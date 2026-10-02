@@ -17,7 +17,8 @@
     "test": "vitest run",
     "license:check": "tsx tools/check-licenses.ts",
     "srd:extract": "tsx tools/srd-extract/index.ts",
-    "srd:check": "tsx tools/srd-extract/index.ts --check"
+    "srd:check": "tsx tools/srd-extract/index.ts --check",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "zod": "^4.6.5"
@@ -25,6 +26,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.19.0",
+    "@vitest/coverage-v8": "4.1.11",
     "eslint": "^10.11.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.12.0",
