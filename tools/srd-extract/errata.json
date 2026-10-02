@@ -33,5 +33,47 @@
     "replace": "|    10 |     10d6 |           +5 | +1 Any             |",
     "pdfPage": 20,
     "note": "Partial Expert/Elementalist focus picks: the PDF (printed page 16) has \"+1 Any\"."
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.7 The Elementalist.md",
+    "find": "| Level | Hit Dice | Bonus Attack | Focus Picks |",
+    "replace": "| Level | Hit Dice | Attack Bonus | Focus Picks |",
+    "pdfPage": 19,
+    "note": "Full Elementalist table header: the PDF (printed page 15) has \"Attack Bonus\"."
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.18 The Warrior.md",
+    "find": "Whenever a Warrior Inflicts Damage With Any Attack, Spell, Or Special Ability They May Add Half Their Character Level, Rounded Up, To The Damage Done.\nThis Damage Is Also Added To Any Shock They May Inflict.",
+    "replace": "Whenever a Warrior inflicts damage with any attack, spell, or special ability they may add half their character level, rounded up, to the damage done.\nThis damage is also added to any Shock they may inflict.",
+    "pdfPage": 38,
+    "note": "Killing Blow is in Title Case in the mirror; the PDF (printed page 34) uses sentence case."
+  },
+  {
+    "file": "1.0 Character Creation/1.6.0 Foci.md",
+    "find": "### Cultured Through\n\nWide travel,",
+    "replace": "### Cultured\n\nThrough wide travel,",
+    "pdfPage": 42,
+    "note": "The focus is named \"Cultured\"; \"Through\" begins its description (printed page 38)."
+  },
+  {
+    "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+    "find": "| Hurlant, Great     |      3d10 |    None | Dex       |  600/2,400 | FX, SS, AP     | 10,000 sp |   1 |",
+    "replace": "| Hurlant, Great     |      3d10 |    None | Dex       |  600/2,400 | FX, SS, AP     | 10,000 sp |  15 |",
+    "pdfPage": 65,
+    "note": "Great Hurlant encumbrance is 15 in the PDF (printed page 61)."
+  },
+  {
+    "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+    "find": "| Inst. | Skill |     |",
+    "replace": "| Inst. | Skill | Save |",
+    "pdfPage": 82,
+    "note": "Unnatural Entities header: the last column is Save (printed page 78)."
+  },
+  {
+    "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+    "find": "| Save Automaton, Humanlike |",
+    "replace": "| Automaton, Humanlike      |",
+    "pdfPage": 82,
+    "note": "The row is named \"Automaton, Humanlike\"; the stray \"Save\" belongs to the header (printed page 78)."
   }
 ]

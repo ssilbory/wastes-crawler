@@ -660,8 +660,8 @@
     "save": 12
   },
   {
-    "id": "save-automaton-humanlike",
-    "name": "Save Automaton, Humanlike",
+    "id": "automaton-humanlike",
+    "name": "Automaton, Humanlike",
     "source": {
       "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
       "heading": "5.1.0 Monster & NPC Statistics"

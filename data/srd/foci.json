@@ -152,13 +152,13 @@
     ]
   },
   {
-    "id": "cultured-through",
-    "name": "Cultured Through",
+    "id": "cultured",
+    "name": "Cultured",
     "source": {
       "file": "1.0 Character Creation/1.6.0 Foci.md",
-      "heading": "Cultured Through"
+      "heading": "Cultured"
     },
-    "description": "Wide travel, careful observation, or extensive study, you’ve obtained a wide experience of the cultures of your region and an ability to navigate their customs, laws, and languages. You know what to do and say to impress others with the reasonableness of your wishes.",
+    "description": "Through wide travel, careful observation, or extensive study, you’ve obtained a wide experience of the cultures of your region and an ability to navigate their customs, laws, and languages. You know what to do and say to impress others with the reasonableness of your wishes.",
     "levels": [
       {
         "level": 1,
