@@ -15,8 +15,9 @@
 - Every rules function gets Vitest coverage, including edge cases.
 - Done means: pnpm typecheck && pnpm lint && pnpm test all pass.
 - Keep files under ~300 lines. Prefer many small modules.
-- Never add a dependency without checking its license is MIT, BSD, Apache,
-  ISC, zlib, or CC0.
+- Shipped code (runtime dependencies) must be MIT, BSD, Apache, ISC, zlib,
+  or CC0; pnpm license:check enforces this. Dev-only tooling may use other
+  open-source licenses, but never GPL-family ones.
 - Use pnpm, never npm or yarn. pnpm-workspace.yaml enforces a 7-day minimum
   release age and blocks install scripts; never loosen those settings or add
   exclusions without asking.
