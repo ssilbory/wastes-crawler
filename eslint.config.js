@@ -17,6 +17,15 @@ export default tseslint.config(
     },
   },
   {
+    files: ['src/data/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        { patterns: ['**/rules/**', '**/game/**', '**/render/**', '**/ui/**'] },
+      ],
+    },
+  },
+  {
     files: ['src/rules/**/*.ts'],
     rules: {
       'no-restricted-imports': ['error', { patterns: ['**/game/**', '**/render/**', '**/ui/**'] }],

@@ -1,0 +1,887 @@
+[
+  {
+    "id": "axe-hand",
+    "name": "Axe, Hand",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": {
+      "damage": 1,
+      "maxAc": 15
+    },
+    "attributes": [
+      "str",
+      "dex"
+    ],
+    "range": {
+      "short": 10,
+      "long": 30
+    },
+    "traits": [
+      "throwable"
+    ],
+    "cost": {
+      "amount": 10,
+      "unit": "sp"
+    },
+    "encumbrance": 1
+  },
+  {
+    "id": "axe-war",
+    "name": "Axe, War",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 10,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": {
+      "damage": 3,
+      "maxAc": 15
+    },
+    "attributes": [
+      "str"
+    ],
+    "range": null,
+    "traits": [
+      "two-handed"
+    ],
+    "cost": {
+      "amount": 50,
+      "unit": "sp"
+    },
+    "encumbrance": 2
+  },
+  {
+    "id": "blackjack",
+    "name": "Blackjack",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 4,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": null,
+    "attributes": [
+      "str",
+      "dex"
+    ],
+    "range": null,
+    "traits": [
+      "subtle",
+      "less-lethal"
+    ],
+    "cost": {
+      "amount": 1,
+      "unit": "sp"
+    },
+    "encumbrance": 1
+  },
+  {
+    "id": "bow-large",
+    "name": "Bow, Large",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 8,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": null,
+    "attributes": [
+      "dex"
+    ],
+    "range": {
+      "short": 100,
+      "long": 600
+    },
+    "traits": [
+      "two-handed",
+      "reload",
+      "precisely-murderous"
+    ],
+    "cost": {
+      "amount": 20,
+      "unit": "sp"
+    },
+    "encumbrance": 2
+  },
+  {
+    "id": "bow-small",
+    "name": "Bow, Small",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": null,
+    "attributes": [
+      "dex"
+    ],
+    "range": {
+      "short": 50,
+      "long": 300
+    },
+    "traits": [
+      "two-handed",
+      "reload",
+      "precisely-murderous"
+    ],
+    "cost": {
+      "amount": 20,
+      "unit": "sp"
+    },
+    "encumbrance": 1
+  },
+  {
+    "id": "claw-blades",
+    "name": "Claw Blades",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": {
+      "damage": 2,
+      "maxAc": 13
+    },
+    "attributes": [
+      "str",
+      "dex"
+    ],
+    "range": null,
+    "traits": [
+      "subtle"
+    ],
+    "cost": {
+      "amount": 10,
+      "unit": "sp"
+    },
+    "encumbrance": 1
+  },
+  {
+    "id": "club",
+    "name": "Club",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 4,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": null,
+    "attributes": [
+      "str",
+      "dex"
+    ],
+    "range": {
+      "short": 10,
+      "long": 30
+    },
+    "traits": [
+      "throwable",
+      "less-lethal"
+    ],
+    "cost": null,
+    "encumbrance": 1
+  },
+  {
+    "id": "club-great",
+    "name": "Club, Great",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 10,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": {
+      "damage": 2,
+      "maxAc": 15
+    },
+    "attributes": [
+      "str"
+    ],
+    "range": null,
+    "traits": [
+      "two-handed"
+    ],
+    "cost": {
+      "amount": 1,
+      "unit": "sp"
+    },
+    "encumbrance": 2
+  },
+  {
+    "id": "crossbow",
+    "name": "Crossbow",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 10,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": null,
+    "attributes": [
+      "dex"
+    ],
+    "range": {
+      "short": 100,
+      "long": 300
+    },
+    "traits": [
+      "two-handed",
+      "slow-reload",
+      "precisely-murderous"
+    ],
+    "cost": {
+      "amount": 10,
+      "unit": "sp"
+    },
+    "encumbrance": 1
+  },
+  {
+    "id": "dagger",
+    "name": "Dagger",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 4,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": {
+      "damage": 1,
+      "maxAc": 15
+    },
+    "attributes": [
+      "str",
+      "dex"
+    ],
+    "range": {
+      "short": 30,
+      "long": 60
+    },
+    "traits": [
+      "subtle",
+      "throwable",
+      "precisely-murderous"
+    ],
+    "cost": {
+      "amount": 3,
+      "unit": "sp"
+    },
+    "encumbrance": 1
+  },
+  {
+    "id": "halberd",
+    "name": "Halberd",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 10,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": {
+      "damage": 2,
+      "maxAc": 15
+    },
+    "attributes": [
+      "str"
+    ],
+    "range": null,
+    "traits": [
+      "two-handed",
+      "long"
+    ],
+    "cost": {
+      "amount": 50,
+      "unit": "sp"
+    },
+    "encumbrance": 2
+  },
+  {
+    "id": "hammer-great",
+    "name": "Hammer, Great",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 10,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": {
+      "damage": 2,
+      "maxAc": 18
+    },
+    "attributes": [
+      "str"
+    ],
+    "range": null,
+    "traits": [
+      "two-handed"
+    ],
+    "cost": {
+      "amount": 50,
+      "unit": "sp"
+    },
+    "encumbrance": 2
+  },
+  {
+    "id": "hammer-war",
+    "name": "Hammer, War",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 8,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": {
+      "damage": 1,
+      "maxAc": 18
+    },
+    "attributes": [
+      "str"
+    ],
+    "range": null,
+    "traits": [],
+    "cost": {
+      "amount": 30,
+      "unit": "sp"
+    },
+    "encumbrance": 1
+  },
+  {
+    "id": "hurlant-great",
+    "name": "Hurlant, Great",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 3,
+      "sides": 10,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": null,
+    "attributes": [
+      "dex"
+    ],
+    "range": {
+      "short": 600,
+      "long": 2400
+    },
+    "traits": [
+      "fixed",
+      "single-shot",
+      "armor-piercing"
+    ],
+    "cost": {
+      "amount": 10000,
+      "unit": "sp"
+    },
+    "encumbrance": 1
+  },
+  {
+    "id": "hurlant-hand",
+    "name": "Hurlant, Hand",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 12,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": null,
+    "attributes": [
+      "dex"
+    ],
+    "range": {
+      "short": 30,
+      "long": 60
+    },
+    "traits": [
+      "single-shot",
+      "armor-piercing"
+    ],
+    "cost": {
+      "amount": 1000,
+      "unit": "sp"
+    },
+    "encumbrance": 1
+  },
+  {
+    "id": "hurlant-long",
+    "name": "Hurlant, Long",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 2,
+      "sides": 8,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": null,
+    "attributes": [
+      "dex"
+    ],
+    "range": {
+      "short": 200,
+      "long": 600
+    },
+    "traits": [
+      "two-handed",
+      "single-shot",
+      "armor-piercing",
+      "precisely-murderous"
+    ],
+    "cost": {
+      "amount": 4000,
+      "unit": "sp"
+    },
+    "encumbrance": 2
+  },
+  {
+    "id": "mace",
+    "name": "Mace",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": {
+      "damage": 1,
+      "maxAc": 18
+    },
+    "attributes": [
+      "str"
+    ],
+    "range": null,
+    "traits": [
+      "less-lethal"
+    ],
+    "cost": {
+      "amount": 15,
+      "unit": "sp"
+    },
+    "encumbrance": 1
+  },
+  {
+    "id": "pike",
+    "name": "Pike",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 8,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": {
+      "damage": 1,
+      "maxAc": 18
+    },
+    "attributes": [
+      "str"
+    ],
+    "range": null,
+    "traits": [
+      "two-handed",
+      "long"
+    ],
+    "cost": {
+      "amount": 10,
+      "unit": "sp"
+    },
+    "encumbrance": 2
+  },
+  {
+    "id": "shield-bash-large",
+    "name": "Shield Bash, Large",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": {
+      "damage": 1,
+      "maxAc": 13
+    },
+    "attributes": [
+      "str"
+    ],
+    "range": null,
+    "traits": [
+      "less-lethal"
+    ],
+    "cost": null,
+    "encumbrance": null
+  },
+  {
+    "id": "shield-bash-small",
+    "name": "Shield Bash, Small",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 4,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": null,
+    "attributes": [
+      "str",
+      "dex"
+    ],
+    "range": null,
+    "traits": [
+      "less-lethal"
+    ],
+    "cost": null,
+    "encumbrance": null
+  },
+  {
+    "id": "spear-heavy",
+    "name": "Spear, Heavy",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 10,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": {
+      "damage": 2,
+      "maxAc": 15
+    },
+    "attributes": [
+      "str"
+    ],
+    "range": null,
+    "traits": [
+      "two-handed"
+    ],
+    "cost": {
+      "amount": 10,
+      "unit": "sp"
+    },
+    "encumbrance": 2
+  },
+  {
+    "id": "spear-light",
+    "name": "Spear, Light",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": {
+      "damage": 2,
+      "maxAc": 13
+    },
+    "attributes": [
+      "str",
+      "dex"
+    ],
+    "range": {
+      "short": 30,
+      "long": 60
+    },
+    "traits": [
+      "throwable"
+    ],
+    "cost": {
+      "amount": 5,
+      "unit": "sp"
+    },
+    "encumbrance": 1
+  },
+  {
+    "id": "throwing-blade",
+    "name": "Throwing Blade",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 4,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": null,
+    "attributes": [
+      "dex"
+    ],
+    "range": {
+      "short": 30,
+      "long": 60
+    },
+    "traits": [
+      "subtle",
+      "throwable",
+      "numerous"
+    ],
+    "cost": {
+      "amount": 3,
+      "unit": "sp"
+    },
+    "encumbrance": 1
+  },
+  {
+    "id": "staff",
+    "name": "Staff",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": {
+      "damage": 1,
+      "maxAc": 13
+    },
+    "attributes": [
+      "str",
+      "dex"
+    ],
+    "range": null,
+    "traits": [
+      "two-handed",
+      "less-lethal"
+    ],
+    "cost": {
+      "amount": 1,
+      "unit": "sp"
+    },
+    "encumbrance": 1
+  },
+  {
+    "id": "stiletto",
+    "name": "Stiletto",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 4,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": {
+      "damage": 1,
+      "maxAc": 18
+    },
+    "attributes": [
+      "dex"
+    ],
+    "range": null,
+    "traits": [
+      "subtle",
+      "precisely-murderous"
+    ],
+    "cost": {
+      "amount": 10,
+      "unit": "sp"
+    },
+    "encumbrance": 1
+  },
+  {
+    "id": "sword-great",
+    "name": "Sword, Great",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 12,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": {
+      "damage": 2,
+      "maxAc": 15
+    },
+    "attributes": [
+      "str"
+    ],
+    "range": null,
+    "traits": [
+      "two-handed"
+    ],
+    "cost": {
+      "amount": 250,
+      "unit": "sp"
+    },
+    "encumbrance": 2
+  },
+  {
+    "id": "sword-long",
+    "name": "Sword, Long",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 8,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": {
+      "damage": 2,
+      "maxAc": 13
+    },
+    "attributes": [
+      "str",
+      "dex"
+    ],
+    "range": null,
+    "traits": [],
+    "cost": {
+      "amount": 100,
+      "unit": "sp"
+    },
+    "encumbrance": 1
+  },
+  {
+    "id": "sword-short",
+    "name": "Sword, Short",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "damageAddsSkill": false,
+    "shock": {
+      "damage": 2,
+      "maxAc": 15
+    },
+    "attributes": [
+      "str",
+      "dex"
+    ],
+    "range": null,
+    "traits": [],
+    "cost": {
+      "amount": 10,
+      "unit": "sp"
+    },
+    "encumbrance": 1
+  },
+  {
+    "id": "unarmed-attack",
+    "name": "Unarmed Attack",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.5.0 Weapons.md",
+      "heading": "3.5.2 Types of Weapons"
+    },
+    "damage": {
+      "count": 1,
+      "sides": 2,
+      "modifier": 0
+    },
+    "damageAddsSkill": true,
+    "shock": null,
+    "attributes": [
+      "str",
+      "dex"
+    ],
+    "range": null,
+    "traits": [
+      "less-lethal"
+    ],
+    "cost": null,
+    "encumbrance": null
+  }
+]

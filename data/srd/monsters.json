@@ -1,0 +1,1042 @@
+[
+  {
+    "id": "peaceful-human",
+    "name": "Peaceful Human",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Normal Humans",
+    "hitDice": 1,
+    "ac": 10,
+    "armored": false,
+    "attackBonus": 0,
+    "attacks": 1,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 0
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 0,
+      "ignoresAc": false
+    },
+    "move": 30,
+    "morale": 7,
+    "instinct": 5,
+    "skill": 1,
+    "save": 15
+  },
+  {
+    "id": "thug-or-militia",
+    "name": "Thug or Militia",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Normal Humans",
+    "hitDice": 1,
+    "ac": 13,
+    "armored": true,
+    "attackBonus": 1,
+    "attacks": 1,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 0
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 0,
+      "ignoresAc": false
+    },
+    "move": 30,
+    "morale": 8,
+    "instinct": 4,
+    "skill": 1,
+    "save": 15
+  },
+  {
+    "id": "barbarian-fighter",
+    "name": "Barbarian Fighter",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Normal Humans",
+    "hitDice": 1,
+    "ac": 13,
+    "armored": true,
+    "attackBonus": 2,
+    "attacks": 1,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 1
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 1,
+      "ignoresAc": false
+    },
+    "move": 30,
+    "morale": 8,
+    "instinct": 5,
+    "skill": 1,
+    "save": 15
+  },
+  {
+    "id": "veteran-soldier",
+    "name": "Veteran Soldier",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Normal Humans",
+    "hitDice": 1,
+    "ac": 13,
+    "armored": true,
+    "attackBonus": 2,
+    "attacks": 1,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 1
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 1,
+      "ignoresAc": false
+    },
+    "move": 30,
+    "morale": 8,
+    "instinct": 3,
+    "skill": 1,
+    "save": 15
+  },
+  {
+    "id": "skilled-veteran",
+    "name": "Skilled Veteran",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Normal Humans",
+    "hitDice": 2,
+    "ac": 15,
+    "armored": true,
+    "attackBonus": 3,
+    "attacks": 1,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 1
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 1,
+      "ignoresAc": false
+    },
+    "move": 30,
+    "morale": 9,
+    "instinct": 2,
+    "skill": 1,
+    "save": 14
+  },
+  {
+    "id": "elites-or-special-guards",
+    "name": "Elites or Special Guards",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Normal Humans",
+    "hitDice": 3,
+    "ac": 18,
+    "armored": true,
+    "attackBonus": 4,
+    "attacks": 1,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 2
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 2,
+      "ignoresAc": false
+    },
+    "move": 30,
+    "morale": 10,
+    "instinct": 2,
+    "skill": 2,
+    "save": 14
+  },
+  {
+    "id": "knight-or-minor-hero",
+    "name": "Knight or Minor Hero",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Normal Humans",
+    "hitDice": 4,
+    "ac": 18,
+    "armored": true,
+    "attackBonus": 6,
+    "attacks": 1,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 2
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 2,
+      "ignoresAc": false
+    },
+    "move": 30,
+    "morale": 10,
+    "instinct": 1,
+    "skill": 2,
+    "save": 13
+  },
+  {
+    "id": "warrior-baron",
+    "name": "Warrior Baron",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Normal Humans",
+    "hitDice": 6,
+    "ac": 18,
+    "armored": true,
+    "attackBonus": 8,
+    "attacks": 1,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 3
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 3,
+      "ignoresAc": false
+    },
+    "move": 30,
+    "morale": 9,
+    "instinct": 1,
+    "skill": 2,
+    "save": 12
+  },
+  {
+    "id": "barbarian-warlord",
+    "name": "Barbarian Warlord",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Normal Humans",
+    "hitDice": 8,
+    "ac": 16,
+    "armored": true,
+    "attackBonus": 10,
+    "attacks": 2,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 4
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 4,
+      "ignoresAc": true
+    },
+    "move": 30,
+    "morale": 10,
+    "instinct": 3,
+    "skill": 2,
+    "save": 11
+  },
+  {
+    "id": "mighty-general",
+    "name": "Mighty General",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Normal Humans",
+    "hitDice": 8,
+    "ac": 18,
+    "armored": true,
+    "attackBonus": 10,
+    "attacks": 1,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 4
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 4,
+      "ignoresAc": true
+    },
+    "move": 30,
+    "morale": 10,
+    "instinct": 1,
+    "skill": 3,
+    "save": 11
+  },
+  {
+    "id": "major-hero",
+    "name": "Major Hero",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Normal Humans",
+    "hitDice": 10,
+    "ac": 18,
+    "armored": true,
+    "attackBonus": 12,
+    "attacks": 2,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 5
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 5,
+      "ignoresAc": true
+    },
+    "move": 30,
+    "morale": 10,
+    "instinct": 2,
+    "skill": 3,
+    "save": 10
+  },
+  {
+    "id": "great-warrior-king",
+    "name": "Great Warrior King",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Normal Humans",
+    "hitDice": 12,
+    "ac": 18,
+    "armored": true,
+    "attackBonus": 14,
+    "attacks": 2,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 5
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 5,
+      "ignoresAc": true
+    },
+    "move": 30,
+    "morale": 10,
+    "instinct": 1,
+    "skill": 3,
+    "save": 9
+  },
+  {
+    "id": "petty-mage",
+    "name": "Petty Mage",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Spellcasters",
+    "hitDice": 2,
+    "ac": 10,
+    "armored": false,
+    "attackBonus": 1,
+    "attacks": 1,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 0
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 0,
+      "ignoresAc": false
+    },
+    "move": 30,
+    "morale": 8,
+    "instinct": 4,
+    "skill": 1,
+    "save": 14
+  },
+  {
+    "id": "tribal-shaman",
+    "name": "Tribal Shaman",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Spellcasters",
+    "hitDice": 4,
+    "ac": 10,
+    "armored": false,
+    "attackBonus": 3,
+    "attacks": 1,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 1
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 1,
+      "ignoresAc": false
+    },
+    "move": 30,
+    "morale": 9,
+    "instinct": 4,
+    "skill": 1,
+    "save": 13
+  },
+  {
+    "id": "skilled-sorcerer",
+    "name": "Skilled Sorcerer",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Spellcasters",
+    "hitDice": 5,
+    "ac": 10,
+    "armored": false,
+    "attackBonus": 1,
+    "attacks": 1,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 0
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 0,
+      "ignoresAc": false
+    },
+    "move": 30,
+    "morale": 9,
+    "instinct": 4,
+    "skill": 2,
+    "save": 13
+  },
+  {
+    "id": "master-wizard",
+    "name": "Master Wizard",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Spellcasters",
+    "hitDice": 8,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 1,
+    "attacks": 1,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 0
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 0,
+      "ignoresAc": false
+    },
+    "move": 30,
+    "morale": 9,
+    "instinct": 3,
+    "skill": 2,
+    "save": 11
+  },
+  {
+    "id": "famous-arch-mage",
+    "name": "Famous Arch-Mage",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Spellcasters",
+    "hitDice": 10,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 2,
+    "attacks": 1,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 0
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 0,
+      "ignoresAc": false
+    },
+    "move": 30,
+    "morale": 9,
+    "instinct": 2,
+    "skill": 3,
+    "save": 10
+  },
+  {
+    "id": "small-pack-predator",
+    "name": "Small Pack Predator",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Normal animals",
+    "hitDice": 1,
+    "ac": 12,
+    "armored": false,
+    "attackBonus": 2,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": 13
+    },
+    "move": 40,
+    "morale": 7,
+    "instinct": 6,
+    "skill": 1,
+    "save": 15
+  },
+  {
+    "id": "large-solitary-predator",
+    "name": "Large Solitary Predator",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Normal animals",
+    "hitDice": 5,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 6,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 13
+    },
+    "move": 30,
+    "morale": 8,
+    "instinct": 6,
+    "skill": 1,
+    "save": 13
+  },
+  {
+    "id": "apex-predator",
+    "name": "Apex Predator",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Normal animals",
+    "hitDice": 6,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 6,
+    "attacks": 2,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 13
+    },
+    "move": 40,
+    "morale": 8,
+    "instinct": 6,
+    "skill": 2,
+    "save": 12
+  },
+  {
+    "id": "herd-beast",
+    "name": "Herd Beast",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Normal animals",
+    "hitDice": 2,
+    "ac": 11,
+    "armored": false,
+    "attackBonus": 2,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "shock": null,
+    "move": 40,
+    "morale": 7,
+    "instinct": 6,
+    "skill": 1,
+    "save": 14
+  },
+  {
+    "id": "vicious-large-herbivore",
+    "name": "Vicious Large Herbivore",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Normal animals",
+    "hitDice": 4,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 5,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 10,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": 13
+    },
+    "move": 40,
+    "morale": 9,
+    "instinct": 6,
+    "skill": 1,
+    "save": 13
+  },
+  {
+    "id": "elephantine-grazer",
+    "name": "Elephantine Grazer",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Normal animals",
+    "hitDice": 6,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 5,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "shock": null,
+    "move": 40,
+    "morale": 7,
+    "instinct": 6,
+    "skill": 1,
+    "save": 12
+  },
+  {
+    "id": "save-automaton-humanlike",
+    "name": "Save Automaton, Humanlike",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Unnatural Entities",
+    "hitDice": 2,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 2,
+    "attacks": 1,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 0
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 0,
+      "ignoresAc": false
+    },
+    "move": 30,
+    "morale": 12,
+    "instinct": 3,
+    "skill": 1,
+    "save": 14
+  },
+  {
+    "id": "automaton-laborer",
+    "name": "Automaton, Laborer",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Unnatural Entities",
+    "hitDice": 2,
+    "ac": 15,
+    "armored": false,
+    "attackBonus": 2,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": 13
+    },
+    "move": 30,
+    "morale": 12,
+    "instinct": 3,
+    "skill": 1,
+    "save": 14
+  },
+  {
+    "id": "automaton-military",
+    "name": "Automaton, Military",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Unnatural Entities",
+    "hitDice": 4,
+    "ac": 18,
+    "armored": false,
+    "attackBonus": 5,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 10,
+        "modifier": 2
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 4,
+      "maxAc": 15
+    },
+    "move": 30,
+    "morale": 12,
+    "instinct": 3,
+    "skill": 1,
+    "save": 13
+  },
+  {
+    "id": "automaton-warbot",
+    "name": "Automaton, Warbot",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Unnatural Entities",
+    "hitDice": 10,
+    "ac": 20,
+    "armored": false,
+    "attackBonus": 12,
+    "attacks": 3,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 12,
+        "modifier": 5
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 7,
+      "maxAc": null
+    },
+    "move": 40,
+    "morale": 12,
+    "instinct": 2,
+    "skill": 2,
+    "save": 10
+  },
+  {
+    "id": "slime-or-ooze",
+    "name": "Slime or ooze",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Unnatural Entities",
+    "hitDice": 6,
+    "ac": 10,
+    "armored": false,
+    "attackBonus": 6,
+    "attacks": 2,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": null
+    },
+    "move": 20,
+    "morale": 12,
+    "instinct": 5,
+    "skill": 1,
+    "save": 12
+  },
+  {
+    "id": "predator-small-vicious",
+    "name": "Predator, Small Vicious",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Unnatural Entities",
+    "hitDice": 1,
+    "ac": 14,
+    "armored": false,
+    "attackBonus": 1,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": 13
+    },
+    "move": 30,
+    "morale": 7,
+    "instinct": 5,
+    "skill": 1,
+    "save": 15
+  },
+  {
+    "id": "predator-large-vicious",
+    "name": "Predator, Large Vicious",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Unnatural Entities",
+    "hitDice": 6,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 7,
+    "attacks": 2,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 15
+    },
+    "move": 40,
+    "morale": 9,
+    "instinct": 5,
+    "skill": 2,
+    "save": 13
+  },
+  {
+    "id": "predator-hulking",
+    "name": "Predator, Hulking",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Unnatural Entities",
+    "hitDice": 10,
+    "ac": 15,
+    "armored": false,
+    "attackBonus": 12,
+    "attacks": 2,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 3
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 6,
+      "maxAc": 15
+    },
+    "move": 30,
+    "morale": 10,
+    "instinct": 4,
+    "skill": 1,
+    "save": 10
+  },
+  {
+    "id": "predator-hellbeast",
+    "name": "Predator, Hellbeast",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Unnatural Entities",
+    "hitDice": 10,
+    "ac": 18,
+    "armored": false,
+    "attackBonus": 12,
+    "attacks": 4,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 10,
+        "modifier": 5
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 6,
+      "maxAc": null
+    },
+    "move": 60,
+    "morale": 11,
+    "instinct": 4,
+    "skill": 3,
+    "save": 10
+  },
+  {
+    "id": "unnatural-swarm",
+    "name": "Unnatural Swarm",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Unnatural Entities",
+    "hitDice": 4,
+    "ac": 10,
+    "armored": false,
+    "attackBonus": 6,
+    "attacks": 3,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": null
+    },
+    "move": 30,
+    "morale": 10,
+    "instinct": 5,
+    "skill": 1,
+    "save": 13
+  },
+  {
+    "id": "terrible-warbeast",
+    "name": "Terrible Warbeast",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Unnatural Entities",
+    "hitDice": 8,
+    "ac": 15,
+    "armored": false,
+    "attackBonus": 10,
+    "attacks": 2,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 4
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 7,
+      "maxAc": 15
+    },
+    "move": 40,
+    "morale": 9,
+    "instinct": 4,
+    "skill": 2,
+    "save": 11
+  },
+  {
+    "id": "legendary-god-titan",
+    "name": "Legendary God-Titan",
+    "source": {
+      "file": "5.0 Monsters and Foes/Monster and NPC Stats.md",
+      "heading": "5.1.0 Monster & NPC Statistics"
+    },
+    "category": "Unnatural Entities",
+    "hitDice": 20,
+    "ac": 22,
+    "armored": false,
+    "attackBonus": 20,
+    "attacks": 3,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 10,
+        "modifier": 5
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 10,
+      "maxAc": null
+    },
+    "move": 40,
+    "morale": 10,
+    "instinct": 3,
+    "skill": 3,
+    "save": 2
+  }
+]

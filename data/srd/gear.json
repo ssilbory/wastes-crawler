@@ -1,0 +1,466 @@
+[
+  {
+    "id": "arrows-20",
+    "name": "Arrows, 20",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 2,
+      "unit": "sp"
+    },
+    "encumbrance": 1,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "backpack",
+    "name": "Backpack",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 2,
+      "unit": "sp"
+    },
+    "encumbrance": 1,
+    "weightless": false,
+    "freeWhenWorn": true,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "boots",
+    "name": "Boots",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 2,
+      "unit": "sp"
+    },
+    "encumbrance": 1,
+    "weightless": false,
+    "freeWhenWorn": true,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "candle",
+    "name": "Candle",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 1,
+      "unit": "cp"
+    },
+    "encumbrance": null,
+    "weightless": true,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "cart-one-horse",
+    "name": "Cart, one-horse",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 50,
+      "unit": "sp"
+    },
+    "encumbrance": null,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "clothes-common",
+    "name": "Clothes, common",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 25,
+      "unit": "sp"
+    },
+    "encumbrance": 1,
+    "weightless": false,
+    "freeWhenWorn": true,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "clothes-fine",
+    "name": "Clothes, fine",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 100,
+      "unit": "sp"
+    },
+    "encumbrance": 1,
+    "weightless": false,
+    "freeWhenWorn": true,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "clothes-noble",
+    "name": "Clothes, noble",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 500,
+      "unit": "sp"
+    },
+    "encumbrance": 2,
+    "weightless": false,
+    "freeWhenWorn": true,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "cooking-utensils",
+    "name": "Cooking utensils",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 4,
+      "unit": "sp"
+    },
+    "encumbrance": 1,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "crowbar",
+    "name": "Crowbar",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 4,
+      "unit": "sp"
+    },
+    "encumbrance": 1,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "firewood-one-nights-fire",
+    "name": "Firewood, one night's fire",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 2,
+      "unit": "cp"
+    },
+    "encumbrance": 4,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "flask-metal-one-pint",
+    "name": "Flask, metal, one pint",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 3,
+      "unit": "sp"
+    },
+    "encumbrance": 1,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "grappling-hook",
+    "name": "Grappling hook",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 5,
+      "unit": "sp"
+    },
+    "encumbrance": 1,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "hammer-or-small-tool",
+    "name": "Hammer or small tool",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 2,
+      "unit": "sp"
+    },
+    "encumbrance": 1,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "healers-pouch",
+    "name": "Healer's pouch",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 5,
+      "unit": "sp"
+    },
+    "encumbrance": 1,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "hurlant-bolts-20",
+    "name": "Hurlant bolts, 20",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 20,
+      "unit": "sp"
+    },
+    "encumbrance": 1,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "iron-spikes-10",
+    "name": "Iron spikes, 10",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 1,
+      "unit": "sp"
+    },
+    "encumbrance": 1,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "lantern",
+    "name": "Lantern",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 10,
+      "unit": "sp"
+    },
+    "encumbrance": 1,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "mirror-hand",
+    "name": "Mirror, hand",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 10,
+      "unit": "sp"
+    },
+    "encumbrance": null,
+    "weightless": true,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "oil-one-pint",
+    "name": "Oil, one pint",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 1,
+      "unit": "sp"
+    },
+    "encumbrance": 1,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": true
+  },
+  {
+    "id": "paper-10-sheets",
+    "name": "Paper, 10 sheets",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 1,
+      "unit": "sp"
+    },
+    "encumbrance": null,
+    "weightless": true,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "rations-one-week",
+    "name": "Rations, one week",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 5,
+      "unit": "sp"
+    },
+    "encumbrance": 4,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "rope-50",
+    "name": "Rope, 50'",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 2,
+      "unit": "sp"
+    },
+    "encumbrance": 2,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "sack",
+    "name": "Sack",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 1,
+      "unit": "sp"
+    },
+    "encumbrance": 1,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "shovel-pick-or-similar-tool",
+    "name": "Shovel, pick, or similar tool",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 4,
+      "unit": "sp"
+    },
+    "encumbrance": 2,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "tinder-box",
+    "name": "Tinder box",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 1,
+      "unit": "sp"
+    },
+    "encumbrance": null,
+    "weightless": true,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "torch",
+    "name": "Torch",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 2,
+      "unit": "cp"
+    },
+    "encumbrance": 1,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": true
+  },
+  {
+    "id": "waterskin-one-gallon",
+    "name": "Waterskin, one gallon",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 1,
+      "unit": "sp"
+    },
+    "encumbrance": 1,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  {
+    "id": "writing-kit",
+    "name": "Writing kit",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Adventuring Gear"
+    },
+    "cost": {
+      "amount": 3,
+      "unit": "sp"
+    },
+    "encumbrance": 1,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  }
+]

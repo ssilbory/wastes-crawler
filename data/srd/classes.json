@@ -1,0 +1,116 @@
+[
+  {
+    "id": "adventurer",
+    "name": "Adventurer",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.1 The Adventurer.md",
+      "heading": "1.5.1 The Adventurer"
+    },
+    "description": "Not every hero is perfectly reflected by one of the three main classes, even with the wide latitude of concepts each one allows. For those heroes that straddle the roles, there remains the class of Adventurer.\n\nAn Adventurer picks two classes to reflect their own particular talents. A spell-slinging swordsman might choose to be a Partial Mage/Partial Warrior, while a stealthy assassin might be a Partial Expert/Partial Warrior, and a grifting mountebank-wizard might be a Partial Expert/Partial Mage. The player should pick whichever pairing serves best.\n\nThe tables below provide the hit dice, attack bonus, and Foci picks gained by each of the three possible pairings. Thus, a first level Partial Expert/Partial Warrior would roll 1d6+2 for their hit points, have a +1 attack bonus, and pick three Foci: one expert, one warrior, and one free pick.\n\nAdventurers tend to have a wider range of abilities than a more focused PC, and the extra Foci pick can make a significant difference at low levels. The absence of the strongest class abilities of Experts and Warriors make a difference in the longer run, however, and a Partial Mage will never attain the same magical power in their tradition as a focused specialist.",
+    "abilities": [
+      {
+        "name": "Partial Expert",
+        "text": "A Partial Expert is treated just as a full Expert, including gaining the benefits of the Quick Learner ability. They do not have the Masterful Expertise ability, however, as they lack the versatility of a full Expert."
+      },
+      {
+        "name": "Partial Mage",
+        "text": "A Partial Mage is treated as a Mage, and gains the Arcane Tradition ability, allowing them to pick a magical tradition for their powers. That tradition’s abilities will be more limited for Partial Mages, however, as described under each of the paths.\n\nIt’s even possible for a PC to pick the Partial Mage class twice for two different magical traditions, gaining portions of both arcane powers. They then use the usual full Mage chart for hit dice, attack bonus, and Foci, and the spellcasting table for dual casters if both partial classes cast spells.\n\nA Partial Mage must adhere to the restrictions and limits of their magical tradition in order to use its abilities, regardless of whatever other partial class they may have."
+      },
+      {
+        "name": "Partial Warrior",
+        "text": "A Partial Warrior gains certain of the benefits of a full Warrior, including the improved hit die and a somewhat improved attack bonus. They do not have the Veteran’s Luck special ability or the Killing Blow power, however, and must trust to their own talents to land blows and crush their enemies."
+      }
+    ]
+  },
+  {
+    "id": "expert",
+    "name": "Expert",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.8 The Expert.md",
+      "heading": "1.5.8 The Expert"
+    },
+    "description": "Your hero is an expert at some useful skill. Thieves, diplomats, healers, scholars, explorers, artisans, and other such heroes should pick the Expert class if they wish to focus on developing their special skills and performing tremendous feats of mastery with them. Experts gain the widest variety of non-combat skills and are the quickest to learn more of them.\n\nAn Expert has an uncanny knack for wielding their skills success fully at a crucial moment, whether or not it’s a skill they’ve taken for their specialty. Once per scene, the Expert can reroll a failed non-combat skill check, gaining a second chance to yank victory from the jaws of otherwise certain failure. Their natural focus on personal development and determined refinement of their skills bleeds through even into those talents they don’t make their special domain.\n\nExperts are also capable combatants, fully able to hold their own in the midst of a murderous fray. It’s not unknown for some Experts to specialize in professions related to martial pursuits, such as an assassin who relies heavily on their superb powers of stealth and deception to reach their unwary foes.",
+    "abilities": [
+      {
+        "name": "Masterful Expertise",
+        "text": "Once per scene, a Full Expert may reroll any non-combat skill check as an Instant action. This allows the Expert to make a roll and then immediately use this ability if the resulting total isn’t good enough to succeed. In cases where it matters, the better of the two rolls may be used.\n\nNote that the typical ten-minute dungeon exploration turn generally counts as a scene, allowing the Full Expert to use this ability every turn if they so wish.\n\nPartial Experts do not receive this ability."
+      },
+      {
+        "name": "Quick Learner",
+        "text": "When you advance a character level, you gain an extra skill point which may only be spent on gaining or improving non-combat skills or raising attributes. You may save this point to spend later if you wish.\n\nPartial Experts do receive this ability."
+      }
+    ]
+  },
+  {
+    "id": "warrior",
+    "name": "Warrior",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.18 The Warrior.md",
+      "heading": "1.5.18 The Warrior"
+    },
+    "description": "The Warrior is a hero born to the blade, a man or woman gifted with a superb capacity for physical violence. Savage barbarians, hardened mercenaries, courageous young farm boys, and ordinary laborers who just happen to have an undiscovered capacity for massive bloodshed all might qualify as Warriors.\n\nWarriors aren’t all formal soldiers or recognized veterans of the blade. Any adventurer who excels in dealing with their problems through violence might qualify as a Warrior, however peaceful their background. It’s possible that their very talent for killing was what forced them out of their old life after some terrible event or awful encounter compelled them to recognize their gifts.\n\nWarriors have more hit points than heroes of other class, and are capable of surviving wounds and hardships that would kill an ordinary man. They’re also gifted with a superior attack bonus, and a native ability to inflict more damage than other PCs. Full Warriors even have the ability to ensure a hit or force a miss by an enemy once per scene, making them lethal foes to common combatants.",
+    "abilities": [
+      {
+        "name": "Killing Blow",
+        "text": "Whenever a Warrior Inflicts Damage With Any Attack, Spell, Or Special Ability They May Add Half Their Character Level, Rounded Up, To The Damage Done. This Damage Is Also Added To Any Shock They May Inflict.\n\nCombined with Foci meant to improve Shock attacks such as Armsmaster, Close Combatant, or Shocking Assault, this ability ensures that an experienced Warrior will almost always kill any ordinary human soldier or minor monster, regardless of their attack roll result. Partial Warriors do not get this ability."
+      },
+      {
+        "name": "Veteran’s Luck",
+        "text": "Once per scene, as an instant action, the warrior may turn a missed attack they have made into a hit. Alternately, they may turn a successful attack against them into a miss, also as an instant action. This ability is particularly lethal when used with the Make a Snap Attack action and leveled against weaker monsters or ordinary human warriors.\n\nOnly one exercise of this ability is possible in a scene, either to force a miss or ensure a hit on a foe; both options may not be employed in the same fight.\n\nA Warrior may use this ability with crew-served weapons they are assisting in firing. This ability cannot be used to negate environmental damage or damage done to a vehicle or mount they are riding.\n\nPartial Warriors do not get this ability."
+      }
+    ]
+  },
+  {
+    "id": "mage",
+    "name": "Mage",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.12 The Mage.md",
+      "heading": "1.5.12 The Mage"
+    },
+    "description": "The Mage class is a general header under which all heroes with fundamentally supernatural powers or spellcasting ability are place. Once this class is chosen, the PC must choose a specific arcane tradition to follow; one is a High Mage, or a Vowed, or an Elementalist, for example.\n\nNot all magical traditions necessarily involve classical spell-flinging and conjury. Some traditions are much more physical in nature, granting the practitioners remarkable bodily prowess or unique magical gifts they can exercise. Some Mage traditions involve no spellcasting at all, restricting their focus entirely to the strange arcane gifts their forebears have developed.\n\nWhile these spells and occult powers are impressive, they tend to come at a cost. A Mage must spend so much time focused on their studies and training that they have little time to master any other art. Most are notably weak combatants with little ability to survive hardships that would merely wound or weary a Warrior.\n\nIn addition to this, many traditions have their own specific limits on practitioners. Initiates of the High Mage tradition, for example, cannot cast their spells while wearing anything heavier than normal clothing, thus making it impossible for them to wear armor and still wield their spells. The hindrances of some traditions extend beyond physical limitations to social penalties or difficulties in dealing with mundane humanity; a necromancer may have impressive powers of magic, but they are often unwelcome in civilized lands and are sometimes subject to the panicked justice of frightened locals and their lords.\n\nThe ways of magic tend to be specific to settings in a way that swordplay or skillful arts are not. Your GM may disallow certain Mage traditions or partial classes based on the particulars of their own campaign world or the specific sort of game they want to play. Some campaigns set in historical periods or very low-magic worlds might not include Mages at all, leaving heroes reliant on the strength of their own arms and the cunning of their own native wits.\n\nWhatever the setting, Mage heroes need to rely on careful planning and a cooperative party to get the most from their abilities. While potent, the spells they wield are few in number and usually narrow in effect; even the mightiest sorcerer is just not going to be as effective as their Warrior peers in slaying fearsome enemies or their Expert companions in carrying out the mundane activities of stealth, persuasion, or investigation. Instead, Mages excel at providing carefully-planned impossibilities, those selective defiances of reality that allow their teammates to pull off incredible schemes or overcome otherwise insurmountable odds.",
+    "abilities": [
+      {
+        "name": "Arcane Tradition",
+        "text": "The Mage may pick one magical tradition to represent their occult powers, as listed in this section. This tradition may give them a number of additional benefits and restrictions."
+      }
+    ]
+  },
+  {
+    "id": "high-mage",
+    "name": "High Mage",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.10 The High Mage.md",
+      "heading": "1.5.10 The High Mage"
+    },
+    "description": "High Mages represent the default spellcaster in most campaigns. Their spells tend to be generalist in nature rather than focusing on particular specific themes, but their arts make them extremely skilled at manipulating and augmenting the magics they use.",
+    "abilities": [
+      {
+        "name": "High Mage Benefits",
+        "text": "All High Mages gain Magic as a bonus skill, acquiring it at level-0, or level-1 if was already level-0. Every High Mage is well-educated in the principles of magic as understood by the sorcerers of this world.\n\nHigh Mages can prepare and cast High Magic spells, and have a number of arts dedicated to improving their use of these incantations. As usual for spellcasters, they cannot wear bulky clothing or armor while casting or using arts, nor use shields. Mages who have trained to overcome these limits with the Armored Magic Focus have more latitude.\n\nHigh Mages conduct extensive experimentation and study as part of their daily activities. Each time they advance a level, they may pick two High Magic spells from the list in this book to add to their repertoire. These spells must be of a level they can cast.\n\nHigh Mages also gain arts specific to their tradition. At first level, a full High Mage picks two arts and a partial High Mage picks one. As they gain levels and experience, they’ll learn additional arts from the adjacent list. Once picked, an art cannot be changed."
+      },
+      {
+        "name": "High Mage Arts",
+        "text": "High Mage Effort is calculated as usual, with each PC’s maximum being equal to one plus their Magic skill level plus the better of their Intelligence or Charisma modifiers. Partial High Mages have a score one point lower than this, albeit not less than one."
+      }
+    ]
+  },
+  {
+    "id": "elementalist",
+    "name": "Elementalist",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.7 The Elementalist.md",
+      "heading": "1.5.7 The Elementalist"
+    },
+    "description": "Elementalists are spellcasting Mages who focus on the manipulation of the material world around them. While they are capable of using High Magic, their specialist spells focus chiefly on wielding the classical elements of fire, air, water, and earth.",
+    "abilities": [
+      {
+        "name": "Elementalist Benefits",
+        "text": "All Elementalists gain Magic as a bonus skill, acquiring it at level-0, or level-1 if was already level-0.\n\nElementalists can prepare and cast High Magic spells in addition to the spells specific to Elementalists. As usual for spellcasters, Elementalists can’t cast spells or use arts while armored or holding a shield.\n\nElementalists are not as talented at general High Magic research as High Mages are, but their studies still bear fruit in time. Each time they advance a level, they can pick a new High Magic spell or an Elementalist spell to add to their spellbook. They must be able to cast the spell to add it to their selection.\n\nElementalists gain the Elemental Resilience and Elemental Sparks arts as part of their basic training, and may pick one additional art from the list below. Further arts are learned as they advance in character level, as given in the tables below. Once chosen, an art cannot be changed."
+      },
+      {
+        "name": "Elementalist Arts",
+        "text": "Elementalist Effort is calculated as usual, with each PC’s maximum being equal to one plus their Magic skill level plus the better of their Intelligence or Charisma modifiers. Partial Elementalists have a score one point lower than this, albeit not less than one."
+      }
+    ]
+  }
+]

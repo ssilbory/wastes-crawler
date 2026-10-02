@@ -15,7 +15,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
-    "license:check": "tsx tools/check-licenses.ts"
+    "license:check": "tsx tools/check-licenses.ts",
+    "srd:extract": "tsx tools/srd-extract/index.ts",
+    "srd:check": "tsx tools/srd-extract/index.ts --check"
   },
   "dependencies": {
     "zod": "^4.6.5"

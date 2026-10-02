@@ -1,0 +1,37 @@
+[
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.7 The Elementalist.md",
+    "find": "|     1 |      1d6 |           +0 | 1 Expert<br>+1 One |",
+    "replace": "|     1 |      1d6 |           +0 | 1 Expert<br>+1 Any |",
+    "pdfPage": 20,
+    "note": "Partial Expert/Elementalist focus picks: the PDF (printed page 16) has \"+1 Any\"."
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.7 The Elementalist.md",
+    "find": "|     2 |      2d6 |           +1 | +1 One             |",
+    "replace": "|     2 |      2d6 |           +1 | +1 Any             |",
+    "pdfPage": 20,
+    "note": "Partial Expert/Elementalist focus picks: the PDF (printed page 16) has \"+1 Any\"."
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.7 The Elementalist.md",
+    "find": "|     5 |      5d6 |           +2 | +1 One             |",
+    "replace": "|     5 |      5d6 |           +2 | +1 Any             |",
+    "pdfPage": 20,
+    "note": "Partial Expert/Elementalist focus picks: the PDF (printed page 16) has \"+1 Any\"."
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.7 The Elementalist.md",
+    "find": "|     7 |      7d6 |           +3 | +1 One             |",
+    "replace": "|     7 |      7d6 |           +3 | +1 Any             |",
+    "pdfPage": 20,
+    "note": "Partial Expert/Elementalist focus picks: the PDF (printed page 16) has \"+1 Any\"."
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.7 The Elementalist.md",
+    "find": "|    10 |     10d6 |           +5 | +1 One             |",
+    "replace": "|    10 |     10d6 |           +5 | +1 Any             |",
+    "pdfPage": 20,
+    "note": "Partial Expert/Elementalist focus picks: the PDF (printed page 16) has \"+1 Any\"."
+  }
+]
