@@ -10,7 +10,10 @@
 - All content is JSON in data/ with a zod schema. No hardcoded monsters,
   items, or spells in code.
 - Every rules function gets Vitest coverage, including edge cases.
-- Done means: npm run typecheck && npm run lint && npm test all pass.
+- Done means: pnpm typecheck && pnpm lint && pnpm test all pass.
 - Keep files under ~300 lines. Prefer many small modules.
 - Never add a dependency without checking its license is MIT, BSD, Apache,
   ISC, zlib, or CC0.
+- Use pnpm, never npm or yarn. pnpm-workspace.yaml enforces a 7-day minimum
+  release age and blocks install scripts; never loosen those settings or add
+  exclusions without asking.

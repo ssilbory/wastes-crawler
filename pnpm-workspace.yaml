@@ -1,0 +1,8 @@
+# Supply-chain settings: https://pnpm.io/supply-chain-security
+# Only install versions published at least 7 days ago (in minutes).
+minimumReleaseAge: 10080
+blockExoticSubdeps: true
+trustPolicy: no-downgrade
+# Install scripts are off by default; esbuild's postinstall only optimizes its binary lookup.
+allowBuilds:
+  esbuild: false
