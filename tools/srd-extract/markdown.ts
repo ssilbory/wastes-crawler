@@ -84,6 +84,15 @@ export function parseTables(lines: string[]): Table[] {
       const row = splitRow(lines[j] ?? '');
       if (row.some((cell) => cell !== '')) table.rows.push(row);
     }
+    // A blank line followed by more rows would silently drop them; make that loud instead.
+    const after = lines[j + 1];
+    if (
+      lines[j]?.trim() === '' &&
+      after?.trim().startsWith('|') &&
+      !/^\|?[\s:|-]+\|?$/.test(lines[j + 2]?.trim() ?? '')
+    ) {
+      throw new Error(`table starting "${header.trim()}" is split by a blank line`);
+    }
     tables.push(table);
     i = j - 1;
   }
@@ -96,6 +105,7 @@ export function cleanInline(text: string): string {
     .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
     .replace(/\{%[^%]*%\}/g, '')
     .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/(^|[^\w])_([^_]+?)_(?=[^\w]|$)/g, '$1$2')
     .replace(/\\([*#|_])/g, '$1')
     .replace(/([a-z)’'”])\.([A-Z])/g, '$1. $2')
     .replace(/[ \t]+/g, ' ')
@@ -152,6 +162,7 @@ export function parseBullets(lines: string[]): Bullet[] {
 export function slug(text: string): string {
   return text
     .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
     .replace(/[’']/g, '')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')

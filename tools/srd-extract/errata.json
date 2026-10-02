@@ -75,5 +75,152 @@
     "replace": "| Automaton, Humanlike      |",
     "pdfPage": 82,
     "note": "The row is named \"Automaton, Humanlike\"; the stray \"Save\" belongs to the header (printed page 78)."
+  },
+  {
+    "file": "1.0 Character Creation/1.6.0 Foci.md",
+    "find": "You Are Practiced At Sudden Murder, And Have Certain Advantages In Carrying Out An Execution Attack.",
+    "replace": "You are practiced at sudden murder, and have certain advantages in carrying out an Execution Attack.",
+    "pdfPage": 42,
+    "note": "Assassin description is in Title Case in the mirror; the PDF (printed page 38) uses sentence case."
+  },
+  {
+    "file": "1.0 Character Creation/1.6.0 Foci.md",
+    "find": "You Have An Uncanny Kind Of Charisma About You, One That Makes Others Instinctively Follow Your Instructions And Further Your Causes.",
+    "replace": "You have an uncanny kind of charisma about you, one that makes others instinctively follow your instructions and further your causes.",
+    "pdfPage": 42,
+    "note": "Authority description is in Title Case in the mirror; the PDF (printed page 38) uses sentence case."
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.10 The High Mage.md",
+    "find": "op posed",
+    "replace": "opposed",
+    "pdfPage": 24,
+    "note": "\"op posed\" is \"opposed\" in the PDF; the mirror split the word in two (arts/counter-magic)."
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.10 The High Mage.md",
+    "find": "regard less",
+    "replace": "regardless",
+    "pdfPage": 25,
+    "note": "\"regard less\" is \"regardless\" in the PDF; the mirror split the word in two (arts/wizards-grandeur)."
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.7 The Elementalist.md",
+    "find": "with in",
+    "replace": "within",
+    "pdfPage": 19,
+    "note": "\"with in\" is \"within\" in the PDF; the mirror split the word in two (arts/beckoned-deluge)."
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.7 The Elementalist.md",
+    "find": "dam age",
+    "replace": "damage",
+    "pdfPage": 19,
+    "note": "\"dam age\" is \"damage\" in the PDF; the mirror split the word in two (arts/beckoned-deluge)."
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.8 The Expert.md",
+    "find": "success fully",
+    "replace": "successfully",
+    "pdfPage": 21,
+    "note": "\"success fully\" is \"successfully\" in the PDF; the mirror split the word in two (classes/expert)."
+  },
+  {
+    "file": "1.0 Character Creation/1.6.0 Foci.md",
+    "find": "non thrown",
+    "replace": "nonthrown",
+    "pdfPage": 41,
+    "note": "\"non thrown\" is \"nonthrown\" in the PDF; the mirror split the word in two (foci/armsmaster)."
+  },
+  {
+    "file": "1.0 Character Creation/1.6.0 Foci.md",
+    "find": "knife sized",
+    "replace": "knifesized",
+    "pdfPage": 42,
+    "note": "\"knife sized\" is \"knifesized\" in the PDF; the mirror split the word in two (foci/close-combatant)."
+  },
+  {
+    "file": "1.0 Character Creation/1.6.0 Foci.md",
+    "find": "char acter",
+    "replace": "character",
+    "pdfPage": 43,
+    "note": "\"char acter\" is \"character\" in the PDF; the mirror split the word in two (foci/impervious-defense)."
+  },
+  {
+    "file": "1.0 Character Creation/1.6.0 Foci.md",
+    "find": "ward robe",
+    "replace": "wardrobe",
+    "pdfPage": 43,
+    "note": "\"ward robe\" is \"wardrobe\" in the PDF; the mirror split the word in two (foci/impostor)."
+  },
+  {
+    "file": "1.0 Character Creation/1.6.0 Foci.md",
+    "find": "catch all",
+    "replace": "catchall",
+    "pdfPage": 45,
+    "note": "\"catch all\" is \"catchall\" in the PDF; the mirror split the word in two (foci/unique-gift)."
+  },
+  {
+    "file": "1.0 Character Creation/1.2.0 Skills.md",
+    "find": "other wise",
+    "replace": "otherwise",
+    "pdfPage": 6,
+    "note": "\"other wise\" is \"otherwise\" in the PDF; the mirror split the word in two (skills/work)."
+  },
+  {
+    "file": "4.0 Magic and Spellcasting/4.4.0 High Magic Spells by Name.md",
+    "find": "fear less",
+    "replace": "fearless",
+    "pdfPage": 68,
+    "note": "\"fear less\" is \"fearless\" in the PDF; the mirror split the word in two (spells/calculation-of-the-phantasmal-eidolon)."
+  },
+  {
+    "file": "4.0 Magic and Spellcasting/4.4.0 High Magic Spells by Name.md",
+    "find": "As similated",
+    "replace": "Assimilated",
+    "pdfPage": 69,
+    "note": "\"As similated\" is \"Assimilated\" in the PDF; the mirror split the word in two (spells/conjunct-the-vital-viscera)."
+  },
+  {
+    "file": "4.0 Magic and Spellcasting/4.4.0 High Magic Spells by Name.md",
+    "find": "En chanted",
+    "replace": "Enchanted",
+    "pdfPage": 71,
+    "note": "\"En chanted\" is \"Enchanted\" in the PDF; the mirror split the word in two (spells/ineluctable-shackles-of-volition)."
+  },
+  {
+    "file": "4.0 Magic and Spellcasting/4.4.0 High Magic Spells by Name.md",
+    "find": "with in",
+    "replace": "within",
+    "pdfPage": 72,
+    "note": "\"with in\" is \"within\" in the PDF; the mirror split the word in two (spells/phantasmal-mimesis)."
+  },
+  {
+    "file": "4.0 Magic and Spellcasting/4.4.0 High Magic Spells by Name.md",
+    "find": "grant ed",
+    "replace": "granted",
+    "pdfPage": 72,
+    "note": "\"grant ed\" is \"granted\" in the PDF; the mirror split the word in two (spells/scorn-the-fetters-of-earth)."
+  },
+  {
+    "file": "4.0 Magic and Spellcasting/4.5.0 Elementalist Spells.md",
+    "find": "man sized",
+    "replace": "mansized",
+    "pdfPage": 74,
+    "note": "\"man sized\" is \"mansized\" in the PDF; the mirror split the word in two (spells/elemental-vallation)."
+  },
+  {
+    "file": "4.0 Magic and Spellcasting/4.5.0 Elementalist Spells.md",
+    "find": "dam aged",
+    "replace": "damaged",
+    "pdfPage": 75,
+    "note": "\"dam aged\" is \"damaged\" in the PDF; the mirror split the word in two (spells/calcifying-scourge)."
+  },
+  {
+    "file": "4.0 Magic and Spellcasting/4.5.0 Elementalist Spells.md",
+    "find": "super heated",
+    "replace": "superheated",
+    "pdfPage": 75,
+    "note": "\"super heated\" is \"superheated\" in the PDF; the mirror split the word in two (spells/fury-of-the-elements)."
   }
 ]
