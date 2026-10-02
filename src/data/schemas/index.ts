@@ -8,20 +8,20 @@ import { MonsterSchema } from './monsters.ts';
 import { SkillSchema } from './skills.ts';
 import { WeaponSchema, WeaponTraitSchema } from './weapons.ts';
 
-/** One entry per data/srd/<name>.json file. */
+/** One entry per data/srd/<name>.json file; an empty file means an extractor stopped matching. */
 export const SrdSchemas = {
-  skills: z.array(SkillSchema),
-  foci: z.array(FocusSchema),
-  classes: z.array(ClassSchema),
-  progressions: z.array(ProgressionSchema),
-  'casting-progressions': z.array(CastingProgressionSchema),
-  'weapon-traits': z.array(WeaponTraitSchema),
-  weapons: z.array(WeaponSchema),
-  armor: z.array(ArmorSchema),
-  gear: z.array(GearSchema),
-  spells: z.array(SpellSchema),
-  arts: z.array(ArtSchema),
-  monsters: z.array(MonsterSchema),
+  skills: z.array(SkillSchema).min(1),
+  foci: z.array(FocusSchema).min(1),
+  classes: z.array(ClassSchema).min(1),
+  progressions: z.array(ProgressionSchema).min(1),
+  'casting-progressions': z.array(CastingProgressionSchema).min(1),
+  'weapon-traits': z.array(WeaponTraitSchema).min(1),
+  weapons: z.array(WeaponSchema).min(1),
+  armor: z.array(ArmorSchema).min(1),
+  gear: z.array(GearSchema).min(1),
+  spells: z.array(SpellSchema).min(1),
+  arts: z.array(ArtSchema).min(1),
+  monsters: z.array(MonsterSchema).min(1),
 } as const;
 
 export type SrdFile = keyof typeof SrdSchemas;

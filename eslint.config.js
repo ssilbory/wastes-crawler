@@ -17,24 +17,62 @@ export default tseslint.config(
     },
   },
   {
+    // Rules and data are pure: no DOM, storage, network, or clock.
+    files: ['src/rules/**/*.ts', 'src/data/**/*.ts'],
+    rules: {
+      'no-restricted-globals': [
+        'error',
+        ...[
+          'window',
+          'document',
+          'localStorage',
+          'sessionStorage',
+          'navigator',
+          'fetch',
+          'Date',
+        ].map((name) => ({
+          name,
+          message: 'Rules and data stay pure; pass this in from the game layer.',
+        })),
+      ],
+    },
+  },
+  {
     files: ['src/data/**/*.ts'],
     rules: {
       'no-restricted-imports': [
         'error',
-        { patterns: ['**/rules/**', '**/game/**', '**/render/**', '**/ui/**'] },
+        {
+          patterns: [
+            '**/rules',
+            '**/rules/**',
+            '**/game',
+            '**/game/**',
+            '**/render',
+            '**/render/**',
+            '**/ui',
+            '**/ui/**',
+          ],
+        },
       ],
     },
   },
   {
     files: ['src/rules/**/*.ts'],
     rules: {
-      'no-restricted-imports': ['error', { patterns: ['**/game/**', '**/render/**', '**/ui/**'] }],
+      'no-restricted-imports': [
+        'error',
+        { patterns: ['**/game', '**/game/**', '**/render', '**/render/**', '**/ui', '**/ui/**'] },
+      ],
     },
   },
   {
     files: ['src/game/**/*.ts'],
     rules: {
-      'no-restricted-imports': ['error', { patterns: ['**/render/**', '**/ui/**'] }],
+      'no-restricted-imports': [
+        'error',
+        { patterns: ['**/render', '**/render/**', '**/ui', '**/ui/**'] },
+      ],
     },
   },
   prettier,

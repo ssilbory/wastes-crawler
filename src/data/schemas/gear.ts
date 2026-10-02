@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { CostSchema, recordBase } from './common.ts';
 
-export const GearSchema = z.object({
+export const GearSchema = z.strictObject({
   ...recordBase,
   cost: CostSchema,
   /** Null when the SRD lists N/A, or when the item is effectively weightless. */

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { CostSchema, recordBase } from './common.ts';
 
-export const ArmorSchema = z.object({
+export const ArmorSchema = z.strictObject({
   ...recordBase,
   category: z.enum(['light', 'medium', 'heavy', 'shield']),
   ac: z.int().min(10),

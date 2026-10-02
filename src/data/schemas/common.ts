@@ -3,21 +3,21 @@ import { z } from 'zod';
 export const IdSchema = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 
 /** Where a record came from in vendor/wwn-srd/. */
-export const SourceSchema = z.object({
+export const SourceSchema = z.strictObject({
   file: z.string().min(1),
   heading: z.string().min(1),
 });
 export type Source = z.infer<typeof SourceSchema>;
 
 /** A dice expression such as 2d6+4: count dice of `sides`, plus `modifier`. */
-export const DiceSchema = z.object({
+export const DiceSchema = z.strictObject({
   count: z.int().min(1),
   sides: z.int().min(2),
   modifier: z.int(),
 });
 export type Dice = z.infer<typeof DiceSchema>;
 
-export const CostSchema = z.object({
+export const CostSchema = z.strictObject({
   amount: z.number().positive(),
   unit: z.enum(['cp', 'sp', 'gp']),
 });

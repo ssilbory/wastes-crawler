@@ -121,6 +121,7 @@ export function extractArmor(reader: SrdReader): Armor[] {
   );
 }
 
+/** The Adventuring Gear table only; Beasts and Transport and Gear Bundles wait for Phase 3d starting gear. */
 export function extractGear(reader: SrdReader): Gear[] {
   const doc = reader.doc(GEAR);
   const heading = findHeading(doc, 'Adventuring Gear');

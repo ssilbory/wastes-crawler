@@ -52,7 +52,10 @@ function col(table: Table, name: RegExp, where: string): number {
 const PICK_ORDER = ['warrior', 'expert', 'any'] as const;
 
 /** Merged by category in a fixed order, since SRD copies of a table list picks in different orders. */
-function parseFocusPicks(cell: string, where: string): Progression['levels'][number]['focusPicks'] {
+export function parseFocusPicks(
+  cell: string,
+  where: string,
+): Progression['levels'][number]['focusPicks'] {
   const counts = new Map<(typeof PICK_ORDER)[number], number>();
   for (const t of cell.split(/<br\s*\/?>/i).map((x) => x.trim())) {
     if (t === '') continue;
@@ -79,7 +82,7 @@ function progressionLevels(table: Table, where: string): Progression['levels'] {
   }));
 }
 
-function parseArtsGained(cell: string): { arts: string[]; anyArts: number } {
+export function parseArtsGained(cell: string): { arts: string[]; anyArts: number } {
   const counts: Record<string, number> = { one: 1, two: 2, three: 3 };
   let anyArts = 0;
   const arts: string[] = [];
@@ -156,7 +159,7 @@ function classFromDoc(doc: MdDoc, out: ClassExtract, seen: Map<string, string>):
 }
 
 /** Adds a table, or merges its source if an identical copy exists; differing copies are an error. */
-function addOnce<T extends { id: string; sources: Source[]; levels: unknown }>(
+export function addOnce<T extends { id: string; sources: Source[]; levels: unknown }>(
   list: T[],
   seen: Map<string, string>,
   item: T,

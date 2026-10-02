@@ -25,7 +25,8 @@ export class SrdReader {
   ) {}
 
   doc(file: string): MdDoc {
-    let text = readFileSync(join(this.root, file), 'utf8');
+    // Errata are written with LF line endings, so match against LF whatever the checkout uses.
+    let text = readFileSync(join(this.root, file), 'utf8').replace(/\r\n/g, '\n');
     for (const e of this.errata.filter((x) => x.file === file)) {
       const count = text.split(e.find).length - 1;
       if (count !== 1) {

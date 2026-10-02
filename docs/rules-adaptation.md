@@ -19,7 +19,7 @@ WWN SRD is the source of truth for every mechanic it covers; this document only 
 | Backgrounds     | Authored for the setting, since the SRD has only a handful                                                                                                                              |
 | Small armor     | Goblins and Gnomes need small-sized armor                                                                                                                                               |
 | Centaur barding | Centaurs have a second armor slot for barding; their AC is the average of body armor and barding, rounded down. Unbarded counts as AC 10. Shields apply on top of the average as normal |
-| Shields         | Small shield: AC 13 or +1. Large shield: AC 15 or +2. Tower shield: cover, so attacks against and made by its bearer have disadvantage                                                  |
+| Shields         | Overrides the SRD shield table. Small shield: AC 13 or +1. Large shield: AC 15 or +2. Tower shield: cover, so attacks against and made by its bearer have disadvantage                  |
 
 **Party and formation:** six player characters plus two NPC slots, arranged in two rows of four. Quest NPCs, rescued NPCs, and hirelings occupy the NPC slots. When both are full, a new NPC can join only after one is dismissed. Centaurs take one slot like anyone else, but large NPCs such as giants and dragons take two. NPCs can occupy any slot, front or rear. Some quests replace a PC's slot with an NPC; a PC out of the party can rejoin at any tavern. Each rear slot is shielded by the front slot directly ahead of it, so a gap in the front row exposes whoever stands behind it.
 

@@ -1,0 +1,4 @@
+# Vendored sources stay byte-identical to upstream (the CWN text is CRLF).
+vendor/** -text
+# Generated and hand-written data always use LF.
+data/** text eol=lf

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { recordBase } from './common.ts';
 
-export const SkillSchema = z.object({
+export const SkillSchema = z.strictObject({
   ...recordBase,
   description: z.string().min(1),
 });

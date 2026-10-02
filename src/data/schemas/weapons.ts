@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { AttributeSchema, CostSchema, DiceSchema, IdSchema, recordBase } from './common.ts';
 
-export const WeaponTraitSchema = z.object({
+export const WeaponTraitSchema = z.strictObject({
   ...recordBase,
   /** The table code, such as 2H or LL. */
   code: z.string().regex(/^[0-9A-Z]{1,3}$/),
@@ -9,14 +9,14 @@ export const WeaponTraitSchema = z.object({
 });
 export type WeaponTrait = z.infer<typeof WeaponTraitSchema>;
 
-export const WeaponSchema = z.object({
+export const WeaponSchema = z.strictObject({
   ...recordBase,
   damage: DiceSchema,
   /** Unarmed attacks add the attacker's Punch skill to damage. */
   damageAddsSkill: z.boolean(),
-  shock: z.object({ damage: z.int().min(1), maxAc: z.int().min(10) }).nullable(),
+  shock: z.strictObject({ damage: z.int().min(1), maxAc: z.int().min(10) }).nullable(),
   attributes: z.array(AttributeSchema).min(1),
-  range: z.object({ short: z.int().positive(), long: z.int().positive() }).nullable(),
+  range: z.strictObject({ short: z.int().positive(), long: z.int().positive() }).nullable(),
   /** Weapon trait ids. */
   traits: z.array(IdSchema),
   cost: CostSchema.nullable(),

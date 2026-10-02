@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { DiceSchema, recordBase } from './common.ts';
 
-export const MonsterSchema = z.object({
+export const MonsterSchema = z.strictObject({
   ...recordBase,
   category: z.string().min(1),
   hitDice: z.int().min(1),
@@ -11,15 +11,19 @@ export const MonsterSchema = z.object({
   attackBonus: z.int().min(0),
   attacks: z.int().min(1),
   damage: z.discriminatedUnion('kind', [
-    z.object({ kind: z.literal('weapon'), bonus: z.int().min(0) }),
-    z.object({ kind: z.literal('dice'), dice: DiceSchema }),
+    z.strictObject({ kind: z.literal('weapon'), bonus: z.int().min(0) }),
+    z.strictObject({ kind: z.literal('dice'), dice: DiceSchema }),
   ]),
   shock: z
     .discriminatedUnion('kind', [
       /** The wielded weapon's Shock plus a bonus; ignoresAc is the SRD "/-" suffix. */
-      z.object({ kind: z.literal('weapon'), bonus: z.int().min(0), ignoresAc: z.boolean() }),
+      z.strictObject({ kind: z.literal('weapon'), bonus: z.int().min(0), ignoresAc: z.boolean() }),
       /** maxAc null means Shock applies regardless of the target's AC. */
-      z.object({ kind: z.literal('fixed'), damage: z.int().min(1), maxAc: z.int().nullable() }),
+      z.strictObject({
+        kind: z.literal('fixed'),
+        damage: z.int().min(1),
+        maxAc: z.int().nullable(),
+      }),
     ])
     .nullable(),
   move: z.int().positive(),
