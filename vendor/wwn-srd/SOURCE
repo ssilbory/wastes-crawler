@@ -1,0 +1,93 @@
+Worlds Without Number System Reference Document (WWN SRD)
+Author: Kevin Crawford, Sine Nomine Publishing
+
+Source site:   https://wwn.quadrifons.com/
+Source repo:   https://github.com/sambilheimer/WWNSRDV1
+Commit:        475c29771238a32983c1b6ef4ba8828945182140 (2025-11-08, branch main)
+Fetched:       2026-10-02
+Method:        Repo copy. The site is a Jekyll (just-the-docs) build of the repo above;
+               its CNAME is wwn.quadrifons.com and its latest github-pages deployment
+               is the commit above. Every content .md file was copied byte-for-byte with
+               its directory structure (86 files), except for the two removals listed
+               under "Local changes" below. Excluded: README.md, LICENSE, CNAME,
+               _config.yml, Gemfile*, _includes/, _sass/, assets/, .github/, .idea/,
+               favicon.ico, dotfiles.
+
+Official release
+----------------
+Sine Nomine publishes the SRD as a free PDF (94 pages, dated 3/13/24) on DriveThruRPG:
+https://www.drivethrurpg.com/en/product/473939/worlds-without-number-system-reference-document
+The PDF download needs a DriveThruRPG account, so it was not downloaded or compared.
+The mirror markdown is a third-party transcription of that PDF.
+
+License
+-------
+CC0 1.0 Universal.
+
+Quoted verbatim from the DriveThruRPG product description
+(read via https://api.drivethrurpg.com/api/vBeta/products/473939, the same text as the
+product page above):
+
+  "This document contains the current systems reference document for the Worlds
+  Without Number fantasy RPG. It is provided under a Creative Commons 0 waiver allowing
+  downloaders to copy, modify, reproduce, or otherwise use it for both personal and
+  commercial purposes. Later versions of this file may be released, but any released
+  version may be used in perpetuity.
+
+  The contents of the SRD include the mechanics of the game and trivially-derived
+  content such as weapon damage dice, spell and ability names, and other necessary
+  material for reproduction and use. It does not include the specific setting of the
+  game, the Latter Earth and its nations, individual NPCs, GM tool text, or other
+  creative intellectual property not included in this document. Use of that IP is
+  still reserved.
+
+  While I cannot venture to provide legal advice, my position as the author is that the
+  content in this file constitutes purely mechanical or trivially-derived creative
+  material. Only the specific description of the mechanics could be copyrighted in the
+  first place, and with CC0 I am waiving any claim on that specific verbiage. Users are
+  welcome to copy verbatim any and all of this document for their own personal or
+  commercial products, including software tools.
+
+  In the same vein, users are welcome to advertise any such commercial works as being
+  compatible with Worlds Without Number if, in their opinion, the claim is justified.
+  Such works should rely on their own settings and worlds, however, and in no case
+  should they be presented as "official" or sanctioned Sine Nomine Publishing products,
+  or be presented with a title or trade dress that may reasonably lead to such
+  confusion.
+
+  I wish the users of this document the same commercial success I have enjoyed, and may
+  their efforts be crowned with equal satisfaction.
+
+  -- Kevin Crawford, 3/13/24"
+
+Quoted verbatim from the SRD's own introduction, as found in index.md of the repo
+(https://github.com/sambilheimer/WWNSRDV1/blob/475c29771238a32983c1b6ef4ba8828945182140/index.md)
+and at https://wwn.quadrifons.com/:
+
+  "Regarding this document, its copyright and related rights are waived via CC0, with a
+  summary of the waiver at https://creativecommons.org/publicdomain/zero/1.0/ and the
+  legal text itself at https://creativecommons.org/publicdomain/zero/1.0/legalcode."
+
+The repo's own LICENSE file is the MIT license of the just-the-docs theme
+("Copyright (c) 2022 just-the-docs"). It covers the site template, not the SRD text.
+
+Verification
+------------
+Compared against the official SRD PDF (98 pages, created 2024-03-12) on 2026-10-02.
+The prose matches; 26 table cells or phrases differ. Errors that affect extracted
+data are corrected in tools/srd-extract/errata.json, which cites the PDF page for
+each, and are applied when the files are read. These files are not edited for them.
+
+Local changes
+-------------
+Two passages were removed because they are not SRD text, so the CC0 waiver does not
+cover them:
+
+1. index.md: the "An Introduction from the Site Manager" section (6 lines), written
+   by the mirror's author.
+2. 1.0 Character Creation/1.5.0 Class List/1.5.2 The Accursed.md: the "Arts Gained at
+   each level" table (13 lines, between "Accursed arts may be used in or out of
+   armor." and the Accursed Blade entry). The official SRD has no such table; it may
+   come from the copyrighted WWN rulebook.
+
+Every other file is byte-identical to the commit above.
