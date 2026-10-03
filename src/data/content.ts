@@ -18,6 +18,9 @@ import townRules from '../../data/content/town-rules.json';
 import benchmarkWarrior from '../../data/content/benchmark-warrior.json';
 import npcRules from '../../data/content/npc-rules.json';
 import captives from '../../data/content/captives.json';
+import coachRoutes from '../../data/content/coach-routes.json';
+import coachRules from '../../data/content/coach-rules.json';
+import arenaCards from '../../data/content/arena-cards.json';
 import { combatReferenceErrors } from './combat-check.ts';
 import { equipmentReferenceErrors } from './equipment-check.ts';
 import { focusReferenceErrors } from './focus-content.ts';
@@ -25,6 +28,7 @@ import { magicReferenceErrors } from './magic-check.ts';
 import { overlandReferenceErrors } from './overland-check.ts';
 import { townReferenceErrors } from './town-check.ts';
 import { npcReferenceErrors } from './npc-check.ts';
+import { travelReferenceErrors } from './travel-check.ts';
 import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.ts';
 
 export function loadContent(): ContentData {
@@ -49,6 +53,9 @@ export function loadContent(): ContentData {
     benchmarkWarrior: ContentSchemas.benchmarkWarrior.parse(benchmarkWarrior),
     npcRules: ContentSchemas.npcRules.parse(npcRules),
     captives: ContentSchemas.captives.parse(captives),
+    coachRoutes: ContentSchemas.coachRoutes.parse(coachRoutes),
+    coachRules: ContentSchemas.coachRules.parse(coachRules),
+    arenaCards: ContentSchemas.arenaCards.parse(arenaCards),
   };
 }
 
@@ -96,6 +103,8 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['mishaps', content.mishaps],
     ['hirelings', content.npcRules.hirelings],
     ['captives', content.captives],
+    ['coachRoutes', content.coachRoutes],
+    ...content.arenaCards.map((a): [string, { id: string }[]] => [`arenaCards/${a.town}`, a.bouts]),
     ...content.peoples.map((p): [string, { id: string }[]] => [
       `peoples/${p.id} lineages`,
       p.lineages ?? [],
@@ -116,5 +125,6 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...overlandReferenceErrors(srd, content),
     ...townReferenceErrors(content),
     ...npcReferenceErrors(srd, content),
+    ...travelReferenceErrors(srd, content),
   ];
 }

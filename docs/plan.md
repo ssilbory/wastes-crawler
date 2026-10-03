@@ -251,13 +251,13 @@ Thirteen phases, each gated by an exit criterion Claude Code can verify. The are
 
 Each one closes as a short ADR in `docs/decisions/` before the phase that needs it.
 
-| Decision                      | Options                                                                 | Needed by |
-| ----------------------------- | ----------------------------------------------------------------------- | --------- |
-| ~~High-level edge cases~~     | Closed in Phase 2: see `docs/decisions/0001-high-level-progression.md`  | Phase 2   |
-| Coach pricing and ambush odds | Cost per route and ambush chance, fixed or tied to the economic climate | Phase 6   |
-| ~~Setting details~~           | Deferred to Phase 12: see `docs/decisions/0002-placeholder-setting.md`  | Phase 6   |
-| Level authoring               | Hand-written ASCII only, or add an in-game editor later                 | Phase 7   |
-| Procedural levels             | None, optional side dungeons, or main campaign                          | Phase 12  |
+| Decision                          | Options                                                                                                                                              | Needed by |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| ~~High-level edge cases~~         | Closed in Phase 2: see `docs/decisions/0001-high-level-progression.md`                                                                               | Phase 2   |
+| ~~Coach pricing and ambush odds~~ | Fixed per route in content, fare through the town surcharge, ambush die per travel day: see docs/rules-adaptation.md, Coaches and arenas in Phase 6d | Phase 6   |
+| ~~Setting details~~               | Deferred to Phase 12: see `docs/decisions/0002-placeholder-setting.md`                                                                               | Phase 6   |
+| Level authoring                   | Hand-written ASCII only, or add an in-game editor later                                                                                              | Phase 7   |
+| Procedural levels                 | None, optional side dungeons, or main campaign                                                                                                       | Phase 12  |
 
 ## Risks
 

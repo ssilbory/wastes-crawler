@@ -92,6 +92,7 @@ export function wipe(w: World, data: GameData): void {
   w.position = { col: town.col, row: town.row };
   w.destination = null;
   w.encounter = null;
+  w.coach = null;
   w.day += 1;
   w.quarter = 0;
   w.hikes = 0;

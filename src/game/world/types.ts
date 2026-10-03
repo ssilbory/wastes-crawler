@@ -1,6 +1,7 @@
 // The overland world state the game layer mutates. Saves turn it into WorldSave (save.ts).
 import type {
   Character,
+  CoachTrip,
   DefaultPreset,
   LootDice,
   NpcSave,
@@ -52,6 +53,8 @@ export interface World {
   towns: Record<string, TownLedger>;
   climateDay: number;
   encounter: PendingEncounter | null;
+  coach: CoachTrip | null;
+  arenaDay: number | null;
   log: string[];
 }
 

@@ -1,6 +1,9 @@
 import { useRef, useState } from 'preact/hooks';
 import { newWorld, type Recruit } from '../../game/world/new-world.ts';
-import { benchmarkSeed, partyLevel, type Difficulty } from '../../game/world/difficulty.ts';
+import type { BattleResult } from '../../game/combat/battle.ts';
+import { settleBout } from '../../game/world/arena.ts';
+import { coachQuarter } from '../../game/world/coach.ts';
+import { benchmarkSeed, partyLevel } from '../../game/world/difficulty.ts';
 import { encounterBattle, type WorldBattle } from '../../game/world/fight.ts';
 import { passQuarter, settleByFighting, settleByLeaving } from '../../game/world/quarter.ts';
 import { parseWorld, serializeWorld } from '../../game/world/save.ts';
@@ -28,8 +31,12 @@ export function WorldApp() {
   const world = useRef<World | null>(null);
   const [version, setVersion] = useState(0);
   const [screen, setScreen] = useState<'start' | 'map' | 'town'>('start');
-  const [fight, setFight] = useState<WorldBattle | null>(null);
-  const difficulty = useRef<Promise<Difficulty> | null>(null);
+  /** The fight on screen, what settles it, and where the party goes after. */
+  const [fight, setFight] = useState<{
+    battle: WorldBattle;
+    settle: (result: BattleResult) => void | Promise<void>;
+    back: 'map' | 'town';
+  } | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
   const [hasSave, setHasSave] = useState(() => loadWorldText() !== null);
 
@@ -67,6 +74,33 @@ export function WorldApp() {
         onImport={(file) => void file.text().then(open)}
       />
     );
+  if (fight) {
+    const done = () => {
+      setFight(null);
+      setScreen(fight.back);
+      changed();
+    };
+    return (
+      <div class="arena">
+        <FightScreen
+          createBattle={() => fight.battle.battle}
+          presets={fight.battle.memberIds.map(
+            (id) => w.members.find((m) => m.id === id)?.defaultAction ?? 'auto',
+          )}
+          onPreset={(i, preset) => {
+            const m = w.members.find((x) => x.id === fight.battle.memberIds[i]);
+            if (m) m.defaultAction = preset;
+          }}
+          canLeave={false}
+          doneLabel={fight.back === 'town' ? 'Back to town' : 'Back to the map'}
+          onDone={(result) => {
+            if (!result) return done();
+            void Promise.resolve(fight.settle(result)).then(done);
+          }}
+        />
+      </div>
+    );
+  }
   if (screen === 'town')
     return (
       <TownScreen
@@ -75,38 +109,14 @@ export function WorldApp() {
         version={version}
         onChange={changed}
         onLeave={() => setScreen('map')}
+        onBout={(start) =>
+          setFight({
+            battle: start.fight,
+            settle: (result) => settleBout(w, data, start.fight, start.bout, result),
+            back: 'town',
+          })
+        }
       />
-    );
-  if (fight)
-    return (
-      <div class="arena">
-        <FightScreen
-          createBattle={() => fight.battle}
-          presets={fight.memberIds.map(
-            (id) => w.members.find((m) => m.id === id)?.defaultAction ?? 'auto',
-          )}
-          onPreset={(i, preset) => {
-            const m = w.members.find((x) => x.id === fight.memberIds[i]);
-            if (m) m.defaultAction = preset;
-          }}
-          canLeave={false}
-          doneLabel="Back to the map"
-          onDone={(result) => {
-            const verdict = difficulty.current;
-            difficulty.current = null;
-            if (!result || !verdict) {
-              setFight(null);
-              changed();
-              return;
-            }
-            void verdict.then((d) => {
-              settleByFighting(w, data, fight, result, d);
-              setFight(null);
-              changed();
-            });
-          }}
-        />
-      </div>
     );
   return (
     <MapScreen
@@ -119,13 +129,21 @@ export function WorldApp() {
       }}
       onFight={() => {
         const battle = encounterBattle(w, data);
-        difficulty.current = assess({
+        const verdict = assess({
           enemies: battle.enemies,
           level: partyLevel(w, data),
           seed: benchmarkSeed(w),
           fights: data.content.townRules.xp.simFights,
         });
-        setFight(battle);
+        setFight({
+          battle,
+          settle: (result) => verdict.then((d) => settleByFighting(w, data, battle, result, d)),
+          back: 'map',
+        });
+        changed();
+      }}
+      onRide={() => {
+        coachQuarter(w, data);
         changed();
       }}
       onTown={() => setScreen('town')}

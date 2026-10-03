@@ -1,0 +1,8 @@
+[
+  {
+    "id": "west-road",
+    "towns": ["westhold", "eastmarch"],
+    "fare": 15,
+    "ambushDie": 6
+  }
+]

@@ -18,6 +18,7 @@ import {
 import { CharacterSchema } from './character.ts';
 import { TownRulesSchema } from './town-content.ts';
 import { CaptiveSchema, NpcRulesSchema } from './npc-content.ts';
+import { ArenaCardSchema, CoachRouteSchema, CoachRulesSchema } from './travel-content.ts';
 
 const contentBase = {
   id: IdSchema,
@@ -156,6 +157,9 @@ export const ContentSchemas = {
   benchmarkWarrior: CharacterSchema,
   npcRules: NpcRulesSchema,
   captives: z.array(CaptiveSchema).min(1),
+  coachRoutes: z.array(CoachRouteSchema).min(1),
+  coachRules: CoachRulesSchema,
+  arenaCards: z.array(ArenaCardSchema).min(1),
 } as const;
 export type ContentData = {
   [K in keyof typeof ContentSchemas]: z.infer<(typeof ContentSchemas)[K]>;

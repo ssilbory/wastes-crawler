@@ -11,9 +11,10 @@ import { nightForNpcs } from './npcs.ts';
 import { regionMap } from './region.ts';
 import type { World } from './types.ts';
 
-export function endOfDay(w: World, data: GameData): void {
+/** `waystation`: a coach's night stop, with meals and shelter like a town (Phase 6d). */
+export function endOfDay(w: World, data: GameData, waystation = false): void {
   const map = regionMap(data, w.region);
-  const inTown = map.siteAt(w.position) !== undefined;
+  const inTown = waystation || map.siteAt(w.position) !== undefined;
   const { season } = dateOf(data.content.overlandRules, w.day);
   let fed = inTown;
   if (!inTown) {

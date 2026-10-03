@@ -28,7 +28,7 @@ function endQuarter(w: World, data: GameData): void {
 
 /** Plays a quarter; returns false if an encounter must be settled first. */
 export function passQuarter(w: World, data: GameData, plan: QuarterPlan): boolean {
-  if (w.encounter) return false;
+  if (w.encounter || w.coach) return false;
   const dark = isDarkNow(w, data);
   let extra: number;
   let watcher;

@@ -11,6 +11,7 @@ import { HEX_SIZE, HexMap } from './HexMap.tsx';
 import { PartyPanel } from './PartyPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
+import { CoachPanel } from './CoachPanel.tsx';
 import { QuarterPanel } from './QuarterPanel.tsx';
 import { typeOf } from '../../game/world/npcs.ts';
 import type { QuarterPlan } from '../../game/world/types.ts';
@@ -23,6 +24,7 @@ export function MapScreen(props: {
   onFight: () => void;
   onLeave: () => void;
   onTown: () => void;
+  onRide: () => void;
   onExport: () => void;
   onAbandon: () => void;
 }) {
@@ -45,7 +47,7 @@ export function MapScreen(props: {
         <span>Rations: {w.rations === 0 ? 'none' : `d${w.rations}`}</span>
         <span>Purse: {crowns(w.purse)}</span>
         <span>Loot: {lootText(w.loot)}</span>
-        {town && !w.encounter && (
+        {town && !w.encounter && !w.coach && (
           <button type="button" onClick={props.onTown}>
             Visit {town.name}
           </button>
@@ -64,7 +66,8 @@ export function MapScreen(props: {
             width={width}
             height={height}
             onPick={(col, row) => {
-              if (!w.encounter && setDestination(w, data, { col, row })) props.onChange();
+              if (!w.encounter && !w.coach && setDestination(w, data, { col, row }))
+                props.onChange();
             }}
           />
         </div>
@@ -76,6 +79,8 @@ export function MapScreen(props: {
               onLeave={props.onLeave}
               onChange={props.onChange}
             />
+          ) : w.coach ? (
+            <CoachPanel world={w} onRide={props.onRide} />
           ) : (
             <QuarterPanel
               members={able}

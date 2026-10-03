@@ -4,7 +4,7 @@ import { DefaultPresetSchema } from './roster.ts';
 import { CharacterSchema } from './character.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 3;
+export const WORLD_SCHEMA_VERSION = 4;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -81,6 +81,15 @@ export const TownLedgerSchema = z.strictObject({
 });
 export type TownLedger = z.infer<typeof TownLedgerSchema>;
 
+/** A coach journey under way: the road hexes still ahead, and the last day checked for ambush. */
+export const CoachTripSchema = z.strictObject({
+  route: IdSchema,
+  to: IdSchema,
+  path: z.array(HexSchema),
+  checkedDay: z.int().min(0).nullable(),
+});
+export type CoachTrip = z.infer<typeof CoachTripSchema>;
+
 /** A world save (docs/plan.md, Save/load): versioned, with the RNG state. */
 export const WorldSaveSchema = z.strictObject({
   schemaVersion: z.literal(WORLD_SCHEMA_VERSION),
@@ -114,6 +123,10 @@ export const WorldSaveSchema = z.strictObject({
   /** The day the economic climate last moved the purse. */
   climateDay: z.int().min(0),
   encounter: PendingEncounterSchema.nullable(),
+  /** A coach journey under way. */
+  coach: CoachTripSchema.nullable(),
+  /** The day of the party's last arena bout. */
+  arenaDay: z.int().min(0).nullable(),
   log: z.array(z.string()),
 });
 export type WorldSave = z.infer<typeof WorldSaveSchema>;

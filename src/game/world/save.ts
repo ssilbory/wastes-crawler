@@ -49,6 +49,8 @@ export const WORLD_MIGRATIONS: Migrations = {
     };
     return { ...raw, schemaVersion: 3, npcs: [], encounter: encounter ?? null };
   },
+  // Version 4 adds coaches and town arenas (Phase 6d).
+  3: (raw) => ({ ...raw, schemaVersion: 4, coach: null, arenaDay: null }),
 };
 
 export function serializeWorld(w: World): string {
@@ -74,6 +76,8 @@ export function serializeWorld(w: World): string {
     towns: w.towns,
     climateDay: w.climateDay,
     encounter: w.encounter,
+    coach: w.coach,
+    arenaDay: w.arenaDay,
     log: w.log.slice(-SAVED_LOG_LINES),
   };
   return `${JSON.stringify(save)}\n`;
@@ -141,6 +145,8 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       noRecovery: s.noRecovery,
       lastTown: s.lastTown,
       encounter: s.encounter,
+      coach: s.coach,
+      arenaDay: s.arenaDay,
       log: s.log,
       rng: rngFromState(s.rng),
       visited: new Set(s.visited),

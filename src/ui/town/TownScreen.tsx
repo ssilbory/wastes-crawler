@@ -11,12 +11,17 @@ import { ServicesTab } from './ServicesTab.tsx';
 import { ShopTab } from './ShopTab.tsx';
 import { TavernTab } from './TavernTab.tsx';
 import { TrainingTab } from './TrainingTab.tsx';
+import { TravelTab } from './TravelTab.tsx';
+import { ArenaTab } from './ArenaTab.tsx';
+import type { BoutStart } from '../../game/world/arena.ts';
 
 const TABS = {
   services: 'Inn and temple',
   shop: 'Shop',
   tavern: 'Tavern',
   training: 'Training',
+  travel: 'Coaches',
+  arena: 'Arena',
 } as const;
 type Tab = keyof typeof TABS;
 
@@ -30,6 +35,7 @@ export function TownScreen(props: {
   version: number;
   onChange: () => void;
   onLeave: () => void;
+  onBout: (start: Extract<BoutStart, { ok: true }>) => void;
 }) {
   const w = props.world;
   const town = townHere(w, data);
@@ -75,6 +81,8 @@ export function TownScreen(props: {
           {tab === 'shop' && <ShopTab world={w} act={act} />}
           {tab === 'tavern' && <TavernTab world={w} roster={props.roster} act={act} />}
           {tab === 'training' && <TrainingTab world={w} act={act} />}
+          {tab === 'travel' && <TravelTab world={w} act={act} onBoard={props.onLeave} />}
+          {tab === 'arena' && <ArenaTab world={w} act={act} onBout={props.onBout} />}
         </div>
         <div class="world-side">
           <PartyPanel members={w.members} />

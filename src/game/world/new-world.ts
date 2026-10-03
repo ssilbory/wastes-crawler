@@ -39,6 +39,8 @@ export function newWorld(data: GameData, rng: Rng, party: Recruit[], regionId?: 
     members: party.map((p, i) => newMember(`m-${i}`, p)),
     benched: [],
     npcs: [],
+    coach: null,
+    arenaDay: null,
     purse: toTenths(party.reduce((sum, p) => sum + p.character.crowns, 0)),
     loot: [],
     towns: {},

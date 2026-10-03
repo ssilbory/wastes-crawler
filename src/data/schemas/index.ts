@@ -47,3 +47,4 @@ export * from './overland-content.ts';
 export * from './world.ts';
 export * from './town-content.ts';
 export * from './npc-content.ts';
+export * from './travel-content.ts';

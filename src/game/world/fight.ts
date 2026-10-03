@@ -43,14 +43,25 @@ const fighters = (w: World) => alive(w).filter((m) => m.character.hp.current > 0
 
 export function encounterBattle(w: World, data: GameData): WorldBattle {
   if (!w.encounter) throw new Error('no encounter to fight');
+  return partyBattle(w, data, w.encounter.enemies, true, w.encounter.captive);
+}
+
+/** The conscious party, and its NPCs if `withNpcs`, against enemy rows. */
+export function partyBattle(
+  w: World,
+  data: GameData,
+  enemies: string[][],
+  withNpcs: boolean,
+  captive: string | null,
+): WorldBattle {
   const members = fighters(w);
-  const npcs = w.npcs.filter((n) => n.hp > 0);
+  const npcs = withNpcs ? w.npcs.filter((n) => n.hp > 0) : [];
   const battle = createBattle({
     data,
     rng: w.rng,
     party: members.map((m) => ({ character: m.character, row: m.row, column: m.column })),
     npcs: npcs.map((n) => npcSetup(data, n)),
-    enemies: w.encounter.enemies,
+    enemies,
     log: true,
   });
   members.forEach((m, i) => {
@@ -66,12 +77,12 @@ export function encounterBattle(w: World, data: GameData): WorldBattle {
     battle,
     memberIds: members.map((m) => m.id),
     npcIds: npcs.map((n) => n.id),
-    enemies: w.encounter.enemies,
-    captive: w.encounter.captive,
+    enemies,
+    captive,
   };
 }
 
-function carryBack(data: GameData, m: Member, c: Battle['combatants'][number]): void {
+export function carryBack(data: GameData, m: Member, c: Battle['combatants'][number]): void {
   if (c.status === 'dead') {
     m.dead = true;
     setHp(m, 0);
