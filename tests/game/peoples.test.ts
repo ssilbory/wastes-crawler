@@ -107,6 +107,7 @@ function choicesFor(
     background: { id: bg.id, choice: { mode: 'pick', picks: [{ index: 1 }, { index: 2 }] } },
     classId: 'full-warrior',
     foci: [...racial, { id: 'impervious-defense' }, { id: 'lucky' }],
+    gear: { mode: 'package', packageId: 'shield-wall' },
     freeSkill: 'heal',
     name: 'Tester',
   };

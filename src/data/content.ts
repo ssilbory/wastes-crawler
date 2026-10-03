@@ -2,6 +2,10 @@ import backgrounds from '../../data/content/backgrounds.json';
 import focusRules from '../../data/content/focus-rules.json';
 import peoples from '../../data/content/peoples.json';
 import racialFoci from '../../data/content/racial-foci.json';
+import equipmentRules from '../../data/content/equipment-rules.json';
+import shields from '../../data/content/shields.json';
+import startingPackages from '../../data/content/starting-packages.json';
+import { equipmentReferenceErrors } from './equipment-check.ts';
 import { focusReferenceErrors } from './focus-content.ts';
 import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.ts';
 
@@ -11,6 +15,9 @@ export function loadContent(): ContentData {
     backgrounds: ContentSchemas.backgrounds.parse(backgrounds),
     racialFoci: ContentSchemas.racialFoci.parse(racialFoci),
     focusRules: ContentSchemas.focusRules.parse(focusRules),
+    shields: ContentSchemas.shields.parse(shields),
+    startingPackages: ContentSchemas.startingPackages.parse(startingPackages),
+    equipmentRules: ContentSchemas.equipmentRules.parse(equipmentRules),
   };
 }
 
@@ -41,18 +48,27 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
       errors.push(`peoples/${p.id}: no background is open to it`);
     }
   }
-  const lists: [string, { id: string }[]][] = [
-    ...Object.entries(content),
+  const idLists: [string, { id: string }[]][] = [
+    ['peoples', content.peoples],
+    ['backgrounds', content.backgrounds],
+    ['racialFoci', content.racialFoci],
+    ['focusRules', content.focusRules],
+    ['shields', content.shields],
+    ['startingPackages', content.startingPackages],
     ...content.peoples.map((p): [string, { id: string }[]] => [
       `peoples/${p.id} lineages`,
       p.lineages ?? [],
     ]),
   ];
-  for (const [name, list] of lists) {
+  for (const [name, list] of idLists) {
     const ids = list.map((r) => r.id);
     for (const id of new Set(ids.filter((id, i) => ids.indexOf(id) !== i))) {
       errors.push(`${name}: duplicate id ${id}`);
     }
   }
-  return [...errors, ...focusReferenceErrors(srd, content)];
+  return [
+    ...errors,
+    ...focusReferenceErrors(srd, content),
+    ...equipmentReferenceErrors(srd, content),
+  ];
 }

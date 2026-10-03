@@ -9,6 +9,7 @@ import { pcSaveTarget, type SaveType } from '../../rules/saves.ts';
 import { addAdjustments, ATTRIBUTES } from './attributes.ts';
 import { findProgression, progressionLookup, type GameData } from './context.ts';
 import type { Evaluation } from './creation.ts';
+import { loadoutSummary, type EquipmentSummary } from './equipment.ts';
 import { modifierBonuses } from './foci.ts';
 import { findPeople } from './people.ts';
 
@@ -21,6 +22,7 @@ export interface Sheet {
   /** System Strain maximum: the Constitution score. */
   strainMax: number;
   size: People['size'];
+  equipment: EquipmentSummary;
 }
 
 export function finalScores(c: Character): AttributeScores {
@@ -49,11 +51,23 @@ export function characterSheet(c: Character, data: GameData): Sheet {
   if (!people) throw new Error(`unknown people ${c.people}`);
   const scores = finalScores(c);
   const level = characterLevel(c.classes);
+  const bonuses = modifierBonuses(c.foci);
+  const attackBonus = totalAttackBonus(c.classes, progressionLookup(data));
   return {
     scores,
-    ...modifiersAndSaves(scores, level, modifierBonuses(c.foci)),
+    ...modifiersAndSaves(scores, level, bonuses),
     level,
-    attackBonus: totalAttackBonus(c.classes, progressionLookup(data)),
+    attackBonus,
+    equipment: loadoutSummary(data, {
+      entries: c.inventory,
+      people,
+      scores,
+      bonuses,
+      skills: c.skills,
+      foci: c.foci,
+      level,
+      attackBonus,
+    }),
     strainMax: scores.con,
     size: people.size,
   };

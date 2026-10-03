@@ -1,0 +1,80 @@
+[
+  {
+    "id": "artisans-equipment",
+    "name": "Artisan’s Equipment",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Gear Bundles"
+    },
+    "cost": {
+      "amount": 50,
+      "unit": "sp"
+    },
+    "encumbrance": 5
+  },
+  {
+    "id": "criminal-tools",
+    "name": "Criminal Tools",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Gear Bundles"
+    },
+    "cost": {
+      "amount": 100,
+      "unit": "sp"
+    },
+    "encumbrance": 3
+  },
+  {
+    "id": "dungeoneering-kit",
+    "name": "Dungeoneering Kit",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Gear Bundles"
+    },
+    "cost": {
+      "amount": 200,
+      "unit": "sp"
+    },
+    "encumbrance": 6
+  },
+  {
+    "id": "noble-courtier-outfit",
+    "name": "Noble Courtier Outfit",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Gear Bundles"
+    },
+    "cost": {
+      "amount": 1000,
+      "unit": "sp"
+    },
+    "encumbrance": 2
+  },
+  {
+    "id": "performers-implements",
+    "name": "Performer’s Implements",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Gear Bundles"
+    },
+    "cost": {
+      "amount": 100,
+      "unit": "sp"
+    },
+    "encumbrance": 3
+  },
+  {
+    "id": "wilderness-travel-gear",
+    "name": "Wilderness Travel Gear",
+    "source": {
+      "file": "3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring Gear.md",
+      "heading": "Gear Bundles"
+    },
+    "cost": {
+      "amount": 100,
+      "unit": "sp"
+    },
+    "encumbrance": 5
+  }
+]

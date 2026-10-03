@@ -3,6 +3,7 @@ import castingProgressions from '../../data/srd/casting-progressions.json';
 import classes from '../../data/srd/classes.json';
 import foci from '../../data/srd/foci.json';
 import gear from '../../data/srd/gear.json';
+import gearBundles from '../../data/srd/gear-bundles.json';
 import monsters from '../../data/srd/monsters.json';
 import progressions from '../../data/srd/progressions.json';
 import skills from '../../data/srd/skills.json';
@@ -22,6 +23,7 @@ const RAW: Record<keyof SrdData, unknown> = {
   weapons,
   armor,
   gear,
+  'gear-bundles': gearBundles,
   spells,
   arts,
   monsters,

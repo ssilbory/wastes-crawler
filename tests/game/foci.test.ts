@@ -217,6 +217,7 @@ describe('foci in a finished character', () => {
     background: { id: 'raider', choice: { mode: 'pick', picks: [{ index: 1 }, { index: 2 }] } },
     classId: 'full-expert',
     foci,
+    gear: { mode: 'package', packageId: 'shield-wall' },
     freeSkill: 'heal',
     name: 'Grukk',
   });

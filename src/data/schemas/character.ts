@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { AttributeSchema, IdSchema } from './common.ts';
+import { ItemLocationSchema } from './equipment-content.ts';
 
-export const CHARACTER_SCHEMA_VERSION = 2;
+export const CHARACTER_SCHEMA_VERSION = 3;
 
 const Score = z.int().min(3).max(18);
 const Adjustments = z.partialRecord(AttributeSchema, z.int());
@@ -35,6 +36,18 @@ export const CharacterSchema = z.strictObject({
       attribute: AttributeSchema.optional(),
     }),
   ),
+  /** Carried items; worn armor and shields count as Readied. */
+  inventory: z.array(
+    z.strictObject({
+      id: IdSchema,
+      quantity: z.int().min(1),
+      location: ItemLocationSchema,
+      small: z.literal(true).optional(),
+      barding: z.literal(true).optional(),
+    }),
+  ),
+  /** Money; 1 crown = 1 silver piece, so copper prices make tenths. */
+  crowns: z.number().min(0),
   /** Skill id → level 0–4. */
   skills: z.record(IdSchema, z.int().min(0).max(4)),
   classes: z.strictObject({

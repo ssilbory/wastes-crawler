@@ -20,6 +20,7 @@ describe('data/srd', () => {
       weapons: 29,
       armor: 15,
       gear: 29,
+      'gear-bundles': 6,
       spells: 67,
       arts: 27,
       monsters: 35,

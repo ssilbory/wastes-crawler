@@ -1,5 +1,11 @@
 import { z } from 'zod';
 import { AttributeSchema, IdSchema } from './common.ts';
+import {
+  EquipmentRulesSchema,
+  FocusEffectSchema,
+  ShieldSchema,
+  StartingPackageSchema,
+} from './equipment-content.ts';
 
 const contentBase = {
   id: IdSchema,
@@ -35,6 +41,7 @@ export const FocusRuleSchema = z.strictObject({
   bonusSkill: BonusSkillSchema.optional(),
   attributeChoice: z.literal(true).optional(),
   dieHard: z.literal(true).optional(),
+  effects: z.array(FocusEffectSchema).optional(),
 });
 export type FocusRule = z.infer<typeof FocusRuleSchema>;
 
@@ -46,6 +53,7 @@ export const RacialFocusSchema = z.strictObject({
     .min(1)
     .max(2),
   bonusSkill: BonusSkillSchema.optional(),
+  effects: z.array(FocusEffectSchema).optional(),
 });
 export type RacialFocus = z.infer<typeof RacialFocusSchema>;
 
@@ -68,6 +76,8 @@ export const PeopleSchema = z.strictObject({
   signatureFoci: z.array(IdSchema),
   /** SRD foci that fill the remaining racial focus slots, up to three in all. */
   racialFocusPicks: z.array(IdSchema),
+  /** Wears barding in a second armor slot (docs/rules-adaptation.md, Centaur barding). */
+  barding: z.literal(true).optional(),
   /** When present, every member must belong to one lineage. */
   lineages: z.array(LineageSchema).min(2).optional(),
 });
@@ -115,6 +125,9 @@ export const ContentSchemas = {
   backgrounds: z.array(BackgroundSchema).min(1),
   racialFoci: z.array(RacialFocusSchema).min(1),
   focusRules: z.array(FocusRuleSchema).min(1),
+  shields: z.array(ShieldSchema).min(1),
+  startingPackages: z.array(StartingPackageSchema).min(1),
+  equipmentRules: EquipmentRulesSchema,
 } as const;
 export type ContentData = {
   [K in keyof typeof ContentSchemas]: z.infer<(typeof ContentSchemas)[K]>;

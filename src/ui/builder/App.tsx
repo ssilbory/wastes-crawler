@@ -10,12 +10,14 @@ import {
 } from '../../game/character/creation.ts';
 import { previewSheet } from '../../game/character/derived.ts';
 import { exportCharacter, importCharacter } from '../../game/character/io.ts';
-import { backgroundOpenTo } from '../../game/character/people.ts';
+import { rollStartingCrowns } from '../../game/character/gear.ts';
+import { backgroundOpenTo, findPeople } from '../../game/character/people.ts';
 import type { AttributeScores } from '../../rules/attributes.ts';
 import { AttributesStep, type DraftArray } from './AttributesStep.tsx';
 import { BackgroundStep } from './BackgroundStep.tsx';
 import { data, freshRng } from './data.ts';
 import { FociStep } from './FociStep.tsx';
+import { GearStep } from './GearStep.tsx';
 import { ClassStep, FreeSkillStep, IdentityStep } from './OtherSteps.tsx';
 import { PeopleStep } from './PeopleStep.tsx';
 import { CharacterSheet, PreviewSheet } from './Sheet.tsx';
@@ -114,7 +116,13 @@ export function App() {
                 // Drop a background the new people can't take.
                 const bg = data.content.backgrounds.find((b) => b.id === choices.background?.id);
                 const keep = bg !== undefined && backgroundOpenTo(bg, people);
-                update({ people, lineage, foci: [], ...(keep ? {} : { background: null }) });
+                update({
+                  people,
+                  lineage,
+                  foci: [],
+                  gear: null,
+                  ...(keep ? {} : { background: null }),
+                });
               }}
             />
             <AttributesStep
@@ -162,6 +170,22 @@ export function App() {
               status={ev.steps['free-skill']}
               onChange={(freeSkill) => update({ freeSkill })}
             />
+            <GearStep
+              people={
+                ev.steps.people.state === 'ok' && ev.scores
+                  ? findPeople(data, choices.people)
+                  : undefined
+              }
+              choice={choices.gear}
+              inventory={ev.inventory}
+              crownsTenths={ev.crownsTenths}
+              status={ev.steps.gear}
+              onRoll={() =>
+                choices.gear?.mode === 'shop' &&
+                update({ gear: { ...choices.gear, crowns: rollStartingCrowns(rng.current, data) } })
+              }
+              onChange={(gear) => update({ gear })}
+            />
             <IdentityStep
               name={choices.name}
               goal={choices.goal}
@@ -172,7 +196,7 @@ export function App() {
               Create character
             </button>
           </div>
-          <PreviewSheet preview={preview} skills={ev.skills} />
+          <PreviewSheet preview={preview} skills={ev.skills} equipment={ev.equipment} />
         </main>
       )}
     </div>

@@ -1,7 +1,9 @@
 import type { Attribute, Character } from '../../data/schemas/index.ts';
 import { ATTRIBUTES } from '../../game/character/attributes.ts';
 import { characterSheet, type Preview } from '../../game/character/derived.ts';
+import type { AttackLine, EquipmentSummary } from '../../game/character/equipment.ts';
 import { focusInfo } from '../../game/character/foci.ts';
+import { crowns, entryName } from './GearStep.tsx';
 import type { Skills } from '../../game/character/skills.ts';
 import type { AttributeScores } from '../../rules/attributes.ts';
 import type { SaveType } from '../../rules/saves.ts';
@@ -56,8 +58,40 @@ function SkillList(props: { skills: Skills }) {
   );
 }
 
+function attackText(a: AttackLine): string {
+  const dice = `${a.damage.count}d${a.damage.sides}`;
+  const bonus = a.damage.modifier + a.damageBonus;
+  const shock = a.shock
+    ? `, Shock ${a.shock.damage}/${a.shock.maxAc === null ? 'any AC' : `AC ${a.shock.maxAc}`}`
+    : '';
+  return `${a.name} (${a.mode}) ${signed(a.hit)}, ${dice}${bonus === 0 ? '' : signed(bonus)}${shock}`;
+}
+
+function Equipment(props: { equipment: EquipmentSummary }) {
+  const { armorClass, attacks, load } = props.equipment;
+  return (
+    <>
+      <p>
+        AC {armorClass}. Load: Readied {load.readied}/{load.readiedLimit}, Stowed {load.stowed}/
+        {load.stowedLimit}
+        {load.state === 'ok' ? '' : ` (${load.state})`}.
+      </p>
+      <h3>Attacks</h3>
+      <ul class="skills attacks">
+        {attacks.map((a) => (
+          <li key={`${a.id}-${a.mode}`}>{attackText(a)}</li>
+        ))}
+      </ul>
+    </>
+  );
+}
+
 /** Derived stats for the character in progress, before HP is rolled. */
-export function PreviewSheet(props: { preview: Preview; skills: Skills }) {
+export function PreviewSheet(props: {
+  preview: Preview;
+  skills: Skills;
+  equipment: EquipmentSummary | null;
+}) {
   const { preview } = props;
   return (
     <aside class="sheet" aria-label="Character preview">
@@ -66,6 +100,7 @@ export function PreviewSheet(props: { preview: Preview; skills: Skills }) {
       <p>Attack bonus: {preview.attackBonus === null ? '–' : signed(preview.attackBonus)}</p>
       <h3>Saves</h3>
       <Saves saves={preview.saves} />
+      {props.equipment && <Equipment equipment={props.equipment} />}
       <h3>Skills</h3>
       <SkillList skills={props.skills} />
     </aside>
@@ -119,6 +154,16 @@ export function CharacterSheet(props: { character: Character }) {
       <Saves saves={sheet.saves} />
       <h3>Skills</h3>
       <SkillList skills={c.skills} />
+      <Equipment equipment={sheet.equipment} />
+      <h3>Inventory</h3>
+      <ul class="skills">
+        {c.inventory.map((e, i) => (
+          <li key={i}>
+            {entryName(e)}: {e.location}
+          </li>
+        ))}
+      </ul>
+      <p>Purse: {crowns(Math.round(c.crowns * 10))}.</p>
       <h3>Foci</h3>
       <ul class="skills">
         {c.foci.map((f) => (

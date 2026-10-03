@@ -20,7 +20,29 @@
     "bonusSkill": {
       "kind": "skill",
       "skill": "stab"
-    }
+    },
+    "effects": [
+      {
+        "kind": "damage-adds-skill",
+        "level": 1,
+        "skill": "stab",
+        "modes": ["melee", "thrown"],
+        "shock": true,
+        "excludesUnarmed": true
+      },
+      {
+        "kind": "shock-ignores-ac",
+        "level": 2,
+        "excludesUnarmed": true
+      },
+      {
+        "kind": "hit-bonus",
+        "level": 2,
+        "amount": 1,
+        "modes": ["melee", "thrown"],
+        "excludesUnarmed": true
+      }
+    ]
   },
   {
     "id": "artisan",
@@ -55,7 +77,13 @@
     "category": "combat",
     "bonusSkill": {
       "kind": "any-combat"
-    }
+    },
+    "effects": [
+      {
+        "kind": "shock-ignores-ac",
+        "level": 2
+      }
+    ]
   },
   {
     "id": "connected",
@@ -88,7 +116,16 @@
     "bonusSkill": {
       "kind": "skill",
       "skill": "shoot"
-    }
+    },
+    "effects": [
+      {
+        "kind": "damage-adds-skill",
+        "level": 1,
+        "skill": "shoot",
+        "modes": ["ranged", "thrown"],
+        "shock": false
+      }
+    ]
   },
   {
     "id": "dealmaker",
@@ -135,7 +172,14 @@
   {
     "id": "impervious-defense",
     "availability": "pickable",
-    "category": "combat"
+    "category": "combat",
+    "effects": [
+      {
+        "kind": "innate-ac",
+        "level": 1,
+        "base": 15
+      }
+    ]
   },
   {
     "id": "impostor",
@@ -189,7 +233,18 @@
     "bonusSkill": {
       "kind": "one-of",
       "skills": ["punch", "stab"]
-    }
+    },
+    "effects": [
+      {
+        "kind": "shock-ignores-ac",
+        "level": 1
+      },
+      {
+        "kind": "shock-bonus",
+        "level": 2,
+        "amount": 2
+      }
+    ]
   },
   {
     "id": "snipers-eye",
@@ -235,7 +290,44 @@
     "bonusSkill": {
       "kind": "skill",
       "skill": "punch"
-    }
+    },
+    "effects": [
+      {
+        "kind": "unarmed-damage",
+        "level": 1,
+        "byPunchLevel": [
+          {
+            "count": 1,
+            "sides": 6,
+            "modifier": 0
+          },
+          {
+            "count": 1,
+            "sides": 8,
+            "modifier": 0
+          },
+          {
+            "count": 1,
+            "sides": 10,
+            "modifier": 0
+          },
+          {
+            "count": 1,
+            "sides": 12,
+            "modifier": 0
+          },
+          {
+            "count": 1,
+            "sides": 12,
+            "modifier": 1
+          }
+        ],
+        "shock": {
+          "minPunch": 1,
+          "maxAc": 15
+        }
+      }
+    ]
   },
   {
     "id": "unique-gift",

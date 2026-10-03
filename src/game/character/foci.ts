@@ -5,6 +5,7 @@ import type {
   Attribute,
   BonusSkill,
   FocusCategory,
+  FocusEffect,
   Lineage,
   People,
   Progression,
@@ -24,15 +25,17 @@ export interface FocusInfo {
   bonusSkill: BonusSkill | undefined;
   attributeChoice: boolean;
   dieHard: boolean;
+  effects: FocusEffect[];
   pickable: boolean;
 }
 
 export function focusInfo(data: GameData, id: string): FocusInfo | undefined {
   const racial = data.content.racialFoci.find((f) => f.id === id);
   if (racial) {
-    const { bonusSkill, ...rest } = racial;
+    const { bonusSkill, effects, ...rest } = racial;
     return {
       ...rest,
+      effects: effects ?? [],
       category: null,
       bonusSkill,
       attributeChoice: false,
@@ -52,6 +55,7 @@ export function focusInfo(data: GameData, id: string): FocusInfo | undefined {
     bonusSkill: rule.bonusSkill,
     attributeChoice: rule.attributeChoice === true,
     dieHard: rule.dieHard === true,
+    effects: rule.effects ?? [],
     pickable: rule.availability === 'pickable',
   };
 }

@@ -6,6 +6,7 @@ import { extractClasses } from './extractors/classes.ts';
 import {
   extractArmor,
   extractGear,
+  extractGearBundles,
   extractWeapons,
   extractWeaponTraits,
 } from './extractors/equipment.ts';
@@ -37,6 +38,7 @@ const raw: SrdData = {
   weapons: extractWeapons(reader, traits),
   armor: extractArmor(reader),
   gear: extractGear(reader),
+  'gear-bundles': extractGearBundles(reader),
   spells: extractSpells(reader),
   arts: extractArts(reader),
   monsters: extractMonsters(reader),

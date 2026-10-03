@@ -54,7 +54,14 @@
     "bonusSkill": {
       "kind": "one-of",
       "skills": ["stab", "punch"]
-    }
+    },
+    "effects": [
+      {
+        "kind": "shock-bonus",
+        "level": 1,
+        "amount": 1
+      }
+    ]
   },
   {
     "id": "iron-gut",
@@ -111,7 +118,13 @@
     "bonusSkill": {
       "kind": "skill",
       "skill": "exert"
-    }
+    },
+    "effects": [
+      {
+        "kind": "extra-stowed-half-strength",
+        "level": 1
+      }
+    ]
   },
   {
     "id": "fleet",
@@ -206,7 +219,28 @@
     "bonusSkill": {
       "kind": "skill",
       "skill": "punch"
-    }
+    },
+    "effects": [
+      {
+        "kind": "natural-weapon",
+        "level": 1,
+        "weapon": {
+          "id": "horns",
+          "name": "Horns",
+          "damage": {
+            "count": 1,
+            "sides": 6,
+            "modifier": 0
+          },
+          "shock": {
+            "damage": 1,
+            "maxAc": 13
+          },
+          "attributes": ["str", "dex"],
+          "skill": "punch"
+        }
+      }
+    ]
   },
   {
     "id": "feral-hardiness",

@@ -26,6 +26,7 @@ const raider = (): Choices => ({
   background: { id: 'raider', choice: { mode: 'pick', picks: [{ index: 1 }, { index: 2 }] } },
   classId: 'full-warrior',
   foci: [null, null, { id: 'alert' }, { id: 'armsmaster' }, { id: 'lucky' }],
+  gear: { mode: 'package', packageId: 'shield-wall' },
   freeSkill: 'notice',
   name: 'Snag',
   goal: 'Outlive the war-band',
@@ -216,7 +217,7 @@ describe('finishCharacter', () => {
     const result = finishCharacter(raider(), data, scriptedRng([4, 0xabc, 0xdef]));
     if (!result.ok) throw new Error(result.errors.join('; '));
     expect(result.character).toMatchObject({
-      schemaVersion: 2,
+      schemaVersion: 3,
       id: 'char-00000abc00000def',
       name: 'Snag',
       people: 'goblin',

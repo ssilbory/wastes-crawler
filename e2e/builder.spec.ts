@@ -26,6 +26,8 @@ test('builds, exports, and re-imports a Goblin Warrior', async ({ page }, testIn
   await select('Combat focus', 'Armsmaster');
   await select('Any focus', 'Lucky');
   await select('Free skill', 'Notice');
+  await page.getByRole('radio', { name: 'Starting package' }).check();
+  await select('Package', 'Shield Wall');
   await page.getByRole('textbox', { name: 'Name', exact: true }).fill('Snag');
   await page.getByRole('textbox', { name: 'Goal', exact: true }).fill('Outlive the war-band');
 
@@ -42,6 +44,12 @@ test('builds, exports, and re-imports a Goblin Warrior', async ({ page }, testIn
   // Warren-born raises Sneak, Armsmaster raises Stab, and the free pick raises Alert's Notice.
   for (const skill of ['Exert-0', 'Notice-1', 'Sneak-1', 'Stab-1', 'Survive-0'])
     await expect(sheet).toContainText(skill);
+  // Phase 3d fixture: small cuirass 15 with a large shield is max(15, 17), plus Dex 1.
+  await expect(sheet).toContainText('AC 18.');
+  await expect(sheet).toContainText('Spear, Light (melee) +3, 1d6+2, Shock 4/AC 13');
+  await expect(sheet).toContainText('Unarmed Attack (melee) +0, 1d2+1');
+  await expect(sheet).toContainText('Cuirass and Greaves (small): worn');
+  await expect(sheet).toContainText('Purse: 10 crowns.');
   for (const focus of ['Warren-born-1', 'Scrounger-1', 'Alert-1', 'Armsmaster-1', 'Lucky-1'])
     await expect(sheet).toContainText(focus);
   const before = await sheet.innerText();

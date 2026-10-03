@@ -93,6 +93,8 @@ async function build(page: Page, c: (typeof CASES)[number]) {
   await select('Non-combat focus', 'Lucky');
   await select('Any focus', 'Well Met');
   await select('Free skill', 'Lead');
+  await page.getByRole('radio', { name: 'Starting package' }).check();
+  await select('Package', 'Wanderer');
   await page.getByRole('textbox', { name: 'Name', exact: true }).fill(`${c.people} tester`);
   await page.getByRole('button', { name: 'Create character' }).click();
 }

@@ -14,7 +14,7 @@ import {
   type ModifierBonuses,
 } from '../../rules/attributes.ts';
 import { rollMaxHp } from '../../rules/hit-points.ts';
-import { levelHitDie, startingClass } from '../../rules/progression.ts';
+import { levelHitDie, progressionRow, startingClass } from '../../rules/progression.ts';
 import type { Rng } from '../../rules/rng.ts';
 import {
   addAdjustments,
@@ -32,6 +32,9 @@ import {
   type HeldFocus,
 } from './foci.ts';
 import { findProgression, isSkill, type GameData } from './context.ts';
+import { loadoutSummary, type EquipmentSummary } from './equipment.ts';
+import { evaluateGear, type GearChoice } from './gear.ts';
+import type { InventoryEntry } from './items.ts';
 import { evaluatePeople, findLineage, findPeople } from './people.ts';
 import { addCreationSkill, type Skills } from './skills.ts';
 import { fail, INCOMPLETE, OK, type Step, type StepStatus } from './steps.ts';
@@ -47,6 +50,7 @@ export {
 } from './background.ts';
 export type { Step, StepStatus } from './steps.ts';
 export type { FocusChoice, FocusSlot, HeldFocus } from './foci.ts';
+export type { GearChoice } from './gear.ts';
 
 /** Warrior, Expert, and the Adventurer's Partial Warrior/Partial Expert. */
 export const STARTING_CLASSES = ['full-warrior', 'full-expert', 'partial-expert-partial-warrior'];
@@ -64,6 +68,7 @@ export interface Choices {
   /** One entry per focus slot; signature slots may stay null. */
   foci: (FocusChoice | null)[];
   freeSkill: string | null;
+  gear: GearChoice | null;
   name: string;
   goal: string;
 }
@@ -80,6 +85,11 @@ export interface Evaluation {
   focusSkillsBefore: Skills[];
   foci: HeldFocus[];
   modifierBonuses: ModifierBonuses;
+  inventory: InventoryEntry[];
+  /** Money left after starting gear, in tenths of a crown. */
+  crownsTenths: number;
+  /** AC, attacks, and load once the people and scores are known. */
+  equipment: EquipmentSummary | null;
   steps: Record<Step, StepStatus>;
   complete: boolean;
 }
@@ -93,6 +103,7 @@ export function emptyChoices(): Choices {
     classId: null,
     foci: [],
     freeSkill: null,
+    gear: null,
     name: '',
     goal: '',
   };
@@ -106,6 +117,7 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
     class: INCOMPLETE,
     foci: INCOMPLETE,
     'free-skill': INCOMPLETE,
+    gear: INCOMPLETE,
     identity: INCOMPLETE,
   };
   let scores: AttributeScores | null = null;
@@ -116,6 +128,9 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
   let foci: HeldFocus[] = [];
   let focusSkillsBefore: Skills[] = [];
   let modifierBonuses: ModifierBonuses = {};
+  let inventory: InventoryEntry[] = [];
+  let crownsTenths = 0;
+  let equipment: EquipmentSummary | null = null;
 
   const peopleOutcome = evaluatePeople(data, choices.people, choices.lineage);
   const peopleStatus = peopleOutcome.status;
@@ -176,6 +191,25 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
     }
   }
 
+  if (peopleStatus.state === 'ok' && scores) {
+    const progression =
+      steps.class.state === 'ok' ? findProgression(data, choices.classId as string) : undefined;
+    const loadout = {
+      people: findPeople(data, choices.people) as People,
+      scores,
+      bonuses: modifierBonuses,
+      skills,
+      foci,
+      level: 1,
+      attackBonus: progression ? progressionRow(progression, 1).attackBonus : 0,
+    };
+    const gear = evaluateGear(data, choices.gear, loadout);
+    steps.gear = gear.status;
+    inventory = gear.inventory;
+    crownsTenths = gear.tenths;
+    equipment = loadoutSummary(data, { ...loadout, entries: inventory });
+  }
+
   const name = choices.name.trim();
   if (name.length > MAX_NAME) steps.identity = fail(`name is longer than ${MAX_NAME} characters`);
   else if (choices.goal.length > MAX_GOAL)
@@ -192,6 +226,9 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
     focusSkillsBefore,
     foci,
     modifierBonuses,
+    inventory,
+    crownsTenths,
+    equipment,
     steps,
     complete,
   };
@@ -230,6 +267,8 @@ export function finishCharacter(choices: Choices, data: GameData, rng: Rng): Fin
     background: background.id,
     attributes: { base: array, people: ev.peopleAdjust, background: ev.backgroundAdjust },
     foci: ev.foci,
+    inventory: ev.inventory,
+    crowns: ev.crownsTenths / 10,
     skills: ev.skills,
     classes: startingClass(progression.id),
     hp: { max: hp, current: hp },

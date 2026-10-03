@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { contentReferenceErrors, loadContent } from '../src/data/content.ts';
+import { equipmentReferenceErrors } from '../src/data/equipment-check.ts';
 import { focusReferenceErrors } from '../src/data/focus-content.ts';
 import { loadSrd } from '../src/data/load.ts';
 
@@ -59,6 +60,9 @@ describe('data/content', () => {
       backgrounds: [{ ...bg, peoples: ['goblin', 'dwarf'] }],
       racialFoci: content.racialFoci,
       focusRules: content.focusRules,
+      shields: content.shields,
+      startingPackages: content.startingPackages,
+      equipmentRules: content.equipmentRules,
     };
     expect(contentReferenceErrors(srd, broken)).toEqual([
       'backgrounds/scavenger: unknown people dwarf',
@@ -131,5 +135,68 @@ describe('focus content', () => {
         "peoples/centaur: armored-magic isn't a pickable SRD focus",
       ]),
     );
+  });
+});
+
+describe('equipment content', () => {
+  it('reports unknown items, rules, and effect skills', () => {
+    const [pkg] = content.startingPackages;
+    const [shield] = content.shields;
+    const armsmaster = content.focusRules.find((r) => r.id === 'armsmaster');
+    const [horned] = content.racialFoci.filter((f) => f.id === 'horned');
+    if (!pkg || !shield || !armsmaster || !horned) throw new Error('missing content');
+    const broken = {
+      ...content,
+      shields: [{ ...shield, id: 'dagger' }],
+      startingPackages: [
+        { ...pkg, items: [{ id: 'jetpack', quantity: 1, location: 'stowed' as const }] },
+      ],
+      equipmentRules: {
+        ...content.equipmentRules,
+        noUnskilledPenalty: ['laser'],
+        numerous: { trait: 'swarming', perItem: 5 },
+      },
+      focusRules: [
+        {
+          ...armsmaster,
+          effects: [
+            {
+              kind: 'damage-adds-skill' as const,
+              level: 1 as const,
+              skill: 'fly',
+              modes: ['melee' as const],
+              shock: false,
+            },
+          ],
+        },
+      ],
+      racialFoci: [
+        {
+          ...horned,
+          effects: [
+            {
+              kind: 'natural-weapon' as const,
+              level: 1 as const,
+              weapon: {
+                id: 'tail',
+                name: 'Tail',
+                damage: { count: 1, sides: 4, modifier: 0 },
+                shock: null,
+                attributes: ['str' as const],
+                skill: 'swish',
+              },
+            },
+          ],
+        },
+      ],
+    };
+    expect(equipmentReferenceErrors(srd, broken)).toEqual([
+      'shields/dagger: clashes with another item id',
+      'startingPackages/shield-wall: unknown item jetpack',
+      'equipmentRules: unknown weapon laser',
+      'equipmentRules: unknown trait swarming',
+      'foci/armsmaster: effect uses unknown skill fly',
+      'foci/horned: effect uses unknown skill swish',
+    ]);
   });
 });

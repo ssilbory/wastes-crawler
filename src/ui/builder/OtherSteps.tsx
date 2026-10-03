@@ -45,7 +45,7 @@ export function IdentityStep(props: {
   onChange: (patch: { name?: string; goal?: string }) => void;
 }) {
   return (
-    <Step title="7. Name and goal" status={props.status}>
+    <Step title="8. Name and goal" status={props.status}>
       <label class="field">
         <span>Name</span>
         <input

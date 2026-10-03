@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { ArmorSchema } from './armor.ts';
 import { CastingProgressionSchema, ClassSchema, ProgressionSchema } from './classes.ts';
 import { FocusSchema } from './foci.ts';
-import { GearSchema } from './gear.ts';
+import { GearBundleSchema, GearSchema } from './gear.ts';
 import { ArtSchema, SpellSchema } from './magic.ts';
 import { MonsterSchema } from './monsters.ts';
 import { SkillSchema } from './skills.ts';
@@ -19,6 +19,7 @@ export const SrdSchemas = {
   weapons: z.array(WeaponSchema).min(1),
   armor: z.array(ArmorSchema).min(1),
   gear: z.array(GearSchema).min(1),
+  'gear-bundles': z.array(GearBundleSchema).min(1),
   spells: z.array(SpellSchema).min(1),
   arts: z.array(ArtSchema).min(1),
   monsters: z.array(MonsterSchema).min(1),
@@ -32,6 +33,7 @@ export * from './character.ts';
 export * from './classes.ts';
 export * from './common.ts';
 export * from './content.ts';
+export * from './equipment-content.ts';
 export * from './foci.ts';
 export * from './gear.ts';
 export * from './magic.ts';

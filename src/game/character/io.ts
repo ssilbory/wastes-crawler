@@ -5,6 +5,7 @@ import {
 } from '../../data/schemas/index.ts';
 import { findProgression, isSkill, type GameData } from './context.ts';
 import { focusInfo } from './foci.ts';
+import { findItem } from './items.ts';
 import { findLineage, findPeople } from './people.ts';
 
 export type Raw = Record<string, unknown>;
@@ -14,6 +15,8 @@ export type Migrations = Readonly<Record<number, (raw: Raw) => Raw>>;
 export const MIGRATIONS: Migrations = {
   // Version 2 adds foci (Phase 3c); older characters were made before foci could be chosen.
   1: (raw) => ({ ...raw, foci: [], schemaVersion: 2 }),
+  // Version 3 adds gear (Phase 3d); older characters start with nothing.
+  2: (raw) => ({ ...raw, inventory: [], crowns: 0, schemaVersion: 3 }),
 };
 
 export function exportCharacter(c: Character): string {
@@ -75,6 +78,9 @@ export function importCharacter(
   }
   for (const skill of Object.keys(c.skills)) {
     if (!isSkill(data, skill)) errors.push(`skills: unknown ${skill}`);
+  }
+  for (const item of c.inventory) {
+    if (!findItem(data, item.id)) errors.push(`inventory: unknown ${item.id}`);
   }
   for (const f of c.foci) {
     if (!focusInfo(data, f.id)) errors.push(`foci: unknown ${f.id}`);

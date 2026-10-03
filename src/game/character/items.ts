@@ -1,0 +1,117 @@
+// Item catalog over vendor/wwn-srd/3.0 Equipment, Armor, and Weapons/ (3.2.0 gear and bundles,
+// 3.4.0 armor, 3.5.0 weapons), with the house shields, small armor, and barding rules from
+// docs/rules-adaptation.md.
+import type {
+  Armor,
+  Cost,
+  Gear,
+  GearBundle,
+  ItemLocation,
+  Shield,
+  Weapon,
+} from '../../data/schemas/index.ts';
+import type { GameData } from './context.ts';
+
+export type CatalogItem =
+  | { kind: 'weapon'; id: string; name: string; cost: Cost | null; weapon: Weapon }
+  | { kind: 'armor'; id: string; name: string; cost: Cost | null; armor: Armor }
+  | { kind: 'shield'; id: string; name: string; cost: Cost; shield: Shield }
+  | { kind: 'gear'; id: string; name: string; cost: Cost; gear: Gear }
+  | { kind: 'bundle'; id: string; name: string; cost: Cost; bundle: GearBundle };
+
+/** One line of a character's inventory. */
+export interface InventoryEntry {
+  id: string;
+  quantity: number;
+  location: ItemLocation;
+  /** Sized for a small people (docs/rules-adaptation.md, Small armor). */
+  small?: true | undefined;
+  /** Barding for a centaur's horse half. */
+  barding?: true | undefined;
+}
+
+/** Content shields override the SRD shield rows; SRD armor keeps only body armor. */
+export function catalog(data: GameData): CatalogItem[] {
+  return [
+    ...data.srd.weapons.map((w) => ({
+      kind: 'weapon' as const,
+      id: w.id,
+      name: w.name,
+      cost: w.cost,
+      weapon: w,
+    })),
+    ...data.srd.armor
+      .filter((a) => a.category !== 'shield')
+      .map((a) => ({ kind: 'armor' as const, id: a.id, name: a.name, cost: a.cost, armor: a })),
+    ...data.content.shields.map((s) => ({
+      kind: 'shield' as const,
+      id: s.id,
+      name: s.name,
+      cost: s.cost,
+      shield: s,
+    })),
+    ...data.srd.gear.map((g) => ({
+      kind: 'gear' as const,
+      id: g.id,
+      name: g.name,
+      cost: g.cost,
+      gear: g,
+    })),
+    ...data.srd['gear-bundles'].map((b) => ({
+      kind: 'bundle' as const,
+      id: b.id,
+      name: b.name,
+      cost: b.cost,
+      bundle: b,
+    })),
+  ];
+}
+
+export function findItem(data: GameData, id: string): CatalogItem | undefined {
+  return catalog(data).find((i) => i.id === id);
+}
+
+/** Items a shop sells: everything with a price. */
+export function buyable(data: GameData): CatalogItem[] {
+  return catalog(data).filter((i) => i.cost !== null);
+}
+
+const TENTHS = { cp: 1, sp: 10, gp: 100 } as const;
+
+/** Money in tenths of a crown; 1 crown = 1 silver piece (SRD 3.1.0: 10 cp = 1 sp, 10 sp = 1 gp). */
+export function tenths(cost: Cost): number {
+  return Math.round(cost.amount * TENTHS[cost.unit]);
+}
+
+export function entryPrice(data: GameData, item: CatalogItem, entry: InventoryEntry): number {
+  if (!item.cost) return 0;
+  const multiplier = entry.barding ? data.content.equipmentRules.barding.costMultiplier : 1;
+  return tenths(item.cost) * multiplier * entry.quantity;
+}
+
+/** Encumbrance points of one inventory line (SRD 3.2.0 markers, the N trait, and barding). */
+export function entryEncumbrance(data: GameData, item: CatalogItem, entry: InventoryEntry): number {
+  const q = entry.quantity;
+  const rules = data.content.equipmentRules;
+  switch (item.kind) {
+    case 'weapon': {
+      const enc = item.weapon.encumbrance ?? 0;
+      const numerous = item.weapon.traits.includes(rules.numerous.trait);
+      return numerous ? Math.ceil(q / rules.numerous.perItem) * enc : q * enc;
+    }
+    case 'armor': {
+      const mult = entry.barding ? rules.barding.encumbranceMultiplier : 1;
+      return q * (item.armor.encumbrance ?? 0) * mult;
+    }
+    case 'shield':
+      return q * item.shield.encumbrance;
+    case 'bundle':
+      return q * item.bundle.encumbrance;
+    case 'gear': {
+      const g = item.gear;
+      if (g.weightless || g.encumbrance === null) return 0;
+      if (g.freeWhenWorn && entry.location === 'worn') return 0;
+      return g.bundlesOfThree ? Math.ceil(q / 3) * g.encumbrance : q * g.encumbrance;
+    }
+  }
+}
