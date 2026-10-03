@@ -140,8 +140,8 @@
           "x": 7,
           "y": 3
         },
-        "enemies": [["automaton-humanlike", "automaton-humanlike"]],
-        "text": "Destroy the guardians in the east hall of the lower barrow."
+        "enemies": [["barrow-golem", "barrow-golem"]],
+        "text": "Destroy the golems guarding the east hall of the lower barrow."
       },
       {
         "kind": "retrieve",

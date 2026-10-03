@@ -36,12 +36,12 @@ describe('delve quest steps (docs/rules-adaptation.md, Dungeon exploration in Ph
     place(w, 'barrow-upper', 9, 0, 'e');
     takeStairs(w, data);
     expect(stepOf(w)).toBe(1);
-    expect(w.log.join('\n')).toContain('Destroy the guardians in the east hall');
+    expect(w.log.join('\n')).toContain('Destroy the golems guarding the east hall');
 
     place(w, 'barrow-lower', 6, 3, 'e');
     step(w, data, 'forward');
     expect(w.encounter).toMatchObject({ quest: QUEST, hostile: true });
-    expect(w.encounter?.enemies).toEqual([['automaton-humanlike', 'automaton-humanlike']]);
+    expect(w.encounter?.enemies).toEqual([['barrow-golem', 'barrow-golem']]);
     expect(w.log.at(-1)).toMatch(/The guardian is here\. .*\(The Lower Barrow 7,3\)$/);
     w.encounter = null;
     emit(w, data, { kind: 'fight-won', quest: QUEST });

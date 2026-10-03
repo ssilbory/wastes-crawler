@@ -21,6 +21,11 @@ describe('authored monsters', () => {
       id: 'warbreed-hound',
     });
     expect(baseMonster(content, 'warbreed-hound')).toBe('small-pack-predator');
+    // Every SRD automaton has a rogue clockwork or golem reskin.
+    const automatons = srd.monsters.filter((m) => m.id.startsWith('automaton-')).map((m) => m.id);
+    for (const id of automatons)
+      expect(content.settingMonsters.some((r) => r.base === id)).toBe(true);
+    expect(findMonster(data, 'iron-golem')).toMatchObject({ name: 'Iron Golem', hitDice: 10 });
     expect(baseMonster(content, 'vorpal-hare')).toBe('vorpal-hare');
     const orphan = {
       ...content,

@@ -100,5 +100,41 @@
     "name": "Warlord",
     "base": "barbarian-warlord",
     "description": "A would-be heir to the Dark Lord, holding crafters and herds, building a beastman army one birth at a time."
+  },
+  {
+    "id": "clockwork-servitor",
+    "name": "Rogue Clockwork Servitor",
+    "base": "automaton-humanlike",
+    "description": "A brass servant from some lieutenant's household, still winding itself and still serving a master twenty years dead. It treats the living as intruders."
+  },
+  {
+    "id": "clockwork-laborer",
+    "name": "Rogue Clockwork Laborer",
+    "base": "automaton-laborer",
+    "description": "A clockwork digger or hauler still working a mine or a ditch for nobody. Most ignore passers-by; some have learned to defend the work."
+  },
+  {
+    "id": "clockwork-soldier",
+    "name": "Rogue Clockwork Soldier",
+    "base": "automaton-military",
+    "description": "A clockwork trooper from the civil wars, its orders garbled by twenty years without maintenance. It fights whoever it meets."
+  },
+  {
+    "id": "barrow-golem",
+    "name": "Barrow Golem",
+    "base": "automaton-humanlike",
+    "description": "A golem of grave clay and old bones, raised by a flesh crafter to guard a dead king's goods."
+  },
+  {
+    "id": "stone-golem",
+    "name": "Stone Golem",
+    "base": "automaton-laborer",
+    "description": "A slab-bodied golem quarried from a fortress wall and bound to guard it. It does not tire, and it does not leave."
+  },
+  {
+    "id": "iron-golem",
+    "name": "Iron Golem",
+    "base": "automaton-warbot",
+    "description": "One of the Dark Lord's great iron golems, built to break alliance shield walls. A few still stand where the war left them."
   }
 ]

@@ -470,7 +470,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "automaton-humanlike",
+            "monster": "clockwork-servitor",
             "count": {
               "count": 1,
               "sides": 4,
@@ -485,7 +485,7 @@
         "nature": "wary",
         "groups": [
           {
-            "monster": "automaton-laborer",
+            "monster": "clockwork-laborer",
             "count": {
               "count": 1,
               "sides": 4,
@@ -551,7 +551,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "automaton-humanlike",
+            "monster": "barrow-golem",
             "count": {
               "count": 1,
               "sides": 2,
@@ -767,6 +767,21 @@
           }
         ],
         "captive": "scholar"
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "clockwork-servitor",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
       }
     ]
   },
@@ -902,6 +917,17 @@
             "row": 0
           }
         ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "stone-golem",
+            "count": 1,
+            "row": 0
+          }
+        ]
       }
     ]
   },
@@ -1029,6 +1055,36 @@
         "groups": [
           {
             "monster": "bound-orc-guard",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "clockwork-soldier",
+            "count": {
+              "count": 1,
+              "sides": 2,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "clockwork-laborer",
             "count": {
               "count": 1,
               "sides": 3,
