@@ -24,6 +24,20 @@ export {
   type BattleResult,
 } from './round.ts';
 
+/** An NPC fighting from a formation slot, as its SRD stat line. */
+export interface NpcSetup {
+  monster: string;
+  name: string;
+  row: number;
+  column: number;
+  /** Current hit points, carried in from the world. */
+  hp: number;
+  maxHp: number;
+  noncombatant: boolean;
+  /** Tends the dying with this total Heal bonus and a healer's kit (SRD 3.3.0 common hirelings). */
+  healer?: number;
+}
+
 export interface BattleSetup {
   data: GameData;
   rng: Rng;
@@ -31,6 +45,8 @@ export interface BattleSetup {
   party: { character: Character; row?: number; column?: number }[];
   /** Monster rows on the party's side, front first, for monster-vs-monster fights. */
   allies?: string[][];
+  /** NPCs in the party's formation: hirelings and captives (docs/rules-adaptation.md). */
+  npcs?: NpcSetup[];
   /** Enemy rows, front first: up to three rows of up to eight monster ids. */
   enemies: string[][];
   /** Names for the log; the party and the enemy by default. */
@@ -57,9 +73,10 @@ function monsterRows(s: BattleSetup, rows: string[][], side: SideId, prefix: str
 }
 
 export function createBattle(s: BattleSetup): Battle {
-  if (s.party.length > 2 * ROW_SLOTS) throw new Error('at most eight party members');
+  const npcs = s.npcs ?? [];
+  if (s.party.length + npcs.length > 2 * ROW_SLOTS) throw new Error('at most eight party members');
   const allies = s.allies ?? [];
-  if (s.party.length > 0 && allies.length > 0) {
+  if (s.party.length + npcs.length > 0 && allies.length > 0) {
     throw new Error('a side is either characters or monsters');
   }
   checkRows(allies);
@@ -69,6 +86,19 @@ export function createBattle(s: BattleSetup): Battle {
       ...pcCombatant(s.data, p.character, `pc-${i}`),
       row: p.row ?? Math.floor(i / ROW_SLOTS),
       column: p.column ?? i % ROW_SLOTS,
+    })),
+    ...npcs.map((n, i) => ({
+      ...monsterCombatant(s.data, n.monster, `npc-${i}`, s.rng),
+      name: n.name,
+      side: 'party' as const,
+      row: n.row,
+      column: n.column,
+      hp: n.hp,
+      maxHp: n.maxHp,
+      status: n.hp > 0 ? ('active' as const) : ('dead' as const),
+      noncombatant: n.noncombatant,
+      healModifier: n.healer ?? 0,
+      hasHealKit: n.healer !== undefined,
     })),
     ...monsterRows(s, allies, 'party', 'ally'),
   ];

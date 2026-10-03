@@ -26,6 +26,7 @@ function bestAttack(b: Battle, actor: Combatant): { index: number; foes: Combata
 }
 
 export function monsterAction(b: Battle, actor: Combatant): Action {
+  if (actor.noncombatant) return noncombatantAction(b, actor);
   const choice = bestAttack(b, actor);
   if (!choice) return { kind: 'wait' };
   const attack = actor.attacks[choice.index] as Attack;
@@ -84,11 +85,22 @@ function magicAction(b: Battle, actor: Combatant): Action | null {
   return null;
 }
 
-export function partyAction(b: Battle, actor: Combatant): Action {
+/** The ally who fell first and hasn't been tended this round. */
+function firstDying(b: Battle, actor: Combatant): Combatant | undefined {
   const dying = b.combatants.filter(
     (c) => c.side === actor.side && c.status === 'dying' && !b.stabilizedThisRound.has(c.id),
   );
-  const first = dying.sort((x, y) => x.fellRound - y.fellRound)[0];
+  return dying.sort((x, y) => x.fellRound - y.fellRound)[0];
+}
+
+/** Non-combatants only tend the dying, and only with a healer's kit. */
+function noncombatantAction(b: Battle, actor: Combatant): Action {
+  const first = actor.hasHealKit ? firstDying(b, actor) : undefined;
+  return first ? { kind: 'stabilize', target: first.id } : { kind: 'wait' };
+}
+
+export function partyAction(b: Battle, actor: Combatant): Action {
+  const first = firstDying(b, actor);
   if (first && !inMelee(b, actor)) return { kind: 'stabilize', target: first.id };
   const magic = magicAction(b, actor);
   if (magic) return magic;

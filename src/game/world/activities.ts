@@ -2,6 +2,7 @@
 // Exert check past two quarters a day, and camp quarters of resting, sleeping, foraging, hunting,
 // making camp, and keeping watch. Forage difficulties follow SRD 2.12.5.
 import type { Mishap } from '../../data/schemas/index.ts';
+import { npcCheck } from '../../rules/checks.ts';
 import { roll } from '../../rules/dice.ts';
 import { hexKey } from '../../rules/hex.ts';
 import { EXERT_DIFFICULTY, FREE_HIKES, HIKE_POINTS } from '../../rules/overland.ts';
@@ -10,6 +11,7 @@ import { rollSave } from '../../rules/saves.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
 import { addMemberStrain, alive, bestAt, hurt, memberCheck, note, restQuarter } from './members.ts';
+import { guideOf } from './npcs.ts';
 import { findPath, regionMap, seenHexes } from './region.ts';
 import { enterTown } from './town.ts';
 import type { Activity, Member, World } from './types.ts';
@@ -74,6 +76,25 @@ function overloadedSaves(w: World, data: GameData): void {
 
 const byId = (w: World, id: string | null) => alive(w).find((m) => m.id === id);
 
+/**
+ * Lead the Way: a PC's Wis/Survive check, or a Wilderness Guide's flat +1 (SRD 3.3.0, common
+ * hirelings' total bonus); no leader at all is a failure.
+ */
+function leadTheWay(
+  w: World,
+  data: GameData,
+  leaderId: string | null,
+  difficulty: number,
+  dark: boolean,
+): boolean {
+  const steps = dark ? -1 : 0;
+  const leader = byId(w, leaderId);
+  if (leader) return memberCheck(w, data, leader, 'survive', ['wis'], difficulty, steps).success;
+  if (!guideOf(w, data, leaderId)) return false;
+  const skillBonus = data.content.npcRules.skillBonus;
+  return npcCheck(w.rng, { skillBonus, difficulty, steps }).success;
+}
+
 /** One quarter of hiking toward the destination. Returns extra encounter checks owed. */
 export function hike(w: World, data: GameData, leaderId: string | null, dark: boolean): number {
   const map = regionMap(data, w.region);
@@ -104,11 +125,7 @@ export function hike(w: World, data: GameData, leaderId: string | null, dark: bo
     let endMarch = false;
     // Following a road needs no guide.
     if (!w.visited.has(key) && map.dangerAt(next) !== 'road') {
-      const leader = byId(w, leaderId);
-      const terrain = map.terrainAt(next);
-      const found =
-        leader && memberCheck(w, data, leader, 'survive', ['wis'], terrain.survive, dark ? -1 : 0);
-      if (!found?.success) {
+      if (!leadTheWay(w, data, leaderId, map.terrainAt(next).survive, dark)) {
         const out = mishap(w, data, 'travel');
         endMarch = out.endMarch;
         extra += out.extraChecks;

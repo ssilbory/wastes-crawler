@@ -267,7 +267,15 @@
     "bonusSkill": {
       "kind": "skill",
       "skill": "ride"
-    }
+    },
+    "effects": [
+      {
+        "kind": "parley",
+        "level": 1,
+        "minds": ["animal"],
+        "evenAggressive": false
+      }
+    ]
   },
   {
     "id": "shocking-assault",
@@ -389,7 +397,26 @@
   {
     "id": "well-met",
     "availability": "pickable",
-    "category": "non-combat"
+    "category": "non-combat",
+    "effects": [
+      {
+        "kind": "reaction-bonus",
+        "level": 1,
+        "amount": 1
+      },
+      {
+        "kind": "parley",
+        "level": 1,
+        "minds": [],
+        "evenAggressive": true
+      },
+      {
+        "kind": "parley",
+        "level": 2,
+        "minds": ["monster"],
+        "evenAggressive": true
+      }
+    ]
   },
   {
     "id": "whirlwind-assault",

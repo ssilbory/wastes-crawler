@@ -1,22 +1,42 @@
 // Overland encounters fought with the combat engine. Fights carry the party's wounds, Frailty,
 // strain, and the day's spent spells and Effort in and out (SRD 2.5.1, 4.2.0); a lost fight sends
 // the party back to the last town (docs/plan.md, Combat → Town).
-import { createBattle, type BattleResult } from '../combat/battle.ts';
+import { createBattle, type BattleResult, type NpcSetup } from '../combat/battle.ts';
 import { pcCombatant } from '../combat/combatants.ts';
 import type { Battle, CasterState } from '../combat/types.ts';
 import type { GameData } from '../character/context.ts';
 import { difficultyTier, type Difficulty } from './difficulty.ts';
 import { alive, note, setHp } from './members.ts';
+import { fights, moraleAfterFight, npcMonster, removeNpc, typeOf } from './npcs.ts';
+import { freeCaptive } from './rescue.ts';
 import { addLoot } from './shop.ts';
 import { wipe } from './town.ts';
-import type { Member, World } from './types.ts';
+import type { Member, Npc, World } from './types.ts';
 
 export interface WorldBattle {
   battle: Battle;
   /** Member ids in the order of the battle's pc-N combatants. */
   memberIds: string[];
+  /** NPC ids in the order of the battle's npc-N combatants. */
+  npcIds: string[];
   /** The encounter's enemy rows, for loot and the XP benchmark. */
   enemies: string[][];
+  /** A captive the enemy holds, freed by a win. */
+  captive: string | null;
+}
+
+function npcSetup(data: GameData, n: Npc): NpcSetup {
+  const physician = typeOf(data, n)?.role === 'physician';
+  return {
+    monster: npcMonster(data, n).id,
+    name: n.name,
+    row: n.row,
+    column: n.column,
+    hp: n.hp,
+    maxHp: n.maxHp,
+    noncombatant: !fights(data, n),
+    ...(physician ? { healer: data.content.npcRules.skillBonus } : {}),
+  };
 }
 
 const fighters = (w: World) => alive(w).filter((m) => m.character.hp.current > 0);
@@ -24,10 +44,12 @@ const fighters = (w: World) => alive(w).filter((m) => m.character.hp.current > 0
 export function encounterBattle(w: World, data: GameData): WorldBattle {
   if (!w.encounter) throw new Error('no encounter to fight');
   const members = fighters(w);
+  const npcs = w.npcs.filter((n) => n.hp > 0);
   const battle = createBattle({
     data,
     rng: w.rng,
     party: members.map((m) => ({ character: m.character, row: m.row, column: m.column })),
+    npcs: npcs.map((n) => npcSetup(data, n)),
     enemies: w.encounter.enemies,
     log: true,
   });
@@ -40,7 +62,13 @@ export function encounterBattle(w: World, data: GameData): WorldBattle {
       c.caster.effortUsed = c.caster.effortDay;
     }
   });
-  return { battle, memberIds: members.map((m) => m.id), enemies: w.encounter.enemies };
+  return {
+    battle,
+    memberIds: members.map((m) => m.id),
+    npcIds: npcs.map((n) => n.id),
+    enemies: w.encounter.enemies,
+    captive: w.encounter.captive,
+  };
 }
 
 function carryBack(data: GameData, m: Member, c: Battle['combatants'][number]): void {
@@ -111,12 +139,41 @@ export function applyBattle(
     const m = w.members.find((x) => x.id === id) as Member;
     carryBack(data, m, fight.battle.combatants[i] as Battle['combatants'][number]);
   });
+  const npcLost = npcsBack(w, fight);
   w.encounter = null;
-  if (result.outcome === 'enemy') wipe(w, data);
-  else if (result.outcome === 'draw') note(w, 'The fight breaks off.');
+  if (result.outcome === 'enemy') {
+    for (const n of w.npcs.filter((x) => x.kind === 'captive')) {
+      removeNpc(w, n.id);
+      note(w, `${n.name} is taken captive again.`);
+    }
+    wipe(w, data);
+    return;
+  }
+  if (result.outcome === 'draw') note(w, 'The fight breaks off.');
   else {
     note(w, `The party wins after ${result.rounds} round${result.rounds === 1 ? '' : 's'}.`);
     winnings(w, data, fight.enemies);
     if (difficulty) award(w, data, fight, difficulty);
+    if (fight.captive) freeCaptive(w, data, fight.captive);
   }
+  const tier = difficulty && difficultyTier(data, difficulty).name;
+  const dangerous = tier !== null && data.content.npcRules.moraleTiers.includes(tier);
+  if (dangerous || npcLost || result.deaths > 0) moraleAfterFight(w, data);
+}
+
+/** NPC hit points come back from the fight; the dead are gone. True if anyone died. */
+function npcsBack(w: World, fight: WorldBattle): boolean {
+  let lost = false;
+  fight.npcIds.forEach((id, i) => {
+    const c = fight.battle.combatants[fight.memberIds.length + i] as Battle['combatants'][number];
+    const n = w.npcs.find((x) => x.id === id) as Npc;
+    if (c.status !== 'dead') {
+      n.hp = c.hp;
+      return;
+    }
+    lost = true;
+    removeNpc(w, id);
+    note(w, n.kind === 'captive' ? `${n.name} is killed; the rescue is lost.` : `${n.name} dies.`);
+  });
+  return lost;
 }

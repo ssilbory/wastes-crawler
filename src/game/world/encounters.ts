@@ -10,6 +10,8 @@ import { reactionRoll, type Reaction } from '../../rules/reaction.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
 import { alive, memberCheck, note } from './members.ts';
+import { reactionBonus } from './minds.ts';
+import { captiveOf } from './npcs.ts';
 import { regionMap } from './region.ts';
 import type { Member, World } from './types.ts';
 
@@ -19,7 +21,7 @@ export function rollEnemies(
   w: World,
   data: GameData,
   tableId: string,
-): { rows: string[][]; nature: 'hostile' | 'wary' } {
+): { rows: string[][]; nature: 'hostile' | 'wary'; captive: string | null } {
   const table = data.content.encounterTables.find((t) => t.id === tableId);
   if (!table) throw new Error(`unknown encounter table ${tableId}`);
   const total = table.entries.reduce((sum, e) => sum + e.weight, 0);
@@ -31,15 +33,23 @@ export function rollEnemies(
     const row = rows[g.row] as string[];
     for (let i = 0; i < n && row.length < MAX_PER_ROW; i++) row.push(g.monster);
   }
-  return { rows: rows.filter((r) => r.length > 0), nature: entry.nature };
+  return {
+    rows: rows.filter((r) => r.length > 0),
+    nature: entry.nature,
+    captive: entry.captive ?? null,
+  };
 }
+
+/** Whether a group of this nature fights at this reaction. */
+export const fights = (nature: 'hostile' | 'wary', reaction: Reaction) =>
+  FIGHTS[nature].includes(reaction);
 
 const FIGHTS: Record<'hostile' | 'wary', Reaction[]> = {
   hostile: ['aggressive', 'unfriendly', 'expected'],
   wary: ['aggressive', 'unfriendly'],
 };
 
-const MOODS: Record<Reaction, string> = {
+export const MOODS: Record<Reaction, string> = {
   aggressive: 'They charge at once.',
   unfriendly: 'They look for a fight.',
   expected: 'They size the party up.',
@@ -61,10 +71,10 @@ export function maybeEncounter(
   const map = regionMap(data, w.region);
   const die = data.content.overlandRules.encounterDice[map.dangerAt(w.position)];
   if (map.siteAt(w.position) || !encounterCheck(w.rng, die)) return false;
-  const { rows, nature } = rollEnemies(w, data, map.terrainAt(w.position).encounters);
+  const { rows, nature, captive } = rollEnemies(w, data, map.terrainAt(w.position).encounters);
   const able = alive(w).filter((m) => m.character.hp.current > 0);
   const cha = Math.max(0, ...able.map((m) => characterSheet(m.character, data).modifiers.cha));
-  const { reaction } = reactionRoll(w.rng, cha);
+  const { reaction } = reactionRoll(w.rng, cha + reactionBonus(w, data));
   let spotted = false;
   if (watcher) {
     const monsters = rows.flat().map((id) => data.srd.monsters.find((m) => m.id === id) as Monster);
@@ -78,8 +88,19 @@ export function maybeEncounter(
   const counts = new Map<string, number>();
   for (const id of rows.flat()) counts.set(id, (counts.get(id) ?? 0) + 1);
   const who = [...counts].map(([id, n]) => `${n} ${monsterName(data, id)}`).join(' and ');
-  const text = `${spotted ? `${watcher?.character.name} spots` : 'The party meets'} ${who}. ${MOODS[reaction]}`;
-  w.encounter = { enemies: rows, hostile: FIGHTS[nature].includes(reaction), spotted, text };
+  const held = captive ? ` ${captiveOf(data, captive).text}` : '';
+  const text = `${spotted ? `${watcher?.character.name} spots` : 'The party meets'} ${who}.${held} ${MOODS[reaction]}`;
+  w.encounter = {
+    enemies: rows,
+    nature,
+    reaction,
+    parleyed: false,
+    captive,
+    offer: null,
+    hostile: fights(nature, reaction),
+    spotted,
+    text,
+  };
   note(w, `${text} (${hexKey(w.position)})`);
   return true;
 }

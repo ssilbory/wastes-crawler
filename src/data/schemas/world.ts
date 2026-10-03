@@ -1,9 +1,10 @@
 import { z } from 'zod';
 import { IdSchema } from './common.ts';
 import { DefaultPresetSchema } from './roster.ts';
+import { CharacterSchema } from './character.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 2;
+export const WORLD_SCHEMA_VERSION = 3;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -28,8 +29,43 @@ export const MemberSaveSchema = z.strictObject({
   pendingXp: z.number().min(0).multipleOf(0.5),
 });
 
+/** A hireling or a freed captive in one of the party's NPC slots (docs/rules-adaptation.md). */
+export const NpcSaveSchema = z.strictObject({
+  id: z.string().min(1),
+  kind: z.enum(['hireling', 'captive']),
+  /** The hireling type or captive id. */
+  type: IdSchema,
+  name: z.string().min(1),
+  hp: z.int().min(0),
+  maxHp: z.int().min(1),
+  row: z.int().min(0).max(1),
+  column: z.int().min(0).max(3),
+  /** Failed a Morale check: leaves at the next town. */
+  quitting: z.boolean(),
+  /** A porter's load. */
+  inventory: CharacterSchema.shape.inventory,
+});
+export type NpcSave = z.infer<typeof NpcSaveSchema>;
+
+export const ReactionSchema = z.enum([
+  'aggressive',
+  'unfriendly',
+  'expected',
+  'friendly',
+  'helpful',
+]);
+
 export const PendingEncounterSchema = z.strictObject({
   enemies: z.array(z.array(IdSchema)).min(1).max(3),
+  nature: z.enum(['hostile', 'wary']),
+  /** The group's mood, moved by parley (SRD 5.2.1). */
+  reaction: ReactionSchema,
+  /** The party has tried its one parley. */
+  parleyed: z.boolean(),
+  /** A captive they hold, or null. */
+  captive: IdSchema.nullable(),
+  /** A hireling type one of them offers to sign on as, after a helpful parley. */
+  offer: IdSchema.nullable(),
   /** True when the group means to fight. */
   hostile: z.boolean(),
   /** The party spotted them first and can slip away. */
@@ -65,6 +101,8 @@ export const WorldSaveSchema = z.strictObject({
   noRecovery: z.boolean(),
   lastTown: IdSchema,
   members: z.array(MemberSaveSchema).min(1).max(8),
+  /** Hirelings and captives in the NPC slots. */
+  npcs: z.array(NpcSaveSchema).max(2),
   /** PCs left at a tavern; any tavern can bring them back. */
   benched: z.array(MemberSaveSchema),
   /** The party's pooled crowns. */

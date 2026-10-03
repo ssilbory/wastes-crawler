@@ -96,6 +96,8 @@ export interface Combatant {
   blindRounds: number;
   wardRounds: number;
   acBonus: number;
+  /** A captive or non-combat hireling: never attacks, targeted only when no one else can be. */
+  noncombatant: boolean;
 }
 
 export type Action =

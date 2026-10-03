@@ -35,6 +35,20 @@ export const WORLD_MIGRATIONS: Migrations = {
       climateDay: raw.day,
     };
   },
+  // Version 3 adds NPCs and parley (Phase 6c): no NPCs yet, and a pending encounter keeps its
+  // fight-or-not with a matching mood.
+  2: (raw) => {
+    const e = raw.encounter as Raw | null | undefined;
+    const encounter = e && {
+      ...e,
+      nature: 'hostile',
+      reaction: e.hostile ? 'unfriendly' : 'friendly',
+      parleyed: false,
+      captive: null,
+      offer: null,
+    };
+    return { ...raw, schemaVersion: 3, npcs: [], encounter: encounter ?? null };
+  },
 };
 
 export function serializeWorld(w: World): string {
@@ -54,6 +68,7 @@ export function serializeWorld(w: World): string {
     lastTown: w.lastTown,
     members: w.members,
     benched: w.benched,
+    npcs: w.npcs,
     purse: w.purse,
     loot: w.loot,
     towns: w.towns,
@@ -132,6 +147,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       rations: s.rations as ResourceDie,
       members: party,
       benched,
+      npcs: s.npcs,
       purse: s.purse,
       loot: s.loot,
       towns: s.towns,

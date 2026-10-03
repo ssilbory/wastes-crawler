@@ -96,6 +96,22 @@
             "row": 0
           }
         ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "thug-or-militia",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ],
+        "captive": "merchant"
       }
     ]
   },
@@ -177,6 +193,22 @@
             "row": 0
           }
         ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "thug-or-militia",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ],
+        "captive": "pilgrim"
       }
     ]
   },
@@ -267,6 +299,22 @@
             "row": 1
           }
         ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "barbarian-fighter",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ],
+        "captive": "scholar"
       }
     ]
   },

@@ -9,7 +9,7 @@ import {
 import { applyBattle, encounterBattle } from '../../../src/game/world/fight.ts';
 import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
 import { createRng } from '../../../src/rules/rng.ts';
-import { data, member, world } from './helpers.ts';
+import { data, member, world, encounter } from './helpers.ts';
 
 const plains = { col: 5, row: 9 };
 
@@ -65,15 +65,10 @@ describe('fight rewards', () => {
   it('pays loot dice and XP for a win; the dead get theirs when raised', () => {
     const w = world();
     w.position = plains;
-    w.encounter = {
-      enemies: [
-        ['thug-or-militia', 'thug-or-militia'],
-        ['petty-mage', 'small-pack-predator'],
-      ],
-      hostile: true,
-      spotted: false,
-      text: '',
-    };
+    w.encounter = encounter([
+      ['thug-or-militia', 'thug-or-militia'],
+      ['petty-mage', 'small-pack-predator'],
+    ]);
     const fight = encounterBattle(w, data);
     Object.assign(fight.battle.combatants[1] ?? {}, { status: 'dead', hp: 0 });
     applyBattle(
@@ -95,7 +90,7 @@ describe('fight rewards', () => {
   it('gives nothing for trivial fights, beasts, draws, or no verdict', () => {
     const w = world();
     w.position = plains;
-    const beasts = { enemies: [['herd-beast']], hostile: true, spotted: false, text: '' };
+    const beasts = encounter([['herd-beast']]);
     w.encounter = beasts;
     let fight = encounterBattle(w, data);
     applyBattle(

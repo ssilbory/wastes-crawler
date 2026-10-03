@@ -11,6 +11,7 @@ import { sizeEntries } from '../character/gear.ts';
 import { entryPrice, findItem, type InventoryEntry } from '../character/items.ts';
 import { findPeople } from '../character/people.ts';
 import { note } from './members.ts';
+import { hirelingCut } from './npcs.ts';
 import { currentLedger, ledger, priceHere, spend, spendingThreshold, townHere } from './town.ts';
 import type { TownResult } from './services.ts';
 import type { Member, World } from './types.ts';
@@ -38,7 +39,11 @@ export const shopPrice = (w: World, data: GameData, itemId: string) =>
   priceHere(w, data, listedPrice(data, itemId));
 
 /** Checks a changed inventory: worn and readied limits, sizing, and not too heavy to move. */
-function inventoryProblem(data: GameData, m: Member, inventory: InventoryEntry[]): string | null {
+export function inventoryProblem(
+  data: GameData,
+  m: Member,
+  inventory: InventoryEntry[],
+): string | null {
   const c = m.character;
   const errors = inventoryErrors(data, inventory, peopleOf(data, m));
   if (errors.length > 0) return errors.join('; ');
@@ -151,9 +156,12 @@ export function addLoot(w: World, dice: readonly LootDice[]): void {
 }
 
 /** Rolls every loot die carried and pays out against the town's loot threshold. */
-export function exchangeLoot(w: World, data: GameData): { rolled: number; paid: number } {
+export function exchangeLoot(
+  w: World,
+  data: GameData,
+): { rolled: number; paid: number; cut: number } {
   const town = townHere(w, data);
-  if (w.loot.length === 0) return { rolled: 0, paid: 0 };
+  if (w.loot.length === 0) return { rolled: 0, paid: 0, cut: 0 };
   const rules = data.content.townRules;
   const rolled = w.loot.reduce(
     (sum, d) => sum + roll(w.rng, { count: d.count, sides: d.sides, modifier: 0 }).total,
@@ -167,8 +175,10 @@ export function exchangeLoot(w: World, data: GameData): { rolled: number; paid: 
     rules.lootDropRate,
   );
   ledger(w, data, town).looted += rolled;
-  w.purse = toTenths(w.purse + paid);
+  const cut = hirelingCut(w, data, paid);
+  w.purse = toTenths(w.purse + paid - cut);
   w.loot = [];
   note(w, `The loot is worth ${rolled} crowns; ${town.name}'s traders pay ${paid}.`);
-  return { rolled, paid };
+  if (cut > 0) note(w, `The hirelings take their half shares: ${cut} crowns.`);
+  return { rolled, paid, cut };
 }

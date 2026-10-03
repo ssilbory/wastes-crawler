@@ -1,0 +1,73 @@
+{
+  "hirelings": [
+    {
+      "id": "guard",
+      "name": "Guard",
+      "wage": 2,
+      "monster": "thug-or-militia",
+      "role": "fighter"
+    },
+    {
+      "id": "veteran-sellsword",
+      "name": "Veteran Sellsword",
+      "wage": 10,
+      "monster": "veteran-soldier",
+      "role": "fighter"
+    },
+    {
+      "id": "mage-of-minor-abilities",
+      "name": "Mage of Minor Abilities",
+      "wage": 200,
+      "monster": "petty-mage",
+      "role": "fighter"
+    },
+    {
+      "id": "wilderness-guide",
+      "name": "Wilderness Guide",
+      "wage": 10,
+      "monster": "peaceful-human",
+      "role": "guide"
+    },
+    {
+      "id": "porter",
+      "name": "Porter",
+      "wage": 5,
+      "monster": "peaceful-human",
+      "role": "porter"
+    },
+    {
+      "id": "mundane-physician",
+      "name": "Mundane Physician",
+      "wage": 10,
+      "monster": "peaceful-human",
+      "role": "physician"
+    }
+  ],
+  "names": [
+    "Aldo",
+    "Brenna",
+    "Cato",
+    "Dagny",
+    "Edric",
+    "Fenna",
+    "Gorm",
+    "Hild",
+    "Ivo",
+    "Jessa",
+    "Kael",
+    "Lida",
+    "Moss",
+    "Nell",
+    "Orrin",
+    "Pell"
+  ],
+  "lootShare": 0.5,
+  "skillBonus": 1,
+  "porterCapacity": 12,
+  "parley": {
+    "difficulty": 8,
+    "hostileExtra": 2,
+    "bribePerHitDie": 5
+  },
+  "moraleTiers": ["hard", "deadly"]
+}

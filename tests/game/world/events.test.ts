@@ -6,7 +6,7 @@ import { wipe } from '../../../src/game/world/town.ts';
 import type { World } from '../../../src/game/world/types.ts';
 import type { CasterState } from '../../../src/game/combat/types.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
-import { data, member, world } from './helpers.ts';
+import { data, member, world, encounter } from './helpers.ts';
 
 const plains = { col: 5, row: 9 };
 const out = (w: World, at = plains) => {
@@ -20,11 +20,18 @@ describe('wandering encounters (SRD 2.12.6, 5.2.1)', () => {
     expect(rollEnemies(w, data, 'plains')).toEqual({
       rows: [['thug-or-militia', 'thug-or-militia', 'thug-or-militia', 'thug-or-militia']],
       nature: 'hostile',
+      captive: null,
     });
     w.rng = scriptedRng([4, 3]);
     expect(rollEnemies(w, data, 'plains')).toEqual({
       rows: [['veteran-soldier', 'veteran-soldier', 'veteran-soldier'], ['skilled-veteran']],
       nature: 'wary',
+      captive: null,
+    });
+    w.rng = scriptedRng([13, 2]);
+    expect(rollEnemies(w, data, 'plains')).toMatchObject({
+      nature: 'hostile',
+      captive: 'merchant',
     });
     const swarm = {
       ...data,
@@ -57,9 +64,15 @@ describe('wandering encounters (SRD 2.12.6, 5.2.1)', () => {
     expect(maybeEncounter(out(w), data, undefined, false)).toBe(true);
     expect(w.encounter).toEqual({
       enemies: [Array(4).fill('thug-or-militia')],
+      nature: 'hostile',
+      // 2 on the dice, +1 for Lirael's Well-Met.
+      reaction: 'unfriendly',
+      parleyed: false,
+      captive: null,
+      offer: null,
       hostile: true,
       spotted: false,
-      text: 'The party meets 4 Thug or Militia. They charge at once.',
+      text: 'The party meets 4 Thug or Militia. They look for a fight.',
     });
     expect(leaveEncounter(w)).toBe(false);
     w.encounter = null;
@@ -89,7 +102,7 @@ describe('a fallen party', () => {
     const w = out(world());
     member(w, 'Snag').dead = true;
     w.quarter = 2;
-    w.encounter = { enemies: [['thug-or-militia']], hostile: true, spotted: false, text: '' };
+    w.encounter = encounter([['thug-or-militia']]);
     w.destination = { col: 9, row: 9 };
     wipe(w, data);
     expect(w).toMatchObject({
@@ -174,7 +187,7 @@ describe('fighting encounters', () => {
   it('carries wounds, Frailty, and spent magic into the fight and back out', () => {
     const w = out(world());
     expect(() => encounterBattle(w, data)).toThrow('no encounter to fight');
-    w.encounter = { enemies: [['thug-or-militia']], hostile: true, spotted: false, text: '' };
+    w.encounter = encounter([['thug-or-militia']]);
     const fizz = member(w, 'Fizzwick');
     Object.assign(fizz, { spellsCast: 1, effortDay: 1, frail: true });
     const lirael = member(w, 'Lirael');
@@ -204,7 +217,7 @@ describe('fighting encounters', () => {
     expect(fizz.character.strain.value).toBe(3);
     expect(w.encounter).toBeNull();
     expect(w.log.at(-2)).toContain('The party wins after 3 rounds.');
-    w.encounter = { enemies: [['thug-or-militia']], hostile: true, spotted: false, text: '' };
+    w.encounter = encounter([['thug-or-militia']]);
     const quick = encounterBattle(w, data);
     applyBattle(
       w,
@@ -218,7 +231,7 @@ describe('fighting encounters', () => {
 
   it('notes a broken-off fight, and a lost one sends the party to town', () => {
     const w = out(world());
-    w.encounter = { enemies: [['thug-or-militia']], hostile: true, spotted: false, text: '' };
+    w.encounter = encounter([['thug-or-militia']]);
     const member0 = member(w, 'Snag');
     member0.character = { ...member0.character, strain: { value: 0, broken: false } };
     let fight = encounterBattle(w, data);
@@ -231,7 +244,7 @@ describe('fighting encounters', () => {
       null,
     );
     expect(w.log.at(-1)).toContain('The fight breaks off.');
-    w.encounter = { enemies: [['thug-or-militia']], hostile: true, spotted: false, text: '' };
+    w.encounter = encounter([['thug-or-militia']]);
     fight = encounterBattle(w, data);
     applyBattle(
       w,

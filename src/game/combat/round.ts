@@ -27,7 +27,8 @@ export function beginRound(b: Battle): void {
 
 function checkEnd(b: Battle): void {
   if (!b.combatants.some((c) => c.side === 'enemy' && canAct(c))) b.outcome = 'party';
-  else if (!b.combatants.some((c) => c.side === 'party' && canAct(c))) b.outcome = 'enemy';
+  else if (!b.combatants.some((c) => c.side === 'party' && canAct(c) && !c.noncombatant))
+    b.outcome = 'enemy';
 }
 
 /**
@@ -75,7 +76,9 @@ function formation(b: Battle): Formation {
   const grid: Formation = [Array(ROW_SLOTS).fill(null), Array(ROW_SLOTS).fill(null)];
   for (const c of b.combatants) {
     if (c.side !== 'party') continue;
-    (grid[c.row] as FormationRow)[c.column] = { standing: canAct(c), down: !canAct(c) };
+    // Non-combatants hold their slot but are never promoted to the front.
+    const standing = canAct(c) && !c.noncombatant;
+    (grid[c.row] as FormationRow)[c.column] = { standing, down: !canAct(c) };
   }
   return grid;
 }
@@ -112,6 +115,7 @@ function endOfRound(b: Battle): void {
   // Monster rows step up when their front row is empty.
   const monsters = b.combatants.filter((c) => c.kind === 'monster' && isUp(c));
   for (const side of ['party', 'enemy'] as const) {
+    if (b.layout[side] !== 'rows') continue;
     const rows = monsters.filter((c) => c.side === side);
     while (rows.length > 0 && !rows.some((e) => e.row === 0)) for (const e of rows) e.row -= 1;
   }

@@ -6,7 +6,8 @@
     "loot": {
       "count": 1,
       "sides": 4
-    }
+    },
+    "mind": "sapient"
   },
   {
     "id": "thug-or-militia",
@@ -15,7 +16,8 @@
     "loot": {
       "count": 1,
       "sides": 6
-    }
+    },
+    "mind": "sapient"
   },
   {
     "id": "barbarian-fighter",
@@ -24,7 +26,8 @@
     "loot": {
       "count": 1,
       "sides": 6
-    }
+    },
+    "mind": "sapient"
   },
   {
     "id": "veteran-soldier",
@@ -33,7 +36,8 @@
     "loot": {
       "count": 1,
       "sides": 6
-    }
+    },
+    "mind": "sapient"
   },
   {
     "id": "skilled-veteran",
@@ -42,7 +46,8 @@
     "loot": {
       "count": 2,
       "sides": 6
-    }
+    },
+    "mind": "sapient"
   },
   {
     "id": "elites-or-special-guards",
@@ -51,7 +56,8 @@
     "loot": {
       "count": 3,
       "sides": 6
-    }
+    },
+    "mind": "sapient"
   },
   {
     "id": "knight-or-minor-hero",
@@ -60,7 +66,8 @@
     "loot": {
       "count": 4,
       "sides": 6
-    }
+    },
+    "mind": "sapient"
   },
   {
     "id": "warrior-baron",
@@ -69,7 +76,8 @@
     "loot": {
       "count": 6,
       "sides": 6
-    }
+    },
+    "mind": "sapient"
   },
   {
     "id": "barbarian-warlord",
@@ -78,7 +86,8 @@
     "loot": {
       "count": 8,
       "sides": 6
-    }
+    },
+    "mind": "sapient"
   },
   {
     "id": "mighty-general",
@@ -87,7 +96,8 @@
     "loot": {
       "count": 8,
       "sides": 6
-    }
+    },
+    "mind": "sapient"
   },
   {
     "id": "major-hero",
@@ -96,7 +106,8 @@
     "loot": {
       "count": 10,
       "sides": 6
-    }
+    },
+    "mind": "sapient"
   },
   {
     "id": "great-warrior-king",
@@ -105,7 +116,8 @@
     "loot": {
       "count": 12,
       "sides": 6
-    }
+    },
+    "mind": "sapient"
   },
   {
     "id": "petty-mage",
@@ -114,7 +126,8 @@
     "loot": {
       "count": 2,
       "sides": 6
-    }
+    },
+    "mind": "sapient"
   },
   {
     "id": "tribal-shaman",
@@ -123,7 +136,8 @@
     "loot": {
       "count": 4,
       "sides": 6
-    }
+    },
+    "mind": "sapient"
   },
   {
     "id": "skilled-sorcerer",
@@ -132,7 +146,8 @@
     "loot": {
       "count": 5,
       "sides": 6
-    }
+    },
+    "mind": "sapient"
   },
   {
     "id": "master-wizard",
@@ -141,7 +156,8 @@
     "loot": {
       "count": 8,
       "sides": 6
-    }
+    },
+    "mind": "sapient"
   },
   {
     "id": "famous-arch-mage",
@@ -150,31 +166,38 @@
     "loot": {
       "count": 10,
       "sides": 6
-    }
+    },
+    "mind": "sapient"
   },
   {
     "id": "small-pack-predator",
-    "tags": []
+    "tags": [],
+    "mind": "animal"
   },
   {
     "id": "large-solitary-predator",
-    "tags": []
+    "tags": [],
+    "mind": "animal"
   },
   {
     "id": "apex-predator",
-    "tags": []
+    "tags": [],
+    "mind": "animal"
   },
   {
     "id": "herd-beast",
-    "tags": []
+    "tags": [],
+    "mind": "animal"
   },
   {
     "id": "vicious-large-herbivore",
-    "tags": []
+    "tags": [],
+    "mind": "animal"
   },
   {
     "id": "elephantine-grazer",
-    "tags": ["reach"]
+    "tags": ["reach"],
+    "mind": "animal"
   },
   {
     "id": "automaton-humanlike",
@@ -183,7 +206,8 @@
     "loot": {
       "count": 1,
       "sides": 6
-    }
+    },
+    "mind": "mindless"
   },
   {
     "id": "automaton-laborer",
@@ -191,7 +215,8 @@
     "loot": {
       "count": 1,
       "sides": 6
-    }
+    },
+    "mind": "mindless"
   },
   {
     "id": "automaton-military",
@@ -199,7 +224,8 @@
     "loot": {
       "count": 2,
       "sides": 6
-    }
+    },
+    "mind": "mindless"
   },
   {
     "id": "automaton-warbot",
@@ -207,38 +233,47 @@
     "loot": {
       "count": 5,
       "sides": 6
-    }
+    },
+    "mind": "mindless"
   },
   {
     "id": "slime-or-ooze",
-    "tags": ["unliving"]
+    "tags": ["unliving"],
+    "mind": "mindless"
   },
   {
     "id": "predator-small-vicious",
-    "tags": []
+    "tags": [],
+    "mind": "monster"
   },
   {
     "id": "predator-large-vicious",
-    "tags": []
+    "tags": [],
+    "mind": "monster"
   },
   {
     "id": "predator-hulking",
-    "tags": ["reach"]
+    "tags": ["reach"],
+    "mind": "monster"
   },
   {
     "id": "predator-hellbeast",
-    "tags": []
+    "tags": [],
+    "mind": "monster"
   },
   {
     "id": "unnatural-swarm",
-    "tags": ["flying"]
+    "tags": ["flying"],
+    "mind": "mindless"
   },
   {
     "id": "terrible-warbeast",
-    "tags": ["reach"]
+    "tags": ["reach"],
+    "mind": "monster"
   },
   {
     "id": "legendary-god-titan",
-    "tags": ["reach"]
+    "tags": ["reach"],
+    "mind": "monster"
   }
 ]

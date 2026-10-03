@@ -1,3 +1,4 @@
+import type { PendingEncounter } from '../../../src/data/schemas/index.ts';
 import type { GameData } from '../../../src/game/character/context.ts';
 import { newWorld } from '../../../src/game/world/new-world.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
@@ -36,4 +37,23 @@ export function withMishap(effect: GameData['content']['mishaps'][number]['effec
     effect,
   }));
   return { ...data, content: { ...data.content, mishaps } };
+}
+
+/** A pending encounter that means to fight, unspotted and not yet parleyed. */
+export function encounter(
+  enemies: string[][],
+  over: Partial<PendingEncounter> = {},
+): PendingEncounter {
+  return {
+    enemies,
+    nature: 'hostile',
+    reaction: 'expected',
+    parleyed: false,
+    captive: null,
+    offer: null,
+    hostile: true,
+    spotted: false,
+    text: '',
+    ...over,
+  };
 }

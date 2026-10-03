@@ -3,6 +3,7 @@ import type {
   Character,
   DefaultPreset,
   LootDice,
+  NpcSave,
   PendingEncounter,
   TownLedger,
   WorldSave,
@@ -28,6 +29,8 @@ export interface Member {
   pendingXp: number;
 }
 
+export type Npc = NpcSave;
+
 export interface World {
   region: string;
   rng: Rng;
@@ -43,6 +46,7 @@ export interface World {
   lastTown: string;
   members: Member[];
   benched: Member[];
+  npcs: Npc[];
   purse: number;
   loot: LootDice[];
   towns: Record<string, TownLedger>;

@@ -17,7 +17,7 @@ import {
   townHere,
 } from '../../../src/game/world/town.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
-import { data, member, world } from './helpers.ts';
+import { data, member, world, encounter } from './helpers.ts';
 
 const westhold = () => {
   const w = world();
@@ -121,7 +121,7 @@ describe('the inn', () => {
     const w = world();
     w.purse = 11;
     expect(stayAtInn(w, data)).toEqual({ ok: false, reason: 'That costs 12 crowns.' });
-    w.encounter = { enemies: [['thug-or-militia']], hostile: true, spotted: false, text: '' };
+    w.encounter = encounter([['thug-or-militia']]);
     expect(stayAtInn(w, data)).toEqual({ ok: false, reason: 'Settle the encounter first.' });
   });
 });

@@ -167,3 +167,8 @@
 .encounter p {
   font-weight: 600;
 }
+
+.encounter .parley,
+.npc-panel .first-aid {
+  margin-top: 8px;
+}

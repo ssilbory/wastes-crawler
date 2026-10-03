@@ -1,5 +1,7 @@
 import type { RosterEntry } from '../../game/character/roster.ts';
 import { MAX_PCS } from '../../game/world/new-world.ts';
+import { hire } from '../../game/world/hire.ts';
+import { MAX_NPCS } from '../../game/world/npcs.ts';
 import { bench, catchUpXp, inWorld, recruit, rejoin } from '../../game/world/tavern.ts';
 import type { World } from '../../game/world/types.ts';
 import { levelLine } from '../../render/town-view.ts';
@@ -42,6 +44,28 @@ export function TavernTab(props: { world: World; roster: RosterEntry[]; act: Act
               </span>
               <button type="button" onClick={() => props.act(() => rejoin(w, data, m.id))}>
                 Rejoin
+              </button>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <section class="panel" aria-label="Hirelings">
+        <h2>
+          Hirelings ({w.npcs.length}/{MAX_NPCS} NPC slots)
+        </h2>
+        <p class="hint">
+          Paid each night from the purse, plus half a share of any loot sold. They leave if unpaid,
+          and may quit after a dangerous fight.
+        </p>
+        <ul class="tavern-list">
+          {data.content.npcRules.hirelings.map((h) => (
+            <li key={h.id}>
+              <span>
+                <strong>{h.name}</strong> {h.wage} crowns a day
+                {h.role === 'fighter' ? '' : ` · ${h.role}, stays out of fights`}
+              </span>
+              <button type="button" onClick={() => props.act(() => hire(w, data, h.id))}>
+                Hire a {h.name}
               </button>
             </li>
           ))}

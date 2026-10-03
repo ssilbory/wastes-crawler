@@ -1,4 +1,3 @@
-import type { PendingEncounter } from '../../data/schemas/index.ts';
 import type { Activity, Member, QuarterPlan } from '../../game/world/types.ts';
 
 const ACTIVITIES: Record<Activity, string> = {
@@ -10,9 +9,14 @@ const ACTIVITIES: Record<Activity, string> = {
   hunt: 'Hunt or fish',
 };
 
+interface Choice {
+  id: string;
+  name: string;
+}
+
 function MemberSelect(props: {
   label: string;
-  members: Member[];
+  members: Choice[];
   value: string | null;
   onChange: (id: string | null) => void;
 }) {
@@ -26,7 +30,7 @@ function MemberSelect(props: {
         <option value="">Nobody</option>
         {props.members.map((m) => (
           <option key={m.id} value={m.id}>
-            {m.character.name}
+            {m.name}
           </option>
         ))}
       </select>
@@ -37,6 +41,8 @@ function MemberSelect(props: {
 /** The plan for the coming quarter, prefilled with the suggestion. */
 export function QuarterPanel(props: {
   members: Member[];
+  /** Wilderness Guides who can lead the way. */
+  guides: Choice[];
   plan: QuarterPlan;
   canHike: boolean;
   onPlan: (plan: QuarterPlan) => void;
@@ -45,6 +51,7 @@ export function QuarterPanel(props: {
   onCamp: () => void;
 }) {
   const { plan } = props;
+  const people = props.members.map((m) => ({ id: m.id, name: m.character.name }));
   return (
     <section class="panel quarter-panel" aria-label="Quarter plan">
       <h2>This quarter</h2>
@@ -72,13 +79,13 @@ export function QuarterPanel(props: {
         <div class="roles">
           <MemberSelect
             label="Lead the way"
-            members={props.members}
+            members={[...people, ...props.guides]}
             value={plan.leader}
             onChange={(leader) => props.onPlan({ ...plan, leader })}
           />
           <MemberSelect
             label="Keep watch"
-            members={props.members}
+            members={people}
             value={plan.watcher}
             onChange={(watcher) => props.onPlan({ ...plan, watcher })}
           />
@@ -113,30 +120,6 @@ export function QuarterPanel(props: {
       <button type="button" class="create" onClick={props.onPass}>
         Pass the quarter
       </button>
-    </section>
-  );
-}
-
-export function EncounterPanel(props: {
-  encounter: PendingEncounter;
-  onFight: () => void;
-  onLeave: () => void;
-}) {
-  const e = props.encounter;
-  return (
-    <section class="panel encounter" aria-label="Encounter" aria-live="polite">
-      <h2>Encounter</h2>
-      <p>{e.text}</p>
-      <div class="actions">
-        <button type="button" class="create" onClick={props.onFight}>
-          {e.hostile ? 'Fight' : 'Attack them'}
-        </button>
-        {(!e.hostile || e.spotted) && (
-          <button type="button" onClick={props.onLeave}>
-            {e.hostile ? 'Slip away' : 'Let them pass'}
-          </button>
-        )}
-      </div>
     </section>
   );
 }

@@ -16,12 +16,15 @@ import regions from '../../data/content/regions.json';
 import terrains from '../../data/content/terrains.json';
 import townRules from '../../data/content/town-rules.json';
 import benchmarkWarrior from '../../data/content/benchmark-warrior.json';
+import npcRules from '../../data/content/npc-rules.json';
+import captives from '../../data/content/captives.json';
 import { combatReferenceErrors } from './combat-check.ts';
 import { equipmentReferenceErrors } from './equipment-check.ts';
 import { focusReferenceErrors } from './focus-content.ts';
 import { magicReferenceErrors } from './magic-check.ts';
 import { overlandReferenceErrors } from './overland-check.ts';
 import { townReferenceErrors } from './town-check.ts';
+import { npcReferenceErrors } from './npc-check.ts';
 import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.ts';
 
 export function loadContent(): ContentData {
@@ -44,6 +47,8 @@ export function loadContent(): ContentData {
     overlandRules: ContentSchemas.overlandRules.parse(overlandRules),
     townRules: ContentSchemas.townRules.parse(townRules),
     benchmarkWarrior: ContentSchemas.benchmarkWarrior.parse(benchmarkWarrior),
+    npcRules: ContentSchemas.npcRules.parse(npcRules),
+    captives: ContentSchemas.captives.parse(captives),
   };
 }
 
@@ -89,6 +94,8 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['regions', content.regions],
     ['encounterTables', content.encounterTables],
     ['mishaps', content.mishaps],
+    ['hirelings', content.npcRules.hirelings],
+    ['captives', content.captives],
     ...content.peoples.map((p): [string, { id: string }[]] => [
       `peoples/${p.id} lineages`,
       p.lineages ?? [],
@@ -108,5 +115,6 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...combatReferenceErrors(srd, content),
     ...overlandReferenceErrors(srd, content),
     ...townReferenceErrors(content),
+    ...npcReferenceErrors(srd, content),
   ];
 }

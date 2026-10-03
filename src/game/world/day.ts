@@ -7,6 +7,7 @@ import { useResource } from '../../rules/resource-die.ts';
 import type { GameData } from '../character/context.ts';
 import { dateOf } from './calendar.ts';
 import { addMemberStrain, alive, healNight, note } from './members.ts';
+import { nightForNpcs } from './npcs.ts';
 import { regionMap } from './region.ts';
 import type { World } from './types.ts';
 
@@ -43,6 +44,7 @@ export function endOfDay(w: World, data: GameData): void {
   }
   if (!sheltered && !cold)
     note(w, `A night without shelter at ${hexKey(w.position)}: no one recovers.`);
+  nightForNpcs(w, data, fed && sheltered && !w.noRecovery);
   w.camp = 'none';
   w.noRecovery = false;
   w.hikes = 0;

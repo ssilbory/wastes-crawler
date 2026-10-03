@@ -7,6 +7,7 @@ import { RESOURCE_DICE } from '../../rules/resource-die.ts';
 import type { GameData } from '../character/context.ts';
 import { note } from './members.ts';
 import { regionMap } from './region.ts';
+import { arriveNpcs } from './rescue.ts';
 import type { World } from './types.ts';
 
 export const FULL_RATIONS = RESOURCE_DICE[RESOURCE_DICE.length - 1] as 12;
@@ -79,6 +80,7 @@ export function enterTown(w: World, data: GameData, siteId: string, start = fals
   w.lastTown = site.id;
   if (start) return;
   note(w, `The party reaches ${site.name}.`);
+  arriveNpcs(w, data, site.id);
   if (firstVisit || w.day - w.climateDay > month(data)) climate(w, data);
 }
 

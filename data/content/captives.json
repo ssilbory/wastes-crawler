@@ -1,0 +1,29 @@
+[
+  {
+    "id": "merchant",
+    "name": "a captured merchant",
+    "monster": "peaceful-human",
+    "destination": "eastmarch",
+    "reward": 60,
+    "xp": 1,
+    "text": "A bound merchant sits among them."
+  },
+  {
+    "id": "pilgrim",
+    "name": "a captured pilgrim",
+    "monster": "peaceful-human",
+    "destination": "westhold",
+    "reward": 40,
+    "xp": 1,
+    "text": "A pilgrim is tied to a tree behind them."
+  },
+  {
+    "id": "scholar",
+    "name": "a captured scholar",
+    "monster": "peaceful-human",
+    "destination": "highcairn",
+    "reward": 80,
+    "xp": 1,
+    "text": "A scholar in torn robes is held at spear-point."
+  }
+]

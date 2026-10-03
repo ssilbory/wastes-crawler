@@ -54,6 +54,7 @@ function base(
     blindRounds: 0,
     wardRounds: 0,
     acBonus: 0,
+    noncombatant: false,
   };
 }
 

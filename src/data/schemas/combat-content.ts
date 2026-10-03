@@ -13,7 +13,10 @@ export const MonsterCombatSchema = z.strictObject({
   weapon: IdSchema.optional(),
   tags: z.array(z.enum(['flying', 'reach', 'unliving', 'metal'])),
   loot: LootDiceSchema.optional(),
+  /** Who can be parleyed with: people always, animals and monsters with foci, the mindless never. */
+  mind: z.enum(['sapient', 'animal', 'monster', 'mindless']),
 });
+export type Mind = MonsterCombat['mind'];
 export type MonsterCombat = z.infer<typeof MonsterCombatSchema>;
 export type MonsterTag = MonsterCombat['tags'][number];
 

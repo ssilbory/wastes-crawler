@@ -3,7 +3,8 @@
 // someone always on watch (docs/rules-adaptation.md, Overland travel).
 import { hexKey, type Hex } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
-import { alive, bestAt } from './members.ts';
+import { alive, bestAt, checkBonus } from './members.ts';
+import { firstGuide } from './npcs.ts';
 import { findPath, regionMap, seenHexes } from './region.ts';
 import type { Activity, Member, QuarterPlan, World } from './types.ts';
 
@@ -39,7 +40,14 @@ export function suggestPlan(w: World, data: GameData, prefer?: QuarterPlan['kind
   const leader = bestAt(data, party, 'survive', ['wis']);
   if (w.destination && prefer !== 'camp' && (w.quarter < 2 || prefer === 'hike')) {
     const watcher = bestAt(data, others(party, leader), 'notice', ['wis']) ?? leader;
-    return { kind: 'hike', leader: leader?.id ?? null, watcher: watcher?.id ?? null };
+    // A Wilderness Guide leads when no PC would do better than the guide's +1.
+    const guide = firstGuide(w, data);
+    const pc = leader && checkBonus(data, leader, 'survive', ['wis']);
+    const lead =
+      guide && (pc === undefined || pc < data.content.npcRules.skillBonus)
+        ? guide.id
+        : (leader?.id ?? null);
+    return { kind: 'hike', leader: lead, watcher: watcher?.id ?? null };
   }
   const activities: Record<string, Activity> = {};
   const set = (m: Member | undefined, a: Activity) => m && (activities[m.id] = a);

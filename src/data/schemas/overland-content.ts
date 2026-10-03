@@ -75,6 +75,8 @@ export const EncounterTableSchema = z.strictObject({
         weight: z.int().min(1),
         nature: z.enum(['hostile', 'wary']),
         groups: z.array(EncounterGroupSchema).min(1),
+        /** A captive the group holds, freed by winning or by parley. */
+        captive: IdSchema.optional(),
       }),
     )
     .min(1),

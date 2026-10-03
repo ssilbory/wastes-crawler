@@ -74,6 +74,18 @@ export const FocusEffectSchema = z.discriminatedUnion('kind', [
     bonus: z.int(),
     actsFirst: z.boolean(),
   }),
+  /** Well-Met: a bonus to reaction rolls while the character travels with the party. */
+  z.strictObject({ kind: z.literal('reaction-bonus'), level: Level, amount: z.int().min(1) }),
+  /**
+   * Opens parley with these kinds of minds (docs/rules-adaptation.md, Parley), and with
+   * `evenAggressive`, even with groups whose reaction is aggressive.
+   */
+  z.strictObject({
+    kind: z.literal('parley'),
+    level: Level,
+    minds: z.array(z.enum(['animal', 'monster'])),
+    evenAggressive: z.boolean(),
+  }),
   /** Armored Magic: cast in armor up to this encumbrance (null for any), and with a shield. */
   z.strictObject({
     kind: z.literal('armored-casting'),

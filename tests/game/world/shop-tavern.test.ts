@@ -10,23 +10,17 @@ import {
   setLocation,
   shopPrice,
 } from '../../../src/game/world/shop.ts';
-import {
-  bench,
-  catchUpXp,
-  freeSlot,
-  inWorld,
-  recruit,
-  rejoin,
-} from '../../../src/game/world/tavern.ts';
+import { bench, catchUpXp, inWorld, recruit, rejoin } from '../../../src/game/world/tavern.ts';
+import { freeSlot } from '../../../src/game/world/npcs.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
-import { data, member, starter, world } from './helpers.ts';
+import { data, member, starter, world, encounter } from './helpers.ts';
 
 const rich = () => {
   const w = world();
   w.purse = 1000;
   return w;
 };
-const thugs = { enemies: [['thug-or-militia']], hostile: true, spotted: false, text: '' };
+const thugs = encounter([['thug-or-militia']]);
 
 describe('the shop (SRD 3.0 prices)', () => {
   it('lists SRD prices and the surcharge past the spending threshold', () => {
@@ -143,16 +137,16 @@ describe('loot', () => {
 
   it('rolls the dice into crowns, paying less past the loot threshold', () => {
     const w = world();
-    expect(exchangeLoot(w, data)).toEqual({ rolled: 0, paid: 0 });
+    expect(exchangeLoot(w, data)).toEqual({ rolled: 0, paid: 0, cut: 0 });
     addLoot(w, [{ count: 2, sides: 6 }]);
     w.rng = scriptedRng([6, 5]);
-    expect(exchangeLoot(w, data)).toEqual({ rolled: 11, paid: 11 });
+    expect(exchangeLoot(w, data)).toEqual({ rolled: 11, paid: 11, cut: 0 });
     expect(w).toMatchObject({ purse: 96, loot: [] });
     expect(w.log.at(-1)).toContain("The loot is worth 11 crowns; Westhold's traders pay 11.");
     w.towns.westhold = { spent: 0, looted: 750, since: 0 };
     addLoot(w, [{ count: 1, sides: 100 }]);
     w.rng = scriptedRng([75]);
-    expect(exchangeLoot(w, data)).toEqual({ rolled: 75, paid: 67.5 });
+    expect(exchangeLoot(w, data)).toEqual({ rolled: 75, paid: 67.5, cut: 0 });
     expect(w.towns.westhold?.looted).toBe(825);
   });
 });
@@ -176,7 +170,7 @@ describe('the tavern', () => {
   it('brings a benched member back into the first free slot', () => {
     const w = world();
     bench(w, data, 'm-0');
-    expect(freeSlot(w)).toEqual({ row: 0, column: 0 });
+    expect(freeSlot(w, true)).toEqual({ row: 0, column: 0 });
     expect(rejoin(w, data, 'm-0')).toEqual({ ok: true });
     expect(member(w, 'Snag')).toMatchObject({ row: 0, column: 0 });
     expect(() => rejoin(w, data, 'm-0')).toThrow('no benched member m-0');
@@ -219,6 +213,6 @@ describe('the tavern', () => {
       ...w.members,
       ...w.members.slice(0, 2).map((m, i) => ({ ...m, row: 1, column: 2 + i })),
     ];
-    expect(freeSlot(w)).toBeNull();
+    expect(freeSlot(w, true)).toBeNull();
   });
 });

@@ -1,6 +1,8 @@
 import { useState } from 'preact/hooks';
 import type { ItemLocation } from '../../data/schemas/index.ts';
 import { buyable, type CatalogItem } from '../../game/character/items.ts';
+import { stowWithPorter, takeFromPorter } from '../../game/world/hire.ts';
+import { typeOf } from '../../game/world/npcs.ts';
 import { buy, giveItem, sell, sellPrice, setLocation, shopPrice } from '../../game/world/shop.ts';
 import type { World } from '../../game/world/types.ts';
 import { crowns, entryText } from '../../render/town-view.ts';
@@ -26,6 +28,7 @@ export function ShopTab(props: { world: World; act: Act }) {
   const m = living.find((x) => x.id === who) ?? living[0];
   if (!m) return <p class="hint">No one living can shop.</p>;
   const others = living.filter((x) => x !== m);
+  const porters = w.npcs.filter((n) => typeOf(data, n)?.role === 'porter');
   return (
     <>
       <section class="panel" aria-label="Buy">
@@ -90,13 +93,15 @@ export function ShopTab(props: { world: World; act: Act }) {
               <button type="button" onClick={() => props.act(() => sell(w, data, m.id, i))}>
                 Sell ({crowns(sellPrice(data, entry))})
               </button>
-              {others.length > 0 && (
+              {others.length + porters.length > 0 && (
                 <select
                   aria-label={`Give ${entry.id} to`}
                   value=""
                   onChange={(e) => {
                     const to = (e.target as HTMLSelectElement).value;
-                    if (to) props.act(() => giveItem(w, data, m.id, i, to));
+                    if (porters.some((p) => p.id === to))
+                      props.act(() => stowWithPorter(w, data, m.id, i, to));
+                    else if (to) props.act(() => giveItem(w, data, m.id, i, to));
                   }}
                 >
                   <option value="">Give to…</option>
@@ -105,12 +110,36 @@ export function ShopTab(props: { world: World; act: Act }) {
                       {x.character.name}
                     </option>
                   ))}
+                  {porters.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} (porter)
+                    </option>
+                  ))}
                 </select>
               )}
             </li>
           ))}
         </ul>
       </section>
+      {porters.map((p) => (
+        <section key={p.id} class="panel" aria-label={`${p.name}'s load`}>
+          <h2>{p.name}'s load</h2>
+          {p.inventory.length === 0 && <p class="hint">Nothing yet.</p>}
+          <ul class="pack">
+            {p.inventory.map((entry, i) => (
+              <li key={`${entry.id}-${i}`}>
+                <span>{entryText(data, entry)}</span>
+                <button
+                  type="button"
+                  onClick={() => props.act(() => takeFromPorter(w, data, p.id, i, m.id))}
+                >
+                  Give to {m.character.name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
     </>
   );
 }

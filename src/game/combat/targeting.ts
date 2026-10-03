@@ -60,6 +60,8 @@ export function targets(b: Battle, actor: Combatant, attack: Attack): Combatant[
     return t.row === 0 || exposed(b, t);
   };
   const up = foes.filter((t) => isUp(t) && reachable(t));
+  const fighting = up.filter((t) => !t.noncombatant);
+  if (fighting.length > 0) return fighting;
   if (up.length > 0) return up;
   return foes.filter((t) => t.status === 'dying' && reachable(t));
 }

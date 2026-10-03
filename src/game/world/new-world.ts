@@ -38,6 +38,7 @@ export function newWorld(data: GameData, rng: Rng, party: Recruit[], regionId?: 
     lastTown: map.start.id,
     members: party.map((p, i) => newMember(`m-${i}`, p)),
     benched: [],
+    npcs: [],
     purse: toTenths(party.reduce((sum, p) => sum + p.character.crowns, 0)),
     loot: [],
     towns: {},

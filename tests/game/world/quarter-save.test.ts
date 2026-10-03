@@ -10,10 +10,10 @@ import {
 import { parseWorld, SAVED_LOG_LINES, serializeWorld } from '../../../src/game/world/save.ts';
 import { createRng } from '../../../src/rules/rng.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
-import { data, starter, world } from './helpers.ts';
+import { data, starter, world, encounter } from './helpers.ts';
 
 const hikePlan = { kind: 'hike' as const, leader: 'm-2', watcher: 'm-0' };
-const thugs = { enemies: [['thug-or-militia']], hostile: true, spotted: false, text: '' };
+const thugs = encounter([['thug-or-militia']]);
 
 describe('quarter days', () => {
   it('hikes or camps, checks for encounters, and moves the clock on', () => {

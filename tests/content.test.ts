@@ -254,8 +254,8 @@ describe('combat content', () => {
       ...content,
       monsterCombat: [
         ...content.monsterCombat.filter((m) => m.id !== 'herd-beast' && m.id !== 'thug-or-militia'),
-        { id: 'thug-or-militia', tags: [] },
-        { id: 'dragon', weapon: 'breath', tags: [] },
+        { id: 'thug-or-militia', tags: [], mind: 'sapient' as const },
+        { id: 'dragon', weapon: 'breath', tags: [], mind: 'monster' as const },
       ],
       combatMagic: [
         { ...blast, effect: { ...blast.effect, skill: 'blasting' } },

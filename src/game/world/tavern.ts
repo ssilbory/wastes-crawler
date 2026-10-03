@@ -4,27 +4,18 @@ import type { Character, DefaultPreset } from '../../data/schemas/index.ts';
 import { toTenths } from '../../rules/economy.ts';
 import { newMember, note } from './members.ts';
 import { MAX_PCS } from './new-world.ts';
+import { freeSlot } from './npcs.ts';
 import type { TownResult } from './services.ts';
 import { townHere } from './town.ts';
 import type { GameData } from '../character/context.ts';
 import type { Member, World } from './types.ts';
 
-const ROWS = 2;
-const COLUMNS = 4;
 const no = (reason: string): TownResult => ({ ok: false, reason });
-
-/** The first free formation slot, front row first. */
-export function freeSlot(w: World): { row: number; column: number } | null {
-  for (let row = 0; row < ROWS; row++)
-    for (let column = 0; column < COLUMNS; column++)
-      if (!w.members.some((m) => m.row === row && m.column === column)) return { row, column };
-  return null;
-}
 
 function room(w: World, data: GameData): TownResult | { row: number; column: number } {
   if (w.encounter) return no('Settle the encounter first.');
   townHere(w, data);
-  const slot = freeSlot(w);
+  const slot = freeSlot(w, true);
   if (w.members.length >= MAX_PCS || !slot) return no(`A party holds ${MAX_PCS} PCs.`);
   return slot;
 }

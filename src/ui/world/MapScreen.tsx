@@ -9,7 +9,10 @@ import { crowns, lootText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { HEX_SIZE, HexMap } from './HexMap.tsx';
 import { PartyPanel } from './PartyPanel.tsx';
-import { EncounterPanel, QuarterPanel } from './QuarterPanel.tsx';
+import { EncounterPanel } from './EncounterPanel.tsx';
+import { NpcPanel } from './NpcPanel.tsx';
+import { QuarterPanel } from './QuarterPanel.tsx';
+import { typeOf } from '../../game/world/npcs.ts';
 import type { QuarterPlan } from '../../game/world/types.ts';
 
 export function MapScreen(props: {
@@ -68,13 +71,17 @@ export function MapScreen(props: {
         <div class="world-side">
           {w.encounter ? (
             <EncounterPanel
-              encounter={w.encounter}
+              world={w}
               onFight={props.onFight}
               onLeave={props.onLeave}
+              onChange={props.onChange}
             />
           ) : (
             <QuarterPanel
               members={able}
+              guides={w.npcs
+                .filter((n) => n.hp > 0 && typeOf(data, n)?.role === 'guide')
+                .map((n) => ({ id: n.id, name: n.name }))}
               plan={current}
               canHike={w.destination !== null}
               onPlan={choose}
@@ -84,6 +91,7 @@ export function MapScreen(props: {
             />
           )}
           <PartyPanel members={w.members} />
+          <NpcPanel world={w} onChange={props.onChange} />
           <section class="panel log" aria-label="Journey log">
             <h3>Journal</h3>
             <ol>

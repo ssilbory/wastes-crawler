@@ -5,6 +5,7 @@ import { townHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
 import { crowns, lootText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
+import { NpcPanel } from '../world/NpcPanel.tsx';
 import { PartyPanel } from '../world/PartyPanel.tsx';
 import { ServicesTab } from './ServicesTab.tsx';
 import { ShopTab } from './ShopTab.tsx';
@@ -77,6 +78,7 @@ export function TownScreen(props: {
         </div>
         <div class="world-side">
           <PartyPanel members={w.members} />
+          <NpcPanel world={w} onChange={props.onChange} />
           <section class="panel log" aria-label="Journey log">
             <h3>Journal</h3>
             <ol>
