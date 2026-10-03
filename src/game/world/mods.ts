@@ -3,7 +3,8 @@
 // anyone with the Artisan focus, builds a mod onto one weapon or suit of armor at a town workshop,
 // paying exact loot dice and components (Sam's call). Building takes a week per Craft level of the
 // mod, halved because workshop work is full time, and halved again with a Craft assistant in the
-// party. Stripping a mod off takes a day and gives its components back.
+// party. Any loot dice short can be paid in crowns at their highest face (Sam's call). Stripping a
+// mod off takes a day and gives its components back.
 import type { Mod, Project } from '../../data/schemas/index.ts';
 import { payDice } from '../../rules/loot-dice.ts';
 import type { GameData } from '../character/context.ts';
@@ -12,7 +13,7 @@ import { addComponents, pickComponents, removeComponents } from './components.ts
 import { note } from './members.ts';
 import { daysText } from './wording.ts';
 import type { TownResult } from './services.ts';
-import { townHere } from './town.ts';
+import { priceHere, spend, townHere } from './town.ts';
 import type { Member, World } from './types.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
@@ -147,21 +148,27 @@ export function startMod(
   ownerId: string,
   index: number,
   modId: string,
+  /** Spend carried dice first, or pay the whole cost in crowns. */
+  payWith: 'dice' | 'crowns' = 'dice',
 ): TownResult {
   const work = prepare(w, data, crafterId, ownerId, index, modId);
   if ('ok' in work) return work;
   const { crafter, entry, mod } = work;
   const misfit = modMisfit(data, entry, mod);
   if (misfit) return no(misfit);
-  const dice = payDice(w.loot, mod.loot);
-  if (!dice)
-    return no(`${mod.name} takes ${mod.loot.count} loot dice of d${mod.loot.sides} or larger.`);
   const parts = pickComponents(w, data, mod.components);
   if (!parts)
     return no(
       `${mod.name} needs ${mod.components.map((c) => `${c.count} ${c.type}`).join(' and ')}.`,
     );
-  w.loot = dice;
+  // Dice short are paid in crowns at their highest face, through the town's prices (Sam's call).
+  const dice = payDice(w.loot, mod.loot, payWith === 'dice');
+  const price = priceHere(w, data, dice.crowns);
+  if (!spend(w, data, dice.crowns))
+    return no(
+      `${mod.name} takes ${mod.loot.count}d${mod.loot.sides} in loot dice; the ${dice.short} short cost ${price} crowns.`,
+    );
+  w.loot = dice.left;
   removeComponents(w, parts);
   const rules = data.content.craftingRules.mods;
   const assistant = w.members.some(
@@ -171,7 +178,7 @@ export function startMod(
   begin(w, data, work, index, { components: parts }, days);
   note(
     w,
-    `${crafter.character.name} starts building ${mod.name} onto ${work.owner.character.name}'s ${itemName(data, entry.id)}: ${daysText(days)} of work.`,
+    `${crafter.character.name} starts building ${mod.name} onto ${work.owner.character.name}'s ${itemName(data, entry.id)}${dice.crowns > 0 ? `, ${price} crowns paid for dice` : ''}: ${daysText(days)} of work.`,
   );
   return { ok: true };
 }

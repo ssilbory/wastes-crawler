@@ -76,7 +76,10 @@ test('builds Customized onto a spear and keeps it maintained', async ({ page }, 
     .getByRole('combobox', { name: 'Item' })
     .selectOption({ label: 'Snag: Spear, Light (readied)' });
   await mods.getByRole('combobox', { name: 'Mod' }).selectOption({ label: 'Customized (Craft-1)' });
-  await mods.getByRole('button', { name: 'Build Customized' }).click();
+  await expect(
+    mods.getByRole('button', { name: 'Build Customized, dice in crowns (36 crowns)' }),
+  ).toBeVisible();
+  await mods.getByRole('button', { name: 'Build Customized', exact: true }).click();
   const log = page.getByRole('region', { name: 'Journey log' });
   await expect(log).toContainText(
     "Fizzwick starts building Customized onto Snag's Spear, Light: 4 days",

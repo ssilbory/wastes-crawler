@@ -4,7 +4,8 @@ import { componentName } from '../../game/world/components.ts';
 import { capacity, upkeepNeed } from '../../game/world/maintenance.ts';
 import { canMod, craftLevel, modMisfit, startMod, startStrip } from '../../game/world/mods.ts';
 import type { World } from '../../game/world/types.ts';
-import { entryText } from '../../render/town-view.ts';
+import { crowns, entryText } from '../../render/town-view.ts';
+import { priceHere } from '../../game/world/town.ts';
 import { data } from '../builder/data.ts';
 import type { Act } from './TownScreen.tsx';
 
@@ -80,7 +81,8 @@ export function ModsPanel(props: { world: World; act: Act }) {
             </label>
             <p class="hint">
               {mod.text} Costs {mod.loot.count} loot dice of d{mod.loot.sides} or larger
-              {mod.components.map((c) => `, ${c.count} ${c.type}`).join('')}.
+              {mod.components.map((c) => `, ${c.count} ${c.type}`).join('')}. Dice short are paid in
+              crowns, {mod.loot.sides} each.
             </p>
             {line.e.mods?.some((x) => x.id === mod.id) ? (
               <button
@@ -92,15 +94,29 @@ export function ModsPanel(props: { world: World; act: Act }) {
                 Strip {mod.name}
               </button>
             ) : (
-              <button
-                type="button"
-                disabled={modMisfit(data, line.e, mod) !== null}
-                onClick={() =>
-                  props.act(() => startMod(w, data, crafter.id, line.m.id, line.index, mod.id))
-                }
-              >
-                Build {mod.name}
-              </button>
+              <>
+                <button
+                  type="button"
+                  disabled={modMisfit(data, line.e, mod) !== null}
+                  onClick={() =>
+                    props.act(() => startMod(w, data, crafter.id, line.m.id, line.index, mod.id))
+                  }
+                >
+                  Build {mod.name}
+                </button>{' '}
+                <button
+                  type="button"
+                  disabled={modMisfit(data, line.e, mod) !== null}
+                  onClick={() =>
+                    props.act(() =>
+                      startMod(w, data, crafter.id, line.m.id, line.index, mod.id, 'crowns'),
+                    )
+                  }
+                >
+                  Build {mod.name}, dice in crowns (
+                  {crowns(priceHere(w, data, mod.loot.count * mod.loot.sides))})
+                </button>
+              </>
             )}
           </>
         )}

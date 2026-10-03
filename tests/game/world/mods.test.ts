@@ -123,10 +123,12 @@ describe('building mods (SRD 2.8.2)', () => {
       reason: "Customized doesn't fit a Large Shield.",
     });
     w.loot = [{ count: 5, sides: 6 }];
+    w.purse = 5;
     expect(startMod(w, data, 'm-3', 'm-0', SPEAR, 'customized')).toEqual({
       ok: false,
-      reason: 'Customized takes 6 loot dice of d6 or larger.',
+      reason: 'Customized takes 6d6 in loot dice; the 1 short cost 6 crowns.',
     });
+    expect(w.loot).toEqual([{ count: 5, sides: 6 }]);
     withSkills(fizz(w), { craft: 3 });
     w.loot = [{ count: 40, sides: 6 }];
     w.components = {};
@@ -175,6 +177,23 @@ describe('building mods (SRD 2.8.2)', () => {
       { id: 'thirsting-blade', components: ['ooze-essence', 'grave-garnet'] },
     ]);
     expect(w.log.join('\n')).toContain('Fizzwick finishes Thirsting Blade on the Spear, Light.');
+  });
+
+  it('pays dice short in crowns at their highest face, or the whole cost in crowns', () => {
+    const w = stocked();
+    w.loot = [
+      { count: 4, sides: 6 },
+      { count: 3, sides: 4 },
+    ];
+    w.purse = 100;
+    expect(startMod(w, data, 'm-3', 'm-0', SPEAR, 'customized')).toEqual({ ok: true });
+    expect(w.loot).toEqual([{ count: 3, sides: 4 }]);
+    expect(w.purse).toBe(88);
+    expect(w.log.at(-1)).toContain("onto Snag's Spear, Light, 12 crowns paid for dice: 4 days");
+    const all = stocked();
+    expect(startMod(all, data, 'm-3', 'm-0', SPEAR, 'customized', 'crowns')).toEqual({ ok: true });
+    expect(all.loot).toEqual([{ count: 40, sides: 6 }]);
+    expect(all.purse).toBe(964);
   });
 
   it('halves the time again with a Craft assistant, and splits a stack', () => {
