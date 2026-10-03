@@ -16,6 +16,7 @@ export function xpForLevel(level: number): number {
 }
 
 export function levelForXp(xp: number): number {
+  if (!Number.isFinite(xp)) throw new Error(`invalid XP ${xp}`);
   let level = 1;
   while (xpForLevel(level + 1) <= xp) level++;
   return level;

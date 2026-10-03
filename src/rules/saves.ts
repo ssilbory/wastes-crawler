@@ -22,6 +22,7 @@ export function pcSaveTarget(level: number, scores: AttributeScores, type: SaveT
   return Math.max(SAVE_FLOOR, 16 - level - mod);
 }
 
+/** For NPCs without a stat line; monsters use the save listed in their stat line. */
 export function npcSaveTarget(hitDice: number): number {
   return Math.max(SAVE_FLOOR, 15 - Math.floor(hitDice / 2));
 }

@@ -63,12 +63,32 @@ describe('createRng', () => {
   });
 
   it('rejects draws in the biased tail', () => {
-    // With a range of 2^31 + 1, about half of all uint32 draws fall in the rejected tail.
-    const rng = createRng(9);
+    // With a range of 2^31 + 1, about half of all uint32 draws fall in the rejected tail,
+    // so 200 int() calls consume more of the stream than 200 plain draws.
+    const sampled = createRng(9);
+    const plain = createRng(9);
     for (let i = 0; i < 200; i++) {
-      const v = rng.int(0, 2 ** 31);
+      const v = sampled.int(0, 2 ** 31);
       expect(v).toBeGreaterThanOrEqual(0);
       expect(v).toBeLessThanOrEqual(2 ** 31);
+      plain.next();
+    }
+    expect(sampled.state()).not.toEqual(plain.state());
+  });
+
+  it('rejects ranges over 2^32 values, bad seeds, and corrupt states', () => {
+    expect(() => createRng(1).int(0, 2 ** 32)).toThrow(/exceeds/);
+    expect(createRng(1).int(0, 2 ** 32 - 1)).toBeGreaterThanOrEqual(0);
+    for (const seed of [1.5, Number.NaN, Infinity]) expect(() => createRng(seed)).toThrow(/seed/);
+    for (const state of [
+      [2 ** 32, 0, 0, 0],
+      [Number.NaN, 0.5, 0, 0],
+      [1, 2, 3],
+      [-1, 0, 0, 1],
+    ]) {
+      expect(() => rngFromState(state as unknown as [number, number, number, number])).toThrow(
+        /32-bit/,
+      );
     }
   });
 });

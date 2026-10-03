@@ -111,30 +111,41 @@ export function startingClass(progressionId: string): ClassLevels {
   return { current: progressionId, levels: { [progressionId]: 1 } };
 }
 
+/** Own-property lookup, so ids like "constructor" never read from the prototype. */
+function levelIn(c: ClassLevels, id: string): number {
+  return Object.hasOwn(c.levels, id) ? (c.levels[id] as number) : 0;
+}
+
 export function characterLevel(c: ClassLevels): number {
   return Object.values(c.levels).reduce((a, b) => a + b, 0);
 }
 
 export type SwitchResult =
   | { ok: true; classes: ClassLevels }
-  | { ok: false; reason: 'not-in-town' | 'current-below-4' | 'same-class' };
+  | { ok: false; reason: 'not-in-town' | 'current-below-4' | 'same-class' | 'unknown-class' };
 
 /** Only in town, and only once the current class has reached 4th level; earlier classes keep their levels. */
-export function switchClass(c: ClassLevels, target: string, inTown: boolean): SwitchResult {
+export function switchClass(
+  c: ClassLevels,
+  target: string,
+  inTown: boolean,
+  isKnown: (progressionId: string) => boolean,
+): SwitchResult {
+  if (!isKnown(target)) return { ok: false, reason: 'unknown-class' };
   if (target === c.current) return { ok: false, reason: 'same-class' };
   if (!inTown) return { ok: false, reason: 'not-in-town' };
-  if ((c.levels[c.current] ?? 0) < SWITCH_MIN_CLASS_LEVEL) {
+  if (levelIn(c, c.current) < SWITCH_MIN_CLASS_LEVEL) {
     return { ok: false, reason: 'current-below-4' };
   }
   return {
     ok: true,
-    classes: { current: target, levels: { ...c.levels, [target]: c.levels[target] ?? 0 } },
+    classes: { current: target, levels: { ...c.levels, [target]: levelIn(c, target) } },
   };
 }
 
 /** Adds a level to the current class and returns the class level gained. */
 export function levelUp(c: ClassLevels): { classes: ClassLevels; classLevel: number } {
-  const classLevel = (c.levels[c.current] ?? 0) + 1;
+  const classLevel = levelIn(c, c.current) + 1;
   return { classes: { ...c, levels: { ...c.levels, [c.current]: classLevel } }, classLevel };
 }
 

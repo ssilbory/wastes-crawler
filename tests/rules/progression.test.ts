@@ -26,6 +26,9 @@ const casting = (id: string) => {
   if (!c) throw new Error(`no casting progression ${id}`);
   return c;
 };
+const known = (id: string) => srd.progressions.some((p) => p.id === id);
+const sw = (c: ClassLevels, target: string, inTown: boolean) =>
+  switchClass(c, target, inTown, known);
 const warrior = lookup('full-warrior');
 const expert = lookup('full-expert');
 const any1 = [{ count: 1, category: 'any' }];
@@ -78,6 +81,11 @@ describe('progressionRow', () => {
 });
 
 describe('levelHitDie', () => {
+  it('keeps the per-level die in the second cycle', () => {
+    expect(levelHitDie(warrior, 19)).toEqual({ count: 1, sides: 6, modifier: 2 });
+    expect(levelHitDie(warrior, 27)).toEqual({ count: 1, sides: 6, modifier: 2 });
+  });
+
   it('gives each level its own die', () => {
     expect(levelHitDie(warrior, 1)).toEqual({ count: 1, sides: 6, modifier: 2 });
     expect(levelHitDie(warrior, 14)).toEqual({ count: 1, sides: 6, modifier: 2 });
@@ -106,6 +114,12 @@ describe('castingRow', () => {
       anyArts: 0,
     });
     expect(castingRow(elementalist, 12).anyArts).toBe(1);
+    expect(castingRow(elementalist, 19)).toMatchObject({
+      maxSpellLevel: 5,
+      spellsCast: 12,
+      spellsPrepared: 22,
+    });
+    expect(castingRow(elementalist, 20)).toMatchObject({ spellsCast: 12, spellsPrepared: 23 });
     expect(() => castingRow(elementalist, 0)).toThrow();
   });
 });
@@ -121,20 +135,20 @@ describe('class switching', () => {
   });
 
   it('allows a switch only in town, at 4th level or higher, to another class', () => {
-    expect(switchClass(expert4, 'full-warrior', false)).toEqual({
+    expect(sw(expert4, 'full-warrior', false)).toEqual({
       ok: false,
       reason: 'not-in-town',
     });
-    expect(switchClass(expert4, 'full-expert', true)).toEqual({ ok: false, reason: 'same-class' });
+    expect(sw(expert4, 'full-expert', true)).toEqual({ ok: false, reason: 'same-class' });
     const early = { current: 'full-expert', levels: { 'full-expert': 3 } };
-    expect(switchClass(early, 'full-warrior', true)).toEqual({
+    expect(sw(early, 'full-warrior', true)).toEqual({
       ok: false,
       reason: 'current-below-4',
     });
   });
 
   it('sums each class at its own level, with the new class starting from its level-1 row', () => {
-    const switched = switchClass(expert4, 'full-warrior', true);
+    const switched = sw(expert4, 'full-warrior', true);
     if (!switched.ok) throw new Error('switch refused');
     const { classes, classLevel } = levelUp(switched.classes);
     expect(classLevel).toBe(1);
@@ -144,7 +158,7 @@ describe('class switching', () => {
   });
 
   it('picks up an earlier class where the character left off', () => {
-    const back = switchClass(
+    const back = sw(
       { current: 'full-warrior', levels: { 'full-expert': 4, 'full-warrior': 4 } },
       'full-expert',
       true,
@@ -157,13 +171,33 @@ describe('class switching', () => {
   });
 
   it('ignores a class with no levels yet', () => {
-    const fresh = switchClass(expert4, 'full-warrior', true);
+    const fresh = sw(expert4, 'full-warrior', true);
     if (!fresh.ok) throw new Error('switch refused');
     expect(totalAttackBonus(fresh.classes, lookup)).toBe(2);
     expect(levelUp({ current: 'x', levels: {} }).classLevel).toBe(1);
-    expect(switchClass({ current: 'x', levels: {} }, 'full-warrior', true)).toEqual({
+    expect(sw(expert4, 'not-a-class', true)).toEqual({ ok: false, reason: 'unknown-class' });
+    expect(sw({ current: 'constructor', levels: {} }, 'full-warrior', true)).toMatchObject({
+      reason: 'current-below-4',
+    });
+    expect(sw({ current: 'x', levels: {} }, 'full-warrior', true)).toEqual({
       ok: false,
       reason: 'current-below-4',
     });
+  });
+});
+
+describe('single-class invariants', () => {
+  it('agrees with progressionRow for every class and level 1–30', () => {
+    for (const p of srd.progressions) {
+      for (let level = 1; level <= 30; level++) {
+        const c: ClassLevels = { current: p.id, levels: { [p.id]: level } };
+        const row = progressionRow(p, level);
+        expect(totalAttackBonus(c, lookup)).toBe(row.attackBonus);
+        const dice = hitDiceForLevels(c, lookup);
+        expect(dice).toHaveLength(level);
+        expect(dice.reduce((n, d) => n + d.count, 0)).toBe(row.hitDice.count);
+        expect(dice.reduce((n, d) => n + d.modifier, 0)).toBe(row.hitDice.modifier);
+      }
+    }
   });
 });
