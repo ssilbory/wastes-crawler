@@ -7,6 +7,8 @@
 import { useResource, type ResourceDie } from '../../rules/resource-die.ts';
 import { alive, note } from '../world/members.ts';
 import type { Member, World } from '../world/types.ts';
+import type { GameData } from '../character/context.ts';
+import { onSpecial } from './specials.ts';
 
 export const TORCH_DIE: ResourceDie = 6;
 export const LANTERN_DIE: ResourceDie = 12;
@@ -94,8 +96,9 @@ export function burn(w: World): void {
   kindle(w);
 }
 
-/** Underground with nothing burning. */
-export const inDark = (w: World) => w.dungeon !== null && w.light.lit === null;
+/** Underground with nothing burning, or on a square of magical darkness. */
+export const inDark = (w: World, data: GameData) =>
+  w.dungeon !== null && (w.light.lit === null || onSpecial(w, data, 'darkness'));
 
 /** Lights go out on reaching the surface; what is left of them keeps. */
 export function douse(w: World): void {

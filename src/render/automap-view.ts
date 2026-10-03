@@ -1,6 +1,8 @@
 // Read-only drawing data for the dungeon automap: the cells the party has seen on this level, their
-// walls and doors, and an arrow for the party. Secret doors draw as walls until Phase 8's Search.
+// walls and doors, and an arrow for the party. Secret doors draw as walls until found, and traps
+// as floor until known.
 import { levelOf } from '../game/dungeon/explore.ts';
+import { knownEdges } from '../game/dungeon/secrets.ts';
 import type { GameData } from '../game/character/context.ts';
 import type { World } from '../game/world/types.ts';
 import { FACINGS, type Facing } from '../rules/grid.ts';
@@ -77,13 +79,17 @@ export function automap(w: World, data: GameData, size = MAP_CELL): Automap | nu
   const s = w.dungeon;
   if (!s) return null;
   const { map } = levelOf(data, s.dungeon, s.level);
+  const edge = knownEdges(w, data);
   const cells: AutomapCell[] = [];
   const lines = new Map<string, AutomapLine>();
   for (const key of s.seen[s.level] ?? []) {
     const [x, y] = key.split(',').map(Number) as [number, number];
-    cells.push({ key, x, y, kind: map.cell({ x, y }) });
+    const cell = map.cell({ x, y });
+    // Traps show once known, and secret doors once found; until then they look like the rest.
+    const known = s.traps[s.level]?.[key] !== undefined;
+    cells.push({ key, x, y, kind: cell === 'trap' && !known ? 'floor' : cell });
     for (const side of FACINGS) {
-      const e = map.edge({ x, y }, side);
+      const e = edge({ x, y }, side);
       if (e === 'open') continue;
       const [x1, y1, x2, y2] = edgeLine(x, y, side, size);
       const id = `${x1},${y1},${x2},${y2}`;

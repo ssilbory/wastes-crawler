@@ -274,3 +274,7 @@
   font-size: 14px;
   text-anchor: middle;
 }
+
+.automap .seen.trap {
+  fill: #a3412f;
+}

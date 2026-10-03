@@ -141,3 +141,33 @@ test('fights a wanderer, camps on a safe square, and goes dark', async ({ page }
   await expect(view).toContainText('Pitch dark');
   await expect(view).toHaveScreenshot('barrow-dark.png');
 });
+
+// Phase 8b: Search for a secret door, and a known trap to disarm.
+test('searches out the secret closet and works on a known trap', async ({ page }) => {
+  await startAtBarrow(page);
+  await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
+  await edit(page, `Object.assign(save.dungeon, { at: { x: 2, y: 1 }, facing: 'e' });`);
+  const log = page.getByRole('region', { name: 'Journey log' });
+  const searchButton = page.getByRole('button', { name: 'Search (1 turn)' });
+  for (let i = 0; i < 10 && !(await log.innerText()).includes('finds a secret door'); i++)
+    await searchButton.click();
+  await expect(log).toContainText('finds a secret door');
+  await page.getByRole('button', { name: 'Forward' }).click();
+  const view = page.getByRole('img', { name: 'Dungeon view' });
+  await expect(view).toHaveScreenshot('barrow-secret-door.png');
+  await page.getByRole('button', { name: 'Forward' }).click();
+  await expect(page.locator('.bump')).toHaveText(' ');
+  await expect(page.getByRole('region', { name: 'Camp' })).toBeVisible();
+
+  await edit(
+    page,
+    `save.encounter = null;
+     Object.assign(save.dungeon, { at: { x: 4, y: 7 }, facing: 'n' });
+     save.dungeon.traps = { 'barrow-upper': { '4,6': 'noticed' } };`,
+  );
+  await expect(view).toHaveScreenshot('barrow-trap.png');
+  await page.getByRole('button', { name: 'Forward' }).click();
+  await expect(page.locator('.bump')).toHaveText('The dart trap lies ahead.');
+  await page.getByRole('button', { name: 'Disarm the dart trap (1 turn)' }).click();
+  await expect(log).toContainText(/(disarms|can't work out|fumbles) the dart trap/);
+});

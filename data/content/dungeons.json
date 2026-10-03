@@ -33,7 +33,7 @@
           "+-+ +-+-+-+-+-+ +-+-+",
           "| | | | | | | | | | |",
           "+-+ +-+-+ +-+-+ +-+-+",
-          "| | | | | | | | | | |",
+          "| | | | |T| | | | | |",
           "+-+ +-+-+ +-+-+ +-+-+",
           "|     | | | | | | | |",
           "+ + + +-+ +-+-+ +-+-+",
@@ -87,6 +87,50 @@
           {
             "x": 5,
             "y": 1
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 3,
+              "y": 1
+            },
+            "side": "e",
+            "difficulty": 8
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 4,
+              "y": 6
+            },
+            "name": "dart trap",
+            "notice": 9,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 8
+            },
+            "save": "evasion",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 1,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 4,
+              "y": 5
+            },
+            "text": "Scratched into the stone at the dead end: THE DEAD KEEP WHAT IS THEIRS."
           }
         ]
       },
@@ -148,6 +192,61 @@
           {
             "x": 1,
             "y": 1
+          }
+        ],
+        "secrets": [],
+        "traps": [],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 2,
+              "y": 1
+            },
+            "text": "Old bones are heaped against the wall, picked clean."
+          },
+          {
+            "kind": "spinner",
+            "at": {
+              "x": 6,
+              "y": 1
+            }
+          },
+          {
+            "kind": "darkness",
+            "at": {
+              "x": 6,
+              "y": 4
+            }
+          },
+          {
+            "kind": "anti-map",
+            "at": {
+              "x": 6,
+              "y": 5
+            }
+          },
+          {
+            "kind": "anti-magic",
+            "at": {
+              "x": 5,
+              "y": 7
+            }
+          },
+          {
+            "kind": "teleporter",
+            "at": {
+              "x": 7,
+              "y": 7
+            },
+            "to": {
+              "level": "barrow-lower",
+              "at": {
+                "x": 1,
+                "y": 1
+              },
+              "facing": "s"
+            }
           }
         ]
       }

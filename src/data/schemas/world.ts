@@ -5,7 +5,7 @@ import { CharacterSchema } from './character.ts';
 import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 7;
+export const WORLD_SCHEMA_VERSION = 8;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -113,6 +113,14 @@ export const DungeonStateSchema = z.strictObject({
   turn: z.int().min(0),
   /** Steps toward the next turn: 12 make one. */
   steps: z.int().min(0),
+  /** Secret door edges ("x,y,n" or "x,y,w") found, by level. */
+  found: z.record(IdSchema, z.array(z.string())),
+  /** Secret door edges the party has had its free look at, by level. */
+  glimpsed: z.record(IdSchema, z.array(z.string())),
+  /** Traps the party knows of or has disarmed, by level and cell. */
+  traps: z.record(IdSchema, z.record(z.string(), z.enum(['noticed', 'disarmed']))),
+  /** Message squares already read, by level. */
+  read: z.record(IdSchema, z.array(z.string())),
 });
 export type DungeonState = z.infer<typeof DungeonStateSchema>;
 

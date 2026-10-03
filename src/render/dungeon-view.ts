@@ -1,11 +1,12 @@
 // Read-only drawing data for the first-person dungeon view (docs/plan.md, Phase 7; Sam's call:
 // flat-shaded panels). Cells up to four deep, painted far to near so nearer walls and doors hide
-// what is behind them. Secret doors look like walls until Phase 8's Search.
+// what is behind them. Secret doors look like walls until found, and traps show once known.
 import { levelOf } from '../game/dungeon/explore.ts';
 import { inDark } from '../game/dungeon/light.ts';
+import { knownEdges } from '../game/dungeon/secrets.ts';
 import type { GameData } from '../game/character/context.ts';
 import type { World } from '../game/world/types.ts';
-import { ahead, turn, type Cell, type Facing } from '../rules/grid.ts';
+import { ahead, cellKey, turn, type Cell, type Facing } from '../rules/grid.ts';
 
 export const VIEW_WIDTH = 320;
 export const VIEW_HEIGHT = 240;
@@ -13,7 +14,7 @@ export const VIEW_DEPTH = 4;
 
 export interface Panel {
   key: string;
-  kind: 'wall' | 'door' | 'up' | 'down';
+  kind: 'wall' | 'door' | 'up' | 'down' | 'trap';
   /** SVG polygon points. */
   points: string;
   /** A door's frame inside the panel, or null. */
@@ -47,6 +48,7 @@ const inset = (q: Quad, u0: number, u1: number, v0: number, v1: number): Quad =>
 /** Distance shading: lighter near, darker far, side walls darker than walls faced head on. */
 export function shade(kind: Panel['kind'], depth: number, side: boolean): string {
   const light = Math.max(8, (side ? 46 : 60) - depth * 11);
+  if (kind === 'trap') return `hsl(2 60% ${light - 12}%)`;
   if (kind === 'door') return `hsl(28 42% ${light - 8}%)`;
   if (kind === 'wall') return `hsl(32 10% ${light}%)`;
   return `hsl(42 30% ${light - 14}%)`;
@@ -108,12 +110,14 @@ function panel(key: string, kind: 'wall' | 'door', q: Quad, depth: number, side:
 export function dungeonView(w: World, data: GameData): Panel[] {
   const s = w.dungeon;
   // In the dark there is nothing to see (docs/rules-adaptation.md, Dungeon exploration).
-  if (!s || inDark(w)) return [];
+  if (!s || inDark(w, data)) return [];
   const { map } = levelOf(data, s.dungeon, s.level);
   const left = turn(s.facing, 'left');
   const right = turn(s.facing, 'right');
+  const edge = knownEdges(w, data);
+  const trapKnown = (c: Cell) => s.traps[s.level]?.[cellKey(c)] === 'noticed';
   const kindOf = (c: Cell, side: Facing) => {
-    const e = map.edge(c, side);
+    const e = edge(c, side);
     return e === 'open' ? null : e === 'door' ? 'door' : 'wall';
   };
   const panels: Panel[] = [];
@@ -127,8 +131,10 @@ export function dungeonView(w: World, data: GameData): Panel[] {
       .map((lateral) => ({ lateral, c: cellAt(s.at, s.facing, depth, lateral) }))
       .filter(({ c }) => map.inBounds(c));
     for (const { lateral, c } of cells) {
-      const k = map.cell(c);
-      if (k !== 'up' && k !== 'down') continue;
+      // A trap shows once the party knows of it.
+      const cell = map.cell(c);
+      const k = cell === 'trap' && !trapKnown(c) ? 'floor' : cell;
+      if (k !== 'up' && k !== 'down' && k !== 'trap') continue;
       const q = inset(flat(depth, lateral, k === 'up'), 0.2, 0.8, 0.2, 0.8);
       panels.push({
         key: `${k}-${depth}-${lateral}`,

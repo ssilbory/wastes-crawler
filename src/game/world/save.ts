@@ -68,6 +68,15 @@ export const WORLD_MIGRATIONS: Migrations = {
       light: NO_LIGHT,
     };
   },
+  // Version 8 adds secret doors, traps, and special squares (Phase 8b): nothing found yet.
+  7: (raw) => {
+    const d = raw.dungeon as Raw | null;
+    return {
+      ...raw,
+      schemaVersion: 8,
+      dungeon: d && { ...d, found: {}, glimpsed: {}, traps: {}, read: {} },
+    };
+  },
 };
 
 export function serializeWorld(w: World): string {

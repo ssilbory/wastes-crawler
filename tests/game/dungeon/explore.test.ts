@@ -45,6 +45,10 @@ describe('dungeon entrances (docs/rules-adaptation.md, Dungeons in Phase 7)', ()
       seen: { 'barrow-upper': ['1,8', '1,7', '1,6', '1,5'] },
       turn: 0,
       steps: 0,
+      found: {},
+      glimpsed: {},
+      traps: {},
+      read: {},
     });
     expect(w).toMatchObject({ quarter: 1, destination: null });
     expect(w.log.slice(-4)).toEqual([

@@ -16,6 +16,10 @@ function at(x: number, y: number, facing: DungeonState['facing'], seen: string[]
     seen: { 'barrow-upper': seen },
     turn: 0,
     steps: 0,
+    found: {},
+    glimpsed: {},
+    traps: {},
+    read: {},
   };
   w.light.lit = 'torch';
   w.light.torch = 6;
@@ -133,5 +137,27 @@ describe('light and time underground', () => {
     expect(lightText(w)).toBe('Lantern (d12); 1 torch spare, 1 pint of oil');
     expect(turnText(w)).toBe('Turn 1, step 1 of 12');
     expect(turnText(world())).toBe('');
+  });
+});
+
+describe('found secrets and known traps', () => {
+  it('draws a found secret door as a door, on the view and the map', () => {
+    const w = at(3, 1, 'e', ['3,1']);
+    expect(find(w, 'front-0-0')?.kind).toBe('wall');
+    (w.dungeon as DungeonState).found = { 'barrow-upper': ['4,1,w'] };
+    expect(find(w, 'front-0-0')?.kind).toBe('door');
+    expect(automap(w, data)?.lines.find((l) => l.key === '64,16,64,32')?.kind).toBe('door');
+  });
+
+  it('shows a trap only once the party knows of it, and not once disarmed', () => {
+    const w = at(4, 8, 'n', ['4,6']);
+    expect(find(w, 'trap-2-0')).toBeUndefined();
+    expect(automap(w, data)?.cells[0]?.kind).toBe('floor');
+    (w.dungeon as DungeonState).traps = { 'barrow-upper': { '4,6': 'noticed' } };
+    expect(find(w, 'trap-2-0')).toMatchObject({ kind: 'trap', fill: shade('trap', 2, false) });
+    expect(automap(w, data)?.cells[0]?.kind).toBe('trap');
+    (w.dungeon as DungeonState).traps = { 'barrow-upper': { '4,6': 'disarmed' } };
+    expect(find(w, 'trap-2-0')).toBeUndefined();
+    expect(shade('trap', 0, false)).toBe('hsl(2 60% 48%)');
   });
 });

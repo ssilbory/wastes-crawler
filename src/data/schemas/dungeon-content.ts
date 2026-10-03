@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { IdSchema } from './common.ts';
+import { AttributeSchema, DiceSchema, IdSchema } from './common.ts';
 
 export const FacingSchema = z.enum(['n', 'e', 's', 'w']);
 export type Facing = z.infer<typeof FacingSchema>;
@@ -18,6 +18,60 @@ export const StairsLinkSchema = z.strictObject({
 });
 export type StairsLink = z.infer<typeof StairsLinkSchema>;
 
+/** Where a secret door is and how hard it is to find; doors not listed take difficulty 8. */
+export const SecretSchema = z.strictObject({
+  at: CellSchema,
+  side: FacingSchema,
+  difficulty: z.int().min(1),
+});
+export type Secret = z.infer<typeof SecretSchema>;
+
+/**
+ * A trap on a `T` cell (docs/rules-adaptation.md, Dungeon exploration): a Wis/Notice difficulty to
+ * spot it, a skill check to disarm it, the save each PC makes when it springs (null for none), and
+ * what it does to those who fail.
+ */
+export const TrapSchema = z.strictObject({
+  at: CellSchema,
+  name: z.string().min(1),
+  notice: z.int().min(1),
+  disarm: z.strictObject({
+    skill: IdSchema,
+    attributes: z.array(AttributeSchema).min(1),
+    difficulty: z.int().min(1),
+  }),
+  save: z.enum(['physical', 'evasion', 'mental', 'luck']).nullable(),
+  effect: z.discriminatedUnion('kind', [
+    z.strictObject({ kind: z.literal('damage'), dice: DiceSchema }),
+    /** SRD 2.10.0: dungeon poison takes half the victim's maximum hit points. */
+    z.strictObject({ kind: z.literal('poison') }),
+    /** Brings the level's wanderers at once. */
+    z.strictObject({ kind: z.literal('alarm') }),
+  ]),
+});
+export type Trap = z.infer<typeof TrapSchema>;
+
+const At = { at: CellSchema };
+/** A special square: no glyph, found by walking onto it. */
+export const SpecialSchema = z.discriminatedUnion('kind', [
+  /** Text shown the first time the party steps here. */
+  z.strictObject({ kind: z.literal('message'), ...At, text: z.string().min(1) }),
+  z.strictObject({
+    kind: z.literal('teleporter'),
+    ...At,
+    to: z.strictObject({ level: IdSchema, at: CellSchema, facing: FacingSchema }),
+  }),
+  /** Turns the party to a random facing without a word. */
+  z.strictObject({ kind: z.literal('spinner'), ...At }),
+  /** The automap records nothing here. */
+  z.strictObject({ kind: z.literal('anti-map'), ...At }),
+  /** As dark as having no light. */
+  z.strictObject({ kind: z.literal('darkness'), ...At }),
+  /** No spells or arts in a fight here. */
+  z.strictObject({ kind: z.literal('anti-magic'), ...At }),
+]);
+export type Special = z.infer<typeof SpecialSchema>;
+
 /**
  * A dungeon level as the doubled ASCII grid from docs/plan.md (Map format): cells at odd rows and
  * columns, edges between them. See docs/content-guide.md for the glyphs.
@@ -34,6 +88,9 @@ export const DungeonLevelSchema = z.strictObject({
   wander: z.strictObject({ every: z.int().min(1).max(6), table: IdSchema }).nullable(),
   /** The only squares the party can camp on (docs/rules-adaptation.md, Dungeon exploration). */
   safe: z.array(CellSchema),
+  secrets: z.array(SecretSchema),
+  traps: z.array(TrapSchema),
+  specials: z.array(SpecialSchema),
 });
 export type DungeonLevel = z.infer<typeof DungeonLevelSchema>;
 

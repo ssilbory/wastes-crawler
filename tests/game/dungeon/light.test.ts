@@ -92,7 +92,7 @@ describe('light underground (docs/rules-adaptation.md, Dungeon exploration)', ()
       'Day 1, day: The torch gutters out.',
       'Day 1, day: The party is in the dark.',
     ]);
-    expect(inDark(w)).toBe(true);
+    expect(inDark(w, data)).toBe(true);
     burn(w);
     expect(w.light.lit).toBeNull();
   });
@@ -113,7 +113,7 @@ describe('light underground (docs/rules-adaptation.md, Dungeon exploration)', ()
     const w = world();
     expect(kindle(w)).toBe(false);
     expect(w.log.some((l) => l.includes('dark'))).toBe(false);
-    expect(inDark(w)).toBe(false);
+    expect(inDark(w, data)).toBe(false);
     w.light.lit = 'torch';
     douse(w);
     expect(w.light.lit).toBeNull();
@@ -155,5 +155,26 @@ describe('world save version 7', () => {
     });
     const back = parseWorld(serializeWorld(w), data);
     expect(back.ok && back.world.light).toEqual(w.light);
+  });
+});
+
+describe('world save version 8', () => {
+  it('upgrades a version 7 save with nothing found underground', async () => {
+    const { parseWorld, serializeWorld } = await import('../../../src/game/world/save.ts');
+    const save = JSON.parse(serializeWorld(below()));
+    const gone = ['found', 'glimpsed', 'traps', 'read'];
+    save.dungeon = Object.fromEntries(
+      Object.entries(save.dungeon).filter(([k]) => !gone.includes(k)),
+    );
+    const loaded = parseWorld(JSON.stringify({ ...save, schemaVersion: 7 }), data);
+    expect(loaded.ok && loaded.world.dungeon).toMatchObject({
+      found: {},
+      glimpsed: {},
+      traps: {},
+      read: {},
+    });
+    const surface = JSON.parse(serializeWorld(world()));
+    const up = parseWorld(JSON.stringify({ ...surface, schemaVersion: 7 }), data);
+    expect(up.ok && up.world.dungeon).toBeNull();
   });
 });

@@ -35,6 +35,24 @@ function dungeonErrors(d: Dungeon, content: ContentData): string[] {
       }
     if (level.wander && !content.encounterTables.some((t) => t.id === level.wander?.table))
       errors.push(`${where}/${level.id}: unknown encounter table ${level.wander.table}`);
+    const lw = `${where}/${level.id}`;
+    const trapped = new Set(level.traps.map((t) => `${t.at.x},${t.at.y}`));
+    for (let y = 0; y < map.height; y++)
+      for (let x = 0; x < map.width; x++)
+        if (map.cell({ x, y }) === 'trap' && !trapped.has(`${x},${y}`))
+          errors.push(`${lw}: the trap at ${x},${y} has no details`);
+    for (const t of level.traps)
+      if (!map.inBounds(t.at) || map.cell(t.at) !== 'trap')
+        errors.push(`${lw}: trap ${t.name} at ${t.at.x},${t.at.y} is not on a T`);
+    for (const sc of level.secrets)
+      if (!map.inBounds(sc.at) || map.edge(sc.at, sc.side) !== 'secret')
+        errors.push(`${lw}: secret at ${sc.at.x},${sc.at.y},${sc.side} is not on a secret door`);
+    for (const sp of level.specials) {
+      if (!map.inBounds(sp.at))
+        errors.push(`${lw}: ${sp.kind} at ${sp.at.x},${sp.at.y} is off the level`);
+      if (sp.kind === 'teleporter' && !onFloor(sp.to.level, sp.to.at))
+        errors.push(`${lw}: teleporter at ${sp.at.x},${sp.at.y} goes to a cell that isn't there`);
+    }
     for (const c of level.safe)
       if (!map.inBounds(c))
         errors.push(`${where}/${level.id}: safe square ${c.x},${c.y} is off the level`);

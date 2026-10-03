@@ -68,12 +68,33 @@ describe('dungeon validation', () => {
   ): Dungeon => ({
     ...base,
     entry: { level: 'a', at: { x: 0, y: 0 }, facing: 'n' },
-    levels: [{ id: 'a', name: 'A', map, links, wander: null, safe: [] }],
+    levels: [
+      {
+        id: 'a',
+        name: 'A',
+        map,
+        links,
+        wander: null,
+        safe: [],
+        secrets: [],
+        traps: [],
+        specials: [],
+      },
+    ],
     ...extra,
   });
 
   it('checks wandering tables and safe squares', () => {
-    const level = { id: 'a', name: 'A', map: tiny, links: [], safe: [{ x: 5, y: 0 }] };
+    const level = {
+      id: 'a',
+      name: 'A',
+      map: tiny,
+      links: [],
+      safe: [{ x: 5, y: 0 }],
+      secrets: [],
+      traps: [],
+      specials: [],
+    };
     const d = { ...one(tiny, []), levels: [{ ...level, wander: { every: 2, table: 'crypt' } }] };
     expect(check(d)).toEqual(
       expect.arrayContaining([
@@ -81,6 +102,37 @@ describe('dungeon validation', () => {
         'dungeons/old-barrow/a: safe square 5,0 is off the level',
       ]),
     );
+  });
+
+  it('checks traps, secret doors, and special squares against the map', () => {
+    const level = base.levels[0] as Dungeon['levels'][0];
+    const trap = level.traps[0] as Dungeon['levels'][0]['traps'][0];
+    const d: Dungeon = {
+      ...base,
+      levels: [
+        {
+          ...level,
+          traps: [{ ...trap, at: { x: 0, y: 0 } }],
+          secrets: [{ at: { x: 0, y: 0 }, side: 'n', difficulty: 8 }],
+          specials: [
+            { kind: 'spinner', at: { x: 20, y: 0 } },
+            {
+              kind: 'teleporter',
+              at: { x: 0, y: 0 },
+              to: { level: 'nowhere', at: { x: 0, y: 0 }, facing: 'n' },
+            },
+          ],
+        },
+        ...base.levels.slice(1),
+      ],
+    };
+    expect(check(d)).toEqual([
+      'dungeons/old-barrow/barrow-upper: the trap at 4,6 has no details',
+      'dungeons/old-barrow/barrow-upper: trap dart trap at 0,0 is not on a T',
+      'dungeons/old-barrow/barrow-upper: secret at 0,0,n is not on a secret door',
+      'dungeons/old-barrow/barrow-upper: spinner at 20,0 is off the level',
+      "dungeons/old-barrow/barrow-upper: teleporter at 0,0 goes to a cell that isn't there",
+    ]);
   });
 
   it('reports bad maps', () => {
@@ -117,6 +169,7 @@ describe('dungeon validation', () => {
     const walled = ['+-+-+', '', '+-+-+'];
     walled[1] = '|<|T|';
     expect(check(one(walled, [links[0] as (typeof links)[0]]))).toEqual([
+      'dungeons/old-barrow/a: the trap at 1,0 has no details',
       "dungeons/old-barrow/a: 1,0 can't be reached from the entry",
     ]);
     expect(check(one(tiny, links, { entrance: { col: 5, row: 5 } }))).toEqual([

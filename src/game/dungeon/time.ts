@@ -35,9 +35,19 @@ function wander(w: World, data: GameData): void {
     data,
     rolled,
     watcher,
-    inDark(w) ? null : 0,
+    inDark(w, data) ? null : 0,
     `${level.name} ${s.at.x},${s.at.y}`,
   );
+}
+
+/** The level's wanderers come at once, as when an alarm sounds; a level with none stays quiet. */
+export function callWanderers(w: World, data: GameData): void {
+  const s = state(w);
+  const { level } = levelOf(data, s.dungeon, s.level);
+  if (!level.wander || w.encounter) return;
+  const rolled = rollEnemies(w, data, level.wander.table);
+  // They come for the noise: no one spots them first.
+  startEncounter(w, data, rolled, undefined, null, `${level.name} ${s.at.x},${s.at.y}`);
 }
 
 /** One exploration turn: the light burns, the calendar moves on every 36th, then the check. */
@@ -101,7 +111,7 @@ export function campUnderground(
       data,
       rolled,
       watcher,
-      inDark(w) ? null : 0,
+      inDark(w, data) ? null : 0,
       `${level.name} ${s.at.x},${s.at.y}`,
     );
     return { ok: true };

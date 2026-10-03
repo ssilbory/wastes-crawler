@@ -10,7 +10,10 @@ import type { GameData } from '../character/context.ts';
 import { note } from '../world/members.ts';
 import { endQuarter } from '../world/quarter.ts';
 import { douse, drawKits, inDark, kindle } from './light.ts';
+import { glimpse, knownEdges } from './secrets.ts';
+import { arriveOn, onSpecial } from './specials.ts';
 import { countStep } from './time.ts';
+import { approach, springHere } from './traps.ts';
 import type { TownResult } from '../world/services.ts';
 import type { World } from '../world/types.ts';
 
@@ -45,8 +48,9 @@ export function dungeonHere(w: World, data: GameData): Dungeon | undefined {
 
 /** Marks the party's cell and the cells it can see straight ahead (up to 3) as seen. */
 function look(w: World, data: GameData, s: DungeonState): void {
-  // In the dark the party maps nothing (docs/rules-adaptation.md, Dungeon exploration).
-  if (inDark(w)) return;
+  // In the dark, or on an anti-map square, the party maps nothing (docs/rules-adaptation.md,
+  // Dungeon exploration).
+  if (inDark(w, data) || onSpecial(w, data, 'anti-map')) return;
   const { map } = levelOf(data, s.dungeon, s.level);
   const seen = new Set(s.seen[s.level] ?? []);
   let c: Cell = s.at;
@@ -81,6 +85,10 @@ export function enterDungeon(w: World, data: GameData): TownResult {
     seen: {},
     turn: 0,
     steps: 0,
+    found: {},
+    glimpsed: {},
+    traps: {},
+    read: {},
   };
   note(w, `The party goes down into ${d.name}.`);
   drawKits(w);
@@ -92,19 +100,27 @@ export function enterDungeon(w: World, data: GameData): TownResult {
 
 export type Step = 'forward' | 'back' | 'left' | 'right';
 
-/** One step; doors open as the party walks through, walls and secret doors stop it. */
-export function step(w: World, data: GameData, dir: Step): TownResult {
+/**
+ * One step; doors open as the party walks through, and walls and unfound secret doors stop it. A
+ * trap ahead may be spotted and stop the party, unless it means to step in (traps.ts).
+ */
+export function step(w: World, data: GameData, dir: Step, stepIn = false): TownResult {
   const s = w.dungeon;
   if (!s) throw new Error('the party is not in a dungeon');
   if (w.encounter) return no('Settle the encounter first.');
   const way =
     dir === 'forward' ? s.facing : dir === 'back' ? turn(s.facing, 'around') : turn(s.facing, dir);
-  const { map } = levelOf(data, s.dungeon, s.level);
-  const edge = map.edge(s.at, way);
+  const edge = knownEdges(w, data)(s.at, way);
   if (edge === 'wall' || edge === 'secret') return no('A wall blocks the way.');
-  s.at = ahead(s.at, way);
+  const target = ahead(s.at, way);
+  const stop = approach(w, data, target, stepIn);
+  if (stop) return no(stop);
+  s.at = target;
+  arriveOn(w, data);
   look(w, data, s);
-  countStep(w, data);
+  glimpse(w, data);
+  springHere(w, data);
+  if (w.dungeon) countStep(w, data);
   return { ok: true };
 }
 

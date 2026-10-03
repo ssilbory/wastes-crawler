@@ -18,6 +18,9 @@ import { CampPanel } from './CampPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
 import { inDark } from '../../game/dungeon/light.ts';
 import { onSafeSquare } from '../../game/dungeon/time.ts';
+import { search } from '../../game/dungeon/secrets.ts';
+import { disarm, knownTrapAhead } from '../../game/dungeon/traps.ts';
+import type { TownResult } from '../../game/world/services.ts';
 import { lightText, turnText } from '../../render/light-view.ts';
 
 type Move = { step: Step } | { turn: 'left' | 'right' | 'around' };
@@ -69,6 +72,13 @@ export function DungeonScreen(props: {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   });
+  /** Runs an action and shows why it was refused, if it was. */
+  const act = (action: () => TownResult) => {
+    const r = action();
+    setBump(r.ok ? null : r.reason);
+    props.onChange();
+  };
+  const trap = knownTrapAhead(w, data);
   const { level } = levelOf(data, s.dungeon, s.level);
   const stairs = stairsHere(w, data);
   const map = automap(w, data);
@@ -90,7 +100,7 @@ export function DungeonScreen(props: {
       <div class="world-main">
         <div class="dungeon-main">
           <svg
-            class={inDark(w) ? 'dungeon-view dark' : 'dungeon-view'}
+            class={inDark(w, data) ? 'dungeon-view dark' : 'dungeon-view'}
             viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}
             role="img"
             aria-label="Dungeon view"
@@ -103,7 +113,7 @@ export function DungeonScreen(props: {
                 {p.frame && <polygon class="door-frame" points={p.frame} />}
               </g>
             ))}
-            {inDark(w) && (
+            {inDark(w, data) && (
               <text class="pitch-dark" x={VIEW_WIDTH / 2} y={VIEW_HEIGHT / 2}>
                 Pitch dark
               </text>
@@ -138,6 +148,23 @@ export function DungeonScreen(props: {
               Turn right
             </button>
           </div>
+          {!w.encounter && (
+            <div class="actions" role="group" aria-label="Explore">
+              <button type="button" onClick={() => act(() => search(w, data))}>
+                Search (1 turn)
+              </button>
+              {trap && (
+                <>
+                  <button type="button" onClick={() => act(() => disarm(w, data))}>
+                    Disarm the {trap.name} (1 turn)
+                  </button>
+                  <button type="button" onClick={() => act(() => step(w, data, 'forward', true))}>
+                    Step onto the {trap.name}
+                  </button>
+                </>
+              )}
+            </div>
+          )}
           {stairsLabel && !w.encounter && (
             <button
               type="button"

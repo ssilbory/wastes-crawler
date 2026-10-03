@@ -12,6 +12,7 @@ import { alive, note, setHp } from './members.ts';
 import { fights, moraleAfterFight, npcMonster, removeNpc, typeOf } from './npcs.ts';
 import { emit } from './bus.ts';
 import { inDark } from '../dungeon/light.ts';
+import { onSpecial } from '../dungeon/specials.ts';
 import { freeCaptive } from './rescue.ts';
 import { addLoot } from './shop.ts';
 import { wipe } from './town.ts';
@@ -69,6 +70,8 @@ export interface PartySetup {
   enemies: string[][];
   /** The party fights without light. */
   dark: boolean;
+  /** The fight is on an anti-magic square. */
+  antiMagic: boolean;
 }
 
 /** The conscious party as it stands, and its NPCs if `withNpcs`, against enemy rows. */
@@ -89,7 +92,8 @@ export function partySetup(
     })),
     npcs: withNpcs ? w.npcs.filter((n) => n.hp > 0).map((n) => npcSetup(data, n)) : [],
     enemies,
-    dark: inDark(w),
+    dark: inDark(w, data),
+    antiMagic: onSpecial(w, data, 'anti-magic'),
   };
 }
 
@@ -102,6 +106,7 @@ export function battleFrom(data: GameData, rng: Rng, setup: PartySetup, log: boo
     npcs: setup.npcs,
     enemies: setup.enemies.map((r) => [...r]),
     dark: setup.dark,
+    antiMagic: setup.antiMagic,
     log,
   });
   setup.party.forEach((p, i) => {

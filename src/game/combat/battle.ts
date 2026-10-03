@@ -56,6 +56,8 @@ export interface BattleSetup {
   sideNames?: Record<SideId, string>;
   /** The party fights without light (docs/rules-adaptation.md, Dungeon exploration). */
   dark?: boolean;
+  /** No one can cast spells or use arts: an anti-magic square. */
+  antiMagic?: boolean;
   log?: boolean;
 }
 
@@ -108,6 +110,7 @@ export function createBattle(s: BattleSetup): Battle {
     ...monsterRows(s, allies, 'party', 'ally'),
   ];
   const enemies = monsterRows(s, s.enemies, 'enemy', 'foe');
+  if (s.antiMagic) for (const c of [...party, ...enemies]) if (c.caster) c.caster.canCast = false;
   const b: Battle = {
     data: s.data,
     rng: s.rng,
