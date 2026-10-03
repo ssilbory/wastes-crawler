@@ -159,10 +159,10 @@
     }
   },
   {
-    "id": "pilgrimage-highcairn",
-    "name": "The Pilgrimage to Highcairn",
-    "giver": "sister-berit",
-    "summary": "A pilgrim must reach the hill shrine at Highcairn. See them there safely, and the temple will raise one of your dead.",
+    "id": "corpse-road",
+    "name": "The Corpse-Road",
+    "giver": "necromancer-ysolde",
+    "summary": "A hooded mourner must reach the mortuary at Eastmarch with what she carries. See her there safely, and the crypt will give back one of your dead.",
     "prerequisites": {
       "quests": [],
       "minLevel": 1
@@ -171,10 +171,10 @@
     "objectives": [
       {
         "kind": "escort",
-        "name": "a pilgrim",
+        "name": "a hooded mourner",
         "monster": "peaceful-human",
-        "to": "highcairn",
-        "text": "Bring the pilgrim safely to Highcairn."
+        "to": "eastmarch",
+        "text": "Bring the hooded mourner safely to Eastmarch."
       }
     ],
     "reward": {
@@ -185,10 +185,10 @@
     }
   },
   {
-    "id": "saints-bone",
-    "name": "The Saint's Finger-Bone",
-    "giver": "sister-berit",
-    "summary": "A saint's finger-bone lies among the heaped bones of the lower barrow. Bring it back, and the temple will raise one of your dead.",
+    "id": "barrow-bones",
+    "name": "The Barrow-Bones",
+    "giver": "necromancer-ysolde",
+    "summary": "Ysolde wants a finger-bone from the heaped bones of the lower barrow. Bring it to her, and the crypt will give back one of your dead.",
     "prerequisites": {
       "quests": [],
       "minLevel": 1
@@ -203,8 +203,8 @@
           "x": 2,
           "y": 1
         },
-        "item": "the saint's finger-bone",
-        "text": "Find the saint's finger-bone among the bones of the lower barrow."
+        "item": "a barrow finger-bone",
+        "text": "Take a finger-bone from the heaped bones of the lower barrow."
       }
     ],
     "reward": {
@@ -215,10 +215,10 @@
     }
   },
   {
-    "id": "pilgrimage-westhold",
-    "name": "The Pilgrimage to Westhold",
+    "id": "pilgrimage-highcairn",
+    "name": "The Pilgrimage to the High Cairn",
     "giver": "brother-aldo",
-    "summary": "A pilgrim must reach the temple at Westhold. See them there safely, and the shrine will raise one of your dead.",
+    "summary": "A pilgrim of the god of death must reach the burial cairns at Highcairn. See them there safely, and the mortuary will send back one of your dead.",
     "prerequisites": {
       "quests": [],
       "minLevel": 1
@@ -227,10 +227,10 @@
     "objectives": [
       {
         "kind": "escort",
-        "name": "a pilgrim",
+        "name": "a death-pilgrim",
         "monster": "peaceful-human",
-        "to": "westhold",
-        "text": "Bring the pilgrim safely to Westhold."
+        "to": "highcairn",
+        "text": "Bring the death-pilgrim safely to Highcairn."
       }
     ],
     "reward": {
@@ -244,7 +244,7 @@
     "id": "corpse-thieves",
     "name": "The Corpse-Thieves",
     "giver": "brother-aldo",
-    "summary": "Corpse-thieves are digging up the roadside graves south-east of town. Stop them, and the shrine will raise one of your dead.",
+    "summary": "Corpse-thieves are robbing the god's dead from the roadside graves south-east of town. Stop them, and the mortuary will send back one of your dead.",
     "prerequisites": {
       "quests": [],
       "minLevel": 1
@@ -259,59 +259,6 @@
         },
         "enemies": [["thug-or-militia", "thug-or-militia", "thug-or-militia"]],
         "text": "Stop the corpse-thieves at the graves at 21,10."
-      }
-    ],
-    "reward": {
-      "crowns": 0,
-      "xp": 0,
-      "loot": [],
-      "raise": true
-    }
-  },
-  {
-    "id": "pilgrimage-eastmarch",
-    "name": "The Pilgrimage to Eastmarch",
-    "giver": "father-wend",
-    "summary": "A pilgrim must reach the shrine at Eastmarch. See them there safely, and the hill priest will raise one of your dead.",
-    "prerequisites": {
-      "quests": [],
-      "minLevel": 1
-    },
-    "deadlineDays": 14,
-    "objectives": [
-      {
-        "kind": "escort",
-        "name": "a pilgrim",
-        "monster": "peaceful-human",
-        "to": "eastmarch",
-        "text": "Bring the pilgrim safely to Eastmarch."
-      }
-    ],
-    "reward": {
-      "crowns": 0,
-      "xp": 0,
-      "loot": [],
-      "raise": true
-    }
-  },
-  {
-    "id": "high-cairn",
-    "name": "The High Cairn",
-    "giver": "father-wend",
-    "summary": "Climb to the old cairn above the town and lay a stone on it. Come back, and the hill priest will raise one of your dead.",
-    "prerequisites": {
-      "quests": [],
-      "minLevel": 1
-    },
-    "deadlineDays": 10,
-    "objectives": [
-      {
-        "kind": "scout",
-        "hex": {
-          "col": 17,
-          "row": 1
-        },
-        "text": "Lay a stone on the high cairn at 17,1."
       }
     ],
     "reward": {

@@ -1,10 +1,10 @@
 {
   "innPerPc": 3,
-  "temple": {
+  "healer": {
     "perHp": 10,
-    "cureFrail": 100,
-    "raisePerLevel": 125
+    "cureFrail": 100
   },
+  "raisePerLevel": 125,
   "sellFraction": 0.5,
   "spendingThresholds": {
     "village": 300,

@@ -161,13 +161,15 @@ export function runEconomy(
     else if (worthlessSince === null) worthlessSince = day;
     else if (day - worthlessSince > lock.worthlessDays) flag('loot-worthless', delve);
 
-    // Raise the dead: one by a raising quest if none was taken this month (Raising quests), then
+    // Raise the dead: one by a raising quest if none was taken this month (Raising the dead), then
     // those the purse can pay for. Anyone else is replaced by a roster PC from the tavern, who
     // joins with the lowest XP of any PC in the world (docs/rules-adaptation.md, Towns in Phase
     // 6a). Then rest until everyone is whole: at the inn while the purse allows, then in a made
     // camp outside town, which heals as much for free (Food and Conditions).
+    // Only a town with a crypt or mortuary raises the dead; elsewhere they wait for one.
+    const raiser = data.content.missionGivers.some((g) => g.town === here && g.raises);
     pcs.forEach((p, i) => {
-      if (!p.dead) return;
+      if (!p.dead || !raiser) return;
       if (questDay === null || day - questDay >= month) {
         questDay = day;
         day += sim.raiseQuest.days;
@@ -175,7 +177,7 @@ export function runEconomy(
         Object.assign(p, { dead: false, hp: 1 });
         return;
       }
-      if (pay(rules.temple.raisePerLevel * p.level)) {
+      if (pay(rules.raisePerLevel * p.level)) {
         raised.paid += 1;
         Object.assign(p, { dead: false, hp: 1 });
         return;

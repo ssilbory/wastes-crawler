@@ -19,7 +19,7 @@ import type { BoutStart } from '../../game/world/arena.ts';
 
 const TABS = {
   quests: 'Quests',
-  services: 'Inn and temple',
+  services: 'Inn and healer',
   shop: 'Shop',
   tavern: 'Tavern',
   training: 'Training',

@@ -1,6 +1,6 @@
-// Raising quests (docs/rules-adaptation.md, Raising quests; Sam's call). A temple priest's quests
-// are ordinary quests whose only reward is a free raising of one dead PC. While a PC is dead,
-// coming into a town draws one of its priest's raising quests at random as the offer, and the
+// Raising quests (docs/rules-adaptation.md, Raising the dead; Sam's call). A necromancer's or death
+// priest's quests are ordinary quests whose only reward is a free raising of one dead PC. While a
+// PC is dead, coming into a town draws one of its raiser's quests at random as the offer, and the
 // party can take one at most once a month, counted from the day it was last taken.
 import type { Quest } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';

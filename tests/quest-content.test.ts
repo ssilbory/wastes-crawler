@@ -10,14 +10,12 @@ const content = loadContent();
 describe('quest content', () => {
   it('loads clean givers and quests', () => {
     expect(questReferenceErrors(srd, content)).toEqual([]);
-    expect(content.quests.map((q) => q.reward.xp)).toEqual([3, 2, 2, 3, 3, 0, 0, 0, 0, 0, 0]);
+    expect(content.quests.map((q) => q.reward.xp)).toEqual([3, 2, 2, 3, 3, 0, 0, 0, 0]);
     expect(content.quests.filter((q) => q.reward.raise).map((q) => q.giver)).toEqual([
-      'sister-berit',
-      'sister-berit',
+      'necromancer-ysolde',
+      'necromancer-ysolde',
       'brother-aldo',
       'brother-aldo',
-      'father-wend',
-      'father-wend',
     ]);
   });
 
@@ -88,6 +86,26 @@ describe('quest content', () => {
       'quests/odd: needs itself',
       'quests/loop-b: step 1 is not on passable land',
       'quests/loop-b: needs itself',
+    ]);
+  });
+
+  it('keeps raising to one crypt or mortuary per settlement, none in villages', () => {
+    const ysolde = content.missionGivers.find((g) => g.raises === 'crypt');
+    const raising = content.quests.find((q) => q.reward.raise);
+    if (!ysolde || !raising) throw new Error('missing content');
+    const broken = {
+      ...content,
+      missionGivers: [
+        ...content.missionGivers,
+        { ...ysolde, id: 'second', raises: 'mortuary' as const },
+        { ...ysolde, id: 'hill', town: 'highcairn' },
+      ],
+      quests: [...content.quests, { ...raising, id: 'stray', giver: 'reeve-halda' }],
+    };
+    expect(questReferenceErrors(srd, broken)).toEqual([
+      'missionGivers/second: westhold already raises the dead',
+      'missionGivers/hill: a village has no crypt',
+      "quests/stray: reeve-halda can't raise the dead",
     ]);
   });
 });

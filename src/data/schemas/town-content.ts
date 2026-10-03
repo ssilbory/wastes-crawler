@@ -26,13 +26,14 @@ export type XpTier = z.infer<typeof XpTierSchema>;
 export const TownRulesSchema = z.strictObject({
   /** A night at the inn, per PC (SRD 3.3.1 common lifestyle, 20 sp a week). */
   innPerPc: Crowns,
-  temple: z.strictObject({
+  /** Every settlement's healer. */
+  healer: z.strictObject({
     /** SRD 3.3.1 magical healing of wounds. */
     perHp: Crowns,
     cureFrail: Crowns,
-    /** Raising the dead costs this times the character's level. */
-    raisePerLevel: Crowns,
   }),
+  /** Raising the dead at a crypt or mortuary costs this times the character's level. */
+  raisePerLevel: Crowns,
   /** Gear sells for this fraction of its listed price. */
   sellFraction: z.number().positive().max(1),
   spendingThresholds: z.record(TownSizeSchema, Crowns),

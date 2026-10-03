@@ -6,7 +6,7 @@ import {
   raiseDead,
   raiseListed,
   stayAtInn,
-  templeHeal,
+  healerHeal,
 } from '../../../src/game/world/services.ts';
 import {
   currentTown,
@@ -126,17 +126,17 @@ describe('the inn', () => {
   });
 });
 
-describe('the temple', () => {
+describe('the healer, and the crypt or mortuary', () => {
   it('heals to full for 10 crowns a hit point, adding 1 System Strain', () => {
     const w = westhold();
     const snag = member(w, 'Snag');
     snag.character = { ...snag.character, hp: { max: 8, current: 3 } };
     expect(healListed(data, snag)).toBe(50);
-    expect(templeHeal(w, data, 'm-0')).toEqual({ ok: true });
+    expect(healerHeal(w, data, 'm-0')).toEqual({ ok: true });
     expect(snag.character.hp.current).toBe(8);
     expect(snag.character.strain.value).toBe(1);
     expect(w.purse).toBe(950);
-    expect(templeHeal(w, data, 'm-0')).toEqual({ ok: false, reason: 'Snag is unhurt.' });
+    expect(healerHeal(w, data, 'm-0')).toEqual({ ok: false, reason: 'Snag is unhurt.' });
   });
 
   it('refuses the dead, the strained, and the poor', () => {
@@ -144,17 +144,17 @@ describe('the temple', () => {
     const snag = member(w, 'Snag');
     snag.character = { ...snag.character, hp: { max: 8, current: 3 } };
     snag.dead = true;
-    expect(templeHeal(w, data, 'm-0')).toEqual({ ok: false, reason: 'Snag is dead.' });
+    expect(healerHeal(w, data, 'm-0')).toEqual({ ok: false, reason: 'Snag is dead.' });
     snag.dead = false;
     snag.character = { ...snag.character, strain: { value: 11, broken: false } };
-    expect(templeHeal(w, data, 'm-0')).toEqual({
+    expect(healerHeal(w, data, 'm-0')).toEqual({
       ok: false,
       reason: "Snag can't bear more magical healing.",
     });
     snag.character = { ...snag.character, strain: { value: 0, broken: false } };
     w.purse = 10;
-    expect(templeHeal(w, data, 'm-0')).toEqual({ ok: false, reason: 'That costs 50 crowns.' });
-    expect(() => templeHeal(w, data, 'm-9')).toThrow('no party member m-9');
+    expect(healerHeal(w, data, 'm-0')).toEqual({ ok: false, reason: 'That costs 50 crowns.' });
+    expect(() => healerHeal(w, data, 'm-9')).toThrow('no party member m-9');
   });
 
   it('cures Frailty', () => {
@@ -184,5 +184,14 @@ describe('the temple', () => {
     expect(snag).toMatchObject({ dead: false, frail: false, pendingXp: 0 });
     expect(snag.character).toMatchObject({ xp: 1.5, hp: { current: 1 }, strain: { value: 0 } });
     expect(w.purse).toBe(0);
+    expect(w.log.at(-1)).toContain('Ysolde the Necromancer raises Snag.');
+    // A village has no crypt or mortuary.
+    snag.dead = true;
+    w.purse = 1000;
+    w.position = { col: 17, row: 4 };
+    expect(raiseDead(w, data, 'm-0')).toEqual({
+      ok: false,
+      reason: 'No one in Highcairn raises the dead.',
+    });
   });
 });

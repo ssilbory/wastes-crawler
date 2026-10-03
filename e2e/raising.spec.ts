@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
-// Raising quests: with a PC dead, the temple priest offers a quest whose only reward is raising
-// them, and the temple's own price is halved. The offer and cooldown rules are unit tested.
+// Raising the dead: with a PC dead, Westhold's necromancer offers a quest whose only reward is
+// raising them, and her crypt's own price is halved. The offer and cooldown rules are unit tested.
 const starters = ['snag', 'grukk'].map((n) => `tools/sim/parties/starter/${n}.json`);
 const WORLD_KEY = 'wastes-crawler.world';
 
@@ -28,7 +28,7 @@ async function edit(page: Page, change: string) {
   await page.getByRole('button', { name: 'Continue journey' }).click();
 }
 
-test('the temple priest offers a raising quest, and its reward raises the dead', async ({
+test('the necromancer offers a raising quest, and its reward raises the dead', async ({
   page,
 }, testInfo) => {
   await start(page);
@@ -43,26 +43,28 @@ test('the temple priest offers a raising quest, and its reward raises the dead',
   await page.locator('[data-hex="3,8"]').click();
   await page.getByRole('button', { name: 'Pass the quarter' }).click();
   const log = page.getByRole('region', { name: 'Journey log' });
-  await expect(log).toContainText('Sister Berit has work that would raise the dead');
+  await expect(log).toContainText('Ysolde the Necromancer has work that would raise the dead');
 
   await page.getByRole('button', { name: 'Visit Westhold' }).click();
-  const priest = page.getByRole('region', { name: 'Sister Berit' });
-  await expect(priest).toContainText('Reward: the temple raises one dead PC');
+  const priest = page.getByRole('region', { name: 'Ysolde the Necromancer' });
+  await expect(priest).toContainText('Reward: one dead PC raised');
   await page.screenshot({ path: testInfo.outputPath('raising-offer.png'), fullPage: true });
   await priest.getByRole('button', { name: /^Take on / }).click();
   await expect(log).toContainText('The party takes on');
 
-  // The temple's own price is half what it was: 125 crowns a level.
-  await page.getByRole('tab', { name: 'Inn and temple' }).click();
-  await expect(page.getByRole('button', { name: /^Raise \(/ })).toContainText('125');
+  // The crypt's own price is half what it was: 125 crowns a level.
+  await page.getByRole('tab', { name: 'Inn and healer' }).click();
+  await expect(page.getByRole('region', { name: 'Crypt' })).toContainText(
+    'Raise Snag (125 crowns)',
+  );
 
   // Its step done, the quest's only reward is raising Snag.
   await edit(page, `for (const id in save.quests) save.quests[id].status = 'ready';`);
   await page.getByRole('button', { name: 'Visit Westhold' }).click();
   await page
-    .getByRole('region', { name: 'Sister Berit' })
+    .getByRole('region', { name: 'Ysolde the Necromancer' })
     .getByRole('button', { name: 'Raise Snag' })
     .click();
-  await expect(log).toContainText('Sister Berit raises Snag');
+  await expect(log).toContainText('Ysolde the Necromancer raises Snag');
   await page.screenshot({ path: testInfo.outputPath('raising-done.png'), fullPage: true });
 });

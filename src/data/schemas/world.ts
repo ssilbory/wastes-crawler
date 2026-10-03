@@ -192,7 +192,7 @@ export const WorldSaveSchema = z.strictObject({
   light: LightSchema,
   /** Dungeon captives freed, as "dungeon/level/x,y": each rescue happens once per world. */
   rescues: z.array(z.string()),
-  /** The temple's raising quest on offer, and the day one was last taken (once a month). */
+  /** The raising quest on offer, and the day one was last taken (once a month). */
   raising: RaisingSchema,
   log: z.array(z.string()),
 });

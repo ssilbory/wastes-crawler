@@ -147,7 +147,7 @@ describe('traps (docs/rules-adaptation.md, Dungeon exploration)', () => {
     const w = onTrap();
     only(w, 'Grukk');
     setHp(member(w, 'Grukk'), 1);
-    // The last face draws the temple's raising quest for the dead (raising.ts).
+    // The last face draws the crypt's raising quest for the dead (raising.ts).
     w.rng = scriptedRng([1, 0]);
     springHere(w, sure);
     expect(w.dungeon).toBeNull();

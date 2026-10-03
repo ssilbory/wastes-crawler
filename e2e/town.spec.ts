@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 
-// Phase 6a: the town hub. The inn, temple, shop, tavern, and training work in the browser; the
+// Phase 6a: the town hub. The inn, healer, shop, tavern, and training work in the browser; the
 // rules behind them are covered by unit tests.
 const starters = ['snag', 'grukk', 'lirael'].map((n) => `tools/sim/parties/starter/${n}.json`);
 const WORLD_KEY = 'wastes-crawler.world';
@@ -24,7 +24,7 @@ const purse = async (page: Page) =>
 test('rests at the inn, shops, and changes the party at the tavern', async ({ page }, testInfo) => {
   await startInWesthold(page);
   const start = await purse(page);
-  await page.getByRole('tab', { name: 'Inn and temple' }).click();
+  await page.getByRole('tab', { name: 'Inn and healer' }).click();
   await page.getByRole('button', { name: /^Stay the night \(6 crowns\)$/ }).click();
   expect(await purse(page)).toBe(start - 6);
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(

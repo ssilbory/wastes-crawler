@@ -18,21 +18,17 @@
     "text": "The old hill warden watches the passes for trouble."
   },
   {
-    "id": "sister-berit",
-    "name": "Sister Berit",
+    "id": "necromancer-ysolde",
+    "name": "Ysolde the Necromancer",
     "town": "westhold",
-    "text": "The temple's almoner. She can call the dead back, if the party does the temple a service first."
+    "raises": "crypt",
+    "text": "She keeps the crypt under the old chapel, and she can call the dead back up out of it, for a price or a service."
   },
   {
     "id": "brother-aldo",
     "name": "Brother Aldo",
     "town": "eastmarch",
-    "text": "A road-priest who keeps the shrine by the east gate, and keeps a list of favours owed."
-  },
-  {
-    "id": "father-wend",
-    "name": "Father Wend",
-    "town": "highcairn",
-    "text": "The hill priest. He asks a hard service for a life, but he asks no coin."
+    "raises": "mortuary",
+    "text": "A grey-robed priest of the god of death. His mortuary can send the dead back, if the god is paid, in crowns or in service."
   }
 ]

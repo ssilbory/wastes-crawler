@@ -24,7 +24,7 @@ function mourning(): World {
   member(w, 'Snag').dead = true;
   w.position = WESTHOLD;
   enterTown(w, data, 'westhold');
-  w.raising.offer = 'pilgrimage-highcairn';
+  w.raising.offer = 'corpse-road';
   return w;
 }
 
@@ -33,21 +33,21 @@ const ready = (w: World, id: string) => {
 };
 
 describe('raising quests (docs/rules-adaptation.md, Raising quests)', () => {
-  it('are offered only while a PC is dead, drawn from the town’s priest', () => {
+  it('are offered only while a PC is dead, drawn from the town’s necromancer or death priest', () => {
     const calm = world([]);
     calm.position = WESTHOLD;
     enterTown(calm, data, 'westhold');
     expect(calm.raising.offer).toBeNull();
-    expect(questBoard(calm, data, 'sister-berit')).toEqual([]);
+    expect(questBoard(calm, data, 'necromancer-ysolde')).toEqual([]);
 
     const w = world([1]);
     member(w, 'Snag').dead = true;
     offerRaising(w, data, 'westhold');
-    expect(w.raising.offer).toBe('saints-bone');
+    expect(w.raising.offer).toBe('barrow-bones');
     expect(w.log.at(-1)).toContain(
-      "Sister Berit has work that would raise the dead: The Saint's Finger-Bone.",
+      'Ysolde the Necromancer has work that would raise the dead: The Barrow-Bones.',
     );
-    expect(questBoard(w, data, 'sister-berit').map((q) => q.id)).toEqual(['saints-bone']);
+    expect(questBoard(w, data, 'necromancer-ysolde').map((q) => q.id)).toEqual(['barrow-bones']);
     expect(questBoard(w, data, 'reeve-halda')).toHaveLength(3);
   });
 
@@ -56,55 +56,51 @@ describe('raising quests (docs/rules-adaptation.md, Raising quests)', () => {
     member(w, 'Snag').dead = true;
     offerRaising(w, data, 'westhold');
     offerRaising(w, data, 'westhold');
-    expect(w.raising.offer).toBe('pilgrimage-highcairn');
+    expect(w.raising.offer).toBe('corpse-road');
     offerRaising(w, data, 'eastmarch');
     expect(w.raising.offer).toBe('corpse-thieves');
   });
 
-  it('draws nothing in a town with no priest', () => {
+  it('draws nothing in a village, which has no crypt or mortuary', () => {
     const w = world([]);
     member(w, 'Snag').dead = true;
-    const bare = {
-      ...data,
-      content: { ...data.content, missionGivers: [] },
-    };
-    offerRaising(w, bare, 'westhold');
+    offerRaising(w, data, 'highcairn');
     expect(w.raising.offer).toBeNull();
   });
 
   it('can be taken only as offered, and only while someone is dead', () => {
     const w = mourning();
-    const pilgrimage = questOf(data, 'pilgrimage-highcairn');
-    const bone = questOf(data, 'saints-bone');
+    const pilgrimage = questOf(data, 'corpse-road');
+    const bone = questOf(data, 'barrow-bones');
     expect(cannotAccept(w, data, bone)).toBe('Not on offer.');
-    expect(acceptQuest(w, data, 'saints-bone')).toEqual({ ok: false, reason: 'Not on offer.' });
+    expect(acceptQuest(w, data, 'barrow-bones')).toEqual({ ok: false, reason: 'Not on offer.' });
     member(w, 'Snag').dead = false;
     expect(cannotAccept(w, data, pilgrimage)).toBe('No one in the party is dead.');
-    expect(questBoard(w, data, 'sister-berit')).toEqual([]);
+    expect(questBoard(w, data, 'necromancer-ysolde')).toEqual([]);
     member(w, 'Snag').dead = true;
     expect(cannotAccept(w, data, pilgrimage)).toBeNull();
-    expect(acceptQuest(w, data, 'pilgrimage-highcairn')).toEqual({ ok: true });
-    expect(w.npcs.map((n) => n.name)).toEqual(['a pilgrim']);
+    expect(acceptQuest(w, data, 'corpse-road')).toEqual({ ok: true });
+    expect(w.npcs.map((n) => n.name)).toEqual(['a hooded mourner']);
     expect(w.raising).toEqual({ offer: null, accepted: w.day });
     expect(cannotAccept(w, data, pilgrimage)).toBe('Already taken.');
-    expect(questBoard(w, data, 'sister-berit').map((q) => q.id)).toEqual(['pilgrimage-highcairn']);
+    expect(questBoard(w, data, 'necromancer-ysolde').map((q) => q.id)).toEqual(['corpse-road']);
   });
 
   it('raise one chosen dead PC and pay nothing else', () => {
     const w = mourning();
-    acceptQuest(w, data, 'pilgrimage-highcairn');
+    acceptQuest(w, data, 'corpse-road');
     member(w, 'Grukk').dead = true;
     Object.assign(member(w, 'Snag'), { pendingXp: 2 });
-    ready(w, 'pilgrimage-highcairn');
+    ready(w, 'corpse-road');
     const purse = w.purse;
-    expect(turnInQuest(w, data, 'pilgrimage-highcairn')).toEqual({
+    expect(turnInQuest(w, data, 'corpse-road')).toEqual({
       ok: false,
       reason: 'Choose a dead PC to raise.',
     });
-    expect(turnInQuest(w, data, 'pilgrimage-highcairn', member(w, 'Lirael').id)).toMatchObject({
+    expect(turnInQuest(w, data, 'corpse-road', member(w, 'Lirael').id)).toMatchObject({
       ok: false,
     });
-    expect(turnInQuest(w, data, 'pilgrimage-highcairn', member(w, 'Snag').id)).toEqual({
+    expect(turnInQuest(w, data, 'corpse-road', member(w, 'Snag').id)).toEqual({
       ok: true,
     });
     expect(member(w, 'Snag')).toMatchObject({ dead: false, pendingXp: 0 });
@@ -113,25 +109,25 @@ describe('raising quests (docs/rules-adaptation.md, Raising quests)', () => {
     expect(member(w, 'Grukk').character.xp).toBe(0);
     expect(w.purse).toBe(purse);
     expect(w.loot).toEqual([]);
-    expect(w.log.at(-1)).toContain('Sister Berit raises Snag for The Pilgrimage to Highcairn.');
-    expect(standing(w, questOf(data, 'pilgrimage-highcairn'))).toBeUndefined();
+    expect(w.log.at(-1)).toContain('Ysolde the Necromancer raises Snag for The Corpse-Road.');
+    expect(standing(w, questOf(data, 'corpse-road'))).toBeUndefined();
   });
 
   it('come round at most once a month, counted from accepting', () => {
     const w = mourning();
-    acceptQuest(w, data, 'pilgrimage-highcairn');
+    acceptQuest(w, data, 'corpse-road');
     // One under way blocks a new draw, even from another priest.
     w.position = EASTMARCH;
     enterTown(w, data, 'eastmarch');
     expect(w.raising.offer).toBeNull();
-    ready(w, 'pilgrimage-highcairn');
+    ready(w, 'corpse-road');
     w.day += 30;
     offerRaising(w, data, 'eastmarch');
     expect(w.raising.offer).toBeNull();
     w.day -= 30;
     // Other quests under way don't matter.
     w.quests['bandit-camp'] = { status: 'active', step: 0, acceptedDay: w.day };
-    w.quests['pilgrimage-highcairn'] = { status: 'failed', step: 0, acceptedDay: w.day };
+    w.quests['corpse-road'] = { status: 'failed', step: 0, acceptedDay: w.day };
     w.day += 29;
     offerRaising(w, data, 'eastmarch');
     expect(w.raising.offer).toBeNull();
@@ -143,17 +139,17 @@ describe('raising quests (docs/rules-adaptation.md, Raising quests)', () => {
 
   it('can be taken again once done or failed', () => {
     const w = mourning();
-    w.quests['pilgrimage-highcairn'] = { status: 'done', step: 1, acceptedDay: 0 };
-    expect(cannotAccept(w, data, questOf(data, 'pilgrimage-highcairn'))).toBeNull();
+    w.quests['corpse-road'] = { status: 'done', step: 1, acceptedDay: 0 };
+    expect(cannotAccept(w, data, questOf(data, 'corpse-road'))).toBeNull();
     expect(standing(w, questOf(data, 'bandit-camp'))).toBeUndefined();
   });
 
   it('describe their reward', () => {
-    expect(rewardText(questOf(data, 'high-cairn'))).toBe('the temple raises one dead PC');
+    expect(rewardText(questOf(data, 'barrow-bones'))).toBe('one dead PC raised');
   });
 
   it('may pay nothing but the raising', () => {
-    const q = questOf(data, 'high-cairn');
+    const q = questOf(data, 'barrow-bones');
     expect(QuestSchema.safeParse(q).success).toBe(true);
     const greedy = { ...q, reward: { ...q.reward, crowns: 5 } };
     expect(QuestSchema.safeParse(greedy).error?.issues[0]?.message).toBe(
@@ -163,7 +159,7 @@ describe('raising quests (docs/rules-adaptation.md, Raising quests)', () => {
 
   it('save the offer and the last day one was taken, and older saves start with none', () => {
     const w = mourning();
-    acceptQuest(w, data, 'pilgrimage-highcairn');
+    acceptQuest(w, data, 'corpse-road');
     const back = parseWorld(serializeWorld(w), data);
     expect(back.ok && back.world.raising).toEqual(w.raising);
     const save = JSON.parse(serializeWorld(w));

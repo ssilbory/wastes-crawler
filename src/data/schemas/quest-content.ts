@@ -78,7 +78,7 @@ export const QuestSchema = z.strictObject({
       /** SRD 2.7.0: three for an average mission. */
       xp: z.number().min(0).multipleOf(0.5),
       loot: z.array(LootDiceSchema),
-      /** A raising quest: the temple raises one dead PC for free, and pays nothing else. */
+      /** A raising quest: the giver raises one dead PC for free, and pays nothing else. */
       raise: z.literal(true).optional(),
     })
     .refine((r) => !r.raise || (r.crowns === 0 && r.xp === 0 && r.loot.length === 0), {
@@ -93,5 +93,7 @@ export const MissionGiverSchema = z.strictObject({
   name: z.string().min(1),
   town: IdSchema,
   text: z.string().min(1),
+  /** A necromancer's crypt or a death priest's mortuary: raises the dead and gives raising quests. */
+  raises: z.enum(['crypt', 'mortuary']).optional(),
 });
 export type MissionGiver = z.infer<typeof MissionGiverSchema>;

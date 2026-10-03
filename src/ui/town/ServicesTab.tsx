@@ -2,10 +2,11 @@ import {
   cureFrail,
   healListed,
   innListed,
+  healerHeal,
   raiseDead,
   raiseListed,
+  raiserHere,
   stayAtInn,
-  templeHeal,
 } from '../../game/world/services.ts';
 import { exchangeLoot } from '../../game/world/shop.ts';
 import { priceHere } from '../../game/world/town.ts';
@@ -18,6 +19,8 @@ export function ServicesTab(props: { world: World; act: Act }) {
   const w = props.world;
   const price = (listed: number) => crowns(priceHere(w, data, listed));
   const rules = data.content.townRules;
+  const raiser = raiserHere(w, data);
+  const dead = w.members.filter((m) => m.dead);
   return (
     <>
       <section class="panel" aria-label="Inn">
@@ -46,9 +49,9 @@ export function ServicesTab(props: { world: World; act: Act }) {
           Sell the loot
         </button>
       </section>
-      <section class="panel" aria-label="Temple">
-        <h2>Temple</h2>
-        <table class="temple">
+      <section class="panel" aria-label="Healer">
+        <h2>Healer</h2>
+        <table class="healer">
           <tbody>
             {w.members.map((m) => {
               const c = m.character;
@@ -62,7 +65,7 @@ export function ServicesTab(props: { world: World; act: Act }) {
                     {!m.dead && c.hp.current < c.hp.max && (
                       <button
                         type="button"
-                        onClick={() => props.act(() => templeHeal(w, data, m.id))}
+                        onClick={() => props.act(() => healerHeal(w, data, m.id))}
                       >
                         Heal ({price(healListed(data, m))})
                       </button>
@@ -72,15 +75,7 @@ export function ServicesTab(props: { world: World; act: Act }) {
                         type="button"
                         onClick={() => props.act(() => cureFrail(w, data, m.id))}
                       >
-                        Cure Frailty ({price(rules.temple.cureFrail)})
-                      </button>
-                    )}
-                    {m.dead && (
-                      <button
-                        type="button"
-                        onClick={() => props.act(() => raiseDead(w, data, m.id))}
-                      >
-                        Raise ({price(raiseListed(data, m))})
+                        Cure Frailty ({price(rules.healer.cureFrail)})
                       </button>
                     )}
                   </td>
@@ -90,6 +85,22 @@ export function ServicesTab(props: { world: World; act: Act }) {
           </tbody>
         </table>
       </section>
+      {raiser && (
+        <section class="panel" aria-label={raiser.raises === 'crypt' ? 'Crypt' : 'Mortuary'}>
+          <h2>{raiser.raises === 'crypt' ? 'Crypt' : 'Mortuary'}</h2>
+          <p class="hint">{raiser.text}</p>
+          {dead.length === 0 && <p class="hint">No one in the party is dead.</p>}
+          {dead.map((m) => (
+            <button
+              key={m.id}
+              type="button"
+              onClick={() => props.act(() => raiseDead(w, data, m.id))}
+            >
+              Raise {m.character.name} ({price(raiseListed(data, m))})
+            </button>
+          ))}
+        </section>
+      )}
     </>
   );
 }

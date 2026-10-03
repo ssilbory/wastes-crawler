@@ -23,19 +23,19 @@
   align-content: start;
 }
 
-.temple {
+.healer {
   width: 100%;
   border-collapse: collapse;
 }
 
-.temple th,
-.temple td {
+.healer th,
+.healer td {
   text-align: left;
   padding: 4px 6px;
   border-top: 1px solid var(--line);
 }
 
-.temple .actions {
+.healer .actions {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;

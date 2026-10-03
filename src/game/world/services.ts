@@ -1,7 +1,8 @@
-// The inn and the temple (docs/rules-adaptation.md, Towns in Phase 6a). Inn: SRD 3.3.1's common
-// lifestyle by the night. Temple: SRD 3.3.1 magical healing, which adds System Strain like any
-// magical healing (vendor/wwn-srd/2.0 The Rules of the Game/2.5.0, 2.5.2); curing Frailty and
-// raising the dead are house prices.
+// The inn, the healer, and the crypt or mortuary (docs/rules-adaptation.md, Towns in Phase 6a and
+// Raising the dead). Inn: SRD 3.3.1's common lifestyle by the night. Healer: SRD 3.3.1 magical
+// healing, which adds System Strain like any magical healing (vendor/wwn-srd/2.0 The Rules of the
+// Game/2.5.0, 2.5.2); curing Frailty and raising the dead are house prices.
+import type { MissionGiver } from '../../data/schemas/index.ts';
 import { addStrain, fullRest } from '../../rules/strain.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
@@ -48,12 +49,18 @@ export function stayAtInn(w: World, data: GameData): TownResult {
 }
 
 const levelOf = (data: GameData, m: Member) => characterSheet(m.character, data).level;
-const rules = (data: GameData) => data.content.townRules.temple;
+const rules = (data: GameData) => data.content.townRules.healer;
 
 export const healListed = (data: GameData, m: Member) =>
   (m.character.hp.max - m.character.hp.current) * rules(data).perHp;
 export const raiseListed = (data: GameData, m: Member) =>
-  levelOf(data, m) * rules(data).raisePerLevel;
+  levelOf(data, m) * data.content.townRules.raisePerLevel;
+
+/** The town's necromancer or death priest, if it has one; villages never do. */
+export function raiserHere(w: World, data: GameData): MissionGiver | undefined {
+  const town = townHere(w, data).id;
+  return data.content.missionGivers.find((g) => g.town === town && g.raises);
+}
 
 function member(w: World, id: string): Member {
   const m = w.members.find((x) => x.id === id);
@@ -62,7 +69,7 @@ function member(w: World, id: string): Member {
 }
 
 /** Heals a living member to full in one application, which adds 1 System Strain. */
-export function templeHeal(w: World, data: GameData, id: string): TownResult {
+export function healerHeal(w: World, data: GameData, id: string): TownResult {
   const m = member(w, id);
   const c = m.character;
   if (m.dead) return no(`${c.name} is dead.`);
@@ -77,7 +84,7 @@ export function templeHeal(w: World, data: GameData, id: string): TownResult {
     strain: { value: outcome.state.strain, broken: outcome.state.broken },
   };
   setHp(m, c.hp.max);
-  note(w, `The temple heals ${c.name}.`);
+  note(w, `The healer heals ${c.name}.`);
   return OK;
 }
 
@@ -87,7 +94,7 @@ export function cureFrail(w: World, data: GameData, id: string): TownResult {
   const paid = pay(w, data, rules(data).cureFrail);
   if (!paid.ok) return paid;
   m.frail = false;
-  note(w, `The temple cures ${m.character.name}'s Frailty.`);
+  note(w, `The healer cures ${m.character.name}'s Frailty.`);
   return OK;
 }
 
@@ -95,10 +102,12 @@ export function cureFrail(w: World, data: GameData, id: string): TownResult {
 export function raiseDead(w: World, data: GameData, id: string): TownResult {
   const m = member(w, id);
   if (!m.dead) return no(`${m.character.name} isn't dead.`);
+  const raiser = raiserHere(w, data);
+  if (!raiser) return no(`No one in ${townHere(w, data).name} raises the dead.`);
   const paid = pay(w, data, raiseListed(data, m));
   if (!paid.ok) return paid;
   revive(m);
-  note(w, `The temple raises ${m.character.name}.`);
+  note(w, `${raiser.name} raises ${m.character.name}.`);
   return OK;
 }
 

@@ -4,7 +4,8 @@ import type { ContentData, SrdData } from './schemas/index.ts';
 
 /**
  * Quests name real givers, towns, monsters, and earlier quests; their hexes are on passable land;
- * an escort is only ever a first step; and no quest needs itself, directly or not.
+ * an escort is only ever a first step; and no quest needs itself, directly or not. A settlement has
+ * at most one crypt or mortuary, and a village has none; only they give raising quests.
  */
 export function questReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const errors: string[] = [];
@@ -19,12 +20,23 @@ export function questReferenceErrors(srd: SrdData, content: ContentData): string
     const t = glyph === undefined ? undefined : glyphs.get(glyph);
     return t !== undefined && t.movement !== 'impassable';
   };
+  const sites = new Map(content.regions.flatMap((r) => r.sites.map((s) => [s.id, s])));
+  const raisers = new Set<string>();
   for (const g of content.missionGivers) {
     if (!towns.has(g.town)) errors.push(`missionGivers/${g.id}: unknown town ${g.town}`);
+    if (!g.raises) continue;
+    if (sites.get(g.town)?.size === 'village')
+      errors.push(`missionGivers/${g.id}: a village has no ${g.raises}`);
+    if (raisers.has(g.town))
+      errors.push(`missionGivers/${g.id}: ${g.town} already raises the dead`);
+    raisers.add(g.town);
   }
+  const raising = new Set(content.missionGivers.filter((g) => g.raises).map((g) => g.id));
   for (const q of content.quests) {
     const where = `quests/${q.id}`;
     if (!givers.has(q.giver)) errors.push(`${where}: unknown giver ${q.giver}`);
+    else if (q.reward.raise && !raising.has(q.giver))
+      errors.push(`${where}: ${q.giver} can't raise the dead`);
     for (const p of q.prerequisites.quests)
       if (!quests.has(p)) errors.push(`${where}: unknown prerequisite ${p}`);
     q.objectives.forEach((o, i) => {
