@@ -10,11 +10,13 @@ import {
 } from '../../game/character/creation.ts';
 import { previewSheet } from '../../game/character/derived.ts';
 import { exportCharacter, importCharacter } from '../../game/character/io.ts';
+import { backgroundOpenTo } from '../../game/character/people.ts';
 import type { AttributeScores } from '../../rules/attributes.ts';
 import { AttributesStep, type DraftArray } from './AttributesStep.tsx';
 import { BackgroundStep } from './BackgroundStep.tsx';
 import { data, freshRng } from './data.ts';
 import { ClassStep, FreeSkillStep, IdentityStep } from './OtherSteps.tsx';
+import { PeopleStep } from './PeopleStep.tsx';
 import { CharacterSheet, PreviewSheet } from './Sheet.tsx';
 
 function toArray(draft: DraftArray): AttributeScores | null {
@@ -103,6 +105,17 @@ export function App() {
       ) : (
         <main class="steps">
           <div class="column">
+            <PeopleStep
+              people={choices.people}
+              lineage={choices.lineage}
+              status={ev.steps.people}
+              onChange={(people, lineage) => {
+                // Drop a background the new people can't take.
+                const bg = data.content.backgrounds.find((b) => b.id === choices.background?.id);
+                const keep = bg !== undefined && backgroundOpenTo(bg, people);
+                update({ people, lineage, ...(keep ? {} : { background: null }) });
+              }}
+            />
             <AttributesStep
               draft={draft}
               status={ev.steps.attributes}

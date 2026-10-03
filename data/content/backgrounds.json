@@ -134,7 +134,8 @@
         "kind": "skill",
         "skill": "know"
       }
-    ]
+    ],
+    "peoples": ["goblin", "orc", "beastman", "gnome"]
   },
   {
     "id": "raider",
@@ -271,7 +272,8 @@
         "kind": "skill",
         "skill": "work"
       }
-    ]
+    ],
+    "peoples": ["goblin", "orc", "elf", "beastman", "gnome"]
   },
   {
     "id": "shrine-keeper",
@@ -408,6 +410,283 @@
       {
         "kind": "skill",
         "skill": "shoot"
+      }
+    ]
+  },
+  {
+    "id": "outrider",
+    "name": "Outrider",
+    "description": "You carried word between the scattered camps at a gallop, scouting ahead of the herds and anything hunting them.",
+    "freeSkill": "survive",
+    "peoples": ["centaur"],
+    "growth": [
+      {
+        "kind": "attribute",
+        "amount": 1,
+        "pool": "any"
+      },
+      {
+        "kind": "attribute",
+        "amount": 2,
+        "pool": "physical"
+      },
+      {
+        "kind": "attribute",
+        "amount": 2,
+        "pool": "physical"
+      },
+      {
+        "kind": "attribute",
+        "amount": 2,
+        "pool": "mental"
+      },
+      {
+        "kind": "skill",
+        "skill": "notice"
+      },
+      {
+        "kind": "any-skill"
+      }
+    ],
+    "learning": [
+      {
+        "kind": "skill",
+        "skill": "notice"
+      },
+      {
+        "kind": "skill",
+        "skill": "survive"
+      },
+      {
+        "kind": "skill",
+        "skill": "shoot"
+      },
+      {
+        "kind": "skill",
+        "skill": "exert"
+      },
+      {
+        "kind": "skill",
+        "skill": "sneak"
+      },
+      {
+        "kind": "skill",
+        "skill": "connect"
+      },
+      {
+        "kind": "any-combat"
+      },
+      {
+        "kind": "skill",
+        "skill": "trade"
+      }
+    ]
+  },
+  {
+    "id": "warden",
+    "name": "Warden",
+    "description": "You kept watch over one of the last green places in the wastes, a grove, a spring, or a ford, and turned back whatever came to spoil it.",
+    "freeSkill": "shoot",
+    "peoples": ["elf", "centaur"],
+    "growth": [
+      {
+        "kind": "attribute",
+        "amount": 1,
+        "pool": "any"
+      },
+      {
+        "kind": "attribute",
+        "amount": 2,
+        "pool": "physical"
+      },
+      {
+        "kind": "attribute",
+        "amount": 2,
+        "pool": "physical"
+      },
+      {
+        "kind": "attribute",
+        "amount": 2,
+        "pool": "mental"
+      },
+      {
+        "kind": "skill",
+        "skill": "survive"
+      },
+      {
+        "kind": "any-skill"
+      }
+    ],
+    "learning": [
+      {
+        "kind": "skill",
+        "skill": "shoot"
+      },
+      {
+        "kind": "skill",
+        "skill": "sneak"
+      },
+      {
+        "kind": "skill",
+        "skill": "survive"
+      },
+      {
+        "kind": "skill",
+        "skill": "notice"
+      },
+      {
+        "kind": "skill",
+        "skill": "heal"
+      },
+      {
+        "kind": "skill",
+        "skill": "know"
+      },
+      {
+        "kind": "any-combat"
+      },
+      {
+        "kind": "skill",
+        "skill": "lead"
+      }
+    ]
+  },
+  {
+    "id": "pit-fighter",
+    "name": "Pit-fighter",
+    "description": "You fought for coin and crowds in the war camps’ fighting pits, and you learned to put on a show while you won.",
+    "freeSkill": "punch",
+    "peoples": ["orc", "beastman"],
+    "growth": [
+      {
+        "kind": "attribute",
+        "amount": 1,
+        "pool": "any"
+      },
+      {
+        "kind": "attribute",
+        "amount": 2,
+        "pool": "physical"
+      },
+      {
+        "kind": "attribute",
+        "amount": 2,
+        "pool": "physical"
+      },
+      {
+        "kind": "attribute",
+        "amount": 2,
+        "pool": "mental"
+      },
+      {
+        "kind": "skill",
+        "skill": "exert"
+      },
+      {
+        "kind": "any-skill"
+      }
+    ],
+    "learning": [
+      {
+        "kind": "any-combat"
+      },
+      {
+        "kind": "skill",
+        "skill": "punch"
+      },
+      {
+        "kind": "skill",
+        "skill": "exert"
+      },
+      {
+        "kind": "skill",
+        "skill": "perform"
+      },
+      {
+        "kind": "skill",
+        "skill": "convince"
+      },
+      {
+        "kind": "skill",
+        "skill": "notice"
+      },
+      {
+        "kind": "skill",
+        "skill": "stab"
+      },
+      {
+        "kind": "skill",
+        "skill": "connect"
+      }
+    ]
+  },
+  {
+    "id": "hedge-scholar",
+    "name": "Hedge-scholar",
+    "description": "You copied, hoarded, and puzzled over what writing survived the war, and sold what you learned to anyone who asked the right questions.",
+    "freeSkill": "know",
+    "peoples": ["elf", "gnome"],
+    "growth": [
+      {
+        "kind": "attribute",
+        "amount": 1,
+        "pool": "any"
+      },
+      {
+        "kind": "attribute",
+        "amount": 2,
+        "pool": "mental"
+      },
+      {
+        "kind": "attribute",
+        "amount": 2,
+        "pool": "mental"
+      },
+      {
+        "kind": "attribute",
+        "amount": 2,
+        "pool": "physical"
+      },
+      {
+        "kind": "skill",
+        "skill": "know"
+      },
+      {
+        "kind": "any-skill"
+      }
+    ],
+    "learning": [
+      {
+        "kind": "skill",
+        "skill": "know"
+      },
+      {
+        "kind": "skill",
+        "skill": "magic"
+      },
+      {
+        "kind": "skill",
+        "skill": "heal"
+      },
+      {
+        "kind": "skill",
+        "skill": "craft"
+      },
+      {
+        "kind": "skill",
+        "skill": "notice"
+      },
+      {
+        "kind": "skill",
+        "skill": "convince"
+      },
+      {
+        "kind": "skill",
+        "skill": "administer"
+      },
+      {
+        "kind": "skill",
+        "skill": "connect"
       }
     ]
   }

@@ -16,6 +16,8 @@ export const CharacterSchema = z.strictObject({
   name: z.string().trim().min(1).max(60),
   goal: z.string().max(200),
   people: IdSchema,
+  /** Required for peoples that have lineages. */
+  lineage: IdSchema.optional(),
   background: IdSchema,
   attributes: z.strictObject({
     /** Scores from the standard array, before any adjustment. */

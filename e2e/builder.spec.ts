@@ -15,6 +15,7 @@ test('builds, exports, and re-imports a Goblin Warrior', async ({ page }, testIn
     ['Wisdom', '9'],
     ['Charisma', '7'],
   ];
+  await select('People', 'Goblin');
   for (const [attr, value] of array) await select(attr as string, value as string);
 
   await select('Background', 'Raider');

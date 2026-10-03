@@ -8,8 +8,15 @@ const content = loadContent();
 describe('data/content', () => {
   it('validates and references only existing SRD skills', () => {
     expect(contentReferenceErrors(srd, content)).toEqual([]);
-    expect(content.peoples.map((p) => p.id)).toEqual(['goblin']);
-    expect(content.backgrounds).toHaveLength(6);
+    expect(content.peoples.map((p) => p.id)).toEqual([
+      'goblin',
+      'orc',
+      'elf',
+      'centaur',
+      'beastman',
+      'gnome',
+    ]);
+    expect(content.backgrounds).toHaveLength(10);
   });
 
   it('gives Goblins +2 Dex, +1 Int, and -2 Str', () => {
@@ -38,5 +45,22 @@ describe('data/content', () => {
         expect.stringMatching(/backgrounds: duplicate id/),
       ]),
     );
+  });
+
+  it('reports unknown and unserved peoples and duplicate lineages', () => {
+    const [goblin, , , centaur] = content.peoples;
+    const [bg] = content.backgrounds;
+    if (!goblin || !centaur?.lineages || !bg) throw new Error('missing content');
+    const [deer] = centaur.lineages;
+    if (!deer) throw new Error('no lineages');
+    const broken = {
+      peoples: [goblin, { ...centaur, lineages: [deer, deer] }],
+      backgrounds: [{ ...bg, peoples: ['goblin', 'dwarf'] }],
+    };
+    expect(contentReferenceErrors(srd, broken)).toEqual([
+      'backgrounds/scavenger: unknown people dwarf',
+      'peoples/centaur: no background is open to it',
+      'peoples/centaur lineages: duplicate id deer',
+    ]);
   });
 });

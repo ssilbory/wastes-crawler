@@ -7,12 +7,23 @@ const contentBase = {
   description: z.string().min(1),
 };
 
+const Modifiers = z.partialRecord(AttributeSchema, z.int().min(-4).max(4));
+
+/** A people's sub-type, such as a centaur's animal half; its modifiers add to the people's. */
+export const LineageSchema = z.strictObject({
+  ...contentBase,
+  attributeModifiers: Modifiers,
+});
+export type Lineage = z.infer<typeof LineageSchema>;
+
 /** A playable people; see the Peoples rules in docs/rules-adaptation.md. */
 export const PeopleSchema = z.strictObject({
   ...contentBase,
   /** Added to generated scores; the result stays within 3–18. */
-  attributeModifiers: z.partialRecord(AttributeSchema, z.int().min(-4).max(4)),
+  attributeModifiers: Modifiers,
   size: z.enum(['small', 'standard', 'large']),
+  /** When present, every member must belong to one lineage. */
+  lineages: z.array(LineageSchema).min(2).optional(),
 });
 export type People = z.infer<typeof PeopleSchema>;
 
@@ -44,6 +55,8 @@ export type GrowthEntry = z.infer<typeof GrowthEntrySchema>;
 export const BackgroundSchema = z.strictObject({
   ...contentBase,
   freeSkill: IdSchema,
+  /** The peoples who may take this background; absent means every people. */
+  peoples: z.array(IdSchema).min(1).optional(),
   /** Rolled on a d6. */
   growth: z.array(GrowthEntrySchema).length(6),
   /** Rolled on a d8, or picked twice. */

@@ -15,6 +15,7 @@ function goblinWarrior(): Character {
   const r = finishCharacter(
     {
       ...emptyChoices(),
+      people: 'goblin',
       array: { str: 14, dex: 12, con: 11, int: 10, wis: 9, cha: 7 },
       background: { id: 'raider', choice: { mode: 'pick', picks: [{ index: 1 }, { index: 2 }] } },
       classId: 'full-warrior',
@@ -38,6 +39,7 @@ describe('characterSheet', () => {
       attackBonus: 1,
       saves: { physical: 15, evasion: 14, mental: 15, luck: 15 },
       strainMax: 11,
+      size: 'small',
     });
   });
 });
@@ -53,6 +55,7 @@ describe('previewSheet', () => {
     });
     const withArray = {
       ...empty,
+      people: 'goblin',
       array: { str: 14, dex: 12, con: 11, int: 10, wis: 9, cha: 7 },
       classId: 'full-warrior',
     };

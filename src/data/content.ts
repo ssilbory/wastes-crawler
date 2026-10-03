@@ -25,7 +25,25 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
       (e, i) => e.kind === 'skill' && check(`backgrounds/${b.id} learning ${i + 1}`, e.skill),
     );
   }
-  for (const [name, list] of Object.entries(content)) {
+  const peoples = new Set(content.peoples.map((p) => p.id));
+  for (const b of content.backgrounds) {
+    for (const p of b.peoples ?? []) {
+      if (!peoples.has(p)) errors.push(`backgrounds/${b.id}: unknown people ${p}`);
+    }
+  }
+  for (const p of content.peoples) {
+    if (!content.backgrounds.some((b) => !b.peoples || b.peoples.includes(p.id))) {
+      errors.push(`peoples/${p.id}: no background is open to it`);
+    }
+  }
+  const lists: [string, { id: string }[]][] = [
+    ...Object.entries(content),
+    ...content.peoples.map((p): [string, { id: string }[]] => [
+      `peoples/${p.id} lineages`,
+      p.lineages ?? [],
+    ]),
+  ];
+  for (const [name, list] of lists) {
     const ids = list.map((r) => r.id);
     for (const id of new Set(ids.filter((id, i) => ids.indexOf(id) !== i))) {
       errors.push(`${name}: duplicate id ${id}`);

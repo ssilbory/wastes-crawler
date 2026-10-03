@@ -75,7 +75,9 @@ export function PreviewSheet(props: { preview: Preview; skills: Skills }) {
 export function CharacterSheet(props: { character: Character }) {
   const c = props.character;
   const sheet = characterSheet(c, data);
-  const people = data.content.peoples.find((p) => p.id === c.people)?.name ?? c.people;
+  const peopleRecord = data.content.peoples.find((p) => p.id === c.people);
+  const lineage = peopleRecord?.lineages?.find((l) => l.id === c.lineage)?.name;
+  const people = `${peopleRecord?.name ?? c.people}${lineage ? ` (${lineage})` : ''}`;
   const background = data.content.backgrounds.find((b) => b.id === c.background)?.name;
   return (
     <section class="sheet final" data-testid="character-sheet" aria-label="Character sheet">
@@ -102,6 +104,10 @@ export function CharacterSheet(props: { character: Character }) {
           <dd>
             {c.strain.value}/{sheet.strainMax}
           </dd>
+        </div>
+        <div>
+          <dt>Size</dt>
+          <dd>{sheet.size}</dd>
         </div>
         <div>
           <dt>XP</dt>

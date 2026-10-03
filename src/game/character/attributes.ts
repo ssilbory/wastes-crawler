@@ -1,6 +1,6 @@
 // vendor/wwn-srd/1.0 Character Creation/1.1.0 Attributes.md and 1.3.0 Backgrounds.md (1.3.1);
-// Goblin modifiers and the array-only rule: docs/rules-adaptation.md.
-import type { Attribute, People } from '../../data/schemas/index.ts';
+// People and lineage modifiers and the array-only rule: docs/rules-adaptation.md.
+import type { Attribute } from '../../data/schemas/index.ts';
 import type { AttributeScores } from '../../rules/attributes.ts';
 
 export const ATTRIBUTES: readonly Attribute[] = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
@@ -24,18 +24,15 @@ export function addAdjustments(scores: AttributeScores, adj: Adjustments): Attri
   return out;
 }
 
-/** Applies a people's modifiers within 3–18, returning what was actually applied. */
-export function applyPeople(
+/** Applies a people's (and lineage's) modifiers within 3–18, returning what was actually applied. */
+export function applyPeopleModifiers(
   base: AttributeScores,
-  people: People,
+  modifiers: Adjustments,
 ): { scores: AttributeScores; applied: Adjustments } {
   const scores = { ...base };
   const applied: Adjustments = {};
   for (const a of ATTRIBUTES) {
-    const target = Math.min(
-      MAX_SCORE,
-      Math.max(MIN_SCORE, base[a] + (people.attributeModifiers[a] ?? 0)),
-    );
+    const target = Math.min(MAX_SCORE, Math.max(MIN_SCORE, base[a] + (modifiers[a] ?? 0)));
     if (target !== base[a]) applied[a] = target - base[a];
     scores[a] = target;
   }

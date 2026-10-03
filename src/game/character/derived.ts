@@ -1,10 +1,11 @@
-import type { Attribute, Character } from '../../data/schemas/index.ts';
+import type { Attribute, Character, People } from '../../data/schemas/index.ts';
 import { attributeModifier, type AttributeScores } from '../../rules/attributes.ts';
 import { characterLevel, progressionRow, totalAttackBonus } from '../../rules/progression.ts';
 import { pcSaveTarget, type SaveType } from '../../rules/saves.ts';
 import { addAdjustments, ATTRIBUTES } from './attributes.ts';
 import { findProgression, progressionLookup, type GameData } from './context.ts';
 import type { Evaluation } from './creation.ts';
+import { findPeople } from './people.ts';
 
 export interface Sheet {
   scores: AttributeScores;
@@ -14,6 +15,7 @@ export interface Sheet {
   saves: Record<SaveType, number>;
   /** System Strain maximum: the Constitution score. */
   strainMax: number;
+  size: People['size'];
 }
 
 export function finalScores(c: Character): AttributeScores {
@@ -24,6 +26,8 @@ export function finalScores(c: Character): AttributeScores {
 }
 
 export function characterSheet(c: Character, data: GameData): Sheet {
+  const people = findPeople(data, c.people);
+  if (!people) throw new Error(`unknown people ${c.people}`);
   const scores = finalScores(c);
   const level = characterLevel(c.classes);
   const save = (t: SaveType) => pcSaveTarget(level, scores, t);
@@ -41,6 +45,7 @@ export function characterSheet(c: Character, data: GameData): Sheet {
       luck: save('luck'),
     },
     strainMax: scores.con,
+    size: people.size,
   };
 }
 

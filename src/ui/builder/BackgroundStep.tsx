@@ -6,12 +6,12 @@ import {
   type PickedEntry,
   type StepStatus,
 } from '../../game/character/creation.ts';
+import { backgroundOpenTo } from '../../game/character/people.ts';
 import type { Skills } from '../../game/character/skills.ts';
 import { BackgroundRolls } from './BackgroundRolls.tsx';
 import { data, entryLabel, skillName } from './data.ts';
 import { EntrySkillChoice } from './EntryChoice.tsx';
-import { Select } from './Field.tsx';
-import { Step } from './Field.tsx';
+import { Select, Step } from './Field.tsx';
 
 type Table = 'growth' | 'learning';
 
@@ -41,11 +41,13 @@ export function BackgroundStep(props: {
   };
 
   return (
-    <Step title="2. Background" status={props.status}>
+    <Step title="3. Background" status={props.status}>
       <Select
         label="Background"
         value={chosen?.id ?? ''}
-        options={data.content.backgrounds.map((b) => ({ value: b.id, label: b.name }))}
+        options={data.content.backgrounds
+          .filter((b) => props.choices.people === '' || backgroundOpenTo(b, props.choices.people))
+          .map((b) => ({ value: b.id, label: b.name }))}
         onChange={(id) =>
           props.onChange(id === '' ? null : { id, choice: { mode: 'pick', picks: [] } })
         }

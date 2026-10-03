@@ -14,7 +14,7 @@ export function AttributesStep(props: {
 }) {
   const { draft } = props;
   return (
-    <Step title="1. Attributes" status={props.status}>
+    <Step title="2. Attributes" status={props.status}>
       <p class="hint">Assign 14, 12, 11, 10, 9, and 7, one to each attribute.</p>
       <div class="grid">
         {ATTRIBUTES.map((a) => {

@@ -4,6 +4,7 @@ import {
   type Character,
 } from '../../data/schemas/index.ts';
 import { findProgression, isSkill, type GameData } from './context.ts';
+import { findLineage, findPeople } from './people.ts';
 
 export type Raw = Record<string, unknown>;
 export type Migrations = Readonly<Record<number, (raw: Raw) => Raw>>;
@@ -58,8 +59,13 @@ export function importCharacter(
   }
   const c = parsed.data;
   const errors: string[] = [];
-  if (!data.content.peoples.some((p) => p.id === c.people))
-    errors.push(`people: unknown ${c.people}`);
+  const people = findPeople(data, c.people);
+  if (!people) errors.push(`people: unknown ${c.people}`);
+  else if (people.lineages && c.lineage === undefined) {
+    errors.push(`lineage: ${people.name} characters need one`);
+  } else if (c.lineage !== undefined && !findLineage(people, c.lineage)) {
+    errors.push(`lineage: unknown ${people.name} lineage ${c.lineage}`);
+  }
   if (!data.content.backgrounds.some((b) => b.id === c.background)) {
     errors.push(`background: unknown ${c.background}`);
   }

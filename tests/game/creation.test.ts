@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { loadContent } from '../../src/data/content.ts';
 import { loadSrd } from '../../src/data/load.ts';
-import { applyPeople, checkAttributeBonus } from '../../src/game/character/attributes.ts';
+import { applyPeopleModifiers, checkAttributeBonus } from '../../src/game/character/attributes.ts';
 import type { GameData } from '../../src/game/character/context.ts';
 import { progressionLookup } from '../../src/game/character/context.ts';
 import {
@@ -21,6 +21,7 @@ const array: AttributeScores = { str: 14, dex: 12, con: 11, int: 10, wis: 9, cha
 /** A complete Goblin Raider Warrior. */
 const raider = (): Choices => ({
   ...emptyChoices(),
+  people: 'goblin',
   array,
   background: { id: 'raider', choice: { mode: 'pick', picks: [{ index: 1 }, { index: 2 }] } },
   classId: 'full-warrior',
@@ -49,10 +50,10 @@ describe('evaluateChoices', () => {
     const notArray = evaluateChoices({ ...raider(), array: { ...array, str: 18 } }, data);
     expect(notArray.steps.attributes).toMatchObject({ state: 'error' });
     expect(notArray.steps.background).toEqual({ state: 'incomplete' });
-    expect(evaluateChoices({ ...raider(), people: 'dwarf' }, data).steps.attributes).toMatchObject({
-      state: 'error',
-      message: 'unknown people dwarf',
-    });
+    const dwarf = evaluateChoices({ ...raider(), people: 'dwarf' }, data);
+    expect(dwarf.steps.people).toMatchObject({ state: 'error', message: 'unknown people dwarf' });
+    expect(dwarf.steps.attributes).toEqual({ state: 'ok' });
+    expect(dwarf.scores).toBeNull();
   });
 
   it('leaves the background incomplete until one is chosen', () => {
@@ -238,14 +239,7 @@ describe('finishCharacter', () => {
 
 describe('helpers', () => {
   it('clamps people modifiers to 3–18 and records what was applied', () => {
-    const people = {
-      id: 'x',
-      name: 'X',
-      description: 'x',
-      size: 'small' as const,
-      attributeModifiers: { str: -4, dex: 4 },
-    };
-    const r = applyPeople({ ...array, str: 5, dex: 16 }, people);
+    const r = applyPeopleModifiers({ ...array, str: 5, dex: 16 }, { str: -4, dex: 4 });
     expect(r.scores).toMatchObject({ str: 3, dex: 18 });
     expect(r.applied).toEqual({ str: -2, dex: 2 });
   });

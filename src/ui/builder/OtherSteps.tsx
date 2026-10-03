@@ -9,7 +9,7 @@ export function ClassStep(props: {
   onChange: (id: string | null) => void;
 }) {
   return (
-    <Step title="3. Class" status={props.status}>
+    <Step title="4. Class" status={props.status}>
       <Select
         label="Class"
         value={props.value ?? ''}
@@ -30,7 +30,7 @@ export function FreeSkillStep(props: {
   onChange: (id: string | null) => void;
 }) {
   return (
-    <Step title="4. Free skill" status={props.status}>
+    <Step title="5. Free skill" status={props.status}>
       <Select
         label="Free skill"
         value={props.value ?? ''}
@@ -48,7 +48,7 @@ export function IdentityStep(props: {
   onChange: (patch: { name?: string; goal?: string }) => void;
 }) {
   return (
-    <Step title="5. Name and goal" status={props.status}>
+    <Step title="6. Name and goal" status={props.status}>
       <label class="field">
         <span>Name</span>
         <input
