@@ -10,7 +10,15 @@ export interface StrainState {
 
 /** Voluntary sources are refused rather than pushed past the maximum. */
 export type StrainSource =
-  'push' | 'strain-cast' | 'healing' | 'first-aid' | 'potion' | 'condition' | 'poison' | 'monster';
+  | 'push'
+  | 'strain-cast'
+  | 'healing'
+  | 'first-aid'
+  | 'potion'
+  | 'condition'
+  | 'overloaded'
+  | 'poison'
+  | 'monster';
 
 export type StrainOutcome =
   | { kind: 'applied'; state: StrainState }
@@ -20,6 +28,8 @@ export type StrainOutcome =
 
 const SELF_INFLICTED = new Set<StrainSource>(['push', 'strain-cast']);
 const BENEFICIAL = new Set<StrainSource>(['healing', 'first-aid', 'potion']);
+/** Hungry, Sleepless, Cold, and failed Overloaded saves stop at the maximum. */
+const CAPPED = new Set<StrainSource>(['condition', 'overloaded']);
 
 export function addStrain(state: StrainState, amount: number, source: StrainSource): StrainOutcome {
   if (!Number.isInteger(amount) || amount < 0) throw new Error(`invalid strain amount ${amount}`);
@@ -33,20 +43,22 @@ export function addStrain(state: StrainState, amount: number, source: StrainSour
       : { kind: 'applied', state: next };
   }
 
+  // Reaching the maximum from any source makes the character Broken.
   if (SELF_INFLICTED.has(source) || BENEFICIAL.has(source)) {
     if (total > state.max) return { kind: 'refused', state, reason: 'over-max' };
-    const breaks = SELF_INFLICTED.has(source) && total === state.max;
-    return { kind: 'applied', state: { ...state, strain: total, broken: breaks } };
+    return { kind: 'applied', state: { ...state, strain: total, broken: total === state.max } };
   }
 
-  if (source === 'condition') {
+  if (CAPPED.has(source)) {
     const strain = Math.min(total, state.max);
     return { kind: 'applied', state: { ...state, strain, broken: strain === state.max } };
   }
 
   // Poison and monster attacks: forced past the maximum, the character is knocked out instead.
-  if (total > state.max) return { kind: 'knocked-out', state: { ...state, strain: state.max } };
-  return { kind: 'applied', state: { ...state, strain: total } };
+  if (total > state.max) {
+    return { kind: 'knocked-out', state: { ...state, strain: state.max, broken: true } };
+  }
+  return { kind: 'applied', state: { ...state, strain: total, broken: total === state.max } };
 }
 
 /** One point per quarter day of rest, none while Hungry, Sleepless, or Cold. Broken persists. */
@@ -55,6 +67,9 @@ export function recoverStrain(
   quarterDays: number,
   hasCondition: boolean,
 ): StrainState {
+  if (!Number.isInteger(quarterDays) || quarterDays < 0) {
+    throw new Error(`invalid quarter days ${quarterDays}`);
+  }
   if (hasCondition) return state;
   return { ...state, strain: Math.max(0, state.strain - quarterDays) };
 }

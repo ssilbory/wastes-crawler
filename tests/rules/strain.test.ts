@@ -4,39 +4,54 @@ import {
   brokenSteps,
   fullRest,
   recoverStrain,
+  type StrainSource,
   type StrainState,
 } from '../../src/rules/strain.ts';
 
 const s = (strain: number, broken = false, max = 10): StrainState => ({ strain, max, broken });
 
 describe('addStrain when not Broken', () => {
-  it('lets a push or strain cast reach the maximum, which breaks the character', () => {
+  it('breaks the character on reaching the maximum from any source', () => {
+    const sources: StrainSource[] = [
+      'push',
+      'strain-cast',
+      'healing',
+      'first-aid',
+      'potion',
+      'condition',
+      'overloaded',
+      'poison',
+      'monster',
+    ];
+    for (const source of sources) {
+      expect(addStrain(s(9), 1, source), source).toEqual({ kind: 'applied', state: s(10, true) });
+    }
+  });
+
+  it('applies strain below the maximum without breaking', () => {
     expect(addStrain(s(8), 1, 'push')).toEqual({ kind: 'applied', state: s(9) });
-    expect(addStrain(s(7), 3, 'strain-cast')).toEqual({ kind: 'applied', state: s(10, true) });
-  });
-
-  it('refuses a push or strain cast that would pass the maximum', () => {
-    expect(addStrain(s(9), 2, 'strain-cast')).toEqual({
-      kind: 'refused',
-      state: s(9),
-      reason: 'over-max',
-    });
-  });
-
-  it('refuses healing past the maximum but allows reaching it without breaking', () => {
-    expect(addStrain(s(9), 2, 'healing')).toMatchObject({ kind: 'refused', reason: 'over-max' });
-    expect(addStrain(s(9), 1, 'potion')).toEqual({ kind: 'applied', state: s(10) });
+    expect(addStrain(s(2), 3, 'monster')).toEqual({ kind: 'applied', state: s(5) });
     expect(addStrain(s(0), 1, 'first-aid')).toEqual({ kind: 'applied', state: s(1) });
   });
 
-  it('caps conditions at the maximum and breaks the character there', () => {
-    expect(addStrain(s(5), 1, 'condition')).toEqual({ kind: 'applied', state: s(6) });
-    expect(addStrain(s(10), 1, 'condition')).toEqual({ kind: 'applied', state: s(10, true) });
+  it('refuses voluntary and beneficial strain that would pass the maximum', () => {
+    for (const source of ['push', 'strain-cast', 'healing', 'potion'] as const) {
+      expect(addStrain(s(9), 2, source), source).toEqual({
+        kind: 'refused',
+        state: s(9),
+        reason: 'over-max',
+      });
+    }
   });
 
-  it('knocks the character out when poison or a monster forces strain past the maximum', () => {
-    expect(addStrain(s(9), 3, 'poison')).toEqual({ kind: 'knocked-out', state: s(10) });
-    expect(addStrain(s(2), 3, 'monster')).toEqual({ kind: 'applied', state: s(5) });
+  it('caps conditions and failed Overloaded saves at the maximum', () => {
+    expect(addStrain(s(9), 3, 'condition')).toEqual({ kind: 'applied', state: s(10, true) });
+    expect(addStrain(s(5), 1, 'overloaded')).toEqual({ kind: 'applied', state: s(6) });
+  });
+
+  it('knocks the character out and breaks them when poison or a monster passes the maximum', () => {
+    expect(addStrain(s(9), 3, 'poison')).toEqual({ kind: 'knocked-out', state: s(10, true) });
+    expect(addStrain(s(10), 1, 'monster')).toEqual({ kind: 'knocked-out', state: s(10, true) });
   });
 
   it('rejects negative or fractional amounts', () => {
@@ -47,15 +62,34 @@ describe('addStrain when not Broken', () => {
 
 describe('addStrain when Broken', () => {
   it('refuses pushing and strain casting', () => {
-    expect(addStrain(s(10, true), 1, 'push')).toEqual({
-      kind: 'refused',
-      state: s(10, true),
-      reason: 'broken',
-    });
+    for (const source of ['push', 'strain-cast'] as const) {
+      expect(addStrain(s(10, true), 1, source)).toEqual({
+        kind: 'refused',
+        state: s(10, true),
+        reason: 'broken',
+      });
+    }
   });
 
-  it('lets other sources pass the maximum, and kills at double the maximum', () => {
-    expect(addStrain(s(10, true), 3, 'healing')).toEqual({ kind: 'applied', state: s(13, true) });
+  it('lets every other source pass the maximum', () => {
+    for (const source of [
+      'healing',
+      'first-aid',
+      'potion',
+      'condition',
+      'overloaded',
+      'poison',
+      'monster',
+    ] as const) {
+      expect(addStrain(s(10, true), 3, source), source).toEqual({
+        kind: 'applied',
+        state: s(13, true),
+      });
+    }
+  });
+
+  it('kills at double the maximum, not one below it', () => {
+    expect(addStrain(s(18, true), 1, 'poison')).toEqual({ kind: 'applied', state: s(19, true) });
     expect(addStrain(s(19, true), 1, 'condition')).toEqual({ kind: 'dead', state: s(20, true) });
   });
 });
@@ -70,6 +104,11 @@ describe('recovery', () => {
     expect(recoverStrain(s(5), 4, true)).toEqual(s(5));
     expect(recoverStrain(s(10, true), 4, false)).toEqual(s(6, true));
     expect(fullRest(s(13, true))).toEqual(s(0));
+  });
+
+  it('rejects negative or fractional rest', () => {
+    expect(() => recoverStrain(s(3), -2, false)).toThrow();
+    expect(() => recoverStrain(s(3), 0.5, false)).toThrow();
   });
 
   it('gives Broken characters one step of disadvantage', () => {

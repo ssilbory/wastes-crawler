@@ -99,12 +99,33 @@ describe('push', () => {
 
   it('rerolls a failed check for one strain', () => {
     const r = pushCheck(scriptedRng([5, 4]), input, failed, { strain: 0, max: 10, broken: false });
-    expect(r).toMatchObject({ kind: 'pushed', result: { success: true }, strain: { strain: 1 } });
+    expect(r).toMatchObject({
+      kind: 'pushed',
+      result: { success: true, pushed: true },
+      strain: { strain: 1 },
+    });
   });
 
   it('breaks the character when the push reaches maximum strain', () => {
     const r = pushCheck(scriptedRng([1, 1]), input, failed, { strain: 9, max: 10, broken: false });
     expect(r).toMatchObject({ kind: 'pushed', strain: { strain: 10, broken: true } });
+  });
+
+  it('allows only one push per check, and the breaking reroll is not at disadvantage', () => {
+    const first = pushCheck(scriptedRng([1, 2]), input, failed, {
+      strain: 9,
+      max: 10,
+      broken: false,
+    });
+    if (first.kind !== 'pushed') throw new Error('push refused');
+    expect(first.result).toMatchObject({ dice: [1, 2], success: false, pushed: true });
+    expect(first.strain.broken).toBe(true);
+    expect(
+      pushCheck(scriptedRng([]), input, first.result, { strain: 0, max: 10, broken: false }),
+    ).toEqual({
+      kind: 'refused',
+      reason: 'already-pushed',
+    });
   });
 
   it('refuses when Broken, at maximum strain, or when the check succeeded', () => {

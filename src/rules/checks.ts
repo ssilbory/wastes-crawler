@@ -21,11 +21,13 @@ export interface CheckResult extends CheckDice {
   /** Dice plus every modifier. */
   score: number;
   success: boolean;
+  /** A check can be pushed only once. */
+  pushed: boolean;
 }
 
 function resolve(dice: CheckDice, bonus: number, difficulty: number): CheckResult {
   const score = dice.total + bonus;
-  return { ...dice, score, success: score >= difficulty };
+  return { ...dice, score, success: score >= difficulty, pushed: false };
 }
 
 export function skillCheck(rng: Rng, input: SkillCheckInput): CheckResult {
@@ -59,9 +61,12 @@ export function aidBonus(aidSucceeded: readonly boolean[]): number {
 
 export type PushResult =
   | { kind: 'pushed'; result: CheckResult; strain: StrainState }
-  | { kind: 'refused'; reason: 'broken' | 'over-max' | 'not-failed' };
+  | { kind: 'refused'; reason: 'broken' | 'over-max' | 'not-failed' | 'already-pushed' };
 
-/** Rerolls a failed check for 1 System Strain; a Broken character, or one at maximum strain, can't push. */
+/**
+ * Rerolls a failed check once, for 1 System Strain. A Broken character, or one at maximum strain,
+ * can't push. If the push breaks the character, Broken applies to later rolls, not this reroll.
+ */
 export function pushCheck(
   rng: Rng,
   input: SkillCheckInput,
@@ -69,7 +74,12 @@ export function pushCheck(
   strain: StrainState,
 ): PushResult {
   if (failed.success) return { kind: 'refused', reason: 'not-failed' };
+  if (failed.pushed) return { kind: 'refused', reason: 'already-pushed' };
   const outcome: StrainOutcome = addStrain(strain, 1, 'push');
   if (outcome.kind === 'refused') return { kind: 'refused', reason: outcome.reason };
-  return { kind: 'pushed', result: skillCheck(rng, input), strain: outcome.state };
+  return {
+    kind: 'pushed',
+    result: { ...skillCheck(rng, input), pushed: true },
+    strain: outcome.state,
+  };
 }
