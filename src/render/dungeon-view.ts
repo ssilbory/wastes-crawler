@@ -1,6 +1,7 @@
 // Read-only drawing data for the first-person dungeon view (docs/plan.md, Phase 7; Sam's call:
 // flat-shaded panels). Cells up to four deep, painted far to near so nearer walls and doors hide
 // what is behind them. Secret doors look like walls until found, and traps show once known.
+import type { EdgeKind, LevelMap } from '../data/dungeon-map.ts';
 import { levelOf } from '../game/dungeon/explore.ts';
 import { inDark } from '../game/dungeon/light.ts';
 import { knownEdges } from '../game/dungeon/secrets.ts';
@@ -112,10 +113,29 @@ export function dungeonView(w: World, data: GameData): Panel[] {
   // In the dark there is nothing to see (docs/rules-adaptation.md, Dungeon exploration).
   if (!s || inDark(w, data)) return [];
   const { map } = levelOf(data, s.dungeon, s.level);
-  const left = turn(s.facing, 'left');
-  const right = turn(s.facing, 'right');
-  const edge = knownEdges(w, data);
   const trapKnown = (c: Cell) => s.traps[s.level]?.[cellKey(c)] === 'noticed';
+  return viewPanels(map, s.at, s.facing, knownEdges(w, data), trapKnown);
+}
+
+/** The level editor's test walk: every secret door shows as a door, and every trap. */
+export function sandboxView(map: LevelMap, at: Cell, facing: Facing): Panel[] {
+  const edge = (c: Cell, side: Facing): EdgeKind => {
+    const e = map.edge(c, side);
+    return e === 'secret' ? 'door' : e;
+  };
+  return viewPanels(map, at, facing, edge, () => true);
+}
+
+/** The panels seen from a cell, given which edges look like what and which traps show. */
+function viewPanels(
+  map: LevelMap,
+  at: Cell,
+  facing: Facing,
+  edge: (c: Cell, side: Facing) => EdgeKind,
+  trapKnown: (c: Cell) => boolean,
+): Panel[] {
+  const left = turn(facing, 'left');
+  const right = turn(facing, 'right');
   const kindOf = (c: Cell, side: Facing) => {
     const e = edge(c, side);
     return e === 'open' ? null : e === 'door' ? 'door' : 'wall';
@@ -128,7 +148,7 @@ export function dungeonView(w: World, data: GameData): Panel[] {
     for (let l = reach; l > 0; l--) laterals.push(-l, l);
     laterals.push(0);
     const cells = laterals
-      .map((lateral) => ({ lateral, c: cellAt(s.at, s.facing, depth, lateral) }))
+      .map((lateral) => ({ lateral, c: cellAt(at, facing, depth, lateral) }))
       .filter(({ c }) => map.inBounds(c));
     for (const { lateral, c } of cells) {
       // A trap shows once the party knows of it.
@@ -145,7 +165,7 @@ export function dungeonView(w: World, data: GameData): Panel[] {
       });
     }
     for (const { lateral, c } of cells) {
-      const kind = kindOf(c, s.facing);
+      const kind = kindOf(c, facing);
       if (kind)
         panels.push(panel(`front-${depth}-${lateral}`, kind, front(depth, lateral), depth, false));
     }

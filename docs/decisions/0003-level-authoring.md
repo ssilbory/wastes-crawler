@@ -16,3 +16,7 @@ Phase 7 needs a level format before the renderer can draw anything. The plan off
 
 - Claude can write, diff, and validate levels as text from Phase 7 on.
 - The editor in Phase 11 must round-trip the ASCII format exactly, so hand-written and edited levels stay interchangeable.
+
+## Phase 11 update
+
+The editor is at `#/editor` (Sam's calls: edit, validate, test-walk, export; game content stays file-based). It paints walls, doors, secret doors, stairs, traps, and NPC cells on the doubled grid, checks the dungeon with the same validator as `pnpm validate:levels` as you edit, walks the edited geometry in first person (secret doors open, no party, light, time, traps, or encounters), and downloads `dungeons.json` with the edited maps, row for row. Level details (links, traps, captives, specials) are still edited in the JSON; the validator says which ones a painted feature needs. A test checks that an unchanged level round-trips exactly.
