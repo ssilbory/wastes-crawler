@@ -24,6 +24,7 @@ import arenaCards from '../../data/content/arena-cards.json';
 import missionGivers from '../../data/content/mission-givers.json';
 import quests from '../../data/content/quests.json';
 import monsters from '../../data/content/monsters.json';
+import dungeons from '../../data/content/dungeons.json';
 import { combatReferenceErrors } from './combat-check.ts';
 import { equipmentReferenceErrors } from './equipment-check.ts';
 import { focusReferenceErrors } from './focus-content.ts';
@@ -33,6 +34,7 @@ import { townReferenceErrors } from './town-check.ts';
 import { npcReferenceErrors } from './npc-check.ts';
 import { travelReferenceErrors } from './travel-check.ts';
 import { questReferenceErrors } from './quest-check.ts';
+import { dungeonReferenceErrors } from './dungeon-check.ts';
 import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.ts';
 
 export function loadContent(): ContentData {
@@ -63,6 +65,7 @@ export function loadContent(): ContentData {
     missionGivers: ContentSchemas.missionGivers.parse(missionGivers),
     quests: ContentSchemas.quests.parse(quests),
     monsters: ContentSchemas.monsters.parse(monsters),
+    dungeons: ContentSchemas.dungeons.parse(dungeons),
   };
 }
 
@@ -113,6 +116,11 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['coachRoutes', content.coachRoutes],
     ['missionGivers', content.missionGivers],
     ['quests', content.quests],
+    ['dungeons', content.dungeons],
+    ...content.dungeons.map((d): [string, { id: string }[]] => [
+      `dungeons/${d.id} levels`,
+      d.levels,
+    ]),
     ...content.arenaCards.map((a): [string, { id: string }[]] => [`arenaCards/${a.town}`, a.bouts]),
     ...content.peoples.map((p): [string, { id: string }[]] => [
       `peoples/${p.id} lineages`,
@@ -136,5 +144,6 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...npcReferenceErrors(srd, content),
     ...travelReferenceErrors(srd, content),
     ...questReferenceErrors(srd, content),
+    ...dungeonReferenceErrors(content),
   ];
 }

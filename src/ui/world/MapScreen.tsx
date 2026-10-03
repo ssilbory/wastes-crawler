@@ -16,6 +16,7 @@ import { questTargets } from '../../render/quest-view.ts';
 import { CoachPanel } from './CoachPanel.tsx';
 import { QuarterPanel } from './QuarterPanel.tsx';
 import { typeOf } from '../../game/world/npcs.ts';
+import { dungeonHere } from '../../game/dungeon/explore.ts';
 import type { QuarterPlan } from '../../game/world/types.ts';
 
 export function MapScreen(props: {
@@ -27,6 +28,7 @@ export function MapScreen(props: {
   onLeave: () => void;
   onTown: () => void;
   onRide: () => void;
+  onEnter: () => void;
   onExport: () => void;
   onAbandon: () => void;
 }) {
@@ -39,6 +41,10 @@ export function MapScreen(props: {
   const { width, height } = mapPixels(map, HEX_SIZE);
   const town = map.siteAt(w.position);
   const here = town?.name ?? map.terrainAt(w.position).name;
+  const way = dungeonHere(w, data);
+  const entrances = data.content.dungeons
+    .filter((d) => d.region === w.region)
+    .map((d) => ({ ...d.entrance, name: d.name }));
   return (
     <div class="world">
       <div class="world-bar">
@@ -54,6 +60,11 @@ export function MapScreen(props: {
             Visit {town.name}
           </button>
         )}
+        {way && !w.encounter && !w.coach && (
+          <button type="button" onClick={props.onEnter}>
+            Enter {way.name}
+          </button>
+        )}
         <button type="button" class="secondary" onClick={props.onExport}>
           Export save
         </button>
@@ -64,7 +75,7 @@ export function MapScreen(props: {
       <div class="world-main">
         <div class="map-wrap">
           <HexMap
-            cells={hexCells(map, w, route(w, data), HEX_SIZE, questTargets(w, data))}
+            cells={hexCells(map, w, route(w, data), HEX_SIZE, questTargets(w, data), entrances)}
             width={width}
             height={height}
             onPick={(col, row) => {

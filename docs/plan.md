@@ -241,7 +241,7 @@ Thirteen phases, each gated by an exit criterion Claude Code can verify. The are
     - Scope: workshops, quality tiers, mods, components, maintenance, craftsmen with trade pools
     - Exit: build a mod from loot dice and components, keep it maintained at camp, and commission a magical weapon from a craftsman
 11. **Persistence and polish**
-    - Scope: full game save, load, export, and import (characters save from Phase 4, the world from Phase 5), character JSON import in the release build, settings, key remapping, optional sound
+    - Scope: full game save, load, export, and import (characters save from Phase 4, the world from Phase 5), character JSON import in the release build, settings, key remapping, optional sound, and an in-game level editor for the ASCII format (ADR 0003)
     - Exit: save mid-dungeon, reload, identical state including RNG
 12. **Content and campaign**
     - Scope: levels 1 to N, encounter tables, quest chain, boss; optional WWN faction turn between delves
@@ -256,7 +256,7 @@ Each one closes as a short ADR in `docs/decisions/` before the phase that needs 
 | ~~High-level edge cases~~         | Closed in Phase 2: see `docs/decisions/0001-high-level-progression.md`                                                                               | Phase 2   |
 | ~~Coach pricing and ambush odds~~ | Fixed per route in content, fare through the town surcharge, ambush die per travel day: see docs/rules-adaptation.md, Coaches and arenas in Phase 6d | Phase 6   |
 | ~~Setting details~~               | Deferred to Phase 12: see `docs/decisions/0002-placeholder-setting.md`                                                                               | Phase 6   |
-| Level authoring                   | Hand-written ASCII only, or add an in-game editor later                                                                                              | Phase 7   |
+| ~~Level authoring~~               | Hand-written ASCII now, in-game editor in Phase 11: see `docs/decisions/0003-level-authoring.md`                                                     | Phase 7   |
 | Procedural levels                 | None, optional side dungeons, or main campaign                                                                                                       | Phase 12  |
 
 ## Risks

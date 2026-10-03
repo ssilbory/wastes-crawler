@@ -178,3 +178,88 @@
   stroke-width: 3;
   stroke-dasharray: 4 2;
 }
+
+.hex .dungeon {
+  fill: #2b2420;
+  stroke: #fffdf8;
+  stroke-width: 1;
+}
+
+.dungeon-main {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  justify-items: center;
+}
+
+.dungeon-view {
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #0d0c0b;
+}
+
+.dungeon-view .ceiling {
+  fill: #1a1b20;
+}
+
+.dungeon-view .floor {
+  fill: #2e2924;
+}
+
+.dungeon-view polygon {
+  stroke: #0d0c0b;
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+
+.dungeon-view .door-frame {
+  fill: #2a1d12;
+}
+
+.dungeon .bump {
+  min-height: 1.4em;
+  margin: 0;
+  color: var(--error);
+}
+
+.dungeon .moves {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 8em));
+  gap: 6px;
+}
+
+.automap {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  background: #1a1b20;
+}
+
+.automap .seen {
+  fill: #4d463e;
+}
+
+.automap .seen.up,
+.automap .seen.down {
+  fill: #8a7a4a;
+}
+
+.automap line {
+  stroke: #e8e1d2;
+  stroke-width: 2;
+  stroke-linecap: square;
+}
+
+.automap line.door {
+  stroke: #c47a3a;
+  stroke-width: 3;
+}
+
+.automap .party {
+  fill: var(--error);
+}

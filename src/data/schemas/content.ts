@@ -21,6 +21,7 @@ import { CaptiveSchema, NpcRulesSchema } from './npc-content.ts';
 import { ArenaCardSchema, CoachRouteSchema, CoachRulesSchema } from './travel-content.ts';
 import { MissionGiverSchema, QuestSchema } from './quest-content.ts';
 import { AuthoredMonsterSchema } from './monsters.ts';
+import { DungeonSchema } from './dungeon-content.ts';
 
 const contentBase = {
   id: IdSchema,
@@ -166,6 +167,7 @@ export const ContentSchemas = {
   quests: z.array(QuestSchema).min(1),
   /** Monsters authored for the setting, alongside the SRD's. */
   monsters: z.array(AuthoredMonsterSchema),
+  dungeons: z.array(DungeonSchema),
 } as const;
 export type ContentData = {
   [K in keyof typeof ContentSchemas]: z.infer<(typeof ContentSchemas)[K]>;

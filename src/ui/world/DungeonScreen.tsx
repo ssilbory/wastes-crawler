@@ -1,0 +1,170 @@
+import { useEffect, useState } from 'preact/hooks';
+import {
+  dungeonOf,
+  levelOf,
+  stairsHere,
+  step,
+  takeStairs,
+  turnParty,
+  type Step,
+} from '../../game/dungeon/explore.ts';
+import { describeDate } from '../../game/world/calendar.ts';
+import type { World } from '../../game/world/types.ts';
+import { automap, FACING_NAMES, MAP_CELL } from '../../render/automap-view.ts';
+import { dungeonView, VIEW_HEIGHT, VIEW_WIDTH } from '../../render/dungeon-view.ts';
+import { data } from '../builder/data.ts';
+import { PartyPanel } from './PartyPanel.tsx';
+
+type Move = { step: Step } | { turn: 'left' | 'right' | 'around' };
+
+const KEYS: Record<string, Move> = {
+  ArrowUp: { step: 'forward' },
+  w: { step: 'forward' },
+  ArrowDown: { step: 'back' },
+  s: { step: 'back' },
+  ArrowLeft: { turn: 'left' },
+  a: { turn: 'left' },
+  ArrowRight: { turn: 'right' },
+  d: { turn: 'right' },
+  q: { step: 'left' },
+  e: { step: 'right' },
+};
+
+/** First-person view, automap, and controls while the party is underground. */
+export function DungeonScreen(props: { world: World; version: number; onChange: () => void }) {
+  const w = props.world;
+  const s = w.dungeon as NonNullable<World['dungeon']>;
+  const [bump, setBump] = useState<string | null>(null);
+  const move = (m: Move) => {
+    if (!w.dungeon) return;
+    if ('step' in m) {
+      const r = step(w, data, m.step);
+      setBump(r.ok ? null : r.reason);
+    } else {
+      turnParty(w, data, m.turn);
+      setBump(null);
+    }
+    props.onChange();
+  };
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target?.closest('input, select, textarea')) return;
+      const m = KEYS[e.key.length === 1 ? e.key.toLowerCase() : e.key];
+      if (!m) return;
+      e.preventDefault();
+      move(m);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  });
+  const { level } = levelOf(data, s.dungeon, s.level);
+  const stairs = stairsHere(w, data);
+  const map = automap(w, data);
+  const stairsLabel = !stairs
+    ? null
+    : 'surface' in stairs.to
+      ? `Climb out of ${dungeonOf(data, s.dungeon).name}`
+      : `Take the stairs to ${levelOf(data, s.dungeon, stairs.to.level).level.name}`;
+  return (
+    <div class="world dungeon">
+      <div class="world-bar">
+        <span class="date">{describeDate(data.content.overlandRules, w.day, w.quarter)}</span>
+        <span>
+          {level.name}, facing {FACING_NAMES[s.facing]}
+        </span>
+      </div>
+      <div class="world-main">
+        <div class="dungeon-main">
+          <svg
+            class="dungeon-view"
+            viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}
+            role="img"
+            aria-label="Dungeon view"
+          >
+            <rect class="ceiling" width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
+            <rect class="floor" y={VIEW_HEIGHT / 2} width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
+            {dungeonView(w, data).map((p) => (
+              <g key={p.key} class={`panel-${p.kind}`}>
+                <polygon points={p.points} fill={p.fill} />
+                {p.frame && <polygon class="door-frame" points={p.frame} />}
+              </g>
+            ))}
+          </svg>
+          <p class="bump" aria-live="polite">
+            {bump ?? ' '}
+          </p>
+          <div class="moves" role="group" aria-label="Move">
+            <button type="button" onClick={() => move({ step: 'left' })}>
+              Step left
+            </button>
+            <button type="button" onClick={() => move({ step: 'forward' })}>
+              Forward
+            </button>
+            <button type="button" onClick={() => move({ step: 'right' })}>
+              Step right
+            </button>
+            <button type="button" onClick={() => move({ turn: 'left' })}>
+              Turn left
+            </button>
+            <button type="button" onClick={() => move({ step: 'back' })}>
+              Back
+            </button>
+            <button type="button" onClick={() => move({ turn: 'right' })}>
+              Turn right
+            </button>
+          </div>
+          {stairsLabel && (
+            <button
+              type="button"
+              onClick={() => {
+                takeStairs(w, data);
+                setBump(null);
+                props.onChange();
+              }}
+            >
+              {stairsLabel}
+            </button>
+          )}
+        </div>
+        <div class="world-side">
+          {map && (
+            <section class="panel" aria-label="Automap">
+              <h3>Map</h3>
+              <svg
+                class="automap"
+                viewBox={`-2 -2 ${map.width + 4} ${map.height + 4}`}
+                role="img"
+                aria-label={`Map of ${level.name}`}
+              >
+                {map.cells.map((c) => (
+                  <rect
+                    key={c.key}
+                    class={`seen ${c.kind}`}
+                    x={c.x * MAP_CELL}
+                    y={c.y * MAP_CELL}
+                    width={MAP_CELL}
+                    height={MAP_CELL}
+                  />
+                ))}
+                {map.lines.map((l) => (
+                  <line key={l.key} class={l.kind} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} />
+                ))}
+                <polygon class="party" points={map.party} />
+              </svg>
+            </section>
+          )}
+          <PartyPanel members={w.members} />
+          <section class="panel log" aria-label="Journey log">
+            <h3>Journal</h3>
+            <ol>
+              {w.log.slice(-60).map((line, i) => (
+                <li key={`${i}-${line}`}>{line}</li>
+              ))}
+            </ol>
+          </section>
+        </div>
+      </div>
+    </div>
+  );
+}

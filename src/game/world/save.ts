@@ -56,6 +56,8 @@ export const WORLD_MIGRATIONS: Migrations = {
     const e = raw.encounter as Raw | null;
     return { ...raw, schemaVersion: 5, quests: {}, encounter: e && { ...e, quest: null } };
   },
+  // Version 6 adds dungeons (Phase 7): the party starts on the surface.
+  5: (raw) => ({ ...raw, schemaVersion: 6, dungeon: null }),
 };
 
 export function serializeWorld(w: World): string {
@@ -84,6 +86,7 @@ export function serializeWorld(w: World): string {
     coach: w.coach,
     arenaDay: w.arenaDay,
     quests: w.quests,
+    dungeon: w.dungeon,
     log: w.log.slice(-SAVED_LOG_LINES),
   };
   return `${JSON.stringify(save)}\n`;
@@ -154,6 +157,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       coach: s.coach,
       arenaDay: s.arenaDay,
       quests: s.quests,
+      dungeon: s.dungeon,
       log: s.log,
       rng: rngFromState(s.rng),
       visited: new Set(s.visited),

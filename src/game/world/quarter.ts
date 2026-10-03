@@ -16,7 +16,7 @@ export function isDarkNow(w: World, data: GameData): boolean {
   return isDark(quarterName(w.quarter), dateOf(data.content.overlandRules, w.day).season);
 }
 
-function endQuarter(w: World, data: GameData): void {
+export function endQuarter(w: World, data: GameData): void {
   if (w.quarter < 3) {
     w.quarter += 1;
     return;
@@ -28,7 +28,7 @@ function endQuarter(w: World, data: GameData): void {
 
 /** Plays a quarter; returns false if an encounter must be settled first. */
 export function passQuarter(w: World, data: GameData, plan: QuarterPlan): boolean {
-  if (w.encounter || w.coach) return false;
+  if (w.encounter || w.coach || w.dungeon) return false;
   const dark = isDarkNow(w, data);
   let extra: number;
   let watcher;

@@ -2,6 +2,7 @@
 import type {
   Character,
   CoachTrip,
+  DungeonState,
   DefaultPreset,
   LootDice,
   NpcSave,
@@ -57,6 +58,7 @@ export interface World {
   coach: CoachTrip | null;
   arenaDay: number | null;
   quests: Record<string, QuestState>;
+  dungeon: DungeonState | null;
   log: string[];
 }
 

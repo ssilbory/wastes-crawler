@@ -23,6 +23,8 @@ export interface HexCell {
   route: boolean;
   /** A quest step waits here; shown even under fog, since the giver said where. */
   quest: boolean;
+  /** A dungeon entrance's name, once the hex is known. */
+  dungeon: string | null;
 }
 
 const SQRT3 = Math.sqrt(3);
@@ -55,8 +57,10 @@ export function hexCells(
   routeHexes: Hex[],
   size: number,
   questHexes: readonly Hex[] = [],
+  entrances: readonly (Hex & { name: string })[] = [],
 ): HexCell[] {
   const quests = new Set(questHexes.map(hexKey));
+  const ways = new Map(entrances.map((e) => [hexKey(e), e.name]));
   const seen = seenHexes(map, w.visited);
   const onRoute = new Set(routeHexes.map(hexKey));
   const cells: HexCell[] = [];
@@ -84,6 +88,7 @@ export function hexCells(
         destination: w.destination !== null && key === hexKey(w.destination),
         route: onRoute.has(key),
         quest: quests.has(key),
+        dungeon: known ? (ways.get(key) ?? null) : null,
       });
     }
   }

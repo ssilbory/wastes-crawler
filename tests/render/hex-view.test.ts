@@ -38,4 +38,16 @@ describe('hex map view', () => {
     w.destination = null;
     expect(hexCells(map, w, [], 10).some((c) => c.destination)).toBe(false);
   });
+
+  it('marks dungeon entrances once the hex is known', () => {
+    const w = world();
+    const ways = [
+      { col: 3, row: 7, name: 'The Old Barrow' },
+      { col: 20, row: 8, name: 'Hidden' },
+    ];
+    const cells = hexCells(map, w, [], 10, [], ways);
+    expect(cells.find((c) => c.key === '3,7')?.dungeon).toBe('The Old Barrow');
+    expect(cells.find((c) => c.key === '20,8')?.dungeon).toBeNull();
+    expect(cells.find((c) => c.key === '3,8')?.dungeon).toBeNull();
+  });
 });

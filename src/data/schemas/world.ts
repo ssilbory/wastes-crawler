@@ -2,9 +2,10 @@ import { z } from 'zod';
 import { IdSchema } from './common.ts';
 import { DefaultPresetSchema } from './roster.ts';
 import { CharacterSchema } from './character.ts';
+import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 5;
+export const WORLD_SCHEMA_VERSION = 6;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -100,6 +101,17 @@ export const CoachTripSchema = z.strictObject({
 });
 export type CoachTrip = z.infer<typeof CoachTripSchema>;
 
+/** The party underground: where it stands, which way it faces, and the cells it has seen. */
+export const DungeonStateSchema = z.strictObject({
+  dungeon: IdSchema,
+  level: IdSchema,
+  at: CellSchema,
+  facing: FacingSchema,
+  /** Seen cells ("x,y") by level, for the automap. */
+  seen: z.record(IdSchema, z.array(z.string())),
+});
+export type DungeonState = z.infer<typeof DungeonStateSchema>;
+
 /** A world save (docs/plan.md, Save/load): versioned, with the RNG state. */
 export const WorldSaveSchema = z.strictObject({
   schemaVersion: z.literal(WORLD_SCHEMA_VERSION),
@@ -139,6 +151,8 @@ export const WorldSaveSchema = z.strictObject({
   arenaDay: z.int().min(0).nullable(),
   /** Every quest taken, by id. */
   quests: z.record(IdSchema, QuestStateSchema),
+  /** The party's place in a dungeon, or null on the surface. */
+  dungeon: DungeonStateSchema.nullable(),
   log: z.array(z.string()),
 });
 export type WorldSave = z.infer<typeof WorldSaveSchema>;

@@ -15,6 +15,8 @@ import { loadRoster, loadWorldText, saveWorldText } from '../storage.ts';
 import { TownScreen } from '../town/TownScreen.tsx';
 import { assess } from './assess.ts';
 import { MapScreen } from './MapScreen.tsx';
+import { DungeonScreen } from './DungeonScreen.tsx';
+import { enterDungeon } from '../../game/dungeon/explore.ts';
 import { StartScreen } from './StartScreen.tsx';
 
 function download(text: string) {
@@ -101,6 +103,7 @@ export function WorldApp() {
       </div>
     );
   }
+  if (w.dungeon) return <DungeonScreen world={w} version={version} onChange={changed} />;
   if (screen === 'town')
     return (
       <TownScreen
@@ -144,6 +147,10 @@ export function WorldApp() {
       }}
       onRide={() => {
         coachQuarter(w, data);
+        changed();
+      }}
+      onEnter={() => {
+        enterDungeon(w, data);
         changed();
       }}
       onTown={() => setScreen('town')}
