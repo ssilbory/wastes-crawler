@@ -2,7 +2,8 @@ import {
   acceptQuest,
   cannotAccept,
   giversHere,
-  questsFrom,
+  questBoard,
+  standing,
   turnInQuest,
 } from '../../game/world/quest-board.ts';
 import type { World } from '../../game/world/types.ts';
@@ -22,8 +23,8 @@ export function QuestsTab(props: { world: World; act: Act }) {
           <h2>{g.name}</h2>
           <p class="hint">{g.text}</p>
           <ul class="quest-list">
-            {questsFrom(data, g.id).map((q) => {
-              const st = w.quests[q.id];
+            {questBoard(w, data, g.id).map((q) => {
+              const st = standing(w, q);
               const blocked = cannotAccept(w, data, q);
               return (
                 <li key={q.id}>
@@ -46,7 +47,7 @@ export function QuestsTab(props: { world: World; act: Act }) {
                       Take on {q.name}
                     </button>
                   )}
-                  {st?.status === 'ready' && (
+                  {st?.status === 'ready' && !q.reward.raise && (
                     <button
                       type="button"
                       onClick={() => props.act(() => turnInQuest(w, data, q.id))}
@@ -54,6 +55,19 @@ export function QuestsTab(props: { world: World; act: Act }) {
                       Collect the reward
                     </button>
                   )}
+                  {st?.status === 'ready' &&
+                    q.reward.raise &&
+                    w.members
+                      .filter((m) => m.dead)
+                      .map((m) => (
+                        <button
+                          key={m.id}
+                          type="button"
+                          onClick={() => props.act(() => turnInQuest(w, data, q.id, m.id))}
+                        >
+                          Raise {m.character.name}
+                        </button>
+                      ))}
                 </li>
               );
             })}

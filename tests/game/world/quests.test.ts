@@ -50,7 +50,7 @@ const won = (w: World) => {
 describe('the quest board (docs/rules-adaptation.md, Quests)', () => {
   it('lists the town’s givers and their quests', () => {
     const w = world();
-    expect(giversHere(w, data).map((g) => g.name)).toEqual(['Reeve Halda']);
+    expect(giversHere(w, data).map((g) => g.name)).toEqual(['Reeve Halda', 'Sister Berit']);
     expect(questsFrom(data, 'reeve-halda').map((q) => q.id)).toEqual([
       'bandit-camp',
       'surveyor',

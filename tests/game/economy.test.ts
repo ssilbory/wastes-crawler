@@ -9,6 +9,7 @@ const base: EconomySim = {
   party: { maxHp: [8, 7], hpPerLevel: 4, purse: 85 },
   delve: { table: 'barrow', level: 1, fights: 4, days: 2 },
   fight: { hpLost: 0.15, deathChance: 0, deathFalloff: 0.5, xp: 0.5 },
+  raiseQuest: { days: 10 },
   travelDays: 3,
   policies: [{ id: 'home', towns: ['westhold'] }],
   seeds: 3,
@@ -52,6 +53,20 @@ describe('the economy validator (docs/rules-adaptation.md, Economy validator in 
     );
     expect(r.locks).toEqual({ 'no-progress': 2 });
     expect(r.levels).toEqual([1, 1]);
+    // One raising quest in the month, and no crowns for the rest.
+    expect(r.raised).toEqual({ quest: 1, paid: 0, recruited: 5 });
+  });
+
+  it('takes a raising quest at most once a month', () => {
+    const r = run(
+      sim({
+        delves: 12,
+        party: { ...base.party, purse: 0 },
+        fight: { ...base.fight, deathChance: 1 },
+      }),
+    );
+    expect(r.raised.quest).toBeGreaterThan(1);
+    expect(r.raised.quest).toBeLessThanOrEqual(Math.ceil(r.day / 30));
   });
 
   it('dies less as the party outlevels the dungeon', () => {
@@ -73,6 +88,8 @@ describe('the economy validator (docs/rules-adaptation.md, Economy validator in 
       ['westhold'],
     );
     expect(r.levels.every((l) => l >= 1)).toBe(true);
+    expect(r.raised.paid).toBeGreaterThan(0);
+    expect(r.raised.recruited).toBe(0);
   });
 
   it('finds loot that pays nothing for too long, and a party that stops levelling', () => {
@@ -113,6 +130,7 @@ describe('the economy validator (docs/rules-adaptation.md, Economy validator in 
     const clean = economyReport(data, sim({ lockouts: { ...base.lockouts, stuckDelves: 5 } }));
     expect(clean).toHaveLength(1);
     expect(clean[0]?.locks['loot-worthless']).toEqual({ seeds: 0, firstDelve: null });
+    expect(clean[0]?.raised).toEqual({ quest: 0, paid: 0, recruited: 0 });
     expect(passes(clean)).toBe(true);
     const grim = economyReport(data, sim({ seeds: 2, fight: { ...base.fight, xp: 0 } }));
     expect(grim[0]?.locks['no-progress']).toEqual({ seeds: 2, firstDelve: 2 });

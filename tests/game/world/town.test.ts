@@ -176,10 +176,10 @@ describe('the temple', () => {
     expect(raiseDead(w, data, 'm-0')).toEqual({ ok: false, reason: "Snag isn't dead." });
     Object.assign(snag, { dead: true, frail: true, pendingXp: 1.5 });
     snag.character = { ...snag.character, strain: { value: 22, broken: true } };
-    expect(raiseListed(data, snag)).toBe(250);
-    w.purse = 249;
+    expect(raiseListed(data, snag)).toBe(125);
+    w.purse = 124;
     expect(raiseDead(w, data, 'm-0')).toMatchObject({ ok: false });
-    w.purse = 250;
+    w.purse = 125;
     expect(raiseDead(w, data, 'm-0')).toEqual({ ok: true });
     expect(snag).toMatchObject({ dead: false, frail: false, pendingXp: 0 });
     expect(snag.character).toMatchObject({ xp: 1.5, hp: { current: 1 }, strain: { value: 0 } });

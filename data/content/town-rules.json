@@ -3,7 +3,7 @@
   "temple": {
     "perHp": 10,
     "cureFrail": 100,
-    "raisePerLevel": 250
+    "raisePerLevel": 125
   },
   "sellFraction": 0.5,
   "spendingThresholds": {

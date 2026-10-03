@@ -10,7 +10,15 @@ const content = loadContent();
 describe('quest content', () => {
   it('loads clean givers and quests', () => {
     expect(questReferenceErrors(srd, content)).toEqual([]);
-    expect(content.quests.map((q) => q.reward.xp)).toEqual([3, 2, 2, 3, 3]);
+    expect(content.quests.map((q) => q.reward.xp)).toEqual([3, 2, 2, 3, 3, 0, 0, 0, 0, 0, 0]);
+    expect(content.quests.filter((q) => q.reward.raise).map((q) => q.giver)).toEqual([
+      'sister-berit',
+      'sister-berit',
+      'brother-aldo',
+      'brother-aldo',
+      'father-wend',
+      'father-wend',
+    ]);
   });
 
   it('checks delve steps against the dungeons', () => {

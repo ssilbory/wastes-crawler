@@ -20,6 +20,8 @@ export interface PolicyReport {
   medianPurse: number;
   medianLevel: number;
   medianDays: number;
+  /** The dead over every seed: raised by quest, raised for crowns, and replaced. */
+  raised: { quest: number; paid: number; recruited: number };
 }
 
 const median = (xs: number[]) => {
@@ -47,6 +49,11 @@ export function economyReport(data: GameData, sim: EconomySim): PolicyReport[] {
       medianPurse: median(runs.map((r) => r.purse)),
       medianLevel: median(runs.map((r) => Math.max(...r.levels))),
       medianDays: median(runs.map((r) => r.day)),
+      raised: {
+        quest: runs.reduce((n, r) => n + r.raised.quest, 0),
+        paid: runs.reduce((n, r) => n + r.raised.paid, 0),
+        recruited: runs.reduce((n, r) => n + r.raised.recruited, 0),
+      },
     };
   });
 }

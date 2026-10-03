@@ -158,7 +158,7 @@ describe('parley (SRD 5.2.1, 5.2.2)', () => {
 
 describe('rescues', () => {
   it('needs a free slot, and delivers captives home for crowns and XP', () => {
-    const w = out([2, 2, 3, 0]);
+    const w = out([2, 2, 3, 0, 0]);
     expect(freeCaptive(w, data, 'merchant')).toBe(true);
     expect(freeCaptive(w, data, 'pilgrim')).toBe(true);
     expect(freeCaptive(w, data, 'scholar')).toBe(false);
@@ -181,6 +181,7 @@ describe('rescues', () => {
       'A captured merchant is home safe: a reward of 60 crowns, and 1 XP each.',
     );
     expect(log).toContain('Quitter collects their pay and leaves, dropping the load.');
+    expect(log).toContain('Brother Aldo has work that would raise the dead');
     const empty = out([2, 1]);
     freeCaptive(empty, data, 'scholar');
     addNpc(empty, data, 'hireling', 'guard', 'thug-or-militia', 'Stays', true);

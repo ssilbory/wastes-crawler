@@ -5,7 +5,7 @@ import { CharacterSchema } from './character.ts';
 import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 9;
+export const WORLD_SCHEMA_VERSION = 10;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -91,6 +91,13 @@ export const QuestStateSchema = z.strictObject({
   acceptedDay: z.int().min(0),
 });
 export type QuestState = z.infer<typeof QuestStateSchema>;
+
+/** Raising quests (docs/rules-adaptation.md, Raising quests). */
+export const RaisingSchema = z.strictObject({
+  offer: IdSchema.nullable(),
+  accepted: z.int().min(0).nullable(),
+});
+export type Raising = z.infer<typeof RaisingSchema>;
 
 /** A coach journey under way: the road hexes still ahead, and the last day checked for ambush. */
 export const CoachTripSchema = z.strictObject({
@@ -185,6 +192,8 @@ export const WorldSaveSchema = z.strictObject({
   light: LightSchema,
   /** Dungeon captives freed, as "dungeon/level/x,y": each rescue happens once per world. */
   rescues: z.array(z.string()),
+  /** The temple's raising quest on offer, and the day one was last taken (once a month). */
+  raising: RaisingSchema,
   log: z.array(z.string()),
 });
 export type WorldSave = z.infer<typeof WorldSaveSchema>;

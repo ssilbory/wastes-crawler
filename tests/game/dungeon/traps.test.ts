@@ -147,7 +147,8 @@ describe('traps (docs/rules-adaptation.md, Dungeon exploration)', () => {
     const w = onTrap();
     only(w, 'Grukk');
     setHp(member(w, 'Grukk'), 1);
-    w.rng = scriptedRng([1]);
+    // The last face draws the temple's raising quest for the dead (raising.ts).
+    w.rng = scriptedRng([1, 0]);
     springHere(w, sure);
     expect(w.dungeon).toBeNull();
     expect(w.log.join('\n')).toContain('The party falls.');
@@ -157,7 +158,7 @@ describe('traps (docs/rules-adaptation.md, Dungeon exploration)', () => {
     const w = facing();
     only(w, 'Grukk');
     setHp(member(w, 'Grukk'), 1);
-    w.rng = scriptedRng([1, 1, 1, 6]);
+    w.rng = scriptedRng([1, 1, 1, 6, 0]);
     expect(step(w, data, 'forward')).toEqual({ ok: true });
     expect(w.dungeon).toBeNull();
     const d = facing();
@@ -165,7 +166,7 @@ describe('traps (docs/rules-adaptation.md, Dungeon exploration)', () => {
     d.rng = scriptedRng([6, 6]);
     step(d, data, 'forward');
     setHp(member(d, 'Grukk'), 1);
-    d.rng = scriptedRng([1, 1, 1, 6]);
+    d.rng = scriptedRng([1, 1, 1, 6, 0]);
     expect(disarm(d, data)).toEqual({ ok: true });
     expect(d.dungeon).toBeNull();
   });

@@ -16,6 +16,9 @@
     "xp": 0.5,
     "deathFalloff": 0.5
   },
+  "raiseQuest": {
+    "days": 10
+  },
   "travelDays": 3,
   "policies": [
     {

@@ -15,6 +15,8 @@ for (const r of reports) {
   console.log(
     `\n${r.policy}: median purse ${r.medianPurse.toFixed(1)}, best level ${r.medianLevel}, ${r.medianDays} days`,
   );
+  const { quest, paid, recruited } = r.raised;
+  console.log(`  the dead: ${quest} raised by quest, ${paid} for crowns, ${recruited} replaced`);
   for (const k of LOCKOUTS) {
     const l = r.locks[k];
     console.log(

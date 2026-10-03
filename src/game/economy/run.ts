@@ -42,6 +42,8 @@ export interface RunResult {
   /** Nights spent recovering at the inn, and free in camp. */
   innNights: number;
   campNights: number;
+  /** The dead raised by a raising quest, raised for crowns, and replaced from the tavern. */
+  raised: { quest: number; paid: number; recruited: number };
 }
 
 /** Loot dice from one fight drawn from the table: each monster's own dice, rolled now. */
@@ -99,6 +101,8 @@ export function runEconomy(
   let worthlessSince: number | null = null;
   let stuck = 0;
   let innNights = 0;
+  let questDay: number | null = null;
+  const raised = { quest: 0, paid: 0, recruited: 0 };
   let campNights = 0;
   let here = towns[0] as string;
   // The first town is home: visited, with no climate roll, as in a new world.
@@ -157,15 +161,26 @@ export function runEconomy(
     else if (worthlessSince === null) worthlessSince = day;
     else if (day - worthlessSince > lock.worthlessDays) flag('loot-worthless', delve);
 
-    // Raise the dead the purse can pay for; anyone else is replaced by a roster PC from the tavern,
-    // who joins with the lowest XP of any PC in the world (docs/rules-adaptation.md, Towns in Phase
+    // Raise the dead: one by a raising quest if none was taken this month (Raising quests), then
+    // those the purse can pay for. Anyone else is replaced by a roster PC from the tavern, who
+    // joins with the lowest XP of any PC in the world (docs/rules-adaptation.md, Towns in Phase
     // 6a). Then rest until everyone is whole: at the inn while the purse allows, then in a made
     // camp outside town, which heals as much for free (Food and Conditions).
     pcs.forEach((p, i) => {
-      if (!p.dead || pay(rules.temple.raisePerLevel * p.level)) {
-        if (p.dead) Object.assign(p, { dead: false, hp: 1 });
+      if (!p.dead) return;
+      if (questDay === null || day - questDay >= month) {
+        questDay = day;
+        day += sim.raiseQuest.days;
+        raised.quest += 1;
+        Object.assign(p, { dead: false, hp: 1 });
         return;
       }
+      if (pay(rules.temple.raisePerLevel * p.level)) {
+        raised.paid += 1;
+        Object.assign(p, { dead: false, hp: 1 });
+        return;
+      }
+      raised.recruited += 1;
       fallen.push(p);
       const xp = Math.min(...[...pcs, ...fallen].map((x) => x.xp));
       const level = levelForXp(xp);
@@ -192,5 +207,13 @@ export function runEconomy(
     stuck = gained || pcs.some((p) => p.level >= lock.belowLevel) ? 0 : stuck + 1;
     if (stuck > lock.stuckDelves) flag('no-progress', delve);
   }
-  return { locks, purse, levels: pcs.map((p) => p.level), day, innNights, campNights };
+  return {
+    locks,
+    purse,
+    levels: pcs.map((p) => p.level),
+    day,
+    innNights,
+    campNights,
+    raised,
+  };
 }

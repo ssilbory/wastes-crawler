@@ -97,6 +97,13 @@ export function raiseDead(w: World, data: GameData, id: string): TownResult {
   if (!m.dead) return no(`${m.character.name} isn't dead.`);
   const paid = pay(w, data, raiseListed(data, m));
   if (!paid.ok) return paid;
+  revive(m);
+  note(w, `The temple raises ${m.character.name}.`);
+  return OK;
+}
+
+/** Brings a dead member back: 1 HP, no strain, and the XP they earned while dead. */
+export function revive(m: Member): void {
   Object.assign(m, { dead: false, frail: false, hungry: false, sleepless: false, cold: false });
   m.character = {
     ...m.character,
@@ -105,6 +112,4 @@ export function raiseDead(w: World, data: GameData, id: string): TownResult {
   };
   m.pendingXp = 0;
   setHp(m, 1);
-  note(w, `The temple raises ${m.character.name}.`);
-  return OK;
 }

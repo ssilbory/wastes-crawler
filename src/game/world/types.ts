@@ -9,6 +9,7 @@ import type {
   NpcSave,
   PendingEncounter,
   QuestState,
+  Raising,
   TownLedger,
   WorldSave,
 } from '../../data/schemas/index.ts';
@@ -62,6 +63,7 @@ export interface World {
   dungeon: DungeonState | null;
   light: Omit<Light, 'torch' | 'lantern'> & { torch: ResourceDie; lantern: ResourceDie };
   rescues: string[];
+  raising: Raising;
   log: string[];
 }
 

@@ -31,6 +31,8 @@ export const EconomySimSchema = z.strictObject({
     /** XP each living PC earns per fight. */
     xp: z.number().min(0),
   }),
+  /** A raising quest: days it takes the party, at most one taken a month. */
+  raiseQuest: z.strictObject({ days: z.int().min(1) }),
   /** Days on the road between towns. */
   travelDays: z.int().min(0),
   policies: z.array(z.strictObject({ id: IdSchema, towns: z.array(IdSchema).min(1) })).min(1),

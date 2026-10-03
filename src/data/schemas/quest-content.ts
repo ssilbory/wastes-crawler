@@ -72,12 +72,18 @@ export const QuestSchema = z.strictObject({
   /** Days to finish every step, counted from accepting; none if absent. */
   deadlineDays: z.int().min(1).optional(),
   objectives: z.array(ObjectiveSchema).min(1),
-  reward: z.strictObject({
-    crowns: z.number().min(0),
-    /** SRD 2.7.0: three for an average mission. */
-    xp: z.number().min(0).multipleOf(0.5),
-    loot: z.array(LootDiceSchema),
-  }),
+  reward: z
+    .strictObject({
+      crowns: z.number().min(0),
+      /** SRD 2.7.0: three for an average mission. */
+      xp: z.number().min(0).multipleOf(0.5),
+      loot: z.array(LootDiceSchema),
+      /** A raising quest: the temple raises one dead PC for free, and pays nothing else. */
+      raise: z.literal(true).optional(),
+    })
+    .refine((r) => !r.raise || (r.crowns === 0 && r.xp === 0 && r.loot.length === 0), {
+      message: 'a raising quest pays nothing but the raising',
+    }),
 });
 export type Quest = z.infer<typeof QuestSchema>;
 

@@ -16,5 +16,23 @@
     "name": "Warden Osk",
     "town": "highcairn",
     "text": "The old hill warden watches the passes for trouble."
+  },
+  {
+    "id": "sister-berit",
+    "name": "Sister Berit",
+    "town": "westhold",
+    "text": "The temple's almoner. She can call the dead back, if the party does the temple a service first."
+  },
+  {
+    "id": "brother-aldo",
+    "name": "Brother Aldo",
+    "town": "eastmarch",
+    "text": "A road-priest who keeps the shrine by the east gate, and keeps a list of favours owed."
+  },
+  {
+    "id": "father-wend",
+    "name": "Father Wend",
+    "town": "highcairn",
+    "text": "The hill priest. He asks a hard service for a life, but he asks no coin."
   }
 ]
