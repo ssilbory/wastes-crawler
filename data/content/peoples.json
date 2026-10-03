@@ -1,0 +1,13 @@
+[
+  {
+    "id": "goblin",
+    "name": "Goblin",
+    "description": "Small, quick, and clever, goblins survived the Dark Lord’s fall by knowing which ruins to pick over and which to leave alone.",
+    "attributeModifiers": {
+      "dex": 2,
+      "int": 1,
+      "str": -2
+    },
+    "size": "small"
+  }
+]

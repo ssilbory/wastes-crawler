@@ -28,8 +28,10 @@ export type SrdFile = keyof typeof SrdSchemas;
 export type SrdData = { [K in SrdFile]: z.infer<(typeof SrdSchemas)[K]> };
 
 export * from './armor.ts';
+export * from './character.ts';
 export * from './classes.ts';
 export * from './common.ts';
+export * from './content.ts';
 export * from './foci.ts';
 export * from './gear.ts';
 export * from './magic.ts';
