@@ -51,6 +51,15 @@ export const TrapSchema = z.strictObject({
 });
 export type Trap = z.infer<typeof TrapSchema>;
 
+/** A captive held on an `N` cell by a fixed group of guards (Phase 8c). */
+export const HeldCaptiveSchema = z.strictObject({
+  at: CellSchema,
+  captive: IdSchema,
+  guards: z.array(z.array(IdSchema).min(1).max(8)).min(1).max(3),
+  text: z.string().min(1),
+});
+export type HeldCaptive = z.infer<typeof HeldCaptiveSchema>;
+
 const At = { at: CellSchema };
 /** A special square: no glyph, found by walking onto it. */
 export const SpecialSchema = z.discriminatedUnion('kind', [
@@ -91,6 +100,7 @@ export const DungeonLevelSchema = z.strictObject({
   secrets: z.array(SecretSchema),
   traps: z.array(TrapSchema),
   specials: z.array(SpecialSchema),
+  captives: z.array(HeldCaptiveSchema),
 });
 export type DungeonLevel = z.infer<typeof DungeonLevelSchema>;
 

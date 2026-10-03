@@ -1,5 +1,5 @@
 // Text and map marks for quests. Pure reads of game state.
-import type { Quest } from '../data/schemas/index.ts';
+import type { Dungeon, Quest } from '../data/schemas/index.ts';
 import type { GameData } from '../game/character/context.ts';
 import { currentStep, questOf } from '../game/world/quests.ts';
 import type { World } from '../game/world/types.ts';
@@ -10,7 +10,11 @@ export function questTargets(w: World, data: GameData): Hex[] {
   return Object.entries(w.quests).flatMap(([id, st]) => {
     if (st.status !== 'active') return [];
     const o = currentStep(w, data, id);
-    return o && (o.kind === 'slay' || o.kind === 'scout') ? [o.hex] : [];
+    if (!o) return [];
+    if (o.kind === 'slay' || o.kind === 'scout') return [o.hex];
+    if (!('dungeon' in o)) return [];
+    // A delve step marks its dungeon's entrance; content checks guarantee the dungeon.
+    return [(data.content.dungeons.find((x) => x.id === o.dungeon) as Dungeon).entrance];
   });
 }
 

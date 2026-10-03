@@ -156,9 +156,10 @@ export function meetGroup(
   captive: string | null,
   quest: string | null,
   lead: string,
+  where = hexKey(w.position),
 ): void {
   const { reaction } = reactionRoll(w.rng, partyCha(w, data) + reactionBonus(w, data));
-  setEncounter(w, rows, nature, reaction, captive, quest, true, false, lead, hexKey(w.position));
+  setEncounter(w, rows, nature, reaction, captive, quest, true, false, lead, where);
 }
 
 function partyCha(w: World, data: GameData): number {

@@ -44,6 +44,14 @@ function dungeonErrors(d: Dungeon, content: ContentData): string[] {
     for (const t of level.traps)
       if (!map.inBounds(t.at) || map.cell(t.at) !== 'trap')
         errors.push(`${lw}: trap ${t.name} at ${t.at.x},${t.at.y} is not on a T`);
+    const held = new Set(level.captives.map((c) => `${c.at.x},${c.at.y}`));
+    for (let y = 0; y < map.height; y++)
+      for (let x = 0; x < map.width; x++)
+        if (map.cell({ x, y }) === 'npc' && !held.has(`${x},${y}`))
+          errors.push(`${lw}: the NPC at ${x},${y} has no details`);
+    for (const c of level.captives)
+      if (!map.inBounds(c.at) || map.cell(c.at) !== 'npc')
+        errors.push(`${lw}: captive at ${c.at.x},${c.at.y} is not on an N`);
     for (const sc of level.secrets)
       if (!map.inBounds(sc.at) || map.edge(sc.at, sc.side) !== 'secret')
         errors.push(`${lw}: secret at ${sc.at.x},${sc.at.y},${sc.side} is not on a secret door`);

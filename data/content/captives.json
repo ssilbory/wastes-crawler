@@ -25,5 +25,14 @@
     "reward": 80,
     "xp": 1,
     "text": "A scholar in torn robes is held at spear-point."
+  },
+  {
+    "id": "grave-digger",
+    "name": "a captured grave-digger",
+    "monster": "peaceful-human",
+    "destination": "westhold",
+    "reward": 30,
+    "xp": 1,
+    "text": "A grave-digger is bound and gagged in the corner."
   }
 ]

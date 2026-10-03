@@ -5,7 +5,7 @@ import { CharacterSchema } from './character.ts';
 import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 8;
+export const WORLD_SCHEMA_VERSION = 9;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -183,6 +183,8 @@ export const WorldSaveSchema = z.strictObject({
   /** The party's place in a dungeon, or null on the surface. */
   dungeon: DungeonStateSchema.nullable(),
   light: LightSchema,
+  /** Dungeon captives freed, as "dungeon/level/x,y": each rescue happens once per world. */
+  rescues: z.array(z.string()),
   log: z.array(z.string()),
 });
 export type WorldSave = z.infer<typeof WorldSaveSchema>;

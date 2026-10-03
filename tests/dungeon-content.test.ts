@@ -79,6 +79,7 @@ describe('dungeon validation', () => {
         secrets: [],
         traps: [],
         specials: [],
+        captives: [],
       },
     ],
     ...extra,
@@ -94,6 +95,7 @@ describe('dungeon validation', () => {
       secrets: [],
       traps: [],
       specials: [],
+      captives: [],
     };
     const d = { ...one(tiny, []), levels: [{ ...level, wander: { every: 2, table: 'crypt' } }] };
     expect(check(d)).toEqual(
@@ -132,6 +134,19 @@ describe('dungeon validation', () => {
       'dungeons/old-barrow/barrow-upper: secret at 0,0,n is not on a secret door',
       'dungeons/old-barrow/barrow-upper: spinner at 20,0 is off the level',
       "dungeons/old-barrow/barrow-upper: teleporter at 0,0 goes to a cell that isn't there",
+    ]);
+  });
+
+  it('matches held captives with N cells', () => {
+    const level = base.levels[0] as Dungeon['levels'][0];
+    const held = level.captives[0] as Dungeon['levels'][0]['captives'][0];
+    const d: Dungeon = {
+      ...base,
+      levels: [{ ...level, captives: [{ ...held, at: { x: 0, y: 0 } }] }, ...base.levels.slice(1)],
+    };
+    expect(check(d)).toEqual([
+      'dungeons/old-barrow/barrow-upper: the NPC at 6,0 has no details',
+      'dungeons/old-barrow/barrow-upper: captive at 0,0 is not on an N',
     ]);
   });
 

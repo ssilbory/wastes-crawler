@@ -51,7 +51,11 @@ describe('the quest board (docs/rules-adaptation.md, Quests)', () => {
   it('lists the town’s givers and their quests', () => {
     const w = world();
     expect(giversHere(w, data).map((g) => g.name)).toEqual(['Reeve Halda']);
-    expect(questsFrom(data, 'reeve-halda').map((q) => q.id)).toEqual(['bandit-camp', 'surveyor']);
+    expect(questsFrom(data, 'reeve-halda').map((q) => q.id)).toEqual([
+      'bandit-camp',
+      'surveyor',
+      'barrow-torc',
+    ]);
     expect(() => questOf(data, 'grail')).toThrow('unknown quest grail');
   });
 

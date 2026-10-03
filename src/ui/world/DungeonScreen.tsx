@@ -14,6 +14,8 @@ import { automap, FACING_NAMES, MAP_CELL } from '../../render/automap-view.ts';
 import { dungeonView, VIEW_HEIGHT, VIEW_WIDTH } from '../../render/dungeon-view.ts';
 import { data } from '../builder/data.ts';
 import { PartyPanel } from './PartyPanel.tsx';
+import { NpcPanel } from './NpcPanel.tsx';
+import { QuestLog } from './QuestLog.tsx';
 import { CampPanel } from './CampPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
 import { inDark } from '../../game/dungeon/light.ts';
@@ -209,6 +211,8 @@ export function DungeonScreen(props: {
             <CampPanel world={w} onChange={props.onChange} />
           )}
           <PartyPanel members={w.members} />
+          <NpcPanel world={w} onChange={props.onChange} />
+          <QuestLog world={w} onChange={props.onChange} />
           <section class="panel log" aria-label="Journey log">
             <h3>Journal</h3>
             <ol>

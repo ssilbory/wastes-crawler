@@ -77,6 +77,8 @@ export const WORLD_MIGRATIONS: Migrations = {
       dungeon: d && { ...d, found: {}, glimpsed: {}, traps: {}, read: {} },
     };
   },
+  // Version 9 adds dungeon quests and rescues (Phase 8c): no one freed yet.
+  8: (raw) => ({ ...raw, schemaVersion: 9, rescues: [] }),
 };
 
 export function serializeWorld(w: World): string {
@@ -107,6 +109,7 @@ export function serializeWorld(w: World): string {
     quests: w.quests,
     dungeon: w.dungeon,
     light: w.light,
+    rescues: w.rescues,
     log: w.log.slice(-SAVED_LOG_LINES),
   };
   return `${JSON.stringify(save)}\n`;
@@ -183,6 +186,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
         torch: s.light.torch as ResourceDie,
         lantern: s.light.lantern as ResourceDie,
       },
+      rescues: s.rescues,
       log: s.log,
       rng: rngFromState(s.rng),
       visited: new Set(s.visited),

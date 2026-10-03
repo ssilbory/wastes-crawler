@@ -21,7 +21,7 @@
         "name": "The Upper Barrow",
         "map": [
           "+-+-+-+-+-+-+-+-+-+-+",
-          "|       |   |      >|",
+          "|       |   |N     >|",
           "+ + + + + + + + + + +",
           "|       s   |       |",
           "+ + + + +-+-+ + + + +",
@@ -131,6 +131,17 @@
               "y": 5
             },
             "text": "Scratched into the stone at the dead end: THE DEAD KEEP WHAT IS THEIRS."
+          }
+        ],
+        "captives": [
+          {
+            "at": {
+              "x": 6,
+              "y": 0
+            },
+            "captive": "grave-digger",
+            "guards": [["thug-or-militia", "thug-or-militia"]],
+            "text": "Two grave robbers are binding a struggling grave-digger."
           }
         ]
       },
@@ -248,7 +259,8 @@
               "facing": "s"
             }
           }
-        ]
+        ],
+        "captives": []
       }
     ]
   }

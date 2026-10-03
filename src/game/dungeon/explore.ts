@@ -9,6 +9,7 @@ import { hexKey } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
 import { note } from '../world/members.ts';
 import { endQuarter } from '../world/quarter.ts';
+import { emit } from '../world/bus.ts';
 import { douse, drawKits, inDark, kindle } from './light.ts';
 import { glimpse, knownEdges } from './secrets.ts';
 import { arriveOn, onSpecial } from './specials.ts';
@@ -67,6 +68,8 @@ function arrive(w: World, data: GameData, level: string, at: Cell, facing: Facin
   Object.assign(s, { level, at, facing });
   look(w, data, s);
   note(w, `The party reaches ${levelOf(data, s.dungeon, level).level.name}.`);
+  emit(w, data, { kind: 'level-entered' });
+  emit(w, data, { kind: 'cell-entered' });
 }
 
 /** Goes down into the dungeon at the party's hex: a quarter day. */
@@ -115,12 +118,17 @@ export function step(w: World, data: GameData, dir: Step, stepIn = false): TownR
   const target = ahead(s.at, way);
   const stop = approach(w, data, target, stepIn);
   if (stop) return no(stop);
+  const from = s.level;
   s.at = target;
   arriveOn(w, data);
   look(w, data, s);
   glimpse(w, data);
   springHere(w, data);
-  if (w.dungeon) countStep(w, data);
+  // A trap may have killed the party.
+  if (!w.dungeon) return { ok: true };
+  if (s.level !== from) emit(w, data, { kind: 'level-entered' });
+  emit(w, data, { kind: 'cell-entered' });
+  countStep(w, data);
   return { ok: true };
 }
 

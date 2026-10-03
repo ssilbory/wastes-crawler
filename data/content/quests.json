@@ -112,5 +112,50 @@
         }
       ]
     }
+  },
+  {
+    "id": "barrow-torc",
+    "name": "The Barrow-King's Torc",
+    "giver": "reeve-halda",
+    "summary": "Something guards the Old Barrow's lower hall, and the barrow-king's torc lies hidden above it. Bring the torc back.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 1
+    },
+    "objectives": [
+      {
+        "kind": "reach",
+        "dungeon": "old-barrow",
+        "level": "barrow-lower",
+        "text": "Go down to the lower barrow."
+      },
+      {
+        "kind": "guardian",
+        "dungeon": "old-barrow",
+        "level": "barrow-lower",
+        "at": {
+          "x": 7,
+          "y": 3
+        },
+        "enemies": [["automaton-humanlike", "automaton-humanlike"]],
+        "text": "Destroy the guardians in the east hall of the lower barrow."
+      },
+      {
+        "kind": "retrieve",
+        "dungeon": "old-barrow",
+        "level": "barrow-upper",
+        "at": {
+          "x": 5,
+          "y": 0
+        },
+        "item": "the barrow-king's torc",
+        "text": "Find the barrow-king's torc in a hidden room of the upper barrow."
+      }
+    ],
+    "reward": {
+      "crowns": 80,
+      "xp": 3,
+      "loot": []
+    }
   }
 ]

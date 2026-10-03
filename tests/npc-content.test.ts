@@ -33,6 +33,13 @@ describe('NPC content', () => {
         moraleTiers: ['grim'],
       },
       captives: [{ ...merchant, monster: 'dragon', destination: 'atlantis' }],
+      dungeons: content.dungeons.map((d) => ({
+        ...d,
+        levels: d.levels.map((l) => ({
+          ...l,
+          captives: l.captives.map((c) => ({ ...c, guards: [['dragon']] })),
+        })),
+      })),
       encounterTables: [
         {
           ...plains,
@@ -45,6 +52,8 @@ describe('NPC content', () => {
       'npcRules: unknown XP tier grim',
       'captives/merchant: unknown monster dragon',
       'captives/merchant: unknown town atlantis',
+      'dungeons/old-barrow/barrow-upper: captive at 6,0: unknown captive grave-digger',
+      'dungeons/old-barrow/barrow-upper: captive at 6,0: unknown monster dragon',
       'encounterTables/plains: unknown captive prince',
     ]);
   });

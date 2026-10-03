@@ -3,6 +3,7 @@
 // leave at the next town (vendor/wwn-srd/3.0 Equipment, Armor, and Weapons/3.3.0).
 import type { GameData } from '../character/context.ts';
 import { toTenths } from '../../rules/economy.ts';
+import { emit } from './bus.ts';
 import { note } from './members.ts';
 import { addNpc, captiveOf, removeNpc } from './npcs.ts';
 import type { World } from './types.ts';
@@ -11,6 +12,7 @@ import type { World } from './types.ts';
 export function freeCaptive(w: World, data: GameData, captiveId: string): boolean {
   const c = captiveOf(data, captiveId);
   const name = c.name.charAt(0).toUpperCase() + c.name.slice(1);
+  emit(w, data, { kind: 'captive-freed', captive: c.id });
   if (!addNpc(w, data, 'captive', c.id, c.monster, name, false)) {
     note(w, `${name} is free, but with no room in the party goes their own way.`);
     return false;

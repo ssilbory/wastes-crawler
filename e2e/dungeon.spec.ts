@@ -171,3 +171,68 @@ test('searches out the secret closet and works on a known trap', async ({ page }
   await page.getByRole('button', { name: 'Disarm the dart trap (1 turn)' }).click();
   await expect(log).toContainText(/(disarms|can't work out|fumbles) the dart trap/);
 });
+
+/** Fights out any pending encounters with auto-resolve, until the way is clear. */
+async function settle(page: Page) {
+  const encounter = page.getByRole('region', { name: 'Encounter' });
+  const view = page.getByRole('img', { name: 'Dungeon view' });
+  for (;;) {
+    // The dungeon comes back once the fight's XP simulation has finished.
+    await expect(view).toBeVisible();
+    if (!(await encounter.isVisible())) return;
+    await encounter.getByRole('button', { name: /^(Fight|Attack them)$/ }).click();
+    await page.getByRole('button', { name: 'Auto-resolve' }).click();
+    await page.getByRole('button', { name: 'Back to the dungeon' }).click();
+  }
+}
+
+/** Walks key by key, fighting whatever turns up on the way. */
+async function go(page: Page, moves: string) {
+  for (const k of moves) {
+    await settle(page);
+    await page.keyboard.press(k);
+  }
+  await settle(page);
+}
+
+// Phase 8 exit: a full delve from the entrance to the stairs and back, with fights, a trap, a
+// camp, and a rescue.
+test('delves to the stairs and back with fights, a trap, a camp, and a rescue', async ({
+  page,
+}, testInfo) => {
+  await startAtBarrow(page);
+  await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
+  const log = page.getByRole('region', { name: 'Journey log' });
+  const bar = page.locator('.world-bar');
+
+  // East along the lower corridor, then up the dead end into the dart trap.
+  await go(page, 'dwwwaw');
+  await go(page, 'w');
+  if (!(await log.innerText()).includes('The dart trap springs!'))
+    await page.getByRole('button', { name: 'Step onto the dart trap' }).click();
+  await expect(log).toContainText('The dart trap springs!');
+
+  // Back down, east, and north through the door to the grave robbers and their captive.
+  await go(page, 'ddwwawwwawwwwwwawdww');
+  await expect(log).toContainText('grave-digger is free');
+  await expect(page.getByRole('region', { name: 'NPCs' })).toContainText('grave-digger');
+
+  // On to the stairs, down, and a camp in the first room below.
+  await go(page, 'dwww');
+  await page.getByRole('button', { name: 'Take the stairs to The Lower Barrow' }).click();
+  await expect(bar).toContainText('The Lower Barrow');
+  await go(page, 'w');
+  await page.getByRole('region', { name: 'Camp' }).getByRole('button').click();
+  await expect(log).toContainText('The party camps.');
+  await settle(page);
+  await page.screenshot({ path: testInfo.outputPath('delve-camp.png'), fullPage: true });
+
+  // Back up and out the way the party came.
+  await go(page, 's');
+  await page.getByRole('button', { name: 'Take the stairs to The Upper Barrow' }).click();
+  await go(page, 'awwwdwwawwwwwdwwwwww');
+  await page.getByRole('button', { name: 'Climb out of The Old Barrow' }).click();
+  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'NPCs' })).toContainText('grave-digger');
+  await page.screenshot({ path: testInfo.outputPath('delve-out.png'), fullPage: true });
+});

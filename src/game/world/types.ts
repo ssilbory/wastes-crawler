@@ -61,6 +61,7 @@ export interface World {
   quests: Record<string, QuestState>;
   dungeon: DungeonState | null;
   light: Omit<Light, 'torch' | 'lantern'> & { torch: ResourceDie; lantern: ResourceDie };
+  rescues: string[];
   log: string[];
 }
 

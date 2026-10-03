@@ -114,9 +114,9 @@ describe('world saves', () => {
     expect(parseWorld('{', data)).toEqual({ ok: false, errors: ['not valid JSON'] });
     expect(parseWorld('[]', data)).toEqual({ ok: false, errors: ['not a world save'] });
     expect(parseWorld('{}', data)).toEqual({ ok: false, errors: ['schemaVersion is missing'] });
-    expect(parseWorld('{"schemaVersion":9}', data)).toEqual({
+    expect(parseWorld('{"schemaVersion":99}', data)).toEqual({
       ok: false,
-      errors: ['made by a newer version of the game (9)'],
+      errors: ['made by a newer version of the game (99)'],
     });
     expect(parseWorld('{"schemaVersion":0}', data)).toEqual({
       ok: false,

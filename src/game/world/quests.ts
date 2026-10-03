@@ -3,6 +3,8 @@
 // are reached; deliver and escort steps end in a town. A deadline or an escort's death fails it.
 import type { Objective, Quest, QuestState } from '../../data/schemas/index.ts';
 import { hexKey } from '../../rules/hex.ts';
+import type { Cell } from '../../rules/grid.ts';
+import { levelOf } from '../dungeon/explore.ts';
 import type { GameData } from '../character/context.ts';
 import type { WorldEvent } from './bus.ts';
 import { meetGroup } from './encounters.ts';
@@ -23,13 +25,38 @@ export function currentStep(w: World, data: GameData, id: string): Objective | u
 }
 
 const here = (w: World, o: Objective) =>
-  (o.kind === 'slay' || o.kind === 'scout') && hexKey(o.hex) === hexKey(w.position);
+  (o.kind === 'slay' || o.kind === 'scout') && !w.dungeon && hexKey(o.hex) === hexKey(w.position);
 
-/** A slay step at the party's hex springs its fixed encounter. */
+type Delve = Extract<Objective, { dungeon: string }>;
+
+/** The party is on a delve step's level, and on its cell if it has one. */
+const below = (w: World, o: Delve) => {
+  const s = w.dungeon;
+  if (`${s?.dungeon}/${s?.level}` !== `${o.dungeon}/${o.level}`) return false;
+  const at = (s as NonNullable<typeof s>).at;
+  return o.kind === 'reach' || (o.at.x === at.x && o.at.y === at.y);
+};
+
+const where = (data: GameData, o: { dungeon: string; level: string; at: Cell }) =>
+  `${levelOf(data, o.dungeon, o.level).level.name} ${o.at.x},${o.at.y}`;
+
+/** A slay step at the party's hex, or a guardian on its cell, springs its fixed encounter. */
 function springSlay(w: World, data: GameData, id: string): void {
   const o = currentStep(w, data, id);
-  if (o?.kind !== 'slay' || !here(w, o) || w.encounter) return;
-  meetGroup(w, data, o.enemies, 'hostile', null, id, `${o.text} The enemy is here.`);
+  if (w.encounter || !o) return;
+  if (o.kind === 'slay' && here(w, o))
+    meetGroup(w, data, o.enemies, 'hostile', null, id, `${o.text} The enemy is here.`);
+  else if (o.kind === 'guardian' && below(w, o))
+    meetGroup(
+      w,
+      data,
+      o.enemies,
+      'hostile',
+      null,
+      id,
+      `${o.text} The guardian is here.`,
+      where(data, o),
+    );
 }
 
 function advance(w: World, data: GameData, id: string): void {
@@ -76,7 +103,16 @@ function onStep(w: World, data: GameData, id: string, e: WorldEvent): void {
       }
       return;
     case 'fight-won':
-      if (e.quest === id && o.kind === 'slay') advance(w, data, id);
+      if (e.quest === id && (o.kind === 'slay' || o.kind === 'guardian')) advance(w, data, id);
+      return;
+    case 'level-entered':
+      if (o.kind === 'reach' && below(w, o)) advance(w, data, id);
+      return;
+    case 'cell-entered':
+      if (o.kind === 'retrieve' && below(w, o)) {
+        note(w, `The party takes ${o.item}.`);
+        advance(w, data, id);
+      } else springSlay(w, data, id);
       return;
     case 'npc-died':
       if (e.npc.kind === 'escort' && e.npc.type === id)

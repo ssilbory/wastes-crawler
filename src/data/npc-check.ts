@@ -18,6 +18,14 @@ export function npcReferenceErrors(srd: SrdData, content: ContentData): string[]
     if (!monsters.has(c.monster)) errors.push(`captives/${c.id}: unknown monster ${c.monster}`);
     if (!towns.has(c.destination)) errors.push(`captives/${c.id}: unknown town ${c.destination}`);
   }
+  for (const d of content.dungeons)
+    for (const l of d.levels)
+      for (const c of l.captives) {
+        const where = `dungeons/${d.id}/${l.id}: captive at ${c.at.x},${c.at.y}`;
+        if (!captives.has(c.captive)) errors.push(`${where}: unknown captive ${c.captive}`);
+        for (const id of c.guards.flat())
+          if (!monsters.has(id)) errors.push(`${where}: unknown monster ${id}`);
+      }
   for (const t of content.encounterTables) {
     for (const e of t.entries) {
       if (e.captive !== undefined && !captives.has(e.captive))

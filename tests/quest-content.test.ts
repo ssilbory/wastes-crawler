@@ -10,7 +10,32 @@ const content = loadContent();
 describe('quest content', () => {
   it('loads clean givers and quests', () => {
     expect(questReferenceErrors(srd, content)).toEqual([]);
-    expect(content.quests.map((q) => q.reward.xp)).toEqual([3, 2, 2, 3]);
+    expect(content.quests.map((q) => q.reward.xp)).toEqual([3, 2, 2, 3, 3]);
+  });
+
+  it('checks delve steps against the dungeons', () => {
+    const quest = content.quests.find((q) => q.id === 'barrow-torc') as Quest;
+    const odd: Quest = {
+      ...quest,
+      objectives: [
+        { kind: 'reach', dungeon: 'old-barrow', level: 'cellar', text: 'x' },
+        {
+          kind: 'guardian',
+          dungeon: 'old-barrow',
+          level: 'barrow-lower',
+          at: { x: 20, y: 0 },
+          enemies: [['dragon']],
+          text: 'x',
+        },
+        { kind: 'retrieve', dungeon: 'tomb', level: 'a', at: { x: 0, y: 0 }, item: 'x', text: 'x' },
+      ],
+    };
+    expect(questReferenceErrors(srd, { ...content, quests: [odd] })).toEqual([
+      'quests/barrow-torc: step 1 is in no dungeon level',
+      'quests/barrow-torc: step 2 is off its level',
+      'quests/barrow-torc: unknown monster dragon',
+      'quests/barrow-torc: step 3 is in no dungeon level',
+    ]);
   });
 
   it('reports unknown references, bad hexes, late escorts, and loops', () => {

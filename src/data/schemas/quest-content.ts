@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { IdSchema } from './common.ts';
+import { CellSchema } from './dungeon-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
@@ -30,6 +31,31 @@ export const ObjectiveSchema = z.discriminatedUnion('kind', [
   }),
   /** Reach a hex. */
   z.strictObject({ kind: z.literal('scout'), hex: HexSchema, text: z.string().min(1) }),
+  /** Delve steps (Phase 8c): reach a dungeon level. */
+  z.strictObject({
+    kind: z.literal('reach'),
+    dungeon: IdSchema,
+    level: IdSchema,
+    text: z.string().min(1),
+  }),
+  /** A fixed encounter waiting on a dungeon cell, done when the party beats it. */
+  z.strictObject({
+    kind: z.literal('guardian'),
+    dungeon: IdSchema,
+    level: IdSchema,
+    at: CellSchema,
+    enemies: z.array(z.array(IdSchema).min(1).max(8)).min(1).max(3),
+    text: z.string().min(1),
+  }),
+  /** Pick up a quest item lying on a dungeon cell. */
+  z.strictObject({
+    kind: z.literal('retrieve'),
+    dungeon: IdSchema,
+    level: IdSchema,
+    at: CellSchema,
+    item: z.string().min(1),
+    text: z.string().min(1),
+  }),
 ]);
 export type Objective = z.infer<typeof ObjectiveSchema>;
 

@@ -1,3 +1,4 @@
+import { parseLevelMap } from './dungeon-map.ts';
 import { allMonsters } from './monsters.ts';
 import type { ContentData, SrdData } from './schemas/index.ts';
 
@@ -32,7 +33,21 @@ export function questReferenceErrors(srd: SrdData, content: ContentData): string
       if ((o.kind === 'deliver' || o.kind === 'escort') && !towns.has(o.to))
         errors.push(`${where}: step ${i + 1} goes to unknown town ${o.to}`);
       if (o.kind === 'escort' && i > 0) errors.push(`${where}: an escort must be the first step`);
-      const ids = o.kind === 'slay' ? o.enemies.flat() : o.kind === 'escort' ? [o.monster] : [];
+      if (o.kind === 'reach' || o.kind === 'guardian' || o.kind === 'retrieve') {
+        const level = content.dungeons
+          .find((d) => d.id === o.dungeon)
+          ?.levels.find((l) => l.id === o.level);
+        const parsed = level && parseLevelMap(level.map);
+        if (!parsed?.ok) errors.push(`${where}: step ${i + 1} is in no dungeon level`);
+        else if (o.kind !== 'reach' && !parsed.map.inBounds(o.at))
+          errors.push(`${where}: step ${i + 1} is off its level`);
+      }
+      const ids =
+        o.kind === 'slay' || o.kind === 'guardian'
+          ? o.enemies.flat()
+          : o.kind === 'escort'
+            ? [o.monster]
+            : [];
       for (const id of ids) if (!monsters.has(id)) errors.push(`${where}: unknown monster ${id}`);
     });
     const seen = new Set<string>();
