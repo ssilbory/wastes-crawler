@@ -20,6 +20,7 @@ import { carryLoad, type Load } from '../../rules/encumbrance.ts';
 import type { GameData } from './context.ts';
 import { focusInfo, type HeldFocus } from './foci.ts';
 import { entryEncumbrance, findItem, type CatalogItem, type InventoryEntry } from './items.ts';
+import { upgrade } from './upgrades.ts';
 import type { Skills } from './skills.ts';
 
 /** Effects from foci held at or above each effect's level. */
@@ -98,7 +99,11 @@ export function loadoutArmorClass(data: GameData, l: Loadout): number {
   const armor = worn.find((r) => r.item.kind === 'armor' && !r.entry.barding);
   const barding = worn.find((r) => r.item.kind === 'armor' && r.entry.barding);
   const shield = worn.find((r) => r.item.kind === 'shield');
-  const acOf = (r: Resolved | undefined) => (r?.item.kind === 'armor' ? r.item.armor.ac : null);
+  // Crafting's AC changes apply to body armor, not barding (upgrades.ts).
+  const acOf = (r: Resolved | undefined) =>
+    r?.item.kind === 'armor'
+      ? r.item.armor.ac + (r.entry.barding ? 0 : upgrade(data, r.entry).ac)
+      : null;
   const innate = activeEffects(data, l.foci).flatMap((e) =>
     e.kind === 'innate-ac' ? [innateArmorClass(e.base, l.level)] : [],
   );
@@ -137,8 +142,9 @@ export interface AttackLine {
 
 type Source = Pick<Weapon, 'id' | 'name' | 'damage' | 'shock' | 'attributes'> & {
   addsPunch: boolean;
-  /** Mastercrafted weapons grant +1 to hit (SRD 2.8.1). */
+  /** Crafting's to-hit and damage changes (upgrades.ts). */
   hitBonus?: number;
+  damageExtra?: number;
   /** Unarmed and natural attacks, which some focus effects leave out. */
   unarmed: boolean;
   /** Fixed skill for natural and unarmed attacks. */
@@ -173,9 +179,9 @@ function attackLine(
   const punch = l.skills.punch;
   let hit = l.attackBonus + attr + skillTerm + (src.hitBonus ?? 0);
   let damage = src.damage;
-  let damageBonus = attr + (src.addsPunch ? (punch ?? 0) : 0);
+  let damageBonus = attr + (src.addsPunch ? (punch ?? 0) : 0) + (src.damageExtra ?? 0);
   let shock: ShockRating | null = mode === 'melee' && src.shock ? { ...src.shock } : null;
-  let shockExtra = 0;
+  let shockExtra = src.damageExtra ?? 0;
   let ignoresAc = false;
   for (const e of effects) {
     if ('excludesUnarmed' in e && e.excludesUnarmed && src.unarmed) continue;
@@ -209,16 +215,18 @@ export function loadoutAttacks(data: GameData, l: Loadout): AttackLine[] {
   for (const { weapon } of readied) {
     if (seen.has(weapon.id)) continue;
     seen.add(weapon.id);
-    // Of several readied lines of one weapon, the party fights with the best made.
-    const master = readied.some(
-      (r) => r.weapon.id === weapon.id && r.entry.quality === 'mastercrafted',
-    );
+    // Of several readied lines of one weapon, the character fights with the best.
+    const best = readied
+      .filter((r) => r.weapon.id === weapon.id)
+      .map((r) => upgrade(data, r.entry))
+      .reduce((a, b) => (b.hit + b.damage > a.hit + a.damage ? b : a));
     sources.push([
       {
         ...weapon,
         addsPunch: weapon.damageAddsSkill,
         unarmed: weapon.damageAddsSkill,
-        hitBonus: master ? 1 : 0,
+        hitBonus: best.hit,
+        damageExtra: best.damage,
       },
       modesOf(weapon),
     ]);

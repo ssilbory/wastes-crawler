@@ -18,5 +18,13 @@
   "workshop": {
     "rentPerDay": 5,
     "price": 500
+  },
+  "mods": {
+    "daysPerLevel": 7,
+    "stripDays": 1
+  },
+  "upkeep": {
+    "brokenAfterDays": 7,
+    "penalty": 2
   }
 }

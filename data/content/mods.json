@@ -1,0 +1,95 @@
+[
+  {
+    "id": "customized",
+    "name": "Customized",
+    "minCraft": 1,
+    "targets": ["weapon", "armor"],
+    "loot": {
+      "count": 6,
+      "sides": 6
+    },
+    "components": [],
+    "weapon": {
+      "hit": 1
+    },
+    "armor": {
+      "ac": 1
+    },
+    "text": "Fitted to its owner: +1 to hit with the weapon, or +1 AC from the armor. Not for shields."
+  },
+  {
+    "id": "omened-aim",
+    "name": "Omened Aim",
+    "minCraft": 2,
+    "targets": ["weapon"],
+    "rangedOnly": true,
+    "loot": {
+      "count": 23,
+      "sides": 6
+    },
+    "components": [],
+    "weapon": {
+      "hit": 1
+    },
+    "text": "Occult components improve a ranged or thrown weapon's aim: +1 to hit."
+  },
+  {
+    "id": "razor-edge",
+    "name": "Razor Edge",
+    "minCraft": 2,
+    "targets": ["weapon"],
+    "loot": {
+      "count": 29,
+      "sides": 6
+    },
+    "components": [
+      {
+        "type": "metal",
+        "count": 1
+      }
+    ],
+    "weapon": {
+      "damage": 2
+    },
+    "text": "An improved edge or shifting weight: +2 to damage and Shock."
+  },
+  {
+    "id": "tailored-harness",
+    "name": "Tailored Harness",
+    "minCraft": 2,
+    "targets": ["armor"],
+    "loot": {
+      "count": 29,
+      "sides": 6
+    },
+    "components": [],
+    "armor": {
+      "encumbrance": -1
+    },
+    "text": "Altered to fit one wearer: 1 less encumbrance."
+  },
+  {
+    "id": "thirsting-blade",
+    "name": "Thirsting Blade",
+    "minCraft": 3,
+    "targets": ["weapon"],
+    "loot": {
+      "count": 6,
+      "sides": 6
+    },
+    "components": [
+      {
+        "type": "essence",
+        "count": 1
+      },
+      {
+        "type": "gem",
+        "count": 1
+      }
+    ],
+    "weapon": {
+      "hit": 1
+    },
+    "text": "Imbued with a fated inclination to harm: +1 to hit."
+  }
+]

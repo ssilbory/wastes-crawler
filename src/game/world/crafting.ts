@@ -10,6 +10,8 @@ import { entryPrice, findItem, type CatalogItem, type InventoryEntry } from '../
 import { findPeople } from '../character/people.ts';
 import type { WorldEvent } from './bus.ts';
 import { note } from './members.ts';
+import { daysText } from './wording.ts';
+import { completeMod } from './mods.ts';
 import { regionMap } from './region.ts';
 import type { TownResult } from './services.ts';
 import { priceHere, spend, townHere } from './town.ts';
@@ -67,7 +69,7 @@ export const partsListed = (data: GameData, item: Craftable, tier: Tier) =>
 
 export const tierName = (tier: Tier) => (tier === 'normal' ? '' : `${tier} `);
 
-export const daysText = (n: number) => `${n} day${n === 1 ? '' : 's'}`;
+export { daysText } from './wording.ts';
 
 /** Every member in the world, on the bench or in the party. */
 const anyone = (w: World, id: string) =>
@@ -101,6 +103,7 @@ export function startProject(
   const days = buildDays(data, item, tier);
   w.projects.push({
     crafter: m.id,
+    kind: 'gear',
     item: item.id,
     quality: tier,
     ...(sized?.small ? { small: true as const } : {}),
@@ -117,11 +120,17 @@ export function workOn(w: World, data: GameData, p: Project): void {
   p.daysLeft -= 1;
   if (p.daysLeft > 0) return;
   w.projects = w.projects.filter((x) => x !== p);
+  if (p.kind !== 'gear') {
+    completeMod(w, data, p);
+    return;
+  }
   const m = anyone(w, p.crafter);
   const item = findItem(data, p.item) as Craftable;
   const entry: InventoryEntry = {
     ...entryOf(item, p.quality),
     ...(p.small ? { small: true as const } : {}),
+    // The creator's first mod on a mastercrafted item needs no maintenance (SRD 2.8.1).
+    ...(p.quality === 'mastercrafted' ? { maker: m.character.id } : {}),
   };
   const inventory = m.character.inventory;
   // Plain gear stacks; weapons, armor, and shields keep a line each for their tier.
@@ -177,6 +186,8 @@ export function craftingListener(w: World, data: GameData, e: WorldEvent): void 
   const wilds = regionMap(data, w.region).siteAt(w.position) === undefined;
   for (const p of [...w.projects]) {
     const inParty = w.members.some((m) => m.id === p.crafter && !m.dead);
-    if (p.staying || (inParty && wilds && w.camp === 'made')) workOn(w, data, p);
+    // Only plain gear is worked on in camp; mods need the workshop (Sam's call).
+    const camp = p.kind === 'gear' && inParty && wilds && w.camp === 'made';
+    if (p.staying || camp) workOn(w, data, p);
   }
 }

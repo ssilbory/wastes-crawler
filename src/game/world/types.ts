@@ -67,6 +67,7 @@ export interface World {
   raising: Raising;
   projects: Project[];
   workshops: string[];
+  components: Record<string, number>;
   log: string[];
 }
 

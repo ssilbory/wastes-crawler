@@ -53,6 +53,23 @@ export const CharacterSchema = z.strictObject({
       barding: z.literal(true).optional(),
       /** A crafted weapon, armor, or shield's tier; normal items have none (SRD 2.8.1). */
       quality: QualitySchema.optional(),
+      /** Marks one crafted or modded item so work can find it again. */
+      serial: z.string().min(1).optional(),
+      /** The character id of a mastercrafted item's creator (SRD 2.8.1). */
+      maker: z.string().min(1).optional(),
+      /** Installed mods, with the components they used (SRD 2.8.2). */
+      mods: z
+        .array(
+          z.strictObject({
+            id: IdSchema,
+            components: z.array(IdSchema),
+            /** The creator's first mod on a mastercrafted item needs no maintenance. */
+            free: z.literal(true).optional(),
+          }),
+        )
+        .optional(),
+      /** Days since its mods were last maintained (SRD 2.8.3). */
+      upkeep: z.int().min(1).optional(),
     }),
   ),
   /** Money; 1 crown = 1 silver piece, so copper prices make tenths. */

@@ -13,5 +13,12 @@ export function projectText(w: World, data: GameData, p: Project): string {
   const town = data.content.regions.flatMap((r) => r.sites).find((s) => s.id === p.town) as Site;
   const days = `${daysText(p.daysLeft)} left`;
   const where = p.staying ? `, at the workshop in ${town.name}` : '';
-  return `${crafter.character.name}: ${tierName(p.quality)}${item}, ${days}${where}`;
+  const mod = data.content.mods.find((m) => m.id === p.mod)?.name;
+  const work =
+    p.kind === 'mod'
+      ? `${mod} on the ${item}`
+      : p.kind === 'strip'
+        ? `stripping ${mod} off the ${item}`
+        : `${tierName(p.quality)}${item}`;
+  return `${crafter.character.name}: ${work}, ${days}${where}`;
 }

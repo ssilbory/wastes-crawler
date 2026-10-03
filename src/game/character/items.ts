@@ -13,6 +13,7 @@ import type {
   Weapon,
 } from '../../data/schemas/index.ts';
 import type { GameData } from './context.ts';
+import { upgrade } from './upgrades.ts';
 
 export type CatalogItem =
   | { kind: 'weapon'; id: string; name: string; cost: Cost | null; weapon: Weapon }
@@ -32,6 +33,17 @@ export interface InventoryEntry {
   barding?: true | undefined;
   /** A crafted item's tier (SRD 2.8.1); normal items have none. */
   quality?: Quality | undefined;
+  serial?: string | undefined;
+  maker?: string | undefined;
+  mods?: InstalledMod[] | undefined;
+  /** Days since its mods were last maintained (SRD 2.8.3). */
+  upkeep?: number | undefined;
+}
+
+export interface InstalledMod {
+  id: string;
+  components: string[];
+  free?: true | undefined;
 }
 
 /** Content shields override the SRD shield rows; SRD armor keeps only body armor. */
@@ -107,9 +119,11 @@ export function entryEncumbrance(data: GameData, item: CatalogItem, entry: Inven
     }
     case 'armor': {
       const mult = entry.barding ? rules.barding.encumbranceMultiplier : 1;
-      // SRD 2.8.1: mastercrafted armor counts as 1 fewer point, down to a minimum of 1.
+      // SRD 2.8.1: mastercrafted armor counts as 1 fewer point, down to a minimum of 1; a working
+      // Tailored Harness takes off one more (2.8.4).
       const enc = item.armor.encumbrance ?? 0;
-      const each = entry.quality === 'mastercrafted' ? Math.min(enc, Math.max(1, enc - 1)) : enc;
+      const master = entry.quality === 'mastercrafted' ? Math.min(enc, Math.max(1, enc - 1)) : enc;
+      const each = Math.max(0, master + upgrade(data, entry).encumbrance);
       return q * each * mult;
     }
     case 'shield':

@@ -56,3 +56,38 @@ test('builds a crowbar in a day, then leaves the crafter to finish a mastercraft
   await tavern.getByRole('button', { name: 'Rejoin' }).click();
   await expect(page.locator('.town-message')).toContainText('still at work in the workshop');
 });
+
+// Phase 10b: a mod paid in loot dice and built at the workshop, then kept up each night.
+test('builds Customized onto a spear and keeps it maintained', async ({ page }, testInfo) => {
+  await start(page);
+  await page.evaluate((key) => {
+    const save = JSON.parse(localStorage.getItem(key) as string);
+    save.loot = [{ count: 8, sides: 6 }];
+    save.components = { 'cold-iron': 1 };
+    localStorage.setItem(key, JSON.stringify(save));
+  }, WORLD_KEY);
+  await page.reload();
+  await page.getByRole('button', { name: 'Continue journey' }).click();
+  await page.getByRole('button', { name: 'Visit Westhold' }).click();
+  await page.getByRole('tab', { name: 'Workshop' }).click();
+
+  const mods = page.getByRole('region', { name: 'Mods' });
+  await mods
+    .getByRole('combobox', { name: 'Item' })
+    .selectOption({ label: 'Snag: Spear, Light (readied)' });
+  await mods.getByRole('combobox', { name: 'Mod' }).selectOption({ label: 'Customized (Craft-1)' });
+  await mods.getByRole('button', { name: 'Build Customized' }).click();
+  const log = page.getByRole('region', { name: 'Journey log' });
+  await expect(log).toContainText(
+    "Fizzwick starts building Customized onto Snag's Spear, Light: 4 days",
+  );
+  await expect(page.getByRole('region', { name: 'Components' })).toContainText('Cold iron ×1');
+  await expect(page.locator('.world-bar')).toContainText('Loot: 2d6');
+  for (let i = 0; i < 4; i++)
+    await page.getByRole('button', { name: 'Work a day and sleep at the inn' }).click();
+  await expect(log).toContainText('Fizzwick finishes Customized on the Spear, Light.');
+  const upkeep = page.getByRole('region', { name: 'Maintenance' });
+  await expect(upkeep).toContainText('Fizzwick can maintain 4');
+  await expect(upkeep).toContainText('Snag: Spear, Light (Customized, readied)');
+  await page.screenshot({ path: testInfo.outputPath('mods.png'), fullPage: true });
+});

@@ -1,4 +1,5 @@
 // Text for the town screens. Pure reads of game state; nothing here changes it.
+import { brokenEntry } from '../game/character/upgrades.ts';
 import type { Character, LootDice } from '../data/schemas/index.ts';
 import { canLevelUp } from '../game/character/advance.ts';
 import type { GameData } from '../game/character/context.ts';
@@ -23,11 +24,14 @@ export function levelLine(data: GameData, c: Character): string {
   return `Level ${level} · XP ${c.xp} of ${xpForLevel(level + 1)}${ready}`;
 }
 
-/** "Crowbar ×2 (stowed)", quality, sized, and barding notes included. */
+/** "Crowbar ×2 (stowed)", with quality, mods, upkeep, size, and barding notes. */
 export function entryText(data: GameData, entry: InventoryEntry): string {
   const name = findItem(data, entry.id)?.name ?? entry.id;
+  const mods = (entry.mods ?? []).map((m) => data.content.mods.find((x) => x.id === m.id)?.name);
   const notes = [
     entry.quality,
+    ...mods,
+    entry.upkeep && (brokenEntry(data, entry) ? 'breaking down' : 'unmaintained'),
     entry.small && 'small',
     entry.barding && 'barding',
     entry.location,

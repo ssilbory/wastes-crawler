@@ -1,0 +1,114 @@
+[
+  {
+    "id": "beast-hide",
+    "name": "Beast hide",
+    "type": "hide",
+    "rarity": "common",
+    "sources": [
+      {
+        "monster": "small-pack-predator",
+        "chance": 30
+      },
+      {
+        "monster": "large-solitary-predator",
+        "chance": 50
+      },
+      {
+        "monster": "predator-small-vicious",
+        "chance": 25
+      },
+      {
+        "monster": "predator-large-vicious",
+        "chance": 50
+      },
+      {
+        "monster": "predator-hulking",
+        "chance": 60
+      },
+      {
+        "monster": "apex-predator",
+        "chance": 75
+      },
+      {
+        "monster": "herd-beast",
+        "chance": 30
+      },
+      {
+        "monster": "vicious-large-herbivore",
+        "chance": 40
+      }
+    ]
+  },
+  {
+    "id": "ironwood",
+    "name": "Ironwood heart",
+    "type": "wood",
+    "rarity": "uncommon",
+    "sources": [
+      {
+        "monster": "tribal-shaman",
+        "chance": 25
+      }
+    ]
+  },
+  {
+    "id": "cold-iron",
+    "name": "Cold iron",
+    "type": "metal",
+    "rarity": "uncommon",
+    "sources": [
+      {
+        "monster": "automaton-humanlike",
+        "chance": 30
+      },
+      {
+        "monster": "automaton-laborer",
+        "chance": 30
+      },
+      {
+        "monster": "automaton-military",
+        "chance": 50
+      },
+      {
+        "monster": "automaton-warbot",
+        "chance": 75
+      }
+    ]
+  },
+  {
+    "id": "grave-garnet",
+    "name": "Grave garnet",
+    "type": "gem",
+    "rarity": "rare",
+    "sources": [
+      {
+        "monster": "skilled-sorcerer",
+        "chance": 20
+      },
+      {
+        "monster": "master-wizard",
+        "chance": 40
+      }
+    ]
+  },
+  {
+    "id": "ooze-essence",
+    "name": "Ooze essence",
+    "type": "essence",
+    "rarity": "uncommon",
+    "sources": [
+      {
+        "monster": "slime-or-ooze",
+        "chance": 40
+      },
+      {
+        "monster": "unnatural-swarm",
+        "chance": 20
+      },
+      {
+        "monster": "petty-mage",
+        "chance": 15
+      }
+    ]
+  }
+]

@@ -95,6 +95,7 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
     expect(w.projects).toEqual([
       {
         crafter: 'm-3',
+        kind: 'gear',
         item: 'axe-war',
         quality: 'mastercrafted',
         daysLeft: 14,
@@ -174,6 +175,7 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
     w.projects = [
       {
         crafter: 'm-3',
+        kind: 'gear',
         item: 'crowbar',
         quality: 'normal',
         daysLeft: 1,
@@ -189,6 +191,7 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
     w.projects = [
       {
         crafter: 'm-3',
+        kind: 'gear',
         item: 'dagger',
         quality: 'mastercrafted',
         daysLeft: 1,
@@ -202,6 +205,7 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
       quantity: 1,
       location: 'stowed',
       quality: 'mastercrafted',
+      maker: fizz(w).character.id,
     });
   });
 
@@ -321,6 +325,7 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
     delete save.projects;
     delete save.workshops;
     save.schemaVersion = 10;
+    delete save.components;
     const old = parseWorld(JSON.stringify(save), data);
     expect(old.ok && [old.world.projects, old.world.workshops]).toEqual([[], []]);
   });

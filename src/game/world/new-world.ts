@@ -48,6 +48,7 @@ export function newWorld(data: GameData, rng: Rng, party: Recruit[], regionId?: 
     raising: { offer: null, accepted: null },
     projects: [],
     workshops: [],
+    components: {},
     purse: toTenths(party.reduce((sum, p) => sum + p.character.crowns, 0)),
     loot: [],
     towns: {},

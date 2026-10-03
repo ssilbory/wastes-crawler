@@ -16,7 +16,7 @@ import {
   TerrainSchema,
 } from './overland-content.ts';
 import { TownRulesSchema } from './town-content.ts';
-import { CraftingRulesSchema } from './crafting-content.ts';
+import { ComponentSchema, CraftingRulesSchema, ModSchema } from './crafting-content.ts';
 import { CaptiveSchema, NpcRulesSchema } from './npc-content.ts';
 import { ArenaCardSchema, CoachRouteSchema, CoachRulesSchema } from './travel-content.ts';
 import { MissionGiverSchema, QuestSchema } from './quest-content.ts';
@@ -167,6 +167,8 @@ export const ContentSchemas = {
   monsters: z.array(AuthoredMonsterSchema),
   dungeons: z.array(DungeonSchema),
   craftingRules: CraftingRulesSchema,
+  components: z.array(ComponentSchema).min(1),
+  mods: z.array(ModSchema).min(1),
 } as const;
 export type ContentData = {
   [K in keyof typeof ContentSchemas]: z.infer<(typeof ContentSchemas)[K]>;

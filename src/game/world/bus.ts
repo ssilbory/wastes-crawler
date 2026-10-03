@@ -2,6 +2,7 @@
 // game layer emits what happened; listeners, the quests for now, react to it.
 import type { GameData } from '../character/context.ts';
 import { craftingListener } from './crafting.ts';
+import { maintenanceListener } from './maintenance.ts';
 import { questListener } from './quests.ts';
 import { raisingListener } from './raising.ts';
 import { rescueListener } from '../dungeon/rescues.ts';
@@ -29,6 +30,7 @@ const LISTENERS: readonly Listener[] = [
   rescueListener,
   raisingListener,
   craftingListener,
+  maintenanceListener,
 ];
 
 export function emit(w: World, data: GameData, e: WorldEvent): void {

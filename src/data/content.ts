@@ -25,6 +25,8 @@ import quests from '../../data/content/quests.json';
 import monsters from '../../data/content/monsters.json';
 import dungeons from '../../data/content/dungeons.json';
 import craftingRules from '../../data/content/crafting-rules.json';
+import components from '../../data/content/components.json';
+import mods from '../../data/content/mods.json';
 import { combatReferenceErrors } from './combat-check.ts';
 import { equipmentReferenceErrors } from './equipment-check.ts';
 import { focusReferenceErrors } from './focus-content.ts';
@@ -35,6 +37,7 @@ import { npcReferenceErrors } from './npc-check.ts';
 import { travelReferenceErrors } from './travel-check.ts';
 import { questReferenceErrors } from './quest-check.ts';
 import { dungeonReferenceErrors } from './dungeon-check.ts';
+import { craftingReferenceErrors } from './crafting-check.ts';
 import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.ts';
 
 export function loadContent(): ContentData {
@@ -66,6 +69,8 @@ export function loadContent(): ContentData {
     monsters: ContentSchemas.monsters.parse(monsters),
     dungeons: ContentSchemas.dungeons.parse(dungeons),
     craftingRules: ContentSchemas.craftingRules.parse(craftingRules),
+    components: ContentSchemas.components.parse(components),
+    mods: ContentSchemas.mods.parse(mods),
   };
 }
 
@@ -117,6 +122,8 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['missionGivers', content.missionGivers],
     ['quests', content.quests],
     ['dungeons', content.dungeons],
+    ['components', content.components],
+    ['mods', content.mods],
     ...content.dungeons.map((d): [string, { id: string }[]] => [
       `dungeons/${d.id} levels`,
       d.levels,
@@ -145,5 +152,6 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...travelReferenceErrors(srd, content),
     ...questReferenceErrors(srd, content),
     ...dungeonReferenceErrors(content),
+    ...craftingReferenceErrors(srd, content),
   ];
 }

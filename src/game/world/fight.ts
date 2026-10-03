@@ -1,6 +1,7 @@
 // Overland encounters fought with the combat engine. Fights carry the party's wounds, Frailty,
 // strain, and the day's spent spells and Effort in and out (SRD 2.5.1, 4.2.0); a lost fight sends
 // the party back to the last town (docs/plan.md, Combat → Town).
+import { componentDrops } from './components.ts';
 import { createBattle, type BattleResult, type NpcSetup } from '../combat/battle.ts';
 import { pcCombatant } from '../combat/combatants.ts';
 import type { Battle, CasterState } from '../combat/types.ts';
@@ -167,7 +168,7 @@ export function carryBack(data: GameData, m: Member, c: Battle['combatants'][num
   }
 }
 
-/** The loot dice the defeated enemies drop (docs/rules-adaptation.md, Loot dice). */
+/** The loot dice and components the defeated enemies drop (docs/rules-adaptation.md, Loot dice). */
 function winnings(w: World, data: GameData, enemies: readonly (readonly string[])[]): void {
   const dice = enemies.flatMap((row) =>
     row.flatMap((id) => {
@@ -175,6 +176,7 @@ function winnings(w: World, data: GameData, enemies: readonly (readonly string[]
       return loot ? [loot] : [];
     }),
   );
+  componentDrops(w, data, enemies.flat());
   if (dice.length === 0) return;
   addLoot(w, dice);
   const total = new Map<number, number>();

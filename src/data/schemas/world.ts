@@ -5,7 +5,7 @@ import { CharacterSchema } from './character.ts';
 import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 11;
+export const WORLD_SCHEMA_VERSION = 12;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -96,7 +96,15 @@ export type QuestState = z.infer<typeof QuestStateSchema>;
 export const ProjectSchema = z.strictObject({
   /** The member doing the work; each works on one thing at a time. */
   crafter: z.string().min(1),
+  /** Building gear, installing a mod, or stripping one off (Phase 10b). */
+  kind: z.enum(['gear', 'mod', 'strip']),
+  /** The item built, or the item a mod goes on or comes off. */
   item: IdSchema,
+  mod: IdSchema.optional(),
+  /** The serial of the inventory line a mod goes on or comes off. */
+  target: z.string().min(1).optional(),
+  /** The components a mod being installed has used up. */
+  components: z.array(IdSchema).optional(),
   quality: z.enum(['jury-rigged', 'normal', 'mastercrafted']),
   small: z.literal(true).optional(),
   daysLeft: z.int().min(1),
@@ -213,6 +221,8 @@ export const WorldSaveSchema = z.strictObject({
   projects: z.array(ProjectSchema),
   /** Towns whose workshop the party owns. */
   workshops: z.array(IdSchema),
+  /** Crafting components carried, by id; like loot dice they weigh nothing. */
+  components: z.record(IdSchema, z.int().min(1)),
   log: z.array(z.string()),
 });
 export type WorldSave = z.infer<typeof WorldSaveSchema>;
