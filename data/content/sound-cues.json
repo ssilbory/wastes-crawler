@@ -1,0 +1,38 @@
+[
+  { "id": "step", "wave": "triangle", "notes": [{ "hz": 110, "ms": 40 }] },
+  { "id": "bump", "wave": "square", "notes": [{ "hz": 80, "ms": 90 }] },
+  {
+    "id": "coin",
+    "wave": "sine",
+    "notes": [
+      { "hz": 988, "ms": 60 },
+      { "hz": 1319, "ms": 120 }
+    ]
+  },
+  {
+    "id": "win",
+    "wave": "triangle",
+    "notes": [
+      { "hz": 523, "ms": 100 },
+      { "hz": 659, "ms": 100 },
+      { "hz": 784, "ms": 200 }
+    ]
+  },
+  {
+    "id": "lose",
+    "wave": "sawtooth",
+    "notes": [
+      { "hz": 330, "ms": 200 },
+      { "hz": 220, "ms": 400 }
+    ]
+  },
+  {
+    "id": "level",
+    "wave": "sine",
+    "notes": [
+      { "hz": 523, "ms": 90 },
+      { "hz": 784, "ms": 90 },
+      { "hz": 1047, "ms": 250 }
+    ]
+  }
+]

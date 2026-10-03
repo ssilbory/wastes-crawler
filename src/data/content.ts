@@ -28,6 +28,8 @@ import craftingRules from '../../data/content/crafting-rules.json';
 import components from '../../data/content/components.json';
 import mods from '../../data/content/mods.json';
 import craftsmen from '../../data/content/craftsmen.json';
+import settingsDefaults from '../../data/content/settings-defaults.json';
+import soundCues from '../../data/content/sound-cues.json';
 import { combatReferenceErrors } from './combat-check.ts';
 import { equipmentReferenceErrors } from './equipment-check.ts';
 import { focusReferenceErrors } from './focus-content.ts';
@@ -73,6 +75,8 @@ export function loadContent(): ContentData {
     components: ContentSchemas.components.parse(components),
     mods: ContentSchemas.mods.parse(mods),
     craftsmen: ContentSchemas.craftsmen.parse(craftsmen),
+    settingsDefaults: ContentSchemas.settingsDefaults.parse(settingsDefaults),
+    soundCues: ContentSchemas.soundCues.parse(soundCues),
   };
 }
 

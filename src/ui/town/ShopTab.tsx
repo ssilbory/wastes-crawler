@@ -7,6 +7,7 @@ import { buy, giveItem, sell, sellPrice, setLocation, shopPrice } from '../../ga
 import type { World } from '../../game/world/types.ts';
 import { crowns, entryText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
+import { cue } from '../sound.ts';
 import type { Act } from './TownScreen.tsx';
 
 const KINDS: Record<CatalogItem['kind'], string> = {
@@ -59,7 +60,10 @@ export function ShopTab(props: { world: World; act: Act }) {
             ))}
           </select>
         </label>{' '}
-        <button type="button" onClick={() => props.act(() => buy(w, data, m.id, item))}>
+        <button
+          type="button"
+          onClick={() => props.act(() => cue(buy(w, data, m.id, item), 'coin'))}
+        >
           Buy
         </button>
       </section>

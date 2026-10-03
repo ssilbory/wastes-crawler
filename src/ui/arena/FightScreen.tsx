@@ -1,9 +1,13 @@
-import { useRef, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import type { DefaultPreset } from '../../data/schemas/index.ts';
 import { takeTurn, type BattleResult } from '../../game/combat/battle.ts';
 import { commandsFor } from '../../game/combat/commands.ts';
 import type { Action, Battle, Combatant } from '../../game/combat/types.ts';
 import { outcomeText, roundsText, sideView } from '../../render/arena-view.ts';
+import { roundDelay } from '../../game/settings.ts';
+import { data } from '../builder/data.ts';
+import { getSettings } from '../settings-store.ts';
+import { play } from '../sound.ts';
 import { CommandMenu } from './CommandMenu.tsx';
 import { BattleLog, Field } from './Field.tsx';
 import {
@@ -70,11 +74,26 @@ export function FightScreen(props: {
       while (next && b.round === round) next = command(next, presetAction(b, next, p));
       return next;
     });
-  const auto = () =>
+  // Auto-resolve plays out at the speed in the settings: all at once, or a round at a time.
+  const [autoPlaying, setAutoPlaying] = useState(false);
+  const auto = () => {
+    if (roundDelay(data, getSettings()) > 0) {
+      setAutoPlaying(true);
+      return;
+    }
     run(() => {
       autoResolve(b, p);
       return null;
     });
+  };
+  useEffect(() => {
+    if (!autoPlaying || result) return;
+    const timer = setTimeout(defaultsForRound, roundDelay(data, getSettings()));
+    return () => clearTimeout(timer);
+  });
+  useEffect(() => {
+    if (result) play(result.outcome === 'party' ? 'win' : 'lose');
+  }, [result]);
 
   const commands = actor && !result ? commandsFor(b, actor) : [];
   const current = commands.find((c) => c.key === selected);

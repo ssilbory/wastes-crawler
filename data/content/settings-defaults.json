@@ -1,0 +1,18 @@
+{
+  "settings": {
+    "version": 1,
+    "keys": {
+      "forward": ["w", "ArrowUp"],
+      "back": ["s", "ArrowDown"],
+      "turn-left": ["a", "ArrowLeft"],
+      "turn-right": ["d", "ArrowRight"],
+      "step-left": ["q"],
+      "step-right": ["e"],
+      "search": ["f"]
+    },
+    "sound": { "on": false, "volume": 0.5 },
+    "combatSpeed": "instant",
+    "textSize": "normal"
+  },
+  "roundDelays": { "instant": 0, "fast": 250, "normal": 600, "slow": 1200 }
+}

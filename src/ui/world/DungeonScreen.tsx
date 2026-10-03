@@ -25,19 +25,21 @@ import { disarm, knownTrapAhead } from '../../game/dungeon/traps.ts';
 import type { TownResult } from '../../game/world/services.ts';
 import { lightText, turnText } from '../../render/light-view.ts';
 
+import type { KeyAction } from '../../data/schemas/index.ts';
+import { actionForKey } from '../../game/settings.ts';
+import { getSettings } from '../settings-store.ts';
+import { play } from '../sound.ts';
+
 type Move = { step: Step } | { turn: 'left' | 'right' | 'around' };
 
-const KEYS: Record<string, Move> = {
-  ArrowUp: { step: 'forward' },
-  w: { step: 'forward' },
-  ArrowDown: { step: 'back' },
-  s: { step: 'back' },
-  ArrowLeft: { turn: 'left' },
-  a: { turn: 'left' },
-  ArrowRight: { turn: 'right' },
-  d: { turn: 'right' },
-  q: { step: 'left' },
-  e: { step: 'right' },
+/** What each remappable action does here; Search is handled with the other actions. */
+const MOVES: Record<Exclude<KeyAction, 'search'>, Move> = {
+  forward: { step: 'forward' },
+  back: { step: 'back' },
+  'turn-left': { turn: 'left' },
+  'turn-right': { turn: 'right' },
+  'step-left': { step: 'left' },
+  'step-right': { step: 'right' },
 };
 
 /** First-person view, automap, and controls while the party is underground. */
@@ -56,6 +58,7 @@ export function DungeonScreen(props: {
     if ('step' in m) {
       const r = step(w, data, m.step);
       setBump(r.ok ? null : r.reason);
+      play(r.ok ? 'step' : 'bump');
     } else {
       turnParty(w, data, m.turn);
       setBump(null);
@@ -66,10 +69,12 @@ export function DungeonScreen(props: {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
       if (target?.closest('input, select, textarea')) return;
-      const m = KEYS[e.key.length === 1 ? e.key.toLowerCase() : e.key];
-      if (!m) return;
+      // Keys come from the settings (docs/plan.md, Phase 11: key remapping).
+      const action = actionForKey(getSettings(), e.key);
+      if (!action) return;
       e.preventDefault();
-      move(m);
+      if (action === 'search') act(() => search(w, data));
+      else move(MOVES[action]);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);

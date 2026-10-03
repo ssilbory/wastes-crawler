@@ -16,6 +16,7 @@ import {
   TerrainSchema,
 } from './overland-content.ts';
 import { TownRulesSchema } from './town-content.ts';
+import { SettingsDefaultsSchema, SoundCueSchema } from './settings.ts';
 import {
   ComponentSchema,
   CraftingRulesSchema,
@@ -175,6 +176,8 @@ export const ContentSchemas = {
   components: z.array(ComponentSchema).min(1),
   mods: z.array(ModSchema).min(1),
   craftsmen: z.array(CraftsmanSchema),
+  settingsDefaults: SettingsDefaultsSchema,
+  soundCues: z.array(SoundCueSchema).min(1),
 } as const;
 export type ContentData = {
   [K in keyof typeof ContentSchemas]: z.infer<(typeof ContentSchemas)[K]>;

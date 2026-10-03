@@ -34,6 +34,7 @@ export * from './classes.ts';
 export * from './common.ts';
 export * from './content.ts';
 export * from './crafting-content.ts';
+export * from './settings.ts';
 export * from './equipment-content.ts';
 export * from './magic-content.ts';
 export * from './combat-content.ts';

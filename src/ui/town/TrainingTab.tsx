@@ -13,6 +13,7 @@ import type { World } from '../../game/world/types.ts';
 import { levelLine, pointsText } from '../../render/town-view.ts';
 import { ATTRIBUTE_NAMES, className, classes, data, skillName, skills } from '../builder/data.ts';
 import { LevelUpForm } from './LevelUpForm.tsx';
+import { cue } from '../sound.ts';
 import type { Act } from './TownScreen.tsx';
 
 /** Leveling, spending skill points, preparing spells, and switching class. */
@@ -53,7 +54,9 @@ export function TrainingTab(props: { world: World; act: Act }) {
           key={`${m.id}-${c.xp}-${plan.classLevel}-${plan.classId}`}
           character={c}
           plan={plan}
-          onConfirm={(choices) => props.act(() => levelUpMember(w, data, m.id, choices))}
+          onConfirm={(choices) =>
+            props.act(() => cue(levelUpMember(w, data, m.id, choices), 'level'))
+          }
         />
       )}
       <section class="panel" aria-label="Skill points">
