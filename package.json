@@ -21,6 +21,7 @@
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "sim": "tsx tools/sim/index.ts",
+    "economy": "tsx tools/economy.ts",
     "validate:levels": "tsx tools/validate-levels.ts"
   },
   "dependencies": {
