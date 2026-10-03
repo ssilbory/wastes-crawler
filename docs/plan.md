@@ -148,7 +148,7 @@ The game layer is this state machine. Each box is a mode with its own command se
 
 **Minimap.** An automap of visited cells and seen edges, with fog for the rest. Darkness, spinners, and anti-map squares can suppress or mislead it.
 
-**Save/load.** Game state, including RNG state, serializes to versioned JSON. Characters export and import as JSON from Phase 3, before any browser storage. Character saves to browser storage start with the arena in Phase 4, and world saves start in Phase 5. Saves autosave to browser storage, plus export and import as a file. A schema version field allows migrations from the first save. Character JSON import ships in the final game; players can edit their characters, and that's a feature.
+**Save/load.** Game state, including RNG state, serializes to versioned JSON. Characters export and import as JSON from Phase 3, before any browser storage. Character saves to browser storage start with the arena in Phase 4, and world saves start in Phase 5. Saves autosave to browser storage, plus export and import as a file. A schema version field allows migrations from the first save. Character JSON import ships in the final game; players can edit their characters, and that's a feature. From Phase 11 (Sam's call) there are three world slots: the game autosaves into the slot chosen on the start screen, and slot 1 keeps the browser key the single save always used. Export writes a full save, the world and the character roster in one file (`kind: "wastes-crawler-save"`); loading takes a full save or a plain world save, and a full save's characters join the roster, replacing any with the same id. A reloaded save plays on identically, RNG included, which the Phase 11 exit tests check.
 
 ## Rules adaptation
 

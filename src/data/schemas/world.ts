@@ -248,3 +248,15 @@ export const WorldSaveSchema = z.strictObject({
 });
 export type WorldSave = z.infer<typeof WorldSaveSchema>;
 export type PendingEncounter = z.infer<typeof PendingEncounterSchema>;
+
+/** A full game save (docs/plan.md, Phase 11): the world and the character roster in one file. */
+export const SAVE_BUNDLE_KIND = 'wastes-crawler-save';
+export const SaveBundleSchema = z.strictObject({
+  kind: z.literal(SAVE_BUNDLE_KIND),
+  version: z.literal(1),
+  /** A world save, checked by its own schema and migrations. */
+  world: z.unknown(),
+  /** A stored roster, checked by its own schema. */
+  roster: z.unknown(),
+});
+export type SaveBundle = z.infer<typeof SaveBundleSchema>;

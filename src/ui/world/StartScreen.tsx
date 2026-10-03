@@ -2,10 +2,15 @@ import { useState } from 'preact/hooks';
 import type { RosterEntry } from '../../game/character/roster.ts';
 import { MAX_PCS, type Recruit } from '../../game/world/new-world.ts';
 import { PartySetup, type Placement } from '../arena/PartySetup.tsx';
+import { SLOTS, type Slot } from '../storage.ts';
 
-/** Starting a new world from the roster, continuing the saved one, or loading a save file. */
+/** Starting a new world from the roster, continuing a saved one, or loading a save file. */
 export function StartScreen(props: {
   roster: RosterEntry[];
+  /** Each slot's one-line summary, and the slot chosen. */
+  slots: Record<Slot, string>;
+  slot: Slot;
+  onSlot: (slot: Slot) => void;
   hasSave: boolean;
   errors: string[];
   onContinue: () => void;
@@ -31,7 +36,7 @@ export function StartScreen(props: {
           </button>
         )}
         <label class="import">
-          <span>Load a world save</span>
+          <span>Load a save file</span>
           <input
             type="file"
             accept="application/json,.json"
@@ -44,6 +49,20 @@ export function StartScreen(props: {
           />
         </label>
       </header>
+      <fieldset class="slots">
+        <legend>Save slot</legend>
+        {SLOTS.map((n) => (
+          <label key={n}>
+            <input
+              type="radio"
+              name="slot"
+              checked={props.slot === n}
+              onChange={() => props.onSlot(n)}
+            />{' '}
+            Slot {n}: {props.slots[n]}
+          </label>
+        ))}
+      </fieldset>
       {props.errors.length > 0 && (
         <ul class="errors" role="alert">
           {props.errors.map((e) => (

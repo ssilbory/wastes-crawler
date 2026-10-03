@@ -6,12 +6,23 @@ import { coachQuarter } from '../../game/world/coach.ts';
 import { difficultySeed } from '../../game/world/difficulty.ts';
 import { encounterBattle, type WorldBattle } from '../../game/world/fight.ts';
 import { passQuarter, settleByFighting, settleByLeaving } from '../../game/world/quarter.ts';
-import { parseWorld, serializeWorld } from '../../game/world/save.ts';
+import { mergeRoster, parseSave, serializeBundle } from '../../game/world/bundle.ts';
+import { serializeWorld } from '../../game/world/save.ts';
+import { slotSummary } from '../../render/save-view.ts';
 import type { World } from '../../game/world/types.ts';
 import { createRng } from '../../rules/rng.ts';
 import { FightScreen } from '../arena/FightScreen.tsx';
 import { data, freshRng } from '../builder/data.ts';
-import { loadRoster, loadWorldText, saveWorldText } from '../storage.ts';
+import {
+  SLOTS,
+  activeSlot,
+  loadRoster,
+  loadWorldText,
+  saveRoster,
+  saveWorldText,
+  setActiveSlot,
+  type Slot,
+} from '../storage.ts';
 import { TownScreen } from '../town/TownScreen.tsx';
 import { assess } from './assess.ts';
 import { MapScreen } from './MapScreen.tsx';
@@ -23,13 +34,14 @@ function download(text: string) {
   const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'world-save.json';
+  a.download = 'wastes-crawler-save.json';
   a.click();
   URL.revokeObjectURL(url);
 }
 
 export function WorldApp() {
-  const [roster] = useState(() => loadRoster().entries);
+  const [roster, setRoster] = useState(() => loadRoster().entries);
+  const [slot, setSlot] = useState<Slot>(activeSlot);
   const world = useRef<World | null>(null);
   const [version, setVersion] = useState(0);
   const [screen, setScreen] = useState<'start' | 'map' | 'town'>('start');
@@ -40,17 +52,24 @@ export function WorldApp() {
     back: 'map' | 'town';
   } | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
-  const [hasSave, setHasSave] = useState(() => loadWorldText() !== null);
+  const [, setSaves] = useState(0);
+  const hasSave = loadWorldText(slot) !== null;
 
   const changed = () => {
     if (world.current) saveWorldText(serializeWorld(world.current));
     setVersion((v) => v + 1);
   };
+  /** Opens a slot's save, a plain world save, or a full save, whose roster joins this one. */
   const open = (text: string | null) => {
-    const loaded = text === null ? null : parseWorld(text, data);
+    const loaded = text === null ? null : parseSave(text, data);
     if (!loaded?.ok) {
       setErrors(loaded ? loaded.errors : ['There is no saved world.']);
       return;
+    }
+    if (loaded.roster) {
+      const merged = mergeRoster(roster, loaded.roster);
+      saveRoster(merged);
+      setRoster(merged);
     }
     world.current = loaded.world;
     setErrors([]);
@@ -90,6 +109,17 @@ export function WorldApp() {
     return (
       <StartScreen
         roster={roster}
+        slots={
+          Object.fromEntries(SLOTS.map((n) => [n, slotSummary(loadWorldText(n), data)])) as Record<
+            Slot,
+            string
+          >
+        }
+        slot={slot}
+        onSlot={(n) => {
+          setActiveSlot(n);
+          setSlot(n);
+        }}
         hasSave={hasSave}
         errors={errors}
         onContinue={() => open(loadWorldText())}
@@ -177,11 +207,11 @@ export function WorldApp() {
       }}
       onTown={() => setScreen('town')}
       onLeave={leave}
-      onExport={() => download(serializeWorld(w))}
+      onExport={() => download(serializeBundle(w, roster))}
       onAbandon={() => {
         if (!confirm('Abandon this world? The save is deleted.')) return;
         saveWorldText(null);
-        setHasSave(false);
+        setSaves((n) => n + 1);
         world.current = null;
         setScreen('start');
       }}

@@ -31,21 +31,44 @@ export function saveRoster(entries: readonly RosterEntry[]): boolean {
   }
 }
 
-const WORLD_KEY = 'wastes-crawler.world';
+/** Save slots (Sam's call: three). Slot 1 keeps the key the single save always used. */
+export const SLOTS = [1, 2, 3] as const;
+export type Slot = (typeof SLOTS)[number];
+const slotKey = (slot: Slot) =>
+  slot === 1 ? 'wastes-crawler.world' : `wastes-crawler.world.${slot}`;
+const ACTIVE_KEY = 'wastes-crawler.slot';
 
-/** The autosaved world, or null if there is none or storage is unavailable. */
-export function loadWorldText(): string | null {
+/** The slot the game autosaves into. */
+export function activeSlot(): Slot {
   try {
-    return localStorage.getItem(WORLD_KEY);
+    const n = Number(localStorage.getItem(ACTIVE_KEY));
+    return SLOTS.find((s) => s === n) ?? 1;
+  } catch {
+    return 1;
+  }
+}
+
+export function setActiveSlot(slot: Slot): void {
+  try {
+    localStorage.setItem(ACTIVE_KEY, String(slot));
+  } catch {
+    // Without storage the game plays on in slot 1, unsaved.
+  }
+}
+
+/** A slot's saved world, or null if there is none or storage is unavailable. */
+export function loadWorldText(slot: Slot = activeSlot()): string | null {
+  try {
+    return localStorage.getItem(slotKey(slot));
   } catch {
     return null;
   }
 }
 
-export function saveWorldText(text: string | null): boolean {
+export function saveWorldText(text: string | null, slot: Slot = activeSlot()): boolean {
   try {
-    if (text === null) localStorage.removeItem(WORLD_KEY);
-    else localStorage.setItem(WORLD_KEY, text);
+    if (text === null) localStorage.removeItem(slotKey(slot));
+    else localStorage.setItem(slotKey(slot), text);
     return true;
   } catch {
     return false;
