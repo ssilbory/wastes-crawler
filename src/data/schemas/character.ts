@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { AttributeSchema, IdSchema } from './common.ts';
 import { ItemLocationSchema } from './equipment-content.ts';
 
-export const CHARACTER_SCHEMA_VERSION = 4;
+export const CHARACTER_SCHEMA_VERSION = 5;
 
 const Score = z.int().min(3).max(18);
 const Adjustments = z.partialRecord(AttributeSchema, z.int());
@@ -27,6 +27,8 @@ export const CharacterSchema = z.strictObject({
     people: Adjustments,
     /** Background Growth bonuses. */
     background: Adjustments,
+    /** Attribute boosts bought with skill points (SRD 2.7.1.5). */
+    advancement: Adjustments,
   }),
   /** Racial and class foci with their levels; Developed Attribute appears once per attribute. */
   foci: z.array(
@@ -59,7 +61,16 @@ export const CharacterSchema = z.strictObject({
     levels: z.record(IdSchema, z.int().min(0)),
   }),
   hp: z.strictObject({ max: z.int().min(1), current: z.int().min(0) }),
-  xp: z.int().min(0),
+  /** Fight awards come in half points (docs/rules-adaptation.md, XP). */
+  xp: z.number().min(0).multipleOf(0.5),
+  /** Skill points saved for later (SRD 2.7.1.4). */
+  advancement: z.strictObject({
+    skillPoints: z.int().min(0),
+    /** Quick Learner points: non-combat skills or attributes only (SRD 1.5.8). */
+    quickPoints: z.int().min(0),
+    /** A focus's bonus skill points short of the skill's next level (SRD 2.7.1.6). */
+    skillCredit: z.record(IdSchema, z.int().min(1)),
+  }),
   strain: z.strictObject({ value: z.int().min(0), broken: z.boolean() }),
 });
 export type Character = z.infer<typeof CharacterSchema>;

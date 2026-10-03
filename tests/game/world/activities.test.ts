@@ -77,7 +77,8 @@ describe('hiking', () => {
     w.destination = { col: 3, row: 8 };
     w.rations = 4;
     hike(w, data, 'm-2', false);
-    expect(w).toMatchObject({ position: { col: 3, row: 8 }, rations: 12 });
+    expect(w).toMatchObject({ position: { col: 3, row: 8 }, rations: 4, lastTown: 'westhold' });
+    expect(w.log.at(-1)).toContain('The party reaches Westhold.');
   });
 
   it('needs Exert checks past two quarters, and has nowhere to go without a route', () => {

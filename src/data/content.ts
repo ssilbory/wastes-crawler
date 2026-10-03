@@ -14,11 +14,14 @@ import mishaps from '../../data/content/mishaps.json';
 import overlandRules from '../../data/content/overland-rules.json';
 import regions from '../../data/content/regions.json';
 import terrains from '../../data/content/terrains.json';
+import townRules from '../../data/content/town-rules.json';
+import benchmarkWarrior from '../../data/content/benchmark-warrior.json';
 import { combatReferenceErrors } from './combat-check.ts';
 import { equipmentReferenceErrors } from './equipment-check.ts';
 import { focusReferenceErrors } from './focus-content.ts';
 import { magicReferenceErrors } from './magic-check.ts';
 import { overlandReferenceErrors } from './overland-check.ts';
+import { townReferenceErrors } from './town-check.ts';
 import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.ts';
 
 export function loadContent(): ContentData {
@@ -39,6 +42,8 @@ export function loadContent(): ContentData {
     encounterTables: ContentSchemas.encounterTables.parse(encounterTables),
     mishaps: ContentSchemas.mishaps.parse(mishaps),
     overlandRules: ContentSchemas.overlandRules.parse(overlandRules),
+    townRules: ContentSchemas.townRules.parse(townRules),
+    benchmarkWarrior: ContentSchemas.benchmarkWarrior.parse(benchmarkWarrior),
   };
 }
 
@@ -102,5 +107,6 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...magicReferenceErrors(srd, content),
     ...combatReferenceErrors(srd, content),
     ...overlandReferenceErrors(srd, content),
+    ...townReferenceErrors(content),
   ];
 }

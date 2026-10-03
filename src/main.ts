@@ -4,6 +4,7 @@ import './ui/builder/builder.css';
 import './ui/arena/setup.css';
 import './ui/arena/fight.css';
 import './ui/world/world.css';
+import './ui/town/town.css';
 
 const root = document.querySelector<HTMLElement>('#app');
 if (root) render(h(Shell, null), root);

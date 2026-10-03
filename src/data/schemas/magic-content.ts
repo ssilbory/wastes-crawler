@@ -24,8 +24,9 @@ export type Tradition = z.infer<typeof TraditionSchema>;
 export const ClassOptionSchema = z.strictObject({
   id: IdSchema,
   name: z.string().min(1),
-  /** Combat class abilities, such as the full Warrior's (SRD 1.5.18). */
-  abilities: z.array(z.enum(['killing-blow', 'veterans-luck'])).optional(),
+  /** Class abilities that matter to the engine: the full Warrior's (SRD 1.5.18), and the Expert's
+   * Quick Learner (1.5.8), which partial Experts share (1.5.1). */
+  abilities: z.array(z.enum(['killing-blow', 'veterans-luck', 'quick-learner'])).optional(),
   mage: z
     .strictObject({
       traditions: z
@@ -43,6 +44,8 @@ export const ClassOptionSchema = z.strictObject({
       slots: IdSchema,
       /** SRD 1.7.5: four first-level spells for full or dual casters, two for partial. */
       startingSpells: z.int().min(1),
+      /** SRD 2.7.1.7: two for High Mages, one for other Mages. */
+      spellsPerLevel: z.int().min(1),
     })
     .optional(),
 });

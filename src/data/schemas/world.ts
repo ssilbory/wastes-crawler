@@ -1,8 +1,9 @@
 import { z } from 'zod';
 import { IdSchema } from './common.ts';
 import { DefaultPresetSchema } from './roster.ts';
+import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 1;
+export const WORLD_SCHEMA_VERSION = 2;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -23,6 +24,8 @@ export const MemberSaveSchema = z.strictObject({
   /** Spells cast and day Effort spent since the last night's recovery. */
   spellsCast: z.int().min(0),
   effortDay: z.int().min(0),
+  /** XP won while dead, granted when raised. */
+  pendingXp: z.number().min(0).multipleOf(0.5),
 });
 
 export const PendingEncounterSchema = z.strictObject({
@@ -33,6 +36,14 @@ export const PendingEncounterSchema = z.strictObject({
   spotted: z.boolean(),
   text: z.string(),
 });
+
+/** Crowns spent and loot cashed in at one town, at listed value, since `since` (a day). */
+export const TownLedgerSchema = z.strictObject({
+  spent: z.number().min(0),
+  looted: z.number().min(0),
+  since: z.int().min(0),
+});
+export type TownLedger = z.infer<typeof TownLedgerSchema>;
 
 /** A world save (docs/plan.md, Save/load): versioned, with the RNG state. */
 export const WorldSaveSchema = z.strictObject({
@@ -54,6 +65,16 @@ export const WorldSaveSchema = z.strictObject({
   noRecovery: z.boolean(),
   lastTown: IdSchema,
   members: z.array(MemberSaveSchema).min(1).max(8),
+  /** PCs left at a tavern; any tavern can bring them back. */
+  benched: z.array(MemberSaveSchema),
+  /** The party's pooled crowns. */
+  purse: z.number().min(0),
+  /** Loot dice carried unrolled, one entry per die size. */
+  loot: z.array(LootDiceSchema),
+  /** Each visited town's spending and loot since its thresholds last reset. */
+  towns: z.record(IdSchema, TownLedgerSchema),
+  /** The day the economic climate last moved the purse. */
+  climateDay: z.int().min(0),
   encounter: PendingEncounterSchema.nullable(),
   log: z.array(z.string()),
 });

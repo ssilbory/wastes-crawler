@@ -29,8 +29,8 @@ describe('overland content', () => {
           terrain: ['pq', 'p'],
           overlay: ['.?'],
           sites: [
-            { id: 'a', name: 'A', kind: 'town' as const, col: 9, row: 9 },
-            { id: 'a', name: 'B', kind: 'town' as const, col: 0, row: 1 },
+            { id: 'a', name: 'A', kind: 'town' as const, size: 'town' as const, col: 9, row: 9 },
+            { id: 'a', name: 'B', kind: 'town' as const, size: 'town' as const, col: 0, row: 1 },
           ],
           start: 'nowhere',
         },
@@ -39,7 +39,9 @@ describe('overland content', () => {
           id: 'wet',
           terrain: ['r'],
           overlay: ['.'],
-          sites: [{ id: 'c', name: 'C', kind: 'town' as const, col: 0, row: 0 }],
+          sites: [
+            { id: 'c', name: 'C', kind: 'town' as const, size: 'town' as const, col: 0, row: 0 },
+          ],
           start: 'c',
         },
       ],

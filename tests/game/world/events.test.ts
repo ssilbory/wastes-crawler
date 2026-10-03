@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { endOfDay } from '../../../src/game/world/day.ts';
 import { leaveEncounter, maybeEncounter, rollEnemies } from '../../../src/game/world/encounters.ts';
 import { applyBattle, encounterBattle } from '../../../src/game/world/fight.ts';
-import { enterTown, wipe } from '../../../src/game/world/town.ts';
+import { wipe } from '../../../src/game/world/town.ts';
 import type { World } from '../../../src/game/world/types.ts';
 import type { CasterState } from '../../../src/game/combat/types.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
@@ -84,21 +84,10 @@ describe('wandering encounters (SRD 2.12.6, 5.2.1)', () => {
   });
 });
 
-describe('towns (Phase 5 stand-ins)', () => {
-  it('restores everyone, raises the dead, and restocks', () => {
-    const w = world();
-    const snag = member(w, 'Snag');
-    snag.dead = true;
-    w.rations = 4;
-    enterTown(w, data, 'eastmarch');
-    expect(snag.dead).toBe(false);
-    expect(w).toMatchObject({ rations: 12, lastTown: 'eastmarch', camp: 'made' });
-    expect(w.log.at(-1)).toContain('The temple raises Snag.');
-    expect(() => enterTown(w, data, 'atlantis')).toThrow('unknown town atlantis');
-  });
-
-  it('sends a fallen party back to the last town the next morning', () => {
+describe('a fallen party', () => {
+  it('wakes in the last town the next morning, the dead still dead', () => {
     const w = out(world());
+    member(w, 'Snag').dead = true;
     w.quarter = 2;
     w.encounter = { enemies: [['thug-or-militia']], hostile: true, spotted: false, text: '' };
     w.destination = { col: 9, row: 9 };
@@ -110,6 +99,7 @@ describe('towns (Phase 5 stand-ins)', () => {
       day: 1,
       quarter: 0,
     });
+    expect(member(w, 'Snag').dead).toBe(true);
     w.lastTown = 'atlantis';
     expect(() => wipe(w, data)).toThrow('unknown town atlantis');
   });
@@ -201,17 +191,29 @@ describe('fighting encounters', () => {
     if (!fizzC) throw new Error('no Fizzwick');
     fizzC.strain = { strain: 3, max: 10, broken: false };
     caster.effortDay = 2;
-    applyBattle(w, data, fight, { outcome: 'party', rounds: 3, deaths: 1, battle: fight.battle });
+    applyBattle(
+      w,
+      data,
+      fight,
+      { outcome: 'party', rounds: 3, deaths: 1, battle: fight.battle },
+      null,
+    );
     expect(member(w, 'Snag')).toMatchObject({ dead: true });
     expect(member(w, 'Grukk')).toMatchObject({ frail: true, character: { hp: { current: 1 } } });
     expect(fizz).toMatchObject({ frail: false, spellsCast: 1, effortDay: 2 });
     expect(fizz.character.strain.value).toBe(3);
     expect(w.encounter).toBeNull();
-    expect(w.log.at(-1)).toContain('The party wins after 3 rounds.');
+    expect(w.log.at(-2)).toContain('The party wins after 3 rounds.');
     w.encounter = { enemies: [['thug-or-militia']], hostile: true, spotted: false, text: '' };
     const quick = encounterBattle(w, data);
-    applyBattle(w, data, quick, { outcome: 'party', rounds: 1, deaths: 0, battle: quick.battle });
-    expect(w.log.at(-1)).toContain('The party wins after 1 round.');
+    applyBattle(
+      w,
+      data,
+      quick,
+      { outcome: 'party', rounds: 1, deaths: 0, battle: quick.battle },
+      null,
+    );
+    expect(w.log.at(-2)).toContain('The party wins after 1 round.');
   });
 
   it('notes a broken-off fight, and a lost one sends the party to town', () => {
@@ -221,11 +223,23 @@ describe('fighting encounters', () => {
     member0.character = { ...member0.character, strain: { value: 0, broken: false } };
     let fight = encounterBattle(w, data);
     Object.assign(fight.battle.combatants[0] ?? {}, { strain: null });
-    applyBattle(w, data, fight, { outcome: 'draw', rounds: 100, deaths: 0, battle: fight.battle });
+    applyBattle(
+      w,
+      data,
+      fight,
+      { outcome: 'draw', rounds: 100, deaths: 0, battle: fight.battle },
+      null,
+    );
     expect(w.log.at(-1)).toContain('The fight breaks off.');
     w.encounter = { enemies: [['thug-or-militia']], hostile: true, spotted: false, text: '' };
     fight = encounterBattle(w, data);
-    applyBattle(w, data, fight, { outcome: 'enemy', rounds: 4, deaths: 0, battle: fight.battle });
+    applyBattle(
+      w,
+      data,
+      fight,
+      { outcome: 'enemy', rounds: 4, deaths: 0, battle: fight.battle },
+      null,
+    );
     expect(w.position).toEqual({ col: 3, row: 8 });
   });
 });

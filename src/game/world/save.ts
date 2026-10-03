@@ -4,11 +4,38 @@ import { WORLD_SCHEMA_VERSION, WorldSaveSchema, type WorldSave } from '../../dat
 import { rngFromState } from '../../rules/rng.ts';
 import type { ResourceDie } from '../../rules/resource-die.ts';
 import type { GameData } from '../character/context.ts';
-import { importCharacter } from '../character/io.ts';
+import { importCharacter, type Migrations, type Raw } from '../character/io.ts';
 import type { Member, World } from './types.ts';
 
 /** The log kept in saves; older lines are dropped. */
 export const SAVED_LOG_LINES = 200;
+
+const crownsOf = (m: Raw) => {
+  const crowns = (m.character as Raw | undefined)?.crowns;
+  return typeof crowns === 'number' ? crowns : 0;
+};
+
+/** Upgrades a world save from version n to n + 1, keyed by n. */
+export const WORLD_MIGRATIONS: Migrations = {
+  // Version 2 adds towns (Phase 6a): the members' crowns pool into the purse.
+  1: (raw) => {
+    const members = Array.isArray(raw.members) ? (raw.members as Raw[]) : [];
+    return {
+      ...raw,
+      schemaVersion: 2,
+      members: members.map((m) => ({
+        ...m,
+        pendingXp: 0,
+        character: { ...(m.character as Raw), crowns: 0 },
+      })),
+      benched: [],
+      purse: members.reduce((sum, m) => sum + crownsOf(m), 0),
+      loot: [],
+      towns: {},
+      climateDay: raw.day,
+    };
+  },
+};
 
 export function serializeWorld(w: World): string {
   const save: WorldSave = {
@@ -26,6 +53,11 @@ export function serializeWorld(w: World): string {
     noRecovery: w.noRecovery,
     lastTown: w.lastTown,
     members: w.members,
+    benched: w.benched,
+    purse: w.purse,
+    loot: w.loot,
+    towns: w.towns,
+    climateDay: w.climateDay,
     encounter: w.encounter,
     log: w.log.slice(-SAVED_LOG_LINES),
   };
@@ -34,6 +66,30 @@ export function serializeWorld(w: World): string {
 
 export type WorldLoad = { ok: true; world: World } | { ok: false; errors: string[] };
 
+function migrate(raw: unknown): Raw | string {
+  if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) return 'not a world save';
+  let doc = raw as Raw;
+  let version = doc.schemaVersion;
+  if (typeof version !== 'number' || !Number.isInteger(version)) return 'schemaVersion is missing';
+  if (version > WORLD_SCHEMA_VERSION) return `made by a newer version of the game (${version})`;
+  for (; version < WORLD_SCHEMA_VERSION; version++) {
+    const step = WORLD_MIGRATIONS[version];
+    if (!step) return `no upgrade from schema ${version}`;
+    doc = step(doc);
+  }
+  return doc;
+}
+
+function members(saved: WorldSave['members'], data: GameData, errors: string[]): Member[] {
+  const out: Member[] = [];
+  for (const m of saved) {
+    const c = importCharacter(JSON.stringify(m.character), data);
+    if (c.ok) out.push({ ...m, character: c.character });
+    else errors.push(...c.errors.map((e) => `${m.id}: ${e}`));
+  }
+  return out;
+}
+
 export function parseWorld(text: string, data: GameData): WorldLoad {
   let raw: unknown;
   try {
@@ -41,7 +97,9 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
   } catch {
     return { ok: false, errors: ['not valid JSON'] };
   }
-  const parsed = WorldSaveSchema.safeParse(raw);
+  const doc = migrate(raw);
+  if (typeof doc === 'string') return { ok: false, errors: [doc] };
+  const parsed = WorldSaveSchema.safeParse(doc);
   if (!parsed.success) {
     return {
       ok: false,
@@ -51,13 +109,9 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
   const s = parsed.data;
   if (!data.content.regions.some((r) => r.id === s.region))
     return { ok: false, errors: [`unknown region ${s.region}`] };
-  const members: Member[] = [];
   const errors: string[] = [];
-  for (const m of s.members) {
-    const c = importCharacter(JSON.stringify(m.character), data);
-    if (c.ok) members.push({ ...m, character: c.character });
-    else errors.push(...c.errors.map((e) => `${m.id}: ${e}`));
-  }
+  const party = members(s.members, data, errors);
+  const benched = members(s.benched, data, errors);
   if (errors.length > 0) return { ok: false, errors };
   return {
     ok: true,
@@ -76,7 +130,12 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       rng: rngFromState(s.rng),
       visited: new Set(s.visited),
       rations: s.rations as ResourceDie,
-      members,
+      members: party,
+      benched,
+      purse: s.purse,
+      loot: s.loot,
+      towns: s.towns,
+      climateDay: s.climateDay,
     },
   };
 }

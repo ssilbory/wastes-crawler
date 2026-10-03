@@ -43,31 +43,43 @@ describe('quarter days', () => {
     expect(settleByLeaving(w, data)).toBe(false);
     w.rng = createRng('fight');
     const fight = encounterBattle(w, data);
-    settleByFighting(w, data, fight, {
-      outcome: 'party',
-      rounds: 2,
-      deaths: 0,
-      battle: fight.battle,
-    });
+    settleByFighting(
+      w,
+      data,
+      fight,
+      {
+        outcome: 'party',
+        rounds: 2,
+        deaths: 0,
+        battle: fight.battle,
+      },
+      null,
+    );
     expect(w.quarter).toBe(1);
     w.encounter = { ...thugs, hostile: false };
     expect(settleByLeaving(w, data)).toBe(true);
     expect(w.quarter).toBe(2);
     w.encounter = thugs;
     const lost = encounterBattle(w, data);
-    settleByFighting(w, data, lost, {
-      outcome: 'enemy',
-      rounds: 2,
-      deaths: 0,
-      battle: lost.battle,
-    });
+    settleByFighting(
+      w,
+      data,
+      lost,
+      {
+        outcome: 'enemy',
+        rounds: 2,
+        deaths: 0,
+        battle: lost.battle,
+      },
+      null,
+    );
     expect(w).toMatchObject({ day: 1, quarter: 0 });
   });
 });
 
 describe('new worlds', () => {
-  it('needs one to eight members, and starts in the region’s starting town', () => {
-    expect(() => newWorld(data, createRng('x'), [])).toThrow('a party has one to eight members');
+  it('needs one to six PCs, and starts in the region’s starting town', () => {
+    expect(() => newWorld(data, createRng('x'), [])).toThrow('a party has one to six PCs');
     const w = newWorld(
       data,
       createRng('x'),
@@ -100,10 +112,18 @@ describe('world saves', () => {
 
   it('reports bad files, unknown regions, and bad characters', () => {
     expect(parseWorld('{', data)).toEqual({ ok: false, errors: ['not valid JSON'] });
-    expect(parseWorld('{}', data)).toMatchObject({ ok: false });
-    expect(parseWorld('[]', data)).toMatchObject({
-      errors: [expect.stringMatching(/^\(file\): /)],
+    expect(parseWorld('[]', data)).toEqual({ ok: false, errors: ['not a world save'] });
+    expect(parseWorld('{}', data)).toEqual({ ok: false, errors: ['schemaVersion is missing'] });
+    expect(parseWorld('{"schemaVersion":9}', data)).toEqual({
+      ok: false,
+      errors: ['made by a newer version of the game (9)'],
     });
+    expect(parseWorld('{"schemaVersion":0}', data)).toEqual({
+      ok: false,
+      errors: ['no upgrade from schema 0'],
+    });
+    const empty = parseWorld('{"schemaVersion":2}', data);
+    expect(!empty.ok && empty.errors[0]).toMatch(/^region: /);
     const save = JSON.parse(serializeWorld(world()));
     expect(parseWorld(JSON.stringify({ ...save, region: 'atlantis' }), data)).toEqual({
       ok: false,

@@ -217,15 +217,21 @@ describe('finishCharacter', () => {
     const result = finishCharacter(raider(), data, scriptedRng([4, 0xabc, 0xdef]));
     if (!result.ok) throw new Error(result.errors.join('; '));
     expect(result.character).toMatchObject({
-      schemaVersion: 4,
+      schemaVersion: 5,
       id: 'char-00000abc00000def',
       name: 'Snag',
       people: 'goblin',
       background: 'raider',
-      attributes: { base: array, people: { str: -2, dex: 2, int: 1 }, background: {} },
+      attributes: {
+        base: array,
+        people: { str: -2, dex: 2, int: 1 },
+        background: {},
+        advancement: {},
+      },
       classes: { current: 'full-warrior', levels: { 'full-warrior': 1 } },
       hp: { max: 6, current: 6 },
       xp: 0,
+      advancement: { skillPoints: 0, quickPoints: 0, skillCredit: {} },
       strain: { value: 0, broken: false },
     });
   });

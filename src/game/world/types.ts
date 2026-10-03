@@ -2,7 +2,9 @@
 import type {
   Character,
   DefaultPreset,
+  LootDice,
   PendingEncounter,
+  TownLedger,
   WorldSave,
 } from '../../data/schemas/index.ts';
 import type { Hex } from '../../rules/hex.ts';
@@ -23,6 +25,7 @@ export interface Member {
   slept: boolean;
   spellsCast: number;
   effortDay: number;
+  pendingXp: number;
 }
 
 export interface World {
@@ -39,6 +42,11 @@ export interface World {
   noRecovery: boolean;
   lastTown: string;
   members: Member[];
+  benched: Member[];
+  purse: number;
+  loot: LootDice[];
+  towns: Record<string, TownLedger>;
+  climateDay: number;
   encounter: PendingEncounter | null;
   log: string[];
 }

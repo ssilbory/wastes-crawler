@@ -5,7 +5,9 @@ import { createBattle, type BattleResult } from '../combat/battle.ts';
 import { pcCombatant } from '../combat/combatants.ts';
 import type { Battle, CasterState } from '../combat/types.ts';
 import type { GameData } from '../character/context.ts';
+import { difficultyTier, type Difficulty } from './difficulty.ts';
 import { alive, note, setHp } from './members.ts';
+import { addLoot } from './shop.ts';
 import { wipe } from './town.ts';
 import type { Member, World } from './types.ts';
 
@@ -13,6 +15,8 @@ export interface WorldBattle {
   battle: Battle;
   /** Member ids in the order of the battle's pc-N combatants. */
   memberIds: string[];
+  /** The encounter's enemy rows, for loot and the XP benchmark. */
+  enemies: string[][];
 }
 
 const fighters = (w: World) => alive(w).filter((m) => m.character.hp.current > 0);
@@ -36,7 +40,7 @@ export function encounterBattle(w: World, data: GameData): WorldBattle {
       c.caster.effortUsed = c.caster.effortDay;
     }
   });
-  return { battle, memberIds: members.map((m) => m.id) };
+  return { battle, memberIds: members.map((m) => m.id), enemies: w.encounter.enemies };
 }
 
 function carryBack(data: GameData, m: Member, c: Battle['combatants'][number]): void {
@@ -64,12 +68,44 @@ function carryBack(data: GameData, m: Member, c: Battle['combatants'][number]): 
   }
 }
 
-/** Writes a concluded battle back to the party and clears the encounter. */
+/** The loot dice the defeated enemies drop (docs/rules-adaptation.md, Loot dice). */
+function winnings(w: World, data: GameData, enemies: readonly (readonly string[])[]): void {
+  const dice = enemies.flatMap((row) =>
+    row.flatMap((id) => {
+      const loot = data.content.monsterCombat.find((m) => m.id === id)?.loot;
+      return loot ? [loot] : [];
+    }),
+  );
+  if (dice.length === 0) return;
+  addLoot(w, dice);
+  const total = new Map<number, number>();
+  for (const d of dice) total.set(d.sides, (total.get(d.sides) ?? 0) + d.count);
+  const text = [...total].map(([sides, count]) => `${count}d${sides}`).join(' + ');
+  note(w, `The party takes ${text} of loot.`);
+}
+
+/** Every PC who fought gets the award; the dead receive it when raised (docs/rules-adaptation.md). */
+function award(w: World, data: GameData, fight: WorldBattle, difficulty: Difficulty): void {
+  const tier = difficultyTier(data, difficulty);
+  note(w, `A ${tier.name} fight: ${tier.xp} XP each.`);
+  if (tier.xp === 0) return;
+  for (const id of fight.memberIds) {
+    const m = w.members.find((x) => x.id === id) as Member;
+    if (m.dead) m.pendingXp += tier.xp;
+    else m.character = { ...m.character, xp: m.character.xp + tier.xp };
+  }
+}
+
+/**
+ * Writes a concluded battle back to the party and clears the encounter. A win pays loot dice and,
+ * given the benchmark's verdict, XP; a draw or a loss pays nothing.
+ */
 export function applyBattle(
   w: World,
   data: GameData,
   fight: WorldBattle,
   result: BattleResult,
+  difficulty: Difficulty | null,
 ): void {
   fight.memberIds.forEach((id, i) => {
     const m = w.members.find((x) => x.id === id) as Member;
@@ -78,5 +114,9 @@ export function applyBattle(
   w.encounter = null;
   if (result.outcome === 'enemy') wipe(w, data);
   else if (result.outcome === 'draw') note(w, 'The fight breaks off.');
-  else note(w, `The party wins after ${result.rounds} round${result.rounds === 1 ? '' : 's'}.`);
+  else {
+    note(w, `The party wins after ${result.rounds} round${result.rounds === 1 ? '' : 's'}.`);
+    winnings(w, data, fight.enemies);
+    if (difficulty) award(w, data, fight, difficulty);
+  }
 }

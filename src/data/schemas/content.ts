@@ -15,6 +15,8 @@ import {
   RegionSchema,
   TerrainSchema,
 } from './overland-content.ts';
+import { CharacterSchema } from './character.ts';
+import { TownRulesSchema } from './town-content.ts';
 
 const contentBase = {
   id: IdSchema,
@@ -148,6 +150,9 @@ export const ContentSchemas = {
   encounterTables: z.array(EncounterTableSchema).min(1),
   mishaps: z.array(MishapSchema).min(1),
   overlandRules: OverlandRulesSchema,
+  townRules: TownRulesSchema,
+  /** The Warrior four of whom benchmark each fight for XP (docs/rules-adaptation.md, XP). */
+  benchmarkWarrior: CharacterSchema,
 } as const;
 export type ContentData = {
   [K in keyof typeof ContentSchemas]: z.infer<(typeof ContentSchemas)[K]>;

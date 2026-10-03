@@ -1,15 +1,18 @@
 import { z } from 'zod';
 import { AttributeSchema, DiceSchema, IdSchema } from './common.ts';
+import { LootDiceSchema } from './town-content.ts';
 
 /**
  * How an SRD monster fights in the engine: the SRD weapon behind a "Wpn" damage entry, and tags.
  * `flying` ignores formation and cover, `reach` attacks from the second row, `unliving` doesn't
- * sleep, and `metal` carries enough metal for Stunning Shock.
+ * sleep, and `metal` carries enough metal for Stunning Shock. `loot` is what each one drops when
+ * the party wins; none for beasts and the mindless.
  */
 export const MonsterCombatSchema = z.strictObject({
   id: IdSchema,
   weapon: IdSchema.optional(),
   tags: z.array(z.enum(['flying', 'reach', 'unliving', 'metal'])),
+  loot: LootDiceSchema.optional(),
 });
 export type MonsterCombat = z.infer<typeof MonsterCombatSchema>;
 export type MonsterTag = MonsterCombat['tags'][number];

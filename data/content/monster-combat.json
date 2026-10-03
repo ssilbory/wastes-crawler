@@ -2,87 +2,155 @@
   {
     "id": "peaceful-human",
     "weapon": "club",
-    "tags": []
+    "tags": [],
+    "loot": {
+      "count": 1,
+      "sides": 4
+    }
   },
   {
     "id": "thug-or-militia",
     "weapon": "spear-light",
-    "tags": ["metal"]
+    "tags": ["metal"],
+    "loot": {
+      "count": 1,
+      "sides": 6
+    }
   },
   {
     "id": "barbarian-fighter",
     "weapon": "axe-war",
-    "tags": ["metal"]
+    "tags": ["metal"],
+    "loot": {
+      "count": 1,
+      "sides": 6
+    }
   },
   {
     "id": "veteran-soldier",
     "weapon": "spear-light",
-    "tags": ["metal"]
+    "tags": ["metal"],
+    "loot": {
+      "count": 1,
+      "sides": 6
+    }
   },
   {
     "id": "skilled-veteran",
     "weapon": "sword-long",
-    "tags": ["metal"]
+    "tags": ["metal"],
+    "loot": {
+      "count": 2,
+      "sides": 6
+    }
   },
   {
     "id": "elites-or-special-guards",
     "weapon": "halberd",
-    "tags": ["metal"]
+    "tags": ["metal"],
+    "loot": {
+      "count": 3,
+      "sides": 6
+    }
   },
   {
     "id": "knight-or-minor-hero",
     "weapon": "sword-long",
-    "tags": ["metal"]
+    "tags": ["metal"],
+    "loot": {
+      "count": 4,
+      "sides": 6
+    }
   },
   {
     "id": "warrior-baron",
     "weapon": "sword-great",
-    "tags": ["metal"]
+    "tags": ["metal"],
+    "loot": {
+      "count": 6,
+      "sides": 6
+    }
   },
   {
     "id": "barbarian-warlord",
     "weapon": "axe-war",
-    "tags": ["metal"]
+    "tags": ["metal"],
+    "loot": {
+      "count": 8,
+      "sides": 6
+    }
   },
   {
     "id": "mighty-general",
     "weapon": "sword-long",
-    "tags": ["metal"]
+    "tags": ["metal"],
+    "loot": {
+      "count": 8,
+      "sides": 6
+    }
   },
   {
     "id": "major-hero",
     "weapon": "sword-great",
-    "tags": ["metal"]
+    "tags": ["metal"],
+    "loot": {
+      "count": 10,
+      "sides": 6
+    }
   },
   {
     "id": "great-warrior-king",
     "weapon": "sword-great",
-    "tags": ["metal"]
+    "tags": ["metal"],
+    "loot": {
+      "count": 12,
+      "sides": 6
+    }
   },
   {
     "id": "petty-mage",
     "weapon": "dagger",
-    "tags": ["metal"]
+    "tags": ["metal"],
+    "loot": {
+      "count": 2,
+      "sides": 6
+    }
   },
   {
     "id": "tribal-shaman",
     "weapon": "staff",
-    "tags": []
+    "tags": [],
+    "loot": {
+      "count": 4,
+      "sides": 6
+    }
   },
   {
     "id": "skilled-sorcerer",
     "weapon": "dagger",
-    "tags": ["metal"]
+    "tags": ["metal"],
+    "loot": {
+      "count": 5,
+      "sides": 6
+    }
   },
   {
     "id": "master-wizard",
     "weapon": "staff",
-    "tags": []
+    "tags": [],
+    "loot": {
+      "count": 8,
+      "sides": 6
+    }
   },
   {
     "id": "famous-arch-mage",
     "weapon": "staff",
-    "tags": []
+    "tags": [],
+    "loot": {
+      "count": 10,
+      "sides": 6
+    }
   },
   {
     "id": "small-pack-predator",
@@ -111,19 +179,35 @@
   {
     "id": "automaton-humanlike",
     "weapon": "mace",
-    "tags": ["unliving", "metal"]
+    "tags": ["unliving", "metal"],
+    "loot": {
+      "count": 1,
+      "sides": 6
+    }
   },
   {
     "id": "automaton-laborer",
-    "tags": ["unliving", "metal"]
+    "tags": ["unliving", "metal"],
+    "loot": {
+      "count": 1,
+      "sides": 6
+    }
   },
   {
     "id": "automaton-military",
-    "tags": ["unliving", "metal"]
+    "tags": ["unliving", "metal"],
+    "loot": {
+      "count": 2,
+      "sides": 6
+    }
   },
   {
     "id": "automaton-warbot",
-    "tags": ["unliving", "metal", "reach"]
+    "tags": ["unliving", "metal", "reach"],
+    "loot": {
+      "count": 5,
+      "sides": 6
+    }
   },
   {
     "id": "slime-or-ooze",

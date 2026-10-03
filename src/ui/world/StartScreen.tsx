@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks';
 import type { RosterEntry } from '../../game/character/roster.ts';
-import type { Recruit } from '../../game/world/new-world.ts';
+import { MAX_PCS, type Recruit } from '../../game/world/new-world.ts';
 import { PartySetup, type Placement } from '../arena/PartySetup.tsx';
 
 /** Starting a new world from the roster, continuing the saved one, or loading a save file. */
@@ -66,10 +66,11 @@ export function StartScreen(props: {
           Seed (optional){' '}
           <input value={seed} onInput={(e) => setSeed((e.target as HTMLInputElement).value)} />
         </label>
+        {party.length > MAX_PCS && <span class="hint">A party holds {MAX_PCS} PCs.</span>}
         <button
           type="button"
           class="create"
-          disabled={party.length === 0}
+          disabled={party.length === 0 || party.length > MAX_PCS}
           onClick={() => props.onNew(party, seed)}
         >
           {props.hasSave ? 'Start a new world (replaces the save)' : 'Start a new world'}

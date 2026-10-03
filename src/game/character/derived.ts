@@ -62,10 +62,8 @@ function sheetMagic(
 }
 
 export function finalScores(c: Character): AttributeScores {
-  return addAdjustments(
-    addAdjustments(c.attributes.base, c.attributes.people),
-    c.attributes.background,
-  );
+  const { base, people, background, advancement } = c.attributes;
+  return addAdjustments(addAdjustments(addAdjustments(base, people), background), advancement);
 }
 
 const SAVES: readonly SaveType[] = ['physical', 'evasion', 'mental', 'luck'];

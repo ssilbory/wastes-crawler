@@ -234,7 +234,12 @@ export function finishCharacter(choices: Choices, data: GameData, rng: Rng): Fin
     people: choices.people,
     ...(choices.lineage === null ? {} : { lineage: choices.lineage }),
     background: background.id,
-    attributes: { base: array, people: ev.peopleAdjust, background: ev.backgroundAdjust },
+    attributes: {
+      base: array,
+      people: ev.peopleAdjust,
+      background: ev.backgroundAdjust,
+      advancement: {},
+    },
     foci: ev.foci,
     arts: ev.magic.arts,
     spells: { known: ev.magic.known, prepared: ev.magic.prepared },
@@ -244,6 +249,7 @@ export function finishCharacter(choices: Choices, data: GameData, rng: Rng): Fin
     classes: startingClass(progression.id),
     hp: { max: hp, current: hp },
     xp: 0,
+    advancement: { skillPoints: 0, quickPoints: 0, skillCredit: {} },
     strain: { value: 0, broken: false },
   });
   return { ok: true, character };

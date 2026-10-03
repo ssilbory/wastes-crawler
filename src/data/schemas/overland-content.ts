@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { DiceSchema, IdSchema } from './common.ts';
+import { TownSizeSchema } from './town-content.ts';
 
 /**
  * A terrain type (docs/rules-adaptation.md, Overland travel). `survive` is the SRD 2.12.5 forage
@@ -34,8 +35,9 @@ export const DANGER_GLYPHS: Record<string, Danger> = {
 export const SiteSchema = z.strictObject({
   id: IdSchema,
   name: z.string().min(1),
-  /** Phase 5 has only stand-in towns: a full recovery and restocking on entry. */
   kind: z.literal('town'),
+  /** Sets the town's spending and loot thresholds. */
+  size: TownSizeSchema,
   col: z.int().min(0),
   row: z.int().min(0),
 });

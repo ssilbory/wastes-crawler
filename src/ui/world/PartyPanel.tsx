@@ -1,5 +1,6 @@
 import type { Member } from '../../game/world/types.ts';
 import { characterSheet } from '../../game/character/derived.ts';
+import { levelLine } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 
 function tags(m: Member): string[] {
@@ -31,6 +32,7 @@ export function PartyPanel(props: { members: Member[] }) {
               <span class="slot-stats">
                 HP {c.hp.current}/{c.hp.max} · Strain {c.strain.value}/{max}
               </span>
+              <span class="slot-stats">{levelLine(data, c)}</span>
               {tags(m).length > 0 && (
                 <span class="conditions">
                   {tags(m).map((t) => (

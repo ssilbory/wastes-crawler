@@ -1,5 +1,6 @@
 import { useRef, useState } from 'preact/hooks';
 import { newWorld, type Recruit } from '../../game/world/new-world.ts';
+import { benchmarkSeed, partyLevel, type Difficulty } from '../../game/world/difficulty.ts';
 import { encounterBattle, type WorldBattle } from '../../game/world/fight.ts';
 import { passQuarter, settleByFighting, settleByLeaving } from '../../game/world/quarter.ts';
 import { parseWorld, serializeWorld } from '../../game/world/save.ts';
@@ -8,6 +9,8 @@ import { createRng } from '../../rules/rng.ts';
 import { FightScreen } from '../arena/FightScreen.tsx';
 import { data, freshRng } from '../builder/data.ts';
 import { loadRoster, loadWorldText, saveWorldText } from '../storage.ts';
+import { TownScreen } from '../town/TownScreen.tsx';
+import { assess } from './assess.ts';
 import { MapScreen } from './MapScreen.tsx';
 import { StartScreen } from './StartScreen.tsx';
 
@@ -24,8 +27,9 @@ export function WorldApp() {
   const [roster] = useState(() => loadRoster().entries);
   const world = useRef<World | null>(null);
   const [version, setVersion] = useState(0);
-  const [screen, setScreen] = useState<'start' | 'map'>('start');
+  const [screen, setScreen] = useState<'start' | 'map' | 'town'>('start');
   const [fight, setFight] = useState<WorldBattle | null>(null);
+  const difficulty = useRef<Promise<Difficulty> | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
   const [hasSave, setHasSave] = useState(() => loadWorldText() !== null);
 
@@ -63,6 +67,16 @@ export function WorldApp() {
         onImport={(file) => void file.text().then(open)}
       />
     );
+  if (screen === 'town')
+    return (
+      <TownScreen
+        world={w}
+        roster={roster}
+        version={version}
+        onChange={changed}
+        onLeave={() => setScreen('map')}
+      />
+    );
   if (fight)
     return (
       <div class="arena">
@@ -78,9 +92,18 @@ export function WorldApp() {
           canLeave={false}
           doneLabel="Back to the map"
           onDone={(result) => {
-            if (result) settleByFighting(w, data, fight, result);
-            setFight(null);
-            changed();
+            const verdict = difficulty.current;
+            difficulty.current = null;
+            if (!result || !verdict) {
+              setFight(null);
+              changed();
+              return;
+            }
+            void verdict.then((d) => {
+              settleByFighting(w, data, fight, result, d);
+              setFight(null);
+              changed();
+            });
           }}
         />
       </div>
@@ -95,9 +118,17 @@ export function WorldApp() {
         changed();
       }}
       onFight={() => {
-        setFight(encounterBattle(w, data));
+        const battle = encounterBattle(w, data);
+        difficulty.current = assess({
+          enemies: battle.enemies,
+          level: partyLevel(w, data),
+          seed: benchmarkSeed(w),
+          fights: data.content.townRules.xp.simFights,
+        });
+        setFight(battle);
         changed();
       }}
+      onTown={() => setScreen('town')}
       onLeave={() => {
         settleByLeaving(w, data);
         changed();

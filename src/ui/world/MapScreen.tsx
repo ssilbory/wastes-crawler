@@ -5,6 +5,7 @@ import { route, setDestination, suggestPlan } from '../../game/world/plans.ts';
 import { regionMap } from '../../game/world/region.ts';
 import { hexKey } from '../../rules/hex.ts';
 import { hexCells, mapPixels } from '../../render/hex-view.ts';
+import { crowns, lootText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { HEX_SIZE, HexMap } from './HexMap.tsx';
 import { PartyPanel } from './PartyPanel.tsx';
@@ -18,6 +19,7 @@ export function MapScreen(props: {
   onPass: (plan: QuarterPlan) => void;
   onFight: () => void;
   onLeave: () => void;
+  onTown: () => void;
   onExport: () => void;
   onAbandon: () => void;
 }) {
@@ -28,7 +30,8 @@ export function MapScreen(props: {
   const choose = (p: QuarterPlan) => setPlan({ version: props.version, plan: p });
   const able = w.members.filter((m) => !m.dead && m.character.hp.current > 0);
   const { width, height } = mapPixels(map, HEX_SIZE);
-  const here = map.siteAt(w.position)?.name ?? map.terrainAt(w.position).name;
+  const town = map.siteAt(w.position);
+  const here = town?.name ?? map.terrainAt(w.position).name;
   return (
     <div class="world">
       <div class="world-bar">
@@ -37,6 +40,13 @@ export function MapScreen(props: {
           {here} ({hexKey(w.position)})
         </span>
         <span>Rations: {w.rations === 0 ? 'none' : `d${w.rations}`}</span>
+        <span>Purse: {crowns(w.purse)}</span>
+        <span>Loot: {lootText(w.loot)}</span>
+        {town && !w.encounter && (
+          <button type="button" onClick={props.onTown}>
+            Visit {town.name}
+          </button>
+        )}
         <button type="button" class="secondary" onClick={props.onExport}>
           Export save
         </button>

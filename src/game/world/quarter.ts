@@ -7,6 +7,7 @@ import { camp, hike } from './activities.ts';
 import { dateOf, quarterName } from './calendar.ts';
 import { endOfDay } from './day.ts';
 import { leaveEncounter, maybeEncounter } from './encounters.ts';
+import type { Difficulty } from './difficulty.ts';
 import { applyBattle, type WorldBattle } from './fight.ts';
 import { alive } from './members.ts';
 import type { QuarterPlan, World } from './types.ts';
@@ -53,7 +54,8 @@ export function settleByFighting(
   data: GameData,
   fight: WorldBattle,
   result: BattleResult,
+  difficulty: Difficulty | null,
 ): void {
-  applyBattle(w, data, fight, result);
+  applyBattle(w, data, fight, result, difficulty);
   if (result.outcome !== 'enemy') endQuarter(w, data);
 }

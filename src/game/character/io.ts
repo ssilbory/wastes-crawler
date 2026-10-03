@@ -19,6 +19,13 @@ export const MIGRATIONS: Migrations = {
   2: (raw) => ({ ...raw, inventory: [], crowns: 0, schemaVersion: 3 }),
   // Version 4 adds arts and spells (Phase 3e); older characters had no Mage classes.
   3: (raw) => ({ ...raw, arts: [], spells: { known: [], prepared: [] }, schemaVersion: 4 }),
+  // Version 5 adds leveling in town (Phase 6a): attribute boosts and saved skill points.
+  4: (raw) => ({
+    ...raw,
+    attributes: { ...(raw.attributes as Raw), advancement: {} },
+    advancement: { skillPoints: 0, quickPoints: 0, skillCredit: {} },
+    schemaVersion: 5,
+  }),
 };
 
 export function exportCharacter(c: Character): string {

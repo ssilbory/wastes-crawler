@@ -45,3 +45,4 @@ export * from './weapons.ts';
 export * from './roster.ts';
 export * from './overland-content.ts';
 export * from './world.ts';
+export * from './town-content.ts';

@@ -157,8 +157,8 @@ describe('export and import', () => {
 
   it('rejects newer versions and versions with no upgrade path', () => {
     const c = goblinWarrior();
-    expect(importCharacter(JSON.stringify({ ...c, schemaVersion: 5 }), data)).toMatchObject({
-      errors: ['made by a newer version of the game (schema 5)'],
+    expect(importCharacter(JSON.stringify({ ...c, schemaVersion: 6 }), data)).toMatchObject({
+      errors: ['made by a newer version of the game (schema 6)'],
     });
     expect(importCharacter(JSON.stringify({ ...c, schemaVersion: 0 }), data)).toMatchObject({
       errors: ['no upgrade from schema 0'],
@@ -182,8 +182,17 @@ describe('export and import', () => {
     const v1 = { ...goblinWarrior(), schemaVersion: 1, foci: undefined };
     expect(importCharacter(JSON.stringify(v1), data)).toMatchObject({
       ok: true,
-      character: { schemaVersion: 4, foci: [], inventory: [], crowns: 0, arts: [] },
+      character: { schemaVersion: 5, foci: [], inventory: [], crowns: 0, arts: [] },
     });
+  });
+
+  it('upgrades a version 4 file with no attribute boosts or saved skill points', () => {
+    const c = goblinWarrior();
+    const attributes: Record<string, unknown> = { ...c.attributes };
+    delete attributes.advancement;
+    const v4: Record<string, unknown> = { ...c, attributes, schemaVersion: 4 };
+    delete v4.advancement;
+    expect(importCharacter(JSON.stringify(v4), data)).toEqual({ ok: true, character: c });
   });
 
   it('rejects unknown arts and spells', () => {

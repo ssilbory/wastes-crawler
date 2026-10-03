@@ -8,7 +8,6 @@ import {
   hurt,
   memberCheck,
   note,
-  restoreMember,
   restQuarter,
 } from '../../../src/game/world/members.ts';
 import { findPath, regionMap, seenHexes } from '../../../src/game/world/region.ts';
@@ -130,11 +129,5 @@ describe('party members', () => {
     grukk.frail = false;
     for (let i = 0; i < 10; i++) healNight(data, grukk);
     expect(grukk.character.hp.current).toBe(grukk.character.hp.max);
-    Object.assign(grukk, { dead: true, frail: true, spellsCast: 2 });
-    hurt(w, grukk, 3);
-    restoreMember(grukk);
-    expect(grukk).toMatchObject({ dead: false, frail: false, hungry: false, spellsCast: 0 });
-    expect(grukk.character.hp.current).toBe(grukk.character.hp.max);
-    expect(grukk.character.strain).toEqual({ value: 0, broken: false });
   });
 });

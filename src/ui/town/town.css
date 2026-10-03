@@ -1,0 +1,78 @@
+.town-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.town-tabs [aria-selected='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--panel);
+}
+
+.town-message {
+  min-height: 1.4em;
+  margin: 8px 0 0;
+  font-weight: 600;
+}
+
+.town-main {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.temple {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.temple th,
+.temple td {
+  text-align: left;
+  padding: 4px 6px;
+  border-top: 1px solid var(--line);
+}
+
+.temple .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.pack,
+.tavern-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.pack li,
+.tavern-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.pack li > span,
+.tavern-list li > span {
+  margin-right: auto;
+}
+
+.level-up .pick {
+  margin: 6px 0;
+}
+
+.level-up fieldset {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  margin: 8px 0;
+}
+
+label.check {
+  display: block;
+}

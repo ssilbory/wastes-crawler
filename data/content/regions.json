@@ -48,21 +48,24 @@
         "name": "Westhold",
         "kind": "town",
         "col": 3,
-        "row": 8
+        "row": 8,
+        "size": "town"
       },
       {
         "id": "eastmarch",
         "name": "Eastmarch",
         "kind": "town",
         "col": 20,
-        "row": 8
+        "row": 8,
+        "size": "town"
       },
       {
         "id": "highcairn",
         "name": "Highcairn",
         "kind": "town",
         "col": 17,
-        "row": 4
+        "row": 4,
+        "size": "village"
       }
     ],
     "start": "westhold"

@@ -1,7 +1,7 @@
 // Party members on the overland map: checks, strain, damage, and full recovery. Strain follows
 // vendor/wwn-srd/2.0 The Rules of the Game/2.5.0 (2.5.2) and the System Strain outcomes in
 // docs/rules-adaptation.md.
-import type { Attribute } from '../../data/schemas/index.ts';
+import type { Attribute, Character, DefaultPreset } from '../../data/schemas/index.ts';
 import { skillCheck, type CheckResult } from '../../rules/checks.ts';
 import { addStrain, type StrainSource } from '../../rules/strain.ts';
 import type { GameData } from '../character/context.ts';
@@ -95,20 +95,25 @@ export function healNight(data: GameData, m: Member): void {
   setHp(m, Math.min(m.character.hp.max, m.character.hp.current + level));
 }
 
-/** A full rest in town: everything restored, the dead raised (stand-in towns, Phase 5). */
-export function restoreMember(m: Member): void {
-  Object.assign(m, {
+/** A new party member; their crowns go into the purse (docs/rules-adaptation.md, Towns). */
+export function newMember(
+  id: string,
+  r: { character: Character; row: number; column: number; defaultAction: DefaultPreset },
+): Member {
+  return {
+    id,
+    character: { ...r.character, crowns: 0 },
+    row: r.row,
+    column: r.column,
+    defaultAction: r.defaultAction,
     dead: false,
     frail: false,
     hungry: false,
     sleepless: false,
     cold: false,
+    slept: false,
     spellsCast: 0,
     effortDay: 0,
-  });
-  m.character = {
-    ...m.character,
-    hp: { ...m.character.hp, current: m.character.hp.max },
-    strain: { value: 0, broken: false },
+    pendingXp: 0,
   };
 }

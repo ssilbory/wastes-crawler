@@ -6,11 +6,13 @@
   },
   {
     "id": "full-expert",
-    "name": "Expert"
+    "name": "Expert",
+    "abilities": ["quick-learner"]
   },
   {
     "id": "partial-expert-partial-warrior",
-    "name": "Adventurer: Partial Expert/Partial Warrior"
+    "name": "Adventurer: Partial Expert/Partial Warrior",
+    "abilities": ["quick-learner"]
   },
   {
     "id": "full-high-mage",
@@ -24,7 +26,8 @@
         }
       ],
       "slots": "full-high-mage-arts-and-spells",
-      "startingSpells": 4
+      "startingSpells": 4,
+      "spellsPerLevel": 2
     }
   },
   {
@@ -39,7 +42,8 @@
         }
       ],
       "slots": "full-elementalist-arts-and-spells",
-      "startingSpells": 4
+      "startingSpells": 4,
+      "spellsPerLevel": 1
     }
   },
   {
@@ -54,8 +58,10 @@
         }
       ],
       "slots": "partial-high-mage-arts-and-spells",
-      "startingSpells": 2
-    }
+      "startingSpells": 2,
+      "spellsPerLevel": 2
+    },
+    "abilities": ["quick-learner"]
   },
   {
     "id": "high-mage-partial-warrior",
@@ -69,7 +75,8 @@
         }
       ],
       "slots": "partial-high-mage-arts-and-spells",
-      "startingSpells": 2
+      "startingSpells": 2,
+      "spellsPerLevel": 2
     }
   },
   {
@@ -84,8 +91,10 @@
         }
       ],
       "slots": "partial-elementalist-arts-and-spells",
-      "startingSpells": 2
-    }
+      "startingSpells": 2,
+      "spellsPerLevel": 1
+    },
+    "abilities": ["quick-learner"]
   },
   {
     "id": "elementalist-partial-warrior",
@@ -99,7 +108,8 @@
         }
       ],
       "slots": "partial-elementalist-arts-and-spells",
-      "startingSpells": 2
+      "startingSpells": 2,
+      "spellsPerLevel": 1
     }
   },
   {
@@ -119,7 +129,8 @@
         }
       ],
       "slots": "dual-partial-spellcasters",
-      "startingSpells": 4
+      "startingSpells": 4,
+      "spellsPerLevel": 2
     }
   }
 ]
