@@ -15,7 +15,6 @@ import overlandRules from '../../data/content/overland-rules.json';
 import regions from '../../data/content/regions.json';
 import terrains from '../../data/content/terrains.json';
 import townRules from '../../data/content/town-rules.json';
-import benchmarkWarrior from '../../data/content/benchmark-warrior.json';
 import npcRules from '../../data/content/npc-rules.json';
 import captives from '../../data/content/captives.json';
 import coachRoutes from '../../data/content/coach-routes.json';
@@ -56,7 +55,6 @@ export function loadContent(): ContentData {
     mishaps: ContentSchemas.mishaps.parse(mishaps),
     overlandRules: ContentSchemas.overlandRules.parse(overlandRules),
     townRules: ContentSchemas.townRules.parse(townRules),
-    benchmarkWarrior: ContentSchemas.benchmarkWarrior.parse(benchmarkWarrior),
     npcRules: ContentSchemas.npcRules.parse(npcRules),
     captives: ContentSchemas.captives.parse(captives),
     coachRoutes: ContentSchemas.coachRoutes.parse(coachRoutes),

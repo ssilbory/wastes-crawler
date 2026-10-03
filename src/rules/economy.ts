@@ -52,24 +52,23 @@ export function rollClimate(rng: Rng, minPercent: number, maxPercent: number): n
 
 export interface Tier {
   name: string;
-  minWinRate: number;
+  minDownRate: number;
   xp: number;
 }
 
 /**
- * The XP for a fight from the benchmark row's simulated win rate: the first tier (highest win rate
- * first) the rate reaches, one tier harder when the fights average more than `longFightRounds`.
+ * The XP for a won fight from the party's own simulated fights (docs/rules-adaptation.md, XP; a
+ * house rule, not in the SRD): the hardest tier whose PC-down rate the fight reaches, easiest tier
+ * first, or the hardest tier of all when the party wins less than `deadlyWinRate` of the time.
  */
 export function fightXp(
   tiers: readonly Tier[],
+  downRate: number,
   winRate: number,
-  averageRounds: number,
-  longFightRounds: number,
+  deadlyWinRate: number,
 ): Tier {
-  const found = tiers.findIndex((t) => winRate >= t.minWinRate);
-  const base = found < 0 ? tiers.length - 1 : found;
-  const index = Math.min(tiers.length - 1, base + (averageRounds > longFightRounds ? 1 : 0));
-  const tier = tiers[index];
-  if (!tier) throw new Error('no XP tiers');
-  return tier;
+  const hardest = tiers[tiers.length - 1];
+  if (!hardest) throw new Error('no XP tiers');
+  if (winRate < deadlyWinRate) return hardest;
+  return tiers.filter((t) => downRate >= t.minDownRate).at(-1) ?? (tiers[0] as Tier);
 }

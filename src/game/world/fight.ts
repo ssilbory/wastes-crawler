@@ -4,6 +4,8 @@
 import { createBattle, type BattleResult, type NpcSetup } from '../combat/battle.ts';
 import { pcCombatant } from '../combat/combatants.ts';
 import type { Battle, CasterState } from '../combat/types.ts';
+import type { Character } from '../../data/schemas/index.ts';
+import type { Rng } from '../../rules/rng.ts';
 import type { GameData } from '../character/context.ts';
 import { difficultyTier, type Difficulty } from './difficulty.ts';
 import { alive, note, setHp } from './members.ts';
@@ -20,7 +22,9 @@ export interface WorldBattle {
   memberIds: string[];
   /** NPC ids in the order of the battle's npc-N combatants. */
   npcIds: string[];
-  /** The encounter's enemy rows, for loot and the XP benchmark. */
+  /** The line-up the XP simulation replays. */
+  setup: PartySetup;
+  /** The encounter's enemy rows, for loot. */
   enemies: string[][];
   /** A captive the enemy holds, freed by a win. */
   captive: string | null;
@@ -50,6 +54,63 @@ export function encounterBattle(w: World, data: GameData): WorldBattle {
   return { ...fight, quest: w.encounter.quest };
 }
 
+/** A fight's starting line-up as plain data, so the XP simulation can replay it in a worker. */
+export interface PartySetup {
+  party: {
+    character: Character;
+    row: number;
+    column: number;
+    frail: boolean;
+    spellsCast: number;
+    effortDay: number;
+  }[];
+  npcs: NpcSetup[];
+  enemies: string[][];
+}
+
+/** The conscious party as it stands, and its NPCs if `withNpcs`, against enemy rows. */
+export function partySetup(
+  w: World,
+  data: GameData,
+  enemies: string[][],
+  withNpcs: boolean,
+): PartySetup {
+  return {
+    party: fighters(w).map((m) => ({
+      character: m.character,
+      row: m.row,
+      column: m.column,
+      frail: m.frail,
+      spellsCast: m.spellsCast,
+      effortDay: m.effortDay,
+    })),
+    npcs: withNpcs ? w.npcs.filter((n) => n.hp > 0).map((n) => npcSetup(data, n)) : [],
+    enemies,
+  };
+}
+
+/** A battle from a line-up, carrying in each PC's Frailty and the day's spent spells and Effort. */
+export function battleFrom(data: GameData, rng: Rng, setup: PartySetup, log: boolean): Battle {
+  const battle = createBattle({
+    data,
+    rng,
+    party: setup.party.map((p) => ({ character: p.character, row: p.row, column: p.column })),
+    npcs: setup.npcs,
+    enemies: setup.enemies.map((r) => [...r]),
+    log,
+  });
+  setup.party.forEach((p, i) => {
+    const c = battle.combatants[i] as Battle['combatants'][number];
+    c.frail = p.frail;
+    if (c.caster) {
+      c.caster.spellsLeft = Math.max(0, c.caster.spellsLeft - p.spellsCast);
+      c.caster.effortDay = Math.min(c.caster.effortMax, p.effortDay);
+      c.caster.effortUsed = c.caster.effortDay;
+    }
+  });
+  return battle;
+}
+
 /** The conscious party, and its NPCs if `withNpcs`, against enemy rows. */
 export function partyBattle(
   w: World,
@@ -58,28 +119,12 @@ export function partyBattle(
   withNpcs: boolean,
   captive: string | null,
 ): WorldBattle {
-  const members = fighters(w);
+  const setup = partySetup(w, data, enemies, withNpcs);
   const npcs = withNpcs ? w.npcs.filter((n) => n.hp > 0) : [];
-  const battle = createBattle({
-    data,
-    rng: w.rng,
-    party: members.map((m) => ({ character: m.character, row: m.row, column: m.column })),
-    npcs: npcs.map((n) => npcSetup(data, n)),
-    enemies,
-    log: true,
-  });
-  members.forEach((m, i) => {
-    const c = battle.combatants[i] as Battle['combatants'][number];
-    c.frail = m.frail;
-    if (c.caster) {
-      c.caster.spellsLeft = Math.max(0, c.caster.spellsLeft - m.spellsCast);
-      c.caster.effortDay = Math.min(c.caster.effortMax, m.effortDay);
-      c.caster.effortUsed = c.caster.effortDay;
-    }
-  });
   return {
-    battle,
-    memberIds: members.map((m) => m.id),
+    battle: battleFrom(data, w.rng, setup, true),
+    setup,
+    memberIds: fighters(w).map((m) => m.id),
     npcIds: npcs.map((n) => n.id),
     enemies,
     captive,
@@ -142,7 +187,7 @@ function award(w: World, data: GameData, fight: WorldBattle, difficulty: Difficu
 
 /**
  * Writes a concluded battle back to the party and clears the encounter. A win pays loot dice and,
- * given the benchmark's verdict, XP; a draw or a loss pays nothing.
+ * given the simulation's verdict, XP; a draw or a loss pays nothing.
  */
 export function applyBattle(
   w: World,

@@ -15,7 +15,6 @@ import {
   RegionSchema,
   TerrainSchema,
 } from './overland-content.ts';
-import { CharacterSchema } from './character.ts';
 import { TownRulesSchema } from './town-content.ts';
 import { CaptiveSchema, NpcRulesSchema } from './npc-content.ts';
 import { ArenaCardSchema, CoachRouteSchema, CoachRulesSchema } from './travel-content.ts';
@@ -156,8 +155,6 @@ export const ContentSchemas = {
   mishaps: z.array(MishapSchema).min(1),
   overlandRules: OverlandRulesSchema,
   townRules: TownRulesSchema,
-  /** The Warrior four of whom benchmark each fight for XP (docs/rules-adaptation.md, XP). */
-  benchmarkWarrior: CharacterSchema,
   npcRules: NpcRulesSchema,
   captives: z.array(CaptiveSchema).min(1),
   coachRoutes: z.array(CoachRouteSchema).min(1),

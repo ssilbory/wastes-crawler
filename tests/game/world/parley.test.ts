@@ -227,7 +227,7 @@ describe('NPCs in overland fights', () => {
     let fight = encounterBattle(w, data);
     Object.assign(fight.battle.combatants[5] ?? {}, { status: 'dead', hp: 0 });
     w.rng = scriptedRng([6, 6]);
-    const deadly = { winRate: 0.1, averageRounds: 2 };
+    const deadly = { downRate: 0.9, winRate: 0.1 };
     applyBattle(
       w,
       data,

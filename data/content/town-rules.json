@@ -1,21 +1,52 @@
 {
   "innPerPc": 3,
-  "temple": { "perHp": 10, "cureFrail": 100, "raisePerLevel": 250 },
+  "temple": {
+    "perHp": 10,
+    "cureFrail": 100,
+    "raisePerLevel": 250
+  },
   "sellFraction": 0.5,
-  "spendingThresholds": { "village": 300, "town": 1500, "city": 6000 },
+  "spendingThresholds": {
+    "village": 300,
+    "town": 1500,
+    "city": 6000
+  },
   "lootThresholdFraction": 0.5,
   "surchargeRate": 0.5,
   "lootDropRate": 2,
-  "climate": { "minPercent": -30, "maxPercent": 30 },
+  "climate": {
+    "minPercent": -30,
+    "maxPercent": 30
+  },
   "xp": {
     "tiers": [
-      { "name": "trivial", "minWinRate": 0.9, "xp": 0 },
-      { "name": "easy", "minWinRate": 0.7, "xp": 0.5 },
-      { "name": "fair", "minWinRate": 0.4, "xp": 1 },
-      { "name": "hard", "minWinRate": 0.15, "xp": 2 },
-      { "name": "deadly", "minWinRate": 0, "xp": 3 }
+      {
+        "name": "trivial",
+        "minDownRate": 0,
+        "xp": 0
+      },
+      {
+        "name": "easy",
+        "minDownRate": 0.05,
+        "xp": 0.5
+      },
+      {
+        "name": "fair",
+        "minDownRate": 0.2,
+        "xp": 1
+      },
+      {
+        "name": "hard",
+        "minDownRate": 0.4,
+        "xp": 2
+      },
+      {
+        "name": "deadly",
+        "minDownRate": 0.7,
+        "xp": 3
+      }
     ],
-    "longFightRounds": 5,
+    "deadlyWinRate": 0.5,
     "simFights": 200
   }
 }

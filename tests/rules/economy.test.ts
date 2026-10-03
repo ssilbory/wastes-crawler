@@ -59,29 +59,29 @@ describe('economic climate', () => {
 
 describe('fight XP', () => {
   const tiers = [
-    { name: 'trivial', minWinRate: 0.9, xp: 0 },
-    { name: 'easy', minWinRate: 0.7, xp: 0.5 },
-    { name: 'fair', minWinRate: 0.4, xp: 1 },
-    { name: 'hard', minWinRate: 0.15, xp: 2 },
-    { name: 'deadly', minWinRate: 0, xp: 3 },
+    { name: 'trivial', minDownRate: 0, xp: 0 },
+    { name: 'easy', minDownRate: 0.05, xp: 0.5 },
+    { name: 'fair', minDownRate: 0.2, xp: 1 },
+    { name: 'hard', minDownRate: 0.4, xp: 2 },
+    { name: 'deadly', minDownRate: 0.7, xp: 3 },
   ];
 
-  it('picks the first tier the win rate reaches', () => {
-    expect(fightXp(tiers, 1, 2, 5).name).toBe('trivial');
-    expect(fightXp(tiers, 0.9, 2, 5).name).toBe('trivial');
-    expect(fightXp(tiers, 0.89, 2, 5).name).toBe('easy');
-    expect(fightXp(tiers, 0.4, 2, 5).name).toBe('fair');
-    expect(fightXp(tiers, 0.1, 2, 5)).toEqual(tiers[4]);
+  it('picks the hardest tier the chance of a PC going down reaches', () => {
+    expect(fightXp(tiers, 0, 1, 0.5).name).toBe('trivial');
+    expect(fightXp(tiers, 0.049, 1, 0.5).name).toBe('trivial');
+    expect(fightXp(tiers, 0.05, 1, 0.5).name).toBe('easy');
+    expect(fightXp(tiers, 0.24, 0.96, 0.5).name).toBe('fair');
+    expect(fightXp(tiers, 0.46, 0.93, 0.5).name).toBe('hard');
+    expect(fightXp(tiers, 1, 0.9, 0.5)).toEqual(tiers[4]);
   });
 
-  it('moves long fights one tier harder, never past the hardest', () => {
-    expect(fightXp(tiers, 0.95, 5, 5).name).toBe('trivial');
-    expect(fightXp(tiers, 0.95, 5.5, 5).name).toBe('easy');
-    expect(fightXp(tiers, 0, 9, 5).name).toBe('deadly');
+  it('calls any fight the party usually loses deadly', () => {
+    expect(fightXp(tiers, 0.01, 0.49, 0.5).name).toBe('deadly');
+    expect(fightXp(tiers, 0.01, 0.5, 0.5).name).toBe('trivial');
   });
 
-  it('falls back to the hardest tier when none matches, and needs tiers', () => {
-    expect(fightXp([{ name: 'only', minWinRate: 0.5, xp: 1 }], 0.2, 1, 5).name).toBe('only');
-    expect(() => fightXp([], 0.5, 1, 5)).toThrow('no XP tiers');
+  it('falls back to the easiest tier below every threshold, and needs tiers', () => {
+    expect(fightXp([{ name: 'only', minDownRate: 0.5, xp: 1 }], 0.2, 1, 0.5).name).toBe('only');
+    expect(() => fightXp([], 0.5, 1, 0.5)).toThrow('no XP tiers');
   });
 });

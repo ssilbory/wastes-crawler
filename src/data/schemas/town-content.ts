@@ -14,10 +14,10 @@ export type TownSize = z.infer<typeof TownSizeSchema>;
 const Crowns = z.number().positive();
 const HalfSteps = z.number().min(0).multipleOf(0.5);
 
-/** A difficulty tier: fights the benchmark row wins at least `minWinRate` of the time. */
+/** A difficulty tier: fights in which a PC goes down at least `minDownRate` of the time. */
 export const XpTierSchema = z.strictObject({
   name: z.string().min(1),
-  minWinRate: z.number().min(0).max(1),
+  minDownRate: z.number().min(0).max(1),
   xp: HalfSteps,
 });
 export type XpTier = z.infer<typeof XpTierSchema>;
@@ -45,11 +45,11 @@ export const TownRulesSchema = z.strictObject({
   /** The economic climate's adjustment to the purse, in whole percent. */
   climate: z.strictObject({ minPercent: z.int().max(0), maxPercent: z.int().min(0) }),
   xp: z.strictObject({
-    /** Highest win rate first; the last tier should start at 0. */
+    /** Easiest first, from a 0 down rate up. */
     tiers: z.array(XpTierSchema).min(1),
-    /** A benchmark fight averaging more rounds than this moves up one tier. */
-    longFightRounds: z.number().positive(),
-    /** Benchmark fights simulated per encounter. */
+    /** A party that wins less often than this in the simulation faces the hardest tier. */
+    deadlyWinRate: z.number().min(0).max(1),
+    /** Fights simulated per encounter. */
     simFights: z.int().min(1),
   }),
 });

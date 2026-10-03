@@ -1,30 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import {
-  benchmarkSeed,
-  benchmarkWarrior,
+  difficultySeed,
   difficultyTier,
   partyLevel,
   simulateDifficulty,
 } from '../../../src/game/world/difficulty.ts';
-import { applyBattle, encounterBattle } from '../../../src/game/world/fight.ts';
+import { applyBattle, encounterBattle, partySetup } from '../../../src/game/world/fight.ts';
 import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
 import { createRng } from '../../../src/rules/rng.ts';
 import { data, member, world, encounter } from './helpers.ts';
 
 const plains = { col: 5, row: 9 };
 
-describe('the XP benchmark (docs/rules-adaptation.md, XP)', () => {
-  it('fields a Warrior at any level with average hit points', () => {
-    const one = benchmarkWarrior(data, 1);
-    expect(one.classes).toEqual({ current: 'full-warrior', levels: { 'full-warrior': 1 } });
-    // 1d6+2 averages 5.5, +0 Con, +2 Die Hard: 7 rounded down, per level.
-    expect(one.hp).toEqual({ max: 7, current: 7 });
-    expect(benchmarkWarrior(data, 3).hp.max).toBe(21);
-    const plain = { ...data.content.benchmarkWarrior, foci: [] };
-    const noDieHard = { ...data, content: { ...data.content, benchmarkWarrior: plain } };
-    expect(benchmarkWarrior(noDieHard, 1).hp.max).toBe(5);
-  });
-
+describe('the XP difficulty simulation (docs/rules-adaptation.md, XP)', () => {
   it('takes the living PCs’ average level, rounded', () => {
     const w = world();
     expect(partyLevel(w, data)).toBe(1);
@@ -45,19 +33,50 @@ describe('the XP benchmark (docs/rules-adaptation.md, XP)', () => {
   it('seeds from the world’s RNG without advancing it', () => {
     const w = world();
     const before = w.rng.state();
-    expect(benchmarkSeed(w)).toBe(`benchmark-${before.join('-')}`);
+    expect(difficultySeed(w)).toBe(`difficulty-${before.join('-')}`);
     expect(w.rng.state()).toEqual(before);
   });
 
-  it('simulates the fight repeatably and grades it', () => {
-    const easy = simulateDifficulty(data, [['peaceful-human']], 1, 'test', 10);
-    expect(easy.winRate).toBe(1);
-    expect(simulateDifficulty(data, [['peaceful-human']], 1, 'test', 10)).toEqual(easy);
+  it('replays the party as it stands, repeatably, and grades it by PCs going down', () => {
+    const w = world();
+    const easy = simulateDifficulty(data, partySetup(w, data, [['peaceful-human']], true), 't', 20);
+    expect(easy).toEqual({ downRate: 0, winRate: 1 });
     expect(difficultyTier(data, easy).name).toBe('trivial');
-    const heroes = [['legendary-god-titan']];
-    const deadly = simulateDifficulty(data, heroes, 1, 'test', 5);
-    expect(deadly.winRate).toBeLessThan(0.15);
+    const barbarians = partySetup(w, data, [Array(4).fill('barbarian-fighter')], true);
+    const fair = simulateDifficulty(data, barbarians, 't', 40);
+    expect(simulateDifficulty(data, barbarians, 't', 40)).toEqual(fair);
+    expect(fair.downRate).toBeGreaterThan(0.05);
+    // The same fight is harder for a battered party.
+    const beast = [['predator-large-vicious']];
+    const fresh = simulateDifficulty(data, partySetup(w, data, beast, true), 't', 40);
+    for (const m of w.members)
+      m.character = { ...m.character, hp: { ...m.character.hp, current: 1 } };
+    const hurt = simulateDifficulty(data, partySetup(w, data, beast, true), 't', 40);
+    expect(hurt.downRate).toBeGreaterThan(fresh.downRate);
+    const titan = partySetup(w, data, [['legendary-god-titan']], true);
+    const deadly = simulateDifficulty(data, titan, 't', 5);
+    expect(deadly.winRate).toBeLessThan(0.5);
     expect(difficultyTier(data, deadly)).toMatchObject({ name: 'deadly', xp: 3 });
+  });
+
+  it('counts only PCs going down, not NPCs', () => {
+    const w = world();
+    const setup = partySetup(w, data, [['thug-or-militia']], true);
+    setup.party = [];
+    setup.npcs = [
+      {
+        monster: 'peaceful-human',
+        name: 'Merrit',
+        row: 1,
+        column: 0,
+        hp: 1,
+        maxHp: 1,
+        noncombatant: false,
+      },
+    ];
+    const d = simulateDifficulty(data, setup, 't', 10);
+    expect(d.downRate).toBe(0);
+    expect(d.winRate).toBeLessThan(1);
   });
 });
 
@@ -76,7 +95,7 @@ describe('fight rewards', () => {
       data,
       fight,
       { outcome: 'party', rounds: 3, deaths: 1, battle: fight.battle },
-      { winRate: 0.5, averageRounds: 3 },
+      { downRate: 0.3, winRate: 0.9 },
     );
     expect(w.loot).toEqual([{ count: 4, sides: 6 }]);
     expect(w.log.slice(-2)).toEqual([
@@ -98,7 +117,7 @@ describe('fight rewards', () => {
       data,
       fight,
       { outcome: 'party', rounds: 1, deaths: 0, battle: fight.battle },
-      { winRate: 1, averageRounds: 1 },
+      { downRate: 0, winRate: 1 },
     );
     expect(w.loot).toEqual([]);
     expect(w.log.at(-1)).toContain('A trivial fight: 0 XP each.');
@@ -110,10 +129,7 @@ describe('fight rewards', () => {
       data,
       fight,
       { outcome: 'draw', rounds: 100, deaths: 0, battle: fight.battle },
-      {
-        winRate: 0,
-        averageRounds: 9,
-      },
+      { downRate: 1, winRate: 0 },
     );
     expect(w.loot).toEqual([]);
     w.encounter = { ...beasts, enemies: [['thug-or-militia']] };

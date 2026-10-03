@@ -3,7 +3,7 @@ import { newWorld, type Recruit } from '../../game/world/new-world.ts';
 import type { BattleResult } from '../../game/combat/battle.ts';
 import { settleBout } from '../../game/world/arena.ts';
 import { coachQuarter } from '../../game/world/coach.ts';
-import { benchmarkSeed, partyLevel } from '../../game/world/difficulty.ts';
+import { difficultySeed } from '../../game/world/difficulty.ts';
 import { encounterBattle, type WorldBattle } from '../../game/world/fight.ts';
 import { passQuarter, settleByFighting, settleByLeaving } from '../../game/world/quarter.ts';
 import { parseWorld, serializeWorld } from '../../game/world/save.ts';
@@ -133,9 +133,8 @@ export function WorldApp() {
       onFight={() => {
         const battle = encounterBattle(w, data);
         const verdict = assess({
-          enemies: battle.enemies,
-          level: partyLevel(w, data),
-          seed: benchmarkSeed(w),
+          setup: battle.setup,
+          seed: difficultySeed(w),
           fights: data.content.townRules.xp.simFights,
         });
         setFight({

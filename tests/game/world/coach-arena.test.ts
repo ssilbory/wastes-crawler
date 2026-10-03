@@ -127,6 +127,7 @@ describe('coach routes (docs/rules-adaptation.md, Coach routes)', () => {
     w.rng = createRng('fight');
     const fight = {
       battle: null as never,
+      setup: null as never,
       memberIds: [],
       npcIds: [],
       enemies: [],
@@ -153,6 +154,7 @@ describe('coach routes (docs/rules-adaptation.md, Coach routes)', () => {
     w.encounter = encounter([['thug-or-militia']]);
     const fight = {
       battle: null as never,
+      setup: null as never,
       memberIds: [],
       npcIds: [],
       enemies: [],

@@ -1,16 +1,16 @@
-// Starts the XP benchmark when a fight begins: in a Web Worker when the browser has one, otherwise
-// on the main thread. Either way it runs on its own seed, never the world's RNG stream.
+// Starts the XP difficulty simulation when a fight begins: in a Web Worker when the browser has
+// one, otherwise on the main thread. Either way it runs on its own seed, never the world's RNG.
 import { simulateDifficulty, type Difficulty } from '../../game/world/difficulty.ts';
+import type { PartySetup } from '../../game/world/fight.ts';
 import { data } from '../builder/data.ts';
 
 export interface AssessRequest {
-  enemies: string[][];
-  level: number;
+  setup: PartySetup;
   seed: string;
   fights: number;
 }
 
-const inline = (r: AssessRequest) => simulateDifficulty(data, r.enemies, r.level, r.seed, r.fights);
+const inline = (r: AssessRequest) => simulateDifficulty(data, r.setup, r.seed, r.fights);
 
 export function assess(request: AssessRequest): Promise<Difficulty> {
   if (typeof Worker === 'undefined') return Promise.resolve(inline(request));
