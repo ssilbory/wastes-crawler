@@ -3,6 +3,7 @@ import { netSteps, roll2d6WithEdge, rollD20WithEdge } from '../../src/rules/adva
 import {
   attributeModifier,
   bestModifier,
+  boostedModifier,
   type AttributeScores,
 } from '../../src/rules/attributes.ts';
 import {
@@ -35,6 +36,10 @@ describe('attributeModifier', () => {
 
   it('picks the best of several attributes', () => {
     expect(bestModifier(scores({ str: 18, con: 4 }), ['str', 'con'])).toBe(2);
+    expect(boostedModifier(18, 1)).toBe(3);
+    expect(boostedModifier(18, 2)).toBe(3);
+    expect(boostedModifier(7, 1)).toBe(0);
+    expect(boostedModifier(10)).toBe(0);
   });
 });
 
@@ -153,6 +158,9 @@ describe('saves', () => {
     expect(pcSaveTarget(1, s, 'evasion')).toBe(16);
     expect(pcSaveTarget(1, s, 'mental')).toBe(14);
     expect(pcSaveTarget(1, s, 'luck')).toBe(15);
+    // Developed Attribute: +1 to a modifier, never past +3.
+    expect(pcSaveTarget(1, s, 'evasion', { dex: 1 })).toBe(15);
+    expect(pcSaveTarget(1, scores({ str: 18 }), 'physical', { str: 2 })).toBe(12);
     expect(pcSaveTarget(10, s, 'luck')).toBe(6);
     expect(pcSaveTarget(15, s, 'physical')).toBe(2);
   });

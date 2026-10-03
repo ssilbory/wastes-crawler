@@ -1,4 +1,5 @@
 // vendor/wwn-srd/1.0 Character Creation/1.1.0 Attributes.md (1.1.2 Attribute Modifiers)
+// and the Developed Attribute focus in 1.6.0 Foci.md.
 import type { Attribute } from '../data/schemas/index.ts';
 
 export type AttributeScores = Record<Attribute, number>;
@@ -12,6 +13,21 @@ export function attributeModifier(score: number): number {
   return 2;
 }
 
-export function bestModifier(scores: AttributeScores, attributes: readonly Attribute[]): number {
-  return Math.max(...attributes.map((a) => attributeModifier(scores[a])));
+/** Extra modifier per attribute, such as from the Developed Attribute focus. */
+export type ModifierBonuses = Partial<Record<Attribute, number>>;
+
+/** Developed Attribute raises a modifier "up to a maximum of +3" (1.6.0 Foci.md). */
+export const MAX_BOOSTED_MODIFIER = 3;
+
+export function boostedModifier(score: number, bonus = 0): number {
+  const base = attributeModifier(score);
+  return bonus === 0 ? base : Math.min(MAX_BOOSTED_MODIFIER, base + bonus);
+}
+
+export function bestModifier(
+  scores: AttributeScores,
+  attributes: readonly Attribute[],
+  bonuses: ModifierBonuses = {},
+): number {
+  return Math.max(...attributes.map((a) => boostedModifier(scores[a], bonuses[a])));
 }

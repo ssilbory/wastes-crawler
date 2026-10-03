@@ -4,13 +4,17 @@ import {
   type Character,
 } from '../../data/schemas/index.ts';
 import { findProgression, isSkill, type GameData } from './context.ts';
+import { focusInfo } from './foci.ts';
 import { findLineage, findPeople } from './people.ts';
 
 export type Raw = Record<string, unknown>;
 export type Migrations = Readonly<Record<number, (raw: Raw) => Raw>>;
 
-/** Upgrades a save from version n to n + 1, keyed by n. Empty until the schema first changes. */
-const MIGRATIONS: Migrations = {};
+/** Upgrades a save from version n to n + 1, keyed by n. */
+export const MIGRATIONS: Migrations = {
+  // Version 2 adds foci (Phase 3c); older characters were made before foci could be chosen.
+  1: (raw) => ({ ...raw, foci: [], schemaVersion: 2 }),
+};
 
 export function exportCharacter(c: Character): string {
   return `${JSON.stringify(c, null, 2)}\n`;
@@ -71,6 +75,9 @@ export function importCharacter(
   }
   for (const skill of Object.keys(c.skills)) {
     if (!isSkill(data, skill)) errors.push(`skills: unknown ${skill}`);
+  }
+  for (const f of c.foci) {
+    if (!focusInfo(data, f.id)) errors.push(`foci: unknown ${f.id}`);
   }
   for (const id of Object.keys(c.classes.levels)) {
     if (!findProgression(data, id)) errors.push(`classes: unknown ${id}`);

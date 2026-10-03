@@ -16,9 +16,6 @@ export function ClassStep(props: {
         options={classes.map((c) => ({ value: c.id, label: c.name }))}
         onChange={(v) => props.onChange(v === '' ? null : v)}
       />
-      {props.value !== null && (
-        <p class="hint">Level-1 focus picks are chosen in a later update.</p>
-      )}
     </Step>
   );
 }
@@ -30,7 +27,7 @@ export function FreeSkillStep(props: {
   onChange: (id: string | null) => void;
 }) {
   return (
-    <Step title="5. Free skill" status={props.status}>
+    <Step title="6. Free skill" status={props.status}>
       <Select
         label="Free skill"
         value={props.value ?? ''}
@@ -48,7 +45,7 @@ export function IdentityStep(props: {
   onChange: (patch: { name?: string; goal?: string }) => void;
 }) {
   return (
-    <Step title="6. Name and goal" status={props.status}>
+    <Step title="7. Name and goal" status={props.status}>
       <label class="field">
         <span>Name</span>
         <input

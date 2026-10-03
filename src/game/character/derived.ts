@@ -1,10 +1,15 @@
 import type { Attribute, Character, People } from '../../data/schemas/index.ts';
-import { attributeModifier, type AttributeScores } from '../../rules/attributes.ts';
+import {
+  boostedModifier,
+  type AttributeScores,
+  type ModifierBonuses,
+} from '../../rules/attributes.ts';
 import { characterLevel, progressionRow, totalAttackBonus } from '../../rules/progression.ts';
 import { pcSaveTarget, type SaveType } from '../../rules/saves.ts';
 import { addAdjustments, ATTRIBUTES } from './attributes.ts';
 import { findProgression, progressionLookup, type GameData } from './context.ts';
 import type { Evaluation } from './creation.ts';
+import { modifierBonuses } from './foci.ts';
 import { findPeople } from './people.ts';
 
 export interface Sheet {
@@ -25,25 +30,30 @@ export function finalScores(c: Character): AttributeScores {
   );
 }
 
+const SAVES: readonly SaveType[] = ['physical', 'evasion', 'mental', 'luck'];
+
+/** Modifiers and save targets, with focus bonuses such as Developed Attribute applied. */
+function modifiersAndSaves(scores: AttributeScores, level: number, bonuses: ModifierBonuses) {
+  return {
+    modifiers: Object.fromEntries(
+      ATTRIBUTES.map((a) => [a, boostedModifier(scores[a], bonuses[a])]),
+    ) as Record<Attribute, number>,
+    saves: Object.fromEntries(
+      SAVES.map((t) => [t, pcSaveTarget(level, scores, t, bonuses)]),
+    ) as Record<SaveType, number>,
+  };
+}
+
 export function characterSheet(c: Character, data: GameData): Sheet {
   const people = findPeople(data, c.people);
   if (!people) throw new Error(`unknown people ${c.people}`);
   const scores = finalScores(c);
   const level = characterLevel(c.classes);
-  const save = (t: SaveType) => pcSaveTarget(level, scores, t);
   return {
     scores,
-    modifiers: Object.fromEntries(
-      ATTRIBUTES.map((a) => [a, attributeModifier(scores[a])]),
-    ) as Record<Attribute, number>,
+    ...modifiersAndSaves(scores, level, modifierBonuses(c.foci)),
     level,
     attackBonus: totalAttackBonus(c.classes, progressionLookup(data)),
-    saves: {
-      physical: save('physical'),
-      evasion: save('evasion'),
-      mental: save('mental'),
-      luck: save('luck'),
-    },
     strainMax: scores.con,
     size: people.size,
   };
@@ -63,22 +73,11 @@ export function previewSheet(ev: Evaluation, classId: string | null, data: GameD
   const scores = ev.scores;
   const progression =
     classId !== null && ev.steps.class.state === 'ok' ? findProgression(data, classId) : undefined;
+  const derived = scores ? modifiersAndSaves(scores, 1, ev.modifierBonuses) : null;
   return {
     scores,
-    modifiers: scores
-      ? (Object.fromEntries(ATTRIBUTES.map((a) => [a, attributeModifier(scores[a])])) as Record<
-          Attribute,
-          number
-        >)
-      : null,
+    modifiers: derived?.modifiers ?? null,
     attackBonus: progression ? progressionRow(progression, 1).attackBonus : null,
-    saves: scores
-      ? {
-          physical: pcSaveTarget(1, scores, 'physical'),
-          evasion: pcSaveTarget(1, scores, 'evasion'),
-          mental: pcSaveTarget(1, scores, 'mental'),
-          luck: pcSaveTarget(1, scores, 'luck'),
-        }
-      : null,
+    saves: derived?.saves ?? null,
   };
 }

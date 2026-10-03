@@ -22,6 +22,9 @@ test('builds, exports, and re-imports a Goblin Warrior', async ({ page }, testIn
   await select('Learning pick 1', 'Sneak');
   await select('Learning pick 2', 'Exert');
   await select('Class', 'Full Warrior');
+  await select('Racial focus', 'Alert');
+  await select('Combat focus', 'Armsmaster');
+  await select('Any focus', 'Lucky');
   await select('Free skill', 'Notice');
   await page.getByRole('textbox', { name: 'Name', exact: true }).fill('Snag');
   await page.getByRole('textbox', { name: 'Goal', exact: true }).fill('Outlive the war-band');
@@ -36,8 +39,11 @@ test('builds, exports, and re-imports a Goblin Warrior', async ({ page }, testIn
   // Goblin: +2 Dex, +1 Int, -2 Str on top of the array.
   for (const text of ['Strength12', 'Dexterity14+1', 'Intelligence11', 'Charisma7-1'])
     await expect(sheet).toContainText(text);
-  for (const skill of ['Exert-0', 'Notice-0', 'Sneak-0', 'Stab-0'])
+  // Warren-born raises Sneak, Armsmaster raises Stab, and the free pick raises Alert's Notice.
+  for (const skill of ['Exert-0', 'Notice-1', 'Sneak-1', 'Stab-1', 'Survive-0'])
     await expect(sheet).toContainText(skill);
+  for (const focus of ['Warren-born-1', 'Scrounger-1', 'Alert-1', 'Armsmaster-1', 'Lucky-1'])
+    await expect(sheet).toContainText(focus);
   const before = await sheet.innerText();
 
   const download = page.waitForEvent('download');

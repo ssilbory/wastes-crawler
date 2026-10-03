@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { AttributeSchema, IdSchema } from './common.ts';
 
-export const CHARACTER_SCHEMA_VERSION = 1;
+export const CHARACTER_SCHEMA_VERSION = 2;
 
 const Score = z.int().min(3).max(18);
 const Adjustments = z.partialRecord(AttributeSchema, z.int());
@@ -27,6 +27,14 @@ export const CharacterSchema = z.strictObject({
     /** Background Growth bonuses. */
     background: Adjustments,
   }),
+  /** Racial and class foci with their levels; Developed Attribute appears once per attribute. */
+  foci: z.array(
+    z.strictObject({
+      id: IdSchema,
+      level: z.int().min(1).max(2),
+      attribute: AttributeSchema.optional(),
+    }),
+  ),
   /** Skill id → level 0–4. */
   skills: z.record(IdSchema, z.int().min(0).max(4)),
   classes: z.strictObject({

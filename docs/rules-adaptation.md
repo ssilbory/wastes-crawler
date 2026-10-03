@@ -15,7 +15,7 @@ WWN SRD is the source of truth for every mechanic it covers; this document only 
 | Rule            | Mechanic                                                                                                                                                                                |
 | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Attributes      | Each people applies bonuses and penalties to attributes, from the table below. Centaurs add their lineage's modifiers to the shared centaur ones. Final scores stay within 3–18         |
-| Racial foci     | Every PC gets three racial foci on top of their normal foci. A people with fewer than three signature foci fills the rest with 1 or 2 picks from a list of foci that fits it            |
+| Racial foci     | Every PC gets three racial foci on top of their normal foci: the people's (and lineage's) signature foci, plus picks from the people's list to make three. See Foci below               |
 | Backgrounds     | Authored for the setting, since the SRD has only a handful                                                                                                                              |
 | Small armor     | Goblins and Gnomes need small-sized armor                                                                                                                                               |
 | Centaur barding | Centaurs have a second armor slot for barding; their AC is the average of body armor and barding, rounded down. Unbarded counts as AC 10. Shields apply on top of the average as normal |
@@ -35,6 +35,31 @@ WWN SRD is the source of truth for every mechanic it covers; this document only 
 | Gnome    |         | −2  |     |     | +2  | +1  |     | Small    |
 
 Every centaur belongs to exactly one lineage. Backgrounds may be limited to some peoples; an unlimited background is open to all (see docs/content-guide.md).
+
+**Foci:** SRD 1.6.0 applies: a new character gets one focus of any kind, Warriors and Partial Warriors another combat focus, and Experts and Partial Experts another non-combat focus. A second pick of the same focus adds its level 2, and only a focus's first level grants its bonus skill, which counts as a creation skill pick (SRD 1.2.2).
+
+| Rule               | Mechanic                                                                                                                                                                       |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Combat foci        | Armsmaster, Assassin, Close Combatant, Deadeye, Die Hard, Impervious Defense, Shocking Assault, Sniper's Eye, Unarmed Combatant, Valiant Defender, Whirlwind Assault           |
+| Either category    | Alert, Rider, and Poisoner fill a combat or a non-combat pick                                                                                                                  |
+| Non-combat foci    | Every other pickable focus                                                                                                                                                     |
+| Not used           | Special Origin (peoples replace it), Unique Gift (GM-defined), Xenoblooded (overlaps the peoples)                                                                              |
+| Later              | Armored Magic and Spirit Familiar wait for casters in Phase 3e                                                                                                                 |
+| Racial duplicates  | A class pick can't take a focus the character already has as a racial focus, and racial picks can't repeat each other. A racial focus reaches level 2 only through advancement |
+| Bonus skill choice | When every skill a focus offers is already level-1, the player picks any other skill instead (SRD 1.2.2)                                                                       |
+
+Signature foci are authored in data/content/racial-foci.json; fill-in picks come from the SRD foci.
+
+| People   | Signature foci                                                                        | Fill-in picks | Pick list                                                                                          |
+| -------- | ------------------------------------------------------------------------------------- | ------------- | -------------------------------------------------------------------------------------------------- |
+| Goblin   | Warren-born, Scrounger                                                                | 1             | Alert, Trapmaster, Assassin, Dealmaker, Impostor, Artisan, Sniper's Eye                            |
+| Orc      | War-bred, Iron Gut                                                                    | 1             | Die Hard, Shocking Assault, Armsmaster, Close Combatant, Whirlwind Assault, Authority, Henchkeeper |
+| Elf      | Elder Sight                                                                           | 2             | Deadeye, Cultured, Sniper's Eye, Well Met, Nullifier, Specialist, Lucky, Diplomatic Grace          |
+| Centaur  | Four-legged, plus Fleet (Deer), Sure-footed (Goat), Pounce (Lion), or Bulwark (Bison) | 1             | Alert, Deadeye, Armsmaster, Close Combatant, Die Hard, Valiant Defender, Specialist, Well Met      |
+| Beastman | Horned, Feral Hardiness                                                               | 1             | Die Hard, Unarmed Combatant, Shocking Assault, Whirlwind Assault, Alert, Henchkeeper               |
+| Gnome    | Hidden Lore                                                                           | 2             | Artisan, Polymath, Trapmaster, Gifted Chirurgeon, Poisoner, Specialist, Nullifier, Dealmaker       |
+
+At character creation the game applies focus bonus skills, Die Hard's extra hit points, and Developed Attribute's +1 modifier (to saves and hit points too). Every other focus benefit is recorded on the character and takes effect when the system it touches arrives: combat in Phase 3f, armor in 3d, travel and camping in Phase 5.
 
 **Party and formation:** six player characters plus two NPC slots, arranged in two rows of four. Quest NPCs, rescued NPCs, and hirelings occupy the NPC slots. When both are full, a new NPC can join only after one is dismissed. Centaurs take one slot like anyone else, but large NPCs such as giants and dragons take two. NPCs can occupy any slot, front or rear. Some quests replace a PC's slot with an NPC; a PC out of the party can rejoin at any tavern. Each rear slot is shielded by the front slot directly ahead of it, so a gap in the front row exposes whoever stands behind it.
 

@@ -15,6 +15,7 @@ import type { AttributeScores } from '../../rules/attributes.ts';
 import { AttributesStep, type DraftArray } from './AttributesStep.tsx';
 import { BackgroundStep } from './BackgroundStep.tsx';
 import { data, freshRng } from './data.ts';
+import { FociStep } from './FociStep.tsx';
 import { ClassStep, FreeSkillStep, IdentityStep } from './OtherSteps.tsx';
 import { PeopleStep } from './PeopleStep.tsx';
 import { CharacterSheet, PreviewSheet } from './Sheet.tsx';
@@ -113,7 +114,7 @@ export function App() {
                 // Drop a background the new people can't take.
                 const bg = data.content.backgrounds.find((b) => b.id === choices.background?.id);
                 const keep = bg !== undefined && backgroundOpenTo(bg, people);
-                update({ people, lineage, ...(keep ? {} : { background: null }) });
+                update({ people, lineage, foci: [], ...(keep ? {} : { background: null }) });
               }}
             />
             <AttributesStep
@@ -141,7 +142,20 @@ export function App() {
             <ClassStep
               value={choices.classId}
               status={ev.steps.class}
-              onChange={(classId) => update({ classId })}
+              onChange={(classId) => update({ classId, foci: [] })}
+            />
+            <FociStep
+              slots={ev.focusSlots}
+              choices={choices.foci}
+              skillsBefore={ev.focusSkillsBefore}
+              fallbackSkills={ev.skills}
+              status={ev.steps.foci}
+              ready={
+                ev.steps.class.state === 'ok' &&
+                ev.steps.background.state === 'ok' &&
+                ev.focusSlots.length > 0
+              }
+              onChange={(foci) => update({ foci })}
             />
             <FreeSkillStep
               value={choices.freeSkill}

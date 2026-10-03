@@ -7,6 +7,7 @@ import {
   evaluateChoices,
   finishCharacter,
   type Choices,
+  type FocusChoice,
 } from '../../src/game/character/creation.ts';
 import { characterSheet } from '../../src/game/character/derived.ts';
 import { exportCharacter, importCharacter } from '../../src/game/character/io.ts';
@@ -18,20 +19,84 @@ const data: GameData = { srd: loadSrd(), content: loadContent() };
 const array: AttributeScores = { str: 14, dex: 12, con: 11, int: 10, wis: 9, cha: 7 };
 
 // The Peoples table in docs/rules-adaptation.md.
-const EXPECTED = [
-  { people: 'goblin', lineage: null, adjust: { dex: 2, int: 1, str: -2 }, size: 'small' },
-  { people: 'orc', lineage: null, adjust: { str: 2, con: 1, cha: -2 }, size: 'standard' },
-  { people: 'elf', lineage: null, adjust: { dex: 2, cha: 1, str: -2 }, size: 'standard' },
-  { people: 'centaur', lineage: 'deer', adjust: { dex: 1 }, size: 'large' },
-  { people: 'centaur', lineage: 'goat', adjust: { str: 1, con: 1, cha: -1 }, size: 'large' },
-  { people: 'centaur', lineage: 'lion', adjust: { str: 2, wis: -1 }, size: 'large' },
-  { people: 'centaur', lineage: 'bison', adjust: { str: 1, con: 1, dex: -1 }, size: 'large' },
-  { people: 'beastman', lineage: null, adjust: { con: 2, str: 1, int: -2 }, size: 'standard' },
-  { people: 'gnome', lineage: null, adjust: { int: 2, wis: 1, str: -2 }, size: 'small' },
-] as const;
+const EXPECTED: {
+  people: string;
+  lineage: string | null;
+  adjust: Record<string, number>;
+  size: string;
+  racial: (FocusChoice | null)[];
+}[] = [
+  {
+    people: 'goblin',
+    lineage: null,
+    adjust: { dex: 2, int: 1, str: -2 },
+    size: 'small',
+    racial: [null, null, { id: 'alert' }],
+  },
+  {
+    people: 'orc',
+    lineage: null,
+    adjust: { str: 2, con: 1, cha: -2 },
+    size: 'standard',
+    racial: [{ id: 'war-bred', skill: 'punch' }, null, { id: 'die-hard' }],
+  },
+  {
+    people: 'elf',
+    lineage: null,
+    adjust: { dex: 2, cha: 1, str: -2 },
+    size: 'standard',
+    racial: [null, { id: 'deadeye' }, { id: 'cultured' }],
+  },
+  {
+    people: 'centaur',
+    lineage: 'deer',
+    adjust: { dex: 1 },
+    size: 'large',
+    racial: [null, null, { id: 'armsmaster' }],
+  },
+  {
+    people: 'centaur',
+    lineage: 'goat',
+    adjust: { str: 1, con: 1, cha: -1 },
+    size: 'large',
+    racial: [null, null, { id: 'armsmaster' }],
+  },
+  {
+    people: 'centaur',
+    lineage: 'lion',
+    adjust: { str: 2, wis: -1 },
+    size: 'large',
+    racial: [null, { id: 'pounce', skill: 'stab' }, { id: 'armsmaster' }],
+  },
+  {
+    people: 'centaur',
+    lineage: 'bison',
+    adjust: { str: 1, con: 1, dex: -1 },
+    size: 'large',
+    racial: [null, null, { id: 'armsmaster' }],
+  },
+  {
+    people: 'beastman',
+    lineage: null,
+    adjust: { con: 2, str: 1, int: -2 },
+    size: 'standard',
+    racial: [null, null, { id: 'die-hard' }],
+  },
+  {
+    people: 'gnome',
+    lineage: null,
+    adjust: { int: 2, wis: 1, str: -2 },
+    size: 'small',
+    racial: [null, { id: 'artisan' }, { id: 'polymath', skill: 'trade' }],
+  },
+];
 
 /** A complete Warrior of the given people, using the first background open to it. */
-function choicesFor(people: string, lineage: string | null): Choices {
+function choicesFor(
+  people: string,
+  lineage: string | null,
+  racial: (FocusChoice | null)[] = [],
+): Choices {
   const bg = data.content.backgrounds.find((b) => backgroundOpenTo(b, people));
   if (!bg) throw new Error(`no background for ${people}`);
   return {
@@ -41,6 +106,7 @@ function choicesFor(people: string, lineage: string | null): Choices {
     array,
     background: { id: bg.id, choice: { mode: 'pick', picks: [{ index: 1 }, { index: 2 }] } },
     classId: 'full-warrior',
+    foci: [...racial, { id: 'impervious-defense' }, { id: 'lucky' }],
     freeSkill: 'heal',
     name: 'Tester',
   };
@@ -48,7 +114,7 @@ function choicesFor(people: string, lineage: string | null): Choices {
 
 describe('every people and lineage', () => {
   it.each(EXPECTED)('builds, saves, and reloads a $people $lineage', (e) => {
-    const choices = choicesFor(e.people, e.lineage);
+    const choices = choicesFor(e.people, e.lineage, e.racial);
     const ev = evaluateChoices(choices, data);
     expect(ev.complete).toBe(true);
     expect(ev.peopleAdjust).toEqual(e.adjust);
@@ -131,7 +197,11 @@ describe('backgrounds by people', () => {
 
 describe('importing lineages', () => {
   const centaur = () => {
-    const r = finishCharacter(choicesFor('centaur', 'bison'), data, scriptedRng([5, 1, 2]));
+    const r = finishCharacter(
+      choicesFor('centaur', 'bison', [null, null, { id: 'armsmaster' }]),
+      data,
+      scriptedRng([5, 1, 2]),
+    );
     if (!r.ok) throw new Error(r.errors.join('; '));
     return r.character;
   };

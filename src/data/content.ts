@@ -1,11 +1,16 @@
 import backgrounds from '../../data/content/backgrounds.json';
+import focusRules from '../../data/content/focus-rules.json';
 import peoples from '../../data/content/peoples.json';
+import racialFoci from '../../data/content/racial-foci.json';
+import { focusReferenceErrors } from './focus-content.ts';
 import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.ts';
 
 export function loadContent(): ContentData {
   return {
     peoples: ContentSchemas.peoples.parse(peoples),
     backgrounds: ContentSchemas.backgrounds.parse(backgrounds),
+    racialFoci: ContentSchemas.racialFoci.parse(racialFoci),
+    focusRules: ContentSchemas.focusRules.parse(focusRules),
   };
 }
 
@@ -49,5 +54,5 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
       errors.push(`${name}: duplicate id ${id}`);
     }
   }
-  return errors;
+  return [...errors, ...focusReferenceErrors(srd, content)];
 }

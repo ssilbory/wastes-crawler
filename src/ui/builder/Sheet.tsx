@@ -1,6 +1,7 @@
 import type { Attribute, Character } from '../../data/schemas/index.ts';
 import { ATTRIBUTES } from '../../game/character/attributes.ts';
 import { characterSheet, type Preview } from '../../game/character/derived.ts';
+import { focusInfo } from '../../game/character/foci.ts';
 import type { Skills } from '../../game/character/skills.ts';
 import type { AttributeScores } from '../../rules/attributes.ts';
 import type { SaveType } from '../../rules/saves.ts';
@@ -118,6 +119,15 @@ export function CharacterSheet(props: { character: Character }) {
       <Saves saves={sheet.saves} />
       <h3>Skills</h3>
       <SkillList skills={c.skills} />
+      <h3>Foci</h3>
+      <ul class="skills">
+        {c.foci.map((f) => (
+          <li key={`${f.id}-${f.attribute ?? ''}`}>
+            {focusInfo(data, f.id)?.name ?? f.id}-{f.level}
+            {f.attribute ? ` (${ATTRIBUTE_NAMES[f.attribute]})` : ''}
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

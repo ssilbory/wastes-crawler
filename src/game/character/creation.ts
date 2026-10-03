@@ -5,9 +5,14 @@ import {
   CHARACTER_SCHEMA_VERSION,
   CharacterSchema,
   type Character,
+  type People,
   type Progression,
 } from '../../data/schemas/index.ts';
-import { attributeModifier, type AttributeScores } from '../../rules/attributes.ts';
+import {
+  boostedModifier,
+  type AttributeScores,
+  type ModifierBonuses,
+} from '../../rules/attributes.ts';
 import { rollMaxHp } from '../../rules/hit-points.ts';
 import { levelHitDie, startingClass } from '../../rules/progression.ts';
 import type { Rng } from '../../rules/rng.ts';
@@ -18,8 +23,16 @@ import {
   type Adjustments,
 } from './attributes.ts';
 import { evaluateBackground, type ChosenBackground } from './background.ts';
+import {
+  evaluateFoci,
+  focusSlots,
+  hasDieHard,
+  type FocusChoice,
+  type FocusSlot,
+  type HeldFocus,
+} from './foci.ts';
 import { findProgression, isSkill, type GameData } from './context.ts';
-import { evaluatePeople } from './people.ts';
+import { evaluatePeople, findLineage, findPeople } from './people.ts';
 import { addCreationSkill, type Skills } from './skills.ts';
 import { fail, INCOMPLETE, OK, type Step, type StepStatus } from './steps.ts';
 
@@ -33,6 +46,7 @@ export {
   type RolledEntry,
 } from './background.ts';
 export type { Step, StepStatus } from './steps.ts';
+export type { FocusChoice, FocusSlot, HeldFocus } from './foci.ts';
 
 /** Warrior, Expert, and the Adventurer's Partial Warrior/Partial Expert. */
 export const STARTING_CLASSES = ['full-warrior', 'full-expert', 'partial-expert-partial-warrior'];
@@ -47,6 +61,8 @@ export interface Choices {
   array: AttributeScores | null;
   background: ChosenBackground | null;
   classId: string | null;
+  /** One entry per focus slot; signature slots may stay null. */
+  foci: (FocusChoice | null)[];
   freeSkill: string | null;
   name: string;
   goal: string;
@@ -58,6 +74,12 @@ export interface Evaluation {
   peopleAdjust: Adjustments;
   backgroundAdjust: Adjustments;
   skills: Skills;
+  /** Racial slots once the people is valid, plus class slots once the class is. */
+  focusSlots: FocusSlot[];
+  /** Skills before each focus slot that was evaluated. */
+  focusSkillsBefore: Skills[];
+  foci: HeldFocus[];
+  modifierBonuses: ModifierBonuses;
   steps: Record<Step, StepStatus>;
   complete: boolean;
 }
@@ -69,6 +91,7 @@ export function emptyChoices(): Choices {
     array: null,
     background: null,
     classId: null,
+    foci: [],
     freeSkill: null,
     name: '',
     goal: '',
@@ -81,6 +104,7 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
     attributes: INCOMPLETE,
     background: INCOMPLETE,
     class: INCOMPLETE,
+    foci: INCOMPLETE,
     'free-skill': INCOMPLETE,
     identity: INCOMPLETE,
   };
@@ -88,16 +112,21 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
   let peopleAdjust: Adjustments = {};
   let backgroundAdjust: Adjustments = {};
   let skills: Skills = {};
+  let slots: FocusSlot[] = [];
+  let foci: HeldFocus[] = [];
+  let focusSkillsBefore: Skills[] = [];
+  let modifierBonuses: ModifierBonuses = {};
 
-  const people = evaluatePeople(data, choices.people, choices.lineage);
-  steps.people = people.status;
+  const peopleOutcome = evaluatePeople(data, choices.people, choices.lineage);
+  const peopleStatus = peopleOutcome.status;
+  steps.people = peopleStatus;
   if (choices.array && !isStandardArray(choices.array)) {
     steps.attributes = fail('scores must be 14, 12, 11, 10, 9, and 7, one each');
   } else if (choices.array) {
     steps.attributes = OK;
     // Final scores need the people's modifiers, so they wait for a valid people and lineage.
-    if (people.modifiers) {
-      const applied = applyPeopleModifiers(choices.array, people.modifiers);
+    if (peopleOutcome.modifiers) {
+      const applied = applyPeopleModifiers(choices.array, peopleOutcome.modifiers);
       scores = applied.scores;
       peopleAdjust = applied.applied;
     }
@@ -115,6 +144,23 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
     const known =
       STARTING_CLASSES.includes(choices.classId) && findProgression(data, choices.classId);
     steps.class = known ? OK : fail(`${choices.classId} isn't a starting class in this version`);
+  }
+
+  if (peopleStatus.state === 'ok') {
+    // A valid people step guarantees the people exists.
+    const people = findPeople(data, choices.people) as People;
+    const lineage = choices.lineage === null ? undefined : findLineage(people, choices.lineage);
+    const progression =
+      steps.class.state === 'ok' ? findProgression(data, choices.classId as string) : undefined;
+    slots = focusSlots(people, lineage, progression);
+    if (progression && steps.background.state === 'ok') {
+      const outcome = evaluateFoci(data, slots, choices.foci, skills);
+      steps.foci = outcome.status;
+      skills = outcome.skills;
+      foci = outcome.foci;
+      focusSkillsBefore = outcome.skillsBefore;
+      modifierBonuses = outcome.bonuses;
+    }
   }
 
   if (choices.freeSkill !== null) {
@@ -137,7 +183,18 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
   else if (name !== '') steps.identity = OK;
 
   const complete = Object.values(steps).every((s) => s.state === 'ok');
-  return { scores, peopleAdjust, backgroundAdjust, skills, steps, complete };
+  return {
+    scores,
+    peopleAdjust,
+    backgroundAdjust,
+    skills,
+    focusSlots: slots,
+    focusSkillsBefore,
+    foci,
+    modifierBonuses,
+    steps,
+    complete,
+  };
 }
 
 export type FinishResult = { ok: true; character: Character } | { ok: false; errors: string[] };
@@ -158,8 +215,8 @@ export function finishCharacter(choices: Choices, data: GameData, rng: Rng): Fin
   const progression = findProgression(data, choices.classId as string) as Progression;
   const hp = rollMaxHp(rng, {
     dice: [levelHitDie(progression, 1)],
-    conModifier: attributeModifier(scores.con),
-    dieHard: false,
+    conModifier: boostedModifier(scores.con, ev.modifierBonuses.con),
+    dieHard: hasDieHard(data, ev.foci),
     currentMax: 0,
   }).max;
   const hex = () => rng.int(0, 0xffff_ffff).toString(16).padStart(8, '0');
@@ -172,6 +229,7 @@ export function finishCharacter(choices: Choices, data: GameData, rng: Rng): Fin
     ...(choices.lineage === null ? {} : { lineage: choices.lineage }),
     background: background.id,
     attributes: { base: array, people: ev.peopleAdjust, background: ev.backgroundAdjust },
+    foci: ev.foci,
     skills: ev.skills,
     classes: startingClass(progression.id),
     hp: { max: hp, current: hp },

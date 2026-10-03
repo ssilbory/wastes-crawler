@@ -9,10 +9,52 @@ const contentBase = {
 
 const Modifiers = z.partialRecord(AttributeSchema, z.int().min(-4).max(4));
 
+/** What a focus grants as a bonus skill the first time it is taken (SRD 1.2.2, 2.7.1.6). */
+export const BonusSkillSchema = z.discriminatedUnion('kind', [
+  z.strictObject({ kind: z.literal('skill'), skill: IdSchema }),
+  z.strictObject({ kind: z.literal('one-of'), skills: z.array(IdSchema).min(2) }),
+  z.strictObject({ kind: z.literal('any-combat') }),
+  z.strictObject({ kind: z.literal('any') }),
+  z.strictObject({ kind: z.literal('any-except'), except: z.array(IdSchema).min(1) }),
+]);
+export type BonusSkill = z.infer<typeof BonusSkillSchema>;
+
+/** Which class focus picks may take a focus; see the Foci rules in docs/rules-adaptation.md. */
+export const FocusCategorySchema = z.enum(['combat', 'non-combat', 'both']);
+export type FocusCategory = z.infer<typeof FocusCategorySchema>;
+
+/**
+ * How the game uses an SRD focus. `later` foci wait for the systems they need; `excluded` ones
+ * don't fit the setting. `attributeChoice` marks Developed Attribute; `dieHard` marks the extra
+ * hit points of Die Hard.
+ */
+export const FocusRuleSchema = z.strictObject({
+  id: IdSchema,
+  availability: z.enum(['pickable', 'later', 'excluded']),
+  category: FocusCategorySchema,
+  bonusSkill: BonusSkillSchema.optional(),
+  attributeChoice: z.literal(true).optional(),
+  dieHard: z.literal(true).optional(),
+});
+export type FocusRule = z.infer<typeof FocusRuleSchema>;
+
+/** A people's signature focus, authored in the SRD focus format. */
+export const RacialFocusSchema = z.strictObject({
+  ...contentBase,
+  levels: z
+    .array(z.strictObject({ level: z.int().min(1).max(2), text: z.string().min(1) }))
+    .min(1)
+    .max(2),
+  bonusSkill: BonusSkillSchema.optional(),
+});
+export type RacialFocus = z.infer<typeof RacialFocusSchema>;
+
 /** A people's sub-type, such as a centaur's animal half; its modifiers add to the people's. */
 export const LineageSchema = z.strictObject({
   ...contentBase,
   attributeModifiers: Modifiers,
+  /** Added to the people's signature foci. */
+  signatureFoci: z.array(IdSchema),
 });
 export type Lineage = z.infer<typeof LineageSchema>;
 
@@ -22,6 +64,10 @@ export const PeopleSchema = z.strictObject({
   /** Added to generated scores; the result stays within 3–18. */
   attributeModifiers: Modifiers,
   size: z.enum(['small', 'standard', 'large']),
+  /** Racial foci every member gets for free (ids in racial-foci.json). */
+  signatureFoci: z.array(IdSchema),
+  /** SRD foci that fill the remaining racial focus slots, up to three in all. */
+  racialFocusPicks: z.array(IdSchema),
   /** When present, every member must belong to one lineage. */
   lineages: z.array(LineageSchema).min(2).optional(),
 });
@@ -67,6 +113,8 @@ export type Background = z.infer<typeof BackgroundSchema>;
 export const ContentSchemas = {
   peoples: z.array(PeopleSchema).min(1),
   backgrounds: z.array(BackgroundSchema).min(1),
+  racialFoci: z.array(RacialFocusSchema).min(1),
+  focusRules: z.array(FocusRuleSchema).min(1),
 } as const;
 export type ContentData = {
   [K in keyof typeof ContentSchemas]: z.infer<(typeof ContentSchemas)[K]>;

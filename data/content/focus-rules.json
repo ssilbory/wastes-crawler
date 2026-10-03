@@ -1,0 +1,273 @@
+[
+  {
+    "id": "alert",
+    "availability": "pickable",
+    "category": "both",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "notice"
+    }
+  },
+  {
+    "id": "armored-magic",
+    "availability": "later",
+    "category": "non-combat"
+  },
+  {
+    "id": "armsmaster",
+    "availability": "pickable",
+    "category": "combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "stab"
+    }
+  },
+  {
+    "id": "artisan",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "craft"
+    }
+  },
+  {
+    "id": "assassin",
+    "availability": "pickable",
+    "category": "combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "sneak"
+    }
+  },
+  {
+    "id": "authority",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "lead"
+    }
+  },
+  {
+    "id": "close-combatant",
+    "availability": "pickable",
+    "category": "combat",
+    "bonusSkill": {
+      "kind": "any-combat"
+    }
+  },
+  {
+    "id": "connected",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "connect"
+    }
+  },
+  {
+    "id": "cultured",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "connect"
+    }
+  },
+  {
+    "id": "die-hard",
+    "availability": "pickable",
+    "category": "combat",
+    "dieHard": true
+  },
+  {
+    "id": "deadeye",
+    "availability": "pickable",
+    "category": "combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "shoot"
+    }
+  },
+  {
+    "id": "dealmaker",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "trade"
+    }
+  },
+  {
+    "id": "developed-attribute",
+    "availability": "pickable",
+    "category": "non-combat",
+    "attributeChoice": true
+  },
+  {
+    "id": "diplomatic-grace",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "convince"
+    }
+  },
+  {
+    "id": "gifted-chirurgeon",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "heal"
+    }
+  },
+  {
+    "id": "henchkeeper",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "lead"
+    }
+  },
+  {
+    "id": "impervious-defense",
+    "availability": "pickable",
+    "category": "combat"
+  },
+  {
+    "id": "impostor",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "one-of",
+      "skills": ["perform", "sneak"]
+    }
+  },
+  {
+    "id": "lucky",
+    "availability": "pickable",
+    "category": "non-combat"
+  },
+  {
+    "id": "nullifier",
+    "availability": "pickable",
+    "category": "non-combat"
+  },
+  {
+    "id": "poisoner",
+    "availability": "pickable",
+    "category": "both",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "heal"
+    }
+  },
+  {
+    "id": "polymath",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "any"
+    }
+  },
+  {
+    "id": "rider",
+    "availability": "pickable",
+    "category": "both",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "ride"
+    }
+  },
+  {
+    "id": "shocking-assault",
+    "availability": "pickable",
+    "category": "combat",
+    "bonusSkill": {
+      "kind": "one-of",
+      "skills": ["punch", "stab"]
+    }
+  },
+  {
+    "id": "snipers-eye",
+    "availability": "pickable",
+    "category": "combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "shoot"
+    }
+  },
+  {
+    "id": "special-origin",
+    "availability": "excluded",
+    "category": "non-combat"
+  },
+  {
+    "id": "specialist",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "any-except",
+      "except": ["magic", "stab", "shoot", "punch"]
+    }
+  },
+  {
+    "id": "spirit-familiar",
+    "availability": "later",
+    "category": "non-combat"
+  },
+  {
+    "id": "trapmaster",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "notice"
+    }
+  },
+  {
+    "id": "unarmed-combatant",
+    "availability": "pickable",
+    "category": "combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "punch"
+    }
+  },
+  {
+    "id": "unique-gift",
+    "availability": "excluded",
+    "category": "non-combat"
+  },
+  {
+    "id": "valiant-defender",
+    "availability": "pickable",
+    "category": "combat",
+    "bonusSkill": {
+      "kind": "one-of",
+      "skills": ["stab", "punch"]
+    }
+  },
+  {
+    "id": "well-met",
+    "availability": "pickable",
+    "category": "non-combat"
+  },
+  {
+    "id": "whirlwind-assault",
+    "availability": "pickable",
+    "category": "combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "stab"
+    }
+  },
+  {
+    "id": "xenoblooded",
+    "availability": "excluded",
+    "category": "non-combat"
+  }
+]

@@ -25,6 +25,7 @@ const raider = (): Choices => ({
   array,
   background: { id: 'raider', choice: { mode: 'pick', picks: [{ index: 1 }, { index: 2 }] } },
   classId: 'full-warrior',
+  foci: [null, null, { id: 'alert' }, { id: 'armsmaster' }, { id: 'lucky' }],
   freeSkill: 'notice',
   name: 'Snag',
   goal: 'Outlive the war-band',
@@ -36,7 +37,8 @@ describe('evaluateChoices', () => {
     expect(ev.complete).toBe(true);
     expect(ev.scores).toEqual({ str: 12, dex: 14, con: 11, int: 11, wis: 9, cha: 7 });
     expect(ev.peopleAdjust).toEqual({ str: -2, dex: 2, int: 1 });
-    expect(ev.skills).toEqual({ stab: 0, sneak: 0, exert: 0, notice: 0 });
+    // Warren-born raises Sneak, Armsmaster raises Stab, Alert and the free pick give Notice-1.
+    expect(ev.skills).toEqual({ stab: 1, sneak: 1, exert: 0, survive: 0, notice: 1 });
   });
 
   it('starts with every step incomplete', () => {
@@ -214,7 +216,7 @@ describe('finishCharacter', () => {
     const result = finishCharacter(raider(), data, scriptedRng([4, 0xabc, 0xdef]));
     if (!result.ok) throw new Error(result.errors.join('; '));
     expect(result.character).toMatchObject({
-      schemaVersion: 1,
+      schemaVersion: 2,
       id: 'char-00000abc00000def',
       name: 'Snag',
       people: 'goblin',
@@ -232,7 +234,11 @@ describe('finishCharacter', () => {
       finishCharacter({ ...raider(), name: '', classId: 'full-mage' }, data, scriptedRng([])),
     ).toEqual({
       ok: false,
-      errors: ["class: full-mage isn't a starting class in this version", 'identity: incomplete'],
+      errors: [
+        "class: full-mage isn't a starting class in this version",
+        'foci: incomplete',
+        'identity: incomplete',
+      ],
     });
   });
 });

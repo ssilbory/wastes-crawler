@@ -6,7 +6,7 @@ import type { GameData } from '../../src/game/character/context.ts';
 import { emptyChoices, finishCharacter } from '../../src/game/character/creation.ts';
 import { characterSheet, previewSheet } from '../../src/game/character/derived.ts';
 import { evaluateChoices } from '../../src/game/character/creation.ts';
-import { exportCharacter, importCharacter } from '../../src/game/character/io.ts';
+import { exportCharacter, importCharacter, MIGRATIONS } from '../../src/game/character/io.ts';
 import { scriptedRng } from '../helpers/scripted-rng.ts';
 
 const data: GameData = { srd: loadSrd(), content: loadContent() };
@@ -19,6 +19,7 @@ function goblinWarrior(): Character {
       array: { str: 14, dex: 12, con: 11, int: 10, wis: 9, cha: 7 },
       background: { id: 'raider', choice: { mode: 'pick', picks: [{ index: 1 }, { index: 2 }] } },
       classId: 'full-warrior',
+      foci: [null, null, { id: 'alert' }, { id: 'armsmaster' }, { id: 'lucky' }],
       freeSkill: 'notice',
       name: 'Snag',
       goal: '',
@@ -97,8 +98,8 @@ describe('export and import', () => {
 
   it('rejects newer versions and versions with no upgrade path', () => {
     const c = goblinWarrior();
-    expect(importCharacter(JSON.stringify({ ...c, schemaVersion: 2 }), data)).toMatchObject({
-      errors: ['made by a newer version of the game (schema 2)'],
+    expect(importCharacter(JSON.stringify({ ...c, schemaVersion: 3 }), data)).toMatchObject({
+      errors: ['made by a newer version of the game (schema 3)'],
     });
     expect(importCharacter(JSON.stringify({ ...c, schemaVersion: 0 }), data)).toMatchObject({
       errors: ['no upgrade from schema 0'],
@@ -106,15 +107,31 @@ describe('export and import', () => {
   });
 
   it('upgrades older files through the migrations in order', () => {
-    const { goal, ...v0 } = { ...goblinWarrior(), schemaVersion: 0 };
+    const { goal, ...v0 } = { ...goblinWarrior(), schemaVersion: 0, foci: undefined };
     const addGoal = (raw: Record<string, unknown>) => ({
       ...raw,
       goal: goal || '(none)',
       schemaVersion: 1,
     });
-    expect(importCharacter(JSON.stringify(v0), data, { 0: addGoal })).toMatchObject({
+    expect(importCharacter(JSON.stringify(v0), data, { ...MIGRATIONS, 0: addGoal })).toMatchObject({
       ok: true,
-      character: { goal: '(none)' },
+      character: { goal: '(none)', foci: [] },
+    });
+  });
+
+  it('upgrades a version 1 file, made before foci, to an empty focus list', () => {
+    const v1 = { ...goblinWarrior(), schemaVersion: 1, foci: undefined };
+    expect(importCharacter(JSON.stringify(v1), data)).toMatchObject({
+      ok: true,
+      character: { schemaVersion: 2, foci: [] },
+    });
+  });
+
+  it('rejects unknown foci', () => {
+    const c = { ...goblinWarrior(), foci: [{ id: 'flying', level: 1 }] };
+    expect(importCharacter(JSON.stringify(c), data)).toEqual({
+      ok: false,
+      errors: ['foci: unknown flying'],
     });
   });
 
