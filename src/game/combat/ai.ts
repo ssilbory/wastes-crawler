@@ -92,10 +92,15 @@ export function partyAction(b: Battle, actor: Combatant): Action {
   if (first && !inMelee(b, actor)) return { kind: 'stabilize', target: first.id };
   const magic = magicAction(b, actor);
   if (magic) return magic;
-  const choice = bestAttack(b, actor);
-  if (choice) {
-    const target = choice.foes.filter(canAct).sort((x, y) => x.hp - y.hp)[0] ?? choice.foes[0];
-    return { kind: 'attack', attack: choice.index, target: (target as Combatant).id };
-  }
+  const attack = attackWeakest(b, actor);
+  if (attack) return attack;
   return first ? { kind: 'stabilize', target: first.id } : { kind: 'wait' };
+}
+
+/** The best usable attack against the weakest foe still fighting, or null with nobody in reach. */
+export function attackWeakest(b: Battle, actor: Combatant): Action | null {
+  const choice = bestAttack(b, actor);
+  if (!choice) return null;
+  const target = choice.foes.filter(canAct).sort((x, y) => x.hp - y.hp)[0] ?? choice.foes[0];
+  return { kind: 'attack', attack: choice.index, target: (target as Combatant).id };
 }

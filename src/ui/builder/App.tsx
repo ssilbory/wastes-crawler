@@ -12,10 +12,12 @@ import { previewSheet } from '../../game/character/derived.ts';
 import { exportCharacter, importCharacter } from '../../game/character/io.ts';
 import { classBonusSkills, classOption } from '../../game/character/class-step.ts';
 import { rollStartingCrowns } from '../../game/character/gear.ts';
+import { addToRoster } from '../../game/character/roster.ts';
 import { backgroundOpenTo, findPeople } from '../../game/character/people.ts';
 import type { AttributeScores } from '../../rules/attributes.ts';
 import { AttributesStep, type DraftArray } from './AttributesStep.tsx';
 import { BackgroundStep } from './BackgroundStep.tsx';
+import { loadRoster, saveRoster } from '../storage.ts';
 import { data, freshRng } from './data.ts';
 import { FociStep } from './FociStep.tsx';
 import { GearStep } from './GearStep.tsx';
@@ -44,6 +46,7 @@ export function App() {
   const [draft, setDraft] = useState<DraftArray>({});
   const [character, setCharacter] = useState<Character | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
+  const [saved, setSaved] = useState<string | null>(null);
 
   const ev = useMemo(() => evaluateChoices(choices, data), [choices]);
   const option = choices.classId === null ? undefined : classOption(data, choices.classId);
@@ -54,6 +57,7 @@ export function App() {
     const result = finishCharacter(choices, data, rng.current);
     if (result.ok) {
       setCharacter(result.character);
+      setSaved(null);
       setErrors([]);
     } else setErrors(result.errors);
   };
@@ -65,11 +69,19 @@ export function App() {
     input.value = '';
     if (result.ok) {
       setCharacter(result.character);
+      setSaved(null);
       setErrors([]);
     } else setErrors(result.errors.map((e) => `${file.name}: ${e}`));
   };
 
+  const saveToRoster = (c: Character) => {
+    const next = addToRoster(loadRoster().entries, c);
+    if (saveRoster(next)) setSaved(`${c.name} joined the arena roster.`);
+    else setErrors(['Browser storage is unavailable, so the character wasn’t saved.']);
+  };
+
   const startOver = () => {
+    setSaved(null);
     setCharacter(null);
     setChoices(emptyChoices());
     setDraft({});
@@ -99,9 +111,17 @@ export function App() {
       {character ? (
         <main class="done">
           <CharacterSheet character={character} />
+          {saved && (
+            <p class="saved" role="status">
+              {saved} <a href="#/arena">Go to the arena</a>
+            </p>
+          )}
           <div class="actions">
             <button type="button" onClick={() => download(character)}>
               Export JSON
+            </button>
+            <button type="button" disabled={saved !== null} onClick={() => saveToRoster(character)}>
+              Save to roster
             </button>
             <button type="button" onClick={startOver}>
               Start over

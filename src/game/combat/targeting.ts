@@ -14,20 +14,21 @@ function side(b: Battle, s: Combatant['side']) {
   return b.combatants.filter((c) => c.side === s);
 }
 
-/** A party rear slot with nobody standing directly ahead. */
+const formation = (b: Battle, c: Combatant) => b.layout[c.side] === 'formation';
+
+/** A formation rear slot with nobody standing directly ahead. */
 export function exposed(b: Battle, c: Combatant): boolean {
-  if (c.side !== 'party' || c.row === 0) return false;
-  return !side(b, 'party').some((a) => a.row === 0 && a.column === c.column && canAct(a));
+  if (!formation(b, c) || c.row === 0) return false;
+  return !side(b, c.side).some((a) => a.row === 0 && a.column === c.column && canAct(a));
 }
 
-/** Rear cover: party rear slots that are shielded, and every enemy row behind the first. */
+/** Rear cover: formation rear slots that are shielded, and every monster row behind the first. */
 export function covered(b: Battle, c: Combatant): boolean {
   if (flying(c)) return false;
-  if (c.side === 'party') return c.row > 0 && !exposed(b, c);
-  return c.row > 0;
+  return c.row > 0 && !exposed(b, c);
 }
 
-/** An enemy in the front row facing a front-row PC, so ranged attacks are "in melee". */
+/** A front-row combatant facing a foe's front row, so ranged attacks are "in melee". */
 export function inMelee(b: Battle, c: Combatant): boolean {
   if (c.row !== 0) return false;
   const other = c.side === 'party' ? 'enemy' : 'party';
@@ -43,24 +44,23 @@ export function usable(b: Battle, actor: Combatant, attack: Attack): boolean {
     if (actor.row === 0) return true;
     return actor.row === 1 && attack.reach;
   }
-  if (actor.side === 'enemy' && actor.row >= 2 && !flying(actor)) return false;
+  if (actor.row >= 2 && !flying(actor)) return false;
   if (attack.mode === 'ranged' && attack.twoHanded && inMelee(b, actor)) {
     return actor.rangedInMelee !== null;
   }
   return actor.blindRounds === 0;
 }
 
-/** Valid targets for an attack; downed PCs only when nobody else can be reached. */
+/** Valid targets for an attack; the dying only when nobody else can be reached. */
 export function targets(b: Battle, actor: Combatant, attack: Attack): Combatant[] {
   if (!usable(b, actor, attack)) return [];
   const foes = b.combatants.filter((c) => c.side !== actor.side);
   const reachable = (t: Combatant) => {
     if (attack.mode !== 'melee' || flying(actor) || flying(t)) return true;
-    if (t.side === 'enemy') return t.row === 0;
     return t.row === 0 || exposed(b, t);
   };
   const up = foes.filter((t) => isUp(t) && reachable(t));
-  if (up.length > 0 || actor.side === 'party') return up;
+  if (up.length > 0) return up;
   return foes.filter((t) => t.status === 'dying' && reachable(t));
 }
 

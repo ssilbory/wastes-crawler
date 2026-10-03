@@ -1,7 +1,8 @@
-import { render } from 'preact';
-import { h } from 'preact';
-import { App } from './ui/builder/App.tsx';
+import { h, render } from 'preact';
+import { Shell } from './ui/Shell.tsx';
 import './ui/builder/builder.css';
+import './ui/arena/setup.css';
+import './ui/arena/fight.css';
 
 const root = document.querySelector<HTMLElement>('#app');
-if (root) render(h(App, null), root);
+if (root) render(h(Shell, null), root);

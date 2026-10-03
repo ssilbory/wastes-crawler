@@ -1,0 +1,127 @@
+.top-nav {
+  display: flex;
+  gap: 4px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 8px 16px 0;
+}
+
+.top-nav a {
+  color: var(--muted);
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.top-nav a[aria-current='page'] {
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.saved {
+  color: var(--ok);
+}
+
+.arena {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.arena .tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.arena .tabs [aria-selected='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--panel);
+}
+
+.arena-setup {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.panel h2 {
+  margin-top: 0;
+}
+
+.roster-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+}
+
+.roster-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: center;
+  padding: 6px 0;
+  border-top: 1px solid var(--line);
+}
+
+.roster-list .who {
+  flex: 1 1 160px;
+}
+
+.picker-row {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0;
+}
+
+.row-name {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.formation-slots {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.formation-slots select {
+  min-width: 0;
+}
+
+.chips,
+.conditions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.chip {
+  font-size: 0.8rem;
+  padding: 1px 6px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+}
+
+.start-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.secondary {
+  color: var(--muted);
+}

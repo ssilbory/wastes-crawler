@@ -1,0 +1,204 @@
+// The combat round (vendor/wwn-srd/2.0 The Rules of the Game/2.4.1–2.4.2): sides act in initiative
+// order, then the end-of-round formation shifts, mortal-wound clock, and condition timers from
+// docs/rules-adaptation.md and 2.5.1. Turns run one at a time, so a caller can stop for a player's
+// command (advance) or let controllers decide everything (runRound, runBattle).
+import { actsOnInstinct, MORTAL_ROUNDS } from '../../rules/combat.ts';
+import { frontDrops, ROW_SLOTS, type Formation, type FormationRow } from '../../rules/formation.ts';
+import { act, stabilize } from './actions.ts';
+import { freeActions, monsterAction, partyAction } from './ai.ts';
+import { say } from './damage.ts';
+import { checkMorale } from './morale.ts';
+import { canAct, isUp } from './targeting.ts';
+import type { Battle, Combatant, Controller, Outcome } from './types.ts';
+
+export const MAX_ROUNDS = 100;
+
+const order = (list: Combatant[]) => [...list].sort((x, y) => x.row - y.row || x.column - y.column);
+
+/** Queues this round's turns: Alert 2 PCs first, then each side in initiative order. */
+export function beginRound(b: Battle): void {
+  const pcs = order(b.combatants.filter((c) => c.side === 'party'));
+  const foes = order(b.combatants.filter((c) => c.side === 'enemy'));
+  const first = pcs.filter((c) => c.actsFirst);
+  const rest = pcs.filter((c) => !c.actsFirst);
+  const sides = b.partyFirst ? [rest, foes] : [foes, rest];
+  b.queue = [...first, ...sides.flat()].map((c) => c.id);
+}
+
+function checkEnd(b: Battle): void {
+  if (!b.combatants.some((c) => c.side === 'enemy' && canAct(c))) b.outcome = 'party';
+  else if (!b.combatants.some((c) => c.side === 'party' && canAct(c))) b.outcome = 'enemy';
+}
+
+/**
+ * The combatant whose turn it is, or null when the round's turns are done. Skips anyone who can no
+ * longer act, and spends a stunned combatant's turn.
+ */
+export function currentActor(b: Battle): Combatant | null {
+  while (b.queue.length > 0 && !b.outcome) {
+    const actor = b.combatants.find((c) => c.id === b.queue[0]) as Combatant;
+    if (!canAct(actor)) {
+      b.queue.shift();
+      continue;
+    }
+    if (!actor.stunned) return actor;
+    b.queue.shift();
+    actor.totalDefense = false;
+    actor.stunned = false;
+    say(b, `${actor.name} is stunned and loses the action.`);
+  }
+  return null;
+}
+
+/** Starts the actor's turn: Total Defense ends, and On Turn free actions happen first. */
+function beginTurn(b: Battle, actor: Combatant): void {
+  if (b.turnBegun === actor.id) return;
+  b.turnBegun = actor.id;
+  actor.totalDefense = false;
+  if (actor.kind === 'pc') freeActions(b, actor);
+}
+
+/** Plays the current actor's turn: free actions, then one action (monsters: one per attack). */
+export function takeTurn(b: Battle, actor: Combatant, controller: Controller): void {
+  beginTurn(b, actor);
+  b.queue.shift();
+  b.turnBegun = null;
+  const swings = actor.kind === 'monster' ? actor.attacksPerRound : 1;
+  for (let i = 0; i < swings && canAct(actor) && !b.outcome; i++) {
+    act(b, actor, controller(b, actor));
+    checkMorale(b);
+    checkEnd(b);
+  }
+}
+
+function formation(b: Battle): Formation {
+  const grid: Formation = [Array(ROW_SLOTS).fill(null), Array(ROW_SLOTS).fill(null)];
+  for (const c of b.combatants) {
+    if (c.side !== 'party') continue;
+    (grid[c.row] as FormationRow)[c.column] = { standing: canAct(c), down: !canAct(c) };
+  }
+  return grid;
+}
+
+/** HP ties for promotion are decided at random (docs/rules-adaptation.md, Promotion). */
+const pickAtRandom = (b: Battle) => (cols: number[]) =>
+  cols[b.rng.int(0, cols.length - 1)] as number;
+
+function shiftFormation(b: Battle): void {
+  const party = b.combatants.filter((c) => c.side === 'party');
+  const at = (row: number, col: number) => party.find((c) => c.row === row && c.column === col);
+  const rearHp = [0, 1, 2, 3].map((col) => at(1, col)?.hp ?? 0);
+  for (const move of frontDrops(formation(b), rearHp, pickAtRandom(b))) {
+    // frontDrops only moves occupied front slots.
+    const down = at(...move.from) as Combatant;
+    const other = at(...move.to);
+    [down.row, down.column] = move.to;
+    if (other) [other.row, other.column] = move.from;
+  }
+}
+
+function endOfRound(b: Battle): void {
+  for (const c of b.combatants) {
+    if (c.status === 'dying' && b.round - c.fellRound >= MORTAL_ROUNDS) {
+      c.status = 'dead';
+      say(b, `${c.name} dies of their wounds.`);
+    }
+    c.shieldUsed = false;
+    c.instinctive = false;
+    if (c.blindRounds > 0) c.blindRounds -= 1;
+    if (c.wardRounds > 0) c.wardRounds -= 1;
+  }
+  if (b.layout.party === 'formation') shiftFormation(b);
+  // Monster rows step up when their front row is empty.
+  const monsters = b.combatants.filter((c) => c.kind === 'monster' && isUp(c));
+  for (const side of ['party', 'enemy'] as const) {
+    const rows = monsters.filter((c) => c.side === side);
+    while (rows.length > 0 && !rows.some((e) => e.row === 0)) for (const e of rows) e.row -= 1;
+  }
+  b.stabilizedThisRound.clear();
+  b.round += 1;
+  // SRD 5.4.2: the second round of a fight tests the nerve of mobs and undisciplined fighters.
+  if (b.round === 2) {
+    for (const m of monsters)
+      if (canAct(m) && actsOnInstinct(b.rng, m.instinct)) m.instinctive = true;
+  }
+  beginRound(b);
+}
+
+/** Ends the round once every turn is taken; past the round limit the fight is a draw. */
+function closeRound(b: Battle): void {
+  checkEnd(b);
+  if (b.outcome) return;
+  endOfRound(b);
+  if (b.round > MAX_ROUNDS) b.outcome = 'draw';
+}
+
+const controllerFor = (c: Combatant, party: Controller, enemy: Controller) =>
+  c.kind === 'pc' ? party : enemy;
+
+/**
+ * Plays turns until one needs a player's command, returning that combatant, or null once the
+ * battle has an outcome. PCs use `party` and monsters `enemy` when they decide for themselves.
+ */
+export function advance(
+  b: Battle,
+  needsCommand: (c: Combatant) => boolean,
+  party: Controller = partyAction,
+  enemy: Controller = monsterAction,
+): Combatant | null {
+  while (!b.outcome) {
+    const actor = currentActor(b);
+    if (!actor) closeRound(b);
+    else if (needsCommand(actor)) {
+      beginTurn(b, actor);
+      return actor;
+    } else takeTurn(b, actor, controllerFor(actor, party, enemy));
+  }
+  return null;
+}
+
+/** Plays the rest of the current round with controllers deciding every turn. */
+export function runRound(
+  b: Battle,
+  party: Controller = partyAction,
+  enemy: Controller = monsterAction,
+): void {
+  for (let actor = currentActor(b); actor; actor = currentActor(b))
+    takeTurn(b, actor, controllerFor(actor, party, enemy));
+  closeRound(b);
+}
+
+const heal = (c: Combatant) => c.skills.heal ?? -1;
+
+/** After a win, the party keeps trying to stabilize the dying until each lives or dies. */
+function aftermath(b: Battle): void {
+  while (b.combatants.some((c) => c.side === 'party' && c.status === 'dying')) {
+    const medics = b.combatants.filter((c) => c.side === 'party' && canAct(c));
+    for (const victim of b.combatants.filter((c) => c.side === 'party' && c.status === 'dying')) {
+      const medic = medics.sort((x, y) => heal(y) - heal(x))[0];
+      if (medic) stabilize(b, medic, victim);
+    }
+    endOfRound(b);
+  }
+}
+
+export interface BattleResult {
+  outcome: Outcome;
+  rounds: number;
+  deaths: number;
+  battle: Battle;
+}
+
+/** Sums up a finished battle, tending the party's dying first after a win. */
+export function concludeBattle(b: Battle): BattleResult {
+  const outcome: Outcome = b.outcome ?? 'draw';
+  const rounds = Math.min(b.round, MAX_ROUNDS);
+  if (outcome === 'party') aftermath(b);
+  const deaths = b.combatants.filter((c) => c.side === 'party' && c.status === 'dead').length;
+  return { outcome, rounds, deaths, battle: b };
+}
+
+export function runBattle(b: Battle, party?: Controller, enemy?: Controller): BattleResult {
+  while (!b.outcome) runRound(b, party, enemy);
+  return concludeBattle(b);
+}

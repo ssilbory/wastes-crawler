@@ -48,10 +48,10 @@ export interface Combatant {
   name: string;
   side: SideId;
   kind: 'pc' | 'monster';
-  /** Party: row 0 front, 1 rear, column 0–3. Enemies: row 0–2, any column. */
+  /** Formation: row 0 front, 1 rear, column 0–3. Monster rows: row 0–2, any column. */
   row: number;
   column: number;
-  /** An enemy's starting row, which keeps its Morale group as rows advance. */
+  /** A monster's starting row, which keeps its Morale group as rows advance. */
   group: number;
   hp: number;
   maxHp: number;
@@ -106,16 +106,31 @@ export type Action =
 
 export type Outcome = 'party' | 'enemy' | 'draw';
 
+/**
+ * How a side stands: the party's two rows of four (docs/rules-adaptation.md, Formation rules), or
+ * monster rows of up to eight, which advance when the front row empties.
+ */
+export type Layout = 'formation' | 'rows';
+
 export interface Battle {
   data: GameData;
   rng: Rng;
   round: number;
   combatants: Combatant[];
+  layout: Record<SideId, Layout>;
+  /** Names used in the log, such as "the party" or "the enemy". */
+  sideNames: Record<SideId, string>;
   partyFirst: boolean;
-  /** Enemy rows that have taken their first loss and rolled for it. */
-  rowsChecked: Set<number>;
-  halfChecked: boolean;
-  enemyStart: number;
+  /** Ids still to act this round, in turn order. */
+  queue: string[];
+  /** The combatant whose turn has started and awaits a command, if any. */
+  turnBegun: string | null;
+  /** Monster rows (`side:group`) that have taken their first loss and rolled for it. */
+  rowsChecked: Set<string>;
+  /** Sides that have rolled Morale for losing half their number. */
+  halfChecked: Set<SideId>;
+  /** Each side's starting number of combatants. */
+  startCount: Record<SideId, number>;
   stabilizedThisRound: Set<string>;
   log: string[] | null;
   outcome: Outcome | null;

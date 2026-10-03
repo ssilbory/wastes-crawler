@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { monsterAction, partyAction } from '../../../src/game/combat/ai.ts';
 import {
   act,
+  beginRound,
   createBattle,
   MAX_ROUNDS,
   runBattle,
@@ -291,6 +292,7 @@ describe('the battle loop (SRD 2.4.1–2.4.2)', () => {
     const lirael = who(b, 'Lirael');
     lirael.actsFirst = true;
     b.partyFirst = false;
+    beginRound(b);
     const order: string[] = [];
     const record: Controller = (_, actor) => {
       order.push(actor.name);

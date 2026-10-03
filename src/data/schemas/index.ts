@@ -42,3 +42,4 @@ export * from './magic.ts';
 export * from './monsters.ts';
 export * from './skills.ts';
 export * from './weapons.ts';
+export * from './roster.ts';

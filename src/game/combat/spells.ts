@@ -18,7 +18,7 @@ export function combatMagic(b: Battle, id: string): CombatMagic | undefined {
 
 const spellLevel = (b: Battle, id: string) =>
   b.data.srd.spells.find((s) => s.id === id)?.level ?? 1;
-const name = (b: Battle, id: string) =>
+export const magicName = (b: Battle, id: string) =>
   [...b.data.srd.spells, ...b.data.srd.arts].find((x) => x.id === id)?.name ?? id;
 
 function hasEffort(c: CasterState, art: string): boolean {
@@ -89,7 +89,7 @@ export function castMagic(
   const target = b.combatants.find((x) => x.id === targetId);
   pay(b, actor, m, strain);
   c.usedThisScene.add(m.limit === 'target-scene' ? `${m.id}:${targetId ?? ''}` : m.id);
-  say(b, `${actor.name} ${m.source === 'art' ? 'uses' : 'casts'} ${name(b, m.id)}.`);
+  say(b, `${actor.name} ${m.source === 'art' ? 'uses' : 'casts'} ${magicName(b, m.id)}.`);
   const e = m.effect;
   switch (e.kind) {
     case 'damage': {
