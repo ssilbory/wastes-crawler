@@ -24,6 +24,7 @@ const purse = async (page: Page) =>
 test('rests at the inn, shops, and changes the party at the tavern', async ({ page }, testInfo) => {
   await startInWesthold(page);
   const start = await purse(page);
+  await page.getByRole('tab', { name: 'Inn and temple' }).click();
   await page.getByRole('button', { name: /^Stay the night \(6 crowns\)$/ }).click();
   expect(await purse(page)).toBe(start - 6);
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
@@ -62,13 +63,17 @@ test('levels up a character with XP to spend', async ({ page }, testInfo) => {
   // Grant Snag the 3 XP for 2nd level through the autosave, then pick the journey back up.
   await page.evaluate((key) => {
     const save = JSON.parse(localStorage.getItem(key) as string);
-    save.members[0].character.xp = 3;
+    const snag = save.members.find(
+      (m: { character: { name: string } }) => m.character.name === 'Snag',
+    );
+    snag.character.xp = 3;
     localStorage.setItem(key, JSON.stringify(save));
   }, WORLD_KEY);
   await page.reload();
   await page.getByRole('button', { name: 'Continue journey' }).click();
   await page.getByRole('button', { name: 'Visit Westhold' }).click();
   await page.getByRole('tab', { name: 'Training' }).click();
+  await page.getByRole('combobox', { name: 'Who' }).selectOption({ label: 'Snag' });
   const form = page.getByRole('region', { name: 'Level up' });
   await expect(form).toBeVisible();
   await form.getByRole('combobox', { name: 'Focus (any)' }).selectOption({ label: 'Die Hard' });

@@ -11,6 +11,7 @@ import { rollSave } from '../../rules/saves.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
 import { addMemberStrain, alive, bestAt, hurt, memberCheck, note, restQuarter } from './members.ts';
+import { emit } from './bus.ts';
 import { guideOf } from './npcs.ts';
 import { findPath, regionMap, seenHexes } from './region.ts';
 import { enterTown } from './town.ts';
@@ -134,7 +135,8 @@ export function hike(w: World, data: GameData, leaderId: string | null, dark: bo
     w.visited.add(key);
     const site = map.siteAt(next);
     if (site) enterTown(w, data, site.id);
-    if (site || endMarch) break;
+    else emit(w, data, { kind: 'hex-entered' });
+    if (site || endMarch || w.encounter) break;
   }
   if (w.destination && hexKey(w.position) === hexKey(w.destination)) w.destination = null;
   return extra;

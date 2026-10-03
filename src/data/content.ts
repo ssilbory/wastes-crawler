@@ -21,6 +21,8 @@ import captives from '../../data/content/captives.json';
 import coachRoutes from '../../data/content/coach-routes.json';
 import coachRules from '../../data/content/coach-rules.json';
 import arenaCards from '../../data/content/arena-cards.json';
+import missionGivers from '../../data/content/mission-givers.json';
+import quests from '../../data/content/quests.json';
 import { combatReferenceErrors } from './combat-check.ts';
 import { equipmentReferenceErrors } from './equipment-check.ts';
 import { focusReferenceErrors } from './focus-content.ts';
@@ -29,6 +31,7 @@ import { overlandReferenceErrors } from './overland-check.ts';
 import { townReferenceErrors } from './town-check.ts';
 import { npcReferenceErrors } from './npc-check.ts';
 import { travelReferenceErrors } from './travel-check.ts';
+import { questReferenceErrors } from './quest-check.ts';
 import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.ts';
 
 export function loadContent(): ContentData {
@@ -56,6 +59,8 @@ export function loadContent(): ContentData {
     coachRoutes: ContentSchemas.coachRoutes.parse(coachRoutes),
     coachRules: ContentSchemas.coachRules.parse(coachRules),
     arenaCards: ContentSchemas.arenaCards.parse(arenaCards),
+    missionGivers: ContentSchemas.missionGivers.parse(missionGivers),
+    quests: ContentSchemas.quests.parse(quests),
   };
 }
 
@@ -104,6 +109,8 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['hirelings', content.npcRules.hirelings],
     ['captives', content.captives],
     ['coachRoutes', content.coachRoutes],
+    ['missionGivers', content.missionGivers],
+    ['quests', content.quests],
     ...content.arenaCards.map((a): [string, { id: string }[]] => [`arenaCards/${a.town}`, a.bouts]),
     ...content.peoples.map((p): [string, { id: string }[]] => [
       `peoples/${p.id} lineages`,
@@ -126,5 +133,6 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...townReferenceErrors(content),
     ...npcReferenceErrors(srd, content),
     ...travelReferenceErrors(srd, content),
+    ...questReferenceErrors(srd, content),
   ];
 }

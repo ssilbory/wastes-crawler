@@ -3,15 +3,13 @@
 // with food and shelter, and an ambush check each travel day from the terrain's encounter table.
 import type { CoachRoute, Site } from '../../data/schemas/index.ts';
 import { hexKey, type Hex } from '../../rules/hex.ts';
-import { reactionRoll } from '../../rules/reaction.ts';
 import type { GameData } from '../character/context.ts';
-import { characterSheet } from '../character/derived.ts';
 import { endOfDay } from './day.ts';
-import { MOODS, rollEnemies } from './encounters.ts';
+import { meetGroup, rollEnemies } from './encounters.ts';
 import { alive, note } from './members.ts';
-import { reactionBonus } from './minds.ts';
 import { findPath, regionMap, type RegionMap } from './region.ts';
 import type { TownResult } from './services.ts';
+import { emit } from './bus.ts';
 import { enterTown, priceHere, spend, townHere } from './town.ts';
 import type { World } from './types.ts';
 
@@ -77,22 +75,15 @@ export function boardCoach(w: World, data: GameData, routeId: string): TownResul
 function ambush(w: World, data: GameData): void {
   const map = regionMap(data, w.region);
   const { rows, nature, captive } = rollEnemies(w, data, map.terrainAt(w.position).encounters);
-  const able = alive(w).filter((m) => m.character.hp.current > 0);
-  const cha = Math.max(0, ...able.map((m) => characterSheet(m.character, data).modifiers.cha));
-  const { reaction } = reactionRoll(w.rng, cha + reactionBonus(w, data));
-  const text = `Ambush! The coach is set upon at ${hexKey(w.position)}. ${MOODS[reaction]}`;
-  w.encounter = {
-    enemies: rows,
+  meetGroup(
+    w,
+    data,
+    rows,
     nature,
-    reaction,
-    parleyed: false,
     captive,
-    offer: null,
-    hostile: true,
-    spotted: false,
-    text,
-  };
-  note(w, text);
+    null,
+    `Ambush! The coach is set upon at ${hexKey(w.position)}.`,
+  );
 }
 
 function endCoachQuarter(w: World, data: GameData): void {
@@ -122,9 +113,10 @@ export function coachQuarter(w: World, data: GameData): boolean {
         return true;
       }
     }
-    for (const hex of trip.path.splice(0, hexesPerQuarter)) {
-      w.position = hex;
-      w.visited.add(hexKey(hex));
+    for (let i = 0; i < hexesPerQuarter && trip.path.length > 0 && !w.encounter; i++) {
+      w.position = trip.path.shift() as Hex;
+      w.visited.add(hexKey(w.position));
+      if (trip.path.length > 0) emit(w, data, { kind: 'hex-entered' });
     }
     if (trip.path.length === 0) {
       w.coach = null;

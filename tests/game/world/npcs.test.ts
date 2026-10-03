@@ -87,13 +87,13 @@ describe('hiring (SRD 3.3.0)', () => {
     hire(w, data, 'guard');
     hire(w, data, 'porter');
     stowWithPorter(w, data, 'm-0', 4, 'npc-1');
-    expect(dismiss(w, 'npc-1')).toEqual({ ok: false, reason: "Take Brenna's load first." });
-    expect(dismiss(w, 'npc-0')).toEqual({ ok: true });
+    expect(dismiss(w, data, 'npc-1')).toEqual({ ok: false, reason: "Take Brenna's load first." });
+    expect(dismiss(w, data, 'npc-0')).toEqual({ ok: true });
     expect(w.log.at(-1)).toContain('Aldo is let go.');
     addNpc(w, data, 'captive', 'merchant', 'peaceful-human', 'Merrit', false);
-    dismiss(w, 'npc-0');
+    dismiss(w, data, 'npc-0');
     expect(w.log.at(-1)).toContain('The party leaves Merrit behind.');
-    expect(() => dismiss(w, 'npc-9')).toThrow('no NPC npc-9');
+    expect(() => dismiss(w, data, 'npc-9')).toThrow('no NPC npc-9');
   });
 });
 

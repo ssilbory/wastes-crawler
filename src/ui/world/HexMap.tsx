@@ -27,6 +27,7 @@ export function HexMap(props: {
             c.visited ? 'visited' : '',
             c.route ? 'route' : '',
             c.destination ? 'destination' : '',
+            c.quest ? 'quest' : '',
           ]
             .filter(Boolean)
             .join(' ')}

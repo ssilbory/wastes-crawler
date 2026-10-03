@@ -8,6 +8,7 @@ import type { GameData } from '../character/context.ts';
 import { difficultyTier, type Difficulty } from './difficulty.ts';
 import { alive, note, setHp } from './members.ts';
 import { fights, moraleAfterFight, npcMonster, removeNpc, typeOf } from './npcs.ts';
+import { emit } from './bus.ts';
 import { freeCaptive } from './rescue.ts';
 import { addLoot } from './shop.ts';
 import { wipe } from './town.ts';
@@ -23,6 +24,8 @@ export interface WorldBattle {
   enemies: string[][];
   /** A captive the enemy holds, freed by a win. */
   captive: string | null;
+  /** The quest whose fixed encounter this is. */
+  quest: string | null;
 }
 
 function npcSetup(data: GameData, n: Npc): NpcSetup {
@@ -43,7 +46,8 @@ const fighters = (w: World) => alive(w).filter((m) => m.character.hp.current > 0
 
 export function encounterBattle(w: World, data: GameData): WorldBattle {
   if (!w.encounter) throw new Error('no encounter to fight');
-  return partyBattle(w, data, w.encounter.enemies, true, w.encounter.captive);
+  const fight = partyBattle(w, data, w.encounter.enemies, true, w.encounter.captive);
+  return { ...fight, quest: w.encounter.quest };
 }
 
 /** The conscious party, and its NPCs if `withNpcs`, against enemy rows. */
@@ -79,6 +83,7 @@ export function partyBattle(
     npcIds: npcs.map((n) => n.id),
     enemies,
     captive,
+    quest: null,
   };
 }
 
@@ -150,12 +155,13 @@ export function applyBattle(
     const m = w.members.find((x) => x.id === id) as Member;
     carryBack(data, m, fight.battle.combatants[i] as Battle['combatants'][number]);
   });
-  const npcLost = npcsBack(w, fight);
+  const npcLost = npcsBack(w, data, fight);
   w.encounter = null;
   if (result.outcome === 'enemy') {
-    for (const n of w.npcs.filter((x) => x.kind === 'captive')) {
+    for (const n of w.npcs.filter((x) => x.kind !== 'hireling')) {
       removeNpc(w, n.id);
-      note(w, `${n.name} is taken captive again.`);
+      note(w, `${n.name} is taken captive${n.kind === 'captive' ? ' again' : ''}.`);
+      if (n.kind === 'escort') emit(w, data, { kind: 'npc-died', npc: n });
     }
     wipe(w, data);
     return;
@@ -166,6 +172,7 @@ export function applyBattle(
     winnings(w, data, fight.enemies);
     if (difficulty) award(w, data, fight, difficulty);
     if (fight.captive) freeCaptive(w, data, fight.captive);
+    emit(w, data, { kind: 'fight-won', quest: fight.quest });
   }
   const tier = difficulty && difficultyTier(data, difficulty).name;
   const dangerous = tier !== null && data.content.npcRules.moraleTiers.includes(tier);
@@ -173,7 +180,7 @@ export function applyBattle(
 }
 
 /** NPC hit points come back from the fight; the dead are gone. True if anyone died. */
-function npcsBack(w: World, fight: WorldBattle): boolean {
+function npcsBack(w: World, data: GameData, fight: WorldBattle): boolean {
   let lost = false;
   fight.npcIds.forEach((id, i) => {
     const c = fight.battle.combatants[fight.memberIds.length + i] as Battle['combatants'][number];
@@ -185,6 +192,7 @@ function npcsBack(w: World, fight: WorldBattle): boolean {
     lost = true;
     removeNpc(w, id);
     note(w, n.kind === 'captive' ? `${n.name} is killed; the rescue is lost.` : `${n.name} dies.`);
+    emit(w, data, { kind: 'npc-died', npc: n });
   });
   return lost;
 }

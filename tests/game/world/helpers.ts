@@ -51,6 +51,7 @@ export function encounter(
     parleyed: false,
     captive: null,
     offer: null,
+    quest: null,
     hostile: true,
     spotted: false,
     text: '',

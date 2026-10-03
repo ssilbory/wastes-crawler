@@ -6,7 +6,9 @@ import type { World } from '../../game/world/types.ts';
 import { crowns, lootText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { NpcPanel } from '../world/NpcPanel.tsx';
+import { QuestLog } from '../world/QuestLog.tsx';
 import { PartyPanel } from '../world/PartyPanel.tsx';
+import { QuestsTab } from './QuestsTab.tsx';
 import { ServicesTab } from './ServicesTab.tsx';
 import { ShopTab } from './ShopTab.tsx';
 import { TavernTab } from './TavernTab.tsx';
@@ -16,6 +18,7 @@ import { ArenaTab } from './ArenaTab.tsx';
 import type { BoutStart } from '../../game/world/arena.ts';
 
 const TABS = {
+  quests: 'Quests',
   services: 'Inn and temple',
   shop: 'Shop',
   tavern: 'Tavern',
@@ -39,7 +42,7 @@ export function TownScreen(props: {
 }) {
   const w = props.world;
   const town = townHere(w, data);
-  const [tab, setTab] = useState<Tab>('services');
+  const [tab, setTab] = useState<Tab>('quests');
   const [message, setMessage] = useState<string | null>(null);
   const act: Act = (action) => {
     const r = action();
@@ -77,6 +80,7 @@ export function TownScreen(props: {
       </p>
       <div class="world-main">
         <div class="town-main" role="tabpanel" aria-label={TABS[tab]}>
+          {tab === 'quests' && <QuestsTab world={w} act={act} />}
           {tab === 'services' && <ServicesTab world={w} act={act} />}
           {tab === 'shop' && <ShopTab world={w} act={act} />}
           {tab === 'tavern' && <TavernTab world={w} roster={props.roster} act={act} />}
@@ -87,6 +91,7 @@ export function TownScreen(props: {
         <div class="world-side">
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
+          <QuestLog world={w} onChange={props.onChange} />
           <section class="panel log" aria-label="Journey log">
             <h3>Journal</h3>
             <ol>

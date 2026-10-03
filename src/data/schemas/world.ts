@@ -4,7 +4,7 @@ import { DefaultPresetSchema } from './roster.ts';
 import { CharacterSchema } from './character.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 4;
+export const WORLD_SCHEMA_VERSION = 5;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -32,8 +32,8 @@ export const MemberSaveSchema = z.strictObject({
 /** A hireling or a freed captive in one of the party's NPC slots (docs/rules-adaptation.md). */
 export const NpcSaveSchema = z.strictObject({
   id: z.string().min(1),
-  kind: z.enum(['hireling', 'captive']),
-  /** The hireling type or captive id. */
+  kind: z.enum(['hireling', 'captive', 'escort']),
+  /** The hireling type, captive id, or escort quest id. */
   type: IdSchema,
   name: z.string().min(1),
   hp: z.int().min(0),
@@ -64,6 +64,8 @@ export const PendingEncounterSchema = z.strictObject({
   parleyed: z.boolean(),
   /** A captive they hold, or null. */
   captive: IdSchema.nullable(),
+  /** The quest whose fixed encounter this is, or null for a wandering one. */
+  quest: IdSchema.nullable(),
   /** A hireling type one of them offers to sign on as, after a helpful parley. */
   offer: IdSchema.nullable(),
   /** True when the group means to fight. */
@@ -80,6 +82,14 @@ export const TownLedgerSchema = z.strictObject({
   since: z.int().min(0),
 });
 export type TownLedger = z.infer<typeof TownLedgerSchema>;
+
+/** A quest taken (docs/rules-adaptation.md, Quests in Phase 6): the step in progress. */
+export const QuestStateSchema = z.strictObject({
+  status: z.enum(['active', 'ready', 'done', 'failed']),
+  step: z.int().min(0),
+  acceptedDay: z.int().min(0),
+});
+export type QuestState = z.infer<typeof QuestStateSchema>;
 
 /** A coach journey under way: the road hexes still ahead, and the last day checked for ambush. */
 export const CoachTripSchema = z.strictObject({
@@ -127,6 +137,8 @@ export const WorldSaveSchema = z.strictObject({
   coach: CoachTripSchema.nullable(),
   /** The day of the party's last arena bout. */
   arenaDay: z.int().min(0).nullable(),
+  /** Every quest taken, by id. */
+  quests: z.record(IdSchema, QuestStateSchema),
   log: z.array(z.string()),
 });
 export type WorldSave = z.infer<typeof WorldSaveSchema>;

@@ -7,12 +7,17 @@ import type { TownResult } from '../../game/world/services.ts';
 import type { Npc, World } from '../../game/world/types.ts';
 import { data } from '../builder/data.ts';
 
+function escortTo(questId: string): string {
+  const step = data.content.quests.find((q) => q.id === questId)?.objectives[0];
+  return step?.kind === 'escort' ? step.to : questId;
+}
+
 function role(w: World, n: Npc): string {
   const t = typeOf(data, n);
   if (t) return `${t.name}, ${t.wage} crowns a day`;
-  const to = captiveOf(data, n.type).destination;
+  const to = n.kind === 'captive' ? captiveOf(data, n.type).destination : escortTo(n.type);
   const town = regionMap(data, w.region).sites.find((s) => s.id === to)?.name ?? to;
-  return `rescued, bound for ${town}`;
+  return `${n.kind === 'captive' ? 'rescued' : 'escorted'}, bound for ${town}`;
 }
 
 /** The NPC slots, and first aid for anyone hurt. */
@@ -49,7 +54,7 @@ export function NpcPanel(props: { world: World; onChange: () => void }) {
               {n.quitting && ' · leaving at the next town'}
               {n.inventory.length > 0 && ` · carrying ${n.inventory.length} items`}
             </span>
-            <button type="button" onClick={() => run(() => dismiss(w, n.id))}>
+            <button type="button" onClick={() => run(() => dismiss(w, data, n.id))}>
               Dismiss
             </button>
           </li>

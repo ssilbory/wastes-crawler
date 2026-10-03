@@ -7,6 +7,7 @@ import { RESOURCE_DICE } from '../../rules/resource-die.ts';
 import type { GameData } from '../character/context.ts';
 import { note } from './members.ts';
 import { regionMap } from './region.ts';
+import { emit } from './bus.ts';
 import { arriveNpcs } from './rescue.ts';
 import type { World } from './types.ts';
 
@@ -81,6 +82,7 @@ export function enterTown(w: World, data: GameData, siteId: string, start = fals
   if (start) return;
   note(w, `The party reaches ${site.name}.`);
   arriveNpcs(w, data, site.id);
+  emit(w, data, { kind: 'town-entered', town: site.id });
   if (firstVisit || w.day - w.climateDay > month(data)) climate(w, data);
 }
 

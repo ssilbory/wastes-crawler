@@ -6,6 +6,7 @@ import type {
   LootDice,
   NpcSave,
   PendingEncounter,
+  QuestState,
   TownLedger,
   WorldSave,
 } from '../../data/schemas/index.ts';
@@ -55,6 +56,7 @@ export interface World {
   encounter: PendingEncounter | null;
   coach: CoachTrip | null;
   arenaDay: number | null;
+  quests: Record<string, QuestState>;
   log: string[];
 }
 

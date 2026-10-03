@@ -21,6 +21,8 @@ export interface HexCell {
   party: boolean;
   destination: boolean;
   route: boolean;
+  /** A quest step waits here; shown even under fog, since the giver said where. */
+  quest: boolean;
 }
 
 const SQRT3 = Math.sqrt(3);
@@ -47,7 +49,14 @@ export function mapPixels(map: RegionMap, size: number): { width: number; height
   };
 }
 
-export function hexCells(map: RegionMap, w: World, routeHexes: Hex[], size: number): HexCell[] {
+export function hexCells(
+  map: RegionMap,
+  w: World,
+  routeHexes: Hex[],
+  size: number,
+  questHexes: readonly Hex[] = [],
+): HexCell[] {
+  const quests = new Set(questHexes.map(hexKey));
   const seen = seenHexes(map, w.visited);
   const onRoute = new Set(routeHexes.map(hexKey));
   const cells: HexCell[] = [];
@@ -74,6 +83,7 @@ export function hexCells(map: RegionMap, w: World, routeHexes: Hex[], size: numb
         party: key === hexKey(w.position),
         destination: w.destination !== null && key === hexKey(w.destination),
         route: onRoute.has(key),
+        quest: quests.has(key),
       });
     }
   }

@@ -1,0 +1,116 @@
+[
+  {
+    "id": "bandit-camp",
+    "name": "The Bandit Camp",
+    "giver": "reeve-halda",
+    "summary": "Bandits have made camp in the forest south of the road. Break them.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 1
+    },
+    "deadlineDays": 10,
+    "objectives": [
+      {
+        "kind": "slay",
+        "hex": {
+          "col": 6,
+          "row": 12
+        },
+        "enemies": [["thug-or-militia", "thug-or-militia", "thug-or-militia"], ["veteran-soldier"]],
+        "text": "Break the bandit camp in the forest at 6,12."
+      }
+    ],
+    "reward": {
+      "crowns": 60,
+      "xp": 3,
+      "loot": []
+    }
+  },
+  {
+    "id": "surveyor",
+    "name": "The Surveyor",
+    "giver": "reeve-halda",
+    "summary": "A royal surveyor needs safe conduct east along the road.",
+    "prerequisites": {
+      "quests": ["bandit-camp"],
+      "minLevel": 1
+    },
+    "objectives": [
+      {
+        "kind": "escort",
+        "name": "Surveyor Tamsin",
+        "monster": "peaceful-human",
+        "to": "eastmarch",
+        "text": "Bring Surveyor Tamsin safely to Eastmarch."
+      }
+    ],
+    "reward": {
+      "crowns": 50,
+      "xp": 2,
+      "loot": []
+    }
+  },
+  {
+    "id": "letters",
+    "name": "Letters for Highcairn",
+    "giver": "factor-imre",
+    "summary": "Carry sealed letters to the warden at Highcairn.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 1
+    },
+    "deadlineDays": 12,
+    "objectives": [
+      {
+        "kind": "deliver",
+        "item": "a satchel of sealed letters",
+        "to": "highcairn",
+        "text": "Deliver the letters to Highcairn."
+      }
+    ],
+    "reward": {
+      "crowns": 40,
+      "xp": 2,
+      "loot": []
+    }
+  },
+  {
+    "id": "watchtower",
+    "name": "The Old Watchtower",
+    "giver": "warden-osk",
+    "summary": "Something has moved into the ruined watchtower in the hills. Find it and deal with it.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 2
+    },
+    "objectives": [
+      {
+        "kind": "scout",
+        "hex": {
+          "col": 12,
+          "row": 2
+        },
+        "text": "Find the old watchtower in the hills at 12,2."
+      },
+      {
+        "kind": "slay",
+        "hex": {
+          "col": 12,
+          "row": 2
+        },
+        "enemies": [["barbarian-fighter", "barbarian-fighter"], ["tribal-shaman"]],
+        "text": "Drive out whatever holds the watchtower."
+      }
+    ],
+    "reward": {
+      "crowns": 80,
+      "xp": 3,
+      "loot": [
+        {
+          "count": 2,
+          "sides": 6
+        }
+      ]
+    }
+  }
+]

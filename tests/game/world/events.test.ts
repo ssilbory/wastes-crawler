@@ -70,6 +70,7 @@ describe('wandering encounters (SRD 2.12.6, 5.2.1)', () => {
       parleyed: false,
       captive: null,
       offer: null,
+      quest: null,
       hostile: true,
       spotted: false,
       text: 'The party meets 4 Thug or Militia. They look for a fight.',

@@ -1,0 +1,65 @@
+import { z } from 'zod';
+import { IdSchema } from './common.ts';
+import { LootDiceSchema } from './town-content.ts';
+
+const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
+
+/** One step of a quest; steps run in order (docs/rules-adaptation.md, Quests in Phase 6). */
+export const ObjectiveSchema = z.discriminatedUnion('kind', [
+  /** A fixed encounter waiting at a hex, done when the party beats it. */
+  z.strictObject({
+    kind: z.literal('slay'),
+    hex: HexSchema,
+    enemies: z.array(z.array(IdSchema).min(1).max(8)).min(1).max(3),
+    text: z.string().min(1),
+  }),
+  /** Carry a quest item, handed over on accepting, to a town. */
+  z.strictObject({
+    kind: z.literal('deliver'),
+    item: z.string().min(1),
+    to: IdSchema,
+    text: z.string().min(1),
+  }),
+  /** Bring an NPC, who joins on accepting, to a town. Only a first step. */
+  z.strictObject({
+    kind: z.literal('escort'),
+    name: z.string().min(1),
+    monster: IdSchema,
+    to: IdSchema,
+    text: z.string().min(1),
+  }),
+  /** Reach a hex. */
+  z.strictObject({ kind: z.literal('scout'), hex: HexSchema, text: z.string().min(1) }),
+]);
+export type Objective = z.infer<typeof ObjectiveSchema>;
+
+export const QuestSchema = z.strictObject({
+  id: IdSchema,
+  name: z.string().min(1),
+  giver: IdSchema,
+  summary: z.string().min(1),
+  prerequisites: z.strictObject({
+    quests: z.array(IdSchema),
+    /** The party's average PC level, rounded. */
+    minLevel: z.int().min(1),
+  }),
+  /** Days to finish every step, counted from accepting; none if absent. */
+  deadlineDays: z.int().min(1).optional(),
+  objectives: z.array(ObjectiveSchema).min(1),
+  reward: z.strictObject({
+    crowns: z.number().min(0),
+    /** SRD 2.7.0: three for an average mission. */
+    xp: z.number().min(0).multipleOf(0.5),
+    loot: z.array(LootDiceSchema),
+  }),
+});
+export type Quest = z.infer<typeof QuestSchema>;
+
+/** Someone in a town who offers quests. */
+export const MissionGiverSchema = z.strictObject({
+  id: IdSchema,
+  name: z.string().min(1),
+  town: IdSchema,
+  text: z.string().min(1),
+});
+export type MissionGiver = z.infer<typeof MissionGiverSchema>;

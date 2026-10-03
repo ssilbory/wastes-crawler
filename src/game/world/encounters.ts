@@ -72,9 +72,7 @@ export function maybeEncounter(
   const die = data.content.overlandRules.encounterDice[map.dangerAt(w.position)];
   if (map.siteAt(w.position) || !encounterCheck(w.rng, die)) return false;
   const { rows, nature, captive } = rollEnemies(w, data, map.terrainAt(w.position).encounters);
-  const able = alive(w).filter((m) => m.character.hp.current > 0);
-  const cha = Math.max(0, ...able.map((m) => characterSheet(m.character, data).modifiers.cha));
-  const { reaction } = reactionRoll(w.rng, cha + reactionBonus(w, data));
+  const { reaction } = reactionRoll(w.rng, partyCha(w, data) + reactionBonus(w, data));
   let spotted = false;
   if (watcher) {
     const monsters = rows.flat().map((id) => data.srd.monsters.find((m) => m.id === id) as Monster);
@@ -89,7 +87,23 @@ export function maybeEncounter(
   for (const id of rows.flat()) counts.set(id, (counts.get(id) ?? 0) + 1);
   const who = [...counts].map(([id, n]) => `${n} ${monsterName(data, id)}`).join(' and ');
   const held = captive ? ` ${captiveOf(data, captive).text}` : '';
-  const text = `${spotted ? `${watcher?.character.name} spots` : 'The party meets'} ${who}.${held} ${MOODS[reaction]}`;
+  const lead = `${spotted ? `${watcher?.character.name} spots` : 'The party meets'} ${who}.${held}`;
+  setEncounter(w, rows, nature, reaction, captive, null, fights(nature, reaction), spotted, lead);
+  return true;
+}
+
+function setEncounter(
+  w: World,
+  rows: string[][],
+  nature: 'hostile' | 'wary',
+  reaction: Reaction,
+  captive: string | null,
+  quest: string | null,
+  hostile: boolean,
+  spotted: boolean,
+  lead: string,
+): void {
+  const text = `${lead} ${MOODS[reaction]}`;
   w.encounter = {
     enemies: rows,
     nature,
@@ -97,12 +111,31 @@ export function maybeEncounter(
     parleyed: false,
     captive,
     offer: null,
-    hostile: fights(nature, reaction),
+    quest,
+    hostile,
     spotted,
     text,
   };
   note(w, `${text} (${hexKey(w.position)})`);
-  return true;
+}
+
+/** A group that means to fight whatever its mood: an ambush or a quest's fixed encounter. */
+export function meetGroup(
+  w: World,
+  data: GameData,
+  rows: string[][],
+  nature: 'hostile' | 'wary',
+  captive: string | null,
+  quest: string | null,
+  lead: string,
+): void {
+  const { reaction } = reactionRoll(w.rng, partyCha(w, data) + reactionBonus(w, data));
+  setEncounter(w, rows, nature, reaction, captive, quest, true, false, lead);
+}
+
+function partyCha(w: World, data: GameData): number {
+  const able = alive(w).filter((m) => m.character.hp.current > 0);
+  return Math.max(0, ...able.map((m) => characterSheet(m.character, data).modifiers.cha));
 }
 
 /** Slipping away from a spotted group, or letting a peaceful one pass. */

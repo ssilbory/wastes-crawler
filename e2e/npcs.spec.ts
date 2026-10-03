@@ -48,7 +48,7 @@ test('bribes captors to free a captive, then brings them home', async ({ page },
      save.visited.push('19,8', '20,8');
      save.encounter = {
        enemies: [['thug-or-militia', 'thug-or-militia']], nature: 'hostile', reaction: 'expected',
-       parleyed: false, captive: 'merchant', offer: null, hostile: true, spotted: false,
+       parleyed: false, captive: 'merchant', offer: null, quest: null, hostile: true, spotted: false,
        text: 'The party meets 2 Thug or Militia. A bound merchant sits among them.',
      };`,
   );

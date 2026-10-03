@@ -7,6 +7,7 @@ import {
   type CatalogItem,
   type InventoryEntry,
 } from '../character/items.ts';
+import { emit } from './bus.ts';
 import { note } from './members.ts';
 import { addNpc, hirelingType, MAX_NPCS, removeNpc } from './npcs.ts';
 import type { TownResult } from './services.ts';
@@ -28,12 +29,13 @@ export function hire(w: World, data: GameData, typeId: string): TownResult {
 }
 
 /** Sends an NPC away anywhere; a captive left behind is abandoned. */
-export function dismiss(w: World, id: string): TownResult {
+export function dismiss(w: World, data: GameData, id: string): TownResult {
   const n = w.npcs.find((x) => x.id === id);
   if (!n) throw new Error(`no NPC ${id}`);
   if (n.inventory.length > 0) return no(`Take ${n.name}'s load first.`);
   removeNpc(w, id);
-  note(w, n.kind === 'captive' ? `The party leaves ${n.name} behind.` : `${n.name} is let go.`);
+  note(w, n.kind === 'hireling' ? `${n.name} is let go.` : `The party leaves ${n.name} behind.`);
+  if (n.kind === 'escort') emit(w, data, { kind: 'npc-died', npc: n });
   return { ok: true };
 }
 

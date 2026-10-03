@@ -32,11 +32,22 @@ export function captiveOf(data: GameData, id: string): Captive {
   return c;
 }
 
+/** An escort's stat line, from the first step of its quest. */
+function escortMonster(data: GameData, questId: string): string {
+  const step = data.content.quests.find((q) => q.id === questId)?.objectives[0];
+  if (step?.kind !== 'escort') throw new Error(`no escort for quest ${questId}`);
+  return step.monster;
+}
+
 /** The SRD stat line an NPC fights and heals with. */
 export const npcMonster = (data: GameData, n: Npc) =>
   monsterOf(
     data,
-    n.kind === 'hireling' ? hirelingType(data, n.type).monster : captiveOf(data, n.type).monster,
+    n.kind === 'hireling'
+      ? hirelingType(data, n.type).monster
+      : n.kind === 'captive'
+        ? captiveOf(data, n.type).monster
+        : escortMonster(data, n.type),
   );
 
 /** The hireling type behind an NPC, or undefined for a captive. */

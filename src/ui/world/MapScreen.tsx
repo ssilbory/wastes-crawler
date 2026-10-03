@@ -11,6 +11,8 @@ import { HEX_SIZE, HexMap } from './HexMap.tsx';
 import { PartyPanel } from './PartyPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
+import { QuestLog } from './QuestLog.tsx';
+import { questTargets } from '../../render/quest-view.ts';
 import { CoachPanel } from './CoachPanel.tsx';
 import { QuarterPanel } from './QuarterPanel.tsx';
 import { typeOf } from '../../game/world/npcs.ts';
@@ -62,7 +64,7 @@ export function MapScreen(props: {
       <div class="world-main">
         <div class="map-wrap">
           <HexMap
-            cells={hexCells(map, w, route(w, data), HEX_SIZE)}
+            cells={hexCells(map, w, route(w, data), HEX_SIZE, questTargets(w, data))}
             width={width}
             height={height}
             onPick={(col, row) => {
@@ -97,6 +99,7 @@ export function MapScreen(props: {
           )}
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
+          <QuestLog world={w} onChange={props.onChange} />
           <section class="panel log" aria-label="Journey log">
             <h3>Journal</h3>
             <ol>

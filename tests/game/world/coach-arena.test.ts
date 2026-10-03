@@ -125,7 +125,14 @@ describe('coach routes (docs/rules-adaptation.md, Coach routes)', () => {
     expect(w.encounter?.text).toContain('Ambush! The coach is set upon at 3,8.');
     expect(coachQuarter(w, data)).toBe(false);
     w.rng = createRng('fight');
-    const fight = { battle: null as never, memberIds: [], npcIds: [], enemies: [], captive: null };
+    const fight = {
+      battle: null as never,
+      memberIds: [],
+      npcIds: [],
+      enemies: [],
+      captive: null,
+      quest: null,
+    };
     settleByFighting(
       w,
       data,
@@ -144,7 +151,14 @@ describe('coach routes (docs/rules-adaptation.md, Coach routes)', () => {
     boardCoach(w, data, 'west-road');
     ride(w, 1);
     w.encounter = encounter([['thug-or-militia']]);
-    const fight = { battle: null as never, memberIds: [], npcIds: [], enemies: [], captive: null };
+    const fight = {
+      battle: null as never,
+      memberIds: [],
+      npcIds: [],
+      enemies: [],
+      captive: null,
+      quest: null,
+    };
     settleByFighting(
       w,
       data,

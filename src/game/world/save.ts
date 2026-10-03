@@ -51,6 +51,11 @@ export const WORLD_MIGRATIONS: Migrations = {
   },
   // Version 4 adds coaches and town arenas (Phase 6d).
   3: (raw) => ({ ...raw, schemaVersion: 4, coach: null, arenaDay: null }),
+  // Version 5 adds quests (Phase 6): none taken, and any pending encounter is a wandering one.
+  4: (raw) => {
+    const e = raw.encounter as Raw | null;
+    return { ...raw, schemaVersion: 5, quests: {}, encounter: e && { ...e, quest: null } };
+  },
 };
 
 export function serializeWorld(w: World): string {
@@ -78,6 +83,7 @@ export function serializeWorld(w: World): string {
     encounter: w.encounter,
     coach: w.coach,
     arenaDay: w.arenaDay,
+    quests: w.quests,
     log: w.log.slice(-SAVED_LOG_LINES),
   };
   return `${JSON.stringify(save)}\n`;
@@ -147,6 +153,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       encounter: s.encounter,
       coach: s.coach,
       arenaDay: s.arenaDay,
+      quests: s.quests,
       log: s.log,
       rng: rngFromState(s.rng),
       visited: new Set(s.visited),

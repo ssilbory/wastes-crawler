@@ -36,6 +36,8 @@ export function passQuarter(w: World, data: GameData, plan: QuarterPlan): boolea
     extra = hike(w, data, plan.leader, dark);
     watcher = alive(w).find((m) => m.id === plan.watcher);
   } else ({ extraChecks: extra, watcher } = camp(w, data, plan.activities));
+  // A quest's fixed encounter met on the way stops the quarter, like any other.
+  if (w.encounter) return true;
   for (let i = 0; i <= extra; i++) if (maybeEncounter(w, data, watcher, dark)) return true;
   endQuarter(w, data);
   return true;
