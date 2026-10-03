@@ -36,6 +36,8 @@ export interface InventoryEntry {
   serial?: string | undefined;
   maker?: string | undefined;
   mods?: InstalledMod[] | undefined;
+  /** A magic weapon's bonus (SRD 4.9.3). */
+  bonus?: number | undefined;
   /** Days since its mods were last maintained (SRD 2.8.3). */
   upkeep?: number | undefined;
 }
@@ -104,7 +106,10 @@ export function entryPrice(data: GameData, item: CatalogItem, entry: InventoryEn
   if (!item.cost) return 0;
   const barding = entry.barding ? data.content.equipmentRules.barding.costMultiplier : 1;
   const tier = entry.quality ? data.content.craftingRules.quality[entry.quality].cost : 1;
-  return Math.round(tenths(item.cost) * barding * tier * entry.quantity);
+  // A magic weapon is worth its commission besides (Sam's call).
+  const magic = data.content.craftingRules.magic.tiers.find((t) => t.bonus === entry.bonus);
+  const each = tenths(item.cost) * barding * tier + (magic ? magic.commission * 10 : 0);
+  return Math.round(each * entry.quantity);
 }
 
 /** Encumbrance points of one inventory line (SRD 3.2.0 markers, the N trait, and barding). */

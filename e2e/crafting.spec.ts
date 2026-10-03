@@ -94,3 +94,89 @@ test('builds Customized onto a spear and keeps it maintained', async ({ page }, 
   await expect(upkeep).toContainText('Snag: Spear, Light (Customized, readied)');
   await page.screenshot({ path: testInfo.outputPath('mods.png'), fullPage: true });
 });
+
+/** Picks the journey back up after changing the autosaved world. */
+async function edit(page: Page, change: string) {
+  await page.evaluate(
+    ([key, body]) => {
+      const save = JSON.parse(localStorage.getItem(key as string) as string);
+      new Function('save', body as string)(save);
+      localStorage.setItem(key as string, JSON.stringify(save));
+    },
+    [WORLD_KEY, change],
+  );
+  await page.reload();
+  await page.getByRole('button', { name: 'Continue journey' }).click();
+}
+
+// Phase 10 exit: build a mod from loot dice and components, keep it maintained at camp, and
+// commission a magic weapon from a craftsman.
+test('builds a mod, keeps it up in camp, and commissions a magic sword', async ({
+  page,
+}, testInfo) => {
+  await start(page);
+  // Craft-1 with the Artisan focus makes Fizzwick Craft-2 for mods.
+  await edit(
+    page,
+    `save.members[1].character.skills.craft = 1;
+     save.loot = [{ count: 29, sides: 6 }];
+     save.components = { 'cold-iron': 2, 'ooze-essence': 1 };
+     save.purse = 1000;`,
+  );
+  await page.getByRole('button', { name: 'Visit Westhold' }).click();
+  await page.getByRole('tab', { name: 'Workshop' }).click();
+  const mods = page.getByRole('region', { name: 'Mods' });
+  await mods
+    .getByRole('combobox', { name: 'Item' })
+    .selectOption({ label: 'Snag: Spear, Light (readied)' });
+  await mods.getByRole('combobox', { name: 'Mod' }).selectOption({ label: 'Razor Edge (Craft-2)' });
+  await mods.getByRole('button', { name: 'Build Razor Edge', exact: true }).click();
+  const log = page.getByRole('region', { name: 'Journey log' });
+  await expect(log).toContainText(
+    "Fizzwick starts building Razor Edge onto Snag's Spear, Light: 7 days",
+  );
+  for (let i = 0; i < 7; i++)
+    await page.getByRole('button', { name: 'Work a day and sleep at the inn' }).click();
+  await expect(log).toContainText('Fizzwick finishes Razor Edge on the Spear, Light.');
+
+  // A night in a made camp out in the plains keeps it working.
+  await edit(page, `save.position = { col: 4, row: 8 }; save.visited.push('4,8');`);
+  await page.locator('[data-hex="4,7"]').click();
+  await page
+    .getByRole('region', { name: 'Quarter plan' })
+    .getByRole('radio', { name: 'Camp' })
+    .click();
+  const date = await page.locator('.world-bar .date').innerText();
+  for (let q = 0; q < 6 && (await page.locator('.world-bar .date').innerText()) === date; q++) {
+    const encounter = page.getByRole('region', { name: 'Encounter' });
+    if (await encounter.isVisible()) {
+      await encounter.getByRole('button', { name: /^(Fight|Attack them)$/ }).click();
+      await page.getByRole('button', { name: 'Auto-resolve' }).click();
+      await page.getByRole('button', { name: 'Back to the map' }).click();
+    }
+    await page.getByRole('button', { name: 'Pass the quarter' }).click();
+  }
+  await expect(log).not.toContainText('stop working');
+  await edit(page, `save.position = { col: 3, row: 8 };`);
+  await page.getByRole('button', { name: 'Visit Westhold' }).click();
+  await page.getByRole('tab', { name: 'Shop', exact: true }).click();
+  await expect(page.getByRole('region', { name: "Snag's pack" })).toContainText(
+    'Spear, Light (Razor Edge, readied)',
+  );
+
+  // Hagen forges a +1 long sword from cold iron and ooze essence, ready a month later.
+  await page.getByRole('tab', { name: 'Craftsman' }).click();
+  await page.getByRole('button', { name: 'Call on Hagen the Smith' }).click();
+  const jobs = page.getByRole('region', { name: 'Commissions' });
+  await jobs.getByRole('combobox', { name: 'Weapon' }).selectOption({ label: 'Sword, Long' });
+  await jobs.getByRole('button', { name: /^Commission \(250 crowns, 30 days/ }).click();
+  await expect(log).toContainText('Hagen the Smith takes on a +1 Sword, Long: ready in 30 days.');
+  await expect(jobs).toContainText('Sword, Long +1: ready in 30 days');
+  await edit(page, `save.day += 30;`);
+  await page.getByRole('button', { name: 'Visit Westhold' }).click();
+  await page.getByRole('tab', { name: 'Craftsman' }).click();
+  await page.getByRole('button', { name: 'Call on Hagen the Smith' }).click();
+  await jobs.getByRole('button', { name: 'Collect for Snag' }).click();
+  await expect(log).toContainText('Snag collects the +1 Sword, Long from Hagen the Smith.');
+  await page.screenshot({ path: testInfo.outputPath('craftsman.png'), fullPage: true });
+});

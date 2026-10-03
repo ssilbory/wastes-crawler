@@ -5,7 +5,7 @@ import { CharacterSchema } from './character.ts';
 import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 12;
+export const WORLD_SCHEMA_VERSION = 13;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -115,6 +115,24 @@ export const ProjectSchema = z.strictObject({
 });
 export type Project = z.infer<typeof ProjectSchema>;
 
+/** A craftsman's month: trade pool left, magic weapons and components for sale. */
+export const CraftsmanStateSchema = z.strictObject({
+  since: z.int().min(0),
+  pool: z.number().min(0),
+  stock: z.array(z.strictObject({ weapon: IdSchema, bonus: z.int().min(1).max(3) })),
+  parts: z.record(IdSchema, z.int().min(1)),
+});
+export type CraftsmanState = z.infer<typeof CraftsmanStateSchema>;
+
+/** A magic weapon commissioned from a craftsman, collected in their town once ready. */
+export const CommissionSchema = z.strictObject({
+  craftsman: IdSchema,
+  weapon: IdSchema,
+  bonus: z.int().min(1).max(3),
+  readyDay: z.int().min(0),
+});
+export type Commission = z.infer<typeof CommissionSchema>;
+
 /** Raising quests (docs/rules-adaptation.md, Raising quests). */
 export const RaisingSchema = z.strictObject({
   offer: IdSchema.nullable(),
@@ -223,6 +241,9 @@ export const WorldSaveSchema = z.strictObject({
   workshops: z.array(IdSchema),
   /** Crafting components carried, by id; like loot dice they weigh nothing. */
   components: z.record(IdSchema, z.int().min(1)),
+  /** Each craftsman's month, by id, once the party has visited. */
+  craftsmen: z.record(IdSchema, CraftsmanStateSchema),
+  commissions: z.array(CommissionSchema),
   log: z.array(z.string()),
 });
 export type WorldSave = z.infer<typeof WorldSaveSchema>;

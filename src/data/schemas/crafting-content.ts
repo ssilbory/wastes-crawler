@@ -36,6 +36,38 @@ export const CraftingRulesSchema = z.strictObject({
     /** Sam's call: a broken weapon's to-hit and broken armor's AC drop by this much. */
     penalty: z.int().min(0),
   }),
+  /** Magic weapons (SRD 4.9.3; prices from the 4.10.0 creation table, Sam's call). */
+  magic: z.strictObject({
+    tiers: z
+      .array(
+        z.strictObject({
+          bonus: z.int().min(1).max(3),
+          /** A craftsman's commission: crowns, days, and components. */
+          commission: Crowns,
+          days: z.int().min(1),
+          components: z.array(
+            z.strictObject({ type: z.lazy(() => ComponentTypeSchema), count: z.int().min(1) }),
+          ),
+          /** Ready-made in a craftsman's stock. */
+          stockPrice: Crowns,
+          /** How often stock rolls this bonus, against the other tiers. */
+          weight: z.int().min(1),
+        }),
+      )
+      .length(3),
+  }),
+  craftsmen: z.strictObject({
+    /** Ready-made magic weapons in stock each month: 0 to this many. */
+    maxStock: z.int().min(0),
+    /** Components for sale each month. */
+    partsStock: z.int().min(0),
+    /** What a craftsman pays for a component of each rarity. */
+    componentPrices: z.strictObject({ common: Crowns, uncommon: Crowns, rare: Crowns }),
+    /** Components sell for this many times what craftsmen pay. */
+    sellMarkup: z.number().min(1),
+    /** The share of crowns spent with a craftsman that counts toward the town's threshold. */
+    thresholdShare: z.number().min(0).max(1),
+  }),
   workshop: z.strictObject({
     /** Rent for a day of work in a town's workshop. */
     rentPerDay: Crowns,
@@ -76,3 +108,16 @@ export const ModSchema = z.strictObject({
   text: z.string().min(1),
 });
 export type Mod = z.infer<typeof ModSchema>;
+
+/** A town's craftsman (docs/rules-adaptation.md, Crafting and modifying gear: Craftsmen). */
+export const CraftsmanSchema = z.strictObject({
+  id: IdSchema,
+  name: z.string().min(1),
+  town: IdSchema,
+  text: z.string().min(1),
+  /** Crowns a month for buying loot and components. */
+  tradePool: z.number().min(0),
+  /** Weapons they forge as magic weapons, on commission or for stock. */
+  weapons: z.array(IdSchema).min(1),
+});
+export type Craftsman = z.infer<typeof CraftsmanSchema>;

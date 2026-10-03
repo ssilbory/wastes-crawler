@@ -90,6 +90,8 @@ export const WORLD_MIGRATIONS: Migrations = {
     projects: (raw.projects as object[]).map((p) => ({ ...p, kind: 'gear' })),
     components: {},
   }),
+  // Version 13 adds craftsmen (Phase 10c): none visited, nothing commissioned.
+  12: (raw) => ({ ...raw, schemaVersion: 13, craftsmen: {}, commissions: [] }),
 };
 
 export function serializeWorld(w: World): string {
@@ -125,6 +127,8 @@ export function serializeWorld(w: World): string {
     projects: w.projects,
     workshops: w.workshops,
     components: w.components,
+    craftsmen: w.craftsmen,
+    commissions: w.commissions,
     log: w.log.slice(-SAVED_LOG_LINES),
   };
   return `${JSON.stringify(save)}\n`;
@@ -206,6 +210,8 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       projects: s.projects,
       workshops: s.workshops,
       components: s.components,
+      craftsmen: s.craftsmen,
+      commissions: s.commissions,
       log: s.log,
       rng: rngFromState(s.rng),
       visited: new Set(s.visited),

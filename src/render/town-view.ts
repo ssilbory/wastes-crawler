@@ -26,7 +26,7 @@ export function levelLine(data: GameData, c: Character): string {
 
 /** "Crowbar ×2 (stowed)", with quality, mods, upkeep, size, and barding notes. */
 export function entryText(data: GameData, entry: InventoryEntry): string {
-  const name = findItem(data, entry.id)?.name ?? entry.id;
+  const name = `${findItem(data, entry.id)?.name ?? entry.id}${entry.bonus ? ` +${entry.bonus}` : ''}`;
   const mods = (entry.mods ?? []).map((m) => data.content.mods.find((x) => x.id === m.id)?.name);
   const notes = [
     entry.quality,

@@ -10,6 +10,8 @@ import type {
   PendingEncounter,
   QuestState,
   Project,
+  Commission,
+  CraftsmanState,
   Raising,
   TownLedger,
   WorldSave,
@@ -68,6 +70,8 @@ export interface World {
   projects: Project[];
   workshops: string[];
   components: Record<string, number>;
+  craftsmen: Record<string, CraftsmanState>;
+  commissions: Commission[];
   log: string[];
 }
 

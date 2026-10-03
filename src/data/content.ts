@@ -27,6 +27,7 @@ import dungeons from '../../data/content/dungeons.json';
 import craftingRules from '../../data/content/crafting-rules.json';
 import components from '../../data/content/components.json';
 import mods from '../../data/content/mods.json';
+import craftsmen from '../../data/content/craftsmen.json';
 import { combatReferenceErrors } from './combat-check.ts';
 import { equipmentReferenceErrors } from './equipment-check.ts';
 import { focusReferenceErrors } from './focus-content.ts';
@@ -71,6 +72,7 @@ export function loadContent(): ContentData {
     craftingRules: ContentSchemas.craftingRules.parse(craftingRules),
     components: ContentSchemas.components.parse(components),
     mods: ContentSchemas.mods.parse(mods),
+    craftsmen: ContentSchemas.craftsmen.parse(craftsmen),
   };
 }
 
@@ -124,6 +126,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['dungeons', content.dungeons],
     ['components', content.components],
     ['mods', content.mods],
+    ['craftsmen', content.craftsmen],
     ...content.dungeons.map((d): [string, { id: string }[]] => [
       `dungeons/${d.id} levels`,
       d.levels,

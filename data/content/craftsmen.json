@@ -1,0 +1,18 @@
+[
+  {
+    "id": "smith-westhold",
+    "name": "Hagen the Smith",
+    "town": "westhold",
+    "tradePool": 300,
+    "weapons": ["spear-light", "sword-short", "axe-war", "dagger", "sword-long"],
+    "text": "A broad, scarred smith who forges for anyone who pays, and asks no questions about the metal they bring."
+  },
+  {
+    "id": "smith-eastmarch",
+    "name": "Ilsa Coldforge",
+    "town": "eastmarch",
+    "tradePool": 300,
+    "weapons": ["spear-light", "mace", "axe-hand", "bow-small", "dagger"],
+    "text": "She works cold iron the old way, and buys whatever strange parts come down the road."
+  }
+]

@@ -26,5 +26,79 @@
   "upkeep": {
     "brokenAfterDays": 7,
     "penalty": 2
+  },
+  "magic": {
+    "tiers": [
+      {
+        "bonus": 1,
+        "commission": 250,
+        "days": 30,
+        "stockPrice": 12500,
+        "weight": 7,
+        "components": [
+          {
+            "type": "metal",
+            "count": 1
+          },
+          {
+            "type": "essence",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "bonus": 2,
+        "commission": 1000,
+        "days": 90,
+        "stockPrice": 50000,
+        "weight": 2,
+        "components": [
+          {
+            "type": "metal",
+            "count": 2
+          },
+          {
+            "type": "essence",
+            "count": 1
+          },
+          {
+            "type": "gem",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "bonus": 3,
+        "commission": 5000,
+        "days": 180,
+        "stockPrice": 250000,
+        "weight": 1,
+        "components": [
+          {
+            "type": "metal",
+            "count": 3
+          },
+          {
+            "type": "essence",
+            "count": 2
+          },
+          {
+            "type": "gem",
+            "count": 2
+          }
+        ]
+      }
+    ]
+  },
+  "craftsmen": {
+    "maxStock": 2,
+    "partsStock": 2,
+    "componentPrices": {
+      "common": 10,
+      "uncommon": 25,
+      "rare": 60
+    },
+    "sellMarkup": 2,
+    "thresholdShare": 0.25
   }
 }

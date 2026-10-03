@@ -501,6 +501,14 @@ describe('components', () => {
       'mods/razor-edge: no component is metal',
       'mods/thirsting-blade: no component is essence',
       'mods/thirsting-blade: no component is gem',
+      'craftingRules: no component is metal',
+      'craftingRules: no component is essence',
+      'craftingRules: no component is metal',
+      'craftingRules: no component is essence',
+      'craftingRules: no component is gem',
+      'craftingRules: no component is metal',
+      'craftingRules: no component is essence',
+      'craftingRules: no component is gem',
     ]);
   });
 
