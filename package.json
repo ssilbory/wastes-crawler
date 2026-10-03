@@ -21,6 +21,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "preact": "^10.29.8",
     "zod": "^4.6.5"
   },
   "devDependencies": {

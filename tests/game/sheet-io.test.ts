@@ -4,7 +4,8 @@ import { loadSrd } from '../../src/data/load.ts';
 import type { Character } from '../../src/data/schemas/index.ts';
 import type { GameData } from '../../src/game/character/context.ts';
 import { emptyChoices, finishCharacter } from '../../src/game/character/creation.ts';
-import { characterSheet } from '../../src/game/character/derived.ts';
+import { characterSheet, previewSheet } from '../../src/game/character/derived.ts';
+import { evaluateChoices } from '../../src/game/character/creation.ts';
 import { exportCharacter, importCharacter } from '../../src/game/character/io.ts';
 import { scriptedRng } from '../helpers/scripted-rng.ts';
 
@@ -38,6 +39,32 @@ describe('characterSheet', () => {
       saves: { physical: 15, evasion: 14, mental: 15, luck: 15 },
       strainMax: 11,
     });
+  });
+});
+
+describe('previewSheet', () => {
+  it('shows nothing until scores exist, and an attack bonus once a valid class is chosen', () => {
+    const empty = emptyChoices();
+    expect(previewSheet(evaluateChoices(empty, data), null, data)).toEqual({
+      scores: null,
+      modifiers: null,
+      attackBonus: null,
+      saves: null,
+    });
+    const withArray = {
+      ...empty,
+      array: { str: 14, dex: 12, con: 11, int: 10, wis: 9, cha: 7 },
+      classId: 'full-warrior',
+    };
+    expect(previewSheet(evaluateChoices(withArray, data), withArray.classId, data)).toMatchObject({
+      modifiers: { dex: 1, cha: -1 },
+      attackBonus: 1,
+      saves: { physical: 15, evasion: 14, mental: 15, luck: 15 },
+    });
+    const badClass = { ...withArray, classId: 'full-high-mage' };
+    expect(
+      previewSheet(evaluateChoices(badClass, data), badClass.classId, data).attackBonus,
+    ).toBeNull();
   });
 });
 

@@ -1,7 +1,7 @@
-const canvas = document.querySelector<HTMLCanvasElement>('#view');
-const ctx = canvas?.getContext('2d');
+import { render } from 'preact';
+import { h } from 'preact';
+import { App } from './ui/builder/App.tsx';
+import './ui/builder/builder.css';
 
-if (canvas && ctx) {
-  ctx.fillStyle = '#000';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-}
+const root = document.querySelector<HTMLElement>('#app');
+if (root) render(h(App, null), root);
