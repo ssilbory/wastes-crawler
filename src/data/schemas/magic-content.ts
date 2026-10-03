@@ -24,6 +24,8 @@ export type Tradition = z.infer<typeof TraditionSchema>;
 export const ClassOptionSchema = z.strictObject({
   id: IdSchema,
   name: z.string().min(1),
+  /** Combat class abilities, such as the full Warrior's (SRD 1.5.18). */
+  abilities: z.array(z.enum(['killing-blow', 'veterans-luck'])).optional(),
   mage: z
     .strictObject({
       traditions: z

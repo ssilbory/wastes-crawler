@@ -1,0 +1,112 @@
+[
+  {
+    "id": "the-coruscating-coffin",
+    "source": "spell",
+    "target": "enemy",
+    "effect": {
+      "kind": "damage",
+      "perLevel": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      },
+      "save": "physical",
+      "slayHitDice": 1
+    }
+  },
+  {
+    "id": "the-wind-of-the-final-repose",
+    "source": "spell",
+    "target": "enemy-row",
+    "effect": {
+      "kind": "sleep",
+      "maxHitDice": 4
+    }
+  },
+  {
+    "id": "damnation-of-the-sense",
+    "source": "spell",
+    "target": "enemy",
+    "effect": {
+      "kind": "blind",
+      "save": "mental"
+    }
+  },
+  {
+    "id": "wardpact-invocation",
+    "source": "spell",
+    "target": "ally-not-self",
+    "limit": "target-scene",
+    "effect": {
+      "kind": "ward"
+    }
+  },
+  {
+    "id": "ineluctable-shackles-of-volition",
+    "source": "spell",
+    "target": "enemy",
+    "effect": {
+      "kind": "enthrall",
+      "save": "mental",
+      "penaltySkill": "magic"
+    }
+  },
+  {
+    "id": "elemental-blast",
+    "source": "art",
+    "target": "enemy",
+    "effort": "scene",
+    "effect": {
+      "kind": "blast",
+      "skill": "magic",
+      "attributes": ["int", "cha", "dex"],
+      "damage": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    }
+  },
+  {
+    "id": "pavis-of-elements",
+    "source": "art",
+    "target": "self",
+    "effort": "committed",
+    "effect": {
+      "kind": "ac-bonus",
+      "amount": 4,
+      "maxAc": 18
+    }
+  },
+  {
+    "id": "stunning-shock",
+    "source": "art",
+    "target": "enemy",
+    "effort": "day",
+    "limit": "target-scene",
+    "effect": {
+      "kind": "stun",
+      "save": "physical",
+      "requiresTag": "metal"
+    }
+  },
+  {
+    "id": "empowered-sorcery",
+    "source": "art",
+    "target": "none",
+    "effort": "day",
+    "effect": {
+      "kind": "reroll-damage"
+    }
+  },
+  {
+    "id": "inexorable-effect",
+    "source": "art",
+    "target": "none",
+    "effort": "day",
+    "limit": "scene",
+    "effect": {
+      "kind": "force-save-reroll"
+    }
+  }
+]

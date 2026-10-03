@@ -35,6 +35,7 @@ export * from './common.ts';
 export * from './content.ts';
 export * from './equipment-content.ts';
 export * from './magic-content.ts';
+export * from './combat-content.ts';
 export * from './foci.ts';
 export * from './gear.ts';
 export * from './magic.ts';

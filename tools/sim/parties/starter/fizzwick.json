@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 4,
+  "id": "char-f07502da73f6efd3",
+  "name": "Fizzwick",
+  "goal": "",
+  "people": "gnome",
+  "background": "hedge-scholar",
+  "attributes": {
+    "base": {
+      "str": 7,
+      "dex": 12,
+      "con": 11,
+      "int": 14,
+      "wis": 10,
+      "cha": 9
+    },
+    "people": {
+      "str": -2,
+      "int": 2,
+      "wis": 1
+    },
+    "background": {}
+  },
+  "foci": [
+    {
+      "id": "hidden-lore",
+      "level": 1
+    },
+    {
+      "id": "artisan",
+      "level": 1
+    },
+    {
+      "id": "polymath",
+      "level": 1
+    },
+    {
+      "id": "die-hard",
+      "level": 1
+    }
+  ],
+  "arts": ["empowered-sorcery", "inexorable-effect"],
+  "spells": {
+    "known": [
+      "the-coruscating-coffin",
+      "the-wind-of-the-final-repose",
+      "damnation-of-the-sense",
+      "wardpact-invocation"
+    ],
+    "prepared": ["the-coruscating-coffin", "the-wind-of-the-final-repose", "damnation-of-the-sense"]
+  },
+  "inventory": [
+    {
+      "id": "staff",
+      "quantity": 1,
+      "location": "readied"
+    },
+    {
+      "id": "dagger",
+      "quantity": 1,
+      "location": "readied"
+    },
+    {
+      "id": "writing-kit",
+      "quantity": 1,
+      "location": "stowed"
+    },
+    {
+      "id": "paper-10-sheets",
+      "quantity": 1,
+      "location": "stowed"
+    },
+    {
+      "id": "backpack",
+      "quantity": 1,
+      "location": "worn"
+    }
+  ],
+  "crowns": 50,
+  "skills": {
+    "know": 1,
+    "heal": 1,
+    "notice": 1,
+    "magic": 0,
+    "craft": 0
+  },
+  "classes": {
+    "current": "full-high-mage",
+    "levels": {
+      "full-high-mage": 1
+    }
+  },
+  "hp": {
+    "max": 5,
+    "current": 5
+  },
+  "xp": 0,
+  "strain": {
+    "value": 0,
+    "broken": false
+  }
+}

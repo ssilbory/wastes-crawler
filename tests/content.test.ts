@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { contentReferenceErrors, loadContent } from '../src/data/content.ts';
+import { combatReferenceErrors } from '../src/data/combat-check.ts';
 import { equipmentReferenceErrors } from '../src/data/equipment-check.ts';
 import { focusReferenceErrors } from '../src/data/focus-content.ts';
 import { magicReferenceErrors } from '../src/data/magic-check.ts';
@@ -66,6 +67,8 @@ describe('data/content', () => {
       equipmentRules: content.equipmentRules,
       traditions: content.traditions,
       classOptions: content.classOptions,
+      monsterCombat: content.monsterCombat,
+      combatMagic: content.combatMagic,
     };
     expect(contentReferenceErrors(srd, broken)).toEqual([
       'backgrounds/scavenger: unknown people dwarf',
@@ -239,6 +242,43 @@ describe('magic content', () => {
       'classOptions/full-high-mage: unknown casting table nope',
       'classOptions/full-high-mage: unknown tradition bard',
       'classOptions/full-high-mage: unknown casting table none',
+    ]);
+  });
+});
+
+describe('combat content', () => {
+  it('reports missing monsters, weapons, magic, and skills', () => {
+    const [blast] = content.combatMagic.filter((m) => m.effect.kind === 'blast');
+    const [shackles] = content.combatMagic.filter((m) => m.effect.kind === 'enthrall');
+    if (
+      !blast ||
+      !shackles ||
+      blast.effect.kind !== 'blast' ||
+      shackles.effect.kind !== 'enthrall'
+    ) {
+      throw new Error('missing content');
+    }
+    const broken = {
+      ...content,
+      monsterCombat: [
+        ...content.monsterCombat.filter((m) => m.id !== 'herd-beast' && m.id !== 'thug-or-militia'),
+        { id: 'thug-or-militia', tags: [] },
+        { id: 'dragon', weapon: 'breath', tags: [] },
+      ],
+      combatMagic: [
+        { ...blast, effect: { ...blast.effect, skill: 'blasting' } },
+        { ...shackles, effect: { ...shackles.effect, penaltySkill: 'charm' } },
+        { ...blast, id: 'fireball', source: 'spell' as const },
+      ],
+    };
+    expect(combatReferenceErrors(srd, broken)).toEqual([
+      'monsterCombat/thug-or-militia: needs a weapon',
+      'monsterCombat: no entry for herd-beast',
+      'monsterCombat/dragon: unknown monster',
+      'monsterCombat/dragon: unknown weapon breath',
+      'combatMagic/elemental-blast: unknown skill blasting',
+      'combatMagic/ineluctable-shackles-of-volition: unknown skill charm',
+      'combatMagic/fireball: unknown spell',
     ]);
   });
 });

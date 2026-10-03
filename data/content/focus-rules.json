@@ -6,7 +6,21 @@
     "bonusSkill": {
       "kind": "skill",
       "skill": "notice"
-    }
+    },
+    "effects": [
+      {
+        "kind": "initiative",
+        "level": 1,
+        "bonus": 1,
+        "actsFirst": false
+      },
+      {
+        "kind": "initiative",
+        "level": 2,
+        "bonus": 0,
+        "actsFirst": true
+      }
+    ]
   },
   {
     "id": "armored-magic",
@@ -95,6 +109,10 @@
     },
     "effects": [
       {
+        "kind": "melee-shock-immune",
+        "level": 1
+      },
+      {
         "kind": "shock-ignores-ac",
         "level": 2
       }
@@ -139,6 +157,16 @@
         "skill": "shoot",
         "modes": ["ranged", "thrown"],
         "shock": false
+      },
+      {
+        "kind": "ranged-in-melee",
+        "level": 1,
+        "modifier": -4
+      },
+      {
+        "kind": "ranged-in-melee",
+        "level": 2,
+        "modifier": 0
       }
     ]
   },

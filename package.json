@@ -19,7 +19,8 @@
     "srd:extract": "tsx tools/srd-extract/index.ts",
     "srd:check": "tsx tools/srd-extract/index.ts --check",
     "test:coverage": "vitest run --coverage",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "sim": "tsx tools/sim/index.ts"
   },
   "dependencies": {
     "preact": "^10.29.8",

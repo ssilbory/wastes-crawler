@@ -6,6 +6,7 @@ import {
   ShieldSchema,
   StartingPackageSchema,
 } from './equipment-content.ts';
+import { CombatMagicSchema, MonsterCombatSchema } from './combat-content.ts';
 import { ClassOptionSchema, TraditionSchema } from './magic-content.ts';
 
 const contentBase = {
@@ -133,6 +134,8 @@ export const ContentSchemas = {
   equipmentRules: EquipmentRulesSchema,
   traditions: z.array(TraditionSchema).min(1),
   classOptions: z.array(ClassOptionSchema).min(1),
+  monsterCombat: z.array(MonsterCombatSchema).min(1),
+  combatMagic: z.array(CombatMagicSchema).min(1),
 } as const;
 export type ContentData = {
   [K in keyof typeof ContentSchemas]: z.infer<(typeof ContentSchemas)[K]>;

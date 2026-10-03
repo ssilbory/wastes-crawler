@@ -1,0 +1,160 @@
+[
+  {
+    "id": "peaceful-human",
+    "weapon": "club",
+    "tags": []
+  },
+  {
+    "id": "thug-or-militia",
+    "weapon": "spear-light",
+    "tags": ["metal"]
+  },
+  {
+    "id": "barbarian-fighter",
+    "weapon": "axe-war",
+    "tags": ["metal"]
+  },
+  {
+    "id": "veteran-soldier",
+    "weapon": "spear-light",
+    "tags": ["metal"]
+  },
+  {
+    "id": "skilled-veteran",
+    "weapon": "sword-long",
+    "tags": ["metal"]
+  },
+  {
+    "id": "elites-or-special-guards",
+    "weapon": "halberd",
+    "tags": ["metal"]
+  },
+  {
+    "id": "knight-or-minor-hero",
+    "weapon": "sword-long",
+    "tags": ["metal"]
+  },
+  {
+    "id": "warrior-baron",
+    "weapon": "sword-great",
+    "tags": ["metal"]
+  },
+  {
+    "id": "barbarian-warlord",
+    "weapon": "axe-war",
+    "tags": ["metal"]
+  },
+  {
+    "id": "mighty-general",
+    "weapon": "sword-long",
+    "tags": ["metal"]
+  },
+  {
+    "id": "major-hero",
+    "weapon": "sword-great",
+    "tags": ["metal"]
+  },
+  {
+    "id": "great-warrior-king",
+    "weapon": "sword-great",
+    "tags": ["metal"]
+  },
+  {
+    "id": "petty-mage",
+    "weapon": "dagger",
+    "tags": ["metal"]
+  },
+  {
+    "id": "tribal-shaman",
+    "weapon": "staff",
+    "tags": []
+  },
+  {
+    "id": "skilled-sorcerer",
+    "weapon": "dagger",
+    "tags": ["metal"]
+  },
+  {
+    "id": "master-wizard",
+    "weapon": "staff",
+    "tags": []
+  },
+  {
+    "id": "famous-arch-mage",
+    "weapon": "staff",
+    "tags": []
+  },
+  {
+    "id": "small-pack-predator",
+    "tags": []
+  },
+  {
+    "id": "large-solitary-predator",
+    "tags": []
+  },
+  {
+    "id": "apex-predator",
+    "tags": []
+  },
+  {
+    "id": "herd-beast",
+    "tags": []
+  },
+  {
+    "id": "vicious-large-herbivore",
+    "tags": []
+  },
+  {
+    "id": "elephantine-grazer",
+    "tags": ["reach"]
+  },
+  {
+    "id": "automaton-humanlike",
+    "weapon": "mace",
+    "tags": ["unliving", "metal"]
+  },
+  {
+    "id": "automaton-laborer",
+    "tags": ["unliving", "metal"]
+  },
+  {
+    "id": "automaton-military",
+    "tags": ["unliving", "metal"]
+  },
+  {
+    "id": "automaton-warbot",
+    "tags": ["unliving", "metal", "reach"]
+  },
+  {
+    "id": "slime-or-ooze",
+    "tags": ["unliving"]
+  },
+  {
+    "id": "predator-small-vicious",
+    "tags": []
+  },
+  {
+    "id": "predator-large-vicious",
+    "tags": []
+  },
+  {
+    "id": "predator-hulking",
+    "tags": ["reach"]
+  },
+  {
+    "id": "predator-hellbeast",
+    "tags": []
+  },
+  {
+    "id": "unnatural-swarm",
+    "tags": ["flying"]
+  },
+  {
+    "id": "terrible-warbeast",
+    "tags": ["reach"]
+  },
+  {
+    "id": "legendary-god-titan",
+    "tags": ["reach"]
+  }
+]

@@ -63,6 +63,17 @@ export const FocusEffectSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('natural-weapon'), level: Level, weapon: NaturalWeaponSchema }),
   /** Raises the Stowed limit by half Strength, rounded down. */
   z.strictObject({ kind: z.literal('extra-stowed-half-strength'), level: Level }),
+  /** Close Combatant: ignore Shock from melee attackers. */
+  z.strictObject({ kind: z.literal('melee-shock-immune'), level: Level }),
+  /** Deadeye: two-handed ranged weapons work with a foe in melee, at this hit modifier. */
+  z.strictObject({ kind: z.literal('ranged-in-melee'), level: Level, modifier: z.int() }),
+  /** Alert: a bonus to the side's initiative roll (not stacking), or acting first. */
+  z.strictObject({
+    kind: z.literal('initiative'),
+    level: Level,
+    bonus: z.int(),
+    actsFirst: z.boolean(),
+  }),
   /** Armored Magic: cast in armor up to this encumbrance (null for any), and with a shield. */
   z.strictObject({
     kind: z.literal('armored-casting'),

@@ -7,6 +7,9 @@ import shields from '../../data/content/shields.json';
 import startingPackages from '../../data/content/starting-packages.json';
 import traditions from '../../data/content/traditions.json';
 import classOptions from '../../data/content/class-options.json';
+import combatMagic from '../../data/content/combat-magic.json';
+import monsterCombat from '../../data/content/monster-combat.json';
+import { combatReferenceErrors } from './combat-check.ts';
 import { equipmentReferenceErrors } from './equipment-check.ts';
 import { focusReferenceErrors } from './focus-content.ts';
 import { magicReferenceErrors } from './magic-check.ts';
@@ -23,6 +26,8 @@ export function loadContent(): ContentData {
     equipmentRules: ContentSchemas.equipmentRules.parse(equipmentRules),
     traditions: ContentSchemas.traditions.parse(traditions),
     classOptions: ContentSchemas.classOptions.parse(classOptions),
+    monsterCombat: ContentSchemas.monsterCombat.parse(monsterCombat),
+    combatMagic: ContentSchemas.combatMagic.parse(combatMagic),
   };
 }
 
@@ -62,6 +67,8 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['startingPackages', content.startingPackages],
     ['traditions', content.traditions],
     ['classOptions', content.classOptions],
+    ['monsterCombat', content.monsterCombat],
+    ['combatMagic', content.combatMagic],
     ...content.peoples.map((p): [string, { id: string }[]] => [
       `peoples/${p.id} lineages`,
       p.lineages ?? [],
@@ -78,5 +85,6 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...focusReferenceErrors(srd, content),
     ...equipmentReferenceErrors(srd, content),
     ...magicReferenceErrors(srd, content),
+    ...combatReferenceErrors(srd, content),
   ];
 }

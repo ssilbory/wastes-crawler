@@ -1,7 +1,8 @@
 [
   {
     "id": "full-warrior",
-    "name": "Warrior"
+    "name": "Warrior",
+    "abilities": ["killing-blow", "veterans-luck"]
   },
   {
     "id": "full-expert",
