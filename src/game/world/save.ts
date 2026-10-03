@@ -81,6 +81,8 @@ export const WORLD_MIGRATIONS: Migrations = {
   8: (raw) => ({ ...raw, schemaVersion: 9, rescues: [] }),
   // Version 10 adds raising quests: none offered or taken yet.
   9: (raw) => ({ ...raw, schemaVersion: 10, raising: { offer: null, accepted: null } }),
+  // Version 11 adds crafting (Phase 10a): nothing under way, no workshops owned.
+  10: (raw) => ({ ...raw, schemaVersion: 11, projects: [], workshops: [] }),
 };
 
 export function serializeWorld(w: World): string {
@@ -113,6 +115,8 @@ export function serializeWorld(w: World): string {
     light: w.light,
     rescues: w.rescues,
     raising: w.raising,
+    projects: w.projects,
+    workshops: w.workshops,
     log: w.log.slice(-SAVED_LOG_LINES),
   };
   return `${JSON.stringify(save)}\n`;
@@ -191,6 +195,8 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       },
       rescues: s.rescues,
       raising: s.raising,
+      projects: s.projects,
+      workshops: s.workshops,
       log: s.log,
       rng: rngFromState(s.rng),
       visited: new Set(s.visited),

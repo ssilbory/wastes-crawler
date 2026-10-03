@@ -37,6 +37,9 @@ export function rejoin(w: World, data: GameData, id: string): TownResult {
   if ('ok' in slot) return slot;
   const m = w.benched.find((x) => x.id === id);
   if (!m) throw new Error(`no benched member ${id}`);
+  const work = w.projects.find((p) => p.crafter === id && p.staying);
+  if (work)
+    return no(`${m.character.name} is still at work in the workshop (${work.daysLeft} days left).`);
   w.benched = w.benched.filter((x) => x !== m);
   w.members.push({ ...m, ...slot });
   note(w, `${m.character.name} rejoins the party.`);

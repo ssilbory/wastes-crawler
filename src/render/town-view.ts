@@ -23,12 +23,15 @@ export function levelLine(data: GameData, c: Character): string {
   return `Level ${level} · XP ${c.xp} of ${xpForLevel(level + 1)}${ready}`;
 }
 
-/** "Crowbar ×2 (stowed)", sized and barding notes included. */
+/** "Crowbar ×2 (stowed)", quality, sized, and barding notes included. */
 export function entryText(data: GameData, entry: InventoryEntry): string {
   const name = findItem(data, entry.id)?.name ?? entry.id;
-  const notes = [entry.small && 'small', entry.barding && 'barding', entry.location].filter(
-    Boolean,
-  );
+  const notes = [
+    entry.quality,
+    entry.small && 'small',
+    entry.barding && 'barding',
+    entry.location,
+  ].filter(Boolean);
   const qty = entry.quantity > 1 ? ` ×${entry.quantity}` : '';
   return `${name}${qty} (${notes.join(', ')})`;
 }

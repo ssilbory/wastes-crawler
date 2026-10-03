@@ -1,6 +1,7 @@
 // The world's event bus (docs/plan.md, Quest: driven by an event bus from the game layer). The
 // game layer emits what happened; listeners, the quests for now, react to it.
 import type { GameData } from '../character/context.ts';
+import { craftingListener } from './crafting.ts';
 import { questListener } from './quests.ts';
 import { raisingListener } from './raising.ts';
 import { rescueListener } from '../dungeon/rescues.ts';
@@ -23,7 +24,12 @@ export type WorldEvent =
 
 type Listener = (w: World, data: GameData, e: WorldEvent) => void;
 
-const LISTENERS: readonly Listener[] = [questListener, rescueListener, raisingListener];
+const LISTENERS: readonly Listener[] = [
+  questListener,
+  rescueListener,
+  raisingListener,
+  craftingListener,
+];
 
 export function emit(w: World, data: GameData, e: WorldEvent): void {
   for (const listen of LISTENERS) listen(w, data, e);

@@ -9,6 +9,7 @@ import type {
   NpcSave,
   PendingEncounter,
   QuestState,
+  Project,
   Raising,
   TownLedger,
   WorldSave,
@@ -64,6 +65,8 @@ export interface World {
   light: Omit<Light, 'torch' | 'lantern'> & { torch: ResourceDie; lantern: ResourceDie };
   rescues: string[];
   raising: Raising;
+  projects: Project[];
+  workshops: string[];
   log: string[];
 }
 

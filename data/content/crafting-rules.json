@@ -1,0 +1,22 @@
+{
+  "buildDays": {
+    "weapon": 7,
+    "armor": 7,
+    "shield": 7,
+    "gear": 1
+  },
+  "quality": {
+    "jury-rigged": {
+      "cost": 0.25,
+      "time": 0.5
+    },
+    "mastercrafted": {
+      "cost": 10,
+      "time": 2
+    }
+  },
+  "workshop": {
+    "rentPerDay": 5,
+    "price": 500
+  }
+}

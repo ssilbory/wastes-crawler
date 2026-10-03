@@ -55,6 +55,8 @@ export function inventoryErrors(
     if ((entry.small || entry.barding) && item.kind !== 'armor') {
       errors.push(`${item.name} can't be small or barding`);
     }
+    if (entry.quality && item.kind !== 'weapon' && item.kind !== 'armor' && item.kind !== 'shield')
+      errors.push(`${item.name} can't be ${entry.quality}`);
     if (entry.barding && !people.barding)
       errors.push(`${people.name} characters can't wear barding`);
     if (entry.location !== 'worn') continue;
@@ -135,6 +137,8 @@ export interface AttackLine {
 
 type Source = Pick<Weapon, 'id' | 'name' | 'damage' | 'shock' | 'attributes'> & {
   addsPunch: boolean;
+  /** Mastercrafted weapons grant +1 to hit (SRD 2.8.1). */
+  hitBonus?: number;
   /** Unarmed and natural attacks, which some focus effects leave out. */
   unarmed: boolean;
   /** Fixed skill for natural and unarmed attacks. */
@@ -167,7 +171,7 @@ function attackLine(
   const noPenalty = data.content.equipmentRules.noUnskilledPenalty.includes(src.id);
   const skillTerm = skill ?? (noPenalty ? 0 : UNTRAINED_ATTACK_PENALTY);
   const punch = l.skills.punch;
-  let hit = l.attackBonus + attr + skillTerm;
+  let hit = l.attackBonus + attr + skillTerm + (src.hitBonus ?? 0);
   let damage = src.damage;
   let damageBonus = attr + (src.addsPunch ? (punch ?? 0) : 0);
   let shock: ShockRating | null = mode === 'melee' && src.shock ? { ...src.shock } : null;
@@ -199,16 +203,24 @@ export function loadoutAttacks(data: GameData, l: Loadout): AttackLine[] {
   const effects = activeEffects(data, l.foci);
   const sources: [Source, AttackMode[]][] = [];
   const seen = new Set<string>();
-  for (const { entry, item } of resolve(data, l.entries)) {
-    if (item.kind !== 'weapon' || entry.location !== 'readied' || seen.has(item.id)) continue;
-    seen.add(item.id);
+  const readied = resolve(data, l.entries).flatMap(({ entry, item }) =>
+    item.kind === 'weapon' && entry.location === 'readied' ? [{ entry, weapon: item.weapon }] : [],
+  );
+  for (const { weapon } of readied) {
+    if (seen.has(weapon.id)) continue;
+    seen.add(weapon.id);
+    // Of several readied lines of one weapon, the party fights with the best made.
+    const master = readied.some(
+      (r) => r.weapon.id === weapon.id && r.entry.quality === 'mastercrafted',
+    );
     sources.push([
       {
-        ...item.weapon,
-        addsPunch: item.weapon.damageAddsSkill,
-        unarmed: item.weapon.damageAddsSkill,
+        ...weapon,
+        addsPunch: weapon.damageAddsSkill,
+        unarmed: weapon.damageAddsSkill,
+        hitBonus: master ? 1 : 0,
       },
-      modesOf(item.weapon),
+      modesOf(weapon),
     ]);
   }
   for (const e of effects) {

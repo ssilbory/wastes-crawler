@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { AttributeSchema, IdSchema } from './common.ts';
+import { QualitySchema } from './crafting-content.ts';
 import { ItemLocationSchema } from './equipment-content.ts';
 
 export const CHARACTER_SCHEMA_VERSION = 5;
@@ -50,6 +51,8 @@ export const CharacterSchema = z.strictObject({
       location: ItemLocationSchema,
       small: z.literal(true).optional(),
       barding: z.literal(true).optional(),
+      /** A crafted weapon, armor, or shield's tier; normal items have none (SRD 2.8.1). */
+      quality: QualitySchema.optional(),
     }),
   ),
   /** Money; 1 crown = 1 silver piece, so copper prices make tenths. */

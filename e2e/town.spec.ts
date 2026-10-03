@@ -31,7 +31,7 @@ test('rests at the inn, shops, and changes the party at the tavern', async ({ pa
     'The party stays the night at the inn in Westhold.',
   );
 
-  await page.getByRole('tab', { name: 'Shop' }).click();
+  await page.getByRole('tab', { name: 'Shop', exact: true }).click();
   await page.getByRole('combobox', { name: 'Item' }).selectOption({ label: 'Crowbar (4 crowns)' });
   await page.getByRole('button', { name: 'Buy', exact: true }).click();
   const pack = page.getByRole('region', { name: "Snag's pack" });

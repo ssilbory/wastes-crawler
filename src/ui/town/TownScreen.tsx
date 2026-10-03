@@ -14,6 +14,7 @@ import { ShopTab } from './ShopTab.tsx';
 import { TavernTab } from './TavernTab.tsx';
 import { TrainingTab } from './TrainingTab.tsx';
 import { TravelTab } from './TravelTab.tsx';
+import { WorkshopTab } from './WorkshopTab.tsx';
 import { ArenaTab } from './ArenaTab.tsx';
 import type { BoutStart } from '../../game/world/arena.ts';
 
@@ -23,6 +24,7 @@ const TABS = {
   shop: 'Shop',
   tavern: 'Tavern',
   training: 'Training',
+  workshop: 'Workshop',
   travel: 'Coaches',
   arena: 'Arena',
 } as const;
@@ -85,6 +87,7 @@ export function TownScreen(props: {
           {tab === 'shop' && <ShopTab world={w} act={act} />}
           {tab === 'tavern' && <TavernTab world={w} roster={props.roster} act={act} />}
           {tab === 'training' && <TrainingTab world={w} act={act} />}
+          {tab === 'workshop' && <WorkshopTab world={w} act={act} />}
           {tab === 'travel' && <TravelTab world={w} act={act} onBoard={props.onLeave} />}
           {tab === 'arena' && <ArenaTab world={w} act={act} onBout={props.onBout} />}
         </div>

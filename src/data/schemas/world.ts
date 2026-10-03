@@ -5,7 +5,7 @@ import { CharacterSchema } from './character.ts';
 import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 10;
+export const WORLD_SCHEMA_VERSION = 11;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -91,6 +91,21 @@ export const QuestStateSchema = z.strictObject({
   acceptedDay: z.int().min(0),
 });
 export type QuestState = z.infer<typeof QuestStateSchema>;
+
+/** An item being crafted (docs/rules-adaptation.md, Crafting and modifying gear). */
+export const ProjectSchema = z.strictObject({
+  /** The member doing the work; each works on one thing at a time. */
+  crafter: z.string().min(1),
+  item: IdSchema,
+  quality: z.enum(['jury-rigged', 'normal', 'mastercrafted']),
+  small: z.literal(true).optional(),
+  daysLeft: z.int().min(1),
+  /** The town where the parts were bought. */
+  town: IdSchema,
+  /** The crafter stayed behind at that town's workshop to finish it. */
+  staying: z.boolean(),
+});
+export type Project = z.infer<typeof ProjectSchema>;
 
 /** Raising quests (docs/rules-adaptation.md, Raising quests). */
 export const RaisingSchema = z.strictObject({
@@ -194,6 +209,10 @@ export const WorldSaveSchema = z.strictObject({
   rescues: z.array(z.string()),
   /** The raising quest on offer, and the day one was last taken (once a month). */
   raising: RaisingSchema,
+  /** Crafting under way. */
+  projects: z.array(ProjectSchema),
+  /** Towns whose workshop the party owns. */
+  workshops: z.array(IdSchema),
   log: z.array(z.string()),
 });
 export type WorldSave = z.infer<typeof WorldSaveSchema>;

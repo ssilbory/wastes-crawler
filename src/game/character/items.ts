@@ -1,12 +1,14 @@
 // Item catalog over vendor/wwn-srd/3.0 Equipment, Armor, and Weapons/ (3.2.0 gear and bundles,
 // 3.4.0 armor, 3.5.0 weapons), with the house shields, small armor, and barding rules from
-// docs/rules-adaptation.md.
+// docs/rules-adaptation.md, and crafted quality tiers from vendor/wwn-srd/2.0 The Rules of the
+// Game/2.8.0 Crafting and Modifying Gear.md (2.8.1).
 import type {
   Armor,
   Cost,
   Gear,
   GearBundle,
   ItemLocation,
+  Quality,
   Shield,
   Weapon,
 } from '../../data/schemas/index.ts';
@@ -28,6 +30,8 @@ export interface InventoryEntry {
   small?: true | undefined;
   /** Barding for a centaur's horse half. */
   barding?: true | undefined;
+  /** A crafted item's tier (SRD 2.8.1); normal items have none. */
+  quality?: Quality | undefined;
 }
 
 /** Content shields override the SRD shield rows; SRD armor keeps only body armor. */
@@ -83,10 +87,12 @@ export function tenths(cost: Cost): number {
   return Math.round(cost.amount * TENTHS[cost.unit]);
 }
 
+/** Market value of an inventory line: crafted tiers are worth what their parts cost (SRD 2.8.1). */
 export function entryPrice(data: GameData, item: CatalogItem, entry: InventoryEntry): number {
   if (!item.cost) return 0;
-  const multiplier = entry.barding ? data.content.equipmentRules.barding.costMultiplier : 1;
-  return tenths(item.cost) * multiplier * entry.quantity;
+  const barding = entry.barding ? data.content.equipmentRules.barding.costMultiplier : 1;
+  const tier = entry.quality ? data.content.craftingRules.quality[entry.quality].cost : 1;
+  return Math.round(tenths(item.cost) * barding * tier * entry.quantity);
 }
 
 /** Encumbrance points of one inventory line (SRD 3.2.0 markers, the N trait, and barding). */
@@ -101,7 +107,10 @@ export function entryEncumbrance(data: GameData, item: CatalogItem, entry: Inven
     }
     case 'armor': {
       const mult = entry.barding ? rules.barding.encumbranceMultiplier : 1;
-      return q * (item.armor.encumbrance ?? 0) * mult;
+      // SRD 2.8.1: mastercrafted armor counts as 1 fewer point, down to a minimum of 1.
+      const enc = item.armor.encumbrance ?? 0;
+      const each = entry.quality === 'mastercrafted' ? Math.min(enc, Math.max(1, enc - 1)) : enc;
+      return q * each * mult;
     }
     case 'shield':
       return q * item.shield.encumbrance;

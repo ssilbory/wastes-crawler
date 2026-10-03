@@ -24,6 +24,7 @@ import missionGivers from '../../data/content/mission-givers.json';
 import quests from '../../data/content/quests.json';
 import monsters from '../../data/content/monsters.json';
 import dungeons from '../../data/content/dungeons.json';
+import craftingRules from '../../data/content/crafting-rules.json';
 import { combatReferenceErrors } from './combat-check.ts';
 import { equipmentReferenceErrors } from './equipment-check.ts';
 import { focusReferenceErrors } from './focus-content.ts';
@@ -64,6 +65,7 @@ export function loadContent(): ContentData {
     quests: ContentSchemas.quests.parse(quests),
     monsters: ContentSchemas.monsters.parse(monsters),
     dungeons: ContentSchemas.dungeons.parse(dungeons),
+    craftingRules: ContentSchemas.craftingRules.parse(craftingRules),
   };
 }
 
