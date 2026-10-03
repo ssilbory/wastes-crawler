@@ -65,6 +65,27 @@ export function WorldApp() {
   };
 
   const w = world.current;
+  /** Starts the pending encounter's fight, with the XP simulation running alongside. */
+  const startFight = () => {
+    if (!w) return;
+    const battle = encounterBattle(w, data);
+    const verdict = assess({
+      setup: battle.setup,
+      seed: difficultySeed(w),
+      fights: data.content.townRules.xp.simFights,
+    });
+    setFight({
+      battle,
+      settle: (result) => verdict.then((d) => settleByFighting(w, data, battle, result, d)),
+      back: 'map',
+    });
+    changed();
+  };
+  const leave = () => {
+    if (!w) return;
+    settleByLeaving(w, data);
+    changed();
+  };
   if (screen === 'start' || !w)
     return (
       <StartScreen
@@ -94,7 +115,13 @@ export function WorldApp() {
             if (m) m.defaultAction = preset;
           }}
           canLeave={false}
-          doneLabel={fight.back === 'town' ? 'Back to town' : 'Back to the map'}
+          doneLabel={
+            fight.back === 'town'
+              ? 'Back to town'
+              : w.dungeon
+                ? 'Back to the dungeon'
+                : 'Back to the map'
+          }
           onDone={(result) => {
             if (!result) return done();
             void Promise.resolve(fight.settle(result)).then(done);
@@ -103,7 +130,16 @@ export function WorldApp() {
       </div>
     );
   }
-  if (w.dungeon) return <DungeonScreen world={w} version={version} onChange={changed} />;
+  if (w.dungeon)
+    return (
+      <DungeonScreen
+        world={w}
+        version={version}
+        onChange={changed}
+        onFight={startFight}
+        onLeave={leave}
+      />
+    );
   if (screen === 'town')
     return (
       <TownScreen
@@ -130,20 +166,7 @@ export function WorldApp() {
         passQuarter(w, data, plan);
         changed();
       }}
-      onFight={() => {
-        const battle = encounterBattle(w, data);
-        const verdict = assess({
-          setup: battle.setup,
-          seed: difficultySeed(w),
-          fights: data.content.townRules.xp.simFights,
-        });
-        setFight({
-          battle,
-          settle: (result) => verdict.then((d) => settleByFighting(w, data, battle, result, d)),
-          back: 'map',
-        });
-        changed();
-      }}
+      onFight={startFight}
       onRide={() => {
         coachQuarter(w, data);
         changed();
@@ -153,10 +176,7 @@ export function WorldApp() {
         changed();
       }}
       onTown={() => setScreen('town')}
-      onLeave={() => {
-        settleByLeaving(w, data);
-        changed();
-      }}
+      onLeave={leave}
       onExport={() => download(serializeWorld(w))}
       onAbandon={() => {
         if (!confirm('Abandon this world? The save is deleted.')) return;

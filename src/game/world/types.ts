@@ -3,6 +3,7 @@ import type {
   Character,
   CoachTrip,
   DungeonState,
+  Light,
   DefaultPreset,
   LootDice,
   NpcSave,
@@ -59,8 +60,18 @@ export interface World {
   arenaDay: number | null;
   quests: Record<string, QuestState>;
   dungeon: DungeonState | null;
+  light: Omit<Light, 'torch' | 'lantern'> & { torch: ResourceDie; lantern: ResourceDie };
   log: string[];
 }
+
+/** No light burning, nothing left in hand, and the kits ready to draw on. */
+export const NO_LIGHT: World['light'] = {
+  lit: null,
+  torch: 0,
+  lantern: 0,
+  kitTorches: 0,
+  kitsReady: true,
+};
 
 /** What a member does in a camp quarter (docs/rules-adaptation.md, Overland travel). */
 export type Activity = 'rest' | 'sleep' | 'forage' | 'hunt' | 'make-camp' | 'watch';

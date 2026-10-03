@@ -71,16 +71,33 @@ export function maybeEncounter(
   const map = regionMap(data, w.region);
   const die = data.content.overlandRules.encounterDice[map.dangerAt(w.position)];
   if (map.siteAt(w.position) || !encounterCheck(w.rng, die)) return false;
-  const { rows, nature, captive } = rollEnemies(w, data, map.terrainAt(w.position).encounters);
+  const rolled = rollEnemies(w, data, map.terrainAt(w.position).encounters);
+  startEncounter(w, data, rolled, watcher, dark ? -1 : 0, hexKey(w.position));
+  return true;
+}
+
+/**
+ * Sets up a rolled group: a reaction roll, and an opposed Wis/Notice check by the watcher, if any,
+ * to spot them first. `steps` adjusts the watcher's check; null means they can't spot anything.
+ */
+export function startEncounter(
+  w: World,
+  data: GameData,
+  rolled: ReturnType<typeof rollEnemies>,
+  watcher: Member | undefined,
+  steps: number | null,
+  where: string,
+): void {
+  const { rows, nature, captive } = rolled;
   const { reaction } = reactionRoll(w.rng, partyCha(w, data) + reactionBonus(w, data));
   let spotted = false;
-  if (watcher) {
+  if (watcher && steps !== null) {
     const monsters = rows.flat().map((id) => findMonster(data, id) as Monster);
     const theirs = npcCheck(w.rng, {
       skillBonus: Math.max(...monsters.map((m) => m.skill)),
       difficulty: 0,
     });
-    const ours = memberCheck(w, data, watcher, 'notice', ['wis'], 0, dark ? -1 : 0);
+    const ours = memberCheck(w, data, watcher, 'notice', ['wis'], 0, steps);
     spotted = pcWinsOpposed(ours.score, theirs.score);
   }
   const counts = new Map<string, number>();
@@ -88,8 +105,18 @@ export function maybeEncounter(
   const who = [...counts].map(([id, n]) => `${n} ${monsterName(data, id)}`).join(' and ');
   const held = captive ? ` ${captiveOf(data, captive).text}` : '';
   const lead = `${spotted ? `${watcher?.character.name} spots` : 'The party meets'} ${who}.${held}`;
-  setEncounter(w, rows, nature, reaction, captive, null, fights(nature, reaction), spotted, lead);
-  return true;
+  setEncounter(
+    w,
+    rows,
+    nature,
+    reaction,
+    captive,
+    null,
+    fights(nature, reaction),
+    spotted,
+    lead,
+    where,
+  );
 }
 
 function setEncounter(
@@ -102,6 +129,7 @@ function setEncounter(
   hostile: boolean,
   spotted: boolean,
   lead: string,
+  where: string,
 ): void {
   const text = `${lead} ${MOODS[reaction]}`;
   w.encounter = {
@@ -116,7 +144,7 @@ function setEncounter(
     spotted,
     text,
   };
-  note(w, `${text} (${hexKey(w.position)})`);
+  note(w, `${text} (${where})`);
 }
 
 /** A group that means to fight whatever its mood: an ambush or a quest's fixed encounter. */
@@ -130,7 +158,7 @@ export function meetGroup(
   lead: string,
 ): void {
   const { reaction } = reactionRoll(w.rng, partyCha(w, data) + reactionBonus(w, data));
-  setEncounter(w, rows, nature, reaction, captive, quest, true, false, lead);
+  setEncounter(w, rows, nature, reaction, captive, quest, true, false, lead, hexKey(w.position));
 }
 
 function partyCha(w: World, data: GameData): number {

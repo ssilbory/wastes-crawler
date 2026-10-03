@@ -79,6 +79,8 @@ export function enterTown(w: World, data: GameData, siteId: string, start = fals
   const firstVisit = w.towns[site.id] === undefined;
   ledger(w, data, site);
   w.lastTown = site.id;
+  // Dungeoneering Kits restock in town (docs/rules-adaptation.md, Dungeon exploration).
+  w.light.kitsReady = true;
   if (start) return;
   note(w, `The party reaches ${site.name}.`);
   arriveNpcs(w, data, site.id);
@@ -95,6 +97,8 @@ export function wipe(w: World, data: GameData): void {
   w.destination = null;
   w.encounter = null;
   w.coach = null;
+  w.dungeon = null;
+  w.light.lit = null;
   w.day += 1;
   w.quarter = 0;
   w.hikes = 0;

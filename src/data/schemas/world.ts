@@ -5,7 +5,7 @@ import { CharacterSchema } from './character.ts';
 import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 6;
+export const WORLD_SCHEMA_VERSION = 7;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -109,8 +109,29 @@ export const DungeonStateSchema = z.strictObject({
   facing: FacingSchema,
   /** Seen cells ("x,y") by level, for the automap. */
   seen: z.record(IdSchema, z.array(z.string())),
+  /** Exploration turns since the party came down (SRD 2.13.2). */
+  turn: z.int().min(0),
+  /** Steps toward the next turn: 12 make one. */
+  steps: z.int().min(0),
 });
 export type DungeonState = z.infer<typeof DungeonStateSchema>;
+
+const ResourceDieSchema = z.union([0, 4, 6, 8, 10, 12].map((n) => z.literal(n)));
+
+/** The party's light (docs/rules-adaptation.md, Resource dice and Dungeon exploration). */
+export const LightSchema = z.strictObject({
+  /** What is burning, if anything. */
+  lit: z.enum(['torch', 'lantern']).nullable(),
+  /** The die of the torch in hand, 0 for none. */
+  torch: ResourceDieSchema,
+  /** The oil left in the party's lantern. */
+  lantern: ResourceDieSchema,
+  /** Torches drawn from Dungeoneering Kits and not yet burned. */
+  kitTorches: z.int().min(0),
+  /** The kits have been restocked in town since they were last drawn on. */
+  kitsReady: z.boolean(),
+});
+export type Light = z.infer<typeof LightSchema>;
 
 /** A world save (docs/plan.md, Save/load): versioned, with the RNG state. */
 export const WorldSaveSchema = z.strictObject({
@@ -153,6 +174,7 @@ export const WorldSaveSchema = z.strictObject({
   quests: z.record(IdSchema, QuestStateSchema),
   /** The party's place in a dungeon, or null on the surface. */
   dungeon: DungeonStateSchema.nullable(),
+  light: LightSchema,
   log: z.array(z.string()),
 });
 export type WorldSave = z.infer<typeof WorldSaveSchema>;

@@ -263,3 +263,14 @@
 .automap .party {
   fill: var(--error);
 }
+
+.dungeon-view.dark .ceiling,
+.dungeon-view.dark .floor {
+  fill: #050505;
+}
+
+.dungeon-view .pitch-dark {
+  fill: #6b6258;
+  font-size: 14px;
+  text-anchor: middle;
+}

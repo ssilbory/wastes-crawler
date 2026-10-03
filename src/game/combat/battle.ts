@@ -38,6 +38,9 @@ export interface NpcSetup {
   healer?: number;
 }
 
+/** The party's attack modifier in darkness, a house rule: the SRD sets none. */
+export const DARK_HIT_MODIFIER = -4;
+
 export interface BattleSetup {
   data: GameData;
   rng: Rng;
@@ -51,6 +54,8 @@ export interface BattleSetup {
   enemies: string[][];
   /** Names for the log; the party and the enemy by default. */
   sideNames?: Record<SideId, string>;
+  /** The party fights without light (docs/rules-adaptation.md, Dungeon exploration). */
+  dark?: boolean;
   log?: boolean;
 }
 
@@ -117,6 +122,7 @@ export function createBattle(s: BattleSetup): Battle {
     halfChecked: new Set(),
     startCount: { party: party.length, enemy: enemies.length },
     stabilizedThisRound: new Set(),
+    hitModifier: { party: s.dark ? DARK_HIT_MODIFIER : 0, enemy: 0 },
     log: s.log ? [] : null,
     outcome: null,
   };

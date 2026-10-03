@@ -5,7 +5,7 @@ import { rngFromState } from '../../rules/rng.ts';
 import type { ResourceDie } from '../../rules/resource-die.ts';
 import type { GameData } from '../character/context.ts';
 import { importCharacter, type Migrations, type Raw } from '../character/io.ts';
-import type { Member, World } from './types.ts';
+import { NO_LIGHT, type Member, type World } from './types.ts';
 
 /** The log kept in saves; older lines are dropped. */
 export const SAVED_LOG_LINES = 200;
@@ -58,6 +58,16 @@ export const WORLD_MIGRATIONS: Migrations = {
   },
   // Version 6 adds dungeons (Phase 7): the party starts on the surface.
   5: (raw) => ({ ...raw, schemaVersion: 6, dungeon: null }),
+  // Version 7 adds exploration turns and light (Phase 8a): kits are ready, nothing is lit.
+  6: (raw) => {
+    const d = raw.dungeon as Raw | null;
+    return {
+      ...raw,
+      schemaVersion: 7,
+      dungeon: d && { ...d, turn: 0, steps: 0 },
+      light: NO_LIGHT,
+    };
+  },
 };
 
 export function serializeWorld(w: World): string {
@@ -87,6 +97,7 @@ export function serializeWorld(w: World): string {
     arenaDay: w.arenaDay,
     quests: w.quests,
     dungeon: w.dungeon,
+    light: w.light,
     log: w.log.slice(-SAVED_LOG_LINES),
   };
   return `${JSON.stringify(save)}\n`;
@@ -158,6 +169,11 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       arenaDay: s.arenaDay,
       quests: s.quests,
       dungeon: s.dungeon,
+      light: {
+        ...s.light,
+        torch: s.light.torch as ResourceDie,
+        lantern: s.light.lantern as ResourceDie,
+      },
       log: s.log,
       rng: rngFromState(s.rng),
       visited: new Set(s.visited),

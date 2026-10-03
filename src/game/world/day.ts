@@ -26,7 +26,8 @@ export function endOfDay(w: World, data: GameData, waystation = false): void {
     w.rations = use.die;
   }
   const sheltered = inTown || w.camp === 'made';
-  const cold = !sheltered && isHarshNight(map.terrainAt(w.position).harsh, season);
+  // Underground there is no weather.
+  const cold = !sheltered && !w.dungeon && isHarshNight(map.terrainAt(w.position).harsh, season);
   for (const m of alive(w)) {
     m.hungry = !fed;
     m.sleepless = !m.slept;

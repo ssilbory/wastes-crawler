@@ -7,7 +7,7 @@ import type { GameData } from '../character/context.ts';
 import { newMember, note } from './members.ts';
 import { regionMap } from './region.ts';
 import { enterTown, FULL_RATIONS } from './town.ts';
-import type { World } from './types.ts';
+import { NO_LIGHT, type World } from './types.ts';
 
 /** Six PCs; the two NPC slots come in Phase 6c (docs/rules-adaptation.md, Party and formation). */
 export const MAX_PCS = 6;
@@ -43,6 +43,7 @@ export function newWorld(data: GameData, rng: Rng, party: Recruit[], regionId?: 
     arenaDay: null,
     quests: {},
     dungeon: null,
+    light: { ...NO_LIGHT },
     purse: toTenths(party.reduce((sum, p) => sum + p.character.crowns, 0)),
     loot: [],
     towns: {},

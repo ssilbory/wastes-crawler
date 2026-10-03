@@ -42,7 +42,7 @@ export function resolveAttack(
     attackBonus: attack.hit,
     attributeModifier: 0,
     skill: 0,
-    modifier: rangedModifier(b, actor, attack),
+    modifier: rangedModifier(b, actor, attack) + b.hitModifier[actor.side],
     steps: netSteps([attackSteps(b, actor, target, attack.mode)]),
     targetAc: effectiveAc(target),
   });

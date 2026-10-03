@@ -6,6 +6,7 @@ import type { GameData } from '../character/context.ts';
 import { camp, hike } from './activities.ts';
 import { dateOf, quarterName } from './calendar.ts';
 import { endOfDay } from './day.ts';
+import { fightTurns, passTurn } from '../dungeon/time.ts';
 import { leaveEncounter, maybeEncounter } from './encounters.ts';
 import type { Difficulty } from './difficulty.ts';
 import { applyBattle, type WorldBattle } from './fight.ts';
@@ -46,7 +47,9 @@ export function passQuarter(w: World, data: GameData, plan: QuarterPlan): boolea
 /** Avoids or lets pass the pending encounter, then finishes the quarter. */
 export function settleByLeaving(w: World, data: GameData): boolean {
   if (!leaveEncounter(w)) return false;
-  endQuarter(w, data);
+  // Underground, slipping away takes a turn (SRD 2.13.3).
+  if (w.dungeon) passTurn(w, data);
+  else endQuarter(w, data);
   return true;
 }
 
@@ -59,5 +62,7 @@ export function settleByFighting(
   difficulty: Difficulty | null,
 ): void {
   applyBattle(w, data, fight, result, difficulty);
-  if (result.outcome !== 'enemy') endQuarter(w, data);
+  if (result.outcome === 'enemy') return;
+  if (w.dungeon) fightTurns(w, data);
+  else endQuarter(w, data);
 }

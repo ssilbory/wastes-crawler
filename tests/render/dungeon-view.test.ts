@@ -3,6 +3,7 @@ import type { DungeonState } from '../../src/data/schemas/index.ts';
 import type { World } from '../../src/game/world/types.ts';
 import { automap } from '../../src/render/automap-view.ts';
 import { dungeonView, shade } from '../../src/render/dungeon-view.ts';
+import { lightText, turnText } from '../../src/render/light-view.ts';
 import { data, world } from '../game/world/helpers.ts';
 
 function at(x: number, y: number, facing: DungeonState['facing'], seen: string[] = []): World {
@@ -13,7 +14,11 @@ function at(x: number, y: number, facing: DungeonState['facing'], seen: string[]
     at: { x, y },
     facing,
     seen: { 'barrow-upper': seen },
+    turn: 0,
+    steps: 0,
   };
+  w.light.lit = 'torch';
+  w.light.torch = 6;
   return w;
 }
 const find = (w: World, key: string) => dungeonView(w, data).find((p) => p.key === key);
@@ -99,5 +104,34 @@ describe('dungeon automap', () => {
     const w = at(1, 8, 'n');
     w.dungeon = { ...(w.dungeon as DungeonState), seen: {} };
     expect(automap(w, data)?.cells).toEqual([]);
+  });
+});
+
+describe('light and time underground', () => {
+  it('shows nothing in the dark', () => {
+    const w = at(1, 3, 'n');
+    w.light.lit = null;
+    expect(dungeonView(w, data)).toEqual([]);
+  });
+
+  it('describes the light and what is left', () => {
+    const w = at(1, 8, 'n');
+    w.light.lit = null;
+    expect(lightText(w)).toBe('No light; 0 torches spare');
+    w.light = { ...w.light, lit: 'torch', torch: 4, kitTorches: 1 };
+    expect(lightText(w)).toBe('Torch (d4); 1 torch spare');
+    const snag = w.members[0] as World['members'][number];
+    snag.character = {
+      ...snag.character,
+      inventory: [
+        ...snag.character.inventory,
+        { id: 'lantern', quantity: 1, location: 'stowed' },
+        { id: 'oil-one-pint', quantity: 1, location: 'stowed' },
+      ],
+    };
+    w.light = { ...w.light, lit: 'lantern', lantern: 12 };
+    expect(lightText(w)).toBe('Lantern (d12); 1 torch spare, 1 pint of oil');
+    expect(turnText(w)).toBe('Turn 1, step 1 of 12');
+    expect(turnText(world())).toBe('');
   });
 });

@@ -14,6 +14,11 @@ import { automap, FACING_NAMES, MAP_CELL } from '../../render/automap-view.ts';
 import { dungeonView, VIEW_HEIGHT, VIEW_WIDTH } from '../../render/dungeon-view.ts';
 import { data } from '../builder/data.ts';
 import { PartyPanel } from './PartyPanel.tsx';
+import { CampPanel } from './CampPanel.tsx';
+import { EncounterPanel } from './EncounterPanel.tsx';
+import { inDark } from '../../game/dungeon/light.ts';
+import { onSafeSquare } from '../../game/dungeon/time.ts';
+import { lightText, turnText } from '../../render/light-view.ts';
 
 type Move = { step: Step } | { turn: 'left' | 'right' | 'around' };
 
@@ -31,7 +36,13 @@ const KEYS: Record<string, Move> = {
 };
 
 /** First-person view, automap, and controls while the party is underground. */
-export function DungeonScreen(props: { world: World; version: number; onChange: () => void }) {
+export function DungeonScreen(props: {
+  world: World;
+  version: number;
+  onChange: () => void;
+  onFight: () => void;
+  onLeave: () => void;
+}) {
   const w = props.world;
   const s = w.dungeon as NonNullable<World['dungeon']>;
   const [bump, setBump] = useState<string | null>(null);
@@ -73,11 +84,13 @@ export function DungeonScreen(props: { world: World; version: number; onChange: 
         <span>
           {level.name}, facing {FACING_NAMES[s.facing]}
         </span>
+        <span class="turn">{turnText(w)}</span>
+        <span class="light">{lightText(w)}</span>
       </div>
       <div class="world-main">
         <div class="dungeon-main">
           <svg
-            class="dungeon-view"
+            class={inDark(w) ? 'dungeon-view dark' : 'dungeon-view'}
             viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}
             role="img"
             aria-label="Dungeon view"
@@ -90,7 +103,18 @@ export function DungeonScreen(props: { world: World; version: number; onChange: 
                 {p.frame && <polygon class="door-frame" points={p.frame} />}
               </g>
             ))}
+            {inDark(w) && (
+              <text class="pitch-dark" x={VIEW_WIDTH / 2} y={VIEW_HEIGHT / 2}>
+                Pitch dark
+              </text>
+            )}
           </svg>
+          <EncounterPanel
+            world={w}
+            onFight={props.onFight}
+            onLeave={props.onLeave}
+            onChange={props.onChange}
+          />
           <p class="bump" aria-live="polite">
             {bump ?? ' '}
           </p>
@@ -114,7 +138,7 @@ export function DungeonScreen(props: { world: World; version: number; onChange: 
               Turn right
             </button>
           </div>
-          {stairsLabel && (
+          {stairsLabel && !w.encounter && (
             <button
               type="button"
               onClick={() => {
@@ -153,6 +177,9 @@ export function DungeonScreen(props: { world: World; version: number; onChange: 
                 <polygon class="party" points={map.party} />
               </svg>
             </section>
+          )}
+          {!w.encounter && onSafeSquare(w, data) && (
+            <CampPanel world={w} onChange={props.onChange} />
           )}
           <PartyPanel members={w.members} />
           <section class="panel log" aria-label="Journey log">

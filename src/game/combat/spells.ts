@@ -146,6 +146,7 @@ export function castMagic(
         attackBonus: c.level,
         attributeModifier: attr,
         skill: actor.skills[e.skill] ?? null,
+        modifier: b.hitModifier[actor.side],
         steps: netSteps([attackSteps(b, actor, target, 'ranged')]),
         targetAc: effectiveAc(target),
       }).hit;

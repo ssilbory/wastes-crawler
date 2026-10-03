@@ -11,6 +11,7 @@ import { difficultyTier, type Difficulty } from './difficulty.ts';
 import { alive, note, setHp } from './members.ts';
 import { fights, moraleAfterFight, npcMonster, removeNpc, typeOf } from './npcs.ts';
 import { emit } from './bus.ts';
+import { inDark } from '../dungeon/light.ts';
 import { freeCaptive } from './rescue.ts';
 import { addLoot } from './shop.ts';
 import { wipe } from './town.ts';
@@ -66,6 +67,8 @@ export interface PartySetup {
   }[];
   npcs: NpcSetup[];
   enemies: string[][];
+  /** The party fights without light. */
+  dark: boolean;
 }
 
 /** The conscious party as it stands, and its NPCs if `withNpcs`, against enemy rows. */
@@ -86,6 +89,7 @@ export function partySetup(
     })),
     npcs: withNpcs ? w.npcs.filter((n) => n.hp > 0).map((n) => npcSetup(data, n)) : [],
     enemies,
+    dark: inDark(w),
   };
 }
 
@@ -97,6 +101,7 @@ export function battleFrom(data: GameData, rng: Rng, setup: PartySetup, log: boo
     party: setup.party.map((p) => ({ character: p.character, row: p.row, column: p.column })),
     npcs: setup.npcs,
     enemies: setup.enemies.map((r) => [...r]),
+    dark: setup.dark,
     log,
   });
   setup.party.forEach((p, i) => {

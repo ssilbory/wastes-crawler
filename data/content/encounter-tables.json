@@ -527,5 +527,77 @@
         ]
       }
     ]
+  },
+  {
+    "id": "barrow",
+    "entries": [
+      {
+        "weight": 3,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "predator-small-vicious",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "automaton-humanlike",
+            "count": {
+              "count": 1,
+              "sides": 2,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "slime-or-ooze",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "unnatural-swarm",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "thug-or-militia",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      }
+    ]
   }
 ]

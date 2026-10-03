@@ -43,10 +43,14 @@ describe('dungeon entrances (docs/rules-adaptation.md, Dungeons in Phase 7)', ()
       at: { x: 1, y: 8 },
       facing: 'n',
       seen: { 'barrow-upper': ['1,8', '1,7', '1,6', '1,5'] },
+      turn: 0,
+      steps: 0,
     });
     expect(w).toMatchObject({ quarter: 1, destination: null });
-    expect(w.log.slice(-2)).toEqual([
+    expect(w.log.slice(-4)).toEqual([
       'Day 1, morning: The party goes down into The Old Barrow.',
+      'Day 1, morning: The party takes 12 torches from its kits.',
+      'Day 1, morning: A torch is lit.',
       'Day 1, morning: The party reaches The Upper Barrow.',
     ]);
     expect(passQuarter(w, data, { kind: 'camp', activities: {} })).toBe(false);
@@ -103,6 +107,16 @@ describe('moving on the grid', () => {
     expect(step(room, data, 'right')).toEqual({ ok: false, reason: 'A wall blocks the way.' });
   });
 
+  it('maps nothing in the dark', () => {
+    const w = below();
+    w.light = { ...w.light, lit: null, torch: 0, kitTorches: 0 };
+    step(w, data, 'forward');
+    expect(w.dungeon?.at).toEqual({ x: 1, y: 7 });
+    expect(w.dungeon?.seen['barrow-upper']).toEqual(['1,8', '1,7', '1,6', '1,5']);
+    turnParty(w, data, 'right');
+    expect(w.dungeon?.seen['barrow-upper']).toHaveLength(4);
+  });
+
   it('remembers what it has seen, level by level', () => {
     const w = below();
     turnParty(w, data, 'right');
@@ -138,6 +152,7 @@ describe('stairs', () => {
     expect(takeStairs(w, data)).toEqual({ ok: true });
     expect(w).toMatchObject({ dungeon: null, position: entrance, quarter: 2 });
     expect(w.log.at(-1)).toContain('The party climbs out of The Old Barrow.');
+    expect(w.light.lit).toBeNull();
   });
 });
 

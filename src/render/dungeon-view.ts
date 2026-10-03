@@ -2,6 +2,7 @@
 // flat-shaded panels). Cells up to four deep, painted far to near so nearer walls and doors hide
 // what is behind them. Secret doors look like walls until Phase 8's Search.
 import { levelOf } from '../game/dungeon/explore.ts';
+import { inDark } from '../game/dungeon/light.ts';
 import type { GameData } from '../game/character/context.ts';
 import type { World } from '../game/world/types.ts';
 import { ahead, turn, type Cell, type Facing } from '../rules/grid.ts';
@@ -106,7 +107,8 @@ function panel(key: string, kind: 'wall' | 'door', q: Quad, depth: number, side:
 /** Everything in view from the party's cell, in drawing order. */
 export function dungeonView(w: World, data: GameData): Panel[] {
   const s = w.dungeon;
-  if (!s) return [];
+  // In the dark there is nothing to see (docs/rules-adaptation.md, Dungeon exploration).
+  if (!s || inDark(w)) return [];
   const { map } = levelOf(data, s.dungeon, s.level);
   const left = turn(s.facing, 'left');
   const right = turn(s.facing, 'right');

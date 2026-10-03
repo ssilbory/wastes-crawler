@@ -27,6 +27,13 @@ export const DungeonLevelSchema = z.strictObject({
   name: z.string().min(1),
   map: z.array(z.string()).min(3),
   links: z.array(StairsLinkSchema),
+  /**
+   * SRD 2.13.5: a wandering encounter check (1 in 6) every so many turns from an encounter table,
+   * or null for a level with no check.
+   */
+  wander: z.strictObject({ every: z.int().min(1).max(6), table: IdSchema }).nullable(),
+  /** The only squares the party can camp on (docs/rules-adaptation.md, Dungeon exploration). */
+  safe: z.array(CellSchema),
 });
 export type DungeonLevel = z.infer<typeof DungeonLevelSchema>;
 

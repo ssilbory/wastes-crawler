@@ -33,6 +33,11 @@ function dungeonErrors(d: Dungeon, content: ContentData): string[] {
         if ((kind === 'up' || kind === 'down') && !linked.has(`${x},${y}`))
           errors.push(`${where}/${level.id}: stairs at ${x},${y} lead nowhere`);
       }
+    if (level.wander && !content.encounterTables.some((t) => t.id === level.wander?.table))
+      errors.push(`${where}/${level.id}: unknown encounter table ${level.wander.table}`);
+    for (const c of level.safe)
+      if (!map.inBounds(c))
+        errors.push(`${where}/${level.id}: safe square ${c.x},${c.y} is off the level`);
     for (const l of level.links) {
       const at = `${where}/${level.id}: link at ${l.at.x},${l.at.y}`;
       if (!map.inBounds(l.at) || !['up', 'down'].includes(map.cell(l.at)))

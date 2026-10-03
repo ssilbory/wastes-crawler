@@ -24,6 +24,20 @@ async function startAtBarrow(page: Page) {
   await page.getByRole('button', { name: 'Continue journey' }).click();
 }
 
+/** Changes the autosaved world, then picks the journey back up. */
+async function edit(page: Page, change: string) {
+  await page.evaluate(
+    ([key, body]) => {
+      const save = JSON.parse(localStorage.getItem(key as string) as string);
+      new Function('save', body as string)(save);
+      localStorage.setItem(key as string, JSON.stringify(save));
+    },
+    [WORLD_KEY, change],
+  );
+  await page.reload();
+  await page.getByRole('button', { name: 'Continue journey' }).click();
+}
+
 /** Presses movement keys in order: w forward, s back, a/d turn, q/e step aside. */
 async function keys(page: Page, moves: string) {
   for (const k of moves) await page.keyboard.press(k);
@@ -75,4 +89,55 @@ test('enters the barrow from the hex map, walks both levels, and climbs out', as
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
     'The party climbs out of The Old Barrow.',
   );
+});
+
+// Phase 8a: exploration turns, light, wandering encounters, camping, and darkness.
+test('fights a wanderer, camps on a safe square, and goes dark', async ({ page }, testInfo) => {
+  await startAtBarrow(page);
+  await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
+  const bar = page.locator('.world-bar');
+  await expect(bar).toContainText('Turn 1, step 1 of 12');
+  await expect(bar).toContainText('Torch (d6); 11 torches spare');
+  await page.getByRole('button', { name: 'Forward' }).click();
+  await expect(bar).toContainText('Turn 1, step 2 of 12');
+
+  // Three turns in, something comes out of the dark.
+  await edit(
+    page,
+    `save.dungeon.turn = 3;
+     save.encounter = {
+       enemies: [['predator-small-vicious']], nature: 'hostile', reaction: 'expected',
+       parleyed: false, captive: null, offer: null, quest: null, hostile: true, spotted: false,
+       text: 'Something small and vicious scuttles out of the dark.',
+     };`,
+  );
+  const encounter = page.getByRole('region', { name: 'Encounter' });
+  await expect(encounter).toContainText('scuttles out of the dark');
+  await page.getByRole('button', { name: 'Forward' }).click();
+  await expect(page.locator('.bump')).toHaveText('Settle the encounter first.');
+  await page.screenshot({ path: testInfo.outputPath('dungeon-encounter.png'), fullPage: true });
+  await encounter.getByRole('button', { name: 'Fight' }).click();
+  await page.getByRole('button', { name: 'Auto-resolve' }).click();
+  await page.getByRole('button', { name: 'Back to the dungeon' }).click();
+  // The fight and the first aid after it take a turn each.
+  await expect(bar).toContainText('Turn 6, step 2 of 12');
+
+  // The first room of the lower level is safe to camp in.
+  await edit(page, `Object.assign(save.dungeon, { level: 'barrow-lower', at: { x: 1, y: 1 } });`);
+  const camp = page.getByRole('region', { name: 'Camp' });
+  await expect(camp).toBeVisible();
+  await camp.getByRole('button', { name: 'Camp for the quarter' }).click();
+  await expect(page.getByRole('region', { name: 'Journey log' })).toContainText('The party camps.');
+
+  // With every torch gone, the party sees and maps nothing.
+  await edit(
+    page,
+    `Object.assign(save.light, { lit: null, torch: 0, kitTorches: 0 });
+     save.encounter = null;
+     Object.assign(save.dungeon, { level: 'barrow-upper', at: { x: 1, y: 8 }, facing: 'n' });`,
+  );
+  await expect(bar).toContainText('No light; 0 torches spare');
+  const view = page.getByRole('img', { name: 'Dungeon view' });
+  await expect(view).toContainText('Pitch dark');
+  await expect(view).toHaveScreenshot('barrow-dark.png');
 });

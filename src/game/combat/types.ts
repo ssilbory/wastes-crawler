@@ -136,6 +136,8 @@ export interface Battle {
   /** Each side's starting number of combatants. */
   startCount: Record<SideId, number>;
   stabilizedThisRound: Set<string>;
+  /** Attack roll modifier by side: -4 for a party fighting in the dark (docs/rules-adaptation.md). */
+  hitModifier: Record<SideId, number>;
   log: string[] | null;
   outcome: Outcome | null;
 }

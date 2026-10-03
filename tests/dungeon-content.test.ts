@@ -68,8 +68,19 @@ describe('dungeon validation', () => {
   ): Dungeon => ({
     ...base,
     entry: { level: 'a', at: { x: 0, y: 0 }, facing: 'n' },
-    levels: [{ id: 'a', name: 'A', map, links }],
+    levels: [{ id: 'a', name: 'A', map, links, wander: null, safe: [] }],
     ...extra,
+  });
+
+  it('checks wandering tables and safe squares', () => {
+    const level = { id: 'a', name: 'A', map: tiny, links: [], safe: [{ x: 5, y: 0 }] };
+    const d = { ...one(tiny, []), levels: [{ ...level, wander: { every: 2, table: 'crypt' } }] };
+    expect(check(d)).toEqual(
+      expect.arrayContaining([
+        'dungeons/old-barrow/a: unknown encounter table crypt',
+        'dungeons/old-barrow/a: safe square 5,0 is off the level',
+      ]),
+    );
   });
 
   it('reports bad maps', () => {

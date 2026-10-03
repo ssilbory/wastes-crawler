@@ -1,7 +1,7 @@
-// Walking a dungeon (docs/plan.md, Map format; docs/rules-adaptation.md, Dungeons in Phase 7): step
-// and turn on the grid, walk through doors, take stairs between levels or back to the hex map.
-// Each flight of stairs costs a quarter day (Exploration time). Secret doors are walls until
-// Phase 8's Search.
+// Walking a dungeon (docs/plan.md, Map format; docs/rules-adaptation.md, Dungeons in Phase 7 and
+// Dungeon exploration): step and turn on the grid, walk through doors, take stairs between levels
+// or back to the hex map. Steps count toward exploration turns (time.ts); each flight of stairs
+// costs a quarter day. Secret doors are walls until Phase 8's Search.
 import { parseLevelMap, type LevelMap } from '../../data/dungeon-map.ts';
 import type { Dungeon, DungeonLevel, DungeonState } from '../../data/schemas/index.ts';
 import { ahead, cellKey, turn, type Cell, type Facing } from '../../rules/grid.ts';
@@ -9,6 +9,8 @@ import { hexKey } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
 import { note } from '../world/members.ts';
 import { endQuarter } from '../world/quarter.ts';
+import { douse, drawKits, inDark, kindle } from './light.ts';
+import { countStep } from './time.ts';
 import type { TownResult } from '../world/services.ts';
 import type { World } from '../world/types.ts';
 
@@ -42,7 +44,9 @@ export function dungeonHere(w: World, data: GameData): Dungeon | undefined {
 }
 
 /** Marks the party's cell and the cells it can see straight ahead (up to 3) as seen. */
-function look(data: GameData, s: DungeonState): void {
+function look(w: World, data: GameData, s: DungeonState): void {
+  // In the dark the party maps nothing (docs/rules-adaptation.md, Dungeon exploration).
+  if (inDark(w)) return;
   const { map } = levelOf(data, s.dungeon, s.level);
   const seen = new Set(s.seen[s.level] ?? []);
   let c: Cell = s.at;
@@ -57,7 +61,7 @@ function look(data: GameData, s: DungeonState): void {
 function arrive(w: World, data: GameData, level: string, at: Cell, facing: Facing): void {
   const s = w.dungeon as NonNullable<World['dungeon']>;
   Object.assign(s, { level, at, facing });
-  look(data, s);
+  look(w, data, s);
   note(w, `The party reaches ${levelOf(data, s.dungeon, level).level.name}.`);
 }
 
@@ -75,8 +79,12 @@ export function enterDungeon(w: World, data: GameData): TownResult {
     at: d.entry.at,
     facing: d.entry.facing,
     seen: {},
+    turn: 0,
+    steps: 0,
   };
   note(w, `The party goes down into ${d.name}.`);
+  drawKits(w);
+  kindle(w);
   arrive(w, data, d.entry.level, d.entry.at, d.entry.facing);
   endQuarter(w, data);
   return { ok: true };
@@ -88,13 +96,15 @@ export type Step = 'forward' | 'back' | 'left' | 'right';
 export function step(w: World, data: GameData, dir: Step): TownResult {
   const s = w.dungeon;
   if (!s) throw new Error('the party is not in a dungeon');
+  if (w.encounter) return no('Settle the encounter first.');
   const way =
     dir === 'forward' ? s.facing : dir === 'back' ? turn(s.facing, 'around') : turn(s.facing, dir);
   const { map } = levelOf(data, s.dungeon, s.level);
   const edge = map.edge(s.at, way);
   if (edge === 'wall' || edge === 'secret') return no('A wall blocks the way.');
   s.at = ahead(s.at, way);
-  look(data, s);
+  look(w, data, s);
+  countStep(w, data);
   return { ok: true };
 }
 
@@ -102,7 +112,7 @@ export function turnParty(w: World, data: GameData, by: 'left' | 'right' | 'arou
   const s = w.dungeon;
   if (!s) throw new Error('the party is not in a dungeon');
   s.facing = turn(s.facing, by);
-  look(data, s);
+  look(w, data, s);
 }
 
 /** The stairs link at the party's cell, if it stands on stairs. */
@@ -118,10 +128,12 @@ export function stairsHere(w: World, data: GameData) {
 export function takeStairs(w: World, data: GameData): TownResult {
   const link = stairsHere(w, data);
   if (!link) return no('There are no stairs here.');
+  if (w.encounter) return no('Settle the encounter first.');
   const s = w.dungeon as NonNullable<World['dungeon']>;
   if ('surface' in link.to) {
     note(w, `The party climbs out of ${dungeonOf(data, s.dungeon).name}.`);
     w.dungeon = null;
+    douse(w);
   } else arrive(w, data, link.to.level, link.to.at, link.to.facing);
   endQuarter(w, data);
   return { ok: true };
