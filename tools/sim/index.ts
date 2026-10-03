@@ -9,6 +9,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadContent } from '../../src/data/content.ts';
 import { loadSrd } from '../../src/data/load.ts';
+import { allMonsters } from '../../src/data/monsters.ts';
 import type { Character } from '../../src/data/schemas/index.ts';
 import { createBattle, runBattle } from '../../src/game/combat/battle.ts';
 import { importCharacter } from '../../src/game/character/io.ts';
@@ -42,7 +43,8 @@ function parseEnemies(spec: string): string[][] {
   return spec.split('/').map((row) =>
     row.split(',').flatMap((entry) => {
       const [id = '', count = '1'] = entry.trim().split('*');
-      if (!data.srd.monsters.some((m) => m.id === id)) throw new Error(`unknown monster ${id}`);
+      if (!allMonsters(data.srd, data.content).some((m) => m.id === id))
+        throw new Error(`unknown monster ${id}`);
       return Array(Number(count)).fill(id) as string[];
     }),
   );

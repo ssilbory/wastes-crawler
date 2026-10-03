@@ -209,6 +209,21 @@
           }
         ],
         "captive": "pilgrim"
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "vorpal-hare",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
       }
     ]
   },

@@ -1,10 +1,11 @@
+import { allMonsters } from './monsters.ts';
 import type { ContentData, SrdData } from './schemas/index.ts';
 
 /** Coach routes join two different real towns; arena cards are for real towns with real monsters. */
 export function travelReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const errors: string[] = [];
   const towns = new Set(content.regions.flatMap((r) => r.sites.map((s) => s.id)));
-  const monsters = new Set(srd.monsters.map((m) => m.id));
+  const monsters = new Set(allMonsters(srd, content).map((m) => m.id));
   for (const r of content.coachRoutes) {
     for (const t of r.towns)
       if (!towns.has(t)) errors.push(`coachRoutes/${r.id}: unknown town ${t}`);

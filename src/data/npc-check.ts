@@ -1,9 +1,10 @@
+import { allMonsters } from './monsters.ts';
 import type { ContentData, SrdData } from './schemas/index.ts';
 
 /** Hirelings and captives use real monsters, captives head for real towns, tables name real captives. */
 export function npcReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const errors: string[] = [];
-  const monsters = new Set(srd.monsters.map((m) => m.id));
+  const monsters = new Set(allMonsters(srd, content).map((m) => m.id));
   const towns = new Set(content.regions.flatMap((r) => r.sites.map((s) => s.id)));
   const captives = new Set(content.captives.map((c) => c.id));
   for (const h of content.npcRules.hirelings) {

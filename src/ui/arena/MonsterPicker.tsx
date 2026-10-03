@@ -1,7 +1,8 @@
 import { useState } from 'preact/hooks';
+import { allMonsters } from '../../data/monsters.ts';
 import { data } from '../builder/data.ts';
 
-const monsters = [...data.srd.monsters].sort(
+const monsters = allMonsters(data.srd, data.content).sort(
   (a, b) => a.hitDice - b.hitDice || a.name.localeCompare(b.name),
 );
 const nameOf = (id: string) => monsters.find((m) => m.id === id)?.name ?? id;

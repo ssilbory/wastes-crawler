@@ -23,6 +23,7 @@ import coachRules from '../../data/content/coach-rules.json';
 import arenaCards from '../../data/content/arena-cards.json';
 import missionGivers from '../../data/content/mission-givers.json';
 import quests from '../../data/content/quests.json';
+import monsters from '../../data/content/monsters.json';
 import { combatReferenceErrors } from './combat-check.ts';
 import { equipmentReferenceErrors } from './equipment-check.ts';
 import { focusReferenceErrors } from './focus-content.ts';
@@ -61,6 +62,7 @@ export function loadContent(): ContentData {
     arenaCards: ContentSchemas.arenaCards.parse(arenaCards),
     missionGivers: ContentSchemas.missionGivers.parse(missionGivers),
     quests: ContentSchemas.quests.parse(quests),
+    monsters: ContentSchemas.monsters.parse(monsters),
   };
 }
 

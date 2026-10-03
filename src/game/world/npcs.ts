@@ -7,7 +7,7 @@ import type { Captive, HirelingType, Monster } from '../../data/schemas/index.ts
 import { moraleHolds } from '../../rules/combat.ts';
 import { rollDie } from '../../rules/dice.ts';
 import { toTenths } from '../../rules/economy.ts';
-import type { GameData } from '../character/context.ts';
+import { findMonster, type GameData } from '../character/context.ts';
 import { note } from './members.ts';
 import type { Npc, World } from './types.ts';
 
@@ -15,7 +15,7 @@ export const MAX_NPCS = 2;
 const COLUMNS = 4;
 
 export function monsterOf(data: GameData, id: string): Monster {
-  const m = data.srd.monsters.find((x) => x.id === id);
+  const m = findMonster(data, id);
   if (!m) throw new Error(`unknown monster ${id}`);
   return m;
 }

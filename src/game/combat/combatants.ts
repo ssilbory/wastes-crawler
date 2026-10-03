@@ -8,7 +8,7 @@ import { killingBlowBonus } from '../../rules/combat.ts';
 import { characterLevel } from '../../rules/progression.ts';
 import type { Rng } from '../../rules/rng.ts';
 import { classOption } from '../character/class-step.ts';
-import type { GameData } from '../character/context.ts';
+import { findMonster, type GameData } from '../character/context.ts';
 import { characterSheet, finalScores } from '../character/derived.ts';
 import { activeEffects } from '../character/equipment.ts';
 import { modifierBonuses } from '../character/foci.ts';
@@ -179,7 +179,7 @@ export function monsterCombatant(
   id: string,
   rng: Rng,
 ): Combatant {
-  const m = data.srd.monsters.find((x) => x.id === monsterId);
+  const m = findMonster(data, monsterId);
   if (!m) throw new Error(`unknown monster ${monsterId}`);
   const combat = data.content.monsterCombat.find((x) => x.id === monsterId);
   const tags = new Set(combat?.tags ?? []);

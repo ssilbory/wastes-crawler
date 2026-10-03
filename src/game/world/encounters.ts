@@ -7,7 +7,7 @@ import { roll } from '../../rules/dice.ts';
 import { hexKey } from '../../rules/hex.ts';
 import { encounterCheck } from '../../rules/overland.ts';
 import { reactionRoll, type Reaction } from '../../rules/reaction.ts';
-import type { GameData } from '../character/context.ts';
+import { findMonster, type GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
 import { alive, memberCheck, note } from './members.ts';
 import { reactionBonus } from './minds.ts';
@@ -58,7 +58,7 @@ export const MOODS: Record<Reaction, string> = {
 };
 
 function monsterName(data: GameData, id: string): string {
-  return (data.srd.monsters.find((m) => m.id === id) as Monster).name;
+  return (findMonster(data, id) as Monster).name;
 }
 
 /** Makes the quarter's check; on a hit, sets up the encounter and returns true. */
@@ -75,7 +75,7 @@ export function maybeEncounter(
   const { reaction } = reactionRoll(w.rng, partyCha(w, data) + reactionBonus(w, data));
   let spotted = false;
   if (watcher) {
-    const monsters = rows.flat().map((id) => data.srd.monsters.find((m) => m.id === id) as Monster);
+    const monsters = rows.flat().map((id) => findMonster(data, id) as Monster);
     const theirs = npcCheck(w.rng, {
       skillBonus: Math.max(...monsters.map((m) => m.skill)),
       difficulty: 0,

@@ -20,6 +20,7 @@ import { TownRulesSchema } from './town-content.ts';
 import { CaptiveSchema, NpcRulesSchema } from './npc-content.ts';
 import { ArenaCardSchema, CoachRouteSchema, CoachRulesSchema } from './travel-content.ts';
 import { MissionGiverSchema, QuestSchema } from './quest-content.ts';
+import { AuthoredMonsterSchema } from './monsters.ts';
 
 const contentBase = {
   id: IdSchema,
@@ -163,6 +164,8 @@ export const ContentSchemas = {
   arenaCards: z.array(ArenaCardSchema).min(1),
   missionGivers: z.array(MissionGiverSchema).min(1),
   quests: z.array(QuestSchema).min(1),
+  /** Monsters authored for the setting, alongside the SRD's. */
+  monsters: z.array(AuthoredMonsterSchema),
 } as const;
 export type ContentData = {
   [K in keyof typeof ContentSchemas]: z.infer<(typeof ContentSchemas)[K]>;

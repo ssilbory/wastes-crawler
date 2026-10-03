@@ -275,5 +275,10 @@
     "id": "legendary-god-titan",
     "tags": ["reach"],
     "mind": "monster"
+  },
+  {
+    "id": "vorpal-hare",
+    "tags": [],
+    "mind": "monster"
   }
 ]

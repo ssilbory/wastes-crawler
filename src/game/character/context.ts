@@ -1,4 +1,5 @@
-import type { ContentData, Progression, SrdData } from '../../data/schemas/index.ts';
+import { allMonsters } from '../../data/monsters.ts';
+import type { ContentData, Monster, Progression, SrdData } from '../../data/schemas/index.ts';
 
 /** Everything character rules need to look up; built once from loadSrd() and loadContent(). */
 export interface GameData {
@@ -20,4 +21,9 @@ export function progressionLookup(data: GameData): (id: string) => Progression {
 
 export function isSkill(data: GameData, id: string): boolean {
   return data.srd.skills.some((s) => s.id === id);
+}
+
+/** A monster by id, SRD or authored. */
+export function findMonster(data: GameData, id: string): Monster | undefined {
+  return allMonsters(data.srd, data.content).find((m) => m.id === id);
 }

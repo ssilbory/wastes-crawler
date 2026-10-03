@@ -1,0 +1,31 @@
+[
+  {
+    "id": "vorpal-hare",
+    "name": "Vorpal Hare",
+    "category": "Unnatural Entities",
+    "hitDice": 1,
+    "ac": 14,
+    "armored": false,
+    "attackBonus": 4,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 12,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 3,
+      "maxAc": 15
+    },
+    "move": 50,
+    "morale": 12,
+    "instinct": 7,
+    "skill": 2,
+    "save": 15,
+    "description": "A white hare with a fixed, glassy stare and teeth like a surgeon's shears. The Dark Lord's flesh crafters bred them either as a terror weapon or as a joke, and nobody who has met one has been able to say which; most suspect both. It knows no fear, it does not stop, and it goes for the throat."
+  }
+]

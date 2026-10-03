@@ -1,4 +1,4 @@
-import type { Monster } from '../../../src/data/schemas/index.ts';
+import type { SrdMonster as Monster } from '../../../src/data/schemas/index.ts';
 import { findHeading, parseTables, sectionLines, slug } from '../markdown.ts';
 import { parseDice, parseInt10, parseSigned } from '../parse-values.ts';
 import type { SrdReader } from '../reader.ts';

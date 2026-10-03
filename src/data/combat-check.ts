@@ -1,3 +1,4 @@
+import { allMonsters } from './monsters.ts';
 import type { ContentData, SrdData } from './schemas/index.ts';
 
 /** Every monster has combat data, Wpn monsters name a real weapon, and magic effects exist. */
@@ -5,15 +6,18 @@ export function combatReferenceErrors(srd: SrdData, content: ContentData): strin
   const errors: string[] = [];
   const weapons = new Set(srd.weapons.map((w) => w.id));
   const skills = new Set(srd.skills.map((s) => s.id));
-  for (const m of srd.monsters) {
+  const monsters = allMonsters(srd, content);
+  const ids = new Set(srd.monsters.map((m) => m.id));
+  for (const m of content.monsters)
+    if (ids.has(m.id)) errors.push(`monsters/${m.id}: clashes with an SRD monster`);
+  for (const m of monsters) {
     const c = content.monsterCombat.find((x) => x.id === m.id);
     if (!c) errors.push(`monsterCombat: no entry for ${m.id}`);
     else if (m.damage.kind === 'weapon' && !c.weapon)
       errors.push(`monsterCombat/${m.id}: needs a weapon`);
   }
   for (const c of content.monsterCombat) {
-    if (!srd.monsters.some((m) => m.id === c.id))
-      errors.push(`monsterCombat/${c.id}: unknown monster`);
+    if (!monsters.some((m) => m.id === c.id)) errors.push(`monsterCombat/${c.id}: unknown monster`);
     if (c.weapon && !weapons.has(c.weapon))
       errors.push(`monsterCombat/${c.id}: unknown weapon ${c.weapon}`);
   }

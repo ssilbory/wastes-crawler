@@ -1,3 +1,4 @@
+import { allMonsters } from './monsters.ts';
 import { DANGER_GLYPHS, type ContentData, type SrdData } from './schemas/index.ts';
 
 /** Regions use known glyphs in a clean grid, sites sit on passable land, and tables exist. */
@@ -32,7 +33,7 @@ export function overlandReferenceErrors(srd: SrdData, content: ContentData): str
     const ids = r.sites.map((s) => s.id);
     if (new Set(ids).size !== ids.length) errors.push(`${where}: duplicate site id`);
   }
-  const monsters = new Set(srd.monsters.map((m) => m.id));
+  const monsters = new Set(allMonsters(srd, content).map((m) => m.id));
   for (const t of content.encounterTables) {
     for (const e of t.entries) {
       for (const g of e.groups) {
