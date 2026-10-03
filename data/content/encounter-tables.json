@@ -1,0 +1,468 @@
+[
+  {
+    "id": "plains",
+    "entries": [
+      {
+        "weight": 3,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "thug-or-militia",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "veteran-soldier",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          },
+          {
+            "monster": "skilled-veteran",
+            "count": 1,
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "herd-beast",
+            "count": {
+              "count": 1,
+              "sides": 6,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "small-pack-predator",
+            "count": {
+              "count": 1,
+              "sides": 6,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "barbarian-fighter",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "peaceful-human",
+            "count": {
+              "count": 1,
+              "sides": 6,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "forest",
+    "entries": [
+      {
+        "weight": 3,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "small-pack-predator",
+            "count": {
+              "count": 2,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "thug-or-militia",
+            "count": {
+              "count": 1,
+              "sides": 6,
+              "modifier": 0
+            },
+            "row": 0
+          },
+          {
+            "monster": "thug-or-militia",
+            "count": {
+              "count": 1,
+              "sides": 2,
+              "modifier": 0
+            },
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "large-solitary-predator",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "predator-small-vicious",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "vicious-large-herbivore",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "hills",
+    "entries": [
+      {
+        "weight": 3,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "barbarian-fighter",
+            "count": {
+              "count": 1,
+              "sides": 6,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "barbarian-fighter",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          },
+          {
+            "monster": "tribal-shaman",
+            "count": 1,
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "small-pack-predator",
+            "count": {
+              "count": 1,
+              "sides": 6,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "large-solitary-predator",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "veteran-soldier",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          },
+          {
+            "monster": "skilled-veteran",
+            "count": {
+              "count": 1,
+              "sides": 2,
+              "modifier": 0
+            },
+            "row": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mountains",
+    "entries": [
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "barbarian-fighter",
+            "count": {
+              "count": 2,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "apex-predator",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "predator-large-vicious",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "automaton-military",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "herd-beast",
+            "count": {
+              "count": 1,
+              "sides": 6,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "swamp",
+    "entries": [
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "slime-or-ooze",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "unnatural-swarm",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 3,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "predator-small-vicious",
+            "count": {
+              "count": 1,
+              "sides": 6,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "herd-beast",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "badlands",
+    "entries": [
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "automaton-humanlike",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "automaton-laborer",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "predator-large-vicious",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "barbarian-fighter",
+            "count": {
+              "count": 1,
+              "sides": 6,
+              "modifier": 0
+            },
+            "row": 0
+          },
+          {
+            "monster": "petty-mage",
+            "count": 1,
+            "row": 1
+          }
+        ]
+      }
+    ]
+  }
+]

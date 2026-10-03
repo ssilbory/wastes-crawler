@@ -127,6 +127,7 @@ export function pcCombatant(data: GameData, c: Character, id = c.id): Combatant 
           level: casterLevel,
           effortMax: Math.max(0, magic.effort),
           effortUsed: 0,
+          effortDay: 0,
           spellsLeft: magic.slots.spellsCast,
           prepared: [...c.spells.prepared],
           known: [...c.spells.known],

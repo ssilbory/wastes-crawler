@@ -1,0 +1,70 @@
+[
+  {
+    "id": "borderlands",
+    "name": "The Borderlands",
+    "terrain": [
+      "hhhhhhhmmmmmmmmmmhbbbbbb",
+      "hhhhhhhmmmmmmmmmmhbbbbbb",
+      "hhhhhhhmmmmmmmmmmhbbbbbb",
+      "hhhhhhhmmmmmmmmmmhbbbbbb",
+      "hhhhhLLLhhhhrhhhhhbbbbbb",
+      "pffffLLLpppprpppppbbbbbb",
+      "pffffLLLpppprpppppbbbbbb",
+      "pppppppppppprppppppppppp",
+      "ppppppppppppxppppppppppp",
+      "pppppppppppprppppppppppp",
+      "pppppppppppprppppppppppp",
+      "fffffffffffprppppppppppp",
+      "fffffffffffprpssssssssss",
+      "ffFFFFFFFffprpssssssssss",
+      "ffFFFFFFFffpxpssssssssss",
+      "ffFFFFFFFffprpssssssssss",
+      "ffFFFFFFFffprpssssssssss",
+      "ffFFFFFFFffprpssssssssss"
+    ],
+    "overlay": [
+      ".......!!!!!!!!!!.!!!!!!",
+      ".......!!!!!!!!!!.!!!!!!",
+      ".......!!!!!!!!!!.!!!!!!",
+      ".......!!!!!!!!!!.!!!!!!",
+      "..................!!!!!!",
+      "..................!!!!!!",
+      "..................!!!!!!",
+      "........................",
+      "...==================...",
+      "........................",
+      "........................",
+      "........................",
+      "..............!!!!!!!!!!",
+      "..!!!!!!!.....!!!!!!!!!!",
+      "..!!!!!!!.....!!!!!!!!!!",
+      "..!!!!!!!.....!!!!!!!!!!",
+      "..!!!!!!!.....!!!!!!!!!!",
+      "..!!!!!!!.....!!!!!!!!!!"
+    ],
+    "sites": [
+      {
+        "id": "westhold",
+        "name": "Westhold",
+        "kind": "town",
+        "col": 3,
+        "row": 8
+      },
+      {
+        "id": "eastmarch",
+        "name": "Eastmarch",
+        "kind": "town",
+        "col": 20,
+        "row": 8
+      },
+      {
+        "id": "highcairn",
+        "name": "Highcairn",
+        "kind": "town",
+        "col": 17,
+        "row": 4
+      }
+    ],
+    "start": "westhold"
+  }
+]

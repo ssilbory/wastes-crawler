@@ -29,6 +29,8 @@ export interface CasterState {
   level: number;
   effortMax: number;
   effortUsed: number;
+  /** Effort spent for the day, part of effortUsed; it carries over to later fights that day. */
+  effortDay: number;
   spellsLeft: number;
   prepared: string[];
   known: string[];

@@ -11,9 +11,7 @@ import {
   batch,
   nextCommand,
   presetAction,
-  startBattle,
   type Changes,
-  type FightSetup,
   type Presets,
 } from './fight.ts';
 
@@ -24,22 +22,29 @@ interface Session {
   result: BattleResult | null;
 }
 
-function begin(setup: FightSetup & { kind: 'party' }): Session {
-  const battle = startBattle(setup);
+function begin(battle: Battle): Session {
   let actor: Combatant | null = null;
   const { changes, result } = batch(battle, () => (actor = nextCommand(battle)));
   return { battle, actor, changes: { ...changes, logFrom: 0 }, result };
 }
 
+/**
+ * A party fight with the command menu: the arena's, and the overland map's encounters. The battle
+ * is created once; PC `pc-N` uses `presets[N]` as its default action.
+ */
 export function FightScreen(props: {
-  setup: FightSetup & { kind: 'party' };
-  onPreset: (rosterId: string, preset: DefaultPreset) => void;
-  onLeave: () => void;
+  createBattle: () => Battle;
+  presets: DefaultPreset[];
+  onPreset?: (index: number, preset: DefaultPreset) => void;
+  /** Whether the player may walk away mid-fight (the arena), or must see it through. */
+  canLeave: boolean;
+  doneLabel: string;
+  onDone: (result: BattleResult | null) => void;
 }) {
-  const [session, setSession] = useState<Session>(() => begin(props.setup));
+  const [session, setSession] = useState<Session>(() => begin(props.createBattle()));
   const [selected, setSelected] = useState<string | null>(null);
   const [presets, setPresets] = useState<Record<string, DefaultPreset>>(() =>
-    Object.fromEntries(props.setup.party.map((p, i) => [`pc-${i}`, p.entry.defaultAction])),
+    Object.fromEntries(props.presets.map((preset, i) => [`pc-${i}`, preset])),
   );
   const last = useRef(new Map<string, Action>());
   const p: Presets = { preset: (id) => presets[id] ?? 'auto', last: last.current };
@@ -81,9 +86,7 @@ export function FightScreen(props: {
   const setPreset = (preset: DefaultPreset) => {
     if (!actor) return;
     setPresets({ ...presets, [actor.id]: preset });
-    const index = Number(actor.id.slice('pc-'.length));
-    const entry = props.setup.party[index]?.entry;
-    if (entry) props.onPreset(entry.id, preset);
+    props.onPreset?.(Number(actor.id.slice('pc-'.length)), preset);
   };
 
   return (
@@ -100,9 +103,15 @@ export function FightScreen(props: {
             </button>
           </>
         )}
-        <button type="button" class="secondary" onClick={props.onLeave}>
-          {result ? 'New fight' : 'Leave fight'}
-        </button>
+        {(result || props.canLeave) && (
+          <button
+            type="button"
+            class={result ? undefined : 'secondary'}
+            onClick={() => props.onDone(result)}
+          >
+            {result ? props.doneLabel : 'Leave fight'}
+          </button>
+        )}
       </div>
       {result && (
         <p class="result" role="status">

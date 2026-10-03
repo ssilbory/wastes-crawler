@@ -30,3 +30,24 @@ export function saveRoster(entries: readonly RosterEntry[]): boolean {
     return false;
   }
 }
+
+const WORLD_KEY = 'wastes-crawler.world';
+
+/** The autosaved world, or null if there is none or storage is unavailable. */
+export function loadWorldText(): string | null {
+  try {
+    return localStorage.getItem(WORLD_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function saveWorldText(text: string | null): boolean {
+  try {
+    if (text === null) localStorage.removeItem(WORLD_KEY);
+    else localStorage.setItem(WORLD_KEY, text);
+    return true;
+  } catch {
+    return false;
+  }
+}

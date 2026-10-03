@@ -1,0 +1,81 @@
+// Read-only drawing data for the overland map: flat-topped hexes in odd-q layout
+// (src/rules/hex.ts), fog over unseen hexes, sites, the party, and the planned route.
+import { seenHexes, type RegionMap } from '../game/world/region.ts';
+import type { World } from '../game/world/types.ts';
+import { hexKey, type Hex } from '../rules/hex.ts';
+
+export interface HexCell {
+  key: string;
+  col: number;
+  row: number;
+  /** SVG polygon points. */
+  points: string;
+  cx: number;
+  cy: number;
+  /** Terrain id and name, or null under fog. */
+  terrain: string | null;
+  label: string;
+  road: boolean;
+  visited: boolean;
+  site: string | null;
+  party: boolean;
+  destination: boolean;
+  route: boolean;
+}
+
+const SQRT3 = Math.sqrt(3);
+
+export function hexCenter(h: Hex, size: number): { x: number; y: number } {
+  return {
+    x: size + size * 1.5 * h.col,
+    y: (size * SQRT3) / 2 + size * SQRT3 * (h.row + (h.col % 2) * 0.5),
+  };
+}
+
+export function hexPoints(h: Hex, size: number): string {
+  const { x, y } = hexCenter(h, size);
+  return Array.from({ length: 6 }, (_, i) => {
+    const angle = (Math.PI / 3) * i;
+    return `${(x + size * Math.cos(angle)).toFixed(1)},${(y + size * Math.sin(angle)).toFixed(1)}`;
+  }).join(' ');
+}
+
+export function mapPixels(map: RegionMap, size: number): { width: number; height: number } {
+  return {
+    width: Math.ceil(size * 1.5 * (map.width - 1) + size * 2),
+    height: Math.ceil(size * SQRT3 * (map.height + 0.5)),
+  };
+}
+
+export function hexCells(map: RegionMap, w: World, routeHexes: Hex[], size: number): HexCell[] {
+  const seen = seenHexes(map, w.visited);
+  const onRoute = new Set(routeHexes.map(hexKey));
+  const cells: HexCell[] = [];
+  for (let row = 0; row < map.height; row++) {
+    for (let col = 0; col < map.width; col++) {
+      const h = { col, row };
+      const key = hexKey(h);
+      const known = seen.has(key);
+      const terrain = map.terrainAt(h);
+      const site = known ? (map.siteAt(h)?.name ?? null) : null;
+      const { x, y } = hexCenter(h, size);
+      cells.push({
+        key,
+        col,
+        row,
+        points: hexPoints(h, size),
+        cx: x,
+        cy: y,
+        terrain: known ? terrain.id : null,
+        label: known ? `${site ?? terrain.name} (${key})` : `Unexplored (${key})`,
+        road: known && map.dangerAt(h) === 'road',
+        visited: w.visited.has(key),
+        site,
+        party: key === hexKey(w.position),
+        destination: w.destination !== null && key === hexKey(w.destination),
+        route: onRoute.has(key),
+      });
+    }
+  }
+  return cells;
+}

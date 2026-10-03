@@ -1,0 +1,64 @@
+{
+  "encounterDice": {
+    "road": 20,
+    "ordinary": 16,
+    "dangerous": 12
+  },
+  "forageSteps": 1,
+  "huntSteps": 2,
+  "months": [
+    {
+      "name": "Deepwinter",
+      "season": "winter"
+    },
+    {
+      "name": "Thaw",
+      "season": "spring"
+    },
+    {
+      "name": "Seedtime",
+      "season": "spring"
+    },
+    {
+      "name": "Blossom",
+      "season": "spring"
+    },
+    {
+      "name": "Highsun",
+      "season": "summer"
+    },
+    {
+      "name": "Midsummer",
+      "season": "summer"
+    },
+    {
+      "name": "Haymaking",
+      "season": "summer"
+    },
+    {
+      "name": "Harvest",
+      "season": "autumn"
+    },
+    {
+      "name": "Leaffall",
+      "season": "autumn"
+    },
+    {
+      "name": "Mists",
+      "season": "autumn"
+    },
+    {
+      "name": "Frostfall",
+      "season": "winter"
+    },
+    {
+      "name": "Longnight",
+      "season": "winter"
+    }
+  ],
+  "daysPerMonth": 30,
+  "start": {
+    "month": 2,
+    "day": 1
+  }
+}

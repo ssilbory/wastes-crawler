@@ -58,17 +58,9 @@ describe('data/content', () => {
     const [deer] = centaur.lineages;
     if (!deer) throw new Error('no lineages');
     const broken = {
+      ...content,
       peoples: [goblin, { ...centaur, lineages: [deer, deer] }],
       backgrounds: [{ ...bg, peoples: ['goblin', 'dwarf'] }],
-      racialFoci: content.racialFoci,
-      focusRules: content.focusRules,
-      shields: content.shields,
-      startingPackages: content.startingPackages,
-      equipmentRules: content.equipmentRules,
-      traditions: content.traditions,
-      classOptions: content.classOptions,
-      monsterCombat: content.monsterCombat,
-      combatMagic: content.combatMagic,
     };
     expect(contentReferenceErrors(srd, broken)).toEqual([
       'backgrounds/scavenger: unknown people dwarf',

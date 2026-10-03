@@ -9,10 +9,16 @@ import traditions from '../../data/content/traditions.json';
 import classOptions from '../../data/content/class-options.json';
 import combatMagic from '../../data/content/combat-magic.json';
 import monsterCombat from '../../data/content/monster-combat.json';
+import encounterTables from '../../data/content/encounter-tables.json';
+import mishaps from '../../data/content/mishaps.json';
+import overlandRules from '../../data/content/overland-rules.json';
+import regions from '../../data/content/regions.json';
+import terrains from '../../data/content/terrains.json';
 import { combatReferenceErrors } from './combat-check.ts';
 import { equipmentReferenceErrors } from './equipment-check.ts';
 import { focusReferenceErrors } from './focus-content.ts';
 import { magicReferenceErrors } from './magic-check.ts';
+import { overlandReferenceErrors } from './overland-check.ts';
 import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.ts';
 
 export function loadContent(): ContentData {
@@ -28,6 +34,11 @@ export function loadContent(): ContentData {
     classOptions: ContentSchemas.classOptions.parse(classOptions),
     monsterCombat: ContentSchemas.monsterCombat.parse(monsterCombat),
     combatMagic: ContentSchemas.combatMagic.parse(combatMagic),
+    terrains: ContentSchemas.terrains.parse(terrains),
+    regions: ContentSchemas.regions.parse(regions),
+    encounterTables: ContentSchemas.encounterTables.parse(encounterTables),
+    mishaps: ContentSchemas.mishaps.parse(mishaps),
+    overlandRules: ContentSchemas.overlandRules.parse(overlandRules),
   };
 }
 
@@ -69,6 +80,10 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['classOptions', content.classOptions],
     ['monsterCombat', content.monsterCombat],
     ['combatMagic', content.combatMagic],
+    ['terrains', content.terrains],
+    ['regions', content.regions],
+    ['encounterTables', content.encounterTables],
+    ['mishaps', content.mishaps],
     ...content.peoples.map((p): [string, { id: string }[]] => [
       `peoples/${p.id} lineages`,
       p.lineages ?? [],
@@ -86,5 +101,6 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...equipmentReferenceErrors(srd, content),
     ...magicReferenceErrors(srd, content),
     ...combatReferenceErrors(srd, content),
+    ...overlandReferenceErrors(srd, content),
   ];
 }

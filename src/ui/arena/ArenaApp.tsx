@@ -9,7 +9,7 @@ import {
 } from '../../game/character/roster.ts';
 import { data } from '../builder/data.ts';
 import { loadRoster, saveRoster } from '../storage.ts';
-import type { FightSetup, PartySlot } from './fight.ts';
+import { startBattle, type FightSetup, type PartySlot } from './fight.ts';
 import { FightScreen } from './FightScreen.tsx';
 import { MonsterPicker } from './MonsterPicker.tsx';
 import { PartySetup, type Placement } from './PartySetup.tsx';
@@ -74,7 +74,17 @@ export function ArenaApp() {
   if (fight?.kind === 'party')
     return (
       <div class="arena">
-        <FightScreen setup={fight} onPreset={onPreset} onLeave={() => setFight(null)} />
+        <FightScreen
+          createBattle={() => startBattle(fight)}
+          presets={fight.party.map((p) => p.entry.defaultAction)}
+          onPreset={(i, preset) => {
+            const entry = fight.party[i]?.entry;
+            if (entry) onPreset(entry.id, preset);
+          }}
+          canLeave={true}
+          doneLabel="New fight"
+          onDone={() => setFight(null)}
+        />
       </div>
     );
   if (fight?.kind === 'spectator')

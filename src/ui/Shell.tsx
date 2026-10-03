@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'preact/hooks';
 import { ArenaApp } from './arena/ArenaApp.tsx';
 import { App as BuilderApp } from './builder/App.tsx';
+import { WorldApp } from './world/WorldApp.tsx';
 
-type Route = 'builder' | 'arena';
+type Route = 'builder' | 'arena' | 'world';
 
-const routeOf = (hash: string): Route => (hash.startsWith('#/arena') ? 'arena' : 'builder');
+const routeOf = (hash: string): Route =>
+  hash.startsWith('#/arena') ? 'arena' : hash.startsWith('#/world') ? 'world' : 'builder';
 
 export function Shell() {
   const [route, setRoute] = useState<Route>(() => routeOf(location.hash));
@@ -22,8 +24,11 @@ export function Shell() {
         <a href="#/arena" aria-current={route === 'arena' ? 'page' : undefined}>
           Arena
         </a>
+        <a href="#/world" aria-current={route === 'world' ? 'page' : undefined}>
+          Overland
+        </a>
       </nav>
-      {route === 'arena' ? <ArenaApp /> : <BuilderApp />}
+      {route === 'arena' ? <ArenaApp /> : route === 'world' ? <WorldApp /> : <BuilderApp />}
     </>
   );
 }

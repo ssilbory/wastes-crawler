@@ -8,6 +8,13 @@ import {
 } from './equipment-content.ts';
 import { CombatMagicSchema, MonsterCombatSchema } from './combat-content.ts';
 import { ClassOptionSchema, TraditionSchema } from './magic-content.ts';
+import {
+  EncounterTableSchema,
+  MishapSchema,
+  OverlandRulesSchema,
+  RegionSchema,
+  TerrainSchema,
+} from './overland-content.ts';
 
 const contentBase = {
   id: IdSchema,
@@ -136,6 +143,11 @@ export const ContentSchemas = {
   classOptions: z.array(ClassOptionSchema).min(1),
   monsterCombat: z.array(MonsterCombatSchema).min(1),
   combatMagic: z.array(CombatMagicSchema).min(1),
+  terrains: z.array(TerrainSchema).min(1),
+  regions: z.array(RegionSchema).min(1),
+  encounterTables: z.array(EncounterTableSchema).min(1),
+  mishaps: z.array(MishapSchema).min(1),
+  overlandRules: OverlandRulesSchema,
 } as const;
 export type ContentData = {
   [K in keyof typeof ContentSchemas]: z.infer<(typeof ContentSchemas)[K]>;

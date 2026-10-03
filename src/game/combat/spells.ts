@@ -59,6 +59,7 @@ function enemySave(
   const c = actor.caster as CasterState;
   if (ok && hasEffort(c, 'inexorable-effect') && !c.usedThisScene.has('inexorable-effect')) {
     c.effortUsed += 1;
+    c.effortDay += 1;
     c.usedThisScene.add('inexorable-effect');
     ok = save(b, target, type, modifier).success;
     say(b, `${actor.name} forces ${target.name} to resist again.`);
@@ -68,8 +69,10 @@ function enemySave(
 
 function pay(b: Battle, actor: Combatant, m: CombatMagic, strain: boolean): void {
   const c = actor.caster as CasterState;
-  if (m.source === 'art') c.effortUsed += 1;
-  else if (strain && actor.strain) {
+  if (m.source === 'art') {
+    c.effortUsed += 1;
+    if (m.effort === 'day') c.effortDay += 1;
+  } else if (strain && actor.strain) {
     const outcome = addStrain(actor.strain, strainCastCost(spellLevel(b, m.id)), 'strain-cast');
     actor.strain = outcome.state;
   } else c.spellsLeft -= 1;
@@ -99,6 +102,7 @@ export function castMagic(
       const average = (dice.count * (dice.sides + 1)) / 2 + dice.modifier;
       if (total < average && hasEffort(c, 'empowered-sorcery')) {
         c.effortUsed += 1;
+        c.effortDay += 1;
         total = Math.max(total, roll(b.rng, dice).total);
       }
       if (target.kind === 'monster' && target.hitDice <= e.slayHitDice) {

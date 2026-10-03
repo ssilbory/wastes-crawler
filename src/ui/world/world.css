@@ -1,0 +1,169 @@
+.world {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.world-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+}
+
+.world-bar .date {
+  font-weight: 600;
+  margin-right: auto;
+}
+
+.world-main {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+
+@media (max-width: 860px) {
+  .world-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.world-side {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.map-wrap {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px;
+  overflow: auto;
+}
+
+.hex-map {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.hex polygon {
+  stroke: #00000033;
+  stroke-width: 0.6;
+  cursor: pointer;
+}
+
+.hex.fog polygon {
+  fill: var(--line);
+  cursor: default;
+}
+
+.t-plains polygon {
+  fill: #c9d68f;
+}
+.t-forest polygon {
+  fill: #7fae6a;
+}
+.t-deep-forest polygon {
+  fill: #4f7d4a;
+}
+.t-hills polygon {
+  fill: #b7a77a;
+}
+.t-mountains polygon {
+  fill: #8d8478;
+}
+.t-swamp polygon {
+  fill: #7a8f6e;
+}
+.t-badlands polygon {
+  fill: #c4986a;
+}
+.t-lake polygon,
+.t-river polygon {
+  fill: #6f9cc4;
+}
+.t-ford polygon {
+  fill: #9fc0d8;
+}
+
+.hex:not(.visited):not(.fog) polygon {
+  filter: saturate(0.5) brightness(0.92);
+}
+
+.hex.route polygon {
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.hex.destination polygon {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+.hex .road {
+  fill: #6b5a3e;
+}
+
+.hex .site {
+  fill: #fffdf8;
+  stroke: #1f1b16;
+  stroke-width: 1;
+}
+
+.hex .site-name {
+  font-size: 9px;
+  text-anchor: middle;
+  fill: #1f1b16;
+  paint-order: stroke;
+  stroke: #fffdf8;
+  stroke-width: 2px;
+  pointer-events: none;
+}
+
+.hex .party {
+  fill: var(--error);
+  stroke: #fff;
+  stroke-width: 1.5;
+  pointer-events: none;
+}
+
+.quarter-panel .tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.quarter-panel .tabs [aria-checked='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--panel);
+}
+
+.roles {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.party-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.party-panel li {
+  display: grid;
+  gap: 2px;
+}
+
+.party-panel li.gone {
+  opacity: 0.5;
+}
+
+.encounter p {
+  font-weight: 600;
+}
