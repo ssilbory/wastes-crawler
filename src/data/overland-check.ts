@@ -1,7 +1,10 @@
 import { allMonsters } from './monsters.ts';
 import { DANGER_GLYPHS, type ContentData, type SrdData } from './schemas/index.ts';
 
-/** Regions use known glyphs in a clean grid, sites sit on passable land, and tables exist. */
+/**
+ * Regions use known glyphs in a clean grid, sites sit on passable land, tables exist, and roads
+ * between regions start and end on passable land.
+ */
 export function overlandReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const errors: string[] = [];
   const byGlyph = new Map(content.terrains.map((t) => [t.glyph, t]));
@@ -30,6 +33,22 @@ export function overlandReferenceErrors(srd: SrdData, content: ContentData): str
         errors.push(`${where}/${s.id}: on impassable land`);
     }
     if (!r.sites.some((s) => s.id === r.start)) errors.push(`${where}: unknown start ${r.start}`);
+    for (const [terrain, table] of Object.entries(r.encounters)) {
+      if (!content.terrains.some((t) => t.id === terrain))
+        errors.push(`${where}: encounters for unknown terrain ${terrain}`);
+      if (!tables.has(table)) errors.push(`${where}: unknown table ${table}`);
+    }
+    for (const e of r.exits) {
+      const passable = (regionId: string, col: number, row: number) => {
+        const glyph = content.regions.find((x) => x.id === regionId)?.terrain[row]?.[col];
+        const t = glyph === undefined ? undefined : byGlyph.get(glyph);
+        return t !== undefined && t.movement !== 'impassable';
+      };
+      if (!passable(r.id, e.col, e.row))
+        errors.push(`${where}: the road at ${e.col},${e.row} is off the land`);
+      if (!passable(e.to.region, e.to.col, e.to.row))
+        errors.push(`${where}: the road at ${e.col},${e.row} leads nowhere`);
+    }
     const ids = r.sites.map((s) => s.id);
     if (new Set(ids).size !== ids.length) errors.push(`${where}: duplicate site id`);
   }

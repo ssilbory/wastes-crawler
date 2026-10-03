@@ -25,7 +25,10 @@ export function currentStep(w: World, data: GameData, id: string): Objective | u
 }
 
 const here = (w: World, o: Objective) =>
-  (o.kind === 'slay' || o.kind === 'scout') && !w.dungeon && hexKey(o.hex) === hexKey(w.position);
+  (o.kind === 'slay' || o.kind === 'scout') &&
+  !w.dungeon &&
+  o.region === w.region &&
+  hexKey(o.hex) === hexKey(w.position);
 
 type Delve = Extract<Objective, { dungeon: string }>;
 

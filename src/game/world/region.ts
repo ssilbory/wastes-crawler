@@ -1,6 +1,12 @@
 // An overland region from data/content/regions.json: terrain and danger per hex, sites, and
 // routes (docs/rules-adaptation.md, Overland map and Terrain).
-import { DANGER_GLYPHS, type Danger, type Site, type Terrain } from '../../data/schemas/index.ts';
+import {
+  DANGER_GLYPHS,
+  type Danger,
+  type RegionExit,
+  type Site,
+  type Terrain,
+} from '../../data/schemas/index.ts';
 import { hexKey, neighbors, type Hex } from '../../rules/hex.ts';
 import { moveCost } from '../../rules/overland.ts';
 import type { GameData } from '../character/context.ts';
@@ -16,6 +22,10 @@ export interface RegionMap {
   terrainAt: (h: Hex) => Terrain;
   dangerAt: (h: Hex) => Danger;
   siteAt: (h: Hex) => Site | undefined;
+  exits: RegionExit[];
+  exitAt: (h: Hex) => RegionExit | undefined;
+  /** The wandering encounter table for a hex: the region's for its terrain, or the terrain's. */
+  tableAt: (h: Hex) => string;
   /** Hike points to enter the hex, or null if it can't be entered. */
   costOf: (h: Hex) => number | null;
 }
@@ -42,6 +52,9 @@ export function regionMap(data: GameData, id: string): RegionMap {
     terrainAt,
     dangerAt,
     siteAt: (h) => r.sites.find((s) => s.col === h.col && s.row === h.row),
+    exits: r.exits,
+    exitAt: (h) => r.exits.find((e) => e.col === h.col && e.row === h.row),
+    tableAt: (h) => r.encounters[terrainAt(h).id] ?? terrainAt(h).encounters,
     costOf: (h) => (inBounds(h) ? moveCost(terrainAt(h).movement, dangerAt(h) === 'road') : null),
   };
 }

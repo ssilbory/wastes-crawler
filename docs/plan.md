@@ -257,7 +257,7 @@ Each one closes as a short ADR in `docs/decisions/` before the phase that needs 
 | ~~Coach pricing and ambush odds~~ | Fixed per route in content, fare through the town surcharge, ambush die per travel day: see docs/rules-adaptation.md, Coaches and arenas in Phase 6d | Phase 6   |
 | ~~Setting details~~               | Deferred to Phase 12: see `docs/decisions/0002-placeholder-setting.md`                                                                               | Phase 6   |
 | ~~Level authoring~~               | Hand-written ASCII now, in-game editor in Phase 11: see `docs/decisions/0003-level-authoring.md`                                                     | Phase 7   |
-| Procedural levels                 | None, optional side dungeons, or main campaign                                                                                                       | Phase 12  |
+| ~~Procedural levels~~             | Optional side dungeons: see `docs/decisions/0004-procedural-levels.md`                                                                               | Phase 12  |
 
 ## Risks
 

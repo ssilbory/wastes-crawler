@@ -49,3 +49,16 @@ export type SrdMonster = z.infer<typeof MonsterSchema>;
 
 /** What the engine needs of any monster, SRD or authored. */
 export type Monster = Omit<z.infer<typeof MonsterSchema>, 'source'>;
+
+/**
+ * A setting monster on an existing stat line (Sam's call: reskin, so combat balance and the sims
+ * hold): a new name and description over an SRD or authored monster's statistics and combat entry.
+ */
+export const SettingMonsterSchema = z.strictObject({
+  id: IdSchema,
+  name: z.string().min(1),
+  /** The monster whose statistics, combat entry, loot, and component drops it shares. */
+  base: IdSchema,
+  description: z.string().min(1),
+});
+export type SettingMonster = z.infer<typeof SettingMonsterSchema>;

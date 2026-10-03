@@ -15,6 +15,8 @@ async function start(page: Page) {
     .selectOption({ label: 'Fizzwick' });
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('crafting-e2e');
   await page.getByRole('button', { name: 'Start a new world' }).click();
+  // Both PCs must be in the party before the save is edited.
+  await expect(page.getByRole('region', { name: 'Party' })).toContainText('Fizzwick');
   // Enough crowns for a mastercrafted spear and the rent.
   await page.evaluate((key) => {
     const save = JSON.parse(localStorage.getItem(key) as string);

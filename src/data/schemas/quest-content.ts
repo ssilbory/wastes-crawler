@@ -10,6 +10,8 @@ export const ObjectiveSchema = z.discriminatedUnion('kind', [
   /** A fixed encounter waiting at a hex, done when the party beats it. */
   z.strictObject({
     kind: z.literal('slay'),
+    /** The region the hex is in (Phase 12: more than one region). */
+    region: IdSchema,
     hex: HexSchema,
     enemies: z.array(z.array(IdSchema).min(1).max(8)).min(1).max(3),
     text: z.string().min(1),
@@ -30,7 +32,12 @@ export const ObjectiveSchema = z.discriminatedUnion('kind', [
     text: z.string().min(1),
   }),
   /** Reach a hex. */
-  z.strictObject({ kind: z.literal('scout'), hex: HexSchema, text: z.string().min(1) }),
+  z.strictObject({
+    kind: z.literal('scout'),
+    region: IdSchema,
+    hex: HexSchema,
+    text: z.string().min(1),
+  }),
   /** Delve steps (Phase 8c): reach a dungeon level. */
   z.strictObject({
     kind: z.literal('reach'),

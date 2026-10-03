@@ -15,6 +15,35 @@ describe('overland content', () => {
     expect(content.overlandRules.months.filter((m) => m.season === 'winter')).toHaveLength(3);
   });
 
+  it('checks roads between regions and regional encounter tables', () => {
+    const [region] = content.regions;
+    if (!region) throw new Error('missing content');
+    const broken = {
+      ...content,
+      regions: [
+        {
+          ...region,
+          exits: [
+            {
+              name: 'into the lake',
+              col: 5,
+              row: 4,
+              to: { region: 'borderlands', col: 3, row: 8 },
+            },
+            { name: 'to nowhere', col: 3, row: 8, to: { region: 'atlantis', col: 0, row: 0 } },
+          ],
+          encounters: { lava: 'plains', plains: 'nothing' },
+        },
+      ],
+    };
+    expect(overlandReferenceErrors(srd, broken)).toEqual([
+      'regions/borderlands: encounters for unknown terrain lava',
+      'regions/borderlands: unknown table nothing',
+      'regions/borderlands: the road at 5,4 is off the land',
+      'regions/borderlands: the road at 3,8 leads nowhere',
+    ]);
+  });
+
   it('reports bad glyphs, grids, sites, tables, and monsters', () => {
     const [region] = content.regions;
     const [table] = content.encounterTables;
@@ -33,6 +62,7 @@ describe('overland content', () => {
             { id: 'a', name: 'B', kind: 'town' as const, size: 'town' as const, col: 0, row: 1 },
           ],
           start: 'nowhere',
+          exits: [],
         },
         {
           ...region,
@@ -43,6 +73,7 @@ describe('overland content', () => {
             { id: 'c', name: 'C', kind: 'town' as const, size: 'town' as const, col: 0, row: 0 },
           ],
           start: 'c',
+          exits: [],
         },
       ],
       encounterTables: [

@@ -74,7 +74,7 @@ export function boardCoach(w: World, data: GameData, routeId: string): TownResul
 /** An ambush on the road: the terrain's encounter table, out for a fight whatever the reaction. */
 function ambush(w: World, data: GameData): void {
   const map = regionMap(data, w.region);
-  const { rows, nature, captive } = rollEnemies(w, data, map.terrainAt(w.position).encounters);
+  const { rows, nature, captive } = rollEnemies(w, data, map.tableAt(w.position));
   meetGroup(
     w,
     data,

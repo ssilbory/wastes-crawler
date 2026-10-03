@@ -26,7 +26,7 @@ import {
 import { CaptiveSchema, NpcRulesSchema } from './npc-content.ts';
 import { ArenaCardSchema, CoachRouteSchema, CoachRulesSchema } from './travel-content.ts';
 import { MissionGiverSchema, QuestSchema } from './quest-content.ts';
-import { AuthoredMonsterSchema } from './monsters.ts';
+import { AuthoredMonsterSchema, SettingMonsterSchema } from './monsters.ts';
 import { DungeonSchema } from './dungeon-content.ts';
 
 const contentBase = {
@@ -172,6 +172,8 @@ export const ContentSchemas = {
   /** Monsters authored for the setting, alongside the SRD's. */
   monsters: z.array(AuthoredMonsterSchema),
   dungeons: z.array(DungeonSchema),
+  /** Setting monsters on existing stat lines; their combat entries are added on loading. */
+  settingMonsters: z.array(SettingMonsterSchema),
   craftingRules: CraftingRulesSchema,
   components: z.array(ComponentSchema).min(1),
   mods: z.array(ModSchema).min(1),

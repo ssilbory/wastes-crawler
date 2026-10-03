@@ -1,0 +1,104 @@
+[
+  {
+    "id": "human-raider",
+    "name": "Human Raider",
+    "base": "thug-or-militia",
+    "description": "A hard-bitten raider from the coast or the strongholds, paid in overseas silver to keep the Dark Lands down. Most think they are doing honest work."
+  },
+  {
+    "id": "alliance-ranger",
+    "name": "Alliance Ranger",
+    "base": "veteran-soldier",
+    "description": "A ranger who stayed when the alliance went home. They track goblins the way other people track deer."
+  },
+  {
+    "id": "paladin",
+    "name": "Paladin",
+    "base": "skilled-veteran",
+    "description": "A fanatic in polished mail who believes every orc and goblin is a sleeping weapon. To an elf, they offer 'rescue' and a trial."
+  },
+  {
+    "id": "paladin-champion",
+    "name": "Paladin Champion",
+    "base": "knight-or-minor-hero",
+    "description": "A stronghold's champion, sworn to finish the war the alliance walked away from."
+  },
+  {
+    "id": "bound-goblin-sentry",
+    "name": "Bound Goblin Sentry",
+    "base": "thug-or-militia",
+    "description": "An old goblin still keeping a post the Dark Lord gave it twenty years ago. It cannot leave, and it will not listen."
+  },
+  {
+    "id": "bound-orc-guard",
+    "name": "Bound Orc Guard",
+    "base": "veteran-soldier",
+    "description": "An orc of an older breed, still guarding what it was ordered to guard. It asks for a countersign nobody remembers."
+  },
+  {
+    "id": "bound-orc-captain",
+    "name": "Bound Orc Captain",
+    "base": "elites-or-special-guards",
+    "description": "A garrison captain holding until relieved, as ordered. The relief is never coming."
+  },
+  {
+    "id": "beastman-trooper",
+    "name": "Beastman Trooper",
+    "base": "barbarian-fighter",
+    "description": "A herd-born beastman soldier, a year old and already a veteran, loyal to whoever owns its unit."
+  },
+  {
+    "id": "predator-beastman",
+    "name": "Predator Beastman",
+    "base": "skilled-veteran",
+    "description": "A beastman made from predator stock and set loose behind enemy lines long ago. Some still raid; some have gone feral."
+  },
+  {
+    "id": "deserter-beastman",
+    "name": "Deserter Beastman",
+    "base": "barbarian-fighter",
+    "description": "A beastman who walked away from its army. Every free beastman is a deserter from somewhere."
+  },
+  {
+    "id": "warbreed-hound",
+    "name": "Warbreed Hound",
+    "base": "small-pack-predator",
+    "description": "A flesh-crafted hound bred to run down slaves. The packs went feral when their masters died."
+  },
+  {
+    "id": "cull-horror",
+    "name": "Cull Horror",
+    "base": "large-solitary-predator",
+    "description": "A failed breeding experiment that should have been culled and was not. It remembers the vats."
+  },
+  {
+    "id": "vat-spawn",
+    "name": "Vat Spawn",
+    "base": "slime-or-ooze",
+    "description": "Something that crawled out of a breeding lab's tanks when the power failed."
+  },
+  {
+    "id": "flesh-crafter",
+    "name": "Flesh Crafter",
+    "base": "petty-mage",
+    "description": "A crafter of living things, worth more to a warlord than a hundred soldiers, and hunted by every orc and goblin who knows what they are."
+  },
+  {
+    "id": "slaver",
+    "name": "Slaver",
+    "base": "thug-or-militia",
+    "description": "A dealer in beastman stock and stolen labor, armed and paranoid."
+  },
+  {
+    "id": "war-engine",
+    "name": "War-Engine",
+    "base": "automaton-military",
+    "description": "One of the Dark Lord's war machines, still running its last orders. Gnomes can sometimes talk it down."
+  },
+  {
+    "id": "warlord",
+    "name": "Warlord",
+    "base": "barbarian-warlord",
+    "description": "A would-be heir to the Dark Lord, holding crafters and herds, building a beastman army one birth at a time."
+  }
+]

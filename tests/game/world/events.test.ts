@@ -18,13 +18,13 @@ describe('wandering encounters (SRD 2.12.6, 5.2.1)', () => {
   it('rolls a weighted group with fixed or rolled numbers, eight to a row at most', () => {
     const w = world([1, 3]);
     expect(rollEnemies(w, data, 'plains')).toEqual({
-      rows: [['thug-or-militia', 'thug-or-militia', 'thug-or-militia', 'thug-or-militia']],
+      rows: [['human-raider', 'human-raider', 'human-raider', 'human-raider']],
       nature: 'hostile',
       captive: null,
     });
     w.rng = scriptedRng([4, 3]);
     expect(rollEnemies(w, data, 'plains')).toEqual({
-      rows: [['veteran-soldier', 'veteran-soldier', 'veteran-soldier'], ['skilled-veteran']],
+      rows: [['alliance-ranger', 'alliance-ranger', 'alliance-ranger'], ['paladin']],
       nature: 'wary',
       captive: null,
     });
@@ -63,7 +63,7 @@ describe('wandering encounters (SRD 2.12.6, 5.2.1)', () => {
     w.rng = scriptedRng([1, 1, 3, 1, 1]);
     expect(maybeEncounter(out(w), data, undefined, false)).toBe(true);
     expect(w.encounter).toEqual({
-      enemies: [Array(4).fill('thug-or-militia')],
+      enemies: [Array(4).fill('human-raider')],
       nature: 'hostile',
       // 2 on the dice, +1 for Lirael's Well-Met.
       reaction: 'unfriendly',
@@ -73,7 +73,7 @@ describe('wandering encounters (SRD 2.12.6, 5.2.1)', () => {
       quest: null,
       hostile: true,
       spotted: false,
-      text: 'The party meets 4 Thug or Militia. They look for a fight.',
+      text: 'The party meets 4 Human Raider. They look for a fight.',
     });
     expect(leaveEncounter(w)).toBe(false);
     w.encounter = null;

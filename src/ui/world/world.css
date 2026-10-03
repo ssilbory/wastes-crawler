@@ -179,6 +179,12 @@
   stroke-dasharray: 4 2;
 }
 
+.hex .exit {
+  fill: #c9a227;
+  stroke: #2b2420;
+  stroke-width: 1;
+}
+
 .hex .dungeon {
   fill: #2b2420;
   stroke: #fffdf8;

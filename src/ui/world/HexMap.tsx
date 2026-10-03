@@ -59,6 +59,14 @@ export function HexMap(props: {
               <title>{c.dungeon}</title>
             </polygon>
           )}
+          {c.exit && (
+            <polygon
+              class="exit"
+              points={`${c.cx + SIZE * 0.5},${c.cy} ${c.cx - SIZE * 0.2},${c.cy - SIZE * 0.4} ${c.cx - SIZE * 0.2},${c.cy + SIZE * 0.4}`}
+            >
+              <title>{c.exit}</title>
+            </polygon>
+          )}
           {c.party && <circle class="party" cx={c.cx} cy={c.cy} r={SIZE * 0.45} />}
         </g>
       ))}

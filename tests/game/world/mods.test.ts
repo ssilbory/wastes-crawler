@@ -462,8 +462,9 @@ describe('maintenance (SRD 2.8.3)', () => {
 
 describe('components', () => {
   it('drop from their monsters by chance', () => {
-    const w = world([30, 31]);
-    componentDrops(w, data, ['automaton-humanlike', 'automaton-humanlike', 'thug-or-militia']);
+    const w = world([30, 51]);
+    // The war-engine is drawn on the military automaton, and drops what it drops.
+    componentDrops(w, data, ['automaton-humanlike', 'war-engine', 'thug-or-militia']);
     expect(w.components).toEqual({ 'cold-iron': 1 });
     expect(w.log.at(-1)).toContain('The party takes cold iron.');
     expect(componentName(data, 'cold-iron')).toBe('Cold iron');

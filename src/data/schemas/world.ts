@@ -5,7 +5,7 @@ import { CharacterSchema } from './character.ts';
 import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 13;
+export const WORLD_SCHEMA_VERSION = 14;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -200,6 +200,8 @@ export const WorldSaveSchema = z.strictObject({
   position: HexSchema,
   destination: HexSchema.nullable(),
   visited: z.array(z.string()),
+  /** Explored hexes of the regions the party isn't in, by region (Phase 12). */
+  elsewhere: z.record(IdSchema, z.array(z.string())),
   rations: z.union([0, 4, 6, 8, 10, 12].map((n) => z.literal(n))),
   /** Quarters spent hiking today. */
   hikes: z.int().min(0),

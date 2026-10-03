@@ -71,7 +71,7 @@ export function maybeEncounter(
   const map = regionMap(data, w.region);
   const die = data.content.overlandRules.encounterDice[map.dangerAt(w.position)];
   if (map.siteAt(w.position) || !encounterCheck(w.rng, die)) return false;
-  const rolled = rollEnemies(w, data, map.terrainAt(w.position).encounters);
+  const rolled = rollEnemies(w, data, map.tableAt(w.position));
   startEncounter(w, data, rolled, watcher, dark ? -1 : 0, hexKey(w.position));
   return true;
 }

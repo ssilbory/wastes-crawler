@@ -10,12 +10,14 @@ const content = loadContent();
 describe('quest content', () => {
   it('loads clean givers and quests', () => {
     expect(questReferenceErrors(srd, content)).toEqual([]);
-    expect(content.quests.map((q) => q.reward.xp)).toEqual([3, 2, 2, 3, 3, 0, 0, 0, 0]);
+    expect(content.quests.map((q) => q.reward.xp)).toEqual([3, 2, 2, 3, 3, 0, 0, 0, 0, 0, 0]);
     expect(content.quests.filter((q) => q.reward.raise).map((q) => q.giver)).toEqual([
       'necromancer-ysolde',
       'necromancer-ysolde',
       'brother-aldo',
       'brother-aldo',
+      'necromancer-vashti',
+      'mother-skrell',
     ]);
   });
 
@@ -54,8 +56,14 @@ describe('quest content', () => {
       summary: 'x',
       prerequisites: { quests: ['ghost', 'loop-b'], minLevel: 1 },
       objectives: [
-        { kind: 'scout', hex: { col: 99, row: 99 }, text: 'x' },
-        { kind: 'slay', hex: { col: 6, row: 5 }, enemies: [['dragon']], text: 'x' },
+        { kind: 'scout', region: 'borderlands', hex: { col: 99, row: 99 }, text: 'x' },
+        {
+          kind: 'slay',
+          region: 'atlantis',
+          hex: { col: 6, row: 5 },
+          enemies: [['dragon']],
+          text: 'x',
+        },
         { kind: 'deliver', item: 'x', to: 'atlantis', text: 'x' },
         { kind: 'escort', name: 'x', monster: 'dragon', to: 'westhold', text: 'x' },
       ],

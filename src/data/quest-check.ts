@@ -13,9 +13,9 @@ export function questReferenceErrors(srd: SrdData, content: ContentData): string
   const monsters = new Set(allMonsters(srd, content).map((m) => m.id));
   const givers = new Set(content.missionGivers.map((g) => g.id));
   const quests = new Map(content.quests.map((q) => [q.id, q]));
-  const region = content.regions[0];
   const glyphs = new Map(content.terrains.map((t) => [t.glyph, t]));
-  const passable = (h: { col: number; row: number }) => {
+  const passable = (regionId: string, h: { col: number; row: number }) => {
+    const region = content.regions.find((r) => r.id === regionId);
     const glyph = region?.terrain[h.row]?.[h.col];
     const t = glyph === undefined ? undefined : glyphs.get(glyph);
     return t !== undefined && t.movement !== 'impassable';
@@ -40,7 +40,7 @@ export function questReferenceErrors(srd: SrdData, content: ContentData): string
     for (const p of q.prerequisites.quests)
       if (!quests.has(p)) errors.push(`${where}: unknown prerequisite ${p}`);
     q.objectives.forEach((o, i) => {
-      if ((o.kind === 'slay' || o.kind === 'scout') && !passable(o.hex))
+      if ((o.kind === 'slay' || o.kind === 'scout') && !passable(o.region, o.hex))
         errors.push(`${where}: step ${i + 1} is not on passable land`);
       if ((o.kind === 'deliver' || o.kind === 'escort') && !towns.has(o.to))
         errors.push(`${where}: step ${i + 1} goes to unknown town ${o.to}`);

@@ -10,6 +10,11 @@ export function travelReferenceErrors(srd: SrdData, content: ContentData): strin
     for (const t of r.towns)
       if (!towns.has(t)) errors.push(`coachRoutes/${r.id}: unknown town ${t}`);
     if (r.towns[0] === r.towns[1]) errors.push(`coachRoutes/${r.id}: goes nowhere`);
+    const regions = r.towns.map(
+      (t) => content.regions.find((g) => g.sites.some((s) => s.id === t))?.id,
+    );
+    if (regions[0] && regions[1] && regions[0] !== regions[1])
+      errors.push(`coachRoutes/${r.id}: joins towns in two regions`);
   }
   for (const card of content.arenaCards) {
     if (!towns.has(card.town)) errors.push(`arenaCards: unknown town ${card.town}`);

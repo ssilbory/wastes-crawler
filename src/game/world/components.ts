@@ -1,6 +1,7 @@
 // Crafting components (docs/rules-adaptation.md, Crafting and modifying gear): the SRD's arcane
 // salvage (2.8.2) as named, typed parts that drop from some monsters by chance. The party carries
 // them in one weightless stash, like loot dice.
+import { baseMonster } from '../../data/monsters.ts';
 import type { ComponentType } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
 import { note } from './members.ts';
@@ -9,12 +10,12 @@ import type { World } from './types.ts';
 export const componentName = (data: GameData, id: string) =>
   data.content.components.find((c) => c.id === id)?.name ?? id;
 
-/** Each beaten enemy that is a component's source drops one at its chance. */
+/** Each beaten enemy that is a component's source, or drawn on one, drops one at its chance. */
 export function componentDrops(w: World, data: GameData, enemies: readonly string[]): void {
   for (const monster of enemies)
     for (const c of data.content.components)
       for (const s of c.sources)
-        if (s.monster === monster && w.rng.int(1, 100) <= s.chance) {
+        if (s.monster === baseMonster(data.content, monster) && w.rng.int(1, 100) <= s.chance) {
           w.components[c.id] = (w.components[c.id] ?? 0) + 1;
           note(w, `The party takes ${c.name.toLowerCase()}.`);
         }

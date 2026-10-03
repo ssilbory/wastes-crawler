@@ -14,5 +14,21 @@
     "tradePool": 300,
     "weapons": ["spear-light", "mace", "axe-hand", "bow-small", "dagger"],
     "text": "She works cold iron the old way, and buys whatever strange parts come down the road."
+  },
+  {
+    "id": "smith-cinderhold",
+    "name": "Grashna Ironhand",
+    "town": "cinderhold",
+    "tradePool": 300,
+    "weapons": ["axe-war", "spear-heavy", "sword-long", "hammer-war", "halberd"],
+    "text": "An orc smith of an old breed who forged for a lieutenant's legion. She is free now, and she charges like it."
+  },
+  {
+    "id": "artificer-gutterwick",
+    "name": "Nibbet Coilwright",
+    "town": "gutterwick",
+    "tradePool": 300,
+    "weapons": ["crossbow", "bow-small", "dagger", "stiletto", "throwing-blade"],
+    "text": "A gnome artificer who can coax the Dark Lord's machines back to life. Nobody asks what she made for him."
   }
 ]

@@ -5,16 +5,17 @@ import { currentStep, questOf } from '../game/world/quests.ts';
 import type { World } from '../game/world/types.ts';
 import type { Hex } from '../rules/hex.ts';
 
-/** Hexes where an active quest's current step waits. */
+/** Hexes on the party's map where an active quest's current step waits. */
 export function questTargets(w: World, data: GameData): Hex[] {
   return Object.entries(w.quests).flatMap(([id, st]) => {
     if (st.status !== 'active') return [];
     const o = currentStep(w, data, id);
     if (!o) return [];
-    if (o.kind === 'slay' || o.kind === 'scout') return [o.hex];
+    if (o.kind === 'slay' || o.kind === 'scout') return o.region === w.region ? [o.hex] : [];
     if (!('dungeon' in o)) return [];
     // A delve step marks its dungeon's entrance; content checks guarantee the dungeon.
-    return [(data.content.dungeons.find((x) => x.id === o.dungeon) as Dungeon).entrance];
+    const d = data.content.dungeons.find((x) => x.id === o.dungeon) as Dungeon;
+    return d.region === w.region ? [d.entrance] : [];
   });
 }
 

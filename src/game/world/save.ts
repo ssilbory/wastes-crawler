@@ -92,6 +92,8 @@ export const WORLD_MIGRATIONS: Migrations = {
   }),
   // Version 13 adds craftsmen (Phase 10c): none visited, nothing commissioned.
   12: (raw) => ({ ...raw, schemaVersion: 13, craftsmen: {}, commissions: [] }),
+  // Version 14 adds regions (Phase 12): every hex explored so far is in the current one.
+  13: (raw) => ({ ...raw, schemaVersion: 14, elsewhere: {} }),
 };
 
 export function serializeWorld(w: World): string {
@@ -104,6 +106,7 @@ export function serializeWorld(w: World): string {
     position: w.position,
     destination: w.destination,
     visited: [...w.visited],
+    elsewhere: w.elsewhere,
     rations: w.rations,
     hikes: w.hikes,
     camp: w.camp,
@@ -215,6 +218,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       log: s.log,
       rng: rngFromState(s.rng),
       visited: new Set(s.visited),
+      elsewhere: s.elsewhere,
       rations: s.rations as ResourceDie,
       members: party,
       benched,

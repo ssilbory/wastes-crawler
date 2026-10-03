@@ -65,7 +65,7 @@ describe('the quest board (docs/rules-adaptation.md, Quests)', () => {
   it('offers a quest once its prerequisites are met', () => {
     const w = world();
     expect(cannotAccept(w, data, questOf(data, 'bandit-camp'))).toBeNull();
-    expect(cannotAccept(w, data, questOf(data, 'surveyor'))).toBe('First: The Bandit Camp.');
+    expect(cannotAccept(w, data, questOf(data, 'surveyor'))).toBe('First: The Raider Camp.');
     expect(cannotAccept(w, data, questOf(data, 'watchtower'))).toBe('Needs a party of level 2.');
     w.quests['bandit-camp'] = { status: 'done', step: 1, acceptedDay: 0 };
     expect(cannotAccept(w, data, questOf(data, 'surveyor'))).toBeNull();
@@ -80,14 +80,14 @@ describe('the quest board (docs/rules-adaptation.md, Quests)', () => {
     });
     expect(acceptQuest(w, data, 'surveyor')).toEqual({
       ok: false,
-      reason: 'First: The Bandit Camp.',
+      reason: 'First: The Raider Camp.',
     });
     w.encounter = encounter([['thug-or-militia']]);
     expect(acceptQuest(w, data, 'bandit-camp')).toMatchObject({ ok: false });
     w.encounter = null;
     expect(acceptQuest(w, data, 'bandit-camp')).toEqual({ ok: true });
     expect(w.quests['bandit-camp']).toEqual({ status: 'active', step: 0, acceptedDay: 0 });
-    expect(w.log.at(-1)).toBe('Day 1, morning: The party takes on The Bandit Camp.');
+    expect(w.log.at(-1)).toBe('Day 1, morning: The party takes on The Raider Camp.');
     expect(currentStep(w, data, 'bandit-camp')?.kind).toBe('slay');
     expect(currentStep(w, data, 'letters')).toBeUndefined();
   });
@@ -105,17 +105,17 @@ describe('slay and scout steps', () => {
     expect(w.encounter).toMatchObject({
       quest: 'bandit-camp',
       hostile: true,
-      enemies: [['thug-or-militia', 'thug-or-militia', 'thug-or-militia'], ['veteran-soldier']],
+      enemies: [['human-raider', 'human-raider', 'human-raider'], ['alliance-ranger']],
     });
     expect(w.encounter?.text).toContain(
-      'Break the bandit camp in the forest at 6,12. The enemy is here.',
+      'Break the raider camp in the forest at 6,12. The enemy is here.',
     );
     emit(w, data, { kind: 'fight-won', quest: null });
     expect(w.quests['bandit-camp']?.step).toBe(0);
     won(w);
     expect(w.quests['bandit-camp']?.status).toBe('ready');
     expect(w.log.join('\n')).toContain(
-      'The Bandit Camp: done. Return to Reeve Halda for the reward.',
+      'The Raider Camp: done. Return to Reeve Halda for the reward.',
     );
   });
 
@@ -145,7 +145,7 @@ describe('slay and scout steps', () => {
     expect(w.quests.watchtower?.step).toBe(1);
     expect(w.encounter?.quest).toBe('watchtower');
     expect(w.log.join('\n')).toContain(
-      'The Old Watchtower: Drive out whatever holds the watchtower.',
+      'The Old Watchtower: Drive the beastmen out of the watchtower.',
     );
     emit(w, data, { kind: 'hex-entered' });
     expect(w.quests.watchtower?.step).toBe(1);
@@ -197,14 +197,14 @@ describe('deliver and escort steps', () => {
     addNpc(w, data, 'hireling', 'guard', 'thug-or-militia', 'B', true);
     expect(acceptQuest(w, data, 'surveyor')).toEqual({
       ok: false,
-      reason: 'Make room in the party for Surveyor Tamsin.',
+      reason: 'Make room in the party for Engineer Tamsin.',
     });
     w.npcs = [];
     expect(acceptQuest(w, data, 'surveyor')).toEqual({ ok: true });
     expect(w.npcs[0]).toMatchObject({
       kind: 'escort',
       type: 'surveyor',
-      name: 'Surveyor Tamsin',
+      name: 'Engineer Tamsin',
       row: 1,
     });
     at(w, 20, 8);
@@ -233,7 +233,7 @@ describe('deliver and escort steps', () => {
       null,
     );
     expect(killed.quests.surveyor?.status).toBe('failed');
-    expect(killed.log.join('\n')).toContain('The Surveyor has failed: Surveyor Tamsin is lost.');
+    expect(killed.log.join('\n')).toContain('The Engineer has failed: Engineer Tamsin is lost.');
     const taken = escorted();
     taken.encounter = encounter([['thug-or-militia']]);
     fight = encounterBattle(taken, data);
@@ -245,11 +245,11 @@ describe('deliver and escort steps', () => {
       null,
     );
     expect(taken.quests.surveyor?.status).toBe('failed');
-    expect(taken.log.join('\n')).toContain('Surveyor Tamsin is taken captive.');
+    expect(taken.log.join('\n')).toContain('Engineer Tamsin is taken captive.');
     const left = escorted();
     expect(dismiss(left, data, 'npc-0')).toEqual({ ok: true });
     expect(left.quests.surveyor?.status).toBe('failed');
-    expect(left.log.join('\n')).toContain('The party leaves Surveyor Tamsin behind.');
+    expect(left.log.join('\n')).toContain('The party leaves Engineer Tamsin behind.');
   });
 });
 
@@ -264,7 +264,7 @@ describe('deadlines, turning in, and abandoning', () => {
     w.day = 10;
     endOfDay(w, data);
     expect(w.quests['bandit-camp']?.status).toBe('failed');
-    expect(w.log.join('\n')).toContain('The Bandit Camp has failed: time ran out.');
+    expect(w.log.join('\n')).toContain('The Raider Camp has failed: time ran out.');
     expect(acceptQuest(w, data, 'bandit-camp')).toEqual({ ok: false, reason: 'Already taken.' });
     const done = world();
     done.quests['bandit-camp'] = { status: 'ready', step: 1, acceptedDay: 0 };
@@ -278,7 +278,7 @@ describe('deadlines, turning in, and abandoning', () => {
     w.purse = 0;
     expect(turnInQuest(w, data, 'bandit-camp')).toEqual({
       ok: false,
-      reason: "The Bandit Camp isn't finished.",
+      reason: "The Raider Camp isn't finished.",
     });
     w.quests.watchtower = { status: 'ready', step: 2, acceptedDay: 0 };
     expect(turnInQuest(w, data, 'watchtower')).toEqual({

@@ -1,9 +1,9 @@
 [
   {
     "id": "bandit-camp",
-    "name": "The Bandit Camp",
+    "name": "The Raider Camp",
     "giver": "reeve-halda",
-    "summary": "Bandits have made camp in the forest south of the road. Break them.",
+    "summary": "Human raiders from the coast have made camp in the forest south of the road. Break them before they hit the farms.",
     "prerequisites": {
       "quests": [],
       "minLevel": 1
@@ -12,12 +12,13 @@
     "objectives": [
       {
         "kind": "slay",
+        "region": "borderlands",
         "hex": {
           "col": 6,
           "row": 12
         },
-        "enemies": [["thug-or-militia", "thug-or-militia", "thug-or-militia"], ["veteran-soldier"]],
-        "text": "Break the bandit camp in the forest at 6,12."
+        "enemies": [["human-raider", "human-raider", "human-raider"], ["alliance-ranger"]],
+        "text": "Break the raider camp in the forest at 6,12."
       }
     ],
     "reward": {
@@ -28,9 +29,9 @@
   },
   {
     "id": "surveyor",
-    "name": "The Surveyor",
+    "name": "The Engineer",
     "giver": "reeve-halda",
-    "summary": "A royal surveyor needs safe conduct east along the road.",
+    "summary": "A gnome engineer who can restart the old pumps needs safe conduct east along the road.",
     "prerequisites": {
       "quests": ["bandit-camp"],
       "minLevel": 1
@@ -38,10 +39,10 @@
     "objectives": [
       {
         "kind": "escort",
-        "name": "Surveyor Tamsin",
+        "name": "Engineer Tamsin",
         "monster": "peaceful-human",
         "to": "eastmarch",
-        "text": "Bring Surveyor Tamsin safely to Eastmarch."
+        "text": "Bring Engineer Tamsin safely to Eastmarch."
       }
     ],
     "reward": {
@@ -54,7 +55,7 @@
     "id": "letters",
     "name": "Letters for Highcairn",
     "giver": "factor-imre",
-    "summary": "Carry sealed letters to the warden at Highcairn.",
+    "summary": "Carry sealed letters to the warden at Highcairn, past the raiders on the road.",
     "prerequisites": {
       "quests": [],
       "minLevel": 1
@@ -78,7 +79,7 @@
     "id": "watchtower",
     "name": "The Old Watchtower",
     "giver": "warden-osk",
-    "summary": "Something has moved into the ruined watchtower in the hills. Find it and deal with it.",
+    "summary": "A beastman band has moved into the ruined watchtower in the hills. Find them and deal with them.",
     "prerequisites": {
       "quests": [],
       "minLevel": 2
@@ -86,6 +87,7 @@
     "objectives": [
       {
         "kind": "scout",
+        "region": "borderlands",
         "hex": {
           "col": 12,
           "row": 2
@@ -94,12 +96,13 @@
       },
       {
         "kind": "slay",
+        "region": "borderlands",
         "hex": {
           "col": 12,
           "row": 2
         },
-        "enemies": [["barbarian-fighter", "barbarian-fighter"], ["tribal-shaman"]],
-        "text": "Drive out whatever holds the watchtower."
+        "enemies": [["beastman-trooper", "beastman-trooper"], ["tribal-shaman"]],
+        "text": "Drive the beastmen out of the watchtower."
       }
     ],
     "reward": {
@@ -253,12 +256,68 @@
     "objectives": [
       {
         "kind": "slay",
+        "region": "borderlands",
         "hex": {
           "col": 21,
           "row": 10
         },
         "enemies": [["thug-or-militia", "thug-or-militia", "thug-or-militia"]],
         "text": "Stop the corpse-thieves at the graves at 21,10."
+      }
+    ],
+    "reward": {
+      "crowns": 0,
+      "xp": 0,
+      "loot": [],
+      "raise": true
+    }
+  },
+  {
+    "id": "pit-bones",
+    "name": "Bones for the Pits",
+    "giver": "necromancer-vashti",
+    "summary": "Vashti wants a cull horror's skull from the Gallows Wood. Bring it, and the crypt will give back one of your dead.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 1
+    },
+    "deadlineDays": 10,
+    "objectives": [
+      {
+        "kind": "slay",
+        "region": "dark-lands",
+        "hex": {
+          "col": 4,
+          "row": 16
+        },
+        "enemies": [["cull-horror"]],
+        "text": "Kill the cull horror in the Gallows Wood at 4,16."
+      }
+    ],
+    "reward": {
+      "crowns": 0,
+      "xp": 0,
+      "loot": [],
+      "raise": true
+    }
+  },
+  {
+    "id": "mourners-road",
+    "name": "The Mourners' Road",
+    "giver": "mother-skrell",
+    "summary": "A goblin mourner must reach Mirewatch to bury her son. See her there safely, and the mortuary will send back one of your dead.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 1
+    },
+    "deadlineDays": 14,
+    "objectives": [
+      {
+        "kind": "escort",
+        "name": "a goblin mourner",
+        "monster": "peaceful-human",
+        "to": "mirewatch",
+        "text": "Bring the mourner safely to Mirewatch."
       }
     ],
     "reward": {

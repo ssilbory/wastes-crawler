@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { combatReferenceErrors } from '../src/data/combat-check.ts';
 import { loadContent } from '../src/data/content.ts';
 import { loadSrd } from '../src/data/load.ts';
-import { allMonsters } from '../src/data/monsters.ts';
+import { allMonsters, baseMonster, withSettingMonsters } from '../src/data/monsters.ts';
 import { findMonster } from '../src/game/character/context.ts';
 import { monsterCombatant } from '../src/game/combat/combatants.ts';
 import { createRng } from '../src/rules/rng.ts';
@@ -12,9 +12,33 @@ const content = loadContent();
 const data = { srd, content };
 
 describe('authored monsters', () => {
+  it('take setting monsters onto existing stat lines, combat entry and all', () => {
+    const hound = findMonster(data, 'warbreed-hound');
+    const pack = findMonster(data, 'small-pack-predator');
+    expect(hound).toMatchObject({ name: 'Warbreed Hound', hitDice: pack?.hitDice, ac: pack?.ac });
+    expect(content.monsterCombat.find((m) => m.id === 'warbreed-hound')).toEqual({
+      ...content.monsterCombat.find((m) => m.id === 'small-pack-predator'),
+      id: 'warbreed-hound',
+    });
+    expect(baseMonster(content, 'warbreed-hound')).toBe('small-pack-predator');
+    expect(baseMonster(content, 'vorpal-hare')).toBe('vorpal-hare');
+    const orphan = {
+      ...content,
+      settingMonsters: [{ ...content.settingMonsters[0], base: 'nothing' }],
+    };
+    expect(allMonsters(srd, orphan as typeof content)).toHaveLength(
+      srd.monsters.length + content.monsters.length,
+    );
+    expect(withSettingMonsters(orphan as typeof content).monsterCombat).toHaveLength(
+      content.monsterCombat.length,
+    );
+  });
+
   it('stand alongside the SRD monsters, with combat data', () => {
     expect(allMonsters(srd, content).map((m) => m.id)).toContain('vorpal-hare');
-    expect(allMonsters(srd, content)).toHaveLength(srd.monsters.length + content.monsters.length);
+    expect(allMonsters(srd, content)).toHaveLength(
+      srd.monsters.length + content.monsters.length + content.settingMonsters.length,
+    );
     expect(findMonster(data, 'vorpal-hare')).toMatchObject({
       name: 'Vorpal Hare',
       hitDice: 1,

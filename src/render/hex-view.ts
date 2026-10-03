@@ -25,6 +25,8 @@ export interface HexCell {
   quest: boolean;
   /** A dungeon entrance's name, once the hex is known. */
   dungeon: string | null;
+  /** A road off the map, once the hex is known (Phase 12). */
+  exit: string | null;
 }
 
 const SQRT3 = Math.sqrt(3);
@@ -89,6 +91,7 @@ export function hexCells(
         route: onRoute.has(key),
         quest: quests.has(key),
         dungeon: known ? (ways.get(key) ?? null) : null,
+        exit: known ? (map.exitAt(h)?.name ?? null) : null,
       });
     }
   }

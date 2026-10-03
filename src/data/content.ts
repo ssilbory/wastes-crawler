@@ -30,6 +30,8 @@ import mods from '../../data/content/mods.json';
 import craftsmen from '../../data/content/craftsmen.json';
 import settingsDefaults from '../../data/content/settings-defaults.json';
 import soundCues from '../../data/content/sound-cues.json';
+import settingMonsters from '../../data/content/setting-monsters.json';
+import { withSettingMonsters } from './monsters.ts';
 import { combatReferenceErrors } from './combat-check.ts';
 import { equipmentReferenceErrors } from './equipment-check.ts';
 import { focusReferenceErrors } from './focus-content.ts';
@@ -44,7 +46,7 @@ import { craftingReferenceErrors } from './crafting-check.ts';
 import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.ts';
 
 export function loadContent(): ContentData {
-  return {
+  return withSettingMonsters({
     peoples: ContentSchemas.peoples.parse(peoples),
     backgrounds: ContentSchemas.backgrounds.parse(backgrounds),
     racialFoci: ContentSchemas.racialFoci.parse(racialFoci),
@@ -77,7 +79,8 @@ export function loadContent(): ContentData {
     craftsmen: ContentSchemas.craftsmen.parse(craftsmen),
     settingsDefaults: ContentSchemas.settingsDefaults.parse(settingsDefaults),
     soundCues: ContentSchemas.soundCues.parse(soundCues),
-  };
+    settingMonsters: ContentSchemas.settingMonsters.parse(settingMonsters),
+  });
 }
 
 /** Authored content may only reference SRD records that exist. */
@@ -131,6 +134,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['components', content.components],
     ['mods', content.mods],
     ['craftsmen', content.craftsmen],
+    ['settingMonsters', content.settingMonsters],
     ...content.dungeons.map((d): [string, { id: string }[]] => [
       `dungeons/${d.id} levels`,
       d.levels,

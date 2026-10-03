@@ -47,6 +47,7 @@ export interface World {
   position: Hex;
   destination: Hex | null;
   visited: Set<string>;
+  elsewhere: Record<string, string[]>;
   rations: ResourceDie;
   hikes: number;
   camp: WorldSave['camp'];

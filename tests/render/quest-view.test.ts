@@ -27,10 +27,10 @@ describe('quest view', () => {
     w.quests['bandit-camp'] = { status: 'active', step: 0, acceptedDay: 0 };
     w.day = 3;
     expect(questStatus(w, data, 'bandit-camp')).toBe(
-      'Break the bandit camp in the forest at 6,12. 7 days left.',
+      'Break the raider camp in the forest at 6,12. 7 days left.',
     );
     w.quests.surveyor = { status: 'active', step: 0, acceptedDay: 0 };
-    expect(questStatus(w, data, 'surveyor')).toBe('Bring Surveyor Tamsin safely to Eastmarch.');
+    expect(questStatus(w, data, 'surveyor')).toBe('Bring Engineer Tamsin safely to Eastmarch.');
     w.quests.surveyor = { status: 'active', step: 1, acceptedDay: 0 };
     expect(questStatus(w, data, 'surveyor')).toBe('');
     for (const [status, text] of [

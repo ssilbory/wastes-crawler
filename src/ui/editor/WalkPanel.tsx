@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import type { Dungeon } from '../../data/schemas/index.ts';
 import {
   startWalk,
@@ -22,13 +22,22 @@ export function WalkPanel(props: {
   onWalk: (w: Walk | null) => void;
   onLevel: (id: string) => void;
 }) {
-  const { walk, onWalk: setWalk } = props;
+  const { walk } = props;
+  // Keys can come faster than renders, so moves read and write the latest walk.
+  const latest = useRef(walk);
+  latest.current = walk;
+  const setWalk = (next: Walk | null) => {
+    latest.current = next;
+    props.onWalk(next);
+  };
   const edited = props.dungeon;
   const [bump, setBump] = useState<string | null>(null);
   const map = walk ? walkMap(edited, walk.level) : null;
   const move = (dir: WalkStep) => {
-    if (!walk || !map) return;
-    const next = walkStep(map, walk, dir);
+    const now = latest.current;
+    const here = now ? walkMap(edited, now.level) : null;
+    if (!now || !here) return;
+    const next = walkStep(here, now, dir);
     setBump(next ? null : 'A wall blocks the way.');
     if (next) setWalk(next);
   };
@@ -39,8 +48,9 @@ export function WalkPanel(props: {
       const action = actionForKey(getSettings(), e.key);
       if (!action || action === 'search') return;
       e.preventDefault();
-      if (action === 'turn-left') setWalk(walkTurn(walk, 'left'));
-      else if (action === 'turn-right') setWalk(walkTurn(walk, 'right'));
+      const now = latest.current as Walk;
+      if (action === 'turn-left') setWalk(walkTurn(now, 'left'));
+      else if (action === 'turn-right') setWalk(walkTurn(now, 'right'));
       else move(action === 'step-left' ? 'left' : action === 'step-right' ? 'right' : action);
     };
     window.addEventListener('keydown', onKey);

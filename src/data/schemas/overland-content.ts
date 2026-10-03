@@ -43,6 +43,15 @@ export const SiteSchema = z.strictObject({
 });
 export type Site = z.infer<typeof SiteSchema>;
 
+/** A hex where a road leaves one region for another (Phase 12, Sam's call: the Borderlands lead on). */
+export const RegionExitSchema = z.strictObject({
+  name: z.string().min(1),
+  col: z.int().min(0),
+  row: z.int().min(0),
+  to: z.strictObject({ region: IdSchema, col: z.int().min(0), row: z.int().min(0) }),
+});
+export type RegionExit = z.infer<typeof RegionExitSchema>;
+
 /** An overland region as glyph rows in odd-q offset layout (src/rules/hex.ts). */
 export const RegionSchema = z.strictObject({
   id: IdSchema,
@@ -52,6 +61,9 @@ export const RegionSchema = z.strictObject({
   sites: z.array(SiteSchema).min(1),
   /** The town a new party starts in. */
   start: IdSchema,
+  exits: z.array(RegionExitSchema),
+  /** Encounter tables by terrain id, in place of each terrain's own. */
+  encounters: z.record(IdSchema, IdSchema),
 });
 export type Region = z.infer<typeof RegionSchema>;
 

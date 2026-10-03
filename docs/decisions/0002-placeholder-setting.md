@@ -19,3 +19,7 @@ The plan left the setting open until Phase 6: regions, factions, the Dark Lord's
 ## Update, 2026-10-03
 
 The setting is now written: The Dark Lands, in [docs/setting.md](../setting.md). It still applies only in Phase 12; Phases 9 to 11 keep the placeholder content. Phase 12 reskins towns, monsters, dungeons, quests, and captives to fit it, and turns its systems (non-human playable peoples, beastman source animals, standing orders, bound agents, flesh-crafting) into rules and content.
+
+## Update, Phase 12a
+
+Applied. The Borderlands stays as the newcomer's map (Sam's call), its encounter tables and quests re-themed with setting monsters, its town and NPC names kept. A road from its east edge leads into the new Dark Lands region, with four settlements (Cinderhold, Gutterwick, Lanternfall, Mirewatch). Setting monsters reuse SRD stat lines (docs/rules-adaptation.md, Regions and setting monsters in Phase 12).

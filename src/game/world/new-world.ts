@@ -31,6 +31,7 @@ export function newWorld(data: GameData, rng: Rng, party: Recruit[], regionId?: 
     position: start,
     destination: null,
     visited: new Set([hexKey(start)]),
+    elsewhere: {},
     rations: FULL_RATIONS,
     hikes: 0,
     camp: 'none',

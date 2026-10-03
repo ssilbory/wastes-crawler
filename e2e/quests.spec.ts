@@ -53,15 +53,15 @@ test('takes a quest in town, finishes it on the map, and collects the reward', a
 
   await page.getByRole('button', { name: 'Visit Westhold' }).click();
   const reeve = page.getByRole('region', { name: 'Reeve Halda' });
-  await reeve.getByRole('button', { name: 'Take on The Bandit Camp' }).click();
-  await expect(reeve).toContainText('Break the bandit camp in the forest at 6,12.');
+  await reeve.getByRole('button', { name: 'Take on The Raider Camp' }).click();
+  await expect(reeve).toContainText('Break the raider camp in the forest at 6,12.');
   await page.screenshot({ path: testInfo.outputPath('quest-board.png'), fullPage: true });
   await page.getByRole('button', { name: 'Back to the map' }).click();
 
   const log = page.getByRole('region', { name: 'Journey log' });
   const quests = page.getByRole('region', { name: 'Quests' });
-  await expect(quests).toContainText('The Bandit Camp');
-  await walk(page, '6,12', async () => (await log.innerText()).includes('The Bandit Camp: done.'));
+  await expect(quests).toContainText('The Raider Camp');
+  await walk(page, '6,12', async () => (await log.innerText()).includes('The Raider Camp: done.'));
   await expect(quests).toContainText('Done: return for the reward.');
   await page.screenshot({ path: testInfo.outputPath('quest-done.png'), fullPage: true });
 
@@ -69,7 +69,7 @@ test('takes a quest in town, finishes it on the map, and collects the reward', a
   await page.getByRole('button', { name: 'Visit Westhold' }).click();
   await reeve.getByRole('button', { name: 'Collect the reward' }).click();
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
-    'Reeve Halda pays for The Bandit Camp: 60 crowns and 3 XP each.',
+    'Reeve Halda pays for The Raider Camp: 60 crowns and 3 XP each.',
   );
   await expect(reeve).toContainText('Done.');
 });

@@ -8,6 +8,7 @@ import type { GameData } from '../character/context.ts';
 import { note } from './members.ts';
 import { regionMap } from './region.ts';
 import { emit } from './bus.ts';
+import { enterRegion } from './crossing.ts';
 import { arriveNpcs } from './rescue.ts';
 import type { World } from './types.ts';
 
@@ -90,11 +91,12 @@ export function enterTown(w: World, data: GameData, siteId: string, start = fals
 
 /** The party falls: the living wake in the last town visited the next morning; the dead stay dead. */
 export function wipe(w: World, data: GameData): void {
-  const town = regionMap(data, w.region).sites.find((s) => s.id === w.lastTown);
-  if (!town) throw new Error(`unknown town ${w.lastTown}`);
+  // The last town may be in another region (Phase 12).
+  const region = data.content.regions.find((r) => r.sites.some((s) => s.id === w.lastTown));
+  const town = region?.sites.find((s) => s.id === w.lastTown);
+  if (!region || !town) throw new Error(`unknown town ${w.lastTown}`);
   note(w, 'The party falls.');
-  w.position = { col: town.col, row: town.row };
-  w.destination = null;
+  enterRegion(w, region.id, town);
   w.encounter = null;
   w.coach = null;
   w.dungeon = null;

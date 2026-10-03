@@ -7,7 +7,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "thug-or-militia",
+            "monster": "human-raider",
             "count": {
               "count": 1,
               "sides": 4,
@@ -22,7 +22,7 @@
         "nature": "wary",
         "groups": [
           {
-            "monster": "veteran-soldier",
+            "monster": "alliance-ranger",
             "count": {
               "count": 1,
               "sides": 4,
@@ -31,7 +31,7 @@
             "row": 0
           },
           {
-            "monster": "skilled-veteran",
+            "monster": "paladin",
             "count": 1,
             "row": 1
           }
@@ -57,7 +57,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "small-pack-predator",
+            "monster": "warbreed-hound",
             "count": {
               "count": 1,
               "sides": 6,
@@ -72,7 +72,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "barbarian-fighter",
+            "monster": "beastman-trooper",
             "count": {
               "count": 1,
               "sides": 4,
@@ -102,7 +102,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "thug-or-militia",
+            "monster": "slaver",
             "count": {
               "count": 1,
               "sides": 4,
@@ -123,7 +123,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "small-pack-predator",
+            "monster": "warbreed-hound",
             "count": {
               "count": 2,
               "sides": 4,
@@ -138,7 +138,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "thug-or-militia",
+            "monster": "human-raider",
             "count": {
               "count": 1,
               "sides": 6,
@@ -147,7 +147,7 @@
             "row": 0
           },
           {
-            "monster": "thug-or-militia",
+            "monster": "human-raider",
             "count": {
               "count": 1,
               "sides": 2,
@@ -162,7 +162,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "large-solitary-predator",
+            "monster": "cull-horror",
             "count": 1,
             "row": 0
           }
@@ -199,7 +199,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "thug-or-militia",
+            "monster": "slaver",
             "count": {
               "count": 1,
               "sides": 3,
@@ -235,7 +235,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "barbarian-fighter",
+            "monster": "beastman-trooper",
             "count": {
               "count": 1,
               "sides": 6,
@@ -250,7 +250,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "barbarian-fighter",
+            "monster": "beastman-trooper",
             "count": {
               "count": 1,
               "sides": 4,
@@ -270,7 +270,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "small-pack-predator",
+            "monster": "warbreed-hound",
             "count": {
               "count": 1,
               "sides": 6,
@@ -285,7 +285,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "large-solitary-predator",
+            "monster": "cull-horror",
             "count": 1,
             "row": 0
           }
@@ -296,7 +296,7 @@
         "nature": "wary",
         "groups": [
           {
-            "monster": "veteran-soldier",
+            "monster": "alliance-ranger",
             "count": {
               "count": 1,
               "sides": 4,
@@ -305,7 +305,7 @@
             "row": 0
           },
           {
-            "monster": "skilled-veteran",
+            "monster": "paladin",
             "count": {
               "count": 1,
               "sides": 2,
@@ -320,7 +320,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "barbarian-fighter",
+            "monster": "beastman-trooper",
             "count": {
               "count": 1,
               "sides": 3,
@@ -341,7 +341,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "barbarian-fighter",
+            "monster": "beastman-trooper",
             "count": {
               "count": 2,
               "sides": 4,
@@ -378,7 +378,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "automaton-military",
+            "monster": "war-engine",
             "count": {
               "count": 1,
               "sides": 3,
@@ -413,7 +413,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "slime-or-ooze",
+            "monster": "vat-spawn",
             "count": 1,
             "row": 0
           }
@@ -511,7 +511,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "barbarian-fighter",
+            "monster": "beastman-trooper",
             "count": {
               "count": 1,
               "sides": 6,
@@ -520,7 +520,7 @@
             "row": 0
           },
           {
-            "monster": "petty-mage",
+            "monster": "flesh-crafter",
             "count": 1,
             "row": 1
           }
@@ -593,6 +593,446 @@
               "count": 1,
               "sides": 3,
               "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dl-plains",
+    "entries": [
+      {
+        "weight": 3,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "human-raider",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "slaver",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ],
+        "captive": "merchant"
+      },
+      {
+        "weight": 2,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "deserter-beastman",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "warbreed-hound",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "alliance-ranger",
+            "count": 2,
+            "row": 0
+          },
+          {
+            "monster": "paladin",
+            "count": 1,
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "peaceful-human",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dl-hills",
+    "entries": [
+      {
+        "weight": 3,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "beastman-trooper",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "bound-goblin-sentry",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "predator-beastman",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "warbreed-hound",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "beastman-trooper",
+            "count": 2,
+            "row": 0
+          }
+        ],
+        "captive": "scholar"
+      }
+    ]
+  },
+  {
+    "id": "dl-forest",
+    "entries": [
+      {
+        "weight": 3,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "warbreed-hound",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "cull-horror",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "predator-beastman",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "deserter-beastman",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "human-raider",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 0
+          },
+          {
+            "monster": "alliance-ranger",
+            "count": 1,
+            "row": 1
+          }
+        ],
+        "captive": "pilgrim"
+      }
+    ]
+  },
+  {
+    "id": "dl-mountains",
+    "entries": [
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "war-engine",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "bound-orc-guard",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "apex-predator",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "beastman-trooper",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dl-swamp",
+    "entries": [
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "vat-spawn",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "unnatural-swarm",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "predator-small-vicious",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "deserter-beastman",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dl-badlands",
+    "entries": [
+      {
+        "weight": 3,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "beastman-trooper",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          },
+          {
+            "monster": "flesh-crafter",
+            "count": 1,
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "slaver",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ],
+        "captive": "merchant"
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "war-engine",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "cull-horror",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "bound-orc-guard",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
             },
             "row": 0
           }

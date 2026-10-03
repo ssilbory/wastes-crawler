@@ -29,6 +29,7 @@ import { MapScreen } from './MapScreen.tsx';
 import { DungeonScreen } from './DungeonScreen.tsx';
 import { enterDungeon } from '../../game/dungeon/explore.ts';
 import { StartScreen } from './StartScreen.tsx';
+import { crossOver } from '../../game/world/crossing.ts';
 
 function download(text: string) {
   const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
@@ -199,6 +200,10 @@ export function WorldApp() {
       onFight={startFight}
       onRide={() => {
         coachQuarter(w, data);
+        changed();
+      }}
+      onCross={() => {
+        crossOver(w, data);
         changed();
       }}
       onEnter={() => {

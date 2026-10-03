@@ -29,6 +29,7 @@ export function MapScreen(props: {
   onTown: () => void;
   onRide: () => void;
   onEnter: () => void;
+  onCross: () => void;
   onExport: () => void;
   onAbandon: () => void;
 }) {
@@ -42,6 +43,7 @@ export function MapScreen(props: {
   const town = map.siteAt(w.position);
   const here = town?.name ?? map.terrainAt(w.position).name;
   const way = dungeonHere(w, data);
+  const road = map.exitAt(w.position);
   const entrances = data.content.dungeons
     .filter((d) => d.region === w.region)
     .map((d) => ({ ...d.entrance, name: d.name }));
@@ -49,6 +51,7 @@ export function MapScreen(props: {
     <div class="world">
       <div class="world-bar">
         <span class="date">{describeDate(data.content.overlandRules, w.day, w.quarter)}</span>
+        <span class="region">{map.name}</span>
         <span>
           {here} ({hexKey(w.position)})
         </span>
@@ -63,6 +66,11 @@ export function MapScreen(props: {
         {way && !w.encounter && !w.coach && (
           <button type="button" onClick={props.onEnter}>
             Enter {way.name}
+          </button>
+        )}
+        {road && !w.encounter && !w.coach && (
+          <button type="button" onClick={props.onCross}>
+            Take {road.name}
           </button>
         )}
         <button type="button" class="secondary" onClick={props.onExport}>
