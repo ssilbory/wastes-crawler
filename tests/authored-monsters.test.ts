@@ -23,6 +23,10 @@ describe('authored monsters', () => {
     });
     expect(findMonster(data, 'jabberwock')).toBeUndefined();
     expect(content.monsterCombat.find((m) => m.id === 'vorpal-hare')?.mind).toBe('monster');
+    const pit = content.arenaCards
+      .find((c) => c.town === 'eastmarch')
+      ?.bouts.find((b) => b.id === 'hare-pit');
+    expect(pit).toMatchObject({ enemies: [Array(4).fill('vorpal-hare')], toTheDeath: true });
   });
 
   it('fight like any monster: 1d8 hit points a hit die and their own attack', () => {

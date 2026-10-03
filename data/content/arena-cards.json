@@ -38,6 +38,14 @@
         "fee": 25,
         "prize": 150,
         "toTheDeath": true
+      },
+      {
+        "id": "hare-pit",
+        "name": "The Hare Pit",
+        "enemies": [["vorpal-hare", "vorpal-hare", "vorpal-hare", "vorpal-hare"]],
+        "fee": 15,
+        "prize": 100,
+        "toTheDeath": true
       }
     ]
   },
