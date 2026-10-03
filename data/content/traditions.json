@@ -1,0 +1,22 @@
+[
+  {
+    "id": "high-mage",
+    "name": "High Mage",
+    "bonusSkill": "magic",
+    "spellLists": ["high-magic"],
+    "effort": {
+      "skills": ["magic"],
+      "attributes": ["int", "cha"]
+    }
+  },
+  {
+    "id": "elementalist",
+    "name": "Elementalist",
+    "bonusSkill": "magic",
+    "spellLists": ["high-magic", "elementalist"],
+    "effort": {
+      "skills": ["magic"],
+      "attributes": ["int", "cha"]
+    }
+  }
+]

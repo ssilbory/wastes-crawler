@@ -4,6 +4,7 @@ import { characterSheet, type Preview } from '../../game/character/derived.ts';
 import type { AttackLine, EquipmentSummary } from '../../game/character/equipment.ts';
 import { focusInfo } from '../../game/character/foci.ts';
 import { crowns, entryName } from './GearStep.tsx';
+import { spellName } from './MagicStep.tsx';
 import type { Skills } from '../../game/character/skills.ts';
 import type { AttributeScores } from '../../rules/attributes.ts';
 import type { SaveType } from '../../rules/saves.ts';
@@ -91,6 +92,7 @@ export function PreviewSheet(props: {
   preview: Preview;
   skills: Skills;
   equipment: EquipmentSummary | null;
+  effort: number | null;
 }) {
   const { preview } = props;
   return (
@@ -100,6 +102,7 @@ export function PreviewSheet(props: {
       <p>Attack bonus: {preview.attackBonus === null ? '–' : signed(preview.attackBonus)}</p>
       <h3>Saves</h3>
       <Saves saves={preview.saves} />
+      {props.effort !== null && <p>Effort: {props.effort}</p>}
       {props.equipment && <Equipment equipment={props.equipment} />}
       <h3>Skills</h3>
       <SkillList skills={props.skills} />
@@ -164,6 +167,28 @@ export function CharacterSheet(props: { character: Character }) {
         ))}
       </ul>
       <p>Purse: {crowns(Math.round(c.crowns * 10))}.</p>
+      {sheet.magic && (
+        <>
+          <h3>Magic</h3>
+          <p>
+            Effort {sheet.magic.effort}. Casts {sheet.magic.slots.spellsCast} a day, prepares{' '}
+            {sheet.magic.slots.spellsPrepared}, up to level {sheet.magic.slots.maxSpellLevel}.
+            {sheet.magic.canCast ? '' : ' Armor or a shield blocks casting.'}
+          </p>
+          <p>
+            Arts:{' '}
+            {c.arts.map((id) => data.srd.arts.find((a) => a.id === id)?.name ?? id).join(', ')}.
+          </p>
+          <ul class="skills">
+            {c.spells.known.map((id) => (
+              <li key={id}>
+                {spellName(id)}
+                {c.spells.prepared.includes(id) ? ' (prepared)' : ''}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
       <h3>Foci</h3>
       <ul class="skills">
         {c.foci.map((f) => (

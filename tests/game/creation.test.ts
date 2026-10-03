@@ -171,10 +171,10 @@ describe('evaluateChoices', () => {
     expect(() => rollBackground(scriptedRng([]), ['growth'])).toThrow();
   });
 
-  it('accepts only the three starting classes', () => {
+  it('accepts only the class options', () => {
     const cls = (classId: string) => evaluateChoices({ ...raider(), classId }, data).steps.class;
     expect(cls('partial-expert-partial-warrior')).toEqual({ state: 'ok' });
-    expect(cls('full-high-mage')).toMatchObject({ state: 'error' });
+    expect(cls('partial-expert-partial-mage')).toMatchObject({ state: 'error' });
     const noWarrior = {
       ...data,
       srd: {
@@ -217,7 +217,7 @@ describe('finishCharacter', () => {
     const result = finishCharacter(raider(), data, scriptedRng([4, 0xabc, 0xdef]));
     if (!result.ok) throw new Error(result.errors.join('; '));
     expect(result.character).toMatchObject({
-      schemaVersion: 3,
+      schemaVersion: 4,
       id: 'char-00000abc00000def',
       name: 'Snag',
       people: 'goblin',
@@ -238,6 +238,7 @@ describe('finishCharacter', () => {
       errors: [
         "class: full-mage isn't a starting class in this version",
         'foci: incomplete',
+        'magic: incomplete',
         'identity: incomplete',
       ],
     });

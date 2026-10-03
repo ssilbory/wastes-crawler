@@ -135,7 +135,7 @@ export function GearStep(props: {
       ? data.content.startingPackages.find((p) => p.id === choice.packageId)
       : undefined;
   return (
-    <Step title="7. Gear" status={props.status}>
+    <Step title="8. Gear" status={props.status}>
       {!people && <p class="hint">Choose a people and attributes first.</p>}
       {people && (
         <>

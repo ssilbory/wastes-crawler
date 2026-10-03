@@ -15,7 +15,7 @@ describe('data/srd', () => {
       foci: 35,
       classes: 6,
       progressions: 13,
-      'casting-progressions': 4,
+      'casting-progressions': 5,
       'weapon-traits': 12,
       weapons: 29,
       armor: 15,

@@ -129,7 +129,10 @@ describe('evaluateFoci', () => {
     expect(msg(goblin({ id: 'alert' }, null))).toBe('Alert is one of your racial foci');
     expect(msg(goblin({ id: 'horned' }, null))).toBe("Horned can't be picked in this version");
     expect(msg(goblin({ id: 'armored-magic' }, null))).toBe(
-      "Armored Magic can't be picked in this version",
+      'Armored Magic is only for spellcasters',
+    );
+    expect(msg(goblin({ id: 'spirit-familiar' }, null))).toBe(
+      "Spirit Familiar can't be picked in this version",
     );
     expect(msg(goblin({ id: 'lucky' }, null))).toBe("Lucky isn't a combat focus");
     expect(msg([null, null, { id: 'alert' }, { id: 'armsmaster' }], 'full-expert')).toBe(

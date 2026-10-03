@@ -5,8 +5,11 @@ import racialFoci from '../../data/content/racial-foci.json';
 import equipmentRules from '../../data/content/equipment-rules.json';
 import shields from '../../data/content/shields.json';
 import startingPackages from '../../data/content/starting-packages.json';
+import traditions from '../../data/content/traditions.json';
+import classOptions from '../../data/content/class-options.json';
 import { equipmentReferenceErrors } from './equipment-check.ts';
 import { focusReferenceErrors } from './focus-content.ts';
+import { magicReferenceErrors } from './magic-check.ts';
 import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.ts';
 
 export function loadContent(): ContentData {
@@ -18,6 +21,8 @@ export function loadContent(): ContentData {
     shields: ContentSchemas.shields.parse(shields),
     startingPackages: ContentSchemas.startingPackages.parse(startingPackages),
     equipmentRules: ContentSchemas.equipmentRules.parse(equipmentRules),
+    traditions: ContentSchemas.traditions.parse(traditions),
+    classOptions: ContentSchemas.classOptions.parse(classOptions),
   };
 }
 
@@ -55,6 +60,8 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['focusRules', content.focusRules],
     ['shields', content.shields],
     ['startingPackages', content.startingPackages],
+    ['traditions', content.traditions],
+    ['classOptions', content.classOptions],
     ...content.peoples.map((p): [string, { id: string }[]] => [
       `peoples/${p.id} lineages`,
       p.lineages ?? [],
@@ -70,5 +77,6 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...errors,
     ...focusReferenceErrors(srd, content),
     ...equipmentReferenceErrors(srd, content),
+    ...magicReferenceErrors(srd, content),
   ];
 }

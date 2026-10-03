@@ -25,6 +25,7 @@ export interface FocusInfo {
   bonusSkill: BonusSkill | undefined;
   attributeChoice: boolean;
   dieHard: boolean;
+  requiresCaster: boolean;
   effects: FocusEffect[];
   pickable: boolean;
 }
@@ -40,6 +41,7 @@ export function focusInfo(data: GameData, id: string): FocusInfo | undefined {
       bonusSkill,
       attributeChoice: false,
       dieHard: false,
+      requiresCaster: false,
       pickable: false,
     };
   }
@@ -55,6 +57,7 @@ export function focusInfo(data: GameData, id: string): FocusInfo | undefined {
     bonusSkill: rule.bonusSkill,
     attributeChoice: rule.attributeChoice === true,
     dieHard: rule.dieHard === true,
+    requiresCaster: rule.requiresCaster === true,
     effects: rule.effects ?? [],
     pickable: rule.availability === 'pickable',
   };
@@ -145,7 +148,12 @@ function gainBonusSkill(
   return { skills: next };
 }
 
-function slotError(slot: FocusSlot, focus: FocusInfo, racial: Set<string>): string | null {
+function slotError(
+  slot: FocusSlot,
+  focus: FocusInfo,
+  racial: Set<string>,
+  caster: boolean,
+): string | null {
   if (slot.kind === 'signature') return slot.fixed === focus.id ? null : 'wrong signature focus';
   if (slot.kind === 'racial') {
     if (!slot.options?.includes(focus.id)) return `${focus.name} isn't on your people's list`;
@@ -153,6 +161,7 @@ function slotError(slot: FocusSlot, focus: FocusInfo, racial: Set<string>): stri
   }
   if (racial.has(focus.id)) return `${focus.name} is one of your racial foci`;
   if (!focus.pickable) return `${focus.name} can't be picked in this version`;
+  if (focus.requiresCaster && !caster) return `${focus.name} is only for spellcasters`;
   if (slot.kind === 'combat' && focus.category === 'non-combat')
     return `${focus.name} isn't a combat focus`;
   if (slot.kind === 'non-combat' && focus.category === 'combat')
@@ -165,6 +174,7 @@ export function evaluateFoci(
   slots: readonly FocusSlot[],
   choices: readonly (FocusChoice | null)[],
   startSkills: Skills,
+  caster = false,
 ): FociOutcome {
   let skills = startSkills;
   const foci: HeldFocus[] = [];
@@ -186,7 +196,7 @@ export function evaluateFoci(
     if (!choice) return done(INCOMPLETE);
     const focus = focusInfo(data, choice.id);
     if (!focus) return done(fail(`unknown focus ${choice.id}`));
-    const error = slotError(slot, focus, racial);
+    const error = slotError(slot, focus, racial, caster);
     if (error) return done(fail(error));
     if (slot.kind === 'signature' || slot.kind === 'racial') racial.add(focus.id);
 

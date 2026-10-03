@@ -21,7 +21,7 @@ test('builds, exports, and re-imports a Goblin Warrior', async ({ page }, testIn
   await select('Background', 'Raider');
   await select('Learning pick 1', 'Sneak');
   await select('Learning pick 2', 'Exert');
-  await select('Class', 'Full Warrior');
+  await select('Class', 'Warrior');
   await select('Racial focus', 'Alert');
   await select('Combat focus', 'Armsmaster');
   await select('Any focus', 'Lucky');
@@ -37,7 +37,7 @@ test('builds, exports, and re-imports a Goblin Warrior', async ({ page }, testIn
 
   await page.getByRole('button', { name: 'Create character' }).click();
   const sheet = page.getByTestId('character-sheet');
-  await expect(sheet).toContainText('Goblin Full Warrior, level 1. Background: Raider.');
+  await expect(sheet).toContainText('Goblin Warrior, level 1. Background: Raider.');
   // Goblin: +2 Dex, +1 Int, -2 Str on top of the array.
   for (const text of ['Strength12', 'Dexterity14+1', 'Intelligence11', 'Charisma7-1'])
     await expect(sheet).toContainText(text);

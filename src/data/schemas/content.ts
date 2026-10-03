@@ -6,6 +6,7 @@ import {
   ShieldSchema,
   StartingPackageSchema,
 } from './equipment-content.ts';
+import { ClassOptionSchema, TraditionSchema } from './magic-content.ts';
 
 const contentBase = {
   id: IdSchema,
@@ -41,6 +42,8 @@ export const FocusRuleSchema = z.strictObject({
   bonusSkill: BonusSkillSchema.optional(),
   attributeChoice: z.literal(true).optional(),
   dieHard: z.literal(true).optional(),
+  /** Only characters with a spellcasting class may take it. */
+  requiresCaster: z.literal(true).optional(),
   effects: z.array(FocusEffectSchema).optional(),
 });
 export type FocusRule = z.infer<typeof FocusRuleSchema>;
@@ -128,6 +131,8 @@ export const ContentSchemas = {
   shields: z.array(ShieldSchema).min(1),
   startingPackages: z.array(StartingPackageSchema).min(1),
   equipmentRules: EquipmentRulesSchema,
+  traditions: z.array(TraditionSchema).min(1),
+  classOptions: z.array(ClassOptionSchema).min(1),
 } as const;
 export type ContentData = {
   [K in keyof typeof ContentSchemas]: z.infer<(typeof ContentSchemas)[K]>;

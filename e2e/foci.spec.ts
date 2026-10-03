@@ -41,7 +41,7 @@ async function setUp(page: Page, people: string, lineage: string | undefined) {
   await select('Background', 'Raider');
   await select('Learning pick 1', 'Sneak');
   await select('Learning pick 2', 'Exert');
-  await select('Class', 'Full Warrior');
+  await select('Class', 'Warrior');
   return select;
 }
 

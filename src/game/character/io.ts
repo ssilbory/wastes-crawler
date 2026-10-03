@@ -17,6 +17,8 @@ export const MIGRATIONS: Migrations = {
   1: (raw) => ({ ...raw, foci: [], schemaVersion: 2 }),
   // Version 3 adds gear (Phase 3d); older characters start with nothing.
   2: (raw) => ({ ...raw, inventory: [], crowns: 0, schemaVersion: 3 }),
+  // Version 4 adds arts and spells (Phase 3e); older characters had no Mage classes.
+  3: (raw) => ({ ...raw, arts: [], spells: { known: [], prepared: [] }, schemaVersion: 4 }),
 };
 
 export function exportCharacter(c: Character): string {
@@ -81,6 +83,12 @@ export function importCharacter(
   }
   for (const item of c.inventory) {
     if (!findItem(data, item.id)) errors.push(`inventory: unknown ${item.id}`);
+  }
+  for (const id of c.arts) {
+    if (!data.srd.arts.some((a) => a.id === id)) errors.push(`arts: unknown ${id}`);
+  }
+  for (const id of [...c.spells.known, ...c.spells.prepared]) {
+    if (!data.srd.spells.some((sp) => sp.id === id)) errors.push(`spells: unknown ${id}`);
   }
   for (const f of c.foci) {
     if (!focusInfo(data, f.id)) errors.push(`foci: unknown ${f.id}`);

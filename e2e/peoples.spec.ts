@@ -88,7 +88,7 @@ async function build(page: Page, c: (typeof CASES)[number]) {
   await select('Background', c.bg);
   await select('Learning pick 1', c.picks[0]);
   await select('Learning pick 2', c.picks[1]);
-  await select('Class', 'Full Expert');
+  await select('Class', 'Expert');
   for (const [label, option] of c.foci) await select(label, option);
   await select('Non-combat focus', 'Lucky');
   await select('Any focus', 'Well Met');
@@ -105,7 +105,7 @@ for (const c of CASES) {
     await page.goto('/');
     await build(page, c);
     const sheet = page.getByTestId('character-sheet');
-    await expect(sheet).toContainText(`${label} Full Expert, level 1. Background: ${c.bg}.`);
+    await expect(sheet).toContainText(`${label} Expert, level 1. Background: ${c.bg}.`);
     await expect(sheet).toContainText(`Dexterity${c.dex}`);
     await expect(sheet).toContainText(`Size${c.size}`);
     const before = await sheet.innerText();

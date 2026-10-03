@@ -1,12 +1,16 @@
 import { MAX_GOAL, MAX_NAME, type StepStatus } from '../../game/character/creation.ts';
-import { classes, skills } from './data.ts';
+import { classes, skillName, skills } from './data.ts';
 import { Select, Step } from './Field.tsx';
 
-/** Warrior, Expert, or Adventurer (SRD 1.4.0); casters arrive in Phase 3e. */
+/** Warrior, Expert, Mage, or Adventurer combinations (SRD 1.4.0), from data/content. */
 export function ClassStep(props: {
   value: string | null;
   status: StepStatus;
+  /** The class bonus skill to replace, when it's already level-1. */
+  replacing: string | null;
+  replacement: string | null;
   onChange: (id: string | null) => void;
+  onReplace: (skill: string | null) => void;
 }) {
   return (
     <Step title="4. Class" status={props.status}>
@@ -16,6 +20,14 @@ export function ClassStep(props: {
         options={classes.map((c) => ({ value: c.id, label: c.name }))}
         onChange={(v) => props.onChange(v === '' ? null : v)}
       />
+      {props.replacing && (
+        <Select
+          label={`Replacement for ${skillName(props.replacing)}`}
+          value={props.replacement ?? ''}
+          options={skills.map((s) => ({ value: s.id, label: s.name }))}
+          onChange={(v) => props.onReplace(v === '' ? null : v)}
+        />
+      )}
     </Step>
   );
 }
@@ -27,7 +39,7 @@ export function FreeSkillStep(props: {
   onChange: (id: string | null) => void;
 }) {
   return (
-    <Step title="6. Free skill" status={props.status}>
+    <Step title="7. Free skill" status={props.status}>
       <Select
         label="Free skill"
         value={props.value ?? ''}
@@ -45,7 +57,7 @@ export function IdentityStep(props: {
   onChange: (patch: { name?: string; goal?: string }) => void;
 }) {
   return (
-    <Step title="8. Name and goal" status={props.status}>
+    <Step title="9. Name and goal" status={props.status}>
       <label class="field">
         <span>Name</span>
         <input

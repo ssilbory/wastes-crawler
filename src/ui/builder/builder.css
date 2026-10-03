@@ -247,3 +247,23 @@ dd {
   margin-right: 6px;
   font-size: 0.9rem;
 }
+
+fieldset.picks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2px 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  margin: 8px 0;
+}
+
+fieldset.picks legend {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.check {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+}

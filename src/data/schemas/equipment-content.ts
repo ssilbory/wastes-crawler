@@ -63,6 +63,13 @@ export const FocusEffectSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('natural-weapon'), level: Level, weapon: NaturalWeaponSchema }),
   /** Raises the Stowed limit by half Strength, rounded down. */
   z.strictObject({ kind: z.literal('extra-stowed-half-strength'), level: Level }),
+  /** Armored Magic: cast in armor up to this encumbrance (null for any), and with a shield. */
+  z.strictObject({
+    kind: z.literal('armored-casting'),
+    level: Level,
+    maxEncumbrance: z.int().min(0).nullable(),
+    shields: z.boolean(),
+  }),
 ]);
 export type FocusEffect = z.infer<typeof FocusEffectSchema>;
 

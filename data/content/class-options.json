@@ -1,0 +1,124 @@
+[
+  {
+    "id": "full-warrior",
+    "name": "Warrior"
+  },
+  {
+    "id": "full-expert",
+    "name": "Expert"
+  },
+  {
+    "id": "partial-expert-partial-warrior",
+    "name": "Adventurer: Partial Expert/Partial Warrior"
+  },
+  {
+    "id": "full-high-mage",
+    "name": "High Mage",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "high-mage",
+          "partial": false,
+          "arts": "full-high-mage-arts-and-spells"
+        }
+      ],
+      "slots": "full-high-mage-arts-and-spells",
+      "startingSpells": 4
+    }
+  },
+  {
+    "id": "full-elementalist",
+    "name": "Elementalist",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "elementalist",
+          "partial": false,
+          "arts": "full-elementalist-arts-and-spells"
+        }
+      ],
+      "slots": "full-elementalist-arts-and-spells",
+      "startingSpells": 4
+    }
+  },
+  {
+    "id": "high-mage-partial-expert",
+    "name": "Adventurer: Partial High Mage/Partial Expert",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "high-mage",
+          "partial": true,
+          "arts": "partial-high-mage-arts-and-spells"
+        }
+      ],
+      "slots": "partial-high-mage-arts-and-spells",
+      "startingSpells": 2
+    }
+  },
+  {
+    "id": "high-mage-partial-warrior",
+    "name": "Adventurer: Partial High Mage/Partial Warrior",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "high-mage",
+          "partial": true,
+          "arts": "partial-high-mage-arts-and-spells"
+        }
+      ],
+      "slots": "partial-high-mage-arts-and-spells",
+      "startingSpells": 2
+    }
+  },
+  {
+    "id": "elementalist-partial-expert",
+    "name": "Adventurer: Partial Elementalist/Partial Expert",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "elementalist",
+          "partial": true,
+          "arts": "partial-elementalist-arts-and-spells"
+        }
+      ],
+      "slots": "partial-elementalist-arts-and-spells",
+      "startingSpells": 2
+    }
+  },
+  {
+    "id": "elementalist-partial-warrior",
+    "name": "Adventurer: Partial Elementalist/Partial Warrior",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "elementalist",
+          "partial": true,
+          "arts": "partial-elementalist-arts-and-spells"
+        }
+      ],
+      "slots": "partial-elementalist-arts-and-spells",
+      "startingSpells": 2
+    }
+  },
+  {
+    "id": "high-mage-partial-other-mage",
+    "name": "Adventurer: Partial High Mage/Partial Elementalist",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "high-mage",
+          "partial": true,
+          "arts": "partial-high-mage-arts-and-spells"
+        },
+        {
+          "tradition": "elementalist",
+          "partial": true,
+          "arts": "partial-elementalist-arts-and-spells"
+        }
+      ],
+      "slots": "dual-partial-spellcasters",
+      "startingSpells": 4
+    }
+  }
+]

@@ -143,5 +143,38 @@
         "location": "stowed"
       }
     ]
+  },
+  {
+    "id": "apprentice",
+    "name": "Apprentice",
+    "description": "No armor to spoil the casting: a staff, a knife, and the means to keep a spellbook.",
+    "crowns": 50,
+    "items": [
+      {
+        "id": "staff",
+        "quantity": 1,
+        "location": "readied"
+      },
+      {
+        "id": "dagger",
+        "quantity": 1,
+        "location": "readied"
+      },
+      {
+        "id": "writing-kit",
+        "quantity": 1,
+        "location": "stowed"
+      },
+      {
+        "id": "paper-10-sheets",
+        "quantity": 1,
+        "location": "stowed"
+      },
+      {
+        "id": "backpack",
+        "quantity": 1,
+        "location": "worn"
+      }
+    ]
   }
 ]

@@ -23,17 +23,12 @@ import {
   type Adjustments,
 } from './attributes.ts';
 import { evaluateBackground, type ChosenBackground } from './background.ts';
-import {
-  evaluateFoci,
-  focusSlots,
-  hasDieHard,
-  type FocusChoice,
-  type FocusSlot,
-  type HeldFocus,
-} from './foci.ts';
+import { evaluateFoci, focusSlots, hasDieHard, type FocusSlot, type HeldFocus } from './foci.ts';
 import { findProgression, isSkill, type GameData } from './context.ts';
 import { loadoutSummary, type EquipmentSummary } from './equipment.ts';
-import { evaluateGear, type GearChoice } from './gear.ts';
+import { evaluateClass } from './class-step.ts';
+import { evaluateGear } from './gear.ts';
+import { effortFor, evaluateMagic, type MagicOutcome } from './magic.ts';
 import type { InventoryEntry } from './items.ts';
 import { evaluatePeople, findLineage, findPeople } from './people.ts';
 import { addCreationSkill, type Skills } from './skills.ts';
@@ -51,63 +46,9 @@ export {
 export type { Step, StepStatus } from './steps.ts';
 export type { FocusChoice, FocusSlot, HeldFocus } from './foci.ts';
 export type { GearChoice } from './gear.ts';
-
-/** Warrior, Expert, and the Adventurer's Partial Warrior/Partial Expert. */
-export const STARTING_CLASSES = ['full-warrior', 'full-expert', 'partial-expert-partial-warrior'];
-export const MAX_NAME = 60;
-export const MAX_GOAL = 200;
-
-export interface Choices {
-  /** Empty until chosen. */
-  people: string;
-  /** Required when the people has lineages. */
-  lineage: string | null;
-  array: AttributeScores | null;
-  background: ChosenBackground | null;
-  classId: string | null;
-  /** One entry per focus slot; signature slots may stay null. */
-  foci: (FocusChoice | null)[];
-  freeSkill: string | null;
-  gear: GearChoice | null;
-  name: string;
-  goal: string;
-}
-
-export interface Evaluation {
-  /** Final scores after the people and background, or null until the people and array are set. */
-  scores: AttributeScores | null;
-  peopleAdjust: Adjustments;
-  backgroundAdjust: Adjustments;
-  skills: Skills;
-  /** Racial slots once the people is valid, plus class slots once the class is. */
-  focusSlots: FocusSlot[];
-  /** Skills before each focus slot that was evaluated. */
-  focusSkillsBefore: Skills[];
-  foci: HeldFocus[];
-  modifierBonuses: ModifierBonuses;
-  inventory: InventoryEntry[];
-  /** Money left after starting gear, in tenths of a crown. */
-  crownsTenths: number;
-  /** AC, attacks, and load once the people and scores are known. */
-  equipment: EquipmentSummary | null;
-  steps: Record<Step, StepStatus>;
-  complete: boolean;
-}
-
-export function emptyChoices(): Choices {
-  return {
-    people: '',
-    lineage: null,
-    array: null,
-    background: null,
-    classId: null,
-    foci: [],
-    freeSkill: null,
-    gear: null,
-    name: '',
-    goal: '',
-  };
-}
+export type { MagicChoice } from './magic.ts';
+export { emptyChoices, MAX_GOAL, MAX_NAME, type Choices, type Evaluation } from './choices.ts';
+import { MAX_GOAL, MAX_NAME, type Choices, type Evaluation } from './choices.ts';
 
 export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
   const steps: Record<Step, StepStatus> = {
@@ -116,6 +57,7 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
     background: INCOMPLETE,
     class: INCOMPLETE,
     foci: INCOMPLETE,
+    magic: INCOMPLETE,
     'free-skill': INCOMPLETE,
     gear: INCOMPLETE,
     identity: INCOMPLETE,
@@ -131,6 +73,8 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
   let inventory: InventoryEntry[] = [];
   let crownsTenths = 0;
   let equipment: EquipmentSummary | null = null;
+  let magic: MagicOutcome = { status: INCOMPLETE, arts: [], known: [], prepared: [] };
+  let effort: number | null = null;
 
   const peopleOutcome = evaluatePeople(data, choices.people, choices.lineage);
   const peopleStatus = peopleOutcome.status;
@@ -155,27 +99,42 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
     scores = addAdjustments(scores, backgroundAdjust);
   }
 
-  if (choices.classId !== null) {
-    const known =
-      STARTING_CLASSES.includes(choices.classId) && findProgression(data, choices.classId);
-    steps.class = known ? OK : fail(`${choices.classId} isn't a starting class in this version`);
-  }
+  const backgroundOk = steps.background.state === 'ok';
+  const cls = evaluateClass(
+    data,
+    choices.classId,
+    choices.classSkills,
+    backgroundOk ? skills : null,
+  );
+  steps.class = cls.status;
+  const classOk = cls.status.state === 'ok';
+  if (backgroundOk && classOk) skills = cls.skills;
+  const progression = classOk ? cls.progression : undefined;
 
   if (peopleStatus.state === 'ok') {
     // A valid people step guarantees the people exists.
     const people = findPeople(data, choices.people) as People;
     const lineage = choices.lineage === null ? undefined : findLineage(people, choices.lineage);
-    const progression =
-      steps.class.state === 'ok' ? findProgression(data, choices.classId as string) : undefined;
     slots = focusSlots(people, lineage, progression);
-    if (progression && steps.background.state === 'ok') {
-      const outcome = evaluateFoci(data, slots, choices.foci, skills);
+    if (progression && backgroundOk) {
+      const outcome = evaluateFoci(
+        data,
+        slots,
+        choices.foci,
+        skills,
+        cls.option?.mage !== undefined,
+      );
       steps.foci = outcome.status;
       skills = outcome.skills;
       foci = outcome.foci;
       focusSkillsBefore = outcome.skillsBefore;
       modifierBonuses = outcome.bonuses;
     }
+  }
+
+  if (classOk) {
+    magic = evaluateMagic(data, cls.option?.mage, choices.magic);
+    steps.magic = magic.status;
   }
 
   if (choices.freeSkill !== null) {
@@ -191,9 +150,17 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
     }
   }
 
+  if (scores && classOk) {
+    effort = effortFor(
+      data,
+      startingClass(choices.classId as string),
+      skills,
+      scores,
+      modifierBonuses,
+    );
+  }
+
   if (peopleStatus.state === 'ok' && scores) {
-    const progression =
-      steps.class.state === 'ok' ? findProgression(data, choices.classId as string) : undefined;
     const loadout = {
       people: findPeople(data, choices.people) as People,
       scores,
@@ -229,6 +196,8 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
     inventory,
     crownsTenths,
     equipment,
+    magic,
+    effort,
     steps,
     complete,
   };
@@ -267,6 +236,8 @@ export function finishCharacter(choices: Choices, data: GameData, rng: Rng): Fin
     background: background.id,
     attributes: { base: array, people: ev.peopleAdjust, background: ev.backgroundAdjust },
     foci: ev.foci,
+    arts: ev.magic.arts,
+    spells: { known: ev.magic.known, prepared: ev.magic.prepared },
     inventory: ev.inventory,
     crowns: ev.crownsTenths / 10,
     skills: ev.skills,

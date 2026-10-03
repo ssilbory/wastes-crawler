@@ -1,5 +1,13 @@
 export type Step =
-  'people' | 'attributes' | 'background' | 'class' | 'foci' | 'free-skill' | 'gear' | 'identity';
+  | 'people'
+  | 'attributes'
+  | 'background'
+  | 'class'
+  | 'foci'
+  | 'magic'
+  | 'free-skill'
+  | 'gear'
+  | 'identity';
 export type StepStatus =
   { state: 'incomplete' } | { state: 'ok' } | { state: 'error'; message: string };
 

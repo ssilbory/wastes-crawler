@@ -4,13 +4,20 @@ import {
   type AttributeScores,
   type ModifierBonuses,
 } from '../../rules/attributes.ts';
-import { characterLevel, progressionRow, totalAttackBonus } from '../../rules/progression.ts';
+import {
+  characterLevel,
+  progressionRow,
+  totalAttackBonus,
+  type CastingLevelRow,
+} from '../../rules/progression.ts';
 import { pcSaveTarget, type SaveType } from '../../rules/saves.ts';
 import { addAdjustments, ATTRIBUTES } from './attributes.ts';
 import { findProgression, progressionLookup, type GameData } from './context.ts';
 import type { Evaluation } from './creation.ts';
 import { loadoutSummary, type EquipmentSummary } from './equipment.ts';
+import { classOption } from './class-step.ts';
 import { modifierBonuses } from './foci.ts';
+import { castingAllowed, effortFor, spellSlots } from './magic.ts';
 import { findPeople } from './people.ts';
 
 export interface Sheet {
@@ -23,6 +30,35 @@ export interface Sheet {
   strainMax: number;
   size: People['size'];
   equipment: EquipmentSummary;
+  /** Null for characters with no casting class. */
+  magic: SheetMagic | null;
+}
+
+export interface SheetMagic {
+  effort: number;
+  /** Spell slots of the first casting class held, at that class's level. */
+  slots: CastingLevelRow;
+  /** False while worn armor or a shield blocks casting. */
+  canCast: boolean;
+}
+
+function sheetMagic(
+  data: GameData,
+  c: Character,
+  scores: AttributeScores,
+  bonuses: ModifierBonuses,
+): SheetMagic | null {
+  const effort = effortFor(data, c.classes, c.skills, scores, bonuses);
+  const caster = Object.entries(c.classes.levels).find(
+    ([id, level]) => level >= 1 && classOption(data, id)?.mage,
+  );
+  const mage = caster ? classOption(data, caster[0])?.mage : undefined;
+  if (effort === null || !caster || !mage) return null;
+  return {
+    effort,
+    slots: spellSlots(data, mage, caster[1]),
+    canCast: castingAllowed(data, c.inventory, c.foci),
+  };
 }
 
 export function finalScores(c: Character): AttributeScores {
@@ -70,6 +106,7 @@ export function characterSheet(c: Character, data: GameData): Sheet {
     }),
     strainMax: scores.con,
     size: people.size,
+    magic: sheetMagic(data, c, scores, bonuses),
   };
 }
 

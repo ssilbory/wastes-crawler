@@ -44,7 +44,7 @@ Every centaur belongs to exactly one lineage. Backgrounds may be limited to some
 | Either category    | Alert, Rider, and Poisoner fill a combat or a non-combat pick                                                                                                                  |
 | Non-combat foci    | Every other pickable focus                                                                                                                                                     |
 | Not used           | Special Origin (peoples replace it), Unique Gift (GM-defined), Xenoblooded (overlaps the peoples)                                                                              |
-| Later              | Armored Magic and Spirit Familiar wait for casters in Phase 3e                                                                                                                 |
+| Later              | Spirit Familiar waits for summoned servitors in combat (Phase 3f). Armored Magic is pickable from Phase 3e, by spellcasters only                                               |
 | Racial duplicates  | A class pick can't take a focus the character already has as a racial focus, and racial picks can't repeat each other. A racial focus reaches level 2 only through advancement |
 | Bonus skill choice | When every skill a focus offers is already level-1, the player picks any other skill instead (SRD 1.2.2)                                                                       |
 
@@ -68,6 +68,16 @@ At character creation the game applies focus bonus skills, Die Hard's extra hit 
 | Attack lines    | One line per Readied weapon and mode: melee, thrown (the better of Stab and Shoot), or ranged (Shoot), plus natural weapons and an unarmed attack. Shock applies only in melee |
 | Overloaded load | Items past the Readied and Stowed limits add up; up to half Strength over is Overloaded, and more can't be carried                                                             |
 | Worn items      | One suit of armor, one barding, and one shield; clothing marked § is free while worn. Worn armor and shields count as Readied                                                  |
+
+**Magic:** new characters may take a full High Mage or Elementalist, either one as a partial class beside a Partial Warrior or Partial Expert, or both as dual partial casters (SRD 4.3.0). The class list, with each class's traditions and casting tables, is in data/content/class-options.json.
+
+| Rule             | Mechanic                                                                                                                                                                                                                                             |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Magic skill      | Each tradition grants Magic as a creation skill pick (SRD 1.5.10, 1.5.7), so a dual caster starts at Magic-1. A pick that would pass level-1 is replaced by another skill (SRD 1.2.2)                                                                |
+| Effort           | 1 + the best Effort skill + the best Effort attribute modifier across every casting class held, Developed Attribute included. One lower, but at least 1, only when every casting class is partial. Full casters have no floor, as the SRD gives none |
+| Arts             | Each class picks its own tradition's arts from its level-1 Arts Gained (SRD 4.1.0); Elementalists also get Elemental Resilience and Elemental Sparks                                                                                                 |
+| Starting spells  | Four first-level spells for full and dual casters, two for partial ones (SRD 1.7.5), from every list the traditions can learn. The player prepares up to the casting table's limit                                                                   |
+| Casting in armor | Any worn armor, even a war shirt, or a shield blocks casting. Armored Magic 1 allows armor of encumbrance 2 or less and a shield; level 2 allows any armor. Barding counts at its doubled encumbrance                                                |
 
 **Party and formation:** six player characters plus two NPC slots, arranged in two rows of four. Quest NPCs, rescued NPCs, and hirelings occupy the NPC slots. When both are full, a new NPC can join only after one is dismissed. Centaurs take one slot like anyone else, but large NPCs such as giants and dragons take two. NPCs can occupy any slot, front or rear. Some quests replace a PC's slot with an NPC; a PC out of the party can rejoin at any tavern. Each rear slot is shielded by the front slot directly ahead of it, so a gap in the front row exposes whoever stands behind it.
 

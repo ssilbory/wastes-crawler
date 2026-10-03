@@ -6,6 +6,7 @@ import type {
 } from '../../../src/data/schemas/index.ts';
 import {
   childHeadings,
+  findHeading,
   parseTables,
   proseText,
   sectionLines,
@@ -98,21 +99,38 @@ export function parseArtsGained(cell: string): { arts: string[]; anyArts: number
   return { arts, anyArts };
 }
 
-function castingLevels(table: Table, where: string): CastingProgression['levels'] {
-  const [lv, max, cast, prep, arts] = [
+/** The dual-caster table (4.3.0) has no arts column; its arts come from both partial classes. */
+function castingLevels(table: Table, where: string, hasArts = true): CastingProgression['levels'] {
+  const [lv, max, cast, prep] = [
     /^Level$/,
     /^Max Level$/,
     /^Spells Cast$/,
     /^Spells Prepared$/,
-    /^Arts Gained$/,
-  ].map((r) => col(table, r, where)) as [number, number, number, number, number];
+  ].map((r) => col(table, r, where)) as [number, number, number, number];
+  const arts = hasArts ? col(table, /^Arts Gained$/, where) : -1;
   return table.rows.map((r) => ({
     level: parseInt10(r[lv] ?? ''),
     maxSpellLevel: parseInt10(r[max] ?? ''),
     spellsCast: parseInt10(r[cast] ?? ''),
     spellsPrepared: parseInt10(r[prep] ?? ''),
-    ...parseArtsGained(r[arts] ?? ''),
+    ...(hasArts ? parseArtsGained(r[arts] ?? '') : { arts: [], anyArts: 0 }),
   }));
+}
+
+const DUAL = '4.0 Magic and Spellcasting/4.3.0 Dual Partial Spellcasters.md';
+
+/** SRD 4.3.0: spells cast and prepared for an Adventurer with two partial spellcasting classes. */
+export function extractDualCasting(reader: SrdReader): CastingProgression {
+  const doc = reader.doc(DUAL);
+  const heading = findHeading(doc, 'PCs with Dual Spellcasting Traditions');
+  const [table] = parseTables(sectionLines(doc, heading));
+  if (!table) throw new Error(`${doc.file}: no dual spellcasting table`);
+  return {
+    id: 'dual-partial-spellcasters',
+    name: 'Dual Partial Spellcasters',
+    sources: [{ file: doc.file, heading: heading.text }],
+    levels: castingLevels(table, `${doc.file}: ${heading.text}`, false),
+  };
 }
 
 function classFromDoc(doc: MdDoc, out: ClassExtract, seen: Map<string, string>): void {

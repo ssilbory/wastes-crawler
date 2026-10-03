@@ -10,6 +10,7 @@ import {
 } from '../../game/character/creation.ts';
 import { previewSheet } from '../../game/character/derived.ts';
 import { exportCharacter, importCharacter } from '../../game/character/io.ts';
+import { classBonusSkills, classOption } from '../../game/character/class-step.ts';
 import { rollStartingCrowns } from '../../game/character/gear.ts';
 import { backgroundOpenTo, findPeople } from '../../game/character/people.ts';
 import type { AttributeScores } from '../../rules/attributes.ts';
@@ -18,6 +19,7 @@ import { BackgroundStep } from './BackgroundStep.tsx';
 import { data, freshRng } from './data.ts';
 import { FociStep } from './FociStep.tsx';
 import { GearStep } from './GearStep.tsx';
+import { MagicStep } from './MagicStep.tsx';
 import { ClassStep, FreeSkillStep, IdentityStep } from './OtherSteps.tsx';
 import { PeopleStep } from './PeopleStep.tsx';
 import { CharacterSheet, PreviewSheet } from './Sheet.tsx';
@@ -44,6 +46,7 @@ export function App() {
   const [errors, setErrors] = useState<string[]>([]);
 
   const ev = useMemo(() => evaluateChoices(choices, data), [choices]);
+  const option = choices.classId === null ? undefined : classOption(data, choices.classId);
   const preview = useMemo(() => previewSheet(ev, choices.classId, data), [ev, choices.classId]);
   const update = (patch: Partial<Choices>) => setChoices((c) => ({ ...c, ...patch }));
 
@@ -150,7 +153,14 @@ export function App() {
             <ClassStep
               value={choices.classId}
               status={ev.steps.class}
-              onChange={(classId) => update({ classId, foci: [] })}
+              replacing={
+                option && (ev.steps.class.state === 'error' || choices.classSkills[0])
+                  ? (classBonusSkills(data, option)[0] ?? null)
+                  : null
+              }
+              replacement={choices.classSkills[0] ?? null}
+              onChange={(classId) => update({ classId, classSkills: [], foci: [], magic: null })}
+              onReplace={(skill) => update({ classSkills: [skill] })}
             />
             <FociStep
               slots={ev.focusSlots}
@@ -164,6 +174,12 @@ export function App() {
                 ev.focusSlots.length > 0
               }
               onChange={(foci) => update({ foci })}
+            />
+            <MagicStep
+              option={ev.steps.class.state === 'ok' ? option : undefined}
+              choice={choices.magic}
+              status={ev.steps.magic}
+              onChange={(magic) => update({ magic })}
             />
             <FreeSkillStep
               value={choices.freeSkill}
@@ -196,7 +212,12 @@ export function App() {
               Create character
             </button>
           </div>
-          <PreviewSheet preview={preview} skills={ev.skills} equipment={ev.equipment} />
+          <PreviewSheet
+            preview={preview}
+            skills={ev.skills}
+            equipment={ev.equipment}
+            effort={ev.effort}
+          />
         </main>
       )}
     </div>

@@ -99,6 +99,7 @@ describe('characterSheet', () => {
         ],
         load: { readied: 5, stowed: 6, readiedLimit: 6, stowedLimit: 12, excess: 0, state: 'ok' },
       },
+      magic: null,
     });
   });
 });
@@ -123,7 +124,7 @@ describe('previewSheet', () => {
       attackBonus: 1,
       saves: { physical: 15, evasion: 14, mental: 15, luck: 15 },
     });
-    const badClass = { ...withArray, classId: 'full-high-mage' };
+    const badClass = { ...withArray, classId: 'partial-expert-partial-mage' };
     expect(
       previewSheet(evaluateChoices(badClass, data), badClass.classId, data).attackBonus,
     ).toBeNull();
@@ -156,8 +157,8 @@ describe('export and import', () => {
 
   it('rejects newer versions and versions with no upgrade path', () => {
     const c = goblinWarrior();
-    expect(importCharacter(JSON.stringify({ ...c, schemaVersion: 4 }), data)).toMatchObject({
-      errors: ['made by a newer version of the game (schema 4)'],
+    expect(importCharacter(JSON.stringify({ ...c, schemaVersion: 5 }), data)).toMatchObject({
+      errors: ['made by a newer version of the game (schema 5)'],
     });
     expect(importCharacter(JSON.stringify({ ...c, schemaVersion: 0 }), data)).toMatchObject({
       errors: ['no upgrade from schema 0'],
@@ -181,7 +182,19 @@ describe('export and import', () => {
     const v1 = { ...goblinWarrior(), schemaVersion: 1, foci: undefined };
     expect(importCharacter(JSON.stringify(v1), data)).toMatchObject({
       ok: true,
-      character: { schemaVersion: 3, foci: [], inventory: [], crowns: 0 },
+      character: { schemaVersion: 4, foci: [], inventory: [], crowns: 0, arts: [] },
+    });
+  });
+
+  it('rejects unknown arts and spells', () => {
+    const c = {
+      ...goblinWarrior(),
+      arts: ['juggling'],
+      spells: { known: ['fireball'], prepared: [] },
+    };
+    expect(importCharacter(JSON.stringify(c), data)).toEqual({
+      ok: false,
+      errors: ['arts: unknown juggling', 'spells: unknown fireball'],
     });
   });
 

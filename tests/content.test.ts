@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { contentReferenceErrors, loadContent } from '../src/data/content.ts';
 import { equipmentReferenceErrors } from '../src/data/equipment-check.ts';
 import { focusReferenceErrors } from '../src/data/focus-content.ts';
+import { magicReferenceErrors } from '../src/data/magic-check.ts';
 import { loadSrd } from '../src/data/load.ts';
 
 const srd = loadSrd();
@@ -63,6 +64,8 @@ describe('data/content', () => {
       shields: content.shields,
       startingPackages: content.startingPackages,
       equipmentRules: content.equipmentRules,
+      traditions: content.traditions,
+      classOptions: content.classOptions,
     };
     expect(contentReferenceErrors(srd, broken)).toEqual([
       'backgrounds/scavenger: unknown people dwarf',
@@ -113,7 +116,7 @@ describe('focus content', () => {
         {
           ...centaur,
           signatureFoci: [],
-          racialFocusPicks: ['armored-magic'],
+          racialFocusPicks: ['spirit-familiar'],
           lineages: centaur.lineages.map((l) => ({ ...l, signatureFoci: [] })),
         },
       ],
@@ -132,7 +135,7 @@ describe('focus content', () => {
         'peoples/goblin: needs 1 to 3 signature foci',
         'peoples/centaur/deer: needs 1 to 3 signature foci',
         'peoples/centaur/deer: too few racial focus picks',
-        "peoples/centaur: armored-magic isn't a pickable SRD focus",
+        "peoples/centaur: spirit-familiar isn't a pickable SRD focus",
       ]),
     );
   });
@@ -197,6 +200,45 @@ describe('equipment content', () => {
       'equipmentRules: unknown trait swarming',
       'foci/armsmaster: effect uses unknown skill fly',
       'foci/horned: effect uses unknown skill swish',
+    ]);
+  });
+});
+
+describe('magic content', () => {
+  it('reports unknown progressions, traditions, casting tables, and skills', () => {
+    const [hm] = content.traditions;
+    const caster = content.classOptions.find((c) => c.mage);
+    if (!hm || !caster?.mage) throw new Error('missing content');
+    const broken = {
+      ...content,
+      traditions: [
+        {
+          ...hm,
+          id: 'necromancer',
+          bonusSkill: 'necromancy',
+          effort: { ...hm.effort, skills: ['death'] },
+        },
+      ],
+      classOptions: [
+        { id: 'full-wizard', name: 'Wizard' },
+        {
+          ...caster,
+          mage: {
+            ...caster.mage,
+            slots: 'nope',
+            traditions: [{ tradition: 'bard', partial: false, arts: 'none' }],
+          },
+        },
+      ],
+    };
+    expect(magicReferenceErrors(srd, broken)).toEqual([
+      'traditions/necromancer: unknown skill necromancy',
+      'traditions/necromancer: unknown skill death',
+      'traditions/necromancer: has no arts',
+      'classOptions/full-wizard: unknown progression',
+      'classOptions/full-high-mage: unknown casting table nope',
+      'classOptions/full-high-mage: unknown tradition bard',
+      'classOptions/full-high-mage: unknown casting table none',
     ]);
   });
 });

@@ -2,7 +2,6 @@ import { loadContent } from '../../data/content.ts';
 import { loadSrd } from '../../data/load.ts';
 import type { Attribute, GrowthEntry, LearningEntry } from '../../data/schemas/index.ts';
 import type { GameData } from '../../game/character/context.ts';
-import { STARTING_CLASSES } from '../../game/character/creation.ts';
 import { createRng, type Rng } from '../../rules/rng.ts';
 
 export const data: GameData = { srd: loadSrd(), content: loadContent() };
@@ -22,13 +21,14 @@ export function skillName(id: string): string {
   return skills.find((s) => s.id === id)?.name ?? id;
 }
 
-export const classes = STARTING_CLASSES.map((id) => ({
-  id,
-  name: data.srd.progressions.find((p) => p.id === id)?.name ?? id,
-}));
+export const classes = data.content.classOptions.map((c) => ({ id: c.id, name: c.name }));
 
 export function className(id: string): string {
-  return data.srd.progressions.find((p) => p.id === id)?.name ?? id;
+  return (
+    data.content.classOptions.find((c) => c.id === id)?.name ??
+    data.srd.progressions.find((p) => p.id === id)?.name ??
+    id
+  );
 }
 
 export function entryLabel(entry: GrowthEntry | LearningEntry): string {

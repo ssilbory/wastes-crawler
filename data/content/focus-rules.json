@@ -10,8 +10,23 @@
   },
   {
     "id": "armored-magic",
-    "availability": "later",
-    "category": "non-combat"
+    "availability": "pickable",
+    "category": "non-combat",
+    "requiresCaster": true,
+    "effects": [
+      {
+        "kind": "armored-casting",
+        "level": 1,
+        "maxEncumbrance": 2,
+        "shields": true
+      },
+      {
+        "kind": "armored-casting",
+        "level": 2,
+        "maxEncumbrance": null,
+        "shields": true
+      }
+    ]
   },
   {
     "id": "armsmaster",
