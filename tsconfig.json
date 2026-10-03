@@ -19,5 +19,13 @@
     "jsx": "react-jsx",
     "jsxImportSource": "preact"
   },
-  "include": ["src", "tests", "tools", "vite.config.ts", "eslint.config.js"]
+  "include": [
+    "src",
+    "tests",
+    "tools",
+    "vite.config.ts",
+    "eslint.config.js",
+    "e2e",
+    "playwright.config.ts"
+  ]
 }

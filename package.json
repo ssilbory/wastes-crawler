@@ -18,7 +18,8 @@
     "license:check": "tsx tools/check-licenses.ts",
     "srd:extract": "tsx tools/srd-extract/index.ts",
     "srd:check": "tsx tools/srd-extract/index.ts --check",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "preact": "^10.29.8",
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
     "@types/node": "^24.19.0",
     "@vitest/coverage-v8": "4.1.11",
     "eslint": "^10.11.0",
