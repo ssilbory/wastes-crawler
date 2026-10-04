@@ -147,6 +147,8 @@ export const OverlandRulesSchema = z.strictObject({
   /** Rations die steps for a successful Forage and Hunt. */
   forageSteps: z.int().min(1),
   huntSteps: z.int().min(1),
+  /** A slain beast steps the rations die up once per this many hit dice, rounded up (Phase 17). */
+  butcherHitDicePerStep: z.int().min(1),
   months: z.array(z.strictObject({ name: z.string().min(1), season: SeasonSchema })).length(12),
   daysPerMonth: z.int().min(1),
   /** The calendar date a new world starts on, 0-based month. */

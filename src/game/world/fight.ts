@@ -15,6 +15,7 @@ import { emit } from './bus.ts';
 import { faithLit, inDark } from '../dungeon/light.ts';
 import { FAITH_LIGHT, userOf, vigor } from './arts.ts';
 import { onSpecial } from '../dungeon/specials.ts';
+import { butcher } from './butcher.ts';
 import { recordFallen } from './healer.ts';
 import { leaveCorpses } from './necromancy.ts';
 import { freeCaptive } from './rescue.ts';
@@ -202,6 +203,7 @@ function winnings(w: World, data: GameData, enemies: readonly (readonly string[]
     }),
   );
   componentDrops(w, data, enemies.flat());
+  butcher(w, data, enemies.flat());
   if (dice.length === 0) return;
   addLoot(w, dice);
   accrueShares(w, data, dice);

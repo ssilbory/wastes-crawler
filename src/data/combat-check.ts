@@ -29,6 +29,9 @@ export function combatReferenceErrors(srd: SrdData, content: ContentData): strin
     if (m && swings !== undefined && swings !== m.attacks)
       errors.push(`monsterCombat/${c.id}: the routine makes ${swings} attacks, not ${m.attacks}`);
     if (c.volley && !c.routine) errors.push(`monsterCombat/${c.id}: a volley needs a routine`);
+    // Beasts give rations instead of loot (Phase 17).
+    if (c.mind === 'animal' && c.loot)
+      errors.push(`monsterCombat/${c.id}: beasts give rations, not loot`);
   }
   for (const m of content.combatMagic) {
     const known = m.source === 'spell' ? srd.spells : srd.arts;

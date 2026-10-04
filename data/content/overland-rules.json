@@ -6,6 +6,7 @@
   },
   "forageSteps": 1,
   "huntSteps": 2,
+  "butcherHitDicePerStep": 4,
   "months": [
     {
       "name": "Deepwinter",
