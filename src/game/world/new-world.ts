@@ -56,6 +56,8 @@ export function newWorld(data: GameData, rng: Rng, party: Recruit[], regionId?: 
     notes: {},
     ending: null,
     hirelingDays: { food: null, aid: null },
+    deadShares: [],
+    hireBans: {},
     ordersEnded: [],
     authority: [],
     raid: null,

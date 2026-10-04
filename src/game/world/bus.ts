@@ -5,6 +5,7 @@ import { clockListener } from './clock.ts';
 import { craftingListener } from './crafting.ts';
 import { maintenanceListener } from './maintenance.ts';
 import { notesListener } from './notes.ts';
+import { sharesListener } from './shares.ts';
 import { ordersListener } from './orders.ts';
 import { questListener } from './quests.ts';
 import { raidsListener } from './raids.ts';
@@ -41,6 +42,7 @@ const LISTENERS: readonly Listener[] = [
   raidsListener,
   clockListener,
   notesListener,
+  sharesListener,
 ];
 
 export function emit(w: World, data: GameData, e: WorldEvent): void {

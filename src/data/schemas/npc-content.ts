@@ -2,14 +2,15 @@ import { z } from 'zod';
 import { IdSchema } from './common.ts';
 
 /**
- * A hireling for hire in any town: an SRD 3.3.0 wage row and the SRD monster stat line it fights
- * with. Fighters take part in combat; guides, porters, and physicians stand back as non-combatants.
+ * A hireling for hire in any town: an SRD 3.3.0 hireling row and the SRD monster stat line it
+ * fights with. Fighters take part in combat; guides, porters, and physicians stand back as
+ * non-combatants. Sam's call: no daily wage, a signing fee and a share of the loot instead.
  */
 export const HirelingTypeSchema = z.strictObject({
   id: IdSchema,
   name: z.string().min(1),
-  /** Daily wage in crowns (silver pieces). */
-  wage: z.number().positive(),
+  /** The share of loot taken, as a fraction of one PC's share. */
+  share: z.number().min(0.25).max(1),
   monster: IdSchema,
   role: z.enum(['fighter', 'guide', 'porter', 'physician']),
 });
@@ -20,8 +21,8 @@ export const NpcRulesSchema = z.strictObject({
   hirelings: z.array(HirelingTypeSchema).min(1),
   /** Placeholder names handed out in turn. */
   names: z.array(z.string().min(1)).min(1),
-  /** A hireling's share of loot as a fraction of a PC's (SRD 3.3.0: at least a half-share). */
-  lootShare: z.number().min(0),
+  /** Crowns paid to sign any hireling on in town. */
+  signingFee: z.number().min(0),
   /** SRD 3.3.0: common hirelings have a total +1 on relevant skill checks. */
   skillBonus: z.int(),
   /** Fight tiers dangerous enough to test hirelings' Morale (SRD 3.3.0). */

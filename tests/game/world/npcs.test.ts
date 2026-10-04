@@ -6,14 +6,12 @@ import {
   addNpc,
   captiveOf,
   freeSlot,
-  hirelingCut,
   hirelingType,
   moraleAfterFight,
   monsterOf,
   npcRoom,
 } from '../../../src/game/world/npcs.ts';
 import { suggestPlan } from '../../../src/game/world/plans.ts';
-import { exchangeLoot, addLoot } from '../../../src/game/world/shop.ts';
 import type { Npc, World } from '../../../src/game/world/types.ts';
 import { createRng } from '../../../src/rules/rng.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
@@ -42,9 +40,11 @@ describe('hiring (SRD 3.3.0)', () => {
         column: 2,
         quitting: false,
         inventory: [],
+        owed: 0,
       },
     ]);
-    expect(w.log.at(-1)).toContain('Aldo signs on as a Guard for 2 crowns a day.');
+    expect(w.log.at(-1)).toContain('Aldo signs on as a Guard for a quarter share of the loot.');
+    expect(w.purse).toBe(480);
     w.rng = scriptedRng([3]);
     hire(w, data, 'porter');
     expect(w.npcs[1]).toMatchObject({ id: 'npc-1', name: 'Brenna', row: 1, column: 2 });
@@ -133,7 +133,7 @@ describe('porters', () => {
 });
 
 describe('wages, healing, Morale, and shares', () => {
-  it('pays each night, and an unpaid hireling leaves at dawn', () => {
+  it('draws no wage overnight, and heals fed and sheltered', () => {
     const w = town([8, 8]);
     hire(w, data, 'guard');
     hire(w, data, 'veteran-sellsword');
@@ -141,9 +141,8 @@ describe('wages, healing, Morale, and shares', () => {
     (w.npcs[0] as Npc).hp = 2;
     for (const m of w.members) m.slept = true;
     endOfDay(w, data);
-    expect(w.purse).toBe(9);
-    expect(w.npcs.map((n) => n.name)).toEqual(['Aldo']);
-    expect(w.log).toContain('Day 1, morning: Brenna goes unpaid and leaves at dawn.');
+    expect(w.purse).toBe(11);
+    expect(w.npcs.map((n) => n.name)).toEqual(['Aldo', 'Brenna']);
     // Fed and sheltered in town: an NPC heals its hit dice.
     expect(w.npcs[0]?.hp).toBe(3);
     w.position = { col: 5, row: 9 };
@@ -183,21 +182,6 @@ describe('wages, healing, Morale, and shares', () => {
     w.rng = scriptedRng([6, 3]);
     moraleAfterFight(w, data);
     expect(w.npcs[0]?.quitting).toBe(true);
-  });
-
-  it('gives hirelings half a PC’s share of loot', () => {
-    const w = town([5, 5]);
-    expect(hirelingCut(w, data, 90)).toBe(0);
-    hire(w, data, 'guard');
-    hire(w, data, 'guard');
-    // Four PCs and two half shares: the hirelings take 1/5.
-    expect(hirelingCut(w, data, 90)).toBe(18);
-    addLoot(w, [{ count: 1, sides: 6 }]);
-    w.rng = scriptedRng([5]);
-    w.purse = 0;
-    expect(exchangeLoot(w, data)).toEqual({ rolled: 5, paid: 5, cut: 1 });
-    expect(w.purse).toBe(4);
-    expect(w.log.at(-1)).toContain('The hirelings take their half shares: 1 crowns.');
   });
 });
 

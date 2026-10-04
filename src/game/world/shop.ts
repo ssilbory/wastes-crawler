@@ -11,7 +11,6 @@ import { sizeEntries } from '../character/gear.ts';
 import { entryPrice, findItem, type InventoryEntry } from '../character/items.ts';
 import { findPeople } from '../character/people.ts';
 import { note } from './members.ts';
-import { hirelingCut } from './npcs.ts';
 import { currentLedger, ledger, priceHere, spend, spendingThreshold, townHere } from './town.ts';
 import type { TownResult } from './services.ts';
 import type { Member, World } from './types.ts';
@@ -156,12 +155,9 @@ export function addLoot(w: World, dice: readonly LootDice[]): void {
 }
 
 /** Rolls every loot die carried and pays out against the town's loot threshold. */
-export function exchangeLoot(
-  w: World,
-  data: GameData,
-): { rolled: number; paid: number; cut: number } {
+export function exchangeLoot(w: World, data: GameData): { rolled: number; paid: number } {
   const town = townHere(w, data);
-  if (w.loot.length === 0) return { rolled: 0, paid: 0, cut: 0 };
+  if (w.loot.length === 0) return { rolled: 0, paid: 0 };
   const rules = data.content.townRules;
   const rolled = w.loot.reduce(
     (sum, d) => sum + roll(w.rng, { count: d.count, sides: d.sides, modifier: 0 }).total,
@@ -175,10 +171,8 @@ export function exchangeLoot(
     rules.lootDropRate,
   );
   ledger(w, data, town).looted += rolled;
-  const cut = hirelingCut(w, data, paid);
-  w.purse = toTenths(w.purse + paid - cut);
+  w.purse = toTenths(w.purse + paid);
   w.loot = [];
   note(w, `The loot is worth ${rolled} crowns; ${town.name}'s traders pay ${paid}.`);
-  if (cut > 0) note(w, `The hirelings take their half shares: ${cut} crowns.`);
-  return { rolled, paid, cut };
+  return { rolled, paid };
 }

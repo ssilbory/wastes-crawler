@@ -8,10 +8,11 @@ import type { GameData } from '../character/context.ts';
 import { fights, MOODS } from './encounters.ts';
 import { alive, memberCheck, note } from './members.ts';
 import { mindOf, parleyReach } from './minds.ts';
-import { addNpc, fights as npcFights, hirelingType, monsterOf } from './npcs.ts';
+import { accrueShares, addNpc, fights as npcFights, hirelingType, monsterOf } from './npcs.ts';
 import { freeCaptive } from './rescue.ts';
 import type { TownResult } from './services.ts';
 import { addLoot } from './shop.ts';
+import { shareText } from './wording.ts';
 import type { World } from './types.ts';
 
 export type Approach = 'talk' | 'intimidate' | 'bribe';
@@ -52,6 +53,7 @@ function goodwill(w: World, data: GameData): void {
   });
   if (dice.length > 0) {
     addLoot(w, dice);
+    accrueShares(w, data, dice);
     note(w, 'They offer tribute to be left in peace.');
   }
   const kin = data.content.npcRules.hirelings.find((h) => e.enemies.flat().includes(h.monster));
@@ -108,6 +110,6 @@ export function acceptOffer(w: World, data: GameData): TownResult {
   const npc = addNpc(w, data, 'hireling', t.id, t.monster, null, t.role === 'fighter');
   if (!npc) return no('There is no room in the party.');
   e.offer = null;
-  note(w, `${npc.name} signs on as a ${t.name} for ${t.wage} crowns a day.`);
+  note(w, `${npc.name} signs on as a ${t.name} for ${shareText(t.share)} of the loot.`);
   return { ok: true };
 }

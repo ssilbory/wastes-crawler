@@ -7,6 +7,7 @@ import type { Captive, HirelingType, Monster } from '../../data/schemas/index.ts
 import { moraleHolds } from '../../rules/combat.ts';
 import { rollDie } from '../../rules/dice.ts';
 import { toTenths } from '../../rules/economy.ts';
+import type { LootDice } from '../../data/schemas/index.ts';
 import { findMonster, type GameData } from '../character/context.ts';
 import { activeEffects } from '../character/equipment.ts';
 import { alive, note } from './members.ts';
@@ -120,6 +121,7 @@ export function addNpc(
     ...slot,
     quitting: false,
     inventory: [],
+    owed: 0,
   };
   w.npcs.push(npc);
   return npc;
@@ -132,20 +134,8 @@ export function removeNpc(w: World, id: string): Npc {
   return n;
 }
 
-/**
- * The night's wages: each hireling is paid in turn from the purse, and one who can't be paid leaves
- * at dawn. Fed and sheltered NPCs then heal their hit dice.
- */
+/** Fed and sheltered NPCs heal their hit dice overnight. Hirelings draw no wage (shares.ts). */
 export function nightForNpcs(w: World, data: GameData, rested: boolean): void {
-  for (const n of hirelings(w)) {
-    const { wage } = hirelingType(data, n.type);
-    if (w.purse >= wage) {
-      w.purse = toTenths(w.purse - wage);
-      continue;
-    }
-    removeNpc(w, n.id);
-    note(w, `${n.name} goes unpaid and leaves at dawn.`);
-  }
   if (!rested) return;
   for (const n of w.npcs) n.hp = Math.min(n.maxHp, n.hp + npcMonster(data, n).hitDice);
 }
@@ -170,10 +160,18 @@ export function moraleAfterFight(w: World, data: GameData): void {
   }
 }
 
-/** The hirelings' cut of a loot payout: each takes `lootShare` of one PC's share. */
-export function hirelingCut(w: World, data: GameData, paid: number): number {
-  const h = hirelings(w).length * data.content.npcRules.lootShare;
+/**
+ * Sam's call: each hireling with the party takes its share of loot dice as they are won, valued at
+ * the dice's average: `share` of one PC's share among the living PCs and the hirelings' shares.
+ */
+export function accrueShares(w: World, data: GameData, dice: readonly LootDice[]): void {
+  const hired = hirelings(w);
+  if (hired.length === 0) return;
+  const value = dice.reduce((sum, d) => sum + (d.count * (d.sides + 1)) / 2, 0);
+  const shares = hired.map((n) => hirelingType(data, n.type).share);
   const pcs = w.members.filter((m) => !m.dead).length;
-  if (h === 0) return 0;
-  return toTenths((paid * h) / (pcs + h));
+  const total = pcs + shares.reduce((a, b) => a + b, 0);
+  hired.forEach((n, i) => {
+    n.owed = toTenths(n.owed + (value * (shares[i] as number)) / total);
+  });
 }

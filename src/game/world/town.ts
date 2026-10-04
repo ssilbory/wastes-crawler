@@ -11,6 +11,7 @@ import { emit } from './bus.ts';
 import { enterRegion } from './crossing.ts';
 import { raidedCost } from './raids.ts';
 import { arriveNpcs } from './rescue.ts';
+import { payShares } from './shares.ts';
 import type { World } from './types.ts';
 
 export const FULL_RATIONS = RESOURCE_DICE[RESOURCE_DICE.length - 1] as 12;
@@ -86,6 +87,7 @@ export function enterTown(w: World, data: GameData, siteId: string, start = fals
   w.light.kitsReady = true;
   if (start) return;
   note(w, `The party reaches ${site.name}.`);
+  payShares(w, data);
   arriveNpcs(w, data, site.id);
   emit(w, data, { kind: 'town-entered', town: site.id });
   if (firstVisit || w.day - w.climateDay > month(data)) climate(w, data);

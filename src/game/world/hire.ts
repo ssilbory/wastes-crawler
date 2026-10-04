@@ -9,22 +9,29 @@ import {
 } from '../character/items.ts';
 import { emit } from './bus.ts';
 import { note } from './members.ts';
-import { addNpc, hirelingType, MAX_NPCS, removeNpc } from './npcs.ts';
+import { addNpc, hirelingType, MAX_NPCS, npcRoom, removeNpc } from './npcs.ts';
+import { hireBlocked } from './shares.ts';
 import type { TownResult } from './services.ts';
 import { inventoryProblem } from './shop.ts';
-import { townHere } from './town.ts';
+import { priceHere, spend, townHere } from './town.ts';
+import { shareText } from './wording.ts';
 import type { Npc, World } from './types.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 
-/** Hires in town; the first night's wage comes due at the end of the day. */
+/** Hires in town for the signing fee; the hireling's pay is a share of the loot (shares.ts). */
 export function hire(w: World, data: GameData, typeId: string): TownResult {
   townHere(w, data);
   if (w.encounter) return no('Settle the encounter first.');
+  const blocked = hireBlocked(w, data);
+  if (blocked) return no(blocked);
   const t = hirelingType(data, typeId);
-  const npc = addNpc(w, data, 'hireling', t.id, t.monster, null, t.role === 'fighter');
-  if (!npc) return no(`The party has room for ${MAX_NPCS} NPCs.`);
-  note(w, `${npc.name} signs on as a ${t.name} for ${t.wage} crowns a day.`);
+  if (npcRoom(w, t.role === 'fighter') === null)
+    return no(`The party has room for ${MAX_NPCS} NPCs.`);
+  const fee = data.content.npcRules.signingFee;
+  if (!spend(w, data, fee)) return no(`Signing on costs ${priceHere(w, data, fee)} crowns.`);
+  const npc = addNpc(w, data, 'hireling', t.id, t.monster, null, t.role === 'fighter') as Npc;
+  note(w, `${npc.name} signs on as a ${t.name} for ${shareText(t.share)} of the loot.`);
   return { ok: true };
 }
 

@@ -35,7 +35,7 @@ test('hires a guard at the tavern', async ({ page }) => {
   await page.getByRole('tab', { name: 'Tavern' }).click();
   await page.getByRole('button', { name: 'Hire a Guard' }).click();
   const npcs = page.getByRole('region', { name: 'NPCs' });
-  await expect(npcs).toContainText('Aldo Guard, 2 crowns a day');
+  await expect(npcs).toContainText('Aldo Guard, a quarter share');
   await page.getByRole('button', { name: 'Back to the map' }).click();
   await expect(page.getByRole('region', { name: 'NPCs' })).toContainText('Aldo');
 });

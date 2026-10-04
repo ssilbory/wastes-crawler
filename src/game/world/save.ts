@@ -110,6 +110,14 @@ export const WORLD_MIGRATIONS: Migrations = {
   16: (raw) => ({ ...raw, schemaVersion: 17, clock: 0, notes: {}, ending: null }),
   // Version 18 adds the guide's and physician's daily services: neither used yet.
   17: (raw) => ({ ...raw, schemaVersion: 18, hirelingDays: { food: null, aid: null } }),
+  // Version 19 trades hirelings' wages for loot shares (Sam's call): nothing owed yet.
+  18: (raw) => ({
+    ...raw,
+    schemaVersion: 19,
+    npcs: (raw.npcs as Raw[]).map((n) => ({ ...n, owed: 0 })),
+    deadShares: [],
+    hireBans: {},
+  }),
 };
 
 export function serializeWorld(w: World): string {
@@ -152,6 +160,8 @@ export function serializeWorld(w: World): string {
     notes: w.notes,
     ending: w.ending,
     hirelingDays: w.hirelingDays,
+    deadShares: w.deadShares,
+    hireBans: w.hireBans,
     ordersEnded: w.ordersEnded,
     authority: w.authority,
     raid: w.raid,
@@ -245,6 +255,8 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       notes: s.notes,
       ending: s.ending,
       hirelingDays: s.hirelingDays,
+      deadShares: s.deadShares,
+      hireBans: s.hireBans,
       ordersEnded: s.ordersEnded,
       authority: s.authority,
       raid: s.raid,

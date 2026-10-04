@@ -5,6 +5,7 @@ import { captiveOf, MAX_NPCS, typeOf } from '../../game/world/npcs.ts';
 import { regionMap } from '../../game/world/region.ts';
 import type { TownResult } from '../../game/world/services.ts';
 import type { Npc, World } from '../../game/world/types.ts';
+import { shareText } from '../../game/world/wording.ts';
 import { data } from '../builder/data.ts';
 
 function escortTo(questId: string): string {
@@ -14,7 +15,7 @@ function escortTo(questId: string): string {
 
 function role(w: World, n: Npc): string {
   const t = typeOf(data, n);
-  if (t) return `${t.name}, ${t.wage} crowns a day`;
+  if (t) return `${t.name}, ${shareText(t.share)}${n.owed > 0 ? `, owed ${n.owed} crowns` : ''}`;
   const to = n.kind === 'captive' ? captiveOf(data, n.type).destination : escortTo(n.type);
   const town = regionMap(data, w.region).sites.find((s) => s.id === to)?.name ?? to;
   return `${n.kind === 'captive' ? 'rescued' : 'escorted'}, bound for ${town}`;

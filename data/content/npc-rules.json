@@ -3,44 +3,44 @@
     {
       "id": "guard",
       "name": "Guard",
-      "wage": 2,
       "monster": "thug-or-militia",
-      "role": "fighter"
+      "role": "fighter",
+      "share": 0.25
     },
     {
       "id": "veteran-sellsword",
       "name": "Veteran Sellsword",
-      "wage": 10,
       "monster": "veteran-soldier",
-      "role": "fighter"
+      "role": "fighter",
+      "share": 0.75
     },
     {
       "id": "mage-of-minor-abilities",
       "name": "Mage of Minor Abilities",
-      "wage": 200,
       "monster": "petty-mage",
-      "role": "fighter"
+      "role": "fighter",
+      "share": 1
     },
     {
       "id": "wilderness-guide",
       "name": "Wilderness Guide",
-      "wage": 10,
       "monster": "peaceful-human",
-      "role": "guide"
+      "role": "guide",
+      "share": 0.5
     },
     {
       "id": "porter",
       "name": "Porter",
-      "wage": 5,
       "monster": "peaceful-human",
-      "role": "porter"
+      "role": "porter",
+      "share": 0.25
     },
     {
       "id": "mundane-physician",
       "name": "Mundane Physician",
-      "wage": 10,
       "monster": "peaceful-human",
-      "role": "physician"
+      "role": "physician",
+      "share": 0.5
     }
   ],
   "names": [
@@ -61,7 +61,7 @@
     "Orrin",
     "Pell"
   ],
-  "lootShare": 0.5,
+  "signingFee": 20,
   "skillBonus": 1,
   "porterCapacity": 12,
   "parley": {

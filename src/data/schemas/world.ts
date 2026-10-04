@@ -5,7 +5,7 @@ import { CharacterSchema } from './character.ts';
 import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 18;
+export const WORLD_SCHEMA_VERSION = 19;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -45,6 +45,8 @@ export const NpcSaveSchema = z.strictObject({
   quitting: z.boolean(),
   /** A porter's load. */
   inventory: CharacterSchema.shape.inventory,
+  /** A hireling's share of loot taken since the party was last in town, in crowns (Phase 12). */
+  owed: z.number().min(0),
 });
 export type NpcSave = z.infer<typeof NpcSaveSchema>;
 
@@ -258,6 +260,10 @@ export const WorldSaveSchema = z.strictObject({
   notes: z.record(IdSchema, z.enum(['found', 'burned', 'sold', 'kept', 'paid'])),
   /** The day a guide last found food and a physician last gave strain-free first aid. */
   hirelingDays: z.strictObject({ food: z.int().nullable(), aid: z.int().nullable() }),
+  /** Dead hirelings whose shares the party has yet to pay or refuse. */
+  deadShares: z.array(z.strictObject({ name: z.string().min(1), owed: z.number().min(0) })),
+  /** Towns that won't hire for the party, and the day they relent. */
+  hireBans: z.record(IdSchema, z.int().min(0)),
   /** What the party did with the Seal of Command, once decided. */
   ending: z.enum(['destroy', 'give', 'keep']).nullable(),
   /** Tokens of command authority the party carries. */

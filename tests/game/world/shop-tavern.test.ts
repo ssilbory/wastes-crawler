@@ -137,16 +137,16 @@ describe('loot', () => {
 
   it('rolls the dice into crowns, paying less past the loot threshold', () => {
     const w = world();
-    expect(exchangeLoot(w, data)).toEqual({ rolled: 0, paid: 0, cut: 0 });
+    expect(exchangeLoot(w, data)).toEqual({ rolled: 0, paid: 0 });
     addLoot(w, [{ count: 2, sides: 6 }]);
     w.rng = scriptedRng([6, 5]);
-    expect(exchangeLoot(w, data)).toEqual({ rolled: 11, paid: 11, cut: 0 });
+    expect(exchangeLoot(w, data)).toEqual({ rolled: 11, paid: 11 });
     expect(w).toMatchObject({ purse: 96, loot: [] });
     expect(w.log.at(-1)).toContain("The loot is worth 11 crowns; Westhold's traders pay 11.");
     w.towns.westhold = { spent: 0, looted: 750, since: 0 };
     addLoot(w, [{ count: 1, sides: 100 }]);
     w.rng = scriptedRng([75]);
-    expect(exchangeLoot(w, data)).toEqual({ rolled: 75, paid: 67.5, cut: 0 });
+    expect(exchangeLoot(w, data)).toEqual({ rolled: 75, paid: 67.5 });
     expect(w.towns.westhold?.looted).toBe(825);
   });
 });

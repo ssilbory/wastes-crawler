@@ -9,14 +9,15 @@ const content = loadContent();
 describe('NPC content', () => {
   it('loads SRD hirelings, captives bound for real towns, and a mind for every monster', () => {
     expect(npcReferenceErrors(srd, content)).toEqual([]);
-    expect(content.npcRules.hirelings.map((h) => [h.id, h.wage])).toEqual([
-      ['guard', 2],
-      ['veteran-sellsword', 10],
-      ['mage-of-minor-abilities', 200],
-      ['wilderness-guide', 10],
-      ['porter', 5],
-      ['mundane-physician', 10],
+    expect(content.npcRules.hirelings.map((h) => [h.id, h.share])).toEqual([
+      ['guard', 0.25],
+      ['veteran-sellsword', 0.75],
+      ['mage-of-minor-abilities', 1],
+      ['wilderness-guide', 0.5],
+      ['porter', 0.25],
+      ['mundane-physician', 0.5],
     ]);
+    expect(content.npcRules.signingFee).toBe(20);
     expect(content.monsterCombat.every((m) => m.mind)).toBe(true);
   });
 

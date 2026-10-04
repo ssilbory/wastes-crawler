@@ -10,7 +10,7 @@ import type { Rng } from '../../rules/rng.ts';
 import type { GameData } from '../character/context.ts';
 import { difficultyTier, type Difficulty } from './difficulty.ts';
 import { alive, note, setHp } from './members.ts';
-import { fights, moraleAfterFight, npcMonster, removeNpc, typeOf } from './npcs.ts';
+import { accrueShares, fights, moraleAfterFight, npcMonster, removeNpc, typeOf } from './npcs.ts';
 import { emit } from './bus.ts';
 import { inDark } from '../dungeon/light.ts';
 import { onSpecial } from '../dungeon/specials.ts';
@@ -182,6 +182,7 @@ function winnings(w: World, data: GameData, enemies: readonly (readonly string[]
   componentDrops(w, data, enemies.flat());
   if (dice.length === 0) return;
   addLoot(w, dice);
+  accrueShares(w, data, dice);
   const total = new Map<number, number>();
   for (const d of dice) total.set(d.sides, (total.get(d.sides) ?? 0) + d.count);
   const text = [...total].map(([sides, count]) => `${count}d${sides}`).join(' + ');
