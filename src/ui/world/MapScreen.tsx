@@ -17,7 +17,7 @@ import { questTargets } from '../../render/quest-view.ts';
 import { CoachPanel } from './CoachPanel.tsx';
 import { QuarterPanel } from './QuarterPanel.tsx';
 import { typeOf } from '../../game/world/npcs.ts';
-import { dungeonHere } from '../../game/dungeon/explore.ts';
+import { entrancesIn, wayDownHere } from '../../game/dungeon/ruins.ts';
 import type { QuarterPlan } from '../../game/world/types.ts';
 
 export function MapScreen(props: {
@@ -43,11 +43,9 @@ export function MapScreen(props: {
   const { width, height } = mapPixels(map, HEX_SIZE);
   const town = map.siteAt(w.position);
   const here = town?.name ?? map.terrainAt(w.position).name;
-  const way = dungeonHere(w, data);
+  const way = wayDownHere(w, data);
   const road = map.exitAt(w.position);
-  const entrances = data.content.dungeons
-    .filter((d) => d.region === w.region)
-    .map((d) => ({ ...d.entrance, name: d.name }));
+  const entrances = entrancesIn(data, w.region);
   return (
     <div class="world">
       <div class="world-bar">

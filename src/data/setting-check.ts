@@ -47,6 +47,7 @@ export function settingReferenceErrors(srd: SrdData, content: ContentData): stri
         if (s.kind === 'countersign' && !orders.has(s.order))
           errors.push(`${where}: unknown order ${s.order}`);
         if (s.kind === 'notes' && !sets.has(s.set)) errors.push(`${where}: unknown notes ${s.set}`);
+        if (s.kind === 'cache' && s.vault) errors.push(`${where}: vaults belong to ruins`);
         if (s.kind === 'token' && !content.authorities.some((a) => a.id === s.authority))
           errors.push(`${where}: unknown authority ${s.authority}`);
         if (s.kind === 'message')
@@ -70,6 +71,7 @@ export function settingReferenceErrors(srd: SrdData, content: ContentData): stri
       errors.push(`quests/${q.id}: unknown authority ${token}`);
   }
   errors.push(...campaignErrors(content, monsters));
+  errors.push(...ruinErrors(content, monsters));
   const raid = content.raidRules;
   const region = content.regions.find((r) => r.id === raid.region);
   if (!region) errors.push(`raidRules: unknown region ${raid.region}`);
@@ -102,5 +104,36 @@ function campaignErrors(content: ContentData, monsters: Set<string>): string[] {
     for (const o of q.objectives)
       if (o.kind === 'guardian' && o.reinforce && !monsters.has(o.reinforce))
         errors.push(`quests/${q.id}: unknown monster ${o.reinforce}`);
+  return errors;
+}
+
+/** Ruins sit on open land away from settlements and dungeons, and point at known content. */
+function ruinErrors(content: ContentData, monsters: Set<string>): string[] {
+  const errors: string[] = [];
+  const ids = content.ruins.map((r) => r.id);
+  if (new Set(ids).size !== ids.length) errors.push('ruins: duplicate id');
+  for (const r of content.ruins) {
+    const where = `ruins/${r.id}`;
+    const region = content.regions.find((x) => x.id === r.region);
+    const glyph = region?.terrain[r.row]?.[r.col];
+    const terrain = content.terrains.find((t) => t.glyph === glyph);
+    if (!region) errors.push(`${where}: unknown region ${r.region}`);
+    else if (!terrain || terrain.movement === 'impassable')
+      errors.push(`${where}: not on passable land`);
+    else if (
+      region.sites.some((s) => s.col === r.col && s.row === r.row) ||
+      content.dungeons.some(
+        (d) => d.region === r.region && d.entrance.col === r.col && d.entrance.row === r.row,
+      )
+    )
+      errors.push(`${where}: shares its hex with a settlement or dungeon`);
+    if (r.size.min > r.size.max) errors.push(`${where}: size range is empty`);
+    if (!content.encounterTables.some((t) => t.id === r.wander.table))
+      errors.push(`${where}: unknown table ${r.wander.table}`);
+    for (const id of new Set(r.vault.guards.flat()))
+      if (!monsters.has(id)) errors.push(`${where}: unknown monster ${id}`);
+    if (r.vault.component && !content.components.some((c) => c.id === r.vault.component))
+      errors.push(`${where}: unknown component ${r.vault.component}`);
+  }
   return errors;
 }

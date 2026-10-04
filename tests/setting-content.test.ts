@@ -57,6 +57,7 @@ describe('setting content (Phase 12b)', () => {
                 { kind: 'countersign', at: { x: 0, y: 0 }, order: 'lost', text: 'x' },
                 { kind: 'message', at: { x: 0, y: 0 }, text: 'x', people: ['human'] },
                 { kind: 'notes', at: { x: 0, y: 0 }, set: 'lost', text: 'x' },
+                { kind: 'cache', at: { x: 0, y: 0 }, loot: [{ count: 1, sides: 6 }], vault: true },
                 { kind: 'token', at: { x: 0, y: 0 }, authority: 'lost', text: 'x' },
               ],
               garrisons: [
@@ -81,7 +82,11 @@ describe('setting content (Phase 12b)', () => {
       },
     };
     // The campaign's own references are checked below.
-    expect(settingReferenceErrors(srd, broken).filter((e) => !e.startsWith('campaign'))).toEqual([
+    expect(
+      settingReferenceErrors(srd, broken).filter(
+        (e) => !e.startsWith('campaign') && !e.startsWith('ruins'),
+      ),
+    ).toEqual([
       'standingOrders/ruinfield-gate: unknown quest nothing',
       'standingOrders/ruinfield-gate: unknown hireling type jester',
       'authorities/a: unknown order lost',
@@ -93,6 +98,7 @@ describe('setting content (Phase 12b)', () => {
       `dungeons/${dungeon.id}/${level.id}: unknown order lost`,
       `dungeons/${dungeon.id}/${level.id}: message for unknown people human`,
       `dungeons/${dungeon.id}/${level.id}: unknown notes lost`,
+      `dungeons/${dungeon.id}/${level.id}: vaults belong to ruins`,
       `dungeons/${dungeon.id}/${level.id}: unknown authority lost`,
       `dungeons/${dungeon.id}/${level.id}: the garrison at 99,0 has unknown order lost`,
       `dungeons/${dungeon.id}/${level.id}: the garrison at 99,0 is not on a plain floor cell`,
@@ -139,5 +145,35 @@ describe('setting content (Phase 12b)', () => {
         e.startsWith('raidRules'),
       ),
     ).toEqual(['raidRules: dark-lands has no settlements']);
+  });
+
+  it('reports ruins in the wrong places or pointing nowhere', () => {
+    const [ruin] = content.ruins;
+    if (!ruin) throw new Error('missing content');
+    const ruins = [
+      { ...ruin, region: 'atlantis' },
+      { ...ruin, id: 'lake', col: 5, row: 4 },
+      { ...ruin, id: 'town', col: 3, row: 8 },
+      {
+        ...ruin,
+        id: 'odd',
+        size: { min: 10, max: 9 },
+        wander: { every: 2, table: 'nowhere' },
+        vault: { guards: [['dragon']], loot: ruin.vault.loot, component: 'unobtainium' },
+      },
+      { ...ruin, id: 'odd' },
+    ];
+    expect(
+      settingReferenceErrors(srd, { ...content, ruins }).filter((e) => e.startsWith('ruins')),
+    ).toEqual([
+      'ruins: duplicate id',
+      `ruins/${ruin.id}: unknown region atlantis`,
+      'ruins/lake: not on passable land',
+      'ruins/town: shares its hex with a settlement or dungeon',
+      'ruins/odd: size range is empty',
+      'ruins/odd: unknown table nowhere',
+      'ruins/odd: unknown monster dragon',
+      'ruins/odd: unknown component unobtainium',
+    ]);
   });
 });

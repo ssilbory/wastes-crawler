@@ -5,7 +5,7 @@ import { CharacterSchema } from './character.ts';
 import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 19;
+export const WORLD_SCHEMA_VERSION = 20;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -266,6 +266,13 @@ export const WorldSaveSchema = z.strictObject({
   deadShares: z.array(z.strictObject({ name: z.string().min(1), owed: z.number().min(0) })),
   /** Towns that won't hire for the party, and the day they relent. */
   hireBans: z.record(IdSchema, z.int().min(0)),
+  /** Ruins generated so far: each one's layout seed, and the day its vault was emptied (Phase 12e). */
+  ruins: z.record(
+    IdSchema,
+    z.strictObject({ seed: z.int().min(1), emptied: z.int().min(0).nullable() }),
+  ),
+  /** Loot caches taken, by dungeon, level, and cell. */
+  caches: z.array(z.string()),
   /** What the party did with the Seal of Command, once decided. */
   ending: z.enum(['destroy', 'give', 'keep']).nullable(),
   /** Tokens of command authority the party carries. */

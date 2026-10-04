@@ -11,6 +11,7 @@ import { questListener } from './quests.ts';
 import { raidsListener } from './raids.ts';
 import { raisingListener } from './raising.ts';
 import { rescueListener } from '../dungeon/rescues.ts';
+import { ruinsListener } from '../dungeon/ruins.ts';
 import type { Npc, World } from './types.ts';
 
 export type WorldEvent =
@@ -43,6 +44,7 @@ const LISTENERS: readonly Listener[] = [
   clockListener,
   notesListener,
   sharesListener,
+  ruinsListener,
 ];
 
 export function emit(w: World, data: GameData, e: WorldEvent): void {

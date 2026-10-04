@@ -1,4 +1,5 @@
 // One line describing a save slot. Pure reads.
+import { dungeonOf } from '../game/dungeon/explore.ts';
 import type { GameData } from '../game/character/context.ts';
 import { describeDate } from '../game/world/calendar.ts';
 import { regionMap } from '../game/world/region.ts';
@@ -13,7 +14,7 @@ export function slotSummary(text: string | null, data: GameData): string {
   const map = regionMap(data, w.region);
   const site = map.siteAt(w.position);
   const where = w.dungeon
-    ? (data.content.dungeons.find((d) => d.id === w.dungeon?.dungeon)?.name as string)
+    ? dungeonOf(data, w.dungeon.dungeon).name
     : (site?.name ?? `the wilds at ${w.position.col},${w.position.row}`);
   const names = w.members.map((m) => m.character.name).join(', ');
   return `${describeDate(data.content.overlandRules, w.day, w.quarter)} · ${where} · ${names}`;

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { AttributeSchema, DiceSchema, IdSchema } from './common.ts';
+import { LootDiceSchema } from './town-content.ts';
 
 export const FacingSchema = z.enum(['n', 'e', 's', 'w']);
 export type Facing = z.infer<typeof FacingSchema>;
@@ -95,6 +96,18 @@ export const SpecialSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('darkness'), ...At }),
   /** No spells or arts in a fight here. */
   z.strictObject({ kind: z.literal('anti-magic'), ...At }),
+  /**
+   * A loot cache, taken the first time the party steps here (Phase 12e); a vault's guards must be
+   * beaten first.
+   */
+  z.strictObject({
+    kind: z.literal('cache'),
+    ...At,
+    loot: z.array(LootDiceSchema).min(1),
+    component: IdSchema.optional(),
+    guards: z.array(z.array(IdSchema).min(1).max(8)).min(1).max(3).optional(),
+    vault: z.literal(true).optional(),
+  }),
   /** A set of crafter's notes, found the first time the party steps here (Phase 12d). */
   z.strictObject({ kind: z.literal('notes'), ...At, set: IdSchema, text: z.string().min(1) }),
   /** A token of command authority, taken the first time the party steps here (Phase 12d). */

@@ -18,3 +18,9 @@ Sam's call: optional side dungeons.
 
 - No campaign beat depends on a generator; the quest chain and the boss stay authored.
 - The generator is built in Phase 12e, after the campaign dungeons.
+
+## Implementation (Phase 12e)
+
+- Ruin sites are content (data/content/ruins.json); the generator is src/game/dungeon/generate.ts.
+- A ruin's dungeon id carries its seed (`<ruin>-v<seed>`), so a save reloads the same layout without storing the map.
+- The game validates each new layout with the level validator before the party enters; `pnpm validate:levels` also checks every ruin under 100 seeds.

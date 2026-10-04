@@ -118,6 +118,8 @@ export const WORLD_MIGRATIONS: Migrations = {
     deadShares: [],
     hireBans: {},
   }),
+  // Version 20 adds ruins (Phase 12e): none generated, no caches taken.
+  19: (raw) => ({ ...raw, schemaVersion: 20, ruins: {}, caches: [] }),
 };
 
 export function serializeWorld(w: World): string {
@@ -162,6 +164,8 @@ export function serializeWorld(w: World): string {
     hirelingDays: w.hirelingDays,
     deadShares: w.deadShares,
     hireBans: w.hireBans,
+    ruins: w.ruins,
+    caches: w.caches,
     ordersEnded: w.ordersEnded,
     authority: w.authority,
     raid: w.raid,
@@ -257,6 +261,8 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       hirelingDays: s.hirelingDays,
       deadShares: s.deadShares,
       hireBans: s.hireBans,
+      ruins: s.ruins,
+      caches: s.caches,
       ordersEnded: s.ordersEnded,
       authority: s.authority,
       raid: s.raid,

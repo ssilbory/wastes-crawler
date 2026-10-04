@@ -82,6 +82,9 @@ export interface World {
   hirelingDays: { food: number | null; aid: number | null };
   deadShares: { name: string; owed: number }[];
   hireBans: Record<string, number>;
+  /** Generated ruins and taken loot caches (Phase 12e). */
+  ruins: Record<string, { seed: number; emptied: number | null }>;
+  caches: string[];
   ordersEnded: string[];
   authority: string[];
   raid: { town: string; day: number; fighting: boolean } | null;

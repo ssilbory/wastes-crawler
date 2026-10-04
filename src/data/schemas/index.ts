@@ -36,6 +36,7 @@ export * from './content.ts';
 export * from './crafting-content.ts';
 export * from './settings.ts';
 export * from './setting-content.ts';
+export * from './ruin-content.ts';
 export * from './equipment-content.ts';
 export * from './magic-content.ts';
 export * from './combat-content.ts';

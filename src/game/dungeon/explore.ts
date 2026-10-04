@@ -3,13 +3,15 @@
 // or back to the hex map. Steps count toward exploration turns (time.ts); each flight of stairs
 // costs a quarter day. Secret doors are walls until Phase 8's Search.
 import { parseLevelMap, type LevelMap } from '../../data/dungeon-map.ts';
-import type { Dungeon, DungeonLevel, DungeonState } from '../../data/schemas/index.ts';
+import type { Dungeon, DungeonLevel, DungeonState, Ruin } from '../../data/schemas/index.ts';
 import { ahead, cellKey, turn, type Cell, type Facing } from '../../rules/grid.ts';
 import { hexKey } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
 import { note } from '../world/members.ts';
 import { endQuarter } from '../world/quarter.ts';
 import { emit } from '../world/bus.ts';
+import { ruinDungeon } from './generate.ts';
+import { openRuin, ruinHere } from './ruins.ts';
 import { douse, drawKits, inDark, kindle } from './light.ts';
 import { glimpse, knownEdges } from './secrets.ts';
 import { arriveOn, onSpecial } from './specials.ts';
@@ -21,7 +23,7 @@ import type { World } from '../world/types.ts';
 const no = (reason: string): TownResult => ({ ok: false, reason });
 
 export function dungeonOf(data: GameData, id: string): Dungeon {
-  const d = data.content.dungeons.find((x) => x.id === id);
+  const d = data.content.dungeons.find((x) => x.id === id) ?? ruinDungeon(data.content.ruins, id);
   if (!d) throw new Error(`unknown dungeon ${id}`);
   return d;
 }
@@ -40,7 +42,7 @@ export function levelOf(data: GameData, dungeonId: string, levelId: string) {
   return { level, map };
 }
 
-/** The dungeon whose entrance is the party's hex, if any. */
+/** The hand-made dungeon whose entrance is the party's hex, if any; ruins are in ruins.ts. */
 export function dungeonHere(w: World, data: GameData): Dungeon | undefined {
   return data.content.dungeons.find(
     (d) => d.region === w.region && hexKey(d.entrance) === hexKey(w.position),
@@ -74,11 +76,12 @@ function arrive(w: World, data: GameData, level: string, at: Cell, facing: Facin
 
 /** Goes down into the dungeon at the party's hex: a quarter day. */
 export function enterDungeon(w: World, data: GameData): TownResult {
-  const d = dungeonHere(w, data);
-  if (!d) return no('There is no way down here.');
+  const ruin = ruinHere(w, data);
+  if (!dungeonHere(w, data) && !ruin) return no('There is no way down here.');
   if (w.dungeon) return no('The party is already underground.');
   if (w.encounter) return no('Settle the encounter first.');
   if (w.coach) return no('The party is on a coach.');
+  const d = dungeonHere(w, data) ?? openRuin(w, data, ruin as Ruin);
   w.destination = null;
   w.dungeon = {
     dungeon: d.id,

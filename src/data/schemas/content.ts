@@ -23,6 +23,7 @@ import {
   RaidRulesSchema,
   StandingOrderSchema,
 } from './setting-content.ts';
+import { RuinSchema } from './ruin-content.ts';
 import {
   ComponentSchema,
   CraftingRulesSchema,
@@ -184,6 +185,7 @@ export const ContentSchemas = {
   authorities: z.array(AuthoritySchema),
   raidRules: RaidRulesSchema,
   campaign: CampaignSchema,
+  ruins: z.array(RuinSchema),
   craftingRules: CraftingRulesSchema,
   components: z.array(ComponentSchema).min(1),
   mods: z.array(ModSchema).min(1),

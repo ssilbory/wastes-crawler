@@ -1,0 +1,194 @@
+[
+  {
+    "id": "sunken-chapel",
+    "name": "The Sunken Chapel",
+    "region": "borderlands",
+    "col": 2,
+    "row": 10,
+    "depth": 1,
+    "size": {
+      "min": 8,
+      "max": 9
+    },
+    "wander": {
+      "every": 3,
+      "table": "barrow"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 6
+      }
+    ],
+    "vault": {
+      "guards": [["barrow-golem"]],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 6
+        }
+      ],
+      "component": "grave-garnet"
+    }
+  },
+  {
+    "id": "old-mine",
+    "name": "The Old Mine",
+    "region": "borderlands",
+    "col": 3,
+    "row": 2,
+    "depth": 2,
+    "size": {
+      "min": 8,
+      "max": 10
+    },
+    "wander": {
+      "every": 3,
+      "table": "barrow"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 6
+      }
+    ],
+    "vault": {
+      "guards": [["thug-or-militia", "thug-or-militia", "thug-or-militia"]],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 8
+        }
+      ],
+      "component": "cold-iron"
+    }
+  },
+  {
+    "id": "cinder-pits",
+    "name": "The Cinder Pits",
+    "region": "dark-lands",
+    "col": 24,
+    "row": 8,
+    "depth": 2,
+    "size": {
+      "min": 8,
+      "max": 10
+    },
+    "wander": {
+      "every": 3,
+      "table": "ashgate"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 8
+      }
+    ],
+    "vault": {
+      "guards": [["clockwork-servitor", "clockwork-servitor"]],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 10
+        }
+      ],
+      "component": "cold-iron"
+    }
+  },
+  {
+    "id": "drowned-depot",
+    "name": "The Drowned Depot",
+    "region": "dark-lands",
+    "col": 19,
+    "row": 20,
+    "depth": 2,
+    "size": {
+      "min": 8,
+      "max": 10
+    },
+    "wander": {
+      "every": 2,
+      "table": "vats"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 8
+      }
+    ],
+    "vault": {
+      "guards": [["beastman-trooper", "beastman-trooper"], ["slaver"]],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 10
+        }
+      ],
+      "component": "ooze-essence"
+    }
+  },
+  {
+    "id": "gallows-crypts",
+    "name": "The Gallows Crypts",
+    "region": "dark-lands",
+    "col": 3,
+    "row": 16,
+    "depth": 3,
+    "size": {
+      "min": 9,
+      "max": 10
+    },
+    "wander": {
+      "every": 2,
+      "table": "barrow"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 10
+      }
+    ],
+    "vault": {
+      "guards": [["barrow-golem", "barrow-golem"]],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 10
+        }
+      ],
+      "component": "grave-garnet"
+    }
+  },
+  {
+    "id": "shattered-foundry",
+    "name": "The Shattered Foundry",
+    "region": "dark-lands",
+    "col": 14,
+    "row": 1,
+    "depth": 3,
+    "size": {
+      "min": 9,
+      "max": 10
+    },
+    "wander": {
+      "every": 2,
+      "table": "bunker"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 10
+      }
+    ],
+    "vault": {
+      "guards": [["clockwork-soldier"], ["clockwork-servitor"]],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 10
+        }
+      ],
+      "component": "cold-iron"
+    }
+  }
+]
