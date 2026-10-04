@@ -11,6 +11,7 @@ import { hexKey } from '../../rules/hex.ts';
 import { characterLevel } from '../../rules/progression.ts';
 import { rollSave } from '../../rules/saves.ts';
 import { findMonster, type GameData } from '../character/context.ts';
+import { classOption } from '../character/class-step.ts';
 import { characterSheet } from '../character/derived.ts';
 import { note } from './members.ts';
 import { addNpc, GRAVE_KNIGHT, npcMonster, npcRoom } from './npcs.ts';
@@ -82,6 +83,12 @@ function serve(w: World, data: GameData, m: Member, type: string): Npc {
 
 const find = (w: World, id: string) => w.members.find((x) => x.id === id);
 
+/** A Priest of the Lady sends the undead to their rest rather than binding them (Phase 16). */
+const laysToRest = (data: GameData, m: Member) =>
+  Object.entries(m.character.classes.levels).some(
+    ([id, l]) => l >= 1 && classOption(data, id)?.mage?.laysToRest,
+  );
+
 /** Raise Corpse: a corpse here rises as a zombie, or a skeleton. */
 export function raiseCorpse(
   w: World,
@@ -140,7 +147,9 @@ export function raiseGraveKnight(w: World, data: GameData, memberId: string): To
 /**
  * Command the Dead on the encounter's undead: those within the hit dice the caster has left that
  * fail their saves are bound, joining the party while there is room and released where there is
- * none; those too strong only stand dazed. Without foes left, the encounter ends.
+ * none; those too strong only stand dazed. A Priest of the Lady lays the mastered to rest instead,
+ * within twice their level in hit dice (Sam's call, Phase 16). Without foes left, the encounter
+ * ends.
  */
 export function commandTheDead(w: World, data: GameData, memberId: string): TownResult {
   const m = find(w, memberId);
@@ -151,8 +160,10 @@ export function commandTheDead(w: World, data: GameData, memberId: string): Town
   if (!e || !e.enemies.flat().some((id) => tagged(data, id, 'undead')))
     return no('There are no undead here to command.');
   caster.spellsCast += 1;
+  const rest = laysToRest(data, caster);
   const bound = servants(w, caster).filter((n) => !isRaised(n) && n.type !== GRAVE_KNIGHT);
-  let room = 2 * level(caster) - bound.reduce((sum, n) => sum + npcMonster(data, n).hitDice, 0);
+  let room =
+    2 * level(caster) - (rest ? 0 : bound.reduce((sum, n) => sum + npcMonster(data, n).hitDice, 0));
   const penalty = caster.character.skills.magic ?? 0;
   const rows = e.enemies.map((row) =>
     row.filter((id) => {
@@ -160,7 +171,8 @@ export function commandTheDead(w: World, data: GameData, memberId: string): Town
       if (!tagged(data, id, 'undead') || foe.hitDice > room) return true;
       if (rollSave(w.rng, foe.save, { modifier: -penalty }).success) return true;
       room -= foe.hitDice;
-      if (npcRoom(w, true))
+      if (rest) note(w, `${foe.name} is laid to rest in the Lady's embrace.`);
+      else if (npcRoom(w, true))
         note(w, `${serve(w, data, caster, id).name} bows to ${caster.character.name}.`);
       else note(w, `A bound ${foe.name} is released for want of room, and wanders off.`);
       return false;

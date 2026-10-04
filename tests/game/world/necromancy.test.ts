@@ -228,6 +228,23 @@ describe('Command the Dead (4.6.0)', () => {
     expect(m.spellsCast).toBe(1);
   });
 
+  it('lays the undead to rest, binding none, for a Priest of the Lady (Phase 16)', () => {
+    const w = world();
+    const m = necromancer(w, 1);
+    m.character = {
+      ...m.character,
+      classes: { current: 'healer-partial-mage', levels: { 'healer-partial-mage': 1 } },
+    };
+    // A servant held from before doesn't shrink the budget: twice level 1 is 2 hit dice.
+    w.npcs.push({ ...npcBase(), id: 'npc-0', type: 'zombie', master: m.id });
+    w.encounter = encounter([['zombie', 'zombie']]);
+    w.rng = scriptedRng([2, 2]);
+    expect(commandTheDead(w, data, m.id)).toEqual({ ok: true });
+    expect(w.encounter?.enemies).toEqual([['zombie']]);
+    expect(w.npcs).toHaveLength(1);
+    expect(w.log.at(-1)).toContain("Zombie is laid to rest in the Lady's embrace.");
+  });
+
   it('lets the strong resist, releases the bound without room, and ends an emptied encounter', () => {
     const w = world();
     const m = necromancer(w, 5);

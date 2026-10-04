@@ -61,6 +61,11 @@ export const ClassOptionSchema = z.strictObject({
       spellsPerLevel: z.int().min(0),
       /** Spells the class can never learn (Sam's call: Priests of Death create no undead). */
       excludedSpells: z.array(IdSchema),
+      /**
+       * Command the Dead sends the undead it masters to their rest instead of binding them: the
+       * Priests of the Lady, to whom the undead are abominations (Phase 16; docs/setting.md).
+       */
+      laysToRest: z.literal(true).optional(),
     })
     .optional(),
 });

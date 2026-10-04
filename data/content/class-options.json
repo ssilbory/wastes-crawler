@@ -272,7 +272,8 @@
       "slots": "partial-necromancer-arts-and-spells",
       "startingSpells": 2,
       "spellsPerLevel": 1,
-      "excludedSpells": ["raise-corpse", "raise-grave-knight"]
+      "excludedSpells": ["raise-corpse", "raise-grave-knight"],
+      "laysToRest": true
     }
   },
   {
