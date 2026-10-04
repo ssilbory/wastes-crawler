@@ -286,6 +286,10 @@ describe('level-gated arts (Phase 14d)', () => {
       reason: 'revive-the-fallen waits for a higher level',
     });
     const old = priest(7);
+    expect(advance(data, old, choices(old, 'limb-restoration'), createRng('old'))).toEqual({
+      ok: false,
+      reason: "limb-restoration isn't used in this game",
+    });
     const r = ok(advance(data, old, choices(old, 'revive-the-fallen'), createRng('old')));
     expect(r.character.arts).toContain('revive-the-fallen');
   });

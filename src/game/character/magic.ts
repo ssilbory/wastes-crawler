@@ -56,12 +56,23 @@ export function learnableSpells(data: GameData, mage: Mage, maxLevel: number): S
 }
 
 /**
- * Whether an art is open to a character of the class level: some arts wait for a level the SRD
- * names in their text (the Healer's Limb Restoration and Revive the Fallen, at 8th).
+ * Why an art can't be picked at the class level, or null if it can: the game leaves some out, and
+ * some wait for a level the SRD names in their text (the Healer's Revive the Fallen, at 8th).
  */
-export function artOpen(data: GameData, tradition: string, art: string, level: number): boolean {
-  return (findTradition(data, tradition)?.artLevels[art] ?? 1) <= level;
+export function artBar(
+  data: GameData,
+  tradition: string,
+  art: string,
+  level: number,
+): string | null {
+  const t = findTradition(data, tradition);
+  if (t?.excludedArts.includes(art)) return `${art} isn't used in this game`;
+  return (t?.artLevels[art] ?? 1) <= level ? null : `${art} waits for a higher level`;
 }
+
+/** Whether an art can be picked at the class level. */
+export const artOpen = (data: GameData, tradition: string, art: string, level: number) =>
+  artBar(data, tradition, art, level) === null;
 
 /** The arts a pick can choose: the tradition's, not held or granted, open at the level. */
 export function artChoices(
@@ -124,8 +135,8 @@ export function evaluateMagic(
     );
     if (chosen.some((id) => p.automatic.includes(id)))
       return done(fail('that art is already granted'));
-    const early = chosen.find((id) => !artOpen(data, p.tradition, id, 1));
-    if (early) return done(fail(`${early} waits for a higher level`));
+    const barred = chosen.map((id) => artBar(data, p.tradition, id, 1)).find((why) => why);
+    if (barred) return done(fail(barred));
     if (chosen.length > p.picks) return done(fail(`pick ${p.picks} ${p.tradition} arts`));
     if (chosen.length < p.picks) short = true;
   }

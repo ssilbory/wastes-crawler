@@ -22,14 +22,14 @@
     "name": "Ysolde the Necromancer",
     "town": "westhold",
     "raises": "crypt",
-    "text": "She keeps the crypt under the old chapel, and she can call the dead back up out of it, for a price or a service."
+    "text": "She keeps the crypt under the Lady's old chapel, and she can call the dead back up out of it, for a price or a service."
   },
   {
     "id": "brother-aldo",
     "name": "Brother Aldo",
     "town": "eastmarch",
     "raises": "mortuary",
-    "text": "A grey-robed Priest of Death, a partial necromancer and healer who raises no undead. His mortuary can send the dead back, if the god is paid, in crowns or in service."
+    "text": "A grey-robed Priest of Death, a partial necromancer and healer who raises no undead. His mortuary can send the dead back, if the Lady is paid, in crowns or in service."
   },
   {
     "id": "necromancer-vashti",
@@ -43,7 +43,7 @@
     "name": "Mother Skrell",
     "town": "gutterwick",
     "raises": "temple",
-    "text": "A goblin blood priestess who keeps Gutterwick's temple to the god of blood. Her god takes crowns, or service, and gives back what the grave took."
+    "text": "A goblin blood priestess who keeps Gutterwick's temple to the Blood God. Her god takes crowns, or service, and gives back what the grave took."
   },
   {
     "id": "elder-gorvash",

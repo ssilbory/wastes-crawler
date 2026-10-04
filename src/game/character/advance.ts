@@ -11,7 +11,7 @@ import { classBonusSkills, classOption } from './class-step.ts';
 import { progressionLookup, type GameData } from './context.ts';
 import { characterSheet, finalScores } from './derived.ts';
 import { allowedSkills, focusInfo, hasDieHard, modifierBonuses, type FocusChoice } from './foci.ts';
-import { artOpen, artPicks, learnableSpells, spellSlots, type ArtPick } from './magic.ts';
+import { artBar, artPicks, learnableSpells, spellSlots, type ArtPick } from './magic.ts';
 import { creditSkill } from './training.ts';
 
 /** The three skill points a focus's bonus skill is worth when gained by advancement. */
@@ -118,8 +118,10 @@ function learn(
       (id) => data.srd.arts.find((a) => a.id === id)?.tradition === p.tradition,
     );
     if (chosen.length !== p.picks) return `pick ${p.picks} ${p.tradition} arts`;
-    const early = chosen.find((id) => !artOpen(data, p.tradition, id, plan.classLevel));
-    if (early) return `${early} waits for a higher level`;
+    const barred = chosen
+      .map((id) => artBar(data, p.tradition, id, plan.classLevel))
+      .find((why) => why);
+    if (barred) return barred;
   }
   const allArts = [...c.arts, ...plan.arts.flatMap((p) => p.automatic)];
   const picked = plan.arts.reduce((n, p) => n + p.picks, 0);

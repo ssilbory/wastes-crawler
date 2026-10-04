@@ -25,6 +25,8 @@ export const TraditionSchema = z.strictObject({
   armoredArts: z.boolean(),
   /** Arts that can't be learned before a character level (the Healer's Revive the Fallen: 8). */
   artLevels: z.record(IdSchema, z.int().min(2).max(10)),
+  /** Arts the game leaves out: nothing in it calls for them (the Healer's Limb Restoration). */
+  excludedArts: z.array(IdSchema),
 });
 export type Tradition = z.infer<typeof TraditionSchema>;
 

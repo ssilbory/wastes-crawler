@@ -180,7 +180,7 @@ test('a Priest of Death heals and binds the dead, but learns no raising (Phase 1
     .selectOption({ label: 'Adventurer: Priest of Death (Partial Necromancer/Partial Healer)' });
   const magic = page.locator('section.step', { hasText: '6. Magic' });
   await expect(magic).toContainText('Healer arts: pick 1, plus Healing Touch');
-  // Revive the Fallen and Limb Restoration wait for 8th level.
+  // Revive the Fallen waits for 8th level; Limb Restoration is left out of the game.
   await expect(magic.getByLabel('Revive the Fallen', { exact: true })).toHaveCount(0);
   await expect(magic.getByLabel('Limb Restoration', { exact: true })).toHaveCount(0);
   const sheet = await caster(page, {

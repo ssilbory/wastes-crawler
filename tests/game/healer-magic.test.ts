@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { ClassOption } from '../../src/data/schemas/index.ts';
 import { classOption } from '../../src/game/character/class-step.ts';
 import {
+  artBar,
   artChoices,
   artOpen,
   artPicks,
@@ -27,7 +28,7 @@ describe('the Priest of Death and the Blood Priest/Healer (Phase 14d)', () => {
     expect(learnableSpells(data, mage('blood-priest-partial-mage'), 0)).toEqual([]);
   });
 
-  it('opens Limb Restoration and Revive the Fallen at 8th level, as the SRD says', () => {
+  it('opens Revive the Fallen at 8th level, as the SRD says, and never Limb Restoration', () => {
     expect(artOpen(data, 'healer', 'revive-the-fallen', 7)).toBe(false);
     expect(artOpen(data, 'healer', 'revive-the-fallen', 8)).toBe(true);
     expect(artOpen(data, 'healer', 'swift-healer', 1)).toBe(true);
@@ -40,6 +41,11 @@ describe('the Priest of Death and the Blood Priest/Healer (Phase 14d)', () => {
     expect(early).toContain('vital-furnace');
     const late = artChoices(data, healerPick, [], 8).map((a) => a.id);
     expect(late).toContain('revive-the-fallen');
+    // No one in the game loses a limb, so Limb Restoration is left out at every level.
+    expect(late).not.toContain('limb-restoration');
+    expect(artBar(data, 'healer', 'limb-restoration', 10)).toBe(
+      "limb-restoration isn't used in this game",
+    );
   });
 
   it('refuses a gated art at character creation', () => {
@@ -47,6 +53,9 @@ describe('the Priest of Death and the Blood Priest/Healer (Phase 14d)', () => {
     expect(
       evaluateMagic(data, priest, { arts: ['revive-the-fallen'], known: [], prepared: [] }).status,
     ).toEqual({ state: 'error', message: 'revive-the-fallen waits for a higher level' });
+    expect(
+      evaluateMagic(data, priest, { arts: ['limb-restoration'], known: [], prepared: [] }).status,
+    ).toEqual({ state: 'error', message: "limb-restoration isn't used in this game" });
     const bp = mage('blood-priest-partial-mage');
     const ok = evaluateMagic(data, bp, {
       arts: ['armor-of-god', 'merciful-healing', 'vital-furnace'],

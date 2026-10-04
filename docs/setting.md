@@ -142,6 +142,15 @@ Other consequences:
 - A rescued crafter is the most volatile possible NPC-slot companion: orc and goblin PCs want them dead, beastman PCs have complicated feelings, elves may have done the same work.
 - Settlements may quietly make or buy beastman guards, which puts them at odds with the free beastmen they shelter.
 
+## Religion
+
+The Dark Lord allowed only two faiths, and they are still the only two in the Dark Lands.
+
+| Faith         | Priests                                                                                                  | In play                                                                                                             |
+| ------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| The Blood God | Blood priests and priestesses, who work miracles in armor                                                | Partial Blood Priest/Partial Warrior or Partial Healer PCs; Mother Skrell's temple in Gutterwick raises the dead    |
+| The Lady      | Death. The Priests of Death are partial necromancers and healers who raise no undead and serve no master | Priest of Death PCs; Brother Aldo's mortuary in Eastmarch raises the dead. Necromancers like Ysolde keep her crypts |
+
 ## Threats and factions today
 
 The settlements are squeezed from every side: monsters in the wilds, warlords building beastman armies, and human raiders from the strongholds and the coast.

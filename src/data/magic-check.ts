@@ -15,7 +15,7 @@ export function magicReferenceErrors(srd: SrdData, content: ContentData): string
       if (!skills.has(s)) errors.push(`traditions/${t.id}: unknown skill ${s}`);
     }
     if (!srd.arts.some((a) => a.tradition === t.id)) errors.push(`traditions/${t.id}: has no arts`);
-    for (const art of Object.keys(t.artLevels)) {
+    for (const art of [...Object.keys(t.artLevels), ...t.excludedArts]) {
       if (!srd.arts.some((a) => a.id === art && a.tradition === t.id))
         errors.push(`traditions/${t.id}: ${art} isn't one of its arts`);
     }

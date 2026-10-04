@@ -214,6 +214,7 @@ describe('magic content', () => {
           bonusSkill: 'necromancy',
           effort: { ...hm.effort, skills: ['death'] },
           artLevels: { 'revive-the-fallen': 8 },
+          excludedArts: ['limb-restoration'],
         },
       ],
       classOptions: [
@@ -234,6 +235,7 @@ describe('magic content', () => {
       'traditions/witch: unknown skill death',
       'traditions/witch: has no arts',
       "traditions/witch: revive-the-fallen isn't one of its arts",
+      "traditions/witch: limb-restoration isn't one of its arts",
       'classOptions/full-wizard: unknown progression',
       'classOptions/full-high-mage: unknown casting table nope',
       'classOptions/full-high-mage: unknown tradition bard',

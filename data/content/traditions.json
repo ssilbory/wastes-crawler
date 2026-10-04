@@ -12,7 +12,8 @@
       "floorOne": false
     },
     "armoredArts": false,
-    "artLevels": {}
+    "artLevels": {},
+    "excludedArts": []
   },
   {
     "id": "elementalist",
@@ -27,7 +28,8 @@
       "floorOne": false
     },
     "armoredArts": false,
-    "artLevels": {}
+    "artLevels": {},
+    "excludedArts": []
   },
   {
     "id": "necromancer",
@@ -42,7 +44,8 @@
       "floorOne": false
     },
     "armoredArts": false,
-    "artLevels": {}
+    "artLevels": {},
+    "excludedArts": []
   },
   {
     "id": "blood-priest",
@@ -57,7 +60,8 @@
       "floorOne": true
     },
     "armoredArts": true,
-    "artLevels": {}
+    "artLevels": {},
+    "excludedArts": []
   },
   {
     "id": "healer",
@@ -73,8 +77,8 @@
     },
     "armoredArts": true,
     "artLevels": {
-      "limb-restoration": 8,
       "revive-the-fallen": 8
-    }
+    },
+    "excludedArts": ["limb-restoration"]
   }
 ]

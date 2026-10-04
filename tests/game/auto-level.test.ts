@@ -73,6 +73,8 @@ describe('level-gated arts in auto-levelling (Phase 14d)', () => {
     expect(() => autoLevel(data, priest(3), 4, createRng('p'))).toThrow(
       "Fizzwick can't level up automatically",
     );
-    expect(autoLevel(data, priest(7), 8, createRng('p')).arts).toContain('limb-restoration');
+    const eighth = autoLevel(data, priest(7), 8, createRng('p')).arts;
+    expect(eighth).toContain('revive-the-fallen');
+    expect(eighth).not.toContain('limb-restoration');
   });
 });
