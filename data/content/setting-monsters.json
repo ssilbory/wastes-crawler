@@ -153,6 +153,12 @@
     "id": "elven-patriarch",
     "name": "Elven Patriarch",
     "base": "warrior-baron",
-    "description": "An elder elf of the alliance in heavy armor, warrior and mage both, who leads the half-elf rescue parties himself."
+    "description": "An elder elf of the alliance in heavy armor, warrior and mage both, who leads the half-elf rescue parties himself.",
+    "caster": {
+      "tradition": "elementalist",
+      "slots": "partial-elementalist-arts-and-spells",
+      "spells": ["the-coruscating-coffin"],
+      "arts": ["elemental-blast", "stunning-shock"]
+    }
   }
 ]

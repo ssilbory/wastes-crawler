@@ -1,6 +1,7 @@
 // Default decisions. Monsters use tactics (the target most likely to drop) unless a failed
 // Instinct check (vendor/wwn-srd/5.0 Monsters and Foes/Instinct Checks.md) makes them lash out at a
-// random target. PCs in auto-combat stabilize the dying, use combat magic, then attack.
+// random target; casters cast first, as PCs do, unless Instinct has them. PCs in auto-combat
+// stabilize the dying, use combat magic, then attack.
 import type { Dice } from '../../data/schemas/index.ts';
 import { rollDie } from '../../rules/dice.ts';
 import { canUse, castMagic, combatMagic } from './spells.ts';
@@ -27,6 +28,8 @@ function bestAttack(b: Battle, actor: Combatant): { index: number; foes: Combata
 
 export function monsterAction(b: Battle, actor: Combatant): Action {
   if (actor.noncombatant) return noncombatantAction(b, actor);
+  const magic = actor.instinctive ? null : magicAction(b, actor);
+  if (magic) return magic;
   const choice = bestAttack(b, actor);
   if (!choice) return { kind: 'wait' };
   const attack = actor.attacks[choice.index] as Attack;
@@ -78,7 +81,10 @@ function magicAction(b: Battle, actor: Combatant): Action | null {
   if (ready('ineluctable-shackles-of-volition')) {
     return { kind: 'cast', magic: 'ineluctable-shackles-of-volition', target: toughest.id };
   }
-  const metal = foes.find((f) => f.tags.has('metal') && ready('stunning-shock', false, f.id));
+  // Stunning Shock takes metal-bearing monsters, and any PC (spells.ts).
+  const metal = foes.find(
+    (f) => (f.kind === 'pc' || f.tags.has('metal')) && ready('stunning-shock', false, f.id),
+  );
   if (metal) return { kind: 'cast', magic: 'stunning-shock', target: metal.id };
   if (ready('elemental-blast'))
     return { kind: 'cast', magic: 'elemental-blast', target: weakest.id };

@@ -14,11 +14,11 @@ export function allMonsters(srd: SrdData, content: ContentData): Monster[] {
 export const baseMonster = (content: ContentData, id: string) =>
   content.settingMonsters.find((r) => r.id === id)?.base ?? id;
 
-/** Gives each setting monster its base's combat entry under its own id. */
+/** Gives each setting monster its base's combat entry under its own id, with its own magic if any. */
 export function withSettingMonsters(content: ContentData): ContentData {
   const extra = content.settingMonsters.flatMap((r) => {
     const base = content.monsterCombat.find((m) => m.id === r.base);
-    return base ? [{ ...base, id: r.id }] : [];
+    return base ? [{ ...base, id: r.id, ...(r.caster ? { caster: r.caster } : {}) }] : [];
   });
   return { ...content, monsterCombat: [...content.monsterCombat, ...extra] };
 }

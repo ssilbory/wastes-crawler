@@ -127,7 +127,13 @@
       "count": 2,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "caster": {
+      "tradition": "high-mage",
+      "slots": "full-high-mage-arts-and-spells",
+      "spells": ["the-coruscating-coffin"],
+      "arts": ["empowered-sorcery"]
+    }
   },
   {
     "id": "tribal-shaman",
@@ -137,7 +143,13 @@
       "count": 4,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "caster": {
+      "tradition": "elementalist",
+      "slots": "full-elementalist-arts-and-spells",
+      "spells": ["the-coruscating-coffin"],
+      "arts": ["elemental-blast", "pavis-of-elements"]
+    }
   },
   {
     "id": "skilled-sorcerer",
@@ -147,7 +159,17 @@
       "count": 5,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "caster": {
+      "tradition": "high-mage",
+      "slots": "full-high-mage-arts-and-spells",
+      "spells": [
+        "the-wind-of-the-final-repose",
+        "the-coruscating-coffin",
+        "ineluctable-shackles-of-volition"
+      ],
+      "arts": ["empowered-sorcery", "inexorable-effect"]
+    }
   },
   {
     "id": "master-wizard",
@@ -157,7 +179,17 @@
       "count": 8,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "caster": {
+      "tradition": "high-mage",
+      "slots": "full-high-mage-arts-and-spells",
+      "spells": [
+        "the-wind-of-the-final-repose",
+        "the-coruscating-coffin",
+        "ineluctable-shackles-of-volition"
+      ],
+      "arts": ["empowered-sorcery", "inexorable-effect"]
+    }
   },
   {
     "id": "famous-arch-mage",
@@ -167,7 +199,17 @@
       "count": 10,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "caster": {
+      "tradition": "high-mage",
+      "slots": "full-high-mage-arts-and-spells",
+      "spells": [
+        "the-wind-of-the-final-repose",
+        "the-coruscating-coffin",
+        "ineluctable-shackles-of-volition"
+      ],
+      "arts": ["empowered-sorcery", "inexorable-effect"]
+    }
   },
   {
     "id": "small-pack-predator",

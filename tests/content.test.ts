@@ -254,7 +254,9 @@ describe('combat content', () => {
     const broken = {
       ...content,
       monsterCombat: [
-        ...content.monsterCombat.filter((m) => m.id !== 'herd-beast' && m.id !== 'thug-or-militia'),
+        ...content.monsterCombat
+          .filter((m) => m.id !== 'herd-beast' && m.id !== 'thug-or-militia')
+          .map((m) => ({ ...m, caster: undefined })),
         { id: 'thug-or-militia', tags: [], mind: 'sapient' as const },
         { id: 'dragon', weapon: 'breath', tags: [], mind: 'monster' as const },
       ],
@@ -272,6 +274,69 @@ describe('combat content', () => {
       'combatMagic/elemental-blast: unknown skill blasting',
       'combatMagic/ineluctable-shackles-of-volition: unknown skill charm',
       'combatMagic/fireball: unknown spell',
+    ]);
+  });
+
+  it('checks monster casters against the SRD tables and combat magic', () => {
+    const mage = content.monsterCombat.find((m) => m.id === 'petty-mage');
+    const coffin = content.combatMagic.find((m) => m.id === 'the-coruscating-coffin');
+    if (!mage?.caster || !coffin) throw new Error('missing content');
+    const base = mage.caster;
+    const as = (id: string, caster: Partial<typeof base>) => ({
+      ...mage,
+      id,
+      caster: { ...base, ...caster },
+    });
+    const ids = [
+      'petty-mage',
+      'tribal-shaman',
+      'skilled-sorcerer',
+      'master-wizard',
+      'flesh-crafter',
+    ];
+    const broken = {
+      ...content,
+      monsterCombat: [
+        ...content.monsterCombat.filter((m) => !ids.includes(m.id)),
+        as('petty-mage', { tradition: 'necromancer' }),
+        as('tribal-shaman', { slots: 'bardic' }),
+        // 5 HD: six prepared; an elementalist spell and art for a high mage, and unknown magic.
+        as('skilled-sorcerer', {
+          spells: [
+            'the-coruscating-coffin',
+            'damnation-of-the-sense',
+            'wardpact-invocation',
+            'ineluctable-shackles-of-volition',
+            'the-wind-of-the-final-repose',
+            'fireball',
+            'aqueous-harmony',
+          ],
+          arts: ['flight', 'elemental-blast'],
+        }),
+        // Elementalists cast from the high-magic list too.
+        as('master-wizard', {
+          tradition: 'elementalist',
+          spells: ['the-coruscating-coffin'],
+          arts: ['elemental-blast'],
+        }),
+        // 2 HD casts only first-level spells.
+        as('flesh-crafter', { spells: ['calculation-of-the-evoked-servitor'] }),
+      ],
+      combatMagic: [
+        ...content.combatMagic,
+        { ...coffin, id: 'aqueous-harmony' },
+        { ...coffin, id: 'calculation-of-the-evoked-servitor' },
+      ],
+    };
+    expect(combatReferenceErrors(srd, broken)).toEqual([
+      'monsterCombat/petty-mage: unknown tradition necromancer',
+      'monsterCombat/tribal-shaman: unknown casting table bardic',
+      'monsterCombat/skilled-sorcerer: prepares more than 6 spells',
+      'monsterCombat/skilled-sorcerer: no combat spell fireball',
+      "monsterCombat/skilled-sorcerer: aqueous-harmony is not on its tradition's lists",
+      'monsterCombat/skilled-sorcerer: no combat art flight',
+      'monsterCombat/skilled-sorcerer: elemental-blast is not a high-mage art',
+      'monsterCombat/flesh-crafter: calculation-of-the-evoked-servitor is above its spell level',
     ]);
   });
 });

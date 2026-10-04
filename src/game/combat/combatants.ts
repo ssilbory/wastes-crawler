@@ -13,6 +13,7 @@ import { characterSheet, finalScores } from '../character/derived.ts';
 import { activeEffects } from '../character/equipment.ts';
 import { modifierBonuses } from '../character/foci.ts';
 import { findItem } from '../character/items.ts';
+import { monsterCaster } from './monster-caster.ts';
 import type { Attack, Combatant } from './types.ts';
 
 function base(
@@ -202,5 +203,10 @@ export function monsterCombatant(
     tags,
     morale: m.morale,
     instinct: m.instinct,
+    // A caster's Magic skill is its skill bonus, for Shackles and Elemental Blast.
+    ...(combat?.caster && {
+      caster: monsterCaster(data, m, combat.caster),
+      skills: { magic: m.skill },
+    }),
   };
 }

@@ -3,10 +3,24 @@ import { AttributeSchema, DiceSchema, IdSchema } from './common.ts';
 import { LootDiceSchema } from './town-content.ts';
 
 /**
+ * A monster that casts (vendor/wwn-srd/5.0 Monsters and Foes/Monster and NPC Stats.md: the spells
+ * and arts of a mage tradition at a level equal to its hit dice, Effort of its skill plus two): the
+ * tradition, the SRD casting table its spell slots come from, and the spells it has prepared and
+ * the arts it knows, all from data/content/combat-magic.json.
+ */
+export const MonsterCasterSchema = z.strictObject({
+  tradition: IdSchema,
+  slots: IdSchema,
+  spells: z.array(IdSchema),
+  arts: z.array(IdSchema),
+});
+export type MonsterCaster = z.infer<typeof MonsterCasterSchema>;
+
+/**
  * How an SRD monster fights in the engine: the SRD weapon behind a "Wpn" damage entry, and tags.
  * `flying` ignores formation and cover, `reach` attacks from the second row, `unliving` doesn't
  * sleep, and `metal` carries enough metal for Stunning Shock. `loot` is what each one drops when
- * the party wins; none for beasts and the mindless.
+ * the party wins; none for beasts and the mindless. `caster` makes it cast.
  */
 export const MonsterCombatSchema = z.strictObject({
   id: IdSchema,
@@ -15,6 +29,7 @@ export const MonsterCombatSchema = z.strictObject({
   loot: LootDiceSchema.optional(),
   /** Who can be parleyed with: people always, animals and monsters with foci, the mindless never. */
   mind: z.enum(['sapient', 'animal', 'monster', 'mindless']),
+  caster: MonsterCasterSchema.optional(),
 });
 export type Mind = MonsterCombat['mind'];
 export type MonsterCombat = z.infer<typeof MonsterCombatSchema>;

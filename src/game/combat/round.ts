@@ -56,7 +56,7 @@ function beginTurn(b: Battle, actor: Combatant): void {
   if (b.turnBegun === actor.id) return;
   b.turnBegun = actor.id;
   actor.totalDefense = false;
-  if (actor.kind === 'pc') freeActions(b, actor);
+  freeActions(b, actor);
 }
 
 /** Plays the current actor's turn: free actions, then one action (monsters: one per attack). */
@@ -66,9 +66,12 @@ export function takeTurn(b: Battle, actor: Combatant, controller: Controller): v
   b.turnBegun = null;
   const swings = actor.kind === 'monster' ? actor.attacksPerRound : 1;
   for (let i = 0; i < swings && canAct(actor) && !b.outcome; i++) {
-    act(b, actor, controller(b, actor));
+    const action = controller(b, actor);
+    act(b, actor, action);
     checkMorale(b);
     checkEnd(b);
+    // Casting is the Main Action, whatever the monster's number of attacks.
+    if (action.kind === 'cast') break;
   }
 }
 
