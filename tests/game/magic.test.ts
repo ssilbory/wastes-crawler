@@ -237,9 +237,9 @@ describe('casting in armor (SRD 1.5.12, Armored Magic)', () => {
     expect(allowed([W('war-robe')], 2)).toBe(true);
     // Other focus effects don't help.
     expect(castingAllowed(data, [W('war-shirt')], [{ id: 'armsmaster', level: 2 }])).toBe(false);
-    // Barding counts at double encumbrance: linothorax barding is 2, pieced barding is 4.
-    expect(allowed([W('linothorax', { barding: true })], 1)).toBe(true);
-    expect(allowed([W('pieced-armor', { barding: true })], 1)).toBe(false);
+    // Barding counts at its armor's encumbrance: pieced barding is 2, war robe barding more.
+    expect(allowed([W('pieced-armor', { barding: true })], 1)).toBe(true);
+    expect(allowed([W('war-robe', { barding: true })], 1)).toBe(false);
   });
 });
 
