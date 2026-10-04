@@ -28,20 +28,20 @@ async function start(page: Page, seed: string) {
   });
   await page.reload();
   await page.getByRole('button', { name: 'Continue journey' }).click();
-  await page.getByRole('button', { name: 'Visit Westhold' }).click();
+  await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
 }
 
-test('rides the coach from Westhold to Eastmarch', async ({ page }, testInfo) => {
+test('rides the coach from Rubblegate to Scrapmarch', async ({ page }, testInfo) => {
   await start(page, 'coach-e2e');
   await page.getByRole('tab', { name: 'Coaches' }).click();
   await page.getByRole('button', { name: /^Board for 60 crowns$/ }).click();
   await expect(page.getByRole('region', { name: 'Coach' })).toContainText(
-    'On the coach to Eastmarch',
+    'On the coach to Scrapmarch',
   );
   await page.screenshot({ path: testInfo.outputPath('coach.png'), fullPage: true });
   const log = page.getByRole('region', { name: 'Journey log' });
   for (let i = 0; i < 40; i++) {
-    if ((await log.innerText()).includes('The party reaches Eastmarch.')) break;
+    if ((await log.innerText()).includes('The party reaches Scrapmarch.')) break;
     const encounter = page.getByRole('region', { name: 'Encounter' });
     if (await encounter.isVisible()) {
       await encounter.getByRole('button', { name: /^(Fight|Attack them)$/ }).click();
@@ -49,10 +49,10 @@ test('rides the coach from Westhold to Eastmarch', async ({ page }, testInfo) =>
       await page.getByRole('button', { name: 'Back to the map' }).click();
       continue;
     }
-    if (await page.getByRole('button', { name: 'Visit Westhold' }).isVisible()) break;
+    if (await page.getByRole('button', { name: 'Visit Rubblegate' }).isVisible()) break;
     await page.getByRole('button', { name: 'Ride on' }).click();
   }
-  await expect(log).toContainText(/The party reaches Eastmarch\.|The party falls\./);
+  await expect(log).toContainText(/The party reaches Scrapmarch\.|The party falls\./);
 });
 
 test('fights a bout in the town arena for the prize', async ({ page }, testInfo) => {
@@ -64,7 +64,7 @@ test('fights a bout in the town arena for the prize', async ({ page }, testInfo)
   await expect(page.getByRole('status')).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath('arena-bout.png'), fullPage: true });
   await page.getByRole('button', { name: 'Back to town' }).click();
-  await expect(page.getByRole('heading', { name: 'Westhold' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Rubblegate' })).toBeVisible();
   await page.getByRole('tab', { name: 'Arena' }).click();
   await expect(page.getByRole('region', { name: 'Arena' })).toContainText(
     'The party has fought its bout for today.',

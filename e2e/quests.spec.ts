@@ -41,7 +41,7 @@ test('takes a quest in town, finishes it on the map, and collects the reward', a
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('quest-e2e');
   await page.getByRole('button', { name: 'Start a new world' }).click();
 
-  // The reeve's map shows the way: the land between Westhold and the camp is known.
+  // The reeve's map shows the way: the land between Rubblegate and the camp is known.
   await page.evaluate(() => {
     const save = JSON.parse(localStorage.getItem('wastes-crawler.world') as string);
     for (let col = 3; col <= 6; col++)
@@ -51,7 +51,7 @@ test('takes a quest in town, finishes it on the map, and collects the reward', a
   await page.reload();
   await page.getByRole('button', { name: 'Continue journey' }).click();
 
-  await page.getByRole('button', { name: 'Visit Westhold' }).click();
+  await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
   const reeve = page.getByRole('region', { name: 'Reeve Halda' });
   await reeve.getByRole('button', { name: 'Take on The Raider Camp' }).click();
   await expect(reeve).toContainText('Break the raider camp in the forest at 6,12.');
@@ -65,8 +65,8 @@ test('takes a quest in town, finishes it on the map, and collects the reward', a
   await expect(quests).toContainText('Done: return for the reward.');
   await page.screenshot({ path: testInfo.outputPath('quest-done.png'), fullPage: true });
 
-  await walk(page, '3,8', () => page.getByRole('button', { name: 'Visit Westhold' }).isVisible());
-  await page.getByRole('button', { name: 'Visit Westhold' }).click();
+  await walk(page, '3,8', () => page.getByRole('button', { name: 'Visit Rubblegate' }).isVisible());
+  await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
   await reeve.getByRole('button', { name: 'Collect the reward' }).click();
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
     'Reeve Halda pays for The Raider Camp: 60 crowns and 3 XP each.',

@@ -35,8 +35,8 @@ function ride(w: World, quarters: number) {
 describe('coach routes (docs/rules-adaptation.md, Coach routes)', () => {
   it('lists the routes from a town and prices a fare per passenger', () => {
     const w = westhold([3]);
-    expect(routesFrom(w, data, 'westhold').map((r) => r.to.name)).toEqual(['Eastmarch']);
-    expect(routesFrom(w, data, 'eastmarch').map((r) => r.to.name)).toEqual(['Westhold']);
+    expect(routesFrom(w, data, 'westhold').map((r) => r.to.name)).toEqual(['Scrapmarch']);
+    expect(routesFrom(w, data, 'eastmarch').map((r) => r.to.name)).toEqual(['Rubblegate']);
     expect(routesFrom(w, data, 'highcairn')).toEqual([]);
     expect(coachRoute(data, 'west-road').fare).toBe(15);
     expect(() => coachRoute(data, 'sky-road')).toThrow('unknown coach route sky-road');
@@ -71,7 +71,7 @@ describe('coach routes (docs/rules-adaptation.md, Coach routes)', () => {
     highcairn.position = { col: 17, row: 4 };
     expect(boardCoach(highcairn, data, 'west-road')).toEqual({
       ok: false,
-      reason: 'No coach runs from Highcairn on that route.',
+      reason: 'No coach runs from Grimcairn on that route.',
     });
   });
 
@@ -87,7 +87,7 @@ describe('coach routes (docs/rules-adaptation.md, Coach routes)', () => {
     };
     expect(boardCoach(w, cut, 'west-road')).toEqual({
       ok: false,
-      reason: 'The road to Eastmarch is cut.',
+      reason: 'The road to Scrapmarch is cut.',
     });
   });
 
@@ -112,7 +112,7 @@ describe('coach routes (docs/rules-adaptation.md, Coach routes)', () => {
     ride(w, 1);
     expect(w.coach).toBeNull();
     expect(w).toMatchObject({ position: { col: 20, row: 8 }, lastTown: 'eastmarch' });
-    expect(w.log.join('\n')).toContain('The party reaches Eastmarch.');
+    expect(w.log.join('\n')).toContain('The party reaches Scrapmarch.');
     expect(coachQuarter(w, data)).toBe(false);
   });
 

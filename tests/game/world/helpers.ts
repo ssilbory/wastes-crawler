@@ -8,7 +8,7 @@ import { data, starter } from '../combat/helpers.ts';
 
 export { data, starter };
 
-/** The four starters in Westhold: Snag and Grukk in front, Lirael and Fizzwick behind. */
+/** The four starters in Rubblegate: Snag and Grukk in front, Lirael and Fizzwick behind. */
 export function world(faces?: number[], d: GameData = data): World {
   const party = (['snag', 'grukk', 'lirael', 'fizzwick'] as const).map((n, i) => ({
     character: starter(n),

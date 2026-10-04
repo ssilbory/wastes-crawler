@@ -15,7 +15,7 @@ import { shareText } from '../../../src/game/world/wording.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { data, member, world } from './helpers.ts';
 
-/** The starters in Westhold with a guard (a quarter share) and a sellsword (three quarters). */
+/** The starters in Rubblegate with a guard (a quarter share) and a sellsword (three quarters). */
 function hired(): World {
   const w = world([5, 5]);
   w.purse = 100;
@@ -111,7 +111,7 @@ describe('hireling shares (docs/rules-adaptation.md, Hirelings)', () => {
     expect(w.deadShares).toEqual([]);
     expect(w.hireBans).toEqual({ westhold: 30 });
     expect(hireBlocked(w, data)).toBe(
-      'No one in Westhold will sign on with the party until day 31.',
+      'No one in Rubblegate will sign on with the party until day 31.',
     );
     w.day = 30;
     expect(hireBlocked(w, data)).toBeNull();

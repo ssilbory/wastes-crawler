@@ -28,7 +28,7 @@ test('keeps worlds in three slots', async ({ page }) => {
   await page.reload();
   const slots = page.getByRole('group', { name: 'Save slot' });
   await expect(slots).toContainText(
-    'Slot 1: Morning, 1 Seedtime, year 1 (spring) · Westhold · Snag, Grukk',
+    'Slot 1: Morning, 1 Seedtime, year 1 (spring) · Rubblegate · Snag, Grukk',
   );
   await expect(slots).toContainText('Slot 2: Empty');
   await slots.getByRole('radio', { name: /^Slot 2/ }).check();

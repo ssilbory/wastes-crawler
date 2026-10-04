@@ -69,7 +69,7 @@ describe('arriving in a town', () => {
     enterTown(w, data, 'eastmarch');
     expect(w).toMatchObject({ purse: 1100, lastTown: 'eastmarch', climateDay: 0 });
     expect(w.log.slice(-2)).toEqual([
-      'Day 1, morning: The party reaches Eastmarch.',
+      'Day 1, morning: The party reaches Scrapmarch.',
       'Day 1, morning: The economic climate moves the purse up 10%.',
     ]);
     w.rng = scriptedRng([-30]);
@@ -90,7 +90,7 @@ describe('arriving in a town', () => {
     w.rng = scriptedRng([25]);
     enterTown(w, data, 'highcairn');
     expect(w.purse).toBe(0);
-    expect(w.log.at(-1)).toContain('reaches Highcairn');
+    expect(w.log.at(-1)).toContain('reaches Grimcairn');
     expect(() => enterTown(w, data, 'atlantis')).toThrow('unknown town atlantis');
   });
 });
@@ -114,7 +114,9 @@ describe('the inn', () => {
     expect(grukk.character.strain).toEqual({ value: 0, broken: false });
     expect(grukk.character.hp.current).toBe(3);
     expect(grukk).toMatchObject({ hungry: false, sleepless: false, cold: false, spellsCast: 0 });
-    expect(w.log.at(-1)).toBe('Day 2, morning: The party stays the night at the inn in Westhold.');
+    expect(w.log.at(-1)).toBe(
+      'Day 2, morning: The party stays the night at the inn in Rubblegate.',
+    );
   });
 
   it('turns the party away without the crowns, or mid-encounter', () => {
@@ -191,7 +193,7 @@ describe('the healer, and the crypt or mortuary', () => {
     w.position = { col: 17, row: 4 };
     expect(raiseDead(w, data, 'm-0')).toEqual({
       ok: false,
-      reason: 'No one in Highcairn raises the dead.',
+      reason: 'No one in Grimcairn raises the dead.',
     });
   });
 });

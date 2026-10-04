@@ -12,7 +12,7 @@ import { data, encounter, world } from '../world/helpers.ts';
 import { place, state } from './helpers.ts';
 
 const QUEST = 'barrow-torc';
-/** The starters take the barrow quest in Westhold, then go down. */
+/** The starters take the barrow quest in Rubblegate, then go down. */
 function questing(): World {
   const w = world();
   expect(acceptQuest(w, data, QUEST)).toEqual({ ok: true });

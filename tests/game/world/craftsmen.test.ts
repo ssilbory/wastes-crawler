@@ -21,7 +21,7 @@ import { entryText } from '../../../src/render/town-view.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { data, encounter, member, world } from './helpers.ts';
 
-/** The starters in Westhold, called on Hagen: one +1 spear in stock, two cold irons for sale. */
+/** The starters in Rubblegate, called on Hagen: one +1 spear in stock, two cold irons for sale. */
 function atHagen(faces: number[] = []): World {
   const w = world([1, 0, 1, 2, 2, ...faces]);
   w.purse = 1000;
@@ -50,7 +50,7 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
     expect(craftsmanHere(at, data)).toBeUndefined();
     expect(visitCraftsman(at, data)).toEqual({
       ok: false,
-      reason: 'No craftsman works in Highcairn.',
+      reason: 'No craftsman works in Grimcairn.',
     });
   });
 
@@ -79,7 +79,7 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
     at.position = { col: 17, row: 4 };
     expect(sellLootTo(at, data)).toEqual({
       ok: false,
-      reason: 'No craftsman works in Highcairn.',
+      reason: 'No craftsman works in Grimcairn.',
     });
   });
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import {
-  dungeonOf,
+  exitLabel,
   levelOf,
   stairsHere,
   step,
@@ -94,7 +94,7 @@ export function DungeonScreen(props: {
   const stairsLabel = !stairs
     ? null
     : 'surface' in stairs.to
-      ? `Climb out of ${dungeonOf(data, s.dungeon).name}`
+      ? exitLabel(data, s.dungeon)
       : `Take the stairs to ${levelOf(data, s.dungeon, stairs.to.level).level.name}`;
   return (
     <div class="world dungeon">

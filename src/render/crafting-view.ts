@@ -5,7 +5,7 @@ import { findItem, type CatalogItem } from '../game/character/items.ts';
 import { daysText, tierName } from '../game/world/crafting.ts';
 import type { Member, World } from '../game/world/types.ts';
 
-/** "Snag: mastercrafted Spear, 3 days left, at the workshop in Westhold". */
+/** "Snag: mastercrafted Spear, 3 days left, at the workshop in Rubblegate". */
 export function projectText(w: World, data: GameData, p: Project): string {
   // Projects only ever name members, items, and towns that exist.
   const crafter = [...w.members, ...w.benched].find((m) => m.id === p.crafter) as Member;

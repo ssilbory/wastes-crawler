@@ -1,7 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { dungeonReferenceErrors } from '../../../src/data/dungeon-check.ts';
+import type { LevelMap } from '../../../src/data/dungeon-map.ts';
 import type { Ruin } from '../../../src/data/schemas/index.ts';
-import { dungeonOf, enterDungeon } from '../../../src/game/dungeon/explore.ts';
+import {
+  dungeonOf,
+  enterDungeon,
+  exitLabel,
+  goesDown,
+  levelOf,
+  openFacing,
+  takeStairs,
+} from '../../../src/game/dungeon/explore.ts';
 import { generateRuin, ruinDungeon, ruinDungeonId } from '../../../src/game/dungeon/generate.ts';
 import {
   entrancesIn,
@@ -229,6 +238,43 @@ describe('towers and ruined cities (Sam’s call)', () => {
         expect(
           dungeonReferenceErrors({ ...data.content, dungeons: [generateRuin(ruin, seed)] }),
         ).toEqual([]);
+  });
+
+  it('are walked into and out of, while delves are climbed (Phase 16 polish)', () => {
+    const w = atRuin(SPIRE);
+    expect(enterDungeon(w, data)).toEqual({ ok: true });
+    const id = (w.dungeon as NonNullable<World['dungeon']>).dungeon;
+    expect(w.log.join('\n')).toContain('The party enters The Black Spire.');
+    expect(exitLabel(data, id)).toBe('Leave The Black Spire');
+    expect(takeStairs(w, data)).toEqual({ ok: true });
+    expect(w.log.join('\n')).toContain('The party leaves The Black Spire.');
+    expect(goesDown(data, 'old-barrow')).toBe(true);
+    expect(exitLabel(data, 'old-barrow')).toMatch(/^Climb out of /);
+    const crypts = atRuin(CRYPTS);
+    enterDungeon(crypts, data);
+    expect(crypts.log.join('\n')).toMatch(/The party goes down into /);
+  });
+
+  it('turn right, left, then around to find a way, and keep the facing if walled in', () => {
+    const only = (open: string) =>
+      ({ edge: (_: unknown, f: string) => (f === open ? 'open' : 'wall') }) as unknown as LevelMap;
+    const at = { x: 0, y: 0 };
+    expect(openFacing(only('e'), at, 'n')).toBe('e');
+    expect(openFacing(only('w'), at, 'n')).toBe('w');
+    expect(openFacing(only('s'), at, 'n')).toBe('s');
+    expect(openFacing(only('none'), at, 'n')).toBe('n');
+  });
+
+  it('face the party away from walls on arrival', () => {
+    for (const ruin of [SPIRE, DUSKMERE, WESTGATE, CRYPTS])
+      for (let i = 0; i < 6; i++) {
+        const w = atRuin(ruin);
+        w.rng = scriptedRng([i + 1, ...Array(40).fill(3)]);
+        enterDungeon(w, data);
+        const s = w.dungeon as NonNullable<World['dungeon']>;
+        const edge = levelOf(data, s.dungeon, s.level).map.edge(s.at, s.facing);
+        expect(['open', 'door']).toContain(edge);
+      }
   });
 
   it('can be entered from the map', () => {

@@ -28,7 +28,7 @@ import { projectText } from '../../../src/render/crafting-view.ts';
 import { entryText } from '../../../src/render/town-view.ts';
 import { data, encounter, member, world } from './helpers.ts';
 
-/** The starters in Westhold, rich in loot dice and components. */
+/** The starters in Rubblegate, rich in loot dice and components. */
 function stocked(): World {
   const w = world();
   w.purse = 1000;
@@ -140,7 +140,7 @@ describe('building mods (SRD 2.8.2)', () => {
     w.position = { col: 17, row: 4 };
     expect(startMod(w, data, 'm-3', 'm-0', SPEAR, 'customized')).toEqual({
       ok: false,
-      reason: 'Highcairn has no workshop.',
+      reason: 'Grimcairn has no workshop.',
     });
     w.encounter = encounter([['thug-or-militia']]);
     expect(startMod(w, data, 'm-3', 'm-0', SPEAR, 'customized')).toMatchObject({ ok: false });

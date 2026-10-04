@@ -32,15 +32,15 @@ async function edit(page: Page, change: string) {
 const purse = async (page: Page) =>
   Number((await page.locator('.world-bar').innerText()).match(/Purse: ([\d.]+) crown/)?.[1]);
 
-test('overspending in Westhold raises its prices', async ({ page }, testInfo) => {
+test('overspending in Rubblegate raises its prices', async ({ page }, testInfo) => {
   await start(page);
-  await page.getByRole('button', { name: 'Visit Westhold' }).click();
+  await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
   await page.getByRole('tab', { name: 'Shop', exact: true }).click();
   const item = page.getByRole('combobox', { name: 'Item' });
   await expect(item.locator('option', { hasText: 'Crowbar (4 crowns)' })).toHaveCount(1);
   // Twice the town's spending threshold already spent this month: half again on every price.
   await edit(page, `save.towns.westhold = { spent: 3000, looted: 0, since: save.day };`);
-  await page.getByRole('button', { name: 'Visit Westhold' }).click();
+  await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
   await page.getByRole('tab', { name: 'Shop', exact: true }).click();
   await expect(item.locator('option', { hasText: 'Crowbar (6 crowns)' })).toHaveCount(1);
   await page.screenshot({ path: testInfo.outputPath('economy-prices.png'), fullPage: true });
@@ -48,7 +48,7 @@ test('overspending in Westhold raises its prices', async ({ page }, testInfo) =>
 
 test('a month later, coming back to town moves the purse with the climate', async ({ page }) => {
   await start(page);
-  // A month and more on the road, one hex out of Westhold.
+  // A month and more on the road, one hex out of Rubblegate.
   await edit(
     page,
     `save.day += 31;

@@ -45,7 +45,7 @@
         "name": "Engineer Tamsin",
         "monster": "peaceful-human",
         "to": "eastmarch",
-        "text": "Bring Engineer Tamsin safely to Eastmarch."
+        "text": "Bring Engineer Tamsin safely to Scrapmarch."
       }
     ],
     "reward": {
@@ -56,9 +56,9 @@
   },
   {
     "id": "letters",
-    "name": "Letters for Highcairn",
+    "name": "Letters for Grimcairn",
     "giver": "factor-imre",
-    "summary": "Carry sealed letters to the warden at Highcairn, past the raiders on the road.",
+    "summary": "Carry sealed letters to the warden at Grimcairn, past the raiders on the road.",
     "prerequisites": {
       "quests": [],
       "minLevel": 1
@@ -69,7 +69,7 @@
         "kind": "deliver",
         "item": "a satchel of sealed letters",
         "to": "highcairn",
-        "text": "Deliver the letters to Highcairn."
+        "text": "Deliver the letters to Grimcairn."
       }
     ],
     "reward": {
@@ -172,7 +172,7 @@
     "id": "corpse-road",
     "name": "The Corpse-Road",
     "giver": "necromancer-ysolde",
-    "summary": "A hooded mourner must reach the mortuary at Eastmarch with what she carries. See her there safely, and the crypt will give back one of your dead.",
+    "summary": "A hooded mourner must reach the mortuary at Scrapmarch with what she carries. See her there safely, and the crypt will give back one of your dead.",
     "prerequisites": {
       "quests": [],
       "minLevel": 1
@@ -184,7 +184,7 @@
         "name": "a hooded mourner",
         "monster": "peaceful-human",
         "to": "eastmarch",
-        "text": "Bring the hooded mourner safely to Eastmarch."
+        "text": "Bring the hooded mourner safely to Scrapmarch."
       }
     ],
     "reward": {
@@ -228,7 +228,7 @@
     "id": "pilgrimage-highcairn",
     "name": "The Pilgrimage to the High Cairn",
     "giver": "brother-aldo",
-    "summary": "A pilgrim of the god of death must reach the burial cairns at Highcairn. See them there safely, and the mortuary will send back one of your dead.",
+    "summary": "A pilgrim of the god of death must reach the burial cairns at Grimcairn. See them there safely, and the mortuary will send back one of your dead.",
     "prerequisites": {
       "quests": [],
       "minLevel": 1
@@ -240,7 +240,7 @@
         "name": "a death-pilgrim",
         "monster": "peaceful-human",
         "to": "highcairn",
-        "text": "Bring the death-pilgrim safely to Highcairn."
+        "text": "Bring the death-pilgrim safely to Grimcairn."
       }
     ],
     "reward": {

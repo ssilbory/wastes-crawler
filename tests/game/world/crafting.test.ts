@@ -26,7 +26,7 @@ import { data, encounter, member, world } from './helpers.ts';
 type Craftable = Parameters<typeof buildDays>[1];
 const item = (id: string) => findItem(data, id) as Craftable;
 
-/** The starters in Westhold with 1,000 crowns. */
+/** The starters in Rubblegate with 1,000 crowns. */
 function rich(): World {
   const w = world();
   w.purse = 1000;
@@ -242,7 +242,7 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
     expect(w.workshops).toEqual(['westhold']);
     expect(buyWorkshop(w, data)).toEqual({
       ok: false,
-      reason: 'The party already owns the workshop in Westhold.',
+      reason: 'The party already owns the workshop in Rubblegate.',
     });
     startProject(w, data, 'm-3', 'spear-light', 'normal');
     const purse = w.purse;
@@ -256,9 +256,9 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
     const w = rich();
     w.position = { col: 17, row: 4 };
     expect(workshopHere(w, data)).toBeNull();
-    expect(buyWorkshop(w, data)).toEqual({ ok: false, reason: 'Highcairn has no workshop.' });
-    expect(workDay(w, data)).toEqual({ ok: false, reason: 'Highcairn has no workshop.' });
-    expect(stayToWork(w, data, 'm-3')).toEqual({ ok: false, reason: 'Highcairn has no workshop.' });
+    expect(buyWorkshop(w, data)).toEqual({ ok: false, reason: 'Grimcairn has no workshop.' });
+    expect(workDay(w, data)).toEqual({ ok: false, reason: 'Grimcairn has no workshop.' });
+    expect(stayToWork(w, data, 'm-3')).toEqual({ ok: false, reason: 'Grimcairn has no workshop.' });
     expect(startProject(w, data, 'm-3', 'crowbar', 'normal')).toEqual({ ok: true });
   });
 
@@ -275,10 +275,10 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
     expect(w.purse).toBe(65);
     expect(w.benched.map((m) => m.id)).toEqual(['m-3']);
     expect(w.log.at(-1)).toContain(
-      'Fizzwick stays at the workshop in Westhold to finish the Spear, Light (7 days).',
+      'Fizzwick stays at the workshop in Rubblegate to finish the Spear, Light (7 days).',
     );
     expect(projectText(w, data, w.projects[0] as World['projects'][0])).toBe(
-      'Fizzwick: Spear, Light, 7 days left, at the workshop in Westhold',
+      'Fizzwick: Spear, Light, 7 days left, at the workshop in Rubblegate',
     );
     expect(rejoin(w, data, 'm-3')).toEqual({
       ok: false,

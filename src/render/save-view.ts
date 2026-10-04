@@ -5,7 +5,7 @@ import { describeDate } from '../game/world/calendar.ts';
 import { regionMap } from '../game/world/region.ts';
 import { parseWorld } from '../game/world/save.ts';
 
-/** "Morning, 3 Seedtime · Westhold · Snag, Grukk", or why the slot can't be continued. */
+/** "Morning, 3 Seedtime · Rubblegate · Snag, Grukk", or why the slot can't be continued. */
 export function slotSummary(text: string | null, data: GameData): string {
   if (text === null) return 'Empty';
   const loaded = parseWorld(text, data);

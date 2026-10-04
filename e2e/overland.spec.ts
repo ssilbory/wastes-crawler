@@ -30,9 +30,9 @@ test('wanders the overland map, fighting what it meets', async ({ page }, testIn
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('overland-e2e');
   await page.getByRole('button', { name: 'Start a new world' }).click();
   await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
-  await expect(page.locator('.world-bar')).toContainText('Westhold');
+  await expect(page.locator('.world-bar')).toContainText('Rubblegate');
 
-  // Walk east along the road, a hex ahead at a time, turning back at Eastmarch.
+  // Walk east along the road, a hex ahead at a time, turning back at Scrapmarch.
   let fights = 0;
   let east = true;
   for (let i = 0; i < 300 && fights < 2; i++) {

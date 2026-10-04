@@ -17,7 +17,7 @@ import { createRng } from '../../../src/rules/rng.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { data, encounter, member, world } from './helpers.ts';
 
-/** The starters in Westhold with crowns to spend and scripted dice. */
+/** The starters in Rubblegate with crowns to spend and scripted dice. */
 function town(faces: number[] = []): World {
   const w = world(faces);
   w.purse = 500;

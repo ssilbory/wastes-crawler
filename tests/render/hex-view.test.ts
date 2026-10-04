@@ -21,8 +21,8 @@ describe('hex map view', () => {
     const at = (key: string) => cells.find((c) => c.key === key);
     expect(at('3,8')).toMatchObject({
       terrain: 'plains',
-      label: 'Westhold (3,8)',
-      site: 'Westhold',
+      label: 'Rubblegate (3,8)',
+      site: 'Rubblegate',
       party: true,
       visited: true,
       road: true,

@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 
-// Phase 10: crafting. Fizzwick (Craft-0 and the Artisan focus) builds gear at Westhold's workshop,
+// Phase 10: crafting. Fizzwick (Craft-0 and the Artisan focus) builds gear at Rubblegate's workshop,
 // and stays behind to finish a mastercrafted weapon. The rules are unit tested.
 const starters = ['snag', 'fizzwick'].map((n) => `tools/sim/parties/starter/${n}.json`);
 const WORLD_KEY = 'wastes-crawler.world';
@@ -25,7 +25,7 @@ async function start(page: Page) {
   }, WORLD_KEY);
   await page.reload();
   await page.getByRole('button', { name: 'Continue journey' }).click();
-  await page.getByRole('button', { name: 'Visit Westhold' }).click();
+  await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
   await page.getByRole('tab', { name: 'Workshop' }).click();
 }
 
@@ -48,8 +48,8 @@ test('builds a crowbar in a day, then leaves the crafter to finish a mastercraft
   await expect(underway).toContainText('Fizzwick: mastercrafted Spear, Light, 14 days left');
   await page.screenshot({ path: testInfo.outputPath('workshop.png'), fullPage: true });
   await underway.getByRole('button', { name: 'Stay to finish it' }).click();
-  await expect(underway).toContainText('at the workshop in Westhold');
-  await expect(log).toContainText('Fizzwick stays at the workshop in Westhold');
+  await expect(underway).toContainText('at the workshop in Rubblegate');
+  await expect(log).toContainText('Fizzwick stays at the workshop in Rubblegate');
 
   await page.getByRole('tab', { name: 'Shop', exact: true }).click();
   await expect(page.getByRole('region', { name: "Snag's pack" })).toBeVisible();
@@ -70,7 +70,7 @@ test('builds Customized onto a spear and keeps it maintained', async ({ page }, 
   }, WORLD_KEY);
   await page.reload();
   await page.getByRole('button', { name: 'Continue journey' }).click();
-  await page.getByRole('button', { name: 'Visit Westhold' }).click();
+  await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
   await page.getByRole('tab', { name: 'Workshop' }).click();
 
   const mods = page.getByRole('region', { name: 'Mods' });
@@ -125,7 +125,7 @@ test('builds a mod, keeps it up in camp, and commissions a magic sword', async (
      save.components = { 'cold-iron': 2, 'ooze-essence': 1 };
      save.purse = 1000;`,
   );
-  await page.getByRole('button', { name: 'Visit Westhold' }).click();
+  await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
   await page.getByRole('tab', { name: 'Workshop' }).click();
   const mods = page.getByRole('region', { name: 'Mods' });
   await mods
@@ -160,7 +160,7 @@ test('builds a mod, keeps it up in camp, and commissions a magic sword', async (
   }
   await expect(log).not.toContainText('stop working');
   await edit(page, `save.position = { col: 3, row: 8 };`);
-  await page.getByRole('button', { name: 'Visit Westhold' }).click();
+  await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
   await page.getByRole('tab', { name: 'Shop', exact: true }).click();
   await expect(page.getByRole('region', { name: "Snag's pack" })).toContainText(
     'Spear, Light (Razor Edge, readied)',
@@ -175,7 +175,7 @@ test('builds a mod, keeps it up in camp, and commissions a magic sword', async (
   await expect(log).toContainText('Hagen the Smith takes on a +1 Sword, Long: ready in 30 days.');
   await expect(jobs).toContainText('Sword, Long +1: ready in 30 days');
   await edit(page, `save.day += 30;`);
-  await page.getByRole('button', { name: 'Visit Westhold' }).click();
+  await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
   await page.getByRole('tab', { name: 'Craftsman' }).click();
   await page.getByRole('button', { name: 'Call on Hagen the Smith' }).click();
   await jobs.getByRole('button', { name: 'Collect for Snag' }).click();
