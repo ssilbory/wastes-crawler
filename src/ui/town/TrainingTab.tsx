@@ -49,16 +49,6 @@ export function TrainingTab(props: { world: World; act: Act }) {
           {className(c.classes.current)} · {levelLine(data, c)} · {pointsText(c)}
         </p>
       </section>
-      {plan && (
-        <LevelUpForm
-          key={`${m.id}-${c.xp}-${plan.classLevel}-${plan.classId}`}
-          character={c}
-          plan={plan}
-          onConfirm={(choices) =>
-            props.act(() => cue(levelUpMember(w, data, m.id, choices), 'level'))
-          }
-        />
-      )}
       <section class="panel" aria-label="Skill points">
         <h3>Skill points</h3>
         <label>
@@ -92,6 +82,16 @@ export function TrainingTab(props: { world: World; act: Act }) {
           Boost {ATTRIBUTE_NAMES[attribute]}
         </button>
       </section>
+      {plan && (
+        <LevelUpForm
+          key={`${m.id}-${c.xp}-${plan.classLevel}-${plan.classId}`}
+          character={c}
+          plan={plan}
+          onConfirm={(choices) =>
+            props.act(() => cue(levelUpMember(w, data, m.id, choices), 'level'))
+          }
+        />
+      )}
       {magic && (
         <section class="panel" aria-label="Prepared spells">
           <h3>Prepared spells ({magic.slots.spellsPrepared})</h3>
