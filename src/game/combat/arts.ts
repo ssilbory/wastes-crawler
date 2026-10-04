@@ -16,10 +16,6 @@ import type { Battle, CasterState, Combatant } from './types.ts';
 const used = (c: CasterState, art: string) => c.uses[art] ?? 0;
 const use = (c: CasterState, art: string) => (c.uses[art] = used(c, art) + 1);
 
-/** Within reach of a touch: the same formation column or the one beside it. */
-export const touching = (a: Combatant, b: Combatant) =>
-  a.side === b.side && Math.abs(a.column - b.column) <= 1;
-
 /** The effects of Phase 15's combat arts; false for any other effect. */
 export function artEffect(
   b: Battle,
@@ -129,11 +125,12 @@ export function turnArts(b: Battle, actor: Combatant): void {
     say(b, `${actor.name} holds the gate shut for the fallen.`);
     return;
   }
-  // Unliving Persistence: Effort for the day stabilizes a dying ally the Necromancer touches.
-  const near = dying.find((x) => touching(actor, x));
-  if (near && artReady(actor, 'unliving-persistence')) {
+  // Unliving Persistence: Effort for the day stabilizes a dying ally anywhere in the party (Sam's
+  // call: the whole party, Phase 15).
+  const first = dying[0];
+  if (first && artReady(actor, 'unliving-persistence')) {
     spendDay(c);
-    near.status = 'stable';
-    say(b, `${actor.name} will not let ${near.name} die.`);
+    first.status = 'stable';
+    say(b, `${actor.name} will not let ${first.name} die.`);
   }
 }

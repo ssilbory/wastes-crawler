@@ -36,7 +36,7 @@ export function vitalFurnace(b: Battle, target: Combatant, amount: number): bool
 
 /**
  * A PC falling to zero who need not lie dying: Vital Furnace stabilizes the Healer on its own, and
- * Unliving Persistence does it for Effort for the day.
+ * Unliving Persistence does it for anyone in the party for the Necromancer's Effort for the day.
  */
 export function keepsDying(b: Battle, target: Combatant): boolean {
   const c = target.caster;
@@ -44,9 +44,22 @@ export function keepsDying(b: Battle, target: Combatant): boolean {
     say(b, `${target.name} falls, but their life burns on.`);
     return true;
   }
-  if (!artReady(target, 'unliving-persistence')) return false;
-  spendDay(c as CasterState);
-  say(b, `${target.name} falls, but will not die.`);
+  // Unliving Persistence covers the whole party (Sam's call, Phase 15): the Necromancer, or one
+  // still standing, keeps the fallen from dying.
+  const keeper = b.combatants.find(
+    (x) =>
+      x.side === target.side &&
+      (x === target || x.status === 'active') &&
+      artReady(x, 'unliving-persistence'),
+  );
+  if (!keeper) return false;
+  spendDay(keeper.caster as CasterState);
+  say(
+    b,
+    keeper === target
+      ? `${target.name} falls, but will not die.`
+      : `${target.name} falls, but ${keeper.name} will not let them die.`,
+  );
   return true;
 }
 

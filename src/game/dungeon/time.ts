@@ -6,7 +6,7 @@
 import { encounterCheck } from '../../rules/overland.ts';
 import type { GameData } from '../character/context.ts';
 import { rollEnemies, startEncounter } from '../world/encounters.ts';
-import { tended } from '../world/arts.ts';
+import { tended, VIGOR_TURNS, vigor } from '../world/arts.ts';
 import { alive, bestAt, note, restQuarter } from '../world/members.ts';
 import { endQuarter } from '../world/quarter.ts';
 import type { Activity, World } from '../world/types.ts';
@@ -56,6 +56,7 @@ export function passTurn(w: World, data: GameData): void {
   const s = state(w);
   s.turn += 1;
   burn(w, data);
+  if (s.turn % VIGOR_TURNS === 0) vigor(w, data, 1);
   if (s.turn % TURNS_PER_QUARTER === 0) endQuarter(w, data);
   wander(w, data);
 }

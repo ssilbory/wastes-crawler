@@ -91,3 +91,17 @@ export const tended = (w: World) =>
 
 /** Unaging: immune to poisons. */
 export const poisonProof = (m: Member) => m.character.arts.includes('unaging');
+
+/**
+ * Tireless Vigor's regeneration (Sam's call, Phase 15): each Healer who can commit Effort heals
+ * `hp` lost hit points: 1 after a fight, 1 every 10 dungeon turns, and 5 each quarter.
+ */
+export const VIGOR_QUARTER = 5;
+export const VIGOR_TURNS = 10;
+
+export function vigor(w: World, data: GameData, hp: number): void {
+  for (const m of w.members.filter((x) => artUsable(data, x, 'tireless-vigor'))) {
+    const c = m.character;
+    setHp(m, Math.min(c.hp.max, c.hp.current + hp));
+  }
+}

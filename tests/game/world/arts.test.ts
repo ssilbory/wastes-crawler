@@ -10,12 +10,15 @@ import {
   sacredBlood,
   seer,
   tended,
+  vigor,
 } from '../../../src/game/world/arts.ts';
 import { campUnderground } from '../../../src/game/dungeon/time.ts';
 import { camp } from '../../../src/game/world/activities.ts';
 import { endOfDay } from '../../../src/game/world/day.ts';
 import { startEncounter } from '../../../src/game/world/encounters.ts';
-import { battleFrom, partySetup } from '../../../src/game/world/fight.ts';
+import { applyBattle, battleFrom, partySetup } from '../../../src/game/world/fight.ts';
+import { endQuarter } from '../../../src/game/world/quarter.ts';
+import { passTurn } from '../../../src/game/dungeon/time.ts';
 import { restQuarter, setHp } from '../../../src/game/world/members.ts';
 import { parley } from '../../../src/game/world/parley.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
@@ -243,5 +246,59 @@ describe('Refined Restoration and Unaging', () => {
     springHere(w, poison);
     expect(fizz.character.hp.current).toBe(hp);
     expect(w.log.join('\n')).toContain('The poison does nothing to Fizzwick.');
+  });
+});
+
+describe('Tireless Vigor’s regeneration', () => {
+  it('heals 1 after a fight, 1 every 10 dungeon turns, and 5 a quarter, up to the maximum', () => {
+    const w = world();
+    w.position = { col: 5, row: 9 };
+    const fizz = gift(w, ['tireless-vigor'], 'healer-partial-mage');
+    const max = fizz.character.hp.max;
+    setHp(fizz, 1);
+    setHp(member(w, 'Snag'), 1);
+    vigor(w, data, 1);
+    expect(fizz.character.hp.current).toBe(2);
+    expect(member(w, 'Snag').character.hp.current).toBe(1);
+    vigor(w, data, 100);
+    expect(fizz.character.hp.current).toBe(max);
+    // A quarter on the overland map.
+    setHp(fizz, 1);
+    endQuarter(w, data);
+    expect(fizz.character.hp.current).toBe(Math.min(max, 6));
+    // Ten turns underground.
+    const d = below();
+    const h = gift(d, ['tireless-vigor'], 'healer-partial-mage');
+    setHp(h, 1);
+    // The tenth turn heals, before any wanderers come.
+    (d.dungeon as NonNullable<typeof d.dungeon>).turn = 9;
+    d.rng = createRng('turns');
+    passTurn(d, data);
+    expect(h.character.hp.current).toBe(2);
+    passTurn(d, data);
+    expect(h.character.hp.current).toBe(2);
+    // After a won fight.
+    const f = world();
+    const g = gift(f, ['tireless-vigor'], 'healer-partial-mage');
+    setHp(g, 1);
+    const fight = {
+      battle: { combatants: [] } as never,
+      setup: null as never,
+      memberIds: [],
+      npcIds: [],
+      enemies: [['thug-or-militia']],
+      captive: null,
+      quest: null,
+      garrison: null,
+      patrol: null,
+    };
+    applyBattle(
+      f,
+      data,
+      fight,
+      { outcome: 'party', rounds: 1, deaths: 0, battle: null as never },
+      null,
+    );
+    expect(g.character.hp.current).toBe(2);
   });
 });

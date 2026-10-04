@@ -145,20 +145,33 @@ describe('Unliving Persistence and Keeper of the Gate', () => {
     expect(keepsDying(b, f)).toBe(false);
   });
 
-  it('stabilizes a touched dying ally On Turn, or every dying ally with Keeper', () => {
+  it('keeps any ally who falls from dying, while the Necromancer stands', () => {
+    const b = battle(necro(['unliving-persistence']));
+    const grukk = who(b, 'Grukk');
+    grukk.column = 3;
+    harm(b, grukk, 100);
+    expect(grukk.status).toBe('stable');
+    expect(b.log?.at(-1)).toContain('Grukk falls, but Fizzwick will not let them die.');
+    expect(casterOf(fizz(b)).effortDay).toBe(1);
+    // A fallen Necromancer can't hold anyone else.
+    const c = battle(necro(['unliving-persistence']));
+    fizz(c).status = 'dying';
+    harm(c, who(c, 'Snag'), 100);
+    expect(who(c, 'Snag').status).toBe('dying');
+  });
+
+  it('stabilizes a dying ally anywhere On Turn, or every dying ally with Keeper', () => {
     const b = battle(necro(['unliving-persistence']));
     const [snag, grukk] = [who(b, 'Snag'), who(b, 'Grukk')];
+    grukk.column = 3;
     snag.status = 'dying';
     grukk.status = 'dying';
     turnArts(b, fizz(b));
-    // Both are within a column's reach; one is stabilized a turn.
-    const stable = ['Snag', 'Grukk'].filter((n) => who(b, n).status === 'stable');
-    expect(stable).toHaveLength(1);
-    const far = battle(necro(['unliving-persistence']));
-    who(far, 'Grukk').column = 3;
-    who(far, 'Grukk').status = 'dying';
-    turnArts(far, fizz(far));
-    expect(who(far, 'Grukk').status).toBe('dying');
+    // One a turn, the first to fall.
+    expect(who(b, 'Snag').status).toBe('stable');
+    expect(who(b, 'Grukk').status).toBe('dying');
+    turnArts(b, fizz(b));
+    expect(who(b, 'Grukk').status).toBe('stable');
     const k = battle(necro(['keeper-of-the-gate']));
     for (const id of ['Snag', 'Grukk']) {
       const x = who(k, id);

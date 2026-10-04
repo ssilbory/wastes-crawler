@@ -13,7 +13,7 @@ import { alive, note, setHp } from './members.ts';
 import { accrueShares, fights, moraleAfterFight, npcMonster, removeNpc, typeOf } from './npcs.ts';
 import { emit } from './bus.ts';
 import { faithLit, inDark } from '../dungeon/light.ts';
-import { FAITH_LIGHT, userOf } from './arts.ts';
+import { FAITH_LIGHT, userOf, vigor } from './arts.ts';
 import { onSpecial } from '../dungeon/specials.ts';
 import { recordFallen } from './healer.ts';
 import { leaveCorpses } from './necromancy.ts';
@@ -237,6 +237,8 @@ export function applyBattle(
     carryBack(data, m, fight.battle.combatants[i] as Battle['combatants'][number]);
   });
   recordFallen(w, fight.memberIds, fight.battle);
+  // Tireless Vigor: a Healer regains a hit point after each fight (Phase 15).
+  vigor(w, data, 1);
   const npcLost = npcsBack(w, data, fight);
   w.encounter = null;
   if (result.outcome === 'enemy') {
