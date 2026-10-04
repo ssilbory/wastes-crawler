@@ -44,5 +44,17 @@
     "town": "gutterwick",
     "raises": "mortuary",
     "text": "A goblin death priest who keeps Gutterwick's mortuary. The god of death takes crowns, or service."
+  },
+  {
+    "id": "elder-gorvash",
+    "name": "Elder Gorvash",
+    "town": "cinderhold",
+    "text": "An old orc who leads Cinderhold's council. He remembers the binding, and fears whoever finds a way to use it first."
+  },
+  {
+    "id": "foreman-tikka",
+    "name": "Foreman Tikka",
+    "town": "gutterwick",
+    "text": "A goblin who runs Gutterwick's work gangs and road crews, and pays for anything that keeps the roads open."
   }
 ]

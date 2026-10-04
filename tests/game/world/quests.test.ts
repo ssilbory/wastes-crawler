@@ -110,7 +110,7 @@ describe('slay and scout steps', () => {
     expect(w.encounter?.text).toContain(
       'Break the raider camp in the forest at 6,12. The enemy is here.',
     );
-    emit(w, data, { kind: 'fight-won', quest: null });
+    emit(w, data, { kind: 'fight-won', quest: null, garrison: null });
     expect(w.quests['bandit-camp']?.step).toBe(0);
     won(w);
     expect(w.quests['bandit-camp']?.status).toBe('ready');

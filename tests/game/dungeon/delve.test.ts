@@ -44,7 +44,7 @@ describe('delve quest steps (docs/rules-adaptation.md, Dungeon exploration in Ph
     expect(w.encounter?.enemies).toEqual([['barrow-golem', 'barrow-golem']]);
     expect(w.log.at(-1)).toMatch(/The guardian is here\. .*\(The Lower Barrow 7,3\)$/);
     w.encounter = null;
-    emit(w, data, { kind: 'fight-won', quest: QUEST });
+    emit(w, data, { kind: 'fight-won', quest: QUEST, garrison: null });
     expect(stepOf(w)).toBe(2);
 
     place(w, 'barrow-upper', 5, 1, 'n');

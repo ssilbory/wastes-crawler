@@ -34,5 +34,23 @@
     "reward": 30,
     "xp": 1,
     "text": "A grave-digger is bound and gagged in the corner."
+  },
+  {
+    "id": "chained-deserter",
+    "name": "a chained beastman deserter",
+    "monster": "peaceful-human",
+    "destination": "cinderhold",
+    "reward": 40,
+    "xp": 1,
+    "text": "A chained beastman deserter is with them."
+  },
+  {
+    "id": "old-breed-goblin",
+    "name": "an old-breed goblin",
+    "monster": "peaceful-human",
+    "destination": "gutterwick",
+    "reward": 50,
+    "xp": 1,
+    "text": "An old-breed goblin is bound between them."
   }
 ]

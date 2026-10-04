@@ -51,6 +51,7 @@ export function newWorld(data: GameData, rng: Rng, party: Recruit[], regionId?: 
     workshops: [],
     components: {},
     countersigns: [],
+    beaten: [],
     ordersEnded: [],
     authority: [],
     raid: null,

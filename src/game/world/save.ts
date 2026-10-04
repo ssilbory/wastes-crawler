@@ -104,6 +104,8 @@ export const WORLD_MIGRATIONS: Migrations = {
     raid: null,
     raided: {},
   }),
+  // Version 16 records beaten garrisons (Phase 12c): none yet.
+  15: (raw) => ({ ...raw, schemaVersion: 16, beaten: [] }),
 };
 
 export function serializeWorld(w: World): string {
@@ -141,6 +143,7 @@ export function serializeWorld(w: World): string {
     workshops: w.workshops,
     components: w.components,
     countersigns: w.countersigns,
+    beaten: w.beaten,
     ordersEnded: w.ordersEnded,
     authority: w.authority,
     raid: w.raid,
@@ -229,6 +232,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       workshops: s.workshops,
       components: s.components,
       countersigns: s.countersigns,
+      beaten: s.beaten,
       ordersEnded: s.ordersEnded,
       authority: s.authority,
       raid: s.raid,

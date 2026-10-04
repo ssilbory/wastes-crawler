@@ -327,5 +327,152 @@
       "loot": [],
       "raise": true
     }
+  },
+  {
+    "id": "ashgate-rolls",
+    "name": "The Ashgate Rolls",
+    "giver": "elder-gorvash",
+    "summary": "Ashgate Keep, out in the Ruinfields at 22,12, still flies the Dark Lord's banner, and its bound garrison still holds it. Bring back the keep's muster rolls: Gorvash wants to know whose orders it was built to follow.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 1
+    },
+    "objectives": [
+      {
+        "kind": "reach",
+        "dungeon": "ashgate-keep",
+        "level": "ashgate-vaults",
+        "text": "Get down into Ashgate's undervaults."
+      },
+      {
+        "kind": "retrieve",
+        "dungeon": "ashgate-keep",
+        "level": "ashgate-vaults",
+        "at": {
+          "x": 0,
+          "y": 0
+        },
+        "item": "the Ashgate muster rolls",
+        "text": "Take the muster rolls from the keep's archive."
+      }
+    ],
+    "reward": {
+      "crowns": 100,
+      "xp": 3,
+      "loot": [
+        {
+          "count": 1,
+          "sides": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "cull-records",
+    "name": "The Cull Records",
+    "giver": "elder-gorvash",
+    "summary": "The rolls show Ashgate's beastmen came from the Mire Vats at 17,22, south of Mirewatch, along with the crafters' cull records. Whoever kept the vats kept count of every orc and goblin breed. Gorvash wants that count, and who it answered to.",
+    "prerequisites": {
+      "quests": ["ashgate-rolls"],
+      "minLevel": 2
+    },
+    "objectives": [
+      {
+        "kind": "reach",
+        "dungeon": "mire-vats",
+        "level": "vats-cull",
+        "text": "Go down to the cull rooms under the Mire Vats."
+      },
+      {
+        "kind": "guardian",
+        "dungeon": "mire-vats",
+        "level": "vats-cull",
+        "at": {
+          "x": 5,
+          "y": 2
+        },
+        "enemies": [["cull-horror"]],
+        "text": "Kill the cull horror that still keeps the cull pit."
+      },
+      {
+        "kind": "retrieve",
+        "dungeon": "mire-vats",
+        "level": "vats-cull",
+        "at": {
+          "x": 7,
+          "y": 7
+        },
+        "item": "the cull records",
+        "text": "Take the cull records from the room behind the pit."
+      }
+    ],
+    "reward": {
+      "crowns": 150,
+      "xp": 4,
+      "loot": [
+        {
+          "count": 2,
+          "sides": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "ash-road-relief",
+    "name": "Relief for the Ash Road",
+    "giver": "foreman-tikka",
+    "summary": "The old goblin patrols on the hill roads stop every cart. Tikka's scribes have forged relief orders in the old style; carry them to Lanternfall, where the patrols report, and the patrols can finally stand down.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 1
+    },
+    "objectives": [
+      {
+        "kind": "deliver",
+        "item": "sealed relief orders",
+        "to": "lanternfall",
+        "text": "Carry the relief orders to Lanternfall."
+      }
+    ],
+    "reward": {
+      "crowns": 40,
+      "xp": 2,
+      "loot": []
+    }
+  },
+  {
+    "id": "mire-slavers",
+    "name": "Slavers in the Mire",
+    "giver": "foreman-tikka",
+    "summary": "Slavers with beastman muscle have camped in the Mire at 15,21 and are taking road crews. Break the camp.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 2
+    },
+    "objectives": [
+      {
+        "kind": "slay",
+        "region": "dark-lands",
+        "hex": {
+          "col": 15,
+          "row": 21
+        },
+        "enemies": [
+          ["beastman-trooper", "beastman-trooper"],
+          ["slaver", "slaver"]
+        ],
+        "text": "Break the slavers' camp in the Mire at 15,21."
+      }
+    ],
+    "reward": {
+      "crowns": 70,
+      "xp": 3,
+      "loot": [
+        {
+          "count": 1,
+          "sides": 6
+        }
+      ]
+    }
   }
 ]

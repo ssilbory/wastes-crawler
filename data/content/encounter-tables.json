@@ -1114,5 +1114,140 @@
         ]
       }
     ]
+  },
+  {
+    "id": "ashgate",
+    "entries": [
+      {
+        "weight": 3,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "warbreed-hound",
+            "count": {
+              "count": 1,
+              "sides": 2,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "clockwork-servitor",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "bound-goblin-sentry",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "deserter-beastman",
+            "count": {
+              "count": 1,
+              "sides": 2,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vats",
+    "entries": [
+      {
+        "weight": 3,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "warbreed-hound",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "beastman-trooper",
+            "count": 2,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "beastman-trooper",
+            "count": 1,
+            "row": 0
+          },
+          {
+            "monster": "slaver",
+            "count": 1,
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "beastman-trooper",
+            "count": 2,
+            "row": 0
+          },
+          {
+            "monster": "flesh-crafter",
+            "count": 1,
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "predator-beastman",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      }
+    ]
   }
 ]

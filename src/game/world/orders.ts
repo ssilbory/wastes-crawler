@@ -7,6 +7,7 @@
 import type { Authority, StandingOrder } from '../../data/schemas/index.ts';
 import { hexKey } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
+import { levelOf } from '../dungeon/explore.ts';
 import type { WorldEvent } from './bus.ts';
 import { meetGroup } from './encounters.ts';
 import { alive, memberCheck, note } from './members.ts';
@@ -115,30 +116,40 @@ export function fulfilOrders(w: World, data: GameData, quest: string): void {
   for (const o of data.content.standingOrders) if (o.complete === quest) endOrder(w, data, o.id);
 }
 
-/** A garrison holding the party's hex, its order not yet ended, bars the way. */
-function springGarrison(w: World, data: GameData): void {
-  if (w.encounter || w.dungeon) return;
+/** A garrison post the party stands on, its order in force and the post not yet beaten. */
+function postHere(w: World, data: GameData): { key: string; post: Post; where?: string } | null {
+  const live = (key: string, p: Post) =>
+    !orderEnded(w, p.order) && !w.beaten.includes(key) ? { key, post: p } : null;
+  const s = w.dungeon;
+  if (s) {
+    const { level } = levelOf(data, s.dungeon, s.level);
+    const p = level.garrisons.find((x) => x.at.x === s.at.x && x.at.y === s.at.y);
+    const found = p && live(`${s.dungeon}/${s.level}/${s.at.x},${s.at.y}`, p);
+    return found ? { ...found, where: `${level.name} ${s.at.x},${s.at.y}` } : null;
+  }
   const region = data.content.regions.find((r) => r.id === w.region);
-  const g = region?.garrisons.find(
-    (x) => hexKey(x) === hexKey(w.position) && !orderEnded(w, x.order),
-  );
-  if (!g) return;
-  const o = orderOf(data, g.order);
-  const e = meetGroup(
-    w,
-    data,
-    g.enemies,
-    'hostile',
-    null,
-    null,
-    `${o.text} They demand the countersign.`,
-  );
+  const g = region?.garrisons.find((x) => hexKey(x) === hexKey(w.position));
+  return g ? live(`${w.region}/${hexKey(g)}`, { order: g.order, enemies: g.enemies }) : null;
+}
+
+type Post = { order: string; enemies: string[][]; text?: string };
+
+/** A garrison holding the party's hex or cell bars the way, challenging before it attacks. */
+function springGarrison(w: World, data: GameData): void {
+  const found = w.encounter ? null : postHere(w, data);
+  if (!found) return;
+  const { key, post, where } = found;
+  const o = orderOf(data, post.order);
+  const text = `${post.text ?? o.text} They demand the countersign.`;
+  const e = meetGroup(w, data, post.enemies, 'hostile', null, null, text, where);
   e.order = o.id;
-  // A fixed post is seen from afar: the party can turn back.
+  e.garrison = key;
+  // The bound challenge first: the party can still turn back.
   e.spotted = true;
 }
 
-/** The standing orders' bus listener. */
+/** The standing orders' bus listener: posts spring where the party arrives; a won fight clears one. */
 export function ordersListener(w: World, data: GameData, e: WorldEvent): void {
-  if (e.kind === 'hex-entered') springGarrison(w, data);
+  if (e.kind === 'hex-entered' || e.kind === 'cell-entered') springGarrison(w, data);
+  else if (e.kind === 'fight-won' && e.garrison) w.beaten.push(e.garrison);
 }

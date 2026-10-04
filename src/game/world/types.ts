@@ -72,6 +72,8 @@ export interface World {
   workshops: string[];
   components: Record<string, number>;
   countersigns: string[];
+  /** Garrison posts beaten in a fight, by key (orders.ts). */
+  beaten: string[];
   ordersEnded: string[];
   authority: string[];
   raid: { town: string; day: number; fighting: boolean } | null;

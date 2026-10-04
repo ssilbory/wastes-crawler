@@ -125,7 +125,7 @@ describe('exploration turns (SRD 2.13.2, 2.13.3)', () => {
     settleByFighting(
       w,
       data,
-      { ...fight, enemies: [], captive: null, quest: null },
+      { ...fight, enemies: [], captive: null, quest: null, garrison: null },
       { outcome: 'party', rounds: 1, deaths: 0, battle: null as never },
       null,
     );

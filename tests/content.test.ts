@@ -62,7 +62,8 @@ describe('data/content', () => {
       peoples: [goblin, { ...centaur, lineages: [deer, deer] }],
       backgrounds: [{ ...bg, peoples: ['goblin', 'dwarf'] }],
     };
-    expect(contentReferenceErrors(srd, broken)).toEqual([
+    // Messages for the peoples left out are reported too (Phase 12c).
+    expect(contentReferenceErrors(srd, broken).filter((e) => !e.includes('message for'))).toEqual([
       'backgrounds/scavenger: unknown people dwarf',
       'peoples/centaur: no background is open to it',
       'peoples/centaur lineages: duplicate id deer',

@@ -12,6 +12,15 @@
     "name": "Patrol the Ash Road",
     "text": "Old goblins still walk the hill roads in pairs and threes, asking every traveller for a password.",
     "countersign": "Iron and salt",
-    "bluff": 11
+    "bluff": 11,
+    "complete": "ash-road-relief"
+  },
+  {
+    "id": "ashgate-hold",
+    "name": "Hold Ashgate Until Relieved",
+    "text": "Ashgate's bound garrison was ordered to hold the keep until relieved. Twenty years on, they are still waiting.",
+    "countersign": "The banner stays",
+    "bluff": 12,
+    "recruit": "guard"
   }
 ]

@@ -80,6 +80,7 @@ describe('dungeon validation', () => {
         traps: [],
         specials: [],
         captives: [],
+        garrisons: [],
       },
     ],
     ...extra,
@@ -96,6 +97,7 @@ describe('dungeon validation', () => {
       traps: [],
       specials: [],
       captives: [],
+      garrisons: [],
     };
     const d = { ...one(tiny, []), levels: [{ ...level, wander: { every: 2, table: 'crypt' } }] };
     expect(check(d)).toEqual(

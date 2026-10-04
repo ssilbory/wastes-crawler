@@ -67,7 +67,7 @@ describe('the level editor model (docs/decisions/0003-level-authoring.md)', () =
     const twin = { ...barrow, id: 'twin-barrow', entrance: { col: 0, row: 0 } };
     const both = { ...data.content, dungeons: [...data.content.dungeons, twin] };
     expect(editorErrors(both, barrow)).toEqual([]);
-    expect(JSON.parse(exportDungeons(both, barrow))[1].id).toBe('twin-barrow');
+    expect(JSON.parse(exportDungeons(both, barrow)).at(-1).id).toBe('twin-barrow');
     const broken = withLevelMap(barrow, 'barrow-upper', ['+-+', '|x|', '+-+']);
     expect(editorErrors(data.content, broken)[0]).toContain('unknown cell glyph x');
   });

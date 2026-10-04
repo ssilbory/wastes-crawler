@@ -33,7 +33,7 @@ describe('NPC content', () => {
         moraleTiers: ['grim'],
       },
       captives: [{ ...merchant, monster: 'dragon', destination: 'atlantis' }],
-      dungeons: content.dungeons.map((d) => ({
+      dungeons: content.dungeons.slice(0, 1).map((d) => ({
         ...d,
         levels: d.levels.map((l) => ({
           ...l,

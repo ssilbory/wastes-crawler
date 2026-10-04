@@ -143,7 +143,8 @@
             "guards": [["thug-or-militia", "thug-or-militia"]],
             "text": "Two grave robbers are binding a struggling grave-digger."
           }
-        ]
+        ],
+        "garrisons": []
       },
       {
         "id": "barrow-lower",
@@ -269,7 +270,642 @@
             }
           }
         ],
-        "captives": []
+        "captives": [],
+        "garrisons": []
+      }
+    ]
+  },
+  {
+    "id": "ashgate-keep",
+    "name": "Ashgate Keep",
+    "region": "dark-lands",
+    "entrance": {
+      "col": 22,
+      "row": 12
+    },
+    "entry": {
+      "level": "ashgate-ward",
+      "at": {
+        "x": 4,
+        "y": 9
+      },
+      "facing": "n"
+    },
+    "levels": [
+      {
+        "id": "ashgate-ward",
+        "name": "The Outer Ward",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|   |          >|   |",
+          "+ + + + + + + + + + +",
+          "|   s           |   |",
+          "+ + + + + + + + + + +",
+          "|   |           d   |",
+          "+ + +-+-+d+-+-+-+ + +",
+          "|   | | |  T| | |   |",
+          "+-+-+-+-+ + +-+-+ + +",
+          "| | | | |   | | |   |",
+          "+-+-+-+-+ + +-+-+-+-+",
+          "|   | | |   | | | | |",
+          "+ + +-+-+d+-+-+-+-+-+",
+          "|   |           |   |",
+          "+ + + + + + + + + + +",
+          "|   d           |   |",
+          "+ + + + + + + + + + +",
+          "|   |           d   |",
+          "+ + + + + + + + + + +",
+          "|   |    <      |  N|",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 4,
+              "y": 9
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 0
+            },
+            "to": {
+              "level": "ashgate-vaults",
+              "at": {
+                "x": 7,
+                "y": 0
+              },
+              "facing": "s"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "ashgate"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 1,
+            "y": 0
+          },
+          {
+            "x": 0,
+            "y": 1
+          },
+          {
+            "x": 1,
+            "y": 1
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 1,
+              "y": 1
+            },
+            "side": "e",
+            "difficulty": 9
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 5,
+              "y": 3
+            },
+            "name": "murder hole",
+            "notice": 9,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 9
+            },
+            "save": "evasion",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 1,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 4,
+              "y": 8
+            },
+            "text": "The gate stands open. Cut into the lintel in the old script: HOLD UNTIL RELIEVED."
+          }
+        ],
+        "captives": [
+          {
+            "at": {
+              "x": 9,
+              "y": 9
+            },
+            "captive": "chained-deserter",
+            "guards": [["warbreed-hound", "warbreed-hound"]],
+            "text": "A beastman deserter is chained in the stables, and two warbreed hounds are kept hungry beside him."
+          }
+        ],
+        "garrisons": [
+          {
+            "at": {
+              "x": 4,
+              "y": 5
+            },
+            "order": "ashgate-hold",
+            "enemies": [["bound-goblin-sentry", "bound-goblin-sentry", "bound-goblin-sentry"]],
+            "text": "Three old goblins stand to in the gatehouse, spears level, as if the war never ended."
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 1
+            },
+            "order": "ashgate-hold",
+            "enemies": [["bound-orc-guard", "bound-orc-guard"]],
+            "text": "Two orc guards hold the keep hall, their armor patched with twenty years of scrap."
+          }
+        ]
+      },
+      {
+        "id": "ashgate-vaults",
+        "name": "The Undervaults",
+        "map": [
+          "+-+-+-+-+-+-+-+-+",
+          "|     | | |    <|",
+          "+ + + +-+-+ + + +",
+          "|     | | |     |",
+          "+ + + +-+-+ + + +",
+          "|     | | |     |",
+          "+-+d+-+-+-+-+d+-+",
+          "|               |",
+          "+ + + + + + + + +",
+          "|      T        |",
+          "+-+ +-+-+-+-+d+-+",
+          "|       |       |",
+          "+ + + + + + + + +",
+          "|       s       |",
+          "+ + + + + + + + +",
+          "|       |       |",
+          "+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 7,
+              "y": 0
+            },
+            "to": {
+              "level": "ashgate-ward",
+              "at": {
+                "x": 7,
+                "y": 0
+              },
+              "facing": "w"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "ashgate"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 7
+          },
+          {
+            "x": 1,
+            "y": 7
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 3,
+              "y": 6
+            },
+            "side": "e",
+            "difficulty": 8
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 3,
+              "y": 4
+            },
+            "name": "alarm gong",
+            "notice": 8,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 7
+            },
+            "save": null,
+            "effect": {
+              "kind": "alarm"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "darkness",
+            "at": {
+              "x": 2,
+              "y": 6
+            }
+          },
+          {
+            "kind": "countersign",
+            "at": {
+              "x": 7,
+              "y": 7
+            },
+            "order": "ashgate-hold",
+            "text": "Nailed to the armory door: the last orders of Ashgate's commander, with the countersign the garrison was to accept from its relief."
+          }
+        ],
+        "captives": [],
+        "garrisons": [
+          {
+            "at": {
+              "x": 1,
+              "y": 2
+            },
+            "order": "ashgate-hold",
+            "enemies": [["bound-orc-guard"], ["bound-orc-captain"]],
+            "text": "Ashgate's captain guards the archive himself, a guard at his side."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mire-vats",
+    "name": "The Mire Vats",
+    "region": "dark-lands",
+    "entrance": {
+      "col": 17,
+      "row": 22
+    },
+    "entry": {
+      "level": "vats-pens",
+      "at": {
+        "x": 0,
+        "y": 7
+      },
+      "facing": "n"
+    },
+    "levels": [
+      {
+        "id": "vats-pens",
+        "name": "The Pens",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|   |     |         |",
+          "+ + + + + + + + + + +",
+          "|   d     d         |",
+          "+ + + + + + + + + + +",
+          "|   |     |    T    |",
+          "+ + +-+-+-+ + + + + +",
+          "|   |     |         |",
+          "+ + + + + + + + + + +",
+          "|   d    N|         |",
+          "+ + +-+-+-+-+-+-+-+-+",
+          "|   |     |     |   |",
+          "+ + + + + + + + + + +",
+          "|   d     d     d   |",
+          "+ + + + + + + + + + +",
+          "|<  |     |     |  >|",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 0,
+              "y": 7
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 7
+            },
+            "to": {
+              "level": "vats-hall",
+              "at": {
+                "x": 9,
+                "y": 0
+              },
+              "facing": "s"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "vats"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 1,
+            "y": 0
+          }
+        ],
+        "secrets": [],
+        "traps": [
+          {
+            "at": {
+              "x": 7,
+              "y": 2
+            },
+            "name": "spilled birthing draught",
+            "notice": 8,
+            "disarm": {
+              "skill": "heal",
+              "attributes": ["int"],
+              "difficulty": 8
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 2
+            },
+            "text": "Goats fill the yard, bellies swollen. In four months these pens will hold beastmen."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 2
+            },
+            "people": ["beastman"],
+            "text": "{pc} knows the smell of this place, though {pc} was born somewhere like it, not here."
+          }
+        ],
+        "captives": [
+          {
+            "at": {
+              "x": 4,
+              "y": 4
+            },
+            "captive": "old-breed-goblin",
+            "guards": [["beastman-trooper", "beastman-trooper"], ["slaver"]],
+            "text": "A slaver and two beastman troopers are dragging an old-breed goblin toward the cull rooms."
+          }
+        ],
+        "garrisons": []
+      },
+      {
+        "id": "vats-hall",
+        "name": "The Vat Hall",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|     |            <|",
+          "+ + + + + + + + + + +",
+          "|     |             |",
+          "+ + + + + + + + + + +",
+          "|     d             |",
+          "+ + + + + + + + + + +",
+          "|     |             |",
+          "+ + + + + + + + + + +",
+          "|     |             |",
+          "+-+-+-+ + + + + + + +",
+          "| | | |             |",
+          "+-+-+-+-+-+-+-+-+ +-+",
+          "|   d    T          |",
+          "+ + +-+-+-+d+-+-+-+-+",
+          "|   | |             |",
+          "+ + +-+ + + + + + + +",
+          "|   | |             |",
+          "+ + +-+ + + + + + + +",
+          "|>  | |             |",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 9,
+              "y": 0
+            },
+            "to": {
+              "level": "vats-pens",
+              "at": {
+                "x": 9,
+                "y": 7
+              },
+              "facing": "w"
+            }
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 9
+            },
+            "to": {
+              "level": "vats-cull",
+              "at": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": "s"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "vats"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 1,
+            "y": 0
+          }
+        ],
+        "secrets": [],
+        "traps": [
+          {
+            "at": {
+              "x": 4,
+              "y": 6
+            },
+            "name": "vat drain",
+            "notice": 9,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int"],
+              "difficulty": 9
+            },
+            "save": "evasion",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 2,
+                "sides": 4,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 2
+            },
+            "text": "Glass vats as tall as an orc line the hall. Most are cracked; something moved in the last whole one."
+          },
+          {
+            "kind": "anti-magic",
+            "at": {
+              "x": 6,
+              "y": 3
+            }
+          },
+          {
+            "kind": "spinner",
+            "at": {
+              "x": 5,
+              "y": 6
+            }
+          },
+          {
+            "kind": "darkness",
+            "at": {
+              "x": 0,
+              "y": 7
+            }
+          }
+        ],
+        "captives": [],
+        "garrisons": []
+      },
+      {
+        "id": "vats-cull",
+        "name": "The Cull Rooms",
+        "map": [
+          "+-+-+-+-+-+-+-+-+",
+          "|<    |         |",
+          "+ + + + + + + + +",
+          "|     d         |",
+          "+ + + + + + + + +",
+          "|     |         |",
+          "+ +-+-+ + + + + +",
+          "| | | |         |",
+          "+ +-+-+ + + + + +",
+          "| | | |         |",
+          "+ +-+-+-+-+-+d+-+",
+          "| |         |   |",
+          "+ + + + + + + + +",
+          "|           |   |",
+          "+ + + + + + + + +",
+          "| |         |   |",
+          "+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "to": {
+              "level": "vats-hall",
+              "at": {
+                "x": 0,
+                "y": 9
+              },
+              "facing": "e"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "vats"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 1,
+            "y": 0
+          }
+        ],
+        "secrets": [],
+        "traps": [],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 3,
+              "y": 6
+            },
+            "text": "Bones fill the room to the knee: orcs and goblins of breeds no longer made."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 7,
+              "y": 7
+            },
+            "text": "Ledgers fill the shelves: every breed of orc and goblin the vats made, and the day each older breed was culled."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 7,
+              "y": 7
+            },
+            "people": ["orc"],
+            "text": "{pc} finds the orc lines. {pc}'s own breed is marked for the cull, the order signed but never carried out."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 7,
+              "y": 7
+            },
+            "people": ["goblin"],
+            "text": "{pc} finds the goblin lines. {pc}'s breed is listed as a failure, kept for labor until a better one was ready."
+          }
+        ],
+        "captives": [],
+        "garrisons": []
       }
     ]
   }

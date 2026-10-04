@@ -5,7 +5,7 @@ import { CharacterSchema } from './character.ts';
 import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 15;
+export const WORLD_SCHEMA_VERSION = 16;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -76,6 +76,8 @@ export const PendingEncounterSchema = z.strictObject({
   text: z.string(),
   /** A bound garrison's or patrol's standing order (Phase 12b). */
   order: IdSchema.optional(),
+  /** The garrison post this group holds, by key, so a won fight clears it (Phase 12c). */
+  garrison: z.string().optional(),
 });
 
 /** Crowns spent and loot cashed in at one town, at listed value, since `since` (a day). */
@@ -248,6 +250,8 @@ export const WorldSaveSchema = z.strictObject({
   /** Standing orders whose countersigns the party knows, and those it has ended (Phase 12b). */
   countersigns: z.array(IdSchema),
   ordersEnded: z.array(IdSchema),
+  /** Garrison posts the party has beaten, by key (Phase 12c). */
+  beaten: z.array(z.string()),
   /** Tokens of command authority the party carries. */
   authority: z.array(IdSchema),
   /** The settlement raiders mean to hit, the day they strike, and whether the party is fighting them. */

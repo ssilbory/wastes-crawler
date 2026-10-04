@@ -81,14 +81,14 @@ describe('raids (docs/rules-adaptation.md, Raids)', () => {
     const w = threatened();
     w.purse = 0;
     w.raid = { town: 'cinderhold', day: 10, fighting: true };
-    emit(w, data, { kind: 'fight-won', quest: null });
+    emit(w, data, { kind: 'fight-won', quest: null, garrison: null });
     expect(w.purse).toBe(0);
     enterRegion(w, 'dark-lands', CINDERHOLD);
-    emit(w, data, { kind: 'fight-won', quest: null });
+    emit(w, data, { kind: 'fight-won', quest: null, garrison: null });
     expect(w.purse).toBe(60);
     expect(w.raid).toBeNull();
     expect(w.log.at(-1)).toContain('Cinderhold is saved. The settlement pays the defenders 60');
-    emit(w, data, { kind: 'fight-won', quest: null });
+    emit(w, data, { kind: 'fight-won', quest: null, garrison: null });
     expect(w.purse).toBe(60);
   });
 

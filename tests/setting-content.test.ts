@@ -10,7 +10,11 @@ const content = loadContent();
 describe('setting content (Phase 12b)', () => {
   it('loads clean standing orders, authorities, garrisons, and raids', () => {
     expect(settingReferenceErrors(srd, content)).toEqual([]);
-    expect(content.standingOrders.map((o) => o.id)).toEqual(['ruinfield-gate', 'ash-road-patrol']);
+    expect(content.standingOrders.map((o) => o.id)).toEqual([
+      'ruinfield-gate',
+      'ash-road-patrol',
+      'ashgate-hold',
+    ]);
     expect(content.raidRules.region).toBe('dark-lands');
   });
 
@@ -47,7 +51,19 @@ describe('setting content (Phase 12b)', () => {
           levels: [
             {
               ...level,
-              specials: [{ kind: 'countersign', at: { x: 0, y: 0 }, order: 'lost', text: 'x' }],
+              specials: [
+                { kind: 'countersign', at: { x: 0, y: 0 }, order: 'lost', text: 'x' },
+                { kind: 'message', at: { x: 0, y: 0 }, text: 'x', people: ['human'] },
+              ],
+              garrisons: [
+                { at: { x: 99, y: 0 }, order: 'lost', enemies: [['dragon']], text: 'x' },
+                {
+                  at: { x: 0, y: 0 },
+                  order: 'ruinfield-gate',
+                  enemies: [['thug-or-militia']],
+                  text: 'x',
+                },
+              ],
             },
           ],
         },
@@ -70,6 +86,10 @@ describe('setting content (Phase 12b)', () => {
       'regions/dark-lands: the garrison at 6,12 is in a settlement',
       `encounterTables/${table.id}: unknown order lost`,
       `dungeons/${dungeon.id}/${level.id}: unknown order lost`,
+      `dungeons/${dungeon.id}/${level.id}: message for unknown people human`,
+      `dungeons/${dungeon.id}/${level.id}: the garrison at 99,0 has unknown order lost`,
+      `dungeons/${dungeon.id}/${level.id}: the garrison at 99,0 is not on a plain floor cell`,
+      `dungeons/${dungeon.id}/${level.id}: the garrison at 99,0: unknown monster dragon`,
       `quests/${quest.id}: unknown order lost`,
       `quests/${quest.id}: unknown authority z`,
       'raidRules: unknown region atlantis',

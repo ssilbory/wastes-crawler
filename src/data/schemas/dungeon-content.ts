@@ -60,11 +60,28 @@ export const HeldCaptiveSchema = z.strictObject({
 });
 export type HeldCaptive = z.infer<typeof HeldCaptiveSchema>;
 
+/** A bound garrison post on a cell, met on stepping onto it until its order ends (Phase 12c). */
+export const GarrisonPostSchema = z.strictObject({
+  at: CellSchema,
+  order: IdSchema,
+  enemies: z.array(z.array(IdSchema).min(1).max(8)).min(1).max(3),
+  text: z.string().min(1),
+});
+export type GarrisonPost = z.infer<typeof GarrisonPostSchema>;
+
 const At = { at: CellSchema };
 /** A special square: no glyph, found by walking onto it. */
 export const SpecialSchema = z.discriminatedUnion('kind', [
-  /** Text shown the first time the party steps here. */
-  z.strictObject({ kind: z.literal('message'), ...At, text: z.string().min(1) }),
+  /**
+   * Text shown the first time the party steps here. With `people`, only when a living PC is one of
+   * them; `{pc}` in the text names the first such PC (Phase 12c).
+   */
+  z.strictObject({
+    kind: z.literal('message'),
+    ...At,
+    text: z.string().min(1),
+    people: z.array(IdSchema).min(1).optional(),
+  }),
   z.strictObject({
     kind: z.literal('teleporter'),
     ...At,
@@ -108,6 +125,7 @@ export const DungeonLevelSchema = z.strictObject({
   traps: z.array(TrapSchema),
   specials: z.array(SpecialSchema),
   captives: z.array(HeldCaptiveSchema),
+  garrisons: z.array(GarrisonPostSchema),
 });
 export type DungeonLevel = z.infer<typeof DungeonLevelSchema>;
 
