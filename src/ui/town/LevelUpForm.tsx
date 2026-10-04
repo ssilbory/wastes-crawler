@@ -32,6 +32,26 @@ export function LevelUpForm(props: {
     : [];
   const setFocus = (i: number, choice: FocusChoice) =>
     setFoci(foci.map((f, j) => (j === i ? choice : f)));
+  const artPicks = plan.arts.reduce(
+    (n, p) => n + Math.min(p.picks, artChoices(data, p, c.arts, plan.classLevel).length),
+    0,
+  );
+  const spellPicks = Math.min(plan.spells, spellChoices.length);
+  // What the level still asks for, said beside the button so a refusal never goes unseen.
+  const needed = [
+    ...foci.flatMap((choice) => {
+      const f = focusInfo(data, choice.id);
+      if (!f) return ['Choose a focus.'];
+      if (c.foci.some((h) => h.id === f.id)) return [];
+      const skills = f.bonusSkill ? allowedSkills(data, f.bonusSkill) : [];
+      return [
+        ...(skills.length > 1 && !choice.skill ? [`Choose a skill for ${f.name}.`] : []),
+        ...(f.attributeChoice && !choice.attribute ? [`Choose an attribute for ${f.name}.`] : []),
+      ];
+    }),
+    ...(arts.length < artPicks ? [`Pick ${artPicks - arts.length} more art(s).`] : []),
+    ...(spells.length < spellPicks ? [`Pick ${spellPicks - spells.length} more spell(s).`] : []),
+  ];
   return (
     <section class="panel level-up" aria-label="Level up">
       <h3>Level up</h3>
@@ -145,9 +165,17 @@ export function LevelUpForm(props: {
           ))}
         </fieldset>
       )}
+      {needed.length > 0 && (
+        <ul class="hint needed" aria-label="Still needed">
+          {needed.map((n) => (
+            <li key={n}>{n}</li>
+          ))}
+        </ul>
+      )}
       <button
         type="button"
         class="create"
+        disabled={needed.length > 0}
         onClick={() => props.onConfirm({ foci: foci.filter((f) => f.id !== ''), arts, spells })}
       >
         Level up

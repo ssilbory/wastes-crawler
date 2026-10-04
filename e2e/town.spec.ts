@@ -93,7 +93,11 @@ test('levels up a character with XP to spend', async ({ page }, testInfo) => {
   await page.getByRole('combobox', { name: 'Who' }).selectOption({ label: 'Snag' });
   const form = page.getByRole('region', { name: 'Level up' });
   await expect(form).toBeVisible();
+  // Nothing picked yet: the form says what it needs and holds the button back.
+  await expect(form.getByRole('list', { name: 'Still needed' })).toContainText('Choose a focus.');
+  await expect(form.getByRole('button', { name: 'Level up' })).toBeDisabled();
   await form.getByRole('combobox', { name: 'Focus (any)' }).selectOption({ label: 'Die Hard' });
+  await expect(form.getByRole('list', { name: 'Still needed' })).toHaveCount(0);
   await page.screenshot({ path: testInfo.outputPath('town-level-up.png'), fullPage: true });
   await form.getByRole('button', { name: 'Level up' }).click();
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
