@@ -142,5 +142,17 @@
     "name": "Bound Lieutenant",
     "base": "knight-or-minor-hero",
     "description": "One of the Dark Lord's elf lieutenants, bound to his will and still fighting his war."
+  },
+  {
+    "id": "half-elf-zealot",
+    "name": "Half-Elf Zealot",
+    "base": "veteran-soldier",
+    "description": "A half-elf raised in the alliance strongholds, sent to bring elves and gnomes \"home\" for trial and penance."
+  },
+  {
+    "id": "elven-patriarch",
+    "name": "Elven Patriarch",
+    "base": "warrior-baron",
+    "description": "An elder elf of the alliance in heavy armor, warrior and mage both, who leads the half-elf rescue parties himself."
   }
 ]

@@ -159,7 +159,7 @@ The settlements are squeezed from every side: monsters in the wilds, warlords bu
 | Bound agents                        | Humans, elves, gnomes and others; still bound, acting on their own judgment      | Sleepers, infiltrators, tragic bosses; may hold secret orders to avenge or restore him |
 | Loyalists                           | Waiting for the Dark Lord's return                                               | Cultists, recurring enemy, hunt for command authority                                  |
 
-The fanatics may treat elves and gnomes differently from orcs and goblins: "rescue" and trial instead of extermination. To an elf PC, a rescue raid is a kidnapping.
+The fanatics may treat elves and gnomes differently from orcs and goblins: "rescue" and trial instead of extermination. To an elf PC, a rescue raid is a kidnapping. The groups sent to take elves and gnomes are generally half-elves, sometimes led by a high-ranking elven patriarch in armor, both mage and warrior.
 
 ## Content hooks
 

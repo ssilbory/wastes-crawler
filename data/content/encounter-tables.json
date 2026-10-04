@@ -666,23 +666,6 @@
       },
       {
         "weight": 1,
-        "nature": "hostile",
-        "groups": [
-          {
-            "monster": "alliance-ranger",
-            "count": 2,
-            "row": 0
-          },
-          {
-            "monster": "paladin",
-            "count": 1,
-            "row": 1
-          }
-        ],
-        "rescuers": true
-      },
-      {
-        "weight": 1,
         "nature": "wary",
         "groups": [
           {
@@ -693,6 +676,39 @@
               "modifier": 0
             },
             "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "rescuers": true,
+        "groups": [
+          {
+            "monster": "half-elf-zealot",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "rescuers": true,
+        "groups": [
+          {
+            "monster": "half-elf-zealot",
+            "count": 3,
+            "row": 0
+          },
+          {
+            "monster": "elven-patriarch",
+            "count": 1,
+            "row": 1
           }
         ]
       },
@@ -966,18 +982,34 @@
         "captive": "pilgrim"
       },
       {
-        "weight": 1,
+        "weight": 2,
         "nature": "wary",
         "rescuers": true,
         "groups": [
           {
-            "monster": "paladin",
-            "count": 1,
+            "monster": "half-elf-zealot",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "rescuers": true,
+        "groups": [
+          {
+            "monster": "half-elf-zealot",
+            "count": 3,
             "row": 0
           },
           {
-            "monster": "alliance-ranger",
-            "count": 2,
+            "monster": "elven-patriarch",
+            "count": 1,
             "row": 1
           }
         ]
