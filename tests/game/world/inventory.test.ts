@@ -149,6 +149,34 @@ describe('the inventory view', () => {
     });
   });
 
+  it('names barding, small armor, quality, mods, and a magic bonus on each line', () => {
+    const w = world();
+    const snag = member(w, 'Snag');
+    snag.character = {
+      ...snag.character,
+      inventory: [
+        { id: 'pieced-armor', quantity: 1, location: 'worn', barding: true },
+        { id: 'pieced-armor', quantity: 1, location: 'stowed', small: true },
+        {
+          id: 'spear-light',
+          quantity: 1,
+          location: 'readied',
+          quality: 'mastercrafted',
+          bonus: 1,
+          mods: [
+            { id: 'customized', components: [] },
+            { id: 'lost-mod', components: [] },
+          ],
+        },
+      ],
+    };
+    expect(inventoryView(w, data, snag.id)?.lines.map((l) => l.name)).toEqual([
+      'Pieced Armor (barding)',
+      'Pieced Armor (small)',
+      'Spear, Light +1 (mastercrafted, Customized, lost-mod)',
+    ]);
+  });
+
   it('reads out the load against its limits', () => {
     const load = { readied: 3, stowed: 8, readiedLimit: 5, stowedLimit: 10, excess: 0 };
     expect(loadText({ ...load, state: 'ok' })).toBe('Readied 3/5, Stowed 8/10');

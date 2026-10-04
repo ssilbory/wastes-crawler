@@ -3,7 +3,7 @@
 import type { ItemLocation } from '../data/schemas/index.ts';
 import type { GameData } from '../game/character/context.ts';
 import { characterSheet } from '../game/character/derived.ts';
-import { entryEncumbrance, findItem } from '../game/character/items.ts';
+import { entryEncumbrance, findItem, type InventoryEntry } from '../game/character/items.ts';
 import type { World } from '../game/world/types.ts';
 import type { Load } from '../rules/encumbrance.ts';
 
@@ -28,6 +28,15 @@ export interface InventoryView {
   costsTurn: boolean;
 }
 
+/** The name with what sets the line apart: "Pieced Armor (barding)", "Spear +1 (mastercrafted)". */
+function lineName(data: GameData, e: InventoryEntry, name: string): string {
+  const mods = (e.mods ?? []).map(
+    (m) => data.content.mods.find((x) => x.id === m.id)?.name ?? m.id,
+  );
+  const notes = [e.quality, ...mods, e.small && 'small', e.barding && 'barding'].filter(Boolean);
+  return `${name}${e.bonus ? ` +${e.bonus}` : ''}${notes.length ? ` (${notes.join(', ')})` : ''}`;
+}
+
 export function inventoryView(w: World, data: GameData, memberId: string): InventoryView | null {
   const m = w.members.find((x) => x.id === memberId);
   if (!m) return null;
@@ -39,7 +48,7 @@ export function inventoryView(w: World, data: GameData, memberId: string): Inven
       const item = findItem(data, e.id);
       return {
         index,
-        name: item?.name ?? e.id,
+        name: lineName(data, e, item?.name ?? e.id),
         quantity: e.quantity,
         location: e.location,
         encumbrance: item ? entryEncumbrance(data, item, e) : 0,
