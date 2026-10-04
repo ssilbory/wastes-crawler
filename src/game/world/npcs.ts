@@ -65,6 +65,10 @@ export const guideOf = (w: World, data: GameData, id: string | null) =>
 export const firstGuide = (w: World, data: GameData) =>
   w.npcs.find((n) => n.hp > 0 && typeOf(data, n)?.role === 'guide');
 
+/** A conscious Mundane Physician in the party, if any. */
+export const firstPhysician = (w: World, data: GameData) =>
+  w.npcs.find((n) => n.hp > 0 && typeOf(data, n)?.role === 'physician');
+
 /** A free formation slot: fighters fill the front row first, everyone else the rear. */
 export function freeSlot(w: World, front: boolean): { row: number; column: number } | null {
   const taken = (row: number, column: number) =>

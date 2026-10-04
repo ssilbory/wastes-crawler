@@ -5,7 +5,7 @@ import { CharacterSchema } from './character.ts';
 import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 17;
+export const WORLD_SCHEMA_VERSION = 18;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -256,6 +256,8 @@ export const WorldSaveSchema = z.strictObject({
   clock: z.int().min(0),
   /** Crafter's notes found, by set, and what became of them. */
   notes: z.record(IdSchema, z.enum(['found', 'burned', 'sold', 'kept', 'paid'])),
+  /** The day a guide last found food and a physician last gave strain-free first aid. */
+  hirelingDays: z.strictObject({ food: z.int().nullable(), aid: z.int().nullable() }),
   /** What the party did with the Seal of Command, once decided. */
   ending: z.enum(['destroy', 'give', 'keep']).nullable(),
   /** Tokens of command authority the party carries. */

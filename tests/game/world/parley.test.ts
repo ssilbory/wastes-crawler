@@ -285,7 +285,7 @@ describe('first aid (SRD 2.5.4)', () => {
     ]);
   });
 
-  it('heals 1d6 plus the bonus, adding 1 strain to PCs', () => {
+  it('heals 1d6 plus the bonus, adding 1 strain to PCs after the free one each day', () => {
     const w = out([3, 5]);
     addNpc(w, data, 'hireling', 'mundane-physician', 'peaceful-human', 'Doc', false);
     addNpc(w, data, 'hireling', 'guard', 'thug-or-militia', 'Aldo', true);
@@ -296,10 +296,16 @@ describe('first aid (SRD 2.5.4)', () => {
     expect(firstAid(w, data, 'npc-0', 'm-1')).toEqual({ ok: false, reason: 'Grukk is unhurt.' });
     const grukk = member(w, 'Grukk');
     grukk.character = { ...grukk.character, hp: { ...grukk.character.hp, current: 1 } };
-    w.rng = scriptedRng([4]);
+    // The physician's first application of the day costs no strain; the next one does.
+    w.rng = scriptedRng([2, 2]);
     expect(firstAid(w, data, 'npc-0', 'm-1')).toEqual({ ok: true });
-    expect(grukk.character.hp.current).toBe(6);
+    expect(grukk.character.hp.current).toBe(4);
+    expect(grukk.character.strain.value).toBe(0);
+    expect(w.log.at(-1)).toContain('gently enough to cost no strain');
+    expect(firstAid(w, data, 'npc-0', 'm-1')).toEqual({ ok: true });
+    expect(grukk.character.hp.current).toBe(7);
     expect(grukk.character.strain.value).toBe(1);
+    grukk.character = { ...grukk.character, hp: { ...grukk.character.hp, current: 1 } };
     grukk.character = { ...grukk.character, strain: { value: 12, broken: false } };
     expect(firstAid(w, data, 'npc-0', 'm-1')).toEqual({
       ok: false,

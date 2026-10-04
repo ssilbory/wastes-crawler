@@ -108,6 +108,8 @@ export const WORLD_MIGRATIONS: Migrations = {
   15: (raw) => ({ ...raw, schemaVersion: 16, beaten: [] }),
   // Version 17 adds the endgame (Phase 12d): the clock at zero, no notes, no ending.
   16: (raw) => ({ ...raw, schemaVersion: 17, clock: 0, notes: {}, ending: null }),
+  // Version 18 adds the guide's and physician's daily services: neither used yet.
+  17: (raw) => ({ ...raw, schemaVersion: 18, hirelingDays: { food: null, aid: null } }),
 };
 
 export function serializeWorld(w: World): string {
@@ -149,6 +151,7 @@ export function serializeWorld(w: World): string {
     clock: w.clock,
     notes: w.notes,
     ending: w.ending,
+    hirelingDays: w.hirelingDays,
     ordersEnded: w.ordersEnded,
     authority: w.authority,
     raid: w.raid,
@@ -241,6 +244,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       clock: s.clock,
       notes: s.notes,
       ending: s.ending,
+      hirelingDays: s.hirelingDays,
       ordersEnded: s.ordersEnded,
       authority: s.authority,
       raid: s.raid,

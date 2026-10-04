@@ -78,6 +78,8 @@ export interface World {
   clock: number;
   notes: Record<string, 'found' | 'burned' | 'sold' | 'kept' | 'paid'>;
   ending: 'destroy' | 'give' | 'keep' | null;
+  /** The day a guide last found food and a physician last gave strain-free first aid. */
+  hirelingDays: { food: number | null; aid: number | null };
   ordersEnded: string[];
   authority: string[];
   raid: { town: string; day: number; fighting: boolean } | null;

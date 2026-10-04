@@ -88,11 +88,14 @@ export function hurt(w: World, m: Member, amount: number): void {
   note(w, `${m.character.name} takes ${amount} damage.`);
 }
 
-/** Natural healing (SRD 2.5.3): HP equal to the character's level each morning. */
-export function healNight(data: GameData, m: Member): void {
+/**
+ * Natural healing (SRD 2.5.3): HP equal to the character's level each morning, plus `extra` from a
+ * physician's care (Sam's call).
+ */
+export function healNight(data: GameData, m: Member, extra = 0): void {
   if (m.frail) return;
   const { level } = sheet(data, m);
-  setHp(m, Math.min(m.character.hp.max, m.character.hp.current + level));
+  setHp(m, Math.min(m.character.hp.max, m.character.hp.current + level + extra));
 }
 
 /** A new party member; their crowns go into the purse (docs/rules-adaptation.md, Towns). */

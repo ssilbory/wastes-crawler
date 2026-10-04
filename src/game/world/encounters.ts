@@ -11,7 +11,7 @@ import { findMonster, type GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
 import { alive, memberCheck, note } from './members.ts';
 import { reactionBonus } from './minds.ts';
-import { captiveOf } from './npcs.ts';
+import { captiveOf, firstGuide } from './npcs.ts';
 import { regionMap } from './region.ts';
 import type { Member, World } from './types.ts';
 
@@ -90,7 +90,8 @@ export function maybeEncounter(
 
 /**
  * Sets up a rolled group: a reaction roll, and an opposed Wis/Notice check by the watcher, if any,
- * to spot them first. `steps` adjusts the watcher's check; null means they can't spot anything.
+ * to spot them first, then one by a Wilderness Guide above ground if the watcher missed them.
+ * `steps` adjusts the checks; null means no one can spot anything.
  */
 export function startEncounter(
   w: World,
@@ -104,16 +105,26 @@ export function startEncounter(
   const taken = rolled.rescuers ? rescueTarget(w) : undefined;
   const nature = taken ? 'hostile' : rolled.nature;
   const { reaction } = reactionRoll(w.rng, partyCha(w, data) + reactionBonus(w, data));
-  let spotted = false;
-  if (watcher && steps !== null) {
+  // A Wilderness Guide on the overland map makes a second roll to spot them (Sam's call).
+  const guide = w.dungeon ? undefined : firstGuide(w, data);
+  let spotter: string | null = null;
+  if ((watcher || guide) && steps !== null) {
     const monsters = rows.flat().map((id) => findMonster(data, id) as Monster);
     const theirs = npcCheck(w.rng, {
       skillBonus: Math.max(...monsters.map((m) => m.skill)),
       difficulty: 0,
     });
-    const ours = memberCheck(w, data, watcher, 'notice', ['wis'], 0, steps);
-    spotted = pcWinsOpposed(ours.score, theirs.score);
+    if (watcher) {
+      const ours = memberCheck(w, data, watcher, 'notice', ['wis'], 0, steps);
+      if (pcWinsOpposed(ours.score, theirs.score)) spotter = watcher.character.name;
+    }
+    if (!spotter && guide) {
+      const skillBonus = data.content.npcRules.skillBonus;
+      const ours = npcCheck(w.rng, { skillBonus, difficulty: 0, steps });
+      if (pcWinsOpposed(ours.score, theirs.score)) spotter = guide.name;
+    }
   }
+  const spotted = spotter !== null;
   const counts = new Map<string, number>();
   for (const id of rows.flat()) counts.set(id, (counts.get(id) ?? 0) + 1);
   const who = [...counts].map(([id, n]) => `${n} ${monsterName(data, id)}`).join(' and ');
@@ -122,7 +133,7 @@ export function startEncounter(
     : taken
       ? ` They have come to "rescue" ${taken.character.name}.`
       : '';
-  const lead = `${spotted ? `${watcher?.character.name} spots` : 'The party meets'} ${who}.${held}`;
+  const lead = `${spotter ? `${spotter} spots` : 'The party meets'} ${who}.${held}`;
   const e = setEncounter(
     w,
     rows,

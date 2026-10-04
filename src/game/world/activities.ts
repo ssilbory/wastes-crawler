@@ -12,7 +12,7 @@ import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
 import { addMemberStrain, alive, bestAt, hurt, memberCheck, note, restQuarter } from './members.ts';
 import { emit } from './bus.ts';
-import { guideOf } from './npcs.ts';
+import { firstGuide, guideOf } from './npcs.ts';
 import { findPath, regionMap, seenHexes } from './region.ts';
 import { enterTown } from './town.ts';
 import type { Activity, Member, World } from './types.ts';
@@ -182,5 +182,30 @@ export function camp(
     rules.huntSteps,
     'brings in',
   );
+  guideFood(w, data, inTown);
   return { extraChecks, watcher: doing('watch')[0] };
+}
+
+/**
+ * Sam's call: a Wilderness Guide hunts the first camp quarter of each day outside town where there
+ * is game (or fish), and forages otherwise, with the common hireling's +1 (SRD 3.3.0) and without
+ * drawing an extra encounter check.
+ */
+function guideFood(w: World, data: GameData, inTown: boolean): void {
+  const guide = firstGuide(w, data);
+  if (!guide || inTown || w.hirelingDays.food === w.day) return;
+  w.hirelingDays.food = w.day;
+  const terrain = regionMap(data, w.region).terrainAt(w.position);
+  const rules = data.content.overlandRules;
+  const hunt = terrain.hunt ?? (terrain.water ? terrain.survive : null);
+  const [difficulty, steps] =
+    hunt === null ? [terrain.survive, rules.forageSteps] : [hunt, rules.huntSteps];
+  const ok = npcCheck(w.rng, { skillBonus: data.content.npcRules.skillBonus, difficulty }).success;
+  if (ok) w.rations = stepDie(w.rations, steps);
+  note(
+    w,
+    ok
+      ? `${guide.name} ${hunt === null ? 'forages' : 'brings in'} food.`
+      : `${guide.name} finds nothing.`,
+  );
 }

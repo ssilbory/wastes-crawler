@@ -1,7 +1,8 @@
 // First aid (vendor/wwn-srd/2.0 The Rules of the Game/2.5.0 Injury, Healing, And System Strain.md,
 // 2.5.4): a healer with a healer's kit restores 1d6 plus their Heal skill (1d6-1 without the
 // skill), and each application adds 1 System Strain to the patient. Frail patients can be patched
-// up but stay Frail. A Mundane Physician heals with the common hireling's total +1 (3.3.0).
+// up but stay Frail. A Mundane Physician heals with the common hireling's total +1 (3.3.0), and
+// their first application each day adds no strain (Sam's call).
 import { roll } from '../../rules/dice.ts';
 import { addStrain } from '../../rules/strain.ts';
 import type { GameData } from '../character/context.ts';
@@ -59,6 +60,18 @@ export function firstAid(w: World, data: GameData, healerId: string, targetId: s
   if (!m) throw new Error(`no living party member ${targetId}`);
   const c = m.character;
   if (c.hp.current >= c.hp.max) return no(`${c.name} is unhurt.`);
+  // Sam's call: a physician's first application each day adds no System Strain.
+  const physician = w.npcs.some((n) => n.id === healer.id);
+  if (physician && w.hirelingDays.aid !== w.day) {
+    w.hirelingDays.aid = w.day;
+    const healed = amount();
+    setHp(m, Math.min(c.hp.max, c.hp.current + healed));
+    note(
+      w,
+      `${healer.name} patches up ${c.name} for ${healed} HP, gently enough to cost no strain.`,
+    );
+    return { ok: true };
+  }
   const max = characterSheet(c, data).strainMax;
   const outcome = addStrain(
     { strain: c.strain.value, max, broken: c.strain.broken },
