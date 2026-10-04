@@ -9,6 +9,7 @@ import { dateOf } from './calendar.ts';
 import { addMemberStrain, alive, healNight, note } from './members.ts';
 import { npcCheck } from '../../rules/checks.ts';
 import { emit } from './bus.ts';
+import { immuneTo, sacredBlood } from './arts.ts';
 import { wakeRevived } from './healer.ts';
 import { firstPhysician, nightForNpcs } from './npcs.ts';
 import { regionMap } from './region.ts';
@@ -19,8 +20,9 @@ export function endOfDay(w: World, data: GameData, waystation = false): void {
   const map = regionMap(data, w.region);
   const inTown = waystation || map.siteAt(w.position) !== undefined;
   const { season } = dateOf(data.content.overlandRules, w.day);
-  let fed = inTown;
-  if (!inTown) {
+  // Transubstantiation's sacred blood feeds the party in place of the rations (Phase 15).
+  let fed = inTown || sacredBlood(w, data);
+  if (!fed) {
     const use = useResource(w.rng, w.rations);
     fed = use.available;
     if (use.available && use.die < w.rations) note(w, 'The rations run low.');
@@ -34,10 +36,10 @@ export function endOfDay(w: World, data: GameData, waystation = false): void {
   if (physician) tendFrail(w, data, physician.name);
   // The revived sleep the night through, untouched by hunger, cold, or rest (Phase 14d).
   for (const m of alive(w).filter((x) => !x.reviving)) {
-    m.hungry = !fed;
+    m.hungry = !fed && !immuneTo(data, m, 'hungry');
     // Sam's call: a physician's draughts and care keep off everything but hunger.
-    m.sleepless = !m.slept && !physician;
-    m.cold = cold && !physician;
+    m.sleepless = !m.slept && !physician && !immuneTo(data, m, 'sleepless');
+    m.cold = cold && !physician && !immuneTo(data, m, 'cold');
     const conditions = [m.hungry && 'Hungry', m.sleepless && 'Sleepless', m.cold && 'Cold'].filter(
       Boolean,
     );
@@ -48,6 +50,7 @@ export function endOfDay(w: World, data: GameData, waystation = false): void {
       healNight(data, m, physician ? 1 : 0);
       m.spellsCast = 0;
       m.effortDay = 0;
+      m.artUses = {};
     }
     m.slept = false;
   }

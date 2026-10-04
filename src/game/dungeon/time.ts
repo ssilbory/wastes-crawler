@@ -6,11 +6,12 @@
 import { encounterCheck } from '../../rules/overland.ts';
 import type { GameData } from '../character/context.ts';
 import { rollEnemies, startEncounter } from '../world/encounters.ts';
+import { tended } from '../world/arts.ts';
 import { alive, bestAt, note, restQuarter } from '../world/members.ts';
 import { endQuarter } from '../world/quarter.ts';
 import type { Activity, World } from '../world/types.ts';
 import { levelOf } from './explore.ts';
-import { burn, inDark } from './light.ts';
+import { burn, blind } from './light.ts';
 
 export const STEPS_PER_TURN = 12;
 export const TURNS_PER_QUARTER = 36;
@@ -35,7 +36,7 @@ function wander(w: World, data: GameData): void {
     data,
     rolled,
     watcher,
-    inDark(w, data) ? null : 0,
+    blind(w, data) ? null : 0,
     `${level.name} ${s.at.x},${s.at.y}`,
   );
 }
@@ -54,7 +55,7 @@ export function callWanderers(w: World, data: GameData): void {
 export function passTurn(w: World, data: GameData): void {
   const s = state(w);
   s.turn += 1;
-  burn(w);
+  burn(w, data);
   if (s.turn % TURNS_PER_QUARTER === 0) endQuarter(w, data);
   wander(w, data);
 }
@@ -70,7 +71,7 @@ export function countStep(w: World, data: GameData): void {
 
 /** After a fight underground: the light burns for it, then the fight's turn and the one after. */
 export function fightTurns(w: World, data: GameData): void {
-  burn(w);
+  burn(w, data);
   passTurn(w, data);
   passTurn(w, data);
 }
@@ -97,7 +98,10 @@ export function campUnderground(
   if (w.encounter) return { ok: false, reason: 'Settle the encounter first.' };
   if (!onSafeSquare(w, data)) return { ok: false, reason: 'This is no place to camp.' };
   const doing = (a: Activity) => alive(w).filter((m) => activities[m.id] === a);
-  for (const m of [...doing('rest'), ...doing('sleep')]) restQuarter(m);
+  // Refined Restoration: a Healer's care takes off one more strain from sleep (Phase 15).
+  const care = tended(w) ? 1 : 0;
+  for (const m of doing('rest')) restQuarter(m);
+  for (const m of doing('sleep')) restQuarter(m, care);
   for (const m of doing('sleep')) m.slept = true;
   w.camp = 'made';
   note(w, 'The party camps.');
@@ -111,7 +115,7 @@ export function campUnderground(
       data,
       rolled,
       watcher,
-      inDark(w, data) ? null : 0,
+      blind(w, data) ? null : 0,
       `${level.name} ${s.at.x},${s.at.y}`,
     );
     return { ok: true };

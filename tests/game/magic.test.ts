@@ -118,7 +118,7 @@ describe('arts and spells', () => {
       { tradition: 'high-mage', automatic: [], picks: 1 },
       {
         tradition: 'elementalist',
-        automatic: ['elemental-resilience', 'elemental-sparks'],
+        automatic: ['elemental-resilience'],
         picks: 1,
       },
     ]);
@@ -158,7 +158,8 @@ describe('arts and spells', () => {
   it('accepts a complete choice and adds automatic arts', () => {
     expect(evaluateMagic(data, hm, ok)).toEqual({ status: { state: 'ok' }, ...ok });
     const elem = evaluateMagic(data, mage('full-elementalist'), { ...ok, arts: ['flamesight'] });
-    expect(elem.arts).toEqual(['elemental-resilience', 'elemental-sparks', 'flamesight']);
+    // Elemental Sparks is left out of the game (Phase 15).
+    expect(elem.arts).toEqual(['elemental-resilience', 'flamesight']);
     expect(evaluateMagic(data, undefined, null).status).toEqual({ state: 'ok' });
     expect(status(null)).toEqual({ state: 'incomplete' });
     expect(status({ arts: ['counter-magic'] })).toEqual({ state: 'incomplete' });
@@ -178,8 +179,11 @@ describe('arts and spells', () => {
     expect(msg({ arts: ['flamesight', 'sense-magic'] })).toBe(
       "flamesight isn't an art of your tradition",
     );
-    expect(msg({ arts: ['elemental-sparks'] }, mage('full-elementalist'))).toBe(
+    expect(msg({ arts: ['elemental-resilience'] }, mage('full-elementalist'))).toBe(
       'that art is already granted',
+    );
+    expect(msg({ arts: ['elemental-sparks'] }, mage('full-elementalist'))).toBe(
+      "elemental-sparks isn't used in this game",
     );
     expect(msg({ known: ['flame-scrying', ...four.slice(1)] })).toBe(
       "flame-scrying isn't a spell you can learn yet",

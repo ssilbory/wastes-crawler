@@ -6,7 +6,7 @@ import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { FactionStateSchema } from './faction-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 23;
+export const WORLD_SCHEMA_VERSION = 24;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -31,6 +31,8 @@ export const MemberSaveSchema = z.strictObject({
   pendingXp: z.number().min(0).multipleOf(0.5),
   /** Revived by a Healer and unconscious until the next night passes (Phase 14d). */
   reviving: z.boolean(),
+  /** Uses of limited arts since the last quarter of rest, by art id (Phase 15). */
+  artUses: z.record(IdSchema, z.int().min(0)),
 });
 
 /** A hireling or a freed captive in one of the party's NPC slots (docs/rules-adaptation.md). */

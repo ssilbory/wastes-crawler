@@ -10,6 +10,7 @@ import { reactionRoll, type Reaction } from '../../rules/reaction.ts';
 import { findMonster, type GameData } from '../character/context.ts';
 import { rollPatrol, type Patrol } from '../factions/patrols.ts';
 import { characterSheet } from '../character/derived.ts';
+import { bonetalker } from './arts.ts';
 import { alive, memberCheck, note } from './members.ts';
 import { reactionBonus } from './minds.ts';
 import { captiveOf, firstGuide } from './npcs.ts';
@@ -153,6 +154,7 @@ export function startEncounter(
     lead,
     where,
   );
+  bonetalker(w, data, e);
   if (rolled.order) e.order = rolled.order;
   if (rolled.patrol) {
     e.patrol = rolled.patrol.key;

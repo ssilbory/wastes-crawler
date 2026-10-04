@@ -3,7 +3,8 @@ import type { Character } from '../../../src/data/schemas/index.ts';
 import { characterSheet } from '../../../src/game/character/derived.ts';
 import { armorFreeArts } from '../../../src/game/character/magic.ts';
 import { act } from '../../../src/game/combat/actions.ts';
-import { freeActions, partyAction } from '../../../src/game/combat/ai.ts';
+import { partyAction } from '../../../src/game/combat/ai.ts';
+import { freeActions } from '../../../src/game/combat/free-actions.ts';
 import { createBattle } from '../../../src/game/combat/battle.ts';
 import { commandsFor } from '../../../src/game/combat/commands.ts';
 import { harm, save } from '../../../src/game/combat/damage.ts';
@@ -158,25 +159,28 @@ describe('Healing Touch', () => {
     expect(partyAction(b, snag).kind).not.toBe('cast');
   });
 
-  it('comes On Turn with Swift Healer, the level in times a fight', () => {
+  it('comes On Turn with Swift Healer, the level in times a rest', () => {
     const b = battle(priest(2, ['healing-touch', 'swift-healer']));
     const snag = who(b, 'Snag');
-    expect(casterOf(snag).swiftLeft).toBe(2);
+    expect(casterOf(snag).uses).toEqual({});
     const grukk = hurtGrukk(b);
     b.rng = scriptedRng([1, 1, 1, 1]);
     freeActions(b, snag);
     expect(grukk.hp).toBe(4);
     freeActions(b, snag);
     expect(grukk.hp).toBe(7);
-    expect(casterOf(snag).swiftLeft).toBe(0);
+    expect(casterOf(snag).uses).toEqual({ 'swift-healer': 2 });
     freeActions(b, snag);
     expect(grukk.hp).toBe(7);
     // No one hurt enough: nothing happens.
     const c = battle(priest(2, ['healing-touch', 'swift-healer']));
     freeActions(c, who(c, 'Snag'));
-    expect(casterOf(who(c, 'Snag')).swiftLeft).toBe(2);
-    // Without Swift Healer, or the art itself, there is no On Turn touch.
-    expect(casterOf(who(battle(priest()), 'Snag')).swiftLeft).toBe(0);
+    expect(casterOf(who(c, 'Snag')).uses).toEqual({});
+    // Without Swift Healer there is no On Turn touch.
+    const d = battle(priest());
+    hurtGrukk(d);
+    freeActions(d, who(d, 'Snag'));
+    expect(who(d, 'Grukk').hp).toBe(1);
   });
 });
 

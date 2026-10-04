@@ -169,6 +169,14 @@ export const CombatEffectSchema = z.discriminatedUnion('kind', [
   }),
   /** Final Repose: the target takes the caster's skill as a Physical save penalty for the scene. */
   z.strictObject({ kind: z.literal('repose'), skill: IdSchema }),
+  /** Sight that ignores darkness: the user's, or with `party` the whole side's (Phase 15). */
+  z.strictObject({ kind: z.literal('dark-sight'), party: z.boolean() }),
+  /** Steps of Air: the target flies for a round per caster level. */
+  z.strictObject({ kind: z.literal('flight') }),
+  /** Petrifying Stare: a failed save lands a flyer and roots it for half the caster level. */
+  z.strictObject({ kind: z.literal('petrify'), save: Save }),
+  /** Sanctified Ward: +4 AC and saves, no Shock, and foes look elsewhere, until a hostile act. */
+  z.strictObject({ kind: z.literal('sanctify') }),
   /** Reroll a spell's damage and keep the better (Empowered Sorcery). */
   z.strictObject({ kind: z.literal('reroll-damage') }),
   /** Make an enemy reroll a successful save and keep the worse (Inexorable Effect). */
@@ -196,6 +204,8 @@ export const CombatMagicSchema = z.strictObject({
    * it for the scene on the first use only, later uses that scene being free (Healing Touch).
    */
   effort: z.enum(['scene', 'day', 'committed', 'activate']).optional(),
+  /** Only on an ally within one formation column, unless the user is a Far Healer (Phase 15). */
+  touch: z.literal(true).optional(),
   /** Usable once per scene, or once per target per scene. */
   limit: z.enum(['scene', 'target-scene']).optional(),
   effect: CombatEffectSchema,

@@ -5,8 +5,8 @@
 import type { Dice } from '../../data/schemas/index.ts';
 import { rollDie } from '../../rules/dice.ts';
 import { breathRow } from './specials.ts';
-import { canUse, castMagic, combatMagic } from './spells.ts';
-import { canAct, inMelee, isUp, targets } from './targeting.ts';
+import { canUse, combatMagic } from './spells.ts';
+import { canAct, flying, inMelee, isUp, targets } from './targeting.ts';
 import type { Action, Attack, Battle, Combatant } from './types.ts';
 
 const average = (d: Dice, bonus: number) => (d.count * (d.sides + 1)) / 2 + d.modifier + bonus;
@@ -51,50 +51,13 @@ export function monsterAction(b: Battle, actor: Combatant): Action {
 }
 
 /** Healing arts, in the order the AI reaches for them. */
-const HEALING = ['merciful-healing', 'healing-touch'];
+export const HEALING = ['merciful-healing', 'healing-touch'];
 
-const enemiesOf = (b: Battle, actor: Combatant) =>
+export const enemiesOf = (b: Battle, actor: Combatant) =>
   b.combatants.filter((c) => c.side !== actor.side && isUp(c));
 
-/**
- * On Turn and Instant magic taken before the main action: Pavis of Elements, Armor of God when
- * it beats the armor worn, and God Wills It in a hard fight, one where the foes' hit dice match or
- * pass the number of allies standing (Phase 14c).
- */
-export function freeActions(b: Battle, actor: Combatant): void {
-  const pavis = combatMagic(b, 'pavis-of-elements');
-  if (pavis && actor.acBonus === 0 && canUse(b, actor, pavis))
-    castMagic(b, actor, pavis.id, actor.id, undefined);
-  const armor = combatMagic(b, 'armor-of-god');
-  const level = actor.caster?.level ?? 0;
-  if (armor?.effect.kind === 'ac-floor' && actor.acFloor === 0 && canUse(b, actor, armor)) {
-    if (armor.effect.base + Math.floor(level / 2) > actor.ac)
-      castMagic(b, actor, armor.id, actor.id, undefined);
-  }
-  const bless = combatMagic(b, 'god-wills-it');
-  if (bless && canUse(b, actor, bless)) {
-    const hitDice = enemiesOf(b, actor).reduce((sum, f) => sum + f.hitDice, 0);
-    const allies = b.combatants.filter((c) => c.side === actor.side && canAct(c)).length;
-    if (hitDice >= allies) castMagic(b, actor, bless.id, undefined, undefined);
-  }
-  // Swift Healer: Healing Touch On Turn for the dying or an ally at half their hit points or less.
-  const touch = combatMagic(b, 'healing-touch');
-  const c = actor.caster;
-  if (touch && c?.arts.includes('swift-healer') && c.swiftLeft > 0) {
-    const hurt = b.combatants.find(
-      (x) =>
-        x.side === actor.side &&
-        (x.status === 'dying' || (canAct(x) && x.hp * 2 <= x.maxHp)) &&
-        canUse(b, actor, touch, false, x.id),
-    );
-    if (hurt) {
-      c.swiftLeft -= 1;
-      castMagic(b, actor, touch.id, hurt.id, undefined);
-    }
-  }
-}
-
-function magicAction(b: Battle, actor: Combatant): Action | null {
+/** The spell or art a caster would use now, if any. */
+export function magicAction(b: Battle, actor: Combatant): Action | null {
   if (!actor.caster) return null;
   const foes = enemiesOf(b, actor).filter((f) => f.status === 'active');
   if (foes.length === 0) return null;
@@ -108,10 +71,11 @@ function magicAction(b: Battle, actor: Combatant): Action | null {
     const tags = turn.effect.tags;
     if (foes.some((f) => tags.some((t) => f.tags.has(t)))) return { kind: 'cast', magic: turn.id };
   }
-  const hurt = b.combatants.find((c) => c.side === actor.side && canAct(c) && c.hp * 3 <= c.maxHp);
-  // Merciful Healing or Healing Touch for an ally down to a third of their hit points.
-  const healing = HEALING.find((id) => ready(id));
-  if (hurt && healing) return { kind: 'cast', magic: healing, target: hurt.id };
+  const heal = healHurt(b, actor);
+  if (heal) return heal;
+  // Petrifying Stare brings down a flyer (Phase 15).
+  const flyer = foes.find((f) => flying(f) && ready('petrifying-stare', false, f.id));
+  if (flyer) return { kind: 'cast', magic: 'petrifying-stare', target: flyer.id };
   const toughest = foes.reduce((a, f) => (f.hp > a.hp ? f : a));
   const weakest = foes.reduce((a, f) => (f.hp < a.hp ? f : a));
   const sleep = combatMagic(b, 'the-wind-of-the-final-repose');
@@ -145,6 +109,23 @@ function magicAction(b: Battle, actor: Combatant): Action | null {
   return null;
 }
 
+/** Merciful Healing or Healing Touch for an ally down to a third of their hit points. */
+function healHurt(b: Battle, actor: Combatant): Action | null {
+  for (const id of HEALING) {
+    const m = combatMagic(b, id);
+    const hurt = b.combatants.find(
+      (c) =>
+        c.side === actor.side &&
+        canAct(c) &&
+        c.hp * 3 <= c.maxHp &&
+        m !== undefined &&
+        canUse(b, actor, m, false, c.id),
+    );
+    if (hurt) return { kind: 'cast', magic: id, target: hurt.id };
+  }
+  return null;
+}
+
 /** The ally who fell first and hasn't been tended this round. */
 function firstDying(b: Battle, actor: Combatant): Combatant | undefined {
   const dying = b.combatants.filter(
@@ -166,6 +147,12 @@ export function partyAction(b: Battle, actor: Combatant): Action {
     (m) => m && canUse(b, actor, m, false, first?.id),
   );
   if (first && healing) return { kind: 'cast', magic: healing.id, target: first.id };
+  // Under Sanctified Ward, only heal, tend, or defend (Phase 15).
+  if (actor.sanctified)
+    return (
+      healHurt(b, actor) ??
+      (first ? { kind: 'stabilize', target: first.id } : { kind: 'total-defense' })
+    );
   if (first && !inMelee(b, actor)) return { kind: 'stabilize', target: first.id };
   const magic = magicAction(b, actor);
   if (magic) return magic;

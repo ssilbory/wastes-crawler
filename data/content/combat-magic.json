@@ -249,7 +249,8 @@
       },
       "skill": "heal",
       "strain": 1
-    }
+    },
+    "touch": true
   },
   {
     "id": "final-repose",
@@ -260,6 +261,95 @@
     "effect": {
       "kind": "repose",
       "skill": "heal"
+    }
+  },
+  {
+    "id": "sense-magic",
+    "source": "art",
+    "target": "self",
+    "effort": "committed",
+    "effect": {
+      "kind": "dark-sight",
+      "party": false
+    }
+  },
+  {
+    "id": "earthsight",
+    "source": "art",
+    "target": "self",
+    "effort": "scene",
+    "effect": {
+      "kind": "dark-sight",
+      "party": false
+    }
+  },
+  {
+    "id": "flamesight",
+    "source": "art",
+    "target": "self",
+    "effort": "committed",
+    "effect": {
+      "kind": "dark-sight",
+      "party": false
+    }
+  },
+  {
+    "id": "gravesight",
+    "source": "art",
+    "target": "self",
+    "effort": "committed",
+    "effect": {
+      "kind": "dark-sight",
+      "party": false
+    }
+  },
+  {
+    "id": "healers-eye",
+    "source": "art",
+    "target": "self",
+    "effort": "committed",
+    "effect": {
+      "kind": "dark-sight",
+      "party": false
+    }
+  },
+  {
+    "id": "the-light-of-faith",
+    "source": "art",
+    "target": "self",
+    "effort": "committed",
+    "effect": {
+      "kind": "dark-sight",
+      "party": true
+    }
+  },
+  {
+    "id": "steps-of-air",
+    "source": "art",
+    "target": "ally",
+    "effort": "scene",
+    "effect": {
+      "kind": "flight"
+    }
+  },
+  {
+    "id": "petrifying-stare",
+    "source": "art",
+    "target": "enemy",
+    "effort": "day",
+    "effect": {
+      "kind": "petrify",
+      "save": "physical"
+    }
+  },
+  {
+    "id": "sanctified-ward",
+    "source": "art",
+    "target": "self",
+    "effort": "committed",
+    "limit": "scene",
+    "effect": {
+      "kind": "sanctify"
     }
   }
 ]

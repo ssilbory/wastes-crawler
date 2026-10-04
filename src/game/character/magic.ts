@@ -37,7 +37,10 @@ export interface ArtPick {
 export function artPicks(data: GameData, mage: Mage, level = 1): ArtPick[] {
   return mage.traditions.map((t) => {
     const row = castingRow(table(data, t.arts), level);
-    return { tradition: t.tradition, automatic: row.arts, picks: row.anyArts };
+    // Excluded arts are never granted, not even automatically (Elemental Sparks, Phase 15).
+    const excluded = findTradition(data, t.tradition)?.excludedArts ?? [];
+    const automatic = row.arts.filter((a) => !excluded.includes(a));
+    return { tradition: t.tradition, automatic, picks: row.anyArts };
   });
 }
 

@@ -13,7 +13,15 @@
     },
     "armoredArts": false,
     "artLevels": {},
-    "excludedArts": []
+    "excludedArts": [
+      "arcane-lexicon",
+      "hang-sorcery",
+      "iron-resolution",
+      "preparatory-countermagic",
+      "restrained-casting",
+      "suppress-magic",
+      "ward-allies"
+    ]
   },
   {
     "id": "elementalist",
@@ -29,7 +37,7 @@
     },
     "armoredArts": false,
     "artLevels": {},
-    "excludedArts": []
+    "excludedArts": ["beckoned-deluge", "elemental-sparks", "rune-of-destruction", "thermal-shield"]
   },
   {
     "id": "necromancer",
@@ -45,7 +53,7 @@
     },
     "armoredArts": false,
     "artLevels": {},
-    "excludedArts": []
+    "excludedArts": ["false-death", "life-bridge", "uncanny-ichor"]
   },
   {
     "id": "blood-priest",
@@ -61,7 +69,7 @@
     },
     "armoredArts": true,
     "artLevels": {},
-    "excludedArts": []
+    "excludedArts": ["a-thousand-tongues", "divine-guidance", "fear-no-flame"]
   },
   {
     "id": "healer",
@@ -79,6 +87,6 @@
     "artLevels": {
       "revive-the-fallen": 8
     },
-    "excludedArts": ["limb-restoration"]
+    "excludedArts": ["limb-restoration", "purge-ailment", "the-healers-knife"]
   }
 ]

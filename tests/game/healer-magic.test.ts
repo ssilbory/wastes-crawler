@@ -48,6 +48,14 @@ describe('the Priest of Death and the Blood Priest/Healer (Phase 14d)', () => {
     );
   });
 
+  it('grants automatic arts as listed when a tradition has no content entry', () => {
+    const bare = { ...data, content: { ...data.content, traditions: [] } };
+    expect(artPicks(bare, mage('full-elementalist'))[0]?.automatic).toEqual([
+      'elemental-resilience',
+      'elemental-sparks',
+    ]);
+  });
+
   it('refuses a gated art at character creation', () => {
     expect(artPicks(data, priest).map((p) => p.tradition)).toEqual(['necromancer', 'healer']);
     expect(

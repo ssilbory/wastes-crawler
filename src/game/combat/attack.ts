@@ -6,14 +6,20 @@ import { netSteps } from '../../rules/advantage.ts';
 import { attackRoll, hitDamage, shockDamage, type ShockContext } from '../../rules/attacks.ts';
 import { effectiveAc, harm, save, say } from './damage.ts';
 import { afterHit, resisted } from './specials.ts';
-import { attackSteps, rangedModifier } from './targeting.ts';
+import { negatesUndead } from './reactions.ts';
+import { attackSteps, hitModifier, rangedModifier } from './targeting.ts';
 import type { Attack, Battle, Combatant } from './types.ts';
 
 function shockContext(target: Combatant, attack: Attack): ShockContext {
   return {
     targetAc: effectiveAc(target),
     shieldNegates: false,
-    immune: target.totalDefense || (attack.mode === 'melee' && target.meleeShockImmune),
+    immune:
+      target.totalDefense ||
+      target.sanctified ||
+      (attack.mode === 'melee' && target.meleeShockImmune),
+    // Cold Flesh: no more than 2 from any one Shock (Phase 15).
+    cap: target.shockCap,
   };
 }
 
@@ -52,11 +58,14 @@ export function resolveAttack(
   target: Combatant,
   boost: AttackBoost | null = null,
 ): void {
+  // Red Harvest's +4 is spent on the next hit roll (Phase 15).
+  const harvest = actor.nextHitBonus;
+  actor.nextHitBonus = 0;
   const roll = attackRoll(b.rng, {
-    attackBonus: attack.hit + (boost?.hit ?? 0),
+    attackBonus: attack.hit + (boost?.hit ?? 0) + harvest,
     attributeModifier: 0,
     skill: 0,
-    modifier: rangedModifier(b, actor, attack) + b.hitModifier[actor.side],
+    modifier: rangedModifier(b, actor, attack) + hitModifier(b, actor),
     steps: netSteps([attackSteps(b, actor, target, attack.mode)]),
     targetAc: effectiveAc(target),
   });
@@ -64,6 +73,7 @@ export function resolveAttack(
     missShock(b, actor, target, attack);
     return;
   }
+  if (negatesUndead(b, actor, target)) return;
   if (target.wardRounds > 0 && !save(b, actor, 'physical').success) {
     say(b, `${actor.name}'s blow slides off the ward around ${target.name}.`);
     return;

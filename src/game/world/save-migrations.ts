@@ -129,4 +129,10 @@ export const WORLD_MIGRATIONS: Migrations = {
       benched: awake(raw.benched),
     };
   },
+  // Version 24 counts limited art uses between rests (Phase 15): none used yet.
+  23: (raw) => {
+    const fresh = (list: unknown) =>
+      Array.isArray(list) ? (list as Raw[]).map((m) => ({ ...m, artUses: {} })) : list;
+    return { ...raw, schemaVersion: 24, members: fresh(raw.members), benched: fresh(raw.benched) };
+  },
 };

@@ -103,6 +103,7 @@ export function monsterCombatant(
     hitDice: m.hitDice,
     skillBonus: m.skill,
     tags,
+    sapient: combat?.mind === 'sapient',
     morale: m.morale,
     instinct: m.instinct,
     routine,

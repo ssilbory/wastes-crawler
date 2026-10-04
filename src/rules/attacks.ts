@@ -43,6 +43,8 @@ export interface ShockContext {
   shieldNegates: boolean;
   /** Total Defense, some foci, and similar effects. */
   immune: boolean;
+  /** The most Shock the target can take from one instance (the Necromancer's Cold Flesh). */
+  cap?: number | null;
 }
 
 /**
@@ -57,7 +59,8 @@ export function shockDamage(
 ): number {
   if (!shock || ctx.immune || ctx.shieldNegates) return 0;
   if (shock.maxAc !== null && ctx.targetAc > shock.maxAc) return 0;
-  return Math.max(0, shock.damage + attributeModifier + shockBonus);
+  const amount = Math.max(0, shock.damage + attributeModifier + shockBonus);
+  return ctx.cap === undefined || ctx.cap === null ? amount : Math.min(ctx.cap, amount);
 }
 
 export interface DamageInput {

@@ -12,7 +12,8 @@ import { difficultyTier, type Difficulty } from './difficulty.ts';
 import { alive, note, setHp } from './members.ts';
 import { accrueShares, fights, moraleAfterFight, npcMonster, removeNpc, typeOf } from './npcs.ts';
 import { emit } from './bus.ts';
-import { inDark } from '../dungeon/light.ts';
+import { faithLit, inDark } from '../dungeon/light.ts';
+import { FAITH_LIGHT, userOf } from './arts.ts';
 import { onSpecial } from '../dungeon/specials.ts';
 import { recordFallen } from './healer.ts';
 import { leaveCorpses } from './necromancy.ts';
@@ -77,6 +78,10 @@ export interface PartySetup {
     frail: boolean;
     spellsCast: number;
     effortDay: number;
+    /** Limited art uses since the last rest (Phase 15). */
+    artUses: Record<string, number>;
+    /** Effort already committed: Light of Faith lighting the way (Phase 15). */
+    committed: number;
   }[];
   npcs: NpcSetup[];
   enemies: string[][];
@@ -93,6 +98,7 @@ export function partySetup(
   enemies: string[][],
   withNpcs: boolean,
 ): PartySetup {
+  const faith = faithLit(w, data) ? userOf(w, data, FAITH_LIGHT) : undefined;
   return {
     party: fighters(w).map((m) => ({
       character: m.character,
@@ -101,6 +107,8 @@ export function partySetup(
       frail: m.frail,
       spellsCast: m.spellsCast,
       effortDay: m.effortDay,
+      artUses: { ...m.artUses },
+      committed: m === faith ? 1 : 0,
     })),
     npcs: withNpcs ? w.npcs.filter((n) => n.hp > 0).map((n) => npcSetup(data, n)) : [],
     enemies,
@@ -127,7 +135,8 @@ export function battleFrom(data: GameData, rng: Rng, setup: PartySetup, log: boo
     if (c.caster) {
       c.caster.spellsLeft = Math.max(0, c.caster.spellsLeft - p.spellsCast);
       c.caster.effortDay = Math.min(c.caster.effortMax, p.effortDay);
-      c.caster.effortUsed = c.caster.effortDay;
+      c.caster.effortUsed = Math.min(c.caster.effortMax, c.caster.effortDay + p.committed);
+      c.caster.uses = { ...p.artUses };
     }
   });
   return battle;
@@ -178,6 +187,7 @@ export function carryBack(data: GameData, m: Member, c: Battle['combatants'][num
     const fresh = pcCombatant(data, m.character).caster as CasterState;
     m.spellsCast = Math.max(0, fresh.spellsLeft - c.caster.spellsLeft);
     m.effortDay = c.caster.effortDay;
+    m.artUses = { ...c.caster.uses };
   }
 }
 

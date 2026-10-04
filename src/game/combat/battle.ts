@@ -39,8 +39,7 @@ export interface NpcSetup {
   healer?: number;
 }
 
-/** The party's attack modifier in darkness, a house rule: the SRD sets none. */
-export const DARK_HIT_MODIFIER = -4;
+export { DARK_HIT_MODIFIER } from './targeting.ts';
 
 export interface BattleSetup {
   data: GameData;
@@ -128,7 +127,8 @@ export function createBattle(s: BattleSetup): Battle {
     halfChecked: new Set(),
     startCount: { party: party.length, enemy: enemies.length },
     stabilizedThisRound: new Set(),
-    hitModifier: { party: s.dark ? DARK_HIT_MODIFIER : 0, enemy: 0 },
+    hitModifier: { party: 0, enemy: 0 },
+    dark: s.dark ?? false,
     damageBonus: { party: 0, enemy: 0 },
     log: s.log ? [] : null,
     outcome: null,

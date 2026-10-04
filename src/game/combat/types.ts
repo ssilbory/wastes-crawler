@@ -52,8 +52,10 @@ export interface CasterState {
   canCast: boolean;
   /** Arts that work even when armor blocks casting (a Priest of Death's Healer arts, Phase 14d). */
   armorFree: string[];
-  /** Swift Healer's On Turn Healing Touches left this fight (Phase 14d). */
-  swiftLeft: number;
+  /** Uses of limited arts since the last quarter of rest, by art id (Phase 15). */
+  uses: Record<string, number>;
+  /** No spells through this round: Retain Sorcery's stress, or Swift Casting's spell (Phase 15). */
+  castLock: number;
   /** Arts and spells already used this scene, and targets of once-per-target ones. */
   usedThisScene: Set<string>;
 }
@@ -131,6 +133,20 @@ export interface Combatant {
   wrath: { until: number; bonus: number } | null;
   /** Phase 14d: Final Repose's Physical save penalty for the scene. */
   reposePenalty: number;
+  /**
+   * Phase 15 arts: sight that ignores darkness, Sanctified Ward, an intelligent creature (for Red
+   * Harvest), Petrifying Stare's rounds rooted, Steps of Air's rounds aloft, Red Harvest's next-hit
+   * bonus and the round it last fed, Cold Flesh's Shock cap, and Unaging's immunity to poison.
+   */
+  seesInDark: boolean;
+  sanctified: boolean;
+  sapient: boolean;
+  rootedRounds: number;
+  flyingRounds: number;
+  nextHitBonus: number;
+  harvestRound: number;
+  shockCap: number | null;
+  poisonImmune: boolean;
 }
 
 export type Action =
@@ -170,8 +186,10 @@ export interface Battle {
   /** Each side's starting number of combatants. */
   startCount: Record<SideId, number>;
   stabilizedThisRound: Set<string>;
-  /** Attack roll modifier by side: -4 for a party fighting in the dark (docs/rules-adaptation.md). */
+  /** Attack roll modifier by side, from God Wills It. */
   hitModifier: Record<SideId, number>;
+  /** The party fights without light; those who don't see in the dark take -4 to hit. */
+  dark: boolean;
   /** God Wills It's bonus to damage and Shock, by side (Phase 14c). */
   damageBonus: Record<SideId, number>;
   log: string[] | null;

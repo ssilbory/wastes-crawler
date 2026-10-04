@@ -237,7 +237,11 @@ describe('spells and arts at a new level (SRD 2.7.1.7)', () => {
       'the-coruscating-coffin',
       'wardpact-invocation',
     ];
-    const choices = { foci: [{ id: 'die-hard' }], arts: ['swift-casting', 'ward-allies'], spells };
+    const choices = {
+      foci: [{ id: 'die-hard' }],
+      arts: ['swift-casting', 'counter-magic'],
+      spells,
+    };
     const r = ok(advance(data, mage, choices, scriptedRng([1, 1, 1, 1, 1])));
     expect(r.character.skills.magic).toBe(1);
     expect(characterSheet(r.character, data).magic).not.toBeNull();

@@ -5,6 +5,7 @@
 // Hazards.md, Poisons).
 import { roll } from '../../rules/dice.ts';
 import { harm, save, say } from './damage.ts';
+import { negatesUndead } from './reactions.ts';
 import { isUp } from './targeting.ts';
 import type { Attack, Battle, Combatant } from './types.ts';
 
@@ -24,8 +25,10 @@ export function breathe(b: Battle, actor: Combatant, row: number): void {
   actor.breathLeft -= 1;
   const total = roll(b.rng, breath.damage).total;
   say(b, `${actor.name} unleashes ${breath.name}.`);
-  for (const t of b.combatants.filter((c) => c.side !== actor.side && c.row === row && isUp(c)))
+  for (const t of b.combatants.filter((c) => c.side !== actor.side && c.row === row && isUp(c))) {
+    if (negatesUndead(b, actor, t)) continue;
     harm(b, t, save(b, t, breath.save).success ? Math.floor(total / 2) : total);
+  }
 }
 
 /** Damage after the target's resistances to blunt or edged weapons and to missiles. */
@@ -42,7 +45,8 @@ export function afterHit(b: Battle, attack: Attack, target: Combatant): void {
   const effect = attack.onHit;
   if (!effect || target.status !== 'active') return;
   if (effect.kind === 'poison') {
-    if (save(b, target, 'physical', -effect.penalty).success) return;
+    // Unaging: immune to poisons (Phase 15).
+    if (target.poisonImmune || save(b, target, 'physical', -effect.penalty).success) return;
     say(b, `${target.name} is poisoned.`);
     harm(b, target, Math.floor(target.maxHp / 2));
     return;

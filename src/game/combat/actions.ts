@@ -32,8 +32,20 @@ function smiteBoost(b: Battle, actor: Combatant, target: Combatant): AttackBoost
   return { hit: m.effect.hit, damage: (actor.caster as CasterState).level };
 }
 
+/** Sanctified Ward ends with an attack or magic aimed at a foe (1.5.5.1). */
+function hostile(b: Battle, action: Action): boolean {
+  if (action.kind === 'attack') return true;
+  if (action.kind !== 'cast') return false;
+  const target = b.data.content.combatMagic.find((m) => m.id === action.magic)?.target;
+  return target === 'enemy' || target === 'enemy-row' || target === 'enemies';
+}
+
 export function act(b: Battle, actor: Combatant, action: Action): void {
   const target = 'target' in action ? b.combatants.find((c) => c.id === action.target) : undefined;
+  if (actor.sanctified && hostile(b, action)) {
+    actor.sanctified = false;
+    say(b, `${actor.name}'s ward falls away.`);
+  }
   switch (action.kind) {
     case 'attack': {
       const attack = actor.attacks[action.attack];

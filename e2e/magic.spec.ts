@@ -93,9 +93,7 @@ test('a dual partial caster has Magic-1 and Effort 1 + 1 + 1 - 1 = 2', async ({ 
   // Elf: Int 14, Cha 9 + 1 = 10, so Int (+1) is best; two Magic bonus picks make Magic-1.
   await expect(sheet).toContainText('Effort 2.');
   await expect(sheet).toContainText('Magic-1');
-  await expect(sheet).toContainText(
-    'Arts: Elemental Resilience, Elemental Sparks, Sense Magic, Flamesight.',
-  );
+  await expect(sheet).toContainText('Arts: Elemental Resilience, Sense Magic, Flamesight.');
 });
 
 test('a partial Elementalist warrior has Effort one lower, 1', async ({ page }) => {
@@ -227,4 +225,19 @@ test('a Partial Blood Priest/Partial Healer works miracles and heals (Phase 14d)
   );
   await expect(sheet).toContainText('Pray-0');
   await expect(sheet).toContainText('Heal-0');
+});
+
+test('arts the game leaves out are never offered (Phase 15)', async ({ page }) => {
+  await page.goto('/');
+  const magic = page.locator('section.step', { hasText: '6. Magic' });
+  const select = (option: string) =>
+    page.getByRole('combobox', { name: 'Class', exact: true }).selectOption({ label: option });
+  await select('High Mage');
+  await expect(magic.getByLabel('Counter Magic', { exact: true })).toHaveCount(1);
+  await expect(magic.getByLabel('Ward Allies', { exact: true })).toHaveCount(0);
+  await expect(magic.getByLabel('Arcane Lexicon', { exact: true })).toHaveCount(0);
+  await select('Elementalist');
+  await expect(magic).toContainText('plus Elemental Resilience');
+  await expect(magic).not.toContainText('Elemental Sparks');
+  await expect(magic.getByLabel('Thermal Shield', { exact: true })).toHaveCount(0);
 });

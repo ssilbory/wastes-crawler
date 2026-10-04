@@ -5,7 +5,8 @@
 import { actsOnInstinct, MORTAL_ROUNDS } from '../../rules/combat.ts';
 import { frontDrops, ROW_SLOTS, type Formation, type FormationRow } from '../../rules/formation.ts';
 import { act, stabilize } from './actions.ts';
-import { freeActions, monsterAction, partyAction } from './ai.ts';
+import { monsterAction, partyAction } from './ai.ts';
+import { freeActions } from './free-actions.ts';
 import { say } from './damage.ts';
 import { checkMorale } from './morale.ts';
 import { canAct, isUp, targets } from './targeting.ts';
@@ -135,6 +136,8 @@ function endOfRound(b: Battle): void {
     if (c.blindRounds > 0) c.blindRounds -= 1;
     if (c.heldRounds > 0) c.heldRounds -= 1;
     if (c.wardRounds > 0) c.wardRounds -= 1;
+    if (c.rootedRounds > 0) c.rootedRounds -= 1;
+    if (c.flyingRounds > 0) c.flyingRounds -= 1;
   }
   if (b.layout.party === 'formation') shiftFormation(b);
   // Monster rows step up when their front row is empty.
@@ -142,7 +145,9 @@ function endOfRound(b: Battle): void {
   for (const side of ['party', 'enemy'] as const) {
     if (b.layout[side] !== 'rows') continue;
     const rows = monsters.filter((c) => c.side === side);
-    while (rows.length > 0 && !rows.some((e) => e.row === 0)) for (const e of rows) e.row -= 1;
+    // Petrifying Stare's rooted stay where they stand (Phase 15).
+    const movers = rows.filter((e) => e.rootedRounds === 0);
+    while (movers.length > 0 && !rows.some((e) => e.row === 0)) for (const e of movers) e.row -= 1;
   }
   b.stabilizedThisRound.clear();
   b.round += 1;

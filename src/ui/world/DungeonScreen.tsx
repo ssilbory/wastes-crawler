@@ -20,7 +20,7 @@ import { NpcPanel } from './NpcPanel.tsx';
 import { QuestLog } from './QuestLog.tsx';
 import { CampPanel } from './CampPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
-import { inDark } from '../../game/dungeon/light.ts';
+import { blind } from '../../game/dungeon/light.ts';
 import { onSafeSquare } from '../../game/dungeon/time.ts';
 import { search } from '../../game/dungeon/secrets.ts';
 import { disarm, knownTrapAhead } from '../../game/dungeon/traps.ts';
@@ -109,7 +109,7 @@ export function DungeonScreen(props: {
       <div class="world-main">
         <div class="dungeon-main">
           <svg
-            class={inDark(w, data) ? 'dungeon-view dark' : 'dungeon-view'}
+            class={blind(w, data) ? 'dungeon-view dark' : 'dungeon-view'}
             viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}
             role="img"
             aria-label="Dungeon view"
@@ -122,7 +122,7 @@ export function DungeonScreen(props: {
                 {p.frame && <polygon class="door-frame" points={p.frame} />}
               </g>
             ))}
-            {inDark(w, data) && (
+            {blind(w, data) && (
               <text class="pitch-dark" x={VIEW_WIDTH / 2} y={VIEW_HEIGHT / 2}>
                 Pitch dark
               </text>

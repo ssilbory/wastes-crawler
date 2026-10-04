@@ -64,6 +64,15 @@ export function base(
     acFloor: 0,
     wrath: null,
     reposePenalty: 0,
+    seesInDark: false,
+    sanctified: false,
+    sapient: false,
+    rootedRounds: 0,
+    flyingRounds: 0,
+    nextHitBonus: 0,
+    harvestRound: 0,
+    shockCap: null,
+    poisonImmune: false,
   };
 }
 
@@ -148,11 +157,17 @@ export function pcCombatant(data: GameData, c: Character, id = c.id): Combatant 
           castModifier: Math.max(sheet.modifiers.int, sheet.modifiers.cha),
           canCast: magic.canCast,
           armorFree: armorFreeArts(data, c.classes, c.arts),
-          swiftLeft: c.arts.includes('swift-healer') ? casterLevel : 0,
+          uses: {},
+          castLock: 0,
           usedThisScene: new Set(),
         }
       : null,
     strain: { strain: c.strain.value, max: sheet.strainMax, broken: c.strain.broken },
     status: c.hp.current > 0 ? 'active' : 'dead',
+    sapient: true,
+    // Cold Flesh: Shock of 2 at most, and a natural AC of 12 plus half the level (1.5.14).
+    ...(c.arts.includes('cold-flesh') ? { shockCap: 2, acFloor: 12 + Math.floor(level / 2) } : {}),
+    // Unaging: immune to poisons (1.5.14).
+    poisonImmune: c.arts.includes('unaging'),
   };
 }

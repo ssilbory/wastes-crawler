@@ -37,6 +37,7 @@ export interface Member {
   effortDay: number;
   pendingXp: number;
   reviving: boolean;
+  artUses: Record<string, number>;
 }
 
 export type Npc = NpcSave;

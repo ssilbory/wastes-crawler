@@ -9,7 +9,8 @@ import { strainCastCost } from '../../rules/magic.ts';
 import type { SaveType } from '../../rules/saves.ts';
 import { addStrain } from '../../rules/strain.ts';
 import { effectiveAc, harm, save, say } from './damage.ts';
-import { attackSteps, isUp } from './targeting.ts';
+import { attackSteps, hitModifier, isUp } from './targeting.ts';
+import { artEffect, counterSpell, retainsSpell, touching } from './arts.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
 
 export function combatMagic(b: Battle, id: string): CombatMagic | undefined {
@@ -39,6 +40,11 @@ export function canUse(
 ): boolean {
   const c = actor.caster;
   if (!c || !(c.canCast || (m.source === 'art' && c.armorFree.includes(m.id)))) return false;
+  // Retain Sorcery's stress and Swift Casting's spell hold off other spells (Phase 15).
+  if (m.source === 'spell' && c.castLock >= b.round) return false;
+  // A touch reaches the next formation column at most, unless the healer is a Far Healer.
+  const t = b.combatants.find((x) => x.id === target);
+  if (m.touch && t && !c.arts.includes('far-healer') && !touching(actor, t)) return false;
   if (m.limit === 'scene' && c.usedThisScene.has(m.id)) return false;
   if (m.limit === 'target-scene' && c.usedThisScene.has(`${m.id}:${target ?? ''}`)) return false;
   if (m.source === 'art')
@@ -62,6 +68,9 @@ function enemySave(
 ): boolean {
   let ok = save(b, target, type, modifier).success;
   const c = actor.caster as CasterState;
+  // Master of Bones: the undead save twice and take the worse (1.5.14).
+  if (ok && target.tags.has('undead') && c.arts.includes('master-of-bones'))
+    ok = save(b, target, type, modifier).success;
   if (ok && hasEffort(c, 'inexorable-effect') && !c.usedThisScene.has('inexorable-effect')) {
     c.effortUsed += 1;
     c.effortDay += 1;
@@ -81,7 +90,7 @@ function pay(b: Battle, actor: Combatant, m: CombatMagic, strain: boolean): void
   } else if (strain && actor.strain) {
     const outcome = addStrain(actor.strain, strainCastCost(spellLevel(b, m.id)), 'strain-cast');
     actor.strain = outcome.state;
-  } else c.spellsLeft -= 1;
+  } else if (!retainsSpell(b, actor)) c.spellsLeft -= 1;
 }
 
 /** Healing that revives the Mortally Wounded and adds System Strain. */
@@ -116,6 +125,7 @@ export function castMagic(
   pay(b, actor, m, strain);
   c.usedThisScene.add(m.limit === 'target-scene' ? `${m.id}:${targetId ?? ''}` : m.id);
   say(b, `${actor.name} ${m.source === 'art' ? 'uses' : 'casts'} ${magicName(b, m.id)}.`);
+  if (m.source === 'spell' && counterSpell(b, actor)) return true;
   const e = m.effect;
   switch (e.kind) {
     case 'damage': {
@@ -169,7 +179,7 @@ export function castMagic(
         attackBonus: c.level,
         attributeModifier: attr,
         skill: actor.skills[e.skill] ?? null,
-        modifier: b.hitModifier[actor.side],
+        modifier: hitModifier(b, actor),
         steps: netSteps([attackSteps(b, actor, target, 'ranged')]),
         targetAc: effectiveAc(target),
       }).hit;
@@ -246,6 +256,7 @@ export function castMagic(
       }
       return true;
     default:
+      artEffect(b, actor, e, target);
       return true;
   }
 }

@@ -12,7 +12,7 @@ import { endQuarter } from '../world/quarter.ts';
 import { emit } from '../world/bus.ts';
 import { ruinDungeon } from './generate.ts';
 import { openRuin, ruinHere } from './ruins.ts';
-import { douse, drawKits, inDark, kindle } from './light.ts';
+import { douse, drawKits, blind, kindle } from './light.ts';
 import { glimpse, knownEdges } from './secrets.ts';
 import { arriveOn, onSpecial } from './specials.ts';
 import { countStep } from './time.ts';
@@ -53,7 +53,7 @@ export function dungeonHere(w: World, data: GameData): Dungeon | undefined {
 function look(w: World, data: GameData, s: DungeonState): void {
   // In the dark, or on an anti-map square, the party maps nothing (docs/rules-adaptation.md,
   // Dungeon exploration).
-  if (inDark(w, data) || onSpecial(w, data, 'anti-map')) return;
+  if (blind(w, data) || onSpecial(w, data, 'anti-map')) return;
   const { map } = levelOf(data, s.dungeon, s.level);
   const seen = new Set(s.seen[s.level] ?? []);
   let c: Cell = s.at;
