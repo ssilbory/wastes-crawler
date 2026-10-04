@@ -6,7 +6,8 @@ import { coverSteps } from '../../rules/formation.ts';
 import type { Attack, Battle, Combatant } from './types.ts';
 
 export const isUp = (c: Combatant) => c.status === 'active' || c.status === 'asleep';
-export const canAct = (c: Combatant) => c.status === 'active';
+/** Up, awake, and not held by paralysis. */
+export const canAct = (c: Combatant) => c.status === 'active' && c.heldRounds === 0;
 
 const flying = (c: Combatant) => c.tags.has('flying');
 

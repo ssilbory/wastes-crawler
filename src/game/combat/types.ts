@@ -1,6 +1,13 @@
 // Battle state for the combat engine. The engine mutates a Battle it owns; callers get it back
 // from runBattle or step through it round by round.
-import type { Attribute, AttackMode, Dice, MonsterTag } from '../../data/schemas/index.ts';
+import type {
+  Attribute,
+  AttackMode,
+  Dice,
+  MonsterCombat,
+  MonsterTag,
+  OnHit,
+} from '../../data/schemas/index.ts';
 import type { ShockRating } from '../../rules/attacks.ts';
 import type { Rng } from '../../rules/rng.ts';
 import type { SaveType } from '../../rules/saves.ts';
@@ -23,6 +30,10 @@ export interface Attack {
   /** Can melee from the second row (the L trait, or a reach creature). */
   reach: boolean;
   twoHanded: boolean;
+  /** A crushing weapon, for creatures that shrug off blunt blows (Phase 14a). */
+  blunt: boolean;
+  /** Poison or paralysis on a hit (Phase 14a). */
+  onHit: OnHit | null;
 }
 
 export interface CasterState {
@@ -98,11 +109,25 @@ export interface Combatant {
   acBonus: number;
   /** A captive or non-combat hireling: never attacks, targeted only when no one else can be. */
   noncombatant: boolean;
+  /**
+   * Phase 14a: a monster's routine and volley as indices into its attacks, the attack its current
+   * swing must use, its breath weapon and the uses left this fight, rounds it is held paralyzed,
+   * its resistances, and whether it always acts last.
+   */
+  routine: number[] | null;
+  volley: number[] | null;
+  forcedAttack: number | null;
+  breath: NonNullable<MonsterCombat['breath']> | null;
+  breathLeft: number;
+  heldRounds: number;
+  resist: NonNullable<MonsterCombat['resist']> | null;
+  actsLast: boolean;
 }
 
 export type Action =
   | { kind: 'attack'; attack: number; target: string }
   | { kind: 'cast'; magic: string; target?: string; row?: number; strain?: boolean }
+  | { kind: 'breath'; row: number }
   | { kind: 'total-defense' }
   | { kind: 'stabilize'; target: string }
   | { kind: 'move'; row: number; column: number }

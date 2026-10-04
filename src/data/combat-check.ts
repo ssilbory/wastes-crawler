@@ -1,7 +1,10 @@
 import { allMonsters } from './monsters.ts';
 import type { ContentData, Monster, MonsterCaster, SrdData } from './schemas/index.ts';
 
-/** Every monster has combat data, Wpn monsters name a real weapon, and magic effects exist. */
+/**
+ * Every monster has combat data, Wpn monsters name a real weapon, routines make as many attacks as
+ * the stat line, volleys come with a routine, and magic effects exist.
+ */
 export function combatReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const errors: string[] = [];
   const weapons = new Set(srd.weapons.map((w) => w.id));
@@ -22,6 +25,10 @@ export function combatReferenceErrors(srd: SrdData, content: ContentData): strin
       errors.push(`monsterCombat/${c.id}: unknown weapon ${c.weapon}`);
     const m = monsters.find((x) => x.id === c.id);
     if (m && c.caster) errors.push(...casterErrors(srd, content, m, c.caster));
+    const swings = c.routine?.reduce((sum, st) => sum + st.count, 0);
+    if (m && swings !== undefined && swings !== m.attacks)
+      errors.push(`monsterCombat/${c.id}: the routine makes ${swings} attacks, not ${m.attacks}`);
+    if (c.volley && !c.routine) errors.push(`monsterCombat/${c.id}: a volley needs a routine`);
   }
   for (const m of content.combatMagic) {
     const known = m.source === 'spell' ? srd.spells : srd.arts;
@@ -48,7 +55,9 @@ function casterErrors(srd: SrdData, content: ContentData, m: Monster, c: Monster
   if (!table) return [`${where}: unknown casting table ${c.slots}`];
   const errors: string[] = [];
   // SRD tables run from level 1 without gaps; a monster past the last uses the last row.
-  const row = table.levels[Math.min(m.hitDice, table.levels.length) - 1] as (typeof table.levels)[0];
+  const row = table.levels[
+    Math.min(m.hitDice, table.levels.length) - 1
+  ] as (typeof table.levels)[0];
   if (c.spells.length > row.spellsPrepared)
     errors.push(`${where}: prepares more than ${row.spellsPrepared} spells`);
   for (const id of c.spells) {
@@ -64,7 +73,8 @@ function casterErrors(srd: SrdData, content: ContentData, m: Monster, c: Monster
     const art = srd.arts.find((a) => a.id === id);
     if (!art || !content.combatMagic.some((x) => x.id === id && x.source === 'art'))
       errors.push(`${where}: no combat art ${id}`);
-    else if (art.tradition !== c.tradition) errors.push(`${where}: ${id} is not a ${c.tradition} art`);
+    else if (art.tradition !== c.tradition)
+      errors.push(`${where}: ${id} is not a ${c.tradition} art`);
   }
   return errors;
 }

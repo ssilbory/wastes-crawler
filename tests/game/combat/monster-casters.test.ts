@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { findMonster } from '../../../src/game/character/context.ts';
 import { monsterAction } from '../../../src/game/combat/ai.ts';
-import { monsterCombatant } from '../../../src/game/combat/combatants.ts';
+import { monsterCombatant } from '../../../src/game/combat/monster-combatant.ts';
 import { monsterCaster } from '../../../src/game/combat/monster-caster.ts';
 import { takeTurn } from '../../../src/game/combat/round.ts';
 import type { CasterState, Combatant } from '../../../src/game/combat/types.ts';

@@ -5,6 +5,7 @@ import { stabilizeDifficulty } from '../../rules/combat.ts';
 import { ROW_SLOTS } from '../../rules/formation.ts';
 import { resolveAttack } from './attack.ts';
 import { say } from './damage.ts';
+import { breathe } from './specials.ts';
 import { castMagic } from './spells.ts';
 import { targets } from './targeting.ts';
 import type { Action, Battle, Combatant } from './types.ts';
@@ -34,6 +35,9 @@ export function act(b: Battle, actor: Combatant, action: Action): void {
     }
     case 'cast':
       castMagic(b, actor, action.magic, action.target, action.row, action.strain);
+      return;
+    case 'breath':
+      breathe(b, actor, action.row);
       return;
     case 'total-defense':
       actor.totalDefense = true;

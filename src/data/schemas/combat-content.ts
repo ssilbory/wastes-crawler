@@ -16,26 +16,74 @@ export const MonsterCasterSchema = z.strictObject({
 });
 export type MonsterCaster = z.infer<typeof MonsterCasterSchema>;
 
+const SaveKind = z.enum(['physical', 'evasion', 'mental', 'luck']);
+
+/**
+ * What a hit does beyond its damage (Phase 14a). Poison: a Physical save at a penalty, or the
+ * victim loses half its maximum hit points (vendor/wwn-srd/2.0 The Rules of the Game/2.10.0
+ * Falling and Other Hazards.md, Poisons). Paralysis: a Physical save, or the victim is held,
+ * unable to act, for the rolled number of rounds.
+ */
+export const OnHitSchema = z.discriminatedUnion('kind', [
+  z.strictObject({ kind: z.literal('poison'), penalty: z.int().min(0) }),
+  z.strictObject({ kind: z.literal('paralysis'), rounds: DiceSchema }),
+]);
+export type OnHit = z.infer<typeof OnHitSchema>;
+
+/** One natural attack in a creature's routine, made `count` times. */
+export const StrikeSchema = z.strictObject({
+  name: z.string().min(1),
+  damage: DiceSchema,
+  count: z.int().min(1).max(4),
+  onHit: OnHitSchema.optional(),
+});
+export type Strike = z.infer<typeof StrikeSchema>;
+
 /**
  * How an SRD monster fights in the engine: the SRD weapon behind a "Wpn" damage entry, and tags.
  * `flying` ignores formation and cover, `reach` attacks from the second row, `unliving` doesn't
- * sleep, and `metal` carries enough metal for Stunning Shock. `loot` is what each one drops when
- * the party wins; none for beasts and the mindless. `caster` makes it cast.
+ * sleep, `metal` carries enough metal for Stunning Shock, and `slow` always acts last. `loot` is
+ * what each one drops when the party wins; none for beasts and the mindless. `caster` makes it
+ * cast.
  */
 export const MonsterCombatSchema = z.strictObject({
   id: IdSchema,
   weapon: IdSchema.optional(),
-  tags: z.array(z.enum(['flying', 'reach', 'unliving', 'metal'])),
+  tags: z.array(z.enum(['flying', 'reach', 'unliving', 'metal', 'slow'])),
   loot: LootDiceSchema.optional(),
   /** Who can be parleyed with: people always, animals and monsters with foci, the mindless never. */
   mind: z.enum(['sapient', 'animal', 'monster', 'mindless']),
   caster: MonsterCasterSchema.optional(),
+  /**
+   * Mixed natural attacks made together as the Main Action (claws and a bite), replacing the stat
+   * line's single damage; the counts add up to its attacks (Phase 14a).
+   */
+  routine: z.array(StrikeSchema).min(1).optional(),
+  /** Ranged strikes made instead when the routine can reach no one (a manticore's spikes). */
+  volley: z.array(StrikeSchema).min(1).optional(),
+  /** A Main Action against one enemy row: one damage roll, a save for half, so many a fight. */
+  breath: z
+    .strictObject({
+      name: z.string().min(1),
+      damage: DiceSchema,
+      save: SaveKind,
+      uses: z.int().min(1),
+    })
+    .optional(),
+  /** Half damage from blunt or edged weapons, and only 1 from missiles. */
+  resist: z
+    .strictObject({
+      blunt: z.literal('half').optional(),
+      edged: z.literal('half').optional(),
+      missiles: z.literal('one').optional(),
+    })
+    .optional(),
 });
 export type Mind = MonsterCombat['mind'];
 export type MonsterCombat = z.infer<typeof MonsterCombatSchema>;
 export type MonsterTag = MonsterCombat['tags'][number];
 
-const Save = z.enum(['physical', 'evasion', 'mental', 'luck']);
+const Save = SaveKind;
 
 /** The combat mechanics of a spell or art, taken from its SRD text. */
 export const CombatEffectSchema = z.discriminatedUnion('kind', [

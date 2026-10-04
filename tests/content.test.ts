@@ -255,9 +255,21 @@ describe('combat content', () => {
       ...content,
       monsterCombat: [
         ...content.monsterCombat
-          .filter((m) => m.id !== 'herd-beast' && m.id !== 'thug-or-militia')
+          .filter((m) => !['herd-beast', 'thug-or-militia', 'giant-ant', 'zombie'].includes(m.id))
           .map((m) => ({ ...m, caster: undefined })),
         { id: 'thug-or-militia', tags: [], mind: 'sapient' as const },
+        {
+          id: 'giant-ant',
+          tags: [],
+          mind: 'animal' as const,
+          routine: [{ name: 'Bite', damage: { count: 1, sides: 6, modifier: 0 }, count: 2 }],
+        },
+        {
+          id: 'zombie',
+          tags: [],
+          mind: 'mindless' as const,
+          volley: [{ name: 'Spit', damage: { count: 1, sides: 4, modifier: 0 }, count: 1 }],
+        },
         { id: 'dragon', weapon: 'breath', tags: [], mind: 'monster' as const },
       ],
       combatMagic: [
@@ -269,6 +281,8 @@ describe('combat content', () => {
     expect(combatReferenceErrors(srd, broken)).toEqual([
       'monsterCombat/thug-or-militia: needs a weapon',
       'monsterCombat: no entry for herd-beast',
+      'monsterCombat/giant-ant: the routine makes 2 attacks, not 1',
+      'monsterCombat/zombie: a volley needs a routine',
       'monsterCombat/dragon: unknown monster',
       'monsterCombat/dragon: unknown weapon breath',
       'combatMagic/elemental-blast: unknown skill blasting',

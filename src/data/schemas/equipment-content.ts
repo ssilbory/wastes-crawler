@@ -143,6 +143,8 @@ export const EquipmentRulesSchema = z.strictObject({
   noUnskilledPenalty: z.array(IdSchema),
   /** Weapons with this trait count this many to one Readied item (the N trait). */
   numerous: z.strictObject({ trait: IdSchema, perItem: z.int().min(2) }),
+  /** Weapons that strike blunt, for creatures that shrug off crushing blows (Phase 14a). */
+  bluntWeapons: z.array(IdSchema),
   /** SRD 1.7.7: 3d6 x 10 silver, paid in crowns. */
   startingCrowns: z.strictObject({ dice: DiceSchema, multiplier: z.int().min(1) }),
 });

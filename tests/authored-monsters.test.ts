@@ -4,7 +4,7 @@ import { loadContent } from '../src/data/content.ts';
 import { loadSrd } from '../src/data/load.ts';
 import { allMonsters, baseMonster, withSettingMonsters } from '../src/data/monsters.ts';
 import { findMonster } from '../src/game/character/context.ts';
-import { monsterCombatant } from '../src/game/combat/combatants.ts';
+import { monsterCombatant } from '../src/game/combat/monster-combatant.ts';
 import { createRng } from '../src/rules/rng.ts';
 
 const srd = loadSrd();

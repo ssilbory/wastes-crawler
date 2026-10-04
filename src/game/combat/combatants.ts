@@ -1,22 +1,18 @@
-// Combatants from saved characters and SRD monsters (vendor/wwn-srd/5.0 Monsters and Foes/
-// Monster and NPC Stats.md: 1d8 hit points per hit die; Wpn damage uses the weapon in
-// data/content/monster-combat.json).
-import type { Character, Monster, Weapon } from '../../data/schemas/index.ts';
+// Combatants from saved characters, with every sheet value folded in; the defaults every
+// combatant starts from. SRD monsters are built in monster-combatant.ts.
+import type { Character } from '../../data/schemas/index.ts';
 import { boostedModifier } from '../../rules/attributes.ts';
-import { rollDie } from '../../rules/dice.ts';
 import { killingBlowBonus } from '../../rules/combat.ts';
 import { characterLevel } from '../../rules/progression.ts';
-import type { Rng } from '../../rules/rng.ts';
 import { classOption } from '../character/class-step.ts';
-import { findMonster, type GameData } from '../character/context.ts';
+import type { GameData } from '../character/context.ts';
 import { characterSheet, finalScores } from '../character/derived.ts';
 import { activeEffects } from '../character/equipment.ts';
 import { modifierBonuses } from '../character/foci.ts';
 import { findItem } from '../character/items.ts';
-import { monsterCaster } from './monster-caster.ts';
 import type { Attack, Combatant } from './types.ts';
 
-function base(
+export function base(
   id: string,
   name: string,
 ): Omit<Combatant, 'side' | 'kind' | 'hp' | 'maxHp' | 'ac' | 'attacks' | 'saves' | 'hitDice'> {
@@ -56,6 +52,14 @@ function base(
     wardRounds: 0,
     acBonus: 0,
     noncombatant: false,
+    routine: null,
+    volley: null,
+    forcedAttack: null,
+    breath: null,
+    breathLeft: 0,
+    heldRounds: 0,
+    resist: null,
+    actsLast: false,
   };
 }
 
@@ -88,6 +92,8 @@ export function pcCombatant(data: GameData, c: Character, id = c.id): Combatant 
       shock: a.shock ? { damage: a.shock.damage + kb, maxAc: a.shock.maxAc } : null,
       reach: traits.includes('long'),
       twoHanded: traits.includes('two-handed'),
+      blunt: data.content.equipmentRules.bluntWeapons.includes(a.id),
+      onHit: null,
     };
   });
   const worn = c.inventory.filter((e) => e.location === 'worn').map((e) => findItem(data, e.id));
@@ -142,71 +148,5 @@ export function pcCombatant(data: GameData, c: Character, id = c.id): Combatant 
       : null,
     strain: { strain: c.strain.value, max: sheet.strainMax, broken: c.strain.broken },
     status: c.hp.current > 0 ? 'active' : 'dead',
-  };
-}
-
-function monsterAttack(m: Monster, weapon: Weapon | undefined, reach: boolean): Attack {
-  const damage =
-    m.damage.kind === 'dice'
-      ? m.damage.dice
-      : (weapon?.damage ?? { count: 1, sides: 6, modifier: 0 });
-  const bonus = m.damage.kind === 'weapon' ? m.damage.bonus : 0;
-  let shock: Attack['shock'] = null;
-  if (m.shock?.kind === 'fixed') shock = { damage: m.shock.damage, maxAc: m.shock.maxAc };
-  else if (m.shock?.kind === 'weapon' && weapon?.shock) {
-    shock = {
-      damage: weapon.shock.damage + m.shock.bonus,
-      maxAc: m.shock.ignoresAc ? null : weapon.shock.maxAc,
-    };
-  }
-  const ranged = weapon?.range && !weapon.traits.includes('throwable');
-  return {
-    id: weapon?.id ?? m.id,
-    name: weapon?.name ?? 'Natural attack',
-    mode: ranged ? 'ranged' : 'melee',
-    hit: m.attackBonus,
-    damage,
-    damageBonus: bonus,
-    shock: ranged ? null : shock,
-    reach: reach || (weapon?.traits.includes('long') ?? false),
-    twoHanded: weapon?.traits.includes('two-handed') ?? false,
-  };
-}
-
-/** An SRD monster with rolled hit points: 1d8 per hit die. */
-export function monsterCombatant(
-  data: GameData,
-  monsterId: string,
-  id: string,
-  rng: Rng,
-): Combatant {
-  const m = findMonster(data, monsterId);
-  if (!m) throw new Error(`unknown monster ${monsterId}`);
-  const combat = data.content.monsterCombat.find((x) => x.id === monsterId);
-  const tags = new Set(combat?.tags ?? []);
-  const weaponItem = combat?.weapon ? findItem(data, combat.weapon) : undefined;
-  const weapon = weaponItem?.kind === 'weapon' ? weaponItem.weapon : undefined;
-  let hp = 0;
-  for (let i = 0; i < m.hitDice; i++) hp += rollDie(rng, 8);
-  return {
-    ...base(id, m.name),
-    side: 'enemy',
-    kind: 'monster',
-    hp,
-    maxHp: hp,
-    ac: m.ac,
-    attacks: [monsterAttack(m, weapon, tags.has('reach'))],
-    attacksPerRound: m.attacks,
-    saves: { physical: m.save, evasion: m.save, mental: m.save, luck: m.save },
-    hitDice: m.hitDice,
-    skillBonus: m.skill,
-    tags,
-    morale: m.morale,
-    instinct: m.instinct,
-    // A caster's Magic skill is its skill bonus, for Shackles and Elemental Blast.
-    ...(combat?.caster && {
-      caster: monsterCaster(data, m, combat.caster),
-      skills: { magic: m.skill },
-    }),
   };
 }

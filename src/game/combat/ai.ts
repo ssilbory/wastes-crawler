@@ -4,6 +4,7 @@
 // stabilize the dying, use combat magic, then attack.
 import type { Dice } from '../../data/schemas/index.ts';
 import { rollDie } from '../../rules/dice.ts';
+import { breathRow } from './specials.ts';
 import { canUse, castMagic, combatMagic } from './spells.ts';
 import { canAct, inMelee, isUp, targets } from './targeting.ts';
 import type { Action, Attack, Battle, Combatant } from './types.ts';
@@ -19,6 +20,8 @@ function pickRandom<T>(b: Battle, list: readonly T[]): T {
 function bestAttack(b: Battle, actor: Combatant): { index: number; foes: Combatant[] } | null {
   let best: { index: number; foes: Combatant[]; score: number } | null = null;
   actor.attacks.forEach((a, index) => {
+    // A routine's swing must use its own attack (Phase 14a).
+    if (actor.forcedAttack !== null && index !== actor.forcedAttack) return;
     const foes = targets(b, actor, a);
     const score = expected(a);
     if (foes.length > 0 && (!best || score > best.score)) best = { index, foes, score };
@@ -30,6 +33,9 @@ export function monsterAction(b: Battle, actor: Combatant): Action {
   if (actor.noncombatant) return noncombatantAction(b, actor);
   const magic = actor.instinctive ? null : magicAction(b, actor);
   if (magic) return magic;
+  // A breath weapon opens the turn while it lasts (Phase 14a).
+  const row = actor.breathLeft > 0 && !actor.instinctive ? breathRow(b, actor) : null;
+  if (row !== null) return { kind: 'breath', row };
   const choice = bestAttack(b, actor);
   if (!choice) return { kind: 'wait' };
   const attack = actor.attacks[choice.index] as Attack;

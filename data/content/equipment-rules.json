@@ -8,6 +8,18 @@
     "trait": "numerous",
     "perItem": 5
   },
+  "bluntWeapons": [
+    "blackjack",
+    "club",
+    "club-great",
+    "hammer-great",
+    "hammer-war",
+    "mace",
+    "shield-bash-large",
+    "shield-bash-small",
+    "staff",
+    "unarmed-attack"
+  ],
   "startingCrowns": {
     "dice": {
       "count": 3,
