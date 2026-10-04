@@ -12,6 +12,7 @@ import type {
   Project,
   Commission,
   CraftsmanState,
+  FactionState,
   Raising,
   TownLedger,
   WorldSave,
@@ -91,6 +92,8 @@ export interface World {
   raided: Record<string, number>;
   craftsmen: Record<string, CraftsmanState>;
   commissions: Commission[];
+  /** Faction state by id (Phase 13). */
+  factions: Record<string, FactionState>;
   log: string[];
 }
 

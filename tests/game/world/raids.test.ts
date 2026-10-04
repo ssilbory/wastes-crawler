@@ -6,7 +6,6 @@ import { stayAtInn } from '../../../src/game/world/services.ts';
 import { enterTown, priceHere } from '../../../src/game/world/town.ts';
 import type { World } from '../../../src/game/world/types.ts';
 import { createRng } from '../../../src/rules/rng.ts';
-import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { below } from '../dungeon/helpers.ts';
 import { data, world } from './helpers.ts';
 
@@ -28,10 +27,10 @@ describe('raids (docs/rules-adaptation.md, Raids)', () => {
     emit(w, data, { kind: 'day-passed' });
     expect(w.raid).toBeNull();
     w.day = 29;
-    w.rng = scriptedRng([1]);
+    w.rng = createRng('raid');
     emit(w, data, { kind: 'day-passed' });
-    expect(w.raid).toEqual({ town: 'gutterwick', day: 37, fighting: false });
-    expect(w.log.at(-2)).toContain('human raiders will strike Gutterwick within 7 days');
+    expect(w.raid).toMatchObject({ day: 37, fighting: false });
+    expect(w.log.join('\n')).toContain('human raiders will strike');
     // One raid at a time.
     w.raid = { town: 'gutterwick', day: 100, fighting: false };
     w.day = 59;

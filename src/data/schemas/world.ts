@@ -3,9 +3,10 @@ import { IdSchema } from './common.ts';
 import { DefaultPresetSchema } from './roster.ts';
 import { CharacterSchema } from './character.ts';
 import { CellSchema, FacingSchema } from './dungeon-content.ts';
+import { FactionStateSchema } from './faction-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 20;
+export const WORLD_SCHEMA_VERSION = 21;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -284,6 +285,8 @@ export const WorldSaveSchema = z.strictObject({
   /** Each craftsman's month, by id, once the party has visited. */
   craftsmen: z.record(IdSchema, CraftsmanStateSchema),
   commissions: z.array(CommissionSchema),
+  /** Each faction's state, by id, once it has started (Phase 13). */
+  factions: z.record(IdSchema, FactionStateSchema),
   log: z.array(z.string()),
 });
 export type WorldSave = z.infer<typeof WorldSaveSchema>;

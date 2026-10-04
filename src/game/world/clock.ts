@@ -1,5 +1,6 @@
 // The warlord's clock (docs/rules-adaptation.md, Warlord's clock in Phase 12d; Sam's call: pressure
-// with no fail state). It ticks a segment as each month begins and when crafter's notes are sold;
+// with no fail state). It ticks a segment when the warlord's faction meets a goal (Phase 13,
+// src/game/factions/turn.ts) and when crafter's notes are sold;
 // the quests and rescues the campaign names, and burned notes, knock it back. Each full tier adds
 // warlord patrols to the encounter tables and a beastman to the warlord's last fight.
 import type { GameData } from '../character/context.ts';
@@ -54,9 +55,7 @@ export function reinforced(
 /** The clock's bus listener. */
 export function clockListener(w: World, data: GameData, e: WorldEvent): void {
   const { knockback } = rules(data);
-  if (e.kind === 'day-passed' && (w.day + 1) % data.content.overlandRules.daysPerMonth === 0)
-    moveClock(w, data, 1, 'A month turns, and the warlord breeds more troops.');
-  else if (e.kind === 'quest-done' && knockback.quests.includes(e.quest))
+  if (e.kind === 'quest-done' && knockback.quests.includes(e.quest))
     moveClock(w, data, -1, 'The warlord feels the loss.');
   else if (e.kind === 'captive-freed' && knockback.captives.includes(e.captive))
     moveClock(w, data, -1, 'The warlord has one crafter fewer.');

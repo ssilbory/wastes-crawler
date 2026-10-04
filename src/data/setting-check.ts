@@ -94,6 +94,8 @@ function campaignErrors(content: ContentData, monsters: Set<string>): string[] {
     if (!content.captives.some((c) => c.id === id)) errors.push(`campaign: unknown captive ${id}`);
   for (const id of [notes.giver, seal.giver])
     if (!givers.has(id)) errors.push(`campaign: unknown giver ${id}`);
+  if (!content.factions.factions.some((f) => f.id === clock.faction))
+    errors.push(`campaign: unknown faction ${clock.faction}`);
   if (!content.authorities.some((a) => a.id === seal.authority))
     errors.push(`campaign: unknown authority ${seal.authority}`);
   for (const t of content.encounterTables)

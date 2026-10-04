@@ -1,6 +1,7 @@
 import armor from '../../data/srd/armor.json';
 import castingProgressions from '../../data/srd/casting-progressions.json';
 import classes from '../../data/srd/classes.json';
+import factionAssets from '../../data/srd/faction-assets.json';
 import foci from '../../data/srd/foci.json';
 import gear from '../../data/srd/gear.json';
 import gearBundles from '../../data/srd/gear-bundles.json';
@@ -27,6 +28,7 @@ const RAW: Record<keyof SrdData, unknown> = {
   spells,
   arts,
   monsters,
+  'faction-assets': factionAssets,
 };
 
 /** Parses every data/srd file with its schema; throws on the first invalid file. */

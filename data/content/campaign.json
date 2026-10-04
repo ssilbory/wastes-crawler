@@ -1,5 +1,6 @@
 {
   "clock": {
+    "faction": "warhost",
     "segments": 6,
     "perTier": 2,
     "knockback": {

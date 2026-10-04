@@ -50,6 +50,8 @@ export type RaidRules = z.infer<typeof RaidRulesSchema>;
  */
 export const CampaignSchema = z.strictObject({
   clock: z.strictObject({
+    /** The faction whose met goals advance the clock (Phase 13). */
+    faction: IdSchema,
     segments: z.int().min(1),
     /** Segments per tier; each tier adds warlord patrols and boss reinforcements. */
     perTier: z.int().min(1),

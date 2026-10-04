@@ -3,6 +3,7 @@
 import type { GameData } from '../character/context.ts';
 import { clockListener } from './clock.ts';
 import { craftingListener } from './crafting.ts';
+import { factionsListener } from '../factions/turn.ts';
 import { maintenanceListener } from './maintenance.ts';
 import { notesListener } from './notes.ts';
 import { sharesListener } from './shares.ts';
@@ -41,6 +42,7 @@ const LISTENERS: readonly Listener[] = [
   maintenanceListener,
   ordersListener,
   raidsListener,
+  factionsListener,
   clockListener,
   notesListener,
   sharesListener,

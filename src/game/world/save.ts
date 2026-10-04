@@ -120,6 +120,8 @@ export const WORLD_MIGRATIONS: Migrations = {
   }),
   // Version 20 adds ruins (Phase 12e): none generated, no caches taken.
   19: (raw) => ({ ...raw, schemaVersion: 20, ruins: {}, caches: [] }),
+  // Version 21 adds the factions (Phase 13): each starts from its content at the next faction turn.
+  20: (raw) => ({ ...raw, schemaVersion: 21, factions: {} }),
 };
 
 export function serializeWorld(w: World): string {
@@ -172,6 +174,7 @@ export function serializeWorld(w: World): string {
     raided: w.raided,
     craftsmen: w.craftsmen,
     commissions: w.commissions,
+    factions: w.factions,
     log: w.log.slice(-SAVED_LOG_LINES),
   };
   return `${JSON.stringify(save)}\n`;
@@ -269,6 +272,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       raided: s.raided,
       craftsmen: s.craftsmen,
       commissions: s.commissions,
+      factions: s.factions,
       log: s.log,
       rng: rngFromState(s.rng),
       visited: new Set(s.visited),

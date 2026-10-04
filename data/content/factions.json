@@ -1,0 +1,372 @@
+{
+  "locations": [
+    {
+      "id": "cinderhold",
+      "name": "Cinderhold",
+      "region": "dark-lands",
+      "col": 6,
+      "row": 12
+    },
+    {
+      "id": "gutterwick",
+      "name": "Gutterwick",
+      "region": "dark-lands",
+      "col": 16,
+      "row": 15
+    },
+    {
+      "id": "lanternfall",
+      "name": "Lanternfall",
+      "region": "dark-lands",
+      "col": 10,
+      "row": 4
+    },
+    {
+      "id": "mirewatch",
+      "name": "Mirewatch",
+      "region": "dark-lands",
+      "col": 13,
+      "row": 20
+    },
+    {
+      "id": "grisks-hold",
+      "name": "Grisk's Hold",
+      "region": "dark-lands",
+      "col": 2,
+      "row": 21
+    },
+    {
+      "id": "dawnwall",
+      "name": "Dawnwall",
+      "region": "dark-lands",
+      "col": 28,
+      "row": 16
+    },
+    {
+      "id": "ember-shrine",
+      "name": "the Ember Shrine",
+      "region": "dark-lands",
+      "col": 5,
+      "row": 4
+    }
+  ],
+  "assets": [
+    {
+      "asset": "thugs"
+    },
+    {
+      "asset": "local-guard"
+    },
+    {
+      "asset": "fearful-intimidation"
+    },
+    {
+      "asset": "scouts"
+    },
+    {
+      "asset": "reserve-corps"
+    },
+    {
+      "asset": "infantry"
+    },
+    {
+      "asset": "temple-fanatics",
+      "special": {
+        "kind": "self-harm",
+        "damage": {
+          "count": 1,
+          "sides": 4,
+          "modifier": 0
+        }
+      }
+    },
+    {
+      "asset": "witch-hunters"
+    },
+    {
+      "asset": "enchanted-elites"
+    },
+    {
+      "asset": "cavalry"
+    },
+    {
+      "asset": "siege-experts",
+      "special": {
+        "kind": "steal",
+        "amount": {
+          "count": 1,
+          "sides": 4,
+          "modifier": 0
+        },
+        "oncePerTurn": false
+      }
+    },
+    {
+      "asset": "spymaster"
+    },
+    {
+      "asset": "idealistic-thugs"
+    },
+    {
+      "asset": "armed-guards"
+    },
+    {
+      "asset": "farmers",
+      "special": {
+        "kind": "income",
+        "faces": [0, 0, 0, 0, 1, 1]
+      }
+    },
+    {
+      "asset": "front-merchant",
+      "special": {
+        "kind": "steal",
+        "amount": 1,
+        "oncePerTurn": true
+      }
+    },
+    {
+      "asset": "worker-mob"
+    },
+    {
+      "asset": "manufactory",
+      "special": {
+        "kind": "income",
+        "faces": [-1, 1, 1, 1, 1, 2]
+      }
+    }
+  ],
+  "factions": [
+    {
+      "id": "warhost",
+      "name": "Grisk's Warhost",
+      "text": "The warlord Grisk's beastman army, bred from captive crafters' herds and hungry for the settlements' land.",
+      "force": 6,
+      "cunning": 2,
+      "wealth": 4,
+      "magic": "low",
+      "tags": ["martial"],
+      "hq": "grisks-hold",
+      "treasure": 4,
+      "bases": [],
+      "assets": [
+        {
+          "asset": "infantry",
+          "at": "grisks-hold"
+        },
+        {
+          "asset": "scouts",
+          "at": "grisks-hold"
+        },
+        {
+          "asset": "armed-guards",
+          "at": "grisks-hold"
+        },
+        {
+          "asset": "manufactory",
+          "at": "grisks-hold"
+        }
+      ],
+      "buys": [
+        "thugs",
+        "scouts",
+        "reserve-corps",
+        "infantry",
+        "temple-fanatics",
+        "cavalry",
+        "siege-experts",
+        "armed-guards",
+        "worker-mob",
+        "manufactory"
+      ],
+      "goals": ["blood-the-enemy", "root-out"],
+      "enemies": ["settlements", "bastion"],
+      "raise": ["force", "wealth", "cunning"],
+      "names": {
+        "infantry": "Beastman Warband",
+        "scouts": "Predator Pack",
+        "thugs": "Deserter Rabble",
+        "reserve-corps": "Beastman Reserves",
+        "temple-fanatics": "Frenzied Predators",
+        "cavalry": "Warbreed Hounds",
+        "siege-experts": "War-Engines",
+        "armed-guards": "Slaver Guards",
+        "worker-mob": "Slave Gangs",
+        "manufactory": "Breeding Pens"
+      }
+    },
+    {
+      "id": "settlements",
+      "name": "The Free Settlements",
+      "text": "Cinderhold and the towns that look to it: new, poor, and squeezed from every side.",
+      "force": 4,
+      "cunning": 2,
+      "wealth": 5,
+      "magic": "none",
+      "tags": ["populist"],
+      "hq": "cinderhold",
+      "treasure": 2,
+      "bases": [
+        {
+          "at": "gutterwick",
+          "hp": 4
+        },
+        {
+          "at": "lanternfall",
+          "hp": 2
+        },
+        {
+          "at": "mirewatch",
+          "hp": 2
+        }
+      ],
+      "assets": [
+        {
+          "asset": "local-guard",
+          "at": "cinderhold"
+        },
+        {
+          "asset": "local-guard",
+          "at": "gutterwick"
+        },
+        {
+          "asset": "farmers",
+          "at": "lanternfall"
+        },
+        {
+          "asset": "farmers",
+          "at": "mirewatch"
+        }
+      ],
+      "buys": [
+        "local-guard",
+        "reserve-corps",
+        "infantry",
+        "armed-guards",
+        "farmers",
+        "front-merchant",
+        "worker-mob",
+        "manufactory"
+      ],
+      "goals": ["peaceable-kingdom"],
+      "enemies": ["warhost", "bastion"],
+      "raise": ["wealth", "force", "cunning"],
+      "names": {
+        "local-guard": "Town Watch",
+        "reserve-corps": "Veteran Militia",
+        "infantry": "Settlement Levy",
+        "armed-guards": "Caravan Guards",
+        "farmers": "Farmsteads",
+        "front-merchant": "Traders",
+        "worker-mob": "Dockhands",
+        "manufactory": "Forges"
+      }
+    },
+    {
+      "id": "bastion",
+      "name": "The Dawnwall Bastion",
+      "text": "The last inland stronghold of the alliance, sworn to finish the war, supplied from overseas.",
+      "force": 5,
+      "cunning": 4,
+      "wealth": 2,
+      "magic": "medium",
+      "tags": [],
+      "hq": "dawnwall",
+      "treasure": 3,
+      "bases": [],
+      "assets": [
+        {
+          "asset": "infantry",
+          "at": "dawnwall"
+        },
+        {
+          "asset": "scouts",
+          "at": "dawnwall"
+        },
+        {
+          "asset": "spymaster",
+          "at": "dawnwall"
+        },
+        {
+          "asset": "armed-guards",
+          "at": "dawnwall"
+        }
+      ],
+      "buys": [
+        "scouts",
+        "infantry",
+        "enchanted-elites",
+        "witch-hunters",
+        "temple-fanatics",
+        "cavalry",
+        "spymaster",
+        "idealistic-thugs",
+        "armed-guards",
+        "front-merchant"
+      ],
+      "goals": ["root-out", "blood-the-enemy"],
+      "enemies": ["warhost", "settlements", "loyalists"],
+      "raise": ["force", "cunning", "wealth"],
+      "names": {
+        "infantry": "Raider Company",
+        "scouts": "Alliance Rangers",
+        "enchanted-elites": "Paladin Lance",
+        "witch-hunters": "Inquisitors",
+        "temple-fanatics": "Half-Elf Zealots",
+        "cavalry": "Paladin Riders",
+        "spymaster": "Spymaster",
+        "idealistic-thugs": "Crusading Mob",
+        "armed-guards": "Bastion Guards",
+        "front-merchant": "Overseas Factors"
+      }
+    },
+    {
+      "id": "loyalists",
+      "name": "The Faithful",
+      "text": "Those who wait for the Dark Lord's return and hunt for anything the bound will obey.",
+      "force": 1,
+      "cunning": 4,
+      "wealth": 3,
+      "magic": "low",
+      "tags": ["machiavellian"],
+      "hq": "ember-shrine",
+      "treasure": 2,
+      "bases": [],
+      "assets": [
+        {
+          "asset": "thugs",
+          "at": "ember-shrine"
+        },
+        {
+          "asset": "spymaster",
+          "at": "ember-shrine"
+        },
+        {
+          "asset": "front-merchant",
+          "at": "ember-shrine"
+        }
+      ],
+      "buys": [
+        "thugs",
+        "fearful-intimidation",
+        "spymaster",
+        "idealistic-thugs",
+        "armed-guards",
+        "front-merchant",
+        "worker-mob"
+      ],
+      "goals": ["blood-the-enemy"],
+      "enemies": ["bastion", "settlements"],
+      "raise": ["cunning", "wealth", "force"],
+      "names": {
+        "thugs": "Cult Cells",
+        "fearful-intimidation": "Whispered Threats",
+        "spymaster": "Keeper of Secrets",
+        "idealistic-thugs": "True Believers",
+        "armed-guards": "Temple Guards",
+        "front-merchant": "Relic Dealers",
+        "worker-mob": "Penitents"
+      }
+    }
+  ]
+}

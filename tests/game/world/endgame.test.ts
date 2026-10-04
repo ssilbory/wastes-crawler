@@ -32,15 +32,14 @@ function dark(): World {
 }
 
 describe("the warlord's clock (docs/rules-adaptation.md, Warlord's clock)", () => {
-  it('ticks as each month begins, within its six segments', () => {
+  it("moves within its six segments, no longer ticking by the month (Phase 13)", () => {
     const w = dark();
-    w.day = 28;
-    emit(w, data, { kind: 'day-passed' });
-    expect(w.clock).toBe(0);
     w.day = 29;
     w.raid = { town: 'cinderhold', day: 999, fighting: false };
     emit(w, data, { kind: 'day-passed' });
-    expect(w.clock).toBe(1);
+    // The month's faction turn moves no assets yet, so nobody has met a goal.
+    expect(w.clock).toBe(0);
+    moveClock(w, data, 1, 'Once.');
     expect(w.log.at(-1)).toContain("The warlord's clock advances to 1 of 6.");
     moveClock(w, data, 1, 'Again.');
     expect(clockTier(w, data)).toBe(1);

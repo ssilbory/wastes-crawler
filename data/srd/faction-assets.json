@@ -1,0 +1,2197 @@
+[
+  {
+    "id": "fearful-intimidation",
+    "name": "Fearful Intimidation",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 1"
+    },
+    "attribute": "force",
+    "rating": 1,
+    "cost": 2,
+    "hp": 4,
+    "magic": "none",
+    "attack": null,
+    "counter": {
+      "count": 1,
+      "sides": 4,
+      "modifier": 0
+    },
+    "qualities": [],
+    "text": "Judicious exercises of force have intimidated the locals, making them reluctant to cooperate with any group that stands opposed to the faction."
+  },
+  {
+    "id": "local-guard",
+    "name": "Local Guard",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 1"
+    },
+    "attribute": "force",
+    "rating": 1,
+    "cost": 3,
+    "hp": 4,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "force",
+      "defender": "force",
+      "damage": {
+        "count": 1,
+        "sides": 3,
+        "modifier": 1
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 4,
+      "modifier": 1
+    },
+    "qualities": [],
+    "text": "Ordinary citizens are enlisted into night watch patrols and local guard units. They’re most effective when defending from behind a fortified position, but they have some idea of how to use their weapons."
+  },
+  {
+    "id": "summoned-hunter",
+    "name": "Summoned Hunter",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 1"
+    },
+    "attribute": "force",
+    "rating": 1,
+    "cost": 4,
+    "hp": 4,
+    "magic": "medium",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "force",
+      "damage": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "subtle"
+    ],
+    "text": "A skilled sorcerer has summoned a magical beast or mentally bound a usefully disposable assassin into the faction’s service."
+  },
+  {
+    "id": "thugs",
+    "name": "Thugs",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 1"
+    },
+    "attribute": "force",
+    "rating": 1,
+    "cost": 2,
+    "hp": 1,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "force",
+      "defender": "cunning",
+      "damage": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "subtle"
+    ],
+    "text": "These gutter ruffians and common kneebreakers have been organized in service to the faction’s causes."
+  },
+  {
+    "id": "guerrilla-populace",
+    "name": "Guerrilla Populace",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 2"
+    },
+    "attribute": "force",
+    "rating": 2,
+    "cost": 6,
+    "hp": 4,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "force",
+      "defender": "force",
+      "damage": {
+        "count": 1,
+        "sides": 4,
+        "modifier": 1
+      }
+    },
+    "counter": null,
+    "qualities": [],
+    "text": "The locals have the assistance of trained guerrilla warfare leaders who can aid them in sabotaging and attacking unwary hostiles."
+  },
+  {
+    "id": "military-transport",
+    "name": "Military Transport",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 2"
+    },
+    "attribute": "force",
+    "rating": 2,
+    "cost": 4,
+    "hp": 6,
+    "magic": "none",
+    "attack": null,
+    "counter": null,
+    "qualities": [
+      "action"
+    ],
+    "text": "A branch of skilled teamsters, transport ships, road-building crews, or other logistical facilitators is in service to the faction. As a free action once per faction turn, it can bring an allied Asset to its location, provided they’re within one turn’s movement range, or move an allied Asset from its own location to a target also within a turn’s move. Multiple Military Transport assets can chain this movement over long distances."
+  },
+  {
+    "id": "reserve-corps",
+    "name": "Reserve Corps",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 2"
+    },
+    "attribute": "force",
+    "rating": 2,
+    "cost": 4,
+    "hp": 4,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "force",
+      "defender": "force",
+      "damage": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "qualities": [],
+    "text": "Retired military personnel and rear-line troops are spread through the area as workers or colonists, available to resist hostilities as needed."
+  },
+  {
+    "id": "scouts",
+    "name": "Scouts",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 2"
+    },
+    "attribute": "force",
+    "rating": 2,
+    "cost": 5,
+    "hp": 5,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "force",
+      "defender": "force",
+      "damage": {
+        "count": 2,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 4,
+      "modifier": 1
+    },
+    "qualities": [
+      "subtle"
+    ],
+    "text": "Long-range scouts and reconnaissance experts work for the faction, able to venture deep into hostile territory."
+  },
+  {
+    "id": "enchanted-elites",
+    "name": "Enchanted Elites",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 3"
+    },
+    "attribute": "force",
+    "rating": 3,
+    "cost": 8,
+    "hp": 6,
+    "magic": "medium",
+    "attack": {
+      "kind": "check",
+      "attacker": "force",
+      "defender": "force",
+      "damage": {
+        "count": 1,
+        "sides": 10,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "qualities": [
+      "subtle"
+    ],
+    "text": "A carefully-selected group of skilled warriors are given magical armaments and arcane blessings to boost their effectiveness."
+  },
+  {
+    "id": "infantry",
+    "name": "Infantry",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 3"
+    },
+    "attribute": "force",
+    "rating": 3,
+    "cost": 6,
+    "hp": 6,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "force",
+      "defender": "force",
+      "damage": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "qualities": [],
+    "text": "Common foot soldiers have been organized and armed by the faction. While rarely particularly heroic in their capabilities, they have the advantage of numbers."
+  },
+  {
+    "id": "temple-fanatics",
+    "name": "Temple Fanatics",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 3"
+    },
+    "attribute": "force",
+    "rating": 3,
+    "cost": 4,
+    "hp": 6,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "force",
+      "defender": "force",
+      "damage": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 2,
+      "sides": 6,
+      "modifier": 0
+    },
+    "qualities": [
+      "special"
+    ],
+    "text": "Fanatical servants of a cult, ideology, or larger religion, these enthusiasts wreak havoc on enemies without a thought for their own lives. After every time the Temple Fanatics defend or successfully attack, they take 1d4 damage."
+  },
+  {
+    "id": "witch-hunters",
+    "name": "Witch Hunters",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 3"
+    },
+    "attribute": "force",
+    "rating": 3,
+    "cost": 6,
+    "hp": 4,
+    "magic": "low",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "cunning",
+      "damage": {
+        "count": 1,
+        "sides": 4,
+        "modifier": 1
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "qualities": [],
+    "text": "Certain personnel are trained in sniffing out traitors and spies in the organization, along with the presence of hostile magic or hidden spellcraft."
+  },
+  {
+    "id": "cavalry",
+    "name": "Cavalry",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 4"
+    },
+    "attribute": "force",
+    "rating": 4,
+    "cost": 8,
+    "hp": 12,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "force",
+      "defender": "force",
+      "damage": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 4,
+      "modifier": 0
+    },
+    "qualities": [],
+    "text": "Mounted troops, chariots, or other mobile soldiers are in service to the faction. While weak on defense, they can harry logistics and mount powerful charges."
+  },
+  {
+    "id": "military-roads",
+    "name": "Military Roads",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 4"
+    },
+    "attribute": "force",
+    "rating": 4,
+    "cost": 10,
+    "hp": 10,
+    "magic": "none",
+    "attack": null,
+    "counter": null,
+    "qualities": [
+      "action"
+    ],
+    "text": "The faction has established a network of roads with a logistical stockpile at this Asset’s location. As a consequence, once per faction turn, the faction can move any one Asset from any location within its reach to any other location within its reach at a cost of 1 Treasure."
+  },
+  {
+    "id": "vanguard-unit",
+    "name": "Vanguard Unit",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 4"
+    },
+    "attribute": "force",
+    "rating": 4,
+    "cost": 10,
+    "hp": 10,
+    "magic": "none",
+    "attack": null,
+    "counter": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "qualities": [
+      "action"
+    ],
+    "text": "This unit is specially trained to build bridges, reduce fortifications, and facilitate a lightning strike into enemy territory. When its faction takes a Relocate Asset turn, it can move the Vanguard Unit and any allied units at the same location to any other location within range, even if the unit type would normally be prohibitive from moving there. Thus, a Force asset could be moved into a foreign nation’s territory even against their wishes. The unit may remain at that location afterwards even if the Vanguard Unit leaves."
+  },
+  {
+    "id": "war-fleet",
+    "name": "War Fleet",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 4"
+    },
+    "attribute": "force",
+    "rating": 4,
+    "cost": 12,
+    "hp": 8,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "force",
+      "defender": "force",
+      "damage": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 8,
+      "modifier": 0
+    },
+    "qualities": [
+      "action"
+    ],
+    "text": "While a war fleet can only Attack assets and locations within reach of the waterways, once per turn it can freely relocate itself to any coastal area within movement range. The Asset itself must be based out of some landward location to provide for supply and refitting."
+  },
+  {
+    "id": "demonic-slayer",
+    "name": "Demonic Slayer",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 5"
+    },
+    "attribute": "force",
+    "rating": 5,
+    "cost": 12,
+    "hp": 4,
+    "magic": "high",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "cunning",
+      "damage": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 2
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "Powerful sorcerers have summoned or constructed an inhuman assassin-beast to hunt down and slaughter the faction’s enemies. A Demonic Slayer enters play Stealthed."
+  },
+  {
+    "id": "magical-logistics",
+    "name": "Magical Logistics",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 5"
+    },
+    "attribute": "force",
+    "rating": 5,
+    "cost": 14,
+    "hp": 6,
+    "magic": "medium",
+    "attack": null,
+    "counter": null,
+    "qualities": [
+      "special"
+    ],
+    "text": "An advanced web of magical Workings, skilled sorcerers, and trained logistical experts are enlisted to streamline the faction’s maintenance and sustain damaged units. Once per faction turn, as a free action, the Asset can repair 2 hit points of damage to an allied Force Asset."
+  },
+  {
+    "id": "siege-experts",
+    "name": "Siege Experts",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 5"
+    },
+    "attribute": "force",
+    "rating": 5,
+    "cost": 10,
+    "hp": 8,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "force",
+      "defender": "wealth",
+      "damage": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "qualities": [],
+    "text": "These soldiers are trained in trenching, sapping, and razing targeted structures. When they successfully Attack an enemy Asset, the owner loses 1d4 points of Treasure from their reserves and this faction gains it."
+  },
+  {
+    "id": "fortification-program",
+    "name": "Fortification Program",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 6"
+    },
+    "attribute": "force",
+    "rating": 6,
+    "cost": 20,
+    "hp": 18,
+    "magic": "none",
+    "attack": null,
+    "counter": {
+      "count": 2,
+      "sides": 6,
+      "modifier": 0
+    },
+    "qualities": [
+      "action"
+    ],
+    "text": "A program of organized fortification and supply caching has been undertaken around the Asset’s location, hardening allied communities and friendly Assets. Once per turn, when an enemy makes an Attack that targets the faction’s Force rating, the faction can use the Fortification Program to defend if the Asset is within a turn’s move from the attack."
+  },
+  {
+    "id": "knights",
+    "name": "Knights",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 6"
+    },
+    "attribute": "force",
+    "rating": 6,
+    "cost": 18,
+    "hp": 16,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "force",
+      "defender": "force",
+      "damage": {
+        "count": 2,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 2,
+      "sides": 6,
+      "modifier": 0
+    },
+    "qualities": [],
+    "text": "Elite warriors of considerable personal prowess have been trained or enlisted by the faction, either from noble sympathizers, veteran members, or amenable mercenaries."
+  },
+  {
+    "id": "war-machines",
+    "name": "War Machines",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 6"
+    },
+    "attribute": "force",
+    "rating": 6,
+    "cost": 25,
+    "hp": 14,
+    "magic": "medium",
+    "attack": {
+      "kind": "check",
+      "attacker": "force",
+      "defender": "force",
+      "damage": {
+        "count": 2,
+        "sides": 10,
+        "modifier": 4
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 10,
+      "modifier": 0
+    },
+    "qualities": [],
+    "text": "Mobile war machines driven by trained beasts or magical motive power are under the faction’s control."
+  },
+  {
+    "id": "brilliant-general",
+    "name": "Brilliant General",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 7"
+    },
+    "attribute": "force",
+    "rating": 7,
+    "cost": 25,
+    "hp": 8,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "force",
+      "damage": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "A leader for the ages is in service with the faction. Whenever the Brilliant General or any allied Force Asset in the same location Attacks or is made to defend, it can roll an extra die to do so."
+  },
+  {
+    "id": "purity-rites",
+    "name": "Purity Rites",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 7"
+    },
+    "attribute": "force",
+    "rating": 7,
+    "cost": 20,
+    "hp": 10,
+    "magic": "low",
+    "attack": null,
+    "counter": {
+      "count": 2,
+      "sides": 8,
+      "modifier": 2
+    },
+    "qualities": [
+      "special"
+    ],
+    "text": "A rigorous program of regular mental inspection and counterintelligence measures has been undertaken by the faction. This Asset can only defend against attacks that target the faction’s Cunning, but it allows the faction to roll an extra die to defend."
+  },
+  {
+    "id": "warshaped",
+    "name": "Warshaped",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 7"
+    },
+    "attribute": "force",
+    "rating": 7,
+    "cost": 30,
+    "hp": 16,
+    "magic": "high",
+    "attack": {
+      "kind": "check",
+      "attacker": "force",
+      "defender": "force",
+      "damage": {
+        "count": 2,
+        "sides": 8,
+        "modifier": 2
+      }
+    },
+    "counter": {
+      "count": 2,
+      "sides": 8,
+      "modifier": 0
+    },
+    "qualities": [
+      "subtle"
+    ],
+    "text": "The faction has the use of magical creatures designed specifically for warfare, or ordinary humans that have been greatly altered to serve the faction’s needs. Such forces are few and elusive enough to evade easy detection."
+  },
+  {
+    "id": "apocalypse-engine",
+    "name": "Apocalypse Engine",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 8"
+    },
+    "attribute": "force",
+    "rating": 8,
+    "cost": 35,
+    "hp": 20,
+    "magic": "medium",
+    "attack": {
+      "kind": "check",
+      "attacker": "force",
+      "defender": "force",
+      "damage": {
+        "count": 3,
+        "sides": 10,
+        "modifier": 4
+      }
+    },
+    "counter": null,
+    "qualities": [],
+    "text": "One of a number of hideously powerful ancient super-weapons unearthed from some lost armory, an Apocalypse Engine rains some eldritch horror down on a targeted enemy Asset."
+  },
+  {
+    "id": "invincible-legion",
+    "name": "Invincible Legion",
+    "source": {
+      "file": "6.0 Factions/Force Assets.md",
+      "heading": "Force 8"
+    },
+    "attribute": "force",
+    "rating": 8,
+    "cost": 40,
+    "hp": 30,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "force",
+      "defender": "force",
+      "damage": {
+        "count": 2,
+        "sides": 10,
+        "modifier": 4
+      }
+    },
+    "counter": {
+      "count": 2,
+      "sides": 10,
+      "modifier": 4
+    },
+    "qualities": [
+      "special"
+    ],
+    "text": "The faction has developed a truly irresistible military organization that can smash its way through opposition with out the aid of any support units. During a Relocate Asset action, the Invincible Legion can relocate to locations that would otherwise not permit a formal military force to relocate there, as if it had the Subtle quality. It is not, however, in any way subtle."
+  },
+  {
+    "id": "informers",
+    "name": "Informers",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 1"
+    },
+    "attribute": "cunning",
+    "rating": 1,
+    "cost": 2,
+    "hp": 3,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "cunning",
+      "damage": null
+    },
+    "counter": null,
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "As a free action, once per turn, the faction can spend 1 Treasure and have the Informers look for Stealthed Assets. To do so, the Informers pick a faction and make a Cunning vs. Cunning Attack on them. No counterattack damage is taken if they fail, but if they succeed, all Stealthed Assets of that faction within one move of the Informers are revealed."
+  },
+  {
+    "id": "petty-seers",
+    "name": "Petty Seers",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 1"
+    },
+    "attribute": "cunning",
+    "rating": 1,
+    "cost": 2,
+    "hp": 2,
+    "magic": "medium",
+    "attack": null,
+    "counter": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "qualities": [
+      "subtle"
+    ],
+    "text": "A cadre of skilled fortune-tellers and minor oracles have been enlisted by the faction to foresee perils and allow swift counterattacks."
+  },
+  {
+    "id": "smugglers",
+    "name": "Smugglers",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 1"
+    },
+    "attribute": "cunning",
+    "rating": 1,
+    "cost": 2,
+    "hp": 4,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "wealth",
+      "damage": {
+        "count": 1,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "subtle",
+      "action"
+    ],
+    "text": "As a free action, once per faction turn, the Smugglers can move any allied Wealth or Cunning Asset in their same location to a destination within movement range, even if the destination wouldn’t normally allow an un-Subtle Asset."
+  },
+  {
+    "id": "useful-idiots",
+    "name": "Useful Idiots",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 1"
+    },
+    "attribute": "cunning",
+    "rating": 1,
+    "cost": 1,
+    "hp": 2,
+    "magic": "none",
+    "attack": null,
+    "counter": null,
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "Hirelings, catspaws, foolish idealists, and other disposable minions are gathered together in this Asset. If another Asset within one turn’s move of the Useful Idiots is struck by an Attack, the faction can instead sacrifice the Useful Idiots to negate the attack. Only one band of Useful Idiots can be sacrificed on any one turn."
+  },
+  {
+    "id": "blackmail",
+    "name": "Blackmail",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 2"
+    },
+    "attribute": "cunning",
+    "rating": 2,
+    "cost": 4,
+    "hp": 4,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "cunning",
+      "damage": {
+        "count": 1,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "When a Blackmail asset is in a location, hostile factions can’t roll more than one die during Attacks made by or against them there, even if they have tags or Assets that usually grant bonus dice."
+  },
+  {
+    "id": "dancing-girls",
+    "name": "Dancing Girls",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 2"
+    },
+    "attribute": "cunning",
+    "rating": 2,
+    "cost": 4,
+    "hp": 3,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "wealth",
+      "damage": {
+        "count": 2,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "Dancing Girls or other charming distractions are immune to Attack or Counterattack damage from Force Assets, but they cannot be used to defend against Attacks from Force Assets."
+  },
+  {
+    "id": "hired-friends",
+    "name": "Hired Friends",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 2"
+    },
+    "attribute": "cunning",
+    "rating": 2,
+    "cost": 4,
+    "hp": 4,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "cunning",
+      "damage": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "As a free action, once per turn, the faction may spend 1 Treasure and grant a Wealth Asset within one turn’s movement range the Subtle quality. This quality will remain until the Hired Friends are destroyed or they use this ability again."
+  },
+  {
+    "id": "saboteurs",
+    "name": "Saboteurs",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 2"
+    },
+    "attribute": "cunning",
+    "rating": 2,
+    "cost": 5,
+    "hp": 6,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "wealth",
+      "damage": {
+        "count": 2,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "An Asset that is Attacked by the Saboteurs can’t use any free action abilities it may have during the next turn, whether or not the Attack was successful."
+  },
+  {
+    "id": "bewitching-charmer",
+    "name": "Bewitching Charmer",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 3"
+    },
+    "attribute": "cunning",
+    "rating": 3,
+    "cost": 6,
+    "hp": 4,
+    "magic": "low",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "cunning",
+      "damage": null
+    },
+    "counter": null,
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "When the Bewitching Charmer succeeds in an Attack, the targeted Asset is unable to leave the same location as the Bewitching Charmer until the latter Asset moves or is destroyed. Bewitching Charmers are immune to Counterattack."
+  },
+  {
+    "id": "covert-transport",
+    "name": "Covert Transport",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 3"
+    },
+    "attribute": "cunning",
+    "rating": 3,
+    "cost": 8,
+    "hp": 4,
+    "magic": "none",
+    "attack": null,
+    "counter": null,
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "As a free action once per turn, the faction can pay 1 Treasure and move any Cunning or Wealth Asset at the same location as the Covert Transport. The transported Asset gains the Stealth quality until it performs some action or is otherwise utilized by the faction."
+  },
+  {
+    "id": "occult-infiltrators",
+    "name": "Occult Infiltrators",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 3"
+    },
+    "attribute": "cunning",
+    "rating": 3,
+    "cost": 6,
+    "hp": 4,
+    "magic": "medium",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "cunning",
+      "damage": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "Magically-gifted spies and assassins are enlisted to serve the faction. Occult Infiltrator Assets always begin play with the Stealth quality."
+  },
+  {
+    "id": "spymaster",
+    "name": "Spymaster",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 3"
+    },
+    "attribute": "cunning",
+    "rating": 3,
+    "cost": 8,
+    "hp": 4,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "cunning",
+      "damage": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 2,
+      "sides": 6,
+      "modifier": 0
+    },
+    "qualities": [
+      "subtle"
+    ],
+    "text": "A veteran operative runs a counterintelligence bureau in the area."
+  },
+  {
+    "id": "court-patronage",
+    "name": "Court Patronage",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 4"
+    },
+    "attribute": "cunning",
+    "rating": 4,
+    "cost": 8,
+    "hp": 8,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "cunning",
+      "damage": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "Powerful nobles or officials are appointing their agents to useful posts of profit. A Court Patronage Asset automatically grants 1 Treasure to its owning faction each turn."
+  },
+  {
+    "id": "idealistic-thugs",
+    "name": "Idealistic Thugs",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 4"
+    },
+    "attribute": "cunning",
+    "rating": 4,
+    "cost": 8,
+    "hp": 12,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "force",
+      "damage": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "qualities": [
+      "subtle"
+    ],
+    "text": "Easily-manipulated hotheads are enlisted under whatever ideological or religious principle best enthuses them for violence."
+  },
+  {
+    "id": "seditionists",
+    "name": "Seditionists",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 4"
+    },
+    "attribute": "cunning",
+    "rating": 4,
+    "cost": 12,
+    "hp": 8,
+    "magic": "none",
+    "attack": {
+      "kind": "special"
+    },
+    "counter": null,
+    "qualities": [
+      "subtle"
+    ],
+    "text": "In place of an Attack action, the Seditionists’ owners may spend 1d4 Treasure and attach the Asset to a hostile Asset in the same location. Until the Seditionists are destroyed, infest another Asset, or leave the same location, the rebelling Asset cannot be used for anything and grants no benefits."
+  },
+  {
+    "id": "vigilant-agents",
+    "name": "Vigilant Agents",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 4"
+    },
+    "attribute": "cunning",
+    "rating": 4,
+    "cost": 12,
+    "hp": 8,
+    "magic": "none",
+    "attack": null,
+    "counter": {
+      "count": 1,
+      "sides": 4,
+      "modifier": 0
+    },
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "A constant flow of observations runs back to the faction from these watchful counterintelligence agents. Whenever another faction moves a Stealthed asset into a location within one move’s distance from the Vigilant Agents, they may make a Cunning vs. Cunning attack against the owning faction. On a success, the intruding Asset loses its Stealth after it completes the move."
+  },
+  {
+    "id": "cryptomancers",
+    "name": "Cryptomancers",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 5"
+    },
+    "attribute": "cunning",
+    "rating": 5,
+    "cost": 14,
+    "hp": 6,
+    "magic": "low",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "cunning",
+      "damage": null
+    },
+    "counter": null,
+    "qualities": [
+      "subtle"
+    ],
+    "text": "In place of an Attack action, they can make a Cunning vs. Cunning attack on a specific hostile Asset within one move. On a success, the targeted Asset is unable to do anything or be used for anything on its owner’s next faction turn. On a failure, no Counterattack damage is taken."
+  },
+  {
+    "id": "organization-moles",
+    "name": "Organization Moles",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 5"
+    },
+    "attribute": "cunning",
+    "rating": 5,
+    "cost": 8,
+    "hp": 10,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "cunning",
+      "damage": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "subtle"
+    ],
+    "text": "Sleeper agents and deep-cover spies burrow into hostile organizations, waiting to disrupt them from within when ordered."
+  },
+  {
+    "id": "shapeshifters",
+    "name": "Shapeshifters",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 5"
+    },
+    "attribute": "cunning",
+    "rating": 5,
+    "cost": 14,
+    "hp": 8,
+    "magic": "medium",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "cunning",
+      "damage": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "As a free action once per turn, the faction can spend 1 Treasure and grant the Shapeshifters the Stealth quality."
+  },
+  {
+    "id": "interrupted-logistics",
+    "name": "Interrupted Logistics",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 6"
+    },
+    "attribute": "cunning",
+    "rating": 6,
+    "cost": 20,
+    "hp": 10,
+    "magic": "none",
+    "attack": null,
+    "counter": null,
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "Non-Stealthed hostile units cannot enter the same location as the Interrupted Logistics Asset without paying 1d4 Treasure and waiting one turn to arrive there."
+  },
+  {
+    "id": "prophet",
+    "name": "Prophet",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 6"
+    },
+    "attribute": "cunning",
+    "rating": 6,
+    "cost": 20,
+    "hp": 10,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "cunning",
+      "damage": {
+        "count": 2,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 8,
+      "modifier": 0
+    },
+    "qualities": [
+      "subtle"
+    ],
+    "text": "Whether a religious prophet, charismatic philosopher, rebel leader, or other figure of popular appeal, the Asset is firmly under the faction’s control."
+  },
+  {
+    "id": "underground-roads",
+    "name": "Underground Roads",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 6"
+    },
+    "attribute": "cunning",
+    "rating": 6,
+    "cost": 18,
+    "hp": 15,
+    "magic": "none",
+    "attack": null,
+    "counter": null,
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "A well-established network of secret transit extends far around this Asset. As a free action, the faction may pay 1 Treasure and move any friendly Asset from a location within one round’s move of the Underground Roads to a destination within one round of the Roads."
+  },
+  {
+    "id": "expert-treachery",
+    "name": "Expert Treachery",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 7"
+    },
+    "attribute": "cunning",
+    "rating": 7,
+    "cost": 10,
+    "hp": 5,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "cunning",
+      "damage": null
+    },
+    "counter": null,
+    "qualities": [
+      "subtle"
+    ],
+    "text": "On a successful Attack by Expert Treachery, this Asset is lost, 5 Treasure is gained by its owning faction, and the Asset that Expert Treachery targeted switches sides. This conversion happens even if their new owners lack the attributes usually necessary to maintain their new Asset."
+  },
+  {
+    "id": "mindbenders",
+    "name": "Mindbenders",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 7"
+    },
+    "attribute": "cunning",
+    "rating": 7,
+    "cost": 20,
+    "hp": 10,
+    "magic": "medium",
+    "attack": null,
+    "counter": {
+      "count": 2,
+      "sides": 8,
+      "modifier": 0
+    },
+    "qualities": [
+      "subtle"
+    ],
+    "text": "Once per turn as a free action, the Mindbenders can force a rival faction to reroll a check, Attack, or other die roll they just made and take whichever result the Mindbenders prefer. A faction can only be affected this way once until the start of the Mindbender’s faction’s next turn."
+  },
+  {
+    "id": "popular-movement",
+    "name": "Popular Movement",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 7"
+    },
+    "attribute": "cunning",
+    "rating": 7,
+    "cost": 25,
+    "hp": 16,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "cunning",
+      "damage": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "Any friendly Asset is allowed movement into the same location as the Popular Movement, even if it would normally be forbidden by its owners and lacks the Subtle quality. If the Popular Movement later moves or is destroyed, such Assets must also leave or suffer the usual consequences for a non-Subtle Asset."
+  },
+  {
+    "id": "just-as-planned",
+    "name": "Just As Planned",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 8"
+    },
+    "attribute": "cunning",
+    "rating": 8,
+    "cost": 40,
+    "hp": 15,
+    "magic": "none",
+    "attack": null,
+    "counter": {
+      "count": 1,
+      "sides": 10,
+      "modifier": 0
+    },
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "Some sublimely cunning mastermind works for the faction. Whenever the faction’s Assets make a roll involving Cunning, they may reroll a failed check at the cost of inflicting 1d6 damage on Just As Planned. This may be done repeatedly, though it may destroy the Asset. There is no range limit on this benefit."
+  },
+  {
+    "id": "omniscient-seers",
+    "name": "Omniscient Seers",
+    "source": {
+      "file": "6.0 Factions/Cunning Assets.md",
+      "heading": "Cunning 8"
+    },
+    "attribute": "cunning",
+    "rating": 8,
+    "cost": 30,
+    "hp": 10,
+    "magic": "high",
+    "attack": null,
+    "counter": {
+      "count": 1,
+      "sides": 8,
+      "modifier": 0
+    },
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "At the start of their turn, each hostile Stealthed as set within one turn’s movement of the Omniscient Seers must succeed in a Cunning vs. Cunning check against the owning faction or lose their Stealth. In addition, all Cunning rolls made by the faction for units or events within one turn’s movement of the seers gain an extra die."
+  },
+  {
+    "id": "armed-guards",
+    "name": "Armed Guards",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 1"
+    },
+    "attribute": "wealth",
+    "rating": 1,
+    "cost": 1,
+    "hp": 3,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "wealth",
+      "defender": "force",
+      "damage": {
+        "count": 1,
+        "sides": 3,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 4,
+      "modifier": 0
+    },
+    "qualities": [],
+    "text": "Hired caravan guards, bodyguards, or other armed minions serve the faction."
+  },
+  {
+    "id": "cooperative-businesses",
+    "name": "Cooperative Businesses",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 1"
+    },
+    "attribute": "wealth",
+    "rating": 1,
+    "cost": 1,
+    "hp": 2,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "wealth",
+      "defender": "wealth",
+      "damage": {
+        "count": 1,
+        "sides": 4,
+        "modifier": -1
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "If any other faction attempts to create an Asset in the same location as a Cooperative Business, the cost of doing so increases by 1 Treasure. This penalty stacks."
+  },
+  {
+    "id": "farmers",
+    "name": "Farmers",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 1"
+    },
+    "attribute": "wealth",
+    "rating": 1,
+    "cost": 2,
+    "hp": 4,
+    "magic": "none",
+    "attack": null,
+    "counter": {
+      "count": 1,
+      "sides": 4,
+      "modifier": 0
+    },
+    "qualities": [
+      "action"
+    ],
+    "text": "Farmers, hunters, and simple rural artisans are in service to the faction here. Once per turn, as a free action, the Asset’s owner can roll 1d6; on a 5+, they gain 1 Treasure from the Farmers."
+  },
+  {
+    "id": "front-merchant",
+    "name": "Front Merchant",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 1"
+    },
+    "attribute": "wealth",
+    "rating": 1,
+    "cost": 2,
+    "hp": 3,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "wealth",
+      "defender": "wealth",
+      "damage": {
+        "count": 1,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 4,
+      "modifier": -1
+    },
+    "qualities": [
+      "subtle"
+    ],
+    "text": "Whenever the Front Merchant successfully Attacks an enemy Asset, the target faction loses 1 Treasure, if they have any, and the Front Merchant’s owner gains it. Such a loss can occur only once per turn."
+  },
+  {
+    "id": "caravan",
+    "name": "Caravan",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 2"
+    },
+    "attribute": "wealth",
+    "rating": 2,
+    "cost": 5,
+    "hp": 4,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "wealth",
+      "defender": "wealth",
+      "damage": {
+        "count": 1,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "action"
+    ],
+    "text": "As a free action, once per turn, the Caravan can spend 1 Treasure and move itself and one other Asset in the same place to a new location within one move."
+  },
+  {
+    "id": "dragomans",
+    "name": "Dragomans",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 2"
+    },
+    "attribute": "wealth",
+    "rating": 2,
+    "cost": 4,
+    "hp": 4,
+    "magic": "none",
+    "attack": null,
+    "counter": {
+      "count": 1,
+      "sides": 4,
+      "modifier": 0
+    },
+    "qualities": [
+      "subtle",
+      "special"
+    ],
+    "text": "Interpreters, cultural specialists, and go-betweens simplify the expansion of a faction’s influence in an area. A faction that takes an Expand Influence action in the same location as this Asset can roll an extra die on all checks there that turn. As a free action once per turn, this Asset can move."
+  },
+  {
+    "id": "pleaders",
+    "name": "Pleaders",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 2"
+    },
+    "attribute": "wealth",
+    "rating": 2,
+    "cost": 6,
+    "hp": 4,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "wealth",
+      "damage": {
+        "count": 2,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "qualities": [
+      "special"
+    ],
+    "text": "Whether lawyers, skalds, lawspeakers, sage elders, or other legal specialists, Pleaders can turn the local society’s laws against the enemies of the faction. However, Pleaders can neither Attack nor inflict Counterattack damage on Force Assets."
+  },
+  {
+    "id": "worker-mob",
+    "name": "Worker Mob",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 2"
+    },
+    "attribute": "wealth",
+    "rating": 2,
+    "cost": 4,
+    "hp": 6,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "wealth",
+      "defender": "force",
+      "damage": {
+        "count": 1,
+        "sides": 4,
+        "modifier": 1
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 4,
+      "modifier": 0
+    },
+    "qualities": [],
+    "text": "The roughest, most brutal laborers in service with the faction have been quietly organized to sternly discipline the enemies of the group."
+  },
+  {
+    "id": "ancient-mechanisms",
+    "name": "Ancient Mechanisms",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 3"
+    },
+    "attribute": "wealth",
+    "rating": 3,
+    "cost": 8,
+    "hp": 4,
+    "magic": "medium",
+    "attack": null,
+    "counter": null,
+    "qualities": [
+      "special"
+    ],
+    "text": "Some useful magical mechanism from ages past has been refitted to be useful in local industry. Whenever an Asset in the same location must roll to make a profit, such as Farmers or Manufactory, the faction may roll the die twice and take the better result."
+  },
+  {
+    "id": "arcane-laboratory",
+    "name": "Arcane Laboratory",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 3"
+    },
+    "attribute": "wealth",
+    "rating": 3,
+    "cost": 6,
+    "hp": 4,
+    "magic": "none",
+    "attack": null,
+    "counter": null,
+    "qualities": [
+      "special"
+    ],
+    "text": "The faction’s overall Magic is counted as one step higher for the purposes of creating Assets in the same location as the laboratory. Multiple Arcane Laboratories in the same location can increase the Magic boost by multiple steps."
+  },
+  {
+    "id": "free-company",
+    "name": "Free Company",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 3"
+    },
+    "attribute": "wealth",
+    "rating": 3,
+    "cost": 8,
+    "hp": 6,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "wealth",
+      "defender": "force",
+      "damage": {
+        "count": 2,
+        "sides": 4,
+        "modifier": 2
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "qualities": [
+      "action",
+      "special"
+    ],
+    "text": "Hired mercenaries and professional soldiers, this Asset can, as a free action once per turn, move itself. At the start of each of its owner’s turn, it takes 1 Treasure in upkeep costs; if this is not paid, roll 1d6. On a 1-3 the Asset is lost, on a 4-6 it goes rogue and will move to Attack the most profitable-looking target. This roll is repeated each turn until back pay is paid or the Asset is lost."
+  },
+  {
+    "id": "manufactory",
+    "name": "Manufactory",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 3"
+    },
+    "attribute": "wealth",
+    "rating": 3,
+    "cost": 8,
+    "hp": 4,
+    "magic": "none",
+    "attack": null,
+    "counter": {
+      "count": 1,
+      "sides": 4,
+      "modifier": 0
+    },
+    "qualities": [
+      "action"
+    ],
+    "text": "Once per turn, as a free action, the Asset’s owner may roll 1d6; on a 1, one point of Treasure is lost, on a 2-5, one point is gained, and on a 6, two points are gained. If Treasure is lost and none is available to pay it by the end of the turn, this Asset is lost."
+  },
+  {
+    "id": "healers",
+    "name": "Healers",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 4"
+    },
+    "attribute": "wealth",
+    "rating": 4,
+    "cost": 12,
+    "hp": 8,
+    "magic": "none",
+    "attack": null,
+    "counter": null,
+    "qualities": [
+      "action"
+    ],
+    "text": "Whenever an Asset within one move of the Healers is destroyed by an Attack that used Force against the target, the owner of the Healers may pay half its purchase price in Treasure, rounded up, to instantly restore it with 1 hit point. This cannot be used to repair Bases of Influence."
+  },
+  {
+    "id": "monopoly",
+    "name": "Monopoly",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 4"
+    },
+    "attribute": "wealth",
+    "rating": 4,
+    "cost": 8,
+    "hp": 12,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "wealth",
+      "defender": "wealth",
+      "damage": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "qualities": [
+      "action"
+    ],
+    "text": "Once per turn, as a free action, the Monopoly Asset can target an Asset in the same location; that Asset’s owning faction must either pay the Monopoly’s owner 1 Treasure or lose the targeted Asset."
+  },
+  {
+    "id": "occult-countermeasures",
+    "name": "Occult Countermeasures",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 4"
+    },
+    "attribute": "wealth",
+    "rating": 4,
+    "cost": 10,
+    "hp": 8,
+    "magic": "low",
+    "attack": {
+      "kind": "check",
+      "attacker": "wealth",
+      "defender": "cunning",
+      "damage": {
+        "count": 2,
+        "sides": 10,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 10,
+      "modifier": 0
+    },
+    "qualities": [
+      "special"
+    ],
+    "text": "This asset can only Attack or inflict Counterattack damage on Assets that require at least a Low Magic rating to purchase."
+  },
+  {
+    "id": "usurers",
+    "name": "Usurers",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 4"
+    },
+    "attribute": "wealth",
+    "rating": 4,
+    "cost": 12,
+    "hp": 8,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "wealth",
+      "defender": "wealth",
+      "damage": {
+        "count": 1,
+        "sides": 10,
+        "modifier": 0
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "action"
+    ],
+    "text": "Moneylenders and other proto-bankers ply their trade for the faction. For each unit of Usurers owned by a faction, the Treasure cost of buying Assets may be decreased by 2 Treasure, to a minimum of half its cost. Each time the Usurers are used for this benefit, they suffer 1d4 damage from popular displeasure."
+  },
+  {
+    "id": "mad-genius",
+    "name": "Mad Genius",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 5"
+    },
+    "attribute": "wealth",
+    "rating": 5,
+    "cost": 6,
+    "hp": 2,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "wealth",
+      "defender": "cunning",
+      "damage": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "action"
+    ],
+    "text": "As a free action, once per turn, the Mad Genius may move. As a free action, once per turn, the Mad Genius may be sacrificed to treat the Magic rating in their location as High for the purpose of buying Assets that require such resources. This boost lasts only until the next Asset is purchased in that location."
+  },
+  {
+    "id": "smuggling-fleet",
+    "name": "Smuggling Fleet",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 5"
+    },
+    "attribute": "wealth",
+    "rating": 5,
+    "cost": 12,
+    "hp": 6,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "wealth",
+      "defender": "force",
+      "damage": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "subtle",
+      "action"
+    ],
+    "text": "Once per turn, as a free action, they may move themselves and any one Asset at their current location to any other water-accessible location within one move. Any Asset they move with them gains the Subtle quality until they take some action at the destination."
+  },
+  {
+    "id": "supply-interruption",
+    "name": "Supply Interruption",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 5"
+    },
+    "attribute": "wealth",
+    "rating": 5,
+    "cost": 10,
+    "hp": 8,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "cunning",
+      "defender": "wealth",
+      "damage": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "subtle",
+      "action"
+    ],
+    "text": "As a free action, once per turn, the Asset can make a Cunning vs. Wealth check against an Asset in the same location. On a success, the owning faction must sacrifice Treasure equal to half the target Asset’s purchase cost, or else it is disabled and useless until this price is paid."
+  },
+  {
+    "id": "economic-disruption",
+    "name": "Economic Disruption",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 6"
+    },
+    "attribute": "wealth",
+    "rating": 6,
+    "cost": 25,
+    "hp": 10,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "wealth",
+      "defender": "wealth",
+      "damage": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "subtle",
+      "action"
+    ],
+    "text": "As a free action once per turn, this Asset can move itself without cost."
+  },
+  {
+    "id": "merchant-prince",
+    "name": "Merchant Prince",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 6"
+    },
+    "attribute": "wealth",
+    "rating": 6,
+    "cost": 20,
+    "hp": 10,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "wealth",
+      "defender": "wealth",
+      "damage": {
+        "count": 2,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 8,
+      "modifier": 0
+    },
+    "qualities": [
+      "action"
+    ],
+    "text": "A canny master of trade, the Merchant Prince may be triggered as a free action once per turn before buying a new Asset in the same location; the Merchant Prince takes 1d4 damage and the purchased Asset costs 1d8 Treasure less, down to a minimum of half its normal price."
+  },
+  {
+    "id": "trade-company",
+    "name": "Trade Company",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 6"
+    },
+    "attribute": "wealth",
+    "rating": 6,
+    "cost": 15,
+    "hp": 10,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "wealth",
+      "defender": "wealth",
+      "damage": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 1,
+      "sides": 6,
+      "modifier": 0
+    },
+    "qualities": [
+      "action"
+    ],
+    "text": "Bold traders undertake potentially lucrative- or catastrophic- new business opportunities. As a free action, once per turn, the owner of the Asset may roll accept 1d4 damage done to the Asset in exchange for earning 1d6-1 Treasure points."
+  },
+  {
+    "id": "ancient-workshop",
+    "name": "Ancient Workshop",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 7"
+    },
+    "attribute": "wealth",
+    "rating": 7,
+    "cost": 25,
+    "hp": 16,
+    "magic": "medium",
+    "attack": null,
+    "counter": null,
+    "qualities": [],
+    "text": "A workshop has been refitted with ancient magical tools, allowing prodigies of production, albeit not always safely. As a free action, once per turn, the Ancient Workshop takes 1d6 damage and the owning faction gains 1d6 Treasure."
+  },
+  {
+    "id": "lead-or-silver",
+    "name": "Lead or Silver",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 7"
+    },
+    "attribute": "wealth",
+    "rating": 7,
+    "cost": 20,
+    "hp": 10,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "wealth",
+      "defender": "wealth",
+      "damage": {
+        "count": 2,
+        "sides": 10,
+        "modifier": 0
+      }
+    },
+    "counter": {
+      "count": 2,
+      "sides": 8,
+      "modifier": 0
+    },
+    "qualities": [],
+    "text": "If Lead or Silver’s Attack reduces an enemy Asset to zero hit points, this Asset’s owner may immediately pay half the tar get’s purchase cost to claim it as their own, reviving it with 1 hit point."
+  },
+  {
+    "id": "transport-network",
+    "name": "Transport Network",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 7"
+    },
+    "attribute": "wealth",
+    "rating": 7,
+    "cost": 15,
+    "hp": 5,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "wealth",
+      "defender": "wealth",
+      "damage": {
+        "count": 1,
+        "sides": 12,
+        "modifier": 0
+      }
+    },
+    "counter": null,
+    "qualities": [
+      "action"
+    ],
+    "text": "A vast array of carters, ships, smugglers, and official caravans are under the faction’s control. As a free action the Transport Network can spend 1 Treasure to move any friendly Asset within two moves to any location within one move of either the target or the Transport Network."
+  },
+  {
+    "id": "golden-prosperity",
+    "name": "Golden Prosperity",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 8"
+    },
+    "attribute": "wealth",
+    "rating": 8,
+    "cost": 40,
+    "hp": 30,
+    "magic": "medium",
+    "attack": null,
+    "counter": {
+      "count": 2,
+      "sides": 10,
+      "modifier": 0
+    },
+    "qualities": [],
+    "text": "Each turn, as a free action, the faction gains 1d6 Treasure that can be used to fix damaged Assets as if by the Repair Assets action. Any of this Treasure not spent on such purposes is lost."
+  },
+  {
+    "id": "hired-legion",
+    "name": "Hired Legion",
+    "source": {
+      "file": "6.0 Factions/Wealth Assets.md",
+      "heading": "Wealth 8"
+    },
+    "attribute": "wealth",
+    "rating": 8,
+    "cost": 30,
+    "hp": 20,
+    "magic": "none",
+    "attack": {
+      "kind": "check",
+      "attacker": "wealth",
+      "defender": "force",
+      "damage": {
+        "count": 2,
+        "sides": 10,
+        "modifier": 4
+      }
+    },
+    "counter": {
+      "count": 2,
+      "sides": 10,
+      "modifier": 0
+    },
+    "qualities": [
+      "action"
+    ],
+    "text": "As a free action once per turn, the Hired Legion can move. This faction must be paid 2 Treasure at the start of each turn as upkeep, or else they go rogue as the Free Company Asset does. This Asset cannot be voluntarily sold or disbanded."
+  }
+]
