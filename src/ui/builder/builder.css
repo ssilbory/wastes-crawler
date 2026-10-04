@@ -267,3 +267,24 @@ fieldset.picks legend {
   gap: 6px;
   align-items: baseline;
 }
+
+/* Attribute method choice and the "name your stats" prompt (Phase 16). */
+.choice {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.dialog {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  background: var(--panel);
+}
+
+.dialog p {
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+}

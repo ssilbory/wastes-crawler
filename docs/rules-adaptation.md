@@ -10,6 +10,8 @@ WWN SRD is the source of truth for every mechanic it covers; this document only 
 
 **Progression past 10th level (house rule):** classes keep following their normal progression, gaining hit points, attack bonus, foci, and the like at the same per-level rate as before 10th, without repeating the early bump of levels 1 and 2. Concretely, every class and casting table cycles the gains of levels 3 to 10: level 11 gains what level 3 gained over level 2, level 18 gains what level 10 gained over level 9, and level 19 starts the cycle again. Maximum spell level stays at 5. XP follows the SRD Fast table to 10th level (93 XP); each later step is 3 larger than the one before, so 11th level is at 117 XP and 12th at 144. Save targets never drop below 2+. See docs/decisions/0001-high-level-progression.md.
 
+**Generating attributes (vendor/wwn-srd/1.0 Character Creation/1.1.0 Attributes.md, 1.1.1; Sam's call, Phase 16):** the player picks the standard array (14, 12, 11, 10, 9, 7, assigned freely) or rolls 3d6 in order and may set one rolled score to 14. Three rerolls are free. A fourth asks "Why don't you just tell me the stats you want?" and lets the player name each score, 3 to 18, starting from the last roll. People modifiers apply afterwards as usual.
+
 **Peoples:** every PC belongs to one of the setting's peoples, which shapes attributes, foci, and gear.
 
 | Rule            | Mechanic                                                                                                                                                                                                                                                                                                           |
