@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 4,
+  "id": "char-40aca9044a9dfe62",
+  "name": "Lirael",
+  "goal": "",
+  "people": "elf",
+  "background": "warden",
+  "attributes": {
+    "base": {
+      "str": 10,
+      "dex": 14,
+      "con": 12,
+      "int": 11,
+      "wis": 9,
+      "cha": 7
+    },
+    "people": {
+      "str": -2,
+      "dex": 2,
+      "cha": 1
+    },
+    "background": {}
+  },
+  "foci": [
+    {
+      "id": "elder-sight",
+      "level": 1
+    },
+    {
+      "id": "deadeye",
+      "level": 1
+    },
+    {
+      "id": "cultured",
+      "level": 1
+    },
+    {
+      "id": "gifted-chirurgeon",
+      "level": 1
+    },
+    {
+      "id": "well-met",
+      "level": 1
+    }
+  ],
+  "arts": [],
+  "spells": {
+    "known": [],
+    "prepared": []
+  },
+  "inventory": [
+    {
+      "id": "bow-small",
+      "quantity": 1,
+      "location": "readied"
+    },
+    {
+      "id": "arrows-20",
+      "quantity": 1,
+      "location": "readied"
+    },
+    {
+      "id": "sword-short",
+      "quantity": 1,
+      "location": "readied"
+    },
+    {
+      "id": "linothorax",
+      "quantity": 1,
+      "location": "worn"
+    },
+    {
+      "id": "wilderness-travel-gear",
+      "quantity": 1,
+      "location": "stowed"
+    }
+  ],
+  "crowns": 10,
+  "skills": {
+    "shoot": 1,
+    "sneak": 0,
+    "heal": 1,
+    "notice": 1,
+    "connect": 0
+  },
+  "classes": {
+    "current": "full-expert",
+    "levels": {
+      "full-expert": 1
+    }
+  },
+  "hp": {
+    "max": 2,
+    "current": 2
+  },
+  "xp": 0,
+  "strain": {
+    "value": 0,
+    "broken": false
+  }
+}

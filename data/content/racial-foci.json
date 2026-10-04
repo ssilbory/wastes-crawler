@@ -1,0 +1,347 @@
+[
+  {
+    "id": "warren-born",
+    "name": "Warren-born",
+    "description": "You grew up in the cramped dark of the goblin warrens, where the quiet and the small survive.",
+    "levels": [
+      {
+        "level": 1,
+        "text": "Gain Sneak as a bonus skill. You see in darkness as if it were dim light, and you can squeeze through any gap or tunnel a goblin could fit through without a skill check."
+      },
+      {
+        "level": 2,
+        "text": "Once per scene, while in darkness or dim light, you can take a Move action as an On Turn action to slip out of sight. Foes must beat your Dex/Sneak with a Wis/Notice check to keep track of you."
+      }
+    ],
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "sneak"
+    }
+  },
+  {
+    "id": "scrounger",
+    "name": "Scrounger",
+    "description": "Nothing in the wastes is so broken that a goblin can’t find a use for it, or a meal in it.",
+    "levels": [
+      {
+        "level": 1,
+        "text": "Gain Survive as a bonus skill. When the party camps outside a town, roll Wis/Survive against difficulty 8; on a success, the party’s rations die is not rolled that day."
+      },
+      {
+        "level": 2,
+        "text": "Once per day, you can turn up one piece of cheap, common gear from the ruins and refuse around you, if such a thing could plausibly be found there."
+      }
+    ],
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "survive"
+    }
+  },
+  {
+    "id": "war-bred",
+    "name": "War-bred",
+    "description": "The Dark Lord bred your ancestors for the battle line, and it still shows.",
+    "levels": [
+      {
+        "level": 1,
+        "text": "Gain Stab or Punch as a bonus skill. Your melee attacks that do Shock do 1 more point of Shock damage."
+      },
+      {
+        "level": 2,
+        "text": "Once per scene, when you reduce a foe to zero hit points with a melee attack, every ally of that foe who sees it must make a Morale check."
+      }
+    ],
+    "bonusSkill": {
+      "kind": "one-of",
+      "skills": ["stab", "punch"]
+    },
+    "effects": [
+      {
+        "kind": "shock-bonus",
+        "level": 1,
+        "amount": 1
+      }
+    ]
+  },
+  {
+    "id": "iron-gut",
+    "name": "Iron Gut",
+    "description": "Orcs eat what others won’t and shrug off what would lay others low.",
+    "levels": [
+      {
+        "level": 1,
+        "text": "Gain Exert as a bonus skill. Reroll failed Physical saves against poison and disease, and you don’t become Hungry until you’ve gone two days without food."
+      },
+      {
+        "level": 2,
+        "text": "Once per day, when you would gain System Strain from any source, you gain one point less."
+      }
+    ],
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "exert"
+    }
+  },
+  {
+    "id": "elder-sight",
+    "name": "Elder Sight",
+    "description": "Elven eyes were made for a brighter age, and they still see what others miss.",
+    "levels": [
+      {
+        "level": 1,
+        "text": "Gain Notice as a bonus skill. You see by starlight as well as by day, and you are immune to magical sleep."
+      },
+      {
+        "level": 2,
+        "text": "You automatically notice any secret door or concealed passage you pass within a few feet of."
+      }
+    ],
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "notice"
+    }
+  },
+  {
+    "id": "four-legged",
+    "name": "Four-legged",
+    "description": "A centaur’s horse half is strong, sure, and very large.",
+    "levels": [
+      {
+        "level": 1,
+        "text": "Gain Exert as a bonus skill. You can carry Stowed items up to your Strength score plus half of it, rounded down. You can’t climb ropes or ladders, and passages too narrow for you may stop you where others go through."
+      },
+      {
+        "level": 2,
+        "text": "You can carry a willing or helpless person of standard size or smaller on your back without counting them against your encumbrance, and still fight normally."
+      }
+    ],
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "exert"
+    },
+    "effects": [
+      {
+        "kind": "extra-stowed-half-strength",
+        "level": 1
+      }
+    ]
+  },
+  {
+    "id": "fleet",
+    "name": "Fleet",
+    "description": "Deer-blooded centaurs outrun what they can’t outfight.",
+    "levels": [
+      {
+        "level": 1,
+        "text": "Gain Notice as a bonus skill. Your Move actions cover twice the usual distance, and you gain +2 on skill checks to flee or pursue."
+      },
+      {
+        "level": 2,
+        "text": "Once per scene, you can take a Move action as an Instant action."
+      }
+    ],
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "notice"
+    }
+  },
+  {
+    "id": "sure-footed",
+    "name": "Sure-footed",
+    "description": "Goat-blooded centaurs go where no other hooves can.",
+    "levels": [
+      {
+        "level": 1,
+        "text": "Gain Survive as a bonus skill. Steep, broken, or rocky ground doesn’t slow you, and you can’t be knocked prone."
+      },
+      {
+        "level": 2,
+        "text": "Once per day, reroll a failed Physical save."
+      }
+    ],
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "survive"
+    }
+  },
+  {
+    "id": "pounce",
+    "name": "Pounce",
+    "description": "Lion-blooded centaurs and predator-stock beastmen strike hardest at the end of a charge.",
+    "levels": [
+      {
+        "level": 1,
+        "text": "Gain Stab or Punch as a bonus skill. When you take a Move action and make a melee attack in the same round, the attack gets +1 to hit and does 1 more point of Shock damage."
+      },
+      {
+        "level": 2,
+        "text": "A foe you hit with that attack must make a Physical save or be knocked prone."
+      }
+    ],
+    "bonusSkill": {
+      "kind": "one-of",
+      "skills": ["stab", "punch"]
+    }
+  },
+  {
+    "id": "bulwark",
+    "name": "Bulwark",
+    "description": "Bison-blooded centaurs are walls of muscle that do not move unless they choose to.",
+    "levels": [
+      {
+        "level": 1,
+        "text": "Gain Punch as a bonus skill. In any round you haven’t moved, you gain +2 AC against melee attacks and can’t be pushed or knocked prone."
+      },
+      {
+        "level": 2,
+        "text": "Once per scene, as an On Turn action, you can Screen Ally for an adjacent ally without a skill check."
+      }
+    ],
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "punch"
+    }
+  },
+  {
+    "id": "horned",
+    "name": "Horned",
+    "description": "A beastman’s horns are a weapon no one can take away.",
+    "levels": [
+      {
+        "level": 1,
+        "text": "Gain Punch as a bonus skill. Your horns are a Ready natural melee weapon doing 1d6 damage with Shock 1 point against AC 13 or less; they can’t be disarmed."
+      },
+      {
+        "level": 2,
+        "text": "Once per scene, when you hit with your horns after a Move action that round, the foe must make a Physical save or be knocked prone."
+      }
+    ],
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "punch"
+    },
+    "effects": [
+      {
+        "kind": "natural-weapon",
+        "level": 1,
+        "weapon": {
+          "id": "horns",
+          "name": "Horns",
+          "damage": {
+            "count": 1,
+            "sides": 6,
+            "modifier": 0
+          },
+          "shock": {
+            "damage": 1,
+            "maxAc": 13
+          },
+          "attributes": ["str", "dex"],
+          "skill": "punch"
+        }
+      }
+    ]
+  },
+  {
+    "id": "feral-hardiness",
+    "name": "Feral Hardiness",
+    "description": "Beastmen live where nothing else will, and it has made them hard to kill.",
+    "levels": [
+      {
+        "level": 1,
+        "text": "Gain Survive as a bonus skill. You can go a day without food or water before becoming Hungry, and you reroll failed saves against disease."
+      },
+      {
+        "level": 2,
+        "text": "Your maximum System Strain is your Constitution score plus 2."
+      }
+    ],
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "survive"
+    }
+  },
+  {
+    "id": "hidden-lore",
+    "name": "Hidden Lore",
+    "description": "Gnomes hid their libraries through the war, and they still remember what everyone else forgot.",
+    "levels": [
+      {
+        "level": 1,
+        "text": "Gain Know as a bonus skill. After an hour’s study you learn what a magic item does, though not how to command it, and you can read any writing that survived the war."
+      },
+      {
+        "level": 2,
+        "text": "Once per scene, reroll a failed skill check that uses Intelligence."
+      }
+    ],
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "know"
+    }
+  },
+  {
+    "id": "herd-loyal",
+    "name": "Herd-Loyal",
+    "description": "Herd beastmen were bred for loyalty, and loyalty answers loyalty.",
+    "levels": [
+      {
+        "level": 1,
+        "text": "Gain Lead as a bonus skill. Hirelings travelling with the party get +1 to their Morale."
+      },
+      {
+        "level": 2,
+        "text": "Hirelings travelling with the party get +2 to their Morale instead."
+      }
+    ],
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "lead"
+    },
+    "effects": [
+      {
+        "kind": "hireling-morale",
+        "level": 1,
+        "amount": 1
+      },
+      {
+        "kind": "hireling-morale",
+        "level": 2,
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "pack-sense",
+    "name": "Pack Sense",
+    "description": "Pack-stock beastmen hunt together and always know where the others are.",
+    "levels": [
+      {
+        "level": 1,
+        "text": "Gain Notice as a bonus skill. Your side gets +1 to initiative rolls while you are conscious."
+      },
+      {
+        "level": 2,
+        "text": "Your side gets +2 to initiative rolls instead."
+      }
+    ],
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "notice"
+    },
+    "effects": [
+      {
+        "kind": "initiative",
+        "level": 1,
+        "bonus": 1,
+        "actsFirst": false
+      },
+      {
+        "kind": "initiative",
+        "level": 2,
+        "bonus": 2,
+        "actsFirst": false
+      }
+    ]
+  }
+]

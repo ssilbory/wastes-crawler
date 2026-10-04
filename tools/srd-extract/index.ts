@@ -2,10 +2,11 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { z } from 'zod';
 import { SrdSchemas, type SrdData, type SrdFile } from '../../src/data/schemas/index.ts';
-import { extractClasses } from './extractors/classes.ts';
+import { extractClasses, extractDualCasting } from './extractors/classes.ts';
 import {
   extractArmor,
   extractGear,
+  extractGearBundles,
   extractWeapons,
   extractWeaponTraits,
 } from './extractors/equipment.ts';
@@ -32,11 +33,12 @@ const raw: SrdData = {
   foci: extractFoci(reader),
   classes: classes.classes,
   progressions: classes.progressions,
-  'casting-progressions': classes.casting,
+  'casting-progressions': [...classes.casting, extractDualCasting(reader)],
   'weapon-traits': traits,
   weapons: extractWeapons(reader, traits),
   armor: extractArmor(reader),
   gear: extractGear(reader),
+  'gear-bundles': extractGearBundles(reader),
   spells: extractSpells(reader),
   arts: extractArts(reader),
   monsters: extractMonsters(reader),

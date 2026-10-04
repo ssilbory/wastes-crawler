@@ -1,0 +1,41 @@
+{
+  "clock": {
+    "segments": 6,
+    "perTier": 2,
+    "knockback": {
+      "quests": ["cull-records", "mire-slavers"],
+      "captives": ["held-crafter"]
+    }
+  },
+  "notes": {
+    "sets": [
+      {
+        "id": "vats-notes",
+        "name": "the vat-master's notes"
+      },
+      {
+        "id": "grisk-notes",
+        "name": "Grisk's crafter's notes"
+      }
+    ],
+    "sell": 150,
+    "keep": 30,
+    "giver": "elder-gorvash"
+  },
+  "seal": {
+    "authority": "seal-of-command",
+    "quest": "warlord-falls",
+    "giver": "elder-gorvash",
+    "give": 300,
+    "destroyXp": 3,
+    "epilogues": {
+      "destroy": "The seal cracks in Cinderhold's forge fire. No one will command the bound again: not the party, not a warlord, not the Dark Lord himself if he returns. The bound go on keeping orders twenty years old.",
+      "give": "Elder Gorvash takes the seal and swears it will never give an order. The council locks it away, and every warlord in the Dark Lands now knows where it is.",
+      "keep": "The party keeps the seal. Every bound orc and goblin it meets stands aside at a word, and every faction in the Dark Lands starts to wonder what the party will do with them."
+    },
+    "notesEpilogue": {
+      "none": "No crafter's notes survive in safe hands.",
+      "some": "In Cinderhold's strongroom lie {n} sets of crafter's notes, and with them the only future the free beastmen have."
+    }
+  }
+}

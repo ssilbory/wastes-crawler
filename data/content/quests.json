@@ -1,0 +1,601 @@
+[
+  {
+    "id": "bandit-camp",
+    "name": "The Raider Camp",
+    "giver": "reeve-halda",
+    "summary": "Human raiders from the coast have made camp in the forest south of the road. Break them before they hit the farms.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 1
+    },
+    "deadlineDays": 10,
+    "objectives": [
+      {
+        "kind": "slay",
+        "region": "borderlands",
+        "hex": {
+          "col": 6,
+          "row": 12
+        },
+        "enemies": [
+          ["human-raider", "human-raider", "human-raider", "paladin", "paladin", "paladin"],
+          ["alliance-ranger"]
+        ],
+        "text": "Break the raider camp in the forest at 6,12."
+      }
+    ],
+    "reward": {
+      "crowns": 60,
+      "xp": 3,
+      "loot": []
+    }
+  },
+  {
+    "id": "surveyor",
+    "name": "The Engineer",
+    "giver": "reeve-halda",
+    "summary": "A gnome engineer who can restart the old pumps needs safe conduct east along the road.",
+    "prerequisites": {
+      "quests": ["bandit-camp"],
+      "minLevel": 1
+    },
+    "objectives": [
+      {
+        "kind": "escort",
+        "name": "Engineer Tamsin",
+        "monster": "peaceful-human",
+        "to": "eastmarch",
+        "text": "Bring Engineer Tamsin safely to Eastmarch."
+      }
+    ],
+    "reward": {
+      "crowns": 50,
+      "xp": 2,
+      "loot": []
+    }
+  },
+  {
+    "id": "letters",
+    "name": "Letters for Highcairn",
+    "giver": "factor-imre",
+    "summary": "Carry sealed letters to the warden at Highcairn, past the raiders on the road.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 1
+    },
+    "deadlineDays": 12,
+    "objectives": [
+      {
+        "kind": "deliver",
+        "item": "a satchel of sealed letters",
+        "to": "highcairn",
+        "text": "Deliver the letters to Highcairn."
+      }
+    ],
+    "reward": {
+      "crowns": 40,
+      "xp": 2,
+      "loot": []
+    }
+  },
+  {
+    "id": "watchtower",
+    "name": "The Old Watchtower",
+    "giver": "warden-osk",
+    "summary": "A beastman band has moved into the ruined watchtower in the hills. Find them and deal with them.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 2
+    },
+    "objectives": [
+      {
+        "kind": "scout",
+        "region": "borderlands",
+        "hex": {
+          "col": 12,
+          "row": 2
+        },
+        "text": "Find the old watchtower in the hills at 12,2."
+      },
+      {
+        "kind": "slay",
+        "region": "borderlands",
+        "hex": {
+          "col": 12,
+          "row": 2
+        },
+        "enemies": [
+          [
+            "beastman-trooper",
+            "beastman-trooper",
+            "predator-beastman",
+            "predator-beastman",
+            "predator-beastman",
+            "predator-beastman",
+            "predator-beastman"
+          ],
+          ["tribal-shaman"]
+        ],
+        "text": "Drive the beastmen out of the watchtower."
+      }
+    ],
+    "reward": {
+      "crowns": 80,
+      "xp": 3,
+      "loot": [
+        {
+          "count": 2,
+          "sides": 6
+        }
+      ],
+      "countersigns": ["ash-road-patrol"]
+    }
+  },
+  {
+    "id": "barrow-torc",
+    "name": "The Barrow-King's Torc",
+    "giver": "reeve-halda",
+    "summary": "Something guards the Old Barrow's lower hall, and the barrow-king's torc lies hidden above it. Bring the torc back.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 1
+    },
+    "objectives": [
+      {
+        "kind": "reach",
+        "dungeon": "old-barrow",
+        "level": "barrow-lower",
+        "text": "Go down to the lower barrow."
+      },
+      {
+        "kind": "guardian",
+        "dungeon": "old-barrow",
+        "level": "barrow-lower",
+        "at": {
+          "x": 7,
+          "y": 3
+        },
+        "enemies": [["barrow-golem", "barrow-golem", "barrow-golem", "barrow-golem"]],
+        "text": "Destroy the golems guarding the east hall of the lower barrow."
+      },
+      {
+        "kind": "retrieve",
+        "dungeon": "old-barrow",
+        "level": "barrow-upper",
+        "at": {
+          "x": 5,
+          "y": 0
+        },
+        "item": "the barrow-king's torc",
+        "text": "Find the barrow-king's torc in a hidden room of the upper barrow."
+      }
+    ],
+    "reward": {
+      "crowns": 80,
+      "xp": 3,
+      "loot": []
+    }
+  },
+  {
+    "id": "corpse-road",
+    "name": "The Corpse-Road",
+    "giver": "necromancer-ysolde",
+    "summary": "A hooded mourner must reach the mortuary at Eastmarch with what she carries. See her there safely, and the crypt will give back one of your dead.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 1
+    },
+    "deadlineDays": 14,
+    "objectives": [
+      {
+        "kind": "escort",
+        "name": "a hooded mourner",
+        "monster": "peaceful-human",
+        "to": "eastmarch",
+        "text": "Bring the hooded mourner safely to Eastmarch."
+      }
+    ],
+    "reward": {
+      "crowns": 0,
+      "xp": 0,
+      "loot": [],
+      "raise": true
+    }
+  },
+  {
+    "id": "barrow-bones",
+    "name": "The Barrow-Bones",
+    "giver": "necromancer-ysolde",
+    "summary": "Ysolde wants a finger-bone from the heaped bones of the lower barrow. Bring it to her, and the crypt will give back one of your dead.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 1
+    },
+    "deadlineDays": 10,
+    "objectives": [
+      {
+        "kind": "retrieve",
+        "dungeon": "old-barrow",
+        "level": "barrow-lower",
+        "at": {
+          "x": 2,
+          "y": 1
+        },
+        "item": "a barrow finger-bone",
+        "text": "Take a finger-bone from the heaped bones of the lower barrow."
+      }
+    ],
+    "reward": {
+      "crowns": 0,
+      "xp": 0,
+      "loot": [],
+      "raise": true
+    }
+  },
+  {
+    "id": "pilgrimage-highcairn",
+    "name": "The Pilgrimage to the High Cairn",
+    "giver": "brother-aldo",
+    "summary": "A pilgrim of the god of death must reach the burial cairns at Highcairn. See them there safely, and the mortuary will send back one of your dead.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 1
+    },
+    "deadlineDays": 14,
+    "objectives": [
+      {
+        "kind": "escort",
+        "name": "a death-pilgrim",
+        "monster": "peaceful-human",
+        "to": "highcairn",
+        "text": "Bring the death-pilgrim safely to Highcairn."
+      }
+    ],
+    "reward": {
+      "crowns": 0,
+      "xp": 0,
+      "loot": [],
+      "raise": true
+    }
+  },
+  {
+    "id": "corpse-thieves",
+    "name": "The Corpse-Thieves",
+    "giver": "brother-aldo",
+    "summary": "Corpse-thieves are robbing the god's dead from the roadside graves south-east of town. Stop them, and the mortuary will send back one of your dead.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 1
+    },
+    "deadlineDays": 10,
+    "objectives": [
+      {
+        "kind": "slay",
+        "region": "borderlands",
+        "hex": {
+          "col": 21,
+          "row": 10
+        },
+        "enemies": [
+          ["thug-or-militia", "thug-or-militia", "thug-or-militia", "paladin", "paladin", "paladin"]
+        ],
+        "text": "Stop the corpse-thieves at the graves at 21,10."
+      }
+    ],
+    "reward": {
+      "crowns": 0,
+      "xp": 0,
+      "loot": [],
+      "raise": true
+    }
+  },
+  {
+    "id": "pit-bones",
+    "name": "Bones for the Pits",
+    "giver": "necromancer-vashti",
+    "summary": "Vashti wants a cull horror's skull from the Gallows Wood. Bring it, and the crypt will give back one of your dead.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 1
+    },
+    "deadlineDays": 10,
+    "objectives": [
+      {
+        "kind": "slay",
+        "region": "dark-lands",
+        "hex": {
+          "col": 4,
+          "row": 16
+        },
+        "enemies": [
+          [
+            "cull-horror",
+            "predator-beastman",
+            "predator-beastman",
+            "predator-beastman",
+            "predator-beastman"
+          ]
+        ],
+        "text": "Kill the cull horror in the Gallows Wood at 4,16."
+      }
+    ],
+    "reward": {
+      "crowns": 0,
+      "xp": 0,
+      "loot": [],
+      "raise": true
+    }
+  },
+  {
+    "id": "mourners-road",
+    "name": "The Mourners' Road",
+    "giver": "mother-skrell",
+    "summary": "A goblin mourner must reach Mirewatch to bury her son. See her there safely, and the mortuary will send back one of your dead.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 1
+    },
+    "deadlineDays": 14,
+    "objectives": [
+      {
+        "kind": "escort",
+        "name": "a goblin mourner",
+        "monster": "peaceful-human",
+        "to": "mirewatch",
+        "text": "Bring the mourner safely to Mirewatch."
+      }
+    ],
+    "reward": {
+      "crowns": 0,
+      "xp": 0,
+      "loot": [],
+      "raise": true
+    }
+  },
+  {
+    "id": "ashgate-rolls",
+    "name": "The Ashgate Rolls",
+    "giver": "elder-gorvash",
+    "summary": "Ashgate Keep, out in the Ruinfields at 22,12, still flies the Dark Lord's banner, and its bound garrison still holds it. Bring back the keep's muster rolls: Gorvash wants to know whose orders it was built to follow.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 1
+    },
+    "objectives": [
+      {
+        "kind": "reach",
+        "dungeon": "ashgate-keep",
+        "level": "ashgate-vaults",
+        "text": "Get down into Ashgate's undervaults."
+      },
+      {
+        "kind": "retrieve",
+        "dungeon": "ashgate-keep",
+        "level": "ashgate-vaults",
+        "at": {
+          "x": 0,
+          "y": 0
+        },
+        "item": "the Ashgate muster rolls",
+        "text": "Take the muster rolls from the keep's archive."
+      }
+    ],
+    "reward": {
+      "crowns": 100,
+      "xp": 3,
+      "loot": [
+        {
+          "count": 1,
+          "sides": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "cull-records",
+    "name": "The Cull Records",
+    "giver": "elder-gorvash",
+    "summary": "The rolls show Ashgate's beastmen came from the Mire Vats at 17,22, south of Mirewatch, along with the crafters' cull records. Whoever kept the vats kept count of every orc and goblin breed. Gorvash wants that count, and who it answered to.",
+    "prerequisites": {
+      "quests": ["ashgate-rolls"],
+      "minLevel": 2
+    },
+    "objectives": [
+      {
+        "kind": "reach",
+        "dungeon": "mire-vats",
+        "level": "vats-cull",
+        "text": "Go down to the cull rooms under the Mire Vats."
+      },
+      {
+        "kind": "guardian",
+        "dungeon": "mire-vats",
+        "level": "vats-cull",
+        "at": {
+          "x": 5,
+          "y": 2
+        },
+        "enemies": [["cull-horror", "cull-horror", "cull-horror", "cull-horror", "cull-horror"]],
+        "text": "Kill the cull horrors that still keep the cull pit."
+      },
+      {
+        "kind": "retrieve",
+        "dungeon": "mire-vats",
+        "level": "vats-cull",
+        "at": {
+          "x": 7,
+          "y": 7
+        },
+        "item": "the cull records",
+        "text": "Take the cull records from the room behind the pit."
+      }
+    ],
+    "reward": {
+      "crowns": 150,
+      "xp": 4,
+      "loot": [
+        {
+          "count": 2,
+          "sides": 8
+        }
+      ]
+    }
+  },
+  {
+    "id": "ash-road-relief",
+    "name": "Relief for the Ash Road",
+    "giver": "foreman-tikka",
+    "summary": "The old goblin patrols on the hill roads stop every cart. Tikka's scribes have forged relief orders in the old style; carry them to Lanternfall, where the patrols report, and the patrols can finally stand down.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 1
+    },
+    "objectives": [
+      {
+        "kind": "deliver",
+        "item": "sealed relief orders",
+        "to": "lanternfall",
+        "text": "Carry the relief orders to Lanternfall."
+      }
+    ],
+    "reward": {
+      "crowns": 40,
+      "xp": 2,
+      "loot": []
+    }
+  },
+  {
+    "id": "mire-slavers",
+    "name": "Slavers in the Mire",
+    "giver": "foreman-tikka",
+    "summary": "Slavers with beastman muscle have camped in the Mire at 15,21 and are taking road crews. Break the camp.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 2
+    },
+    "objectives": [
+      {
+        "kind": "slay",
+        "region": "dark-lands",
+        "hex": {
+          "col": 15,
+          "row": 21
+        },
+        "enemies": [
+          [
+            "beastman-trooper",
+            "beastman-trooper",
+            "predator-beastman",
+            "predator-beastman",
+            "predator-beastman",
+            "predator-beastman",
+            "predator-beastman",
+            "predator-beastman"
+          ],
+          ["slaver", "slaver", "flesh-crafter"]
+        ],
+        "text": "Break the slavers' camp in the Mire at 15,21."
+      }
+    ],
+    "reward": {
+      "crowns": 70,
+      "xp": 3,
+      "loot": [
+        {
+          "count": 1,
+          "sides": 6
+        }
+      ]
+    }
+  },
+  {
+    "id": "lieutenants-seal",
+    "name": "The Lieutenant's Seal",
+    "giver": "elder-gorvash",
+    "summary": "The cull records answered to Lieutenant Vael, whose war bunker is in the Ash Mountains at 20,2. Vael was trusted with the Seal of Command. Gorvash wants it out of that bunker before a warlord gets there first.",
+    "prerequisites": {
+      "quests": ["cull-records"],
+      "minLevel": 3
+    },
+    "objectives": [
+      {
+        "kind": "reach",
+        "dungeon": "vaels-bunker",
+        "level": "bunker-command",
+        "text": "Get down to the bunker's command deck."
+      },
+      {
+        "kind": "retrieve",
+        "dungeon": "vaels-bunker",
+        "level": "bunker-command",
+        "at": {
+          "x": 0,
+          "y": 0
+        },
+        "item": "the Seal of Command",
+        "text": "Take the Seal of Command from Vael's vault."
+      }
+    ],
+    "reward": {
+      "crowns": 200,
+      "xp": 4,
+      "loot": [
+        {
+          "count": 2,
+          "sides": 10
+        }
+      ]
+    }
+  },
+  {
+    "id": "warlord-falls",
+    "name": "The Warlord Falls",
+    "giver": "elder-gorvash",
+    "summary": "Warlord Grisk holds a stockade in Gallows Wood at 2,21, a crafter to breed his army, and he has heard about the seal. Strike before his herds give birth.",
+    "prerequisites": {
+      "quests": ["lieutenants-seal"],
+      "minLevel": 4
+    },
+    "objectives": [
+      {
+        "kind": "reach",
+        "dungeon": "grisks-hold",
+        "level": "hold-hall",
+        "text": "Fight down to the warlord's hall."
+      },
+      {
+        "kind": "guardian",
+        "dungeon": "grisks-hold",
+        "level": "hold-hall",
+        "at": {
+          "x": 3,
+          "y": 1
+        },
+        "enemies": [
+          [
+            "beastman-trooper",
+            "beastman-trooper",
+            "war-engine",
+            "war-engine",
+            "predator-beastman",
+            "predator-beastman",
+            "war-engine"
+          ],
+          ["warlord"]
+        ],
+        "reinforce": "beastman-trooper",
+        "text": "Kill Warlord Grisk on his throne."
+      }
+    ],
+    "reward": {
+      "crowns": 300,
+      "xp": 6,
+      "loot": [
+        {
+          "count": 3,
+          "sides": 10
+        }
+      ]
+    }
+  }
+]

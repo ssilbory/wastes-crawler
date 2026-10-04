@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import { DiceSchema, recordBase } from './common.ts';
+import { DiceSchema, IdSchema, recordBase } from './common.ts';
 
-export const MonsterSchema = z.strictObject({
-  ...recordBase,
+/** The SRD 5.1.0 stat line every monster shares. */
+const stats = {
   category: z.string().min(1),
   hitDice: z.int().min(1),
   ac: z.int().min(10),
@@ -31,5 +31,34 @@ export const MonsterSchema = z.strictObject({
   instinct: z.int().min(0).max(10),
   skill: z.int(),
   save: z.int().min(2).max(20),
+};
+
+/** An SRD monster, extracted from vendor/wwn-srd. */
+export const MonsterSchema = z.strictObject({ ...recordBase, ...stats });
+
+/** A monster authored for the setting in the SRD's shape (data/content/monsters.json). */
+export const AuthoredMonsterSchema = z.strictObject({
+  id: IdSchema,
+  name: z.string().min(1),
+  ...stats,
+  description: z.string().min(1),
 });
-export type Monster = z.infer<typeof MonsterSchema>;
+export type AuthoredMonster = z.infer<typeof AuthoredMonsterSchema>;
+
+export type SrdMonster = z.infer<typeof MonsterSchema>;
+
+/** What the engine needs of any monster, SRD or authored. */
+export type Monster = Omit<z.infer<typeof MonsterSchema>, 'source'>;
+
+/**
+ * A setting monster on an existing stat line (Sam's call: reskin, so combat balance and the sims
+ * hold): a new name and description over an SRD or authored monster's statistics and combat entry.
+ */
+export const SettingMonsterSchema = z.strictObject({
+  id: IdSchema,
+  name: z.string().min(1),
+  /** The monster whose statistics, combat entry, loot, and component drops it shares. */
+  base: IdSchema,
+  description: z.string().min(1),
+});
+export type SettingMonster = z.infer<typeof SettingMonsterSchema>;

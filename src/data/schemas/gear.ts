@@ -14,3 +14,11 @@ export const GearSchema = z.strictObject({
   bundlesOfThree: z.boolean(),
 });
 export type Gear = z.infer<typeof GearSchema>;
+
+/** SRD 3.2.1: all the non-weapon, non-armor gear a role needs, as one item. */
+export const GearBundleSchema = z.strictObject({
+  ...recordBase,
+  cost: CostSchema,
+  encumbrance: z.int().min(0),
+});
+export type GearBundle = z.infer<typeof GearBundleSchema>;

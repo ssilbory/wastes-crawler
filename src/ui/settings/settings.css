@@ -1,0 +1,22 @@
+.settings {
+  max-width: 48rem;
+  margin: 1rem auto;
+  padding: 0 1rem;
+}
+
+.settings table td {
+  padding: 0.2rem 0.5rem;
+}
+
+.settings table th {
+  text-align: left;
+  padding-right: 1rem;
+}
+
+html[data-text-size='small'] {
+  font-size: 14px;
+}
+
+html[data-text-size='large'] {
+  font-size: 19px;
+}

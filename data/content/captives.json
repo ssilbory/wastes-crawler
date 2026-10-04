@@ -1,0 +1,65 @@
+[
+  {
+    "id": "merchant",
+    "name": "a captured merchant",
+    "monster": "peaceful-human",
+    "destination": "eastmarch",
+    "reward": 60,
+    "xp": 1,
+    "text": "A bound merchant sits among them."
+  },
+  {
+    "id": "pilgrim",
+    "name": "a captured pilgrim",
+    "monster": "peaceful-human",
+    "destination": "westhold",
+    "reward": 40,
+    "xp": 1,
+    "text": "A pilgrim is tied to a tree behind them."
+  },
+  {
+    "id": "scholar",
+    "name": "a captured scholar",
+    "monster": "peaceful-human",
+    "destination": "highcairn",
+    "reward": 80,
+    "xp": 1,
+    "text": "A scholar in torn robes is held at spear-point."
+  },
+  {
+    "id": "grave-digger",
+    "name": "a captured grave-digger",
+    "monster": "peaceful-human",
+    "destination": "westhold",
+    "reward": 30,
+    "xp": 1,
+    "text": "A grave-digger is bound and gagged in the corner."
+  },
+  {
+    "id": "chained-deserter",
+    "name": "a chained beastman deserter",
+    "monster": "peaceful-human",
+    "destination": "cinderhold",
+    "reward": 40,
+    "xp": 1,
+    "text": "A chained beastman deserter is with them."
+  },
+  {
+    "id": "old-breed-goblin",
+    "name": "an old-breed goblin",
+    "monster": "peaceful-human",
+    "destination": "gutterwick",
+    "reward": 50,
+    "xp": 1,
+    "text": "An old-breed goblin is bound between them."
+  },
+  {
+    "id": "held-crafter",
+    "name": "the warlord's flesh crafter",
+    "monster": "peaceful-human",
+    "destination": "gutterwick",
+    "reward": 60,
+    "xp": 2,
+    "text": "A flesh crafter in chains works among them."
+  }
+]

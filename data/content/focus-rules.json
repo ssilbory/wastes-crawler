@@ -1,0 +1,435 @@
+[
+  {
+    "id": "alert",
+    "availability": "pickable",
+    "category": "both",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "notice"
+    },
+    "effects": [
+      {
+        "kind": "initiative",
+        "level": 1,
+        "bonus": 1,
+        "actsFirst": false
+      },
+      {
+        "kind": "initiative",
+        "level": 2,
+        "bonus": 0,
+        "actsFirst": true
+      }
+    ]
+  },
+  {
+    "id": "armored-magic",
+    "availability": "pickable",
+    "category": "non-combat",
+    "requiresCaster": true,
+    "effects": [
+      {
+        "kind": "armored-casting",
+        "level": 1,
+        "maxEncumbrance": 2,
+        "shields": true
+      },
+      {
+        "kind": "armored-casting",
+        "level": 2,
+        "maxEncumbrance": null,
+        "shields": true
+      }
+    ]
+  },
+  {
+    "id": "armsmaster",
+    "availability": "pickable",
+    "category": "combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "stab"
+    },
+    "effects": [
+      {
+        "kind": "damage-adds-skill",
+        "level": 1,
+        "skill": "stab",
+        "modes": ["melee", "thrown"],
+        "shock": true,
+        "excludesUnarmed": true
+      },
+      {
+        "kind": "shock-ignores-ac",
+        "level": 2,
+        "excludesUnarmed": true
+      },
+      {
+        "kind": "hit-bonus",
+        "level": 2,
+        "amount": 1,
+        "modes": ["melee", "thrown"],
+        "excludesUnarmed": true
+      }
+    ]
+  },
+  {
+    "id": "artisan",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "craft"
+    }
+  },
+  {
+    "id": "assassin",
+    "availability": "pickable",
+    "category": "combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "sneak"
+    }
+  },
+  {
+    "id": "authority",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "lead"
+    }
+  },
+  {
+    "id": "close-combatant",
+    "availability": "pickable",
+    "category": "combat",
+    "bonusSkill": {
+      "kind": "any-combat"
+    },
+    "effects": [
+      {
+        "kind": "melee-shock-immune",
+        "level": 1
+      },
+      {
+        "kind": "shock-ignores-ac",
+        "level": 2
+      }
+    ]
+  },
+  {
+    "id": "connected",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "connect"
+    }
+  },
+  {
+    "id": "cultured",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "connect"
+    }
+  },
+  {
+    "id": "die-hard",
+    "availability": "pickable",
+    "category": "combat",
+    "dieHard": true
+  },
+  {
+    "id": "deadeye",
+    "availability": "pickable",
+    "category": "combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "shoot"
+    },
+    "effects": [
+      {
+        "kind": "damage-adds-skill",
+        "level": 1,
+        "skill": "shoot",
+        "modes": ["ranged", "thrown"],
+        "shock": false
+      },
+      {
+        "kind": "ranged-in-melee",
+        "level": 1,
+        "modifier": -4
+      },
+      {
+        "kind": "ranged-in-melee",
+        "level": 2,
+        "modifier": 0
+      }
+    ]
+  },
+  {
+    "id": "dealmaker",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "trade"
+    }
+  },
+  {
+    "id": "developed-attribute",
+    "availability": "pickable",
+    "category": "non-combat",
+    "attributeChoice": true
+  },
+  {
+    "id": "diplomatic-grace",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "convince"
+    }
+  },
+  {
+    "id": "gifted-chirurgeon",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "heal"
+    }
+  },
+  {
+    "id": "henchkeeper",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "lead"
+    }
+  },
+  {
+    "id": "impervious-defense",
+    "availability": "pickable",
+    "category": "combat",
+    "effects": [
+      {
+        "kind": "innate-ac",
+        "level": 1,
+        "base": 15
+      }
+    ]
+  },
+  {
+    "id": "impostor",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "one-of",
+      "skills": ["perform", "sneak"]
+    }
+  },
+  {
+    "id": "lucky",
+    "availability": "pickable",
+    "category": "non-combat"
+  },
+  {
+    "id": "nullifier",
+    "availability": "pickable",
+    "category": "non-combat"
+  },
+  {
+    "id": "poisoner",
+    "availability": "pickable",
+    "category": "both",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "heal"
+    }
+  },
+  {
+    "id": "polymath",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "any"
+    }
+  },
+  {
+    "id": "rider",
+    "availability": "pickable",
+    "category": "both",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "ride"
+    },
+    "effects": [
+      {
+        "kind": "parley",
+        "level": 1,
+        "minds": ["animal"],
+        "evenAggressive": false
+      }
+    ]
+  },
+  {
+    "id": "shocking-assault",
+    "availability": "pickable",
+    "category": "combat",
+    "bonusSkill": {
+      "kind": "one-of",
+      "skills": ["punch", "stab"]
+    },
+    "effects": [
+      {
+        "kind": "shock-ignores-ac",
+        "level": 1
+      },
+      {
+        "kind": "shock-bonus",
+        "level": 2,
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "snipers-eye",
+    "availability": "pickable",
+    "category": "combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "shoot"
+    }
+  },
+  {
+    "id": "special-origin",
+    "availability": "excluded",
+    "category": "non-combat"
+  },
+  {
+    "id": "specialist",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "any-except",
+      "except": ["magic", "stab", "shoot", "punch"]
+    }
+  },
+  {
+    "id": "spirit-familiar",
+    "availability": "later",
+    "category": "non-combat"
+  },
+  {
+    "id": "trapmaster",
+    "availability": "pickable",
+    "category": "non-combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "notice"
+    }
+  },
+  {
+    "id": "unarmed-combatant",
+    "availability": "pickable",
+    "category": "combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "punch"
+    },
+    "effects": [
+      {
+        "kind": "unarmed-damage",
+        "level": 1,
+        "byPunchLevel": [
+          {
+            "count": 1,
+            "sides": 6,
+            "modifier": 0
+          },
+          {
+            "count": 1,
+            "sides": 8,
+            "modifier": 0
+          },
+          {
+            "count": 1,
+            "sides": 10,
+            "modifier": 0
+          },
+          {
+            "count": 1,
+            "sides": 12,
+            "modifier": 0
+          },
+          {
+            "count": 1,
+            "sides": 12,
+            "modifier": 1
+          }
+        ],
+        "shock": {
+          "minPunch": 1,
+          "maxAc": 15
+        }
+      }
+    ]
+  },
+  {
+    "id": "unique-gift",
+    "availability": "excluded",
+    "category": "non-combat"
+  },
+  {
+    "id": "valiant-defender",
+    "availability": "pickable",
+    "category": "combat",
+    "bonusSkill": {
+      "kind": "one-of",
+      "skills": ["stab", "punch"]
+    }
+  },
+  {
+    "id": "well-met",
+    "availability": "pickable",
+    "category": "non-combat",
+    "effects": [
+      {
+        "kind": "reaction-bonus",
+        "level": 1,
+        "amount": 1
+      },
+      {
+        "kind": "parley",
+        "level": 1,
+        "minds": [],
+        "evenAggressive": true
+      },
+      {
+        "kind": "parley",
+        "level": 2,
+        "minds": ["monster"],
+        "evenAggressive": true
+      }
+    ]
+  },
+  {
+    "id": "whirlwind-assault",
+    "availability": "pickable",
+    "category": "combat",
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "stab"
+    }
+  },
+  {
+    "id": "xenoblooded",
+    "availability": "excluded",
+    "category": "non-combat"
+  }
+]

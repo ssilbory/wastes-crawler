@@ -18,7 +18,10 @@ function rotl(x: number, k: number): number {
 
 // FNV-1a, so named streams ("xp-sim", "loot") get distinct, stable seeds.
 function hashSeed(seed: number | string): number {
-  if (typeof seed === 'number') return seed >>> 0;
+  if (typeof seed === 'number') {
+    if (!Number.isSafeInteger(seed)) throw new Error(`seed must be an integer, got ${seed}`);
+    return seed >>> 0;
+  }
   let h = 0x811c9dc5;
   for (let i = 0; i < seed.length; i++) {
     h ^= seed.charCodeAt(i);
@@ -41,8 +44,12 @@ function expandSeed(seed: number): [number, number, number, number] {
 }
 
 export function rngFromState(initial: RngState): Rng {
+  // Validate before coercing, so a corrupt save can't silently become a stream of zeros.
+  if (initial.length !== 4 || !initial.every((w) => Number.isInteger(w) && w >= 0 && w < UINT32)) {
+    throw new Error('RNG state must be four 32-bit unsigned integers');
+  }
   if (initial.every((w) => w === 0)) throw new Error('RNG state cannot be all zeros');
-  const s = initial.map((w) => w >>> 0) as [number, number, number, number];
+  const s = [...initial] as [number, number, number, number];
 
   // xoshiro128** (Blackman and Vigna).
   const nextUint32 = (): number => {
@@ -64,6 +71,7 @@ export function rngFromState(initial: RngState): Rng {
         throw new Error(`invalid range [${min}, ${max}]`);
       }
       const range = max - min + 1;
+      if (range > UINT32) throw new Error(`range [${min}, ${max}] exceeds 2^32 values`);
       // Rejection sampling removes modulo bias.
       const limit = UINT32 - (UINT32 % range);
       let x = nextUint32();

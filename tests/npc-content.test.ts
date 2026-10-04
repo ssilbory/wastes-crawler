@@ -1,0 +1,61 @@
+import { describe, expect, it } from 'vitest';
+import { loadContent } from '../src/data/content.ts';
+import { loadSrd } from '../src/data/load.ts';
+import { npcReferenceErrors } from '../src/data/npc-check.ts';
+
+const srd = loadSrd();
+const content = loadContent();
+
+describe('NPC content', () => {
+  it('loads SRD hirelings, captives bound for real towns, and a mind for every monster', () => {
+    expect(npcReferenceErrors(srd, content)).toEqual([]);
+    expect(content.npcRules.hirelings.map((h) => [h.id, h.share])).toEqual([
+      ['guard', 0.25],
+      ['veteran-sellsword', 0.75],
+      ['mage-of-minor-abilities', 1],
+      ['wilderness-guide', 0.5],
+      ['porter', 0.25],
+      ['mundane-physician', 0.5],
+    ]);
+    expect(content.npcRules.signingFee).toBe(20);
+    expect(content.monsterCombat.every((m) => m.mind)).toBe(true);
+  });
+
+  it('reports unknown monsters, towns, tiers, and captives', () => {
+    const [guard] = content.npcRules.hirelings;
+    const [merchant] = content.captives;
+    const [plains] = content.encounterTables;
+    if (!guard || !merchant || !plains) throw new Error('missing content');
+    const broken = {
+      ...content,
+      npcRules: {
+        ...content.npcRules,
+        hirelings: [{ ...guard, monster: 'dragon' }],
+        moraleTiers: ['grim'],
+      },
+      captives: [{ ...merchant, monster: 'dragon', destination: 'atlantis' }],
+      dungeons: content.dungeons.slice(0, 1).map((d) => ({
+        ...d,
+        levels: d.levels.map((l) => ({
+          ...l,
+          captives: l.captives.map((c) => ({ ...c, guards: [['dragon']] })),
+        })),
+      })),
+      encounterTables: [
+        {
+          ...plains,
+          entries: [{ ...(plains.entries[0] as (typeof plains.entries)[0]), captive: 'prince' }],
+        },
+      ],
+    };
+    expect(npcReferenceErrors(srd, broken)).toEqual([
+      'npcRules/guard: unknown monster dragon',
+      'npcRules: unknown XP tier grim',
+      'captives/merchant: unknown monster dragon',
+      'captives/merchant: unknown town atlantis',
+      'dungeons/old-barrow/barrow-upper: captive at 6,0: unknown captive grave-digger',
+      'dungeons/old-barrow/barrow-upper: captive at 6,0: unknown monster dragon',
+      'encounterTables/plains: unknown captive prince',
+    ]);
+  });
+});

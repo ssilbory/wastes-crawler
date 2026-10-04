@@ -1,0 +1,65 @@
+[
+  {
+    "town": "westhold",
+    "bouts": [
+      {
+        "id": "militia-pair",
+        "name": "Two militia sparring partners",
+        "enemies": [["thug-or-militia", "thug-or-militia"]],
+        "fee": 5,
+        "prize": 15,
+        "toTheDeath": false
+      },
+      {
+        "id": "pit-hounds",
+        "name": "The pit hounds",
+        "enemies": [["small-pack-predator", "small-pack-predator", "small-pack-predator"]],
+        "fee": 10,
+        "prize": 40,
+        "toTheDeath": true
+      }
+    ]
+  },
+  {
+    "town": "eastmarch",
+    "bouts": [
+      {
+        "id": "veterans",
+        "name": "The garrison veterans",
+        "enemies": [["veteran-soldier", "veteran-soldier"], ["skilled-veteran"]],
+        "fee": 15,
+        "prize": 50,
+        "toTheDeath": false
+      },
+      {
+        "id": "caged-horror",
+        "name": "The caged horror",
+        "enemies": [["predator-large-vicious"]],
+        "fee": 25,
+        "prize": 150,
+        "toTheDeath": true
+      },
+      {
+        "id": "hare-pit",
+        "name": "The Hare Pit",
+        "enemies": [["vorpal-hare", "vorpal-hare", "vorpal-hare", "vorpal-hare"]],
+        "fee": 15,
+        "prize": 100,
+        "toTheDeath": true
+      }
+    ]
+  },
+  {
+    "town": "highcairn",
+    "bouts": [
+      {
+        "id": "hill-champion",
+        "name": "The hill champion",
+        "enemies": [["barbarian-fighter"]],
+        "fee": 5,
+        "prize": 20,
+        "toTheDeath": false
+      }
+    ]
+  }
+]

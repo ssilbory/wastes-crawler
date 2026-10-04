@@ -1,0 +1,112 @@
+[
+  {
+    "id": "plains",
+    "name": "Plains",
+    "glyph": "p",
+    "movement": "open",
+    "survive": 9,
+    "hunt": 8,
+    "water": false,
+    "harsh": false,
+    "encounters": "plains"
+  },
+  {
+    "id": "forest",
+    "name": "Light forest",
+    "glyph": "f",
+    "movement": "open",
+    "survive": 8,
+    "hunt": 8,
+    "water": false,
+    "harsh": false,
+    "encounters": "forest"
+  },
+  {
+    "id": "deep-forest",
+    "name": "Deep forest",
+    "glyph": "F",
+    "movement": "difficult",
+    "survive": 8,
+    "hunt": 9,
+    "water": false,
+    "harsh": false,
+    "encounters": "forest"
+  },
+  {
+    "id": "hills",
+    "name": "Hills",
+    "glyph": "h",
+    "movement": "difficult",
+    "survive": 9,
+    "hunt": 9,
+    "water": false,
+    "harsh": false,
+    "encounters": "hills"
+  },
+  {
+    "id": "mountains",
+    "name": "Mountains",
+    "glyph": "m",
+    "movement": "difficult",
+    "survive": 9,
+    "hunt": 11,
+    "water": false,
+    "harsh": true,
+    "encounters": "mountains"
+  },
+  {
+    "id": "swamp",
+    "name": "Swamp",
+    "glyph": "s",
+    "movement": "difficult",
+    "survive": 8,
+    "hunt": 10,
+    "water": true,
+    "harsh": false,
+    "encounters": "swamp"
+  },
+  {
+    "id": "badlands",
+    "name": "Badlands",
+    "glyph": "b",
+    "movement": "difficult",
+    "survive": 12,
+    "hunt": 12,
+    "water": false,
+    "harsh": true,
+    "encounters": "badlands"
+  },
+  {
+    "id": "lake",
+    "name": "Lake",
+    "glyph": "L",
+    "movement": "impassable",
+    "survive": 8,
+    "hunt": 8,
+    "water": true,
+    "harsh": false,
+    "encounters": "plains"
+  },
+  {
+    "id": "river",
+    "name": "River",
+    "glyph": "r",
+    "movement": "impassable",
+    "survive": 8,
+    "hunt": 8,
+    "water": true,
+    "harsh": false,
+    "encounters": "plains"
+  },
+  {
+    "id": "ford",
+    "name": "Ford",
+    "glyph": "x",
+    "movement": "open",
+    "survive": 9,
+    "hunt": 8,
+    "water": true,
+    "harsh": false,
+    "encounters": "plains"
+  }
+]

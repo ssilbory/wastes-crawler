@@ -1,0 +1,99 @@
+[
+  {
+    "id": "lost-the-trail",
+    "table": "travel",
+    "weight": 3,
+    "text": "The trail peters out and the party loses its bearings.",
+    "effect": {
+      "kind": "end-march"
+    }
+  },
+  {
+    "id": "turned-ankle",
+    "table": "travel",
+    "weight": 2,
+    "text": "A loose stone turns an ankle.",
+    "effect": {
+      "kind": "damage",
+      "dice": {
+        "count": 1,
+        "sides": 4,
+        "modifier": 0
+      },
+      "who": "one"
+    }
+  },
+  {
+    "id": "soaked-packs",
+    "table": "travel",
+    "weight": 2,
+    "text": "A bad crossing soaks the packs and spoils food.",
+    "effect": {
+      "kind": "rations",
+      "steps": -1
+    }
+  },
+  {
+    "id": "hard-going",
+    "table": "travel",
+    "weight": 2,
+    "text": "Brutal going wears everyone down.",
+    "effect": {
+      "kind": "strain",
+      "amount": 1,
+      "who": "all"
+    }
+  },
+  {
+    "id": "blundered-into-trouble",
+    "table": "travel",
+    "weight": 1,
+    "text": "The party blunders into someone else's ground.",
+    "effect": {
+      "kind": "encounter"
+    }
+  },
+  {
+    "id": "poor-shelter",
+    "table": "camp",
+    "weight": 3,
+    "text": "The shelter leaks and nobody sleeps well.",
+    "effect": {
+      "kind": "no-recovery"
+    }
+  },
+  {
+    "id": "smoky-fire",
+    "table": "camp",
+    "weight": 2,
+    "text": "Green wood smokes, and the smoke carries.",
+    "effect": {
+      "kind": "encounter"
+    }
+  },
+  {
+    "id": "vermin",
+    "table": "camp",
+    "weight": 2,
+    "text": "Vermin get into the food.",
+    "effect": {
+      "kind": "rations",
+      "steps": -1
+    }
+  },
+  {
+    "id": "burned-hands",
+    "table": "camp",
+    "weight": 1,
+    "text": "A collapsing fire burns someone.",
+    "effect": {
+      "kind": "damage",
+      "dice": {
+        "count": 1,
+        "sides": 3,
+        "modifier": 0
+      },
+      "who": "one"
+    }
+  }
+]

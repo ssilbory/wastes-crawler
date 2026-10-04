@@ -1,0 +1,180 @@
+[
+  {
+    "id": "shield-wall",
+    "name": "Shield Wall",
+    "description": "Spear, large shield, and solid armor for the front rank.",
+    "crowns": 10,
+    "items": [
+      {
+        "id": "spear-light",
+        "quantity": 1,
+        "location": "readied"
+      },
+      {
+        "id": "large-shield",
+        "quantity": 1,
+        "location": "worn"
+      },
+      {
+        "id": "cuirass-and-greaves",
+        "quantity": 1,
+        "location": "worn"
+      },
+      {
+        "id": "dagger",
+        "quantity": 1,
+        "location": "readied"
+      },
+      {
+        "id": "dungeoneering-kit",
+        "quantity": 1,
+        "location": "stowed"
+      }
+    ]
+  },
+  {
+    "id": "heavy-hitter",
+    "name": "Heavy Hitter",
+    "description": "A two-handed weapon and armor light enough to swing it all day.",
+    "crowns": 15,
+    "items": [
+      {
+        "id": "axe-war",
+        "quantity": 1,
+        "location": "readied"
+      },
+      {
+        "id": "pieced-armor",
+        "quantity": 1,
+        "location": "worn"
+      },
+      {
+        "id": "dagger",
+        "quantity": 1,
+        "location": "readied"
+      },
+      {
+        "id": "dungeoneering-kit",
+        "quantity": 1,
+        "location": "stowed"
+      }
+    ]
+  },
+  {
+    "id": "archer",
+    "name": "Archer",
+    "description": "A bow from the second rank, and a short sword if things get close.",
+    "crowns": 10,
+    "items": [
+      {
+        "id": "bow-small",
+        "quantity": 1,
+        "location": "readied"
+      },
+      {
+        "id": "arrows-20",
+        "quantity": 1,
+        "location": "readied"
+      },
+      {
+        "id": "sword-short",
+        "quantity": 1,
+        "location": "readied"
+      },
+      {
+        "id": "linothorax",
+        "quantity": 1,
+        "location": "worn"
+      },
+      {
+        "id": "wilderness-travel-gear",
+        "quantity": 1,
+        "location": "stowed"
+      }
+    ]
+  },
+  {
+    "id": "skulker",
+    "name": "Skulker",
+    "description": "Quiet weapons, a coat that passes for clothing, and the tools of a burglar.",
+    "crowns": 25,
+    "items": [
+      {
+        "id": "sword-short",
+        "quantity": 1,
+        "location": "readied"
+      },
+      {
+        "id": "throwing-blade",
+        "quantity": 5,
+        "location": "readied"
+      },
+      {
+        "id": "buff-coat",
+        "quantity": 1,
+        "location": "worn"
+      },
+      {
+        "id": "criminal-tools",
+        "quantity": 1,
+        "location": "stowed"
+      }
+    ]
+  },
+  {
+    "id": "wanderer",
+    "name": "Wanderer",
+    "description": "A spear, a staff of a coat, and everything needed to live off the land.",
+    "crowns": 40,
+    "items": [
+      {
+        "id": "spear-light",
+        "quantity": 1,
+        "location": "readied"
+      },
+      {
+        "id": "war-shirt",
+        "quantity": 1,
+        "location": "worn"
+      },
+      {
+        "id": "wilderness-travel-gear",
+        "quantity": 1,
+        "location": "stowed"
+      }
+    ]
+  },
+  {
+    "id": "apprentice",
+    "name": "Apprentice",
+    "description": "No armor to spoil the casting: a staff, a knife, and the means to keep a spellbook.",
+    "crowns": 50,
+    "items": [
+      {
+        "id": "staff",
+        "quantity": 1,
+        "location": "readied"
+      },
+      {
+        "id": "dagger",
+        "quantity": 1,
+        "location": "readied"
+      },
+      {
+        "id": "writing-kit",
+        "quantity": 1,
+        "location": "stowed"
+      },
+      {
+        "id": "paper-10-sheets",
+        "quantity": 1,
+        "location": "stowed"
+      },
+      {
+        "id": "backpack",
+        "quantity": 1,
+        "location": "worn"
+      }
+    ]
+  }
+]

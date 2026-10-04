@@ -1,0 +1,41 @@
+[
+  {
+    "id": "small-shield",
+    "name": "Small Shield",
+    "description": "A metal buckler strapped to the arm; the hand can still hold things, but not a weapon.",
+    "baseAc": 13,
+    "bonus": 1,
+    "cover": false,
+    "cost": {
+      "amount": 20,
+      "unit": "sp"
+    },
+    "encumbrance": 1
+  },
+  {
+    "id": "large-shield",
+    "name": "Large Shield",
+    "description": "A broad wooden shield that needs a firm grip.",
+    "baseAc": 15,
+    "bonus": 2,
+    "cover": false,
+    "cost": {
+      "amount": 10,
+      "unit": "sp"
+    },
+    "encumbrance": 1
+  },
+  {
+    "id": "tower-shield",
+    "name": "Tower Shield",
+    "description": "A door-sized wall of wood and hide. Its bearer fights from behind cover: attacks against them and made by them have disadvantage.",
+    "baseAc": 15,
+    "bonus": 2,
+    "cover": true,
+    "cost": {
+      "amount": 50,
+      "unit": "sp"
+    },
+    "encumbrance": 3
+  }
+]

@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 4,
+  "id": "char-d94fc45abe146131",
+  "name": "Snag",
+  "goal": "",
+  "people": "goblin",
+  "background": "raider",
+  "attributes": {
+    "base": {
+      "str": 14,
+      "dex": 12,
+      "con": 11,
+      "int": 10,
+      "wis": 9,
+      "cha": 7
+    },
+    "people": {
+      "str": -2,
+      "dex": 2,
+      "int": 1
+    },
+    "background": {}
+  },
+  "foci": [
+    {
+      "id": "warren-born",
+      "level": 1
+    },
+    {
+      "id": "scrounger",
+      "level": 1
+    },
+    {
+      "id": "alert",
+      "level": 1
+    },
+    {
+      "id": "armsmaster",
+      "level": 1
+    },
+    {
+      "id": "lucky",
+      "level": 1
+    }
+  ],
+  "arts": [],
+  "spells": {
+    "known": [],
+    "prepared": []
+  },
+  "inventory": [
+    {
+      "id": "spear-light",
+      "quantity": 1,
+      "location": "readied"
+    },
+    {
+      "id": "large-shield",
+      "quantity": 1,
+      "location": "worn"
+    },
+    {
+      "id": "cuirass-and-greaves",
+      "quantity": 1,
+      "location": "worn",
+      "small": true
+    },
+    {
+      "id": "dagger",
+      "quantity": 1,
+      "location": "readied"
+    },
+    {
+      "id": "dungeoneering-kit",
+      "quantity": 1,
+      "location": "stowed"
+    }
+  ],
+  "crowns": 10,
+  "skills": {
+    "stab": 1,
+    "sneak": 1,
+    "exert": 0,
+    "survive": 0,
+    "notice": 1
+  },
+  "classes": {
+    "current": "full-warrior",
+    "levels": {
+      "full-warrior": 1
+    }
+  },
+  "hp": {
+    "max": 8,
+    "current": 8
+  },
+  "xp": 0,
+  "strain": {
+    "value": 0,
+    "broken": false
+  }
+}

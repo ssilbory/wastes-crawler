@@ -1,0 +1,199 @@
+.fight-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.fight-bar .round {
+  font-weight: 600;
+  margin-right: auto;
+}
+
+.result {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.fight-main {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+
+@media (max-width: 760px) {
+  .fight-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.battlefield {
+  display: grid;
+  gap: 12px;
+}
+
+.side {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.side h3 {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+}
+
+.field-row {
+  margin: 4px 0;
+}
+
+.slots {
+  display: grid;
+  gap: 4px;
+}
+
+.slot {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 64px;
+  min-width: 0;
+  padding: 4px 6px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg);
+  text-align: left;
+  font-size: 0.8rem;
+}
+
+.slot.empty {
+  border-style: dashed;
+  background: transparent;
+}
+
+.slot-name {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.slot-stats {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.hp-bar {
+  display: block;
+  height: 5px;
+  background: var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.hp-bar span {
+  display: block;
+  height: 100%;
+  background: var(--ok);
+  transition: width 0.3s;
+}
+
+.slot.down .hp-bar span,
+.slot.gone .hp-bar span {
+  background: var(--error);
+}
+
+.slot.gone {
+  opacity: 0.45;
+}
+
+.slot.active {
+  outline: 2px solid var(--accent);
+}
+
+.slot.target {
+  cursor: pointer;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.slot.changed {
+  animation: flash 0.8s ease-out;
+}
+
+@keyframes flash {
+  from {
+    background: color-mix(in srgb, var(--error) 30%, var(--bg));
+  }
+}
+
+.fight-side {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.commands {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.commands h3 {
+  margin: 0 0 6px;
+}
+
+.default-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.command-list,
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.choices p {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+.cmd-group {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.log {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.log h3 {
+  margin: 0 0 4px;
+}
+
+.log ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 420px;
+  overflow-y: auto;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.log li.new {
+  color: var(--accent);
+}

@@ -1,0 +1,60 @@
+[
+  {
+    "id": "reeve-halda",
+    "name": "Reeve Halda",
+    "town": "westhold",
+    "text": "An orc reeve who keeps the peace in Westhold, a settlement dug out of a fallen city's gatehouse, and pays those who help her keep it."
+  },
+  {
+    "id": "factor-imre",
+    "name": "Factor Imre",
+    "town": "eastmarch",
+    "text": "A gnome trader with business all along the border, and never enough couriers he can trust."
+  },
+  {
+    "id": "warden-osk",
+    "name": "Warden Osk",
+    "town": "highcairn",
+    "text": "An old goblin warden who watches the passes for raiders and paladins."
+  },
+  {
+    "id": "necromancer-ysolde",
+    "name": "Ysolde the Necromancer",
+    "town": "westhold",
+    "raises": "crypt",
+    "text": "She keeps the crypt under the old chapel, and she can call the dead back up out of it, for a price or a service."
+  },
+  {
+    "id": "brother-aldo",
+    "name": "Brother Aldo",
+    "town": "eastmarch",
+    "raises": "mortuary",
+    "text": "A grey-robed priest of the god of death. His mortuary can send the dead back, if the god is paid, in crowns or in service."
+  },
+  {
+    "id": "necromancer-vashti",
+    "name": "Vashti of the Pits",
+    "town": "cinderhold",
+    "raises": "crypt",
+    "text": "An elf necromancer who works the plague pits under Cinderhold. She was one of his, once; she does not say how willingly."
+  },
+  {
+    "id": "mother-skrell",
+    "name": "Mother Skrell",
+    "town": "gutterwick",
+    "raises": "mortuary",
+    "text": "A goblin death priest who keeps Gutterwick's mortuary. The god of death takes crowns, or service."
+  },
+  {
+    "id": "elder-gorvash",
+    "name": "Elder Gorvash",
+    "town": "cinderhold",
+    "text": "An old orc who leads Cinderhold's council. He remembers the binding, and fears whoever finds a way to use it first."
+  },
+  {
+    "id": "foreman-tikka",
+    "name": "Foreman Tikka",
+    "town": "gutterwick",
+    "text": "A goblin who runs Gutterwick's work gangs and road crews, and pays for anything that keeps the roads open."
+  }
+]

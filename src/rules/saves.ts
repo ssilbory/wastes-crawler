@@ -2,7 +2,7 @@
 // plus the 2+ floor in docs/decisions/0001-high-level-progression.md.
 import type { Attribute } from '../data/schemas/index.ts';
 import { rollD20WithEdge, type D20Roll } from './advantage.ts';
-import { bestModifier, type AttributeScores } from './attributes.ts';
+import { bestModifier, type AttributeScores, type ModifierBonuses } from './attributes.ts';
 import type { Rng } from './rng.ts';
 
 export type SaveType = 'physical' | 'evasion' | 'mental' | 'luck';
@@ -16,12 +16,18 @@ const SAVE_ATTRIBUTES: Record<SaveType, readonly Attribute[]> = {
   luck: [],
 };
 
-export function pcSaveTarget(level: number, scores: AttributeScores, type: SaveType): number {
+export function pcSaveTarget(
+  level: number,
+  scores: AttributeScores,
+  type: SaveType,
+  bonuses: ModifierBonuses = {},
+): number {
   const attrs = SAVE_ATTRIBUTES[type];
-  const mod = attrs.length > 0 ? bestModifier(scores, attrs) : 0;
+  const mod = attrs.length > 0 ? bestModifier(scores, attrs, bonuses) : 0;
   return Math.max(SAVE_FLOOR, 16 - level - mod);
 }
 
+/** For NPCs without a stat line; monsters use the save listed in their stat line. */
 export function npcSaveTarget(hitDice: number): number {
   return Math.max(SAVE_FLOOR, 15 - Math.floor(hitDice / 2));
 }

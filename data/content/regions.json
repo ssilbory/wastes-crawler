@@ -1,0 +1,208 @@
+[
+  {
+    "id": "borderlands",
+    "name": "The Borderlands",
+    "terrain": [
+      "hhhhhhhmmmmmmmmmmhbbbbbb",
+      "hhhhhhhmmmmmmmmmmhbbbbbb",
+      "hhhhhhhmmmmmmmmmmhbbbbbb",
+      "hhhhhhhmmmmmmmmmmhbbbbbb",
+      "hhhhhLLLhhhhrhhhhhbbbbbb",
+      "pffffLLLpppprpppppbbbbbb",
+      "pffffLLLpppprpppppbbbbbb",
+      "pppppppppppprppppppppppp",
+      "ppppppppppppxppppppppppp",
+      "pppppppppppprppppppppppp",
+      "pppppppppppprppppppppppp",
+      "fffffffffffprppppppppppp",
+      "fffffffffffprpssssssssss",
+      "ffFFFFFFFffprpssssssssss",
+      "ffFFFFFFFffpxpssssssssss",
+      "ffFFFFFFFffprpssssssssss",
+      "ffFFFFFFFffprpssssssssss",
+      "ffFFFFFFFffprpssssssssss"
+    ],
+    "overlay": [
+      ".......!!!!!!!!!!.!!!!!!",
+      ".......!!!!!!!!!!.!!!!!!",
+      ".......!!!!!!!!!!.!!!!!!",
+      ".......!!!!!!!!!!.!!!!!!",
+      "..................!!!!!!",
+      "..................!!!!!!",
+      "..................!!!!!!",
+      "........................",
+      "...==================...",
+      "........................",
+      "........................",
+      "........................",
+      "..............!!!!!!!!!!",
+      "..!!!!!!!.....!!!!!!!!!!",
+      "..!!!!!!!.....!!!!!!!!!!",
+      "..!!!!!!!.....!!!!!!!!!!",
+      "..!!!!!!!.....!!!!!!!!!!",
+      "..!!!!!!!.....!!!!!!!!!!"
+    ],
+    "sites": [
+      {
+        "id": "westhold",
+        "name": "Westhold",
+        "kind": "town",
+        "col": 3,
+        "row": 8,
+        "size": "town"
+      },
+      {
+        "id": "eastmarch",
+        "name": "Eastmarch",
+        "kind": "town",
+        "col": 20,
+        "row": 8,
+        "size": "town"
+      },
+      {
+        "id": "highcairn",
+        "name": "Highcairn",
+        "kind": "town",
+        "col": 17,
+        "row": 4,
+        "size": "village"
+      }
+    ],
+    "start": "westhold",
+    "exits": [
+      {
+        "name": "the east road into the Dark Lands",
+        "col": 23,
+        "row": 8,
+        "to": {
+          "region": "dark-lands",
+          "col": 0,
+          "row": 12
+        }
+      }
+    ],
+    "encounters": {},
+    "garrisons": []
+  },
+  {
+    "id": "dark-lands",
+    "name": "The Dark Lands",
+    "terrain": [
+      "hhhhhhhhhhhhmmmmmmmmmmmmmmmmpLLL",
+      "hhhhhhhhhhhhmmmmmmmmmmmmmmmmpLLL",
+      "hhhhhhhhhhhhmmmmmmmmmmmmmmmmpLLL",
+      "hhhhhhhhhhhhpphhhhhhhhhhhhpppLLL",
+      "hhhhhhhhhhhhpppppppppppppppppLLL",
+      "hhhhhhhhhhhhppppppbbbbbbbbbbpLLL",
+      "hhhhhhhhhhhhppppppbbbbbbbbbbpLLL",
+      "ppppppppppppppppppbbbbbbbbbbpLLL",
+      "ppppppppppppppppppbbbbbbbbbbpLLL",
+      "ppppppppppppppppppbbbbbbbbbbpLLL",
+      "ppppppppppppppppppbbbbbbbbbbpLLL",
+      "ppppppppppppppppppbbbbbbbbbbpLLL",
+      "ppppppppppppppppppbbbbbbbbbbpLLL",
+      "ppppppppppppppppppbbbbbbbbbbpLLL",
+      "ffffffffffprppppppbbbbbbbbbbpLLL",
+      "ffffffffffprppppppbbbbbbbbbbpLLL",
+      "ffffffffffprppppppbbbbbbbbbbpLLL",
+      "ffffffffffprppppppbbbbbbbbbbpLLL",
+      "FFFFFFffffpxppppppbbbbbbbbbbpLLL",
+      "FFFFFFffffprsssssssssppppppppLLL",
+      "FFFFFFffffprsssssssssppppppppLLL",
+      "FFFFFFffffprsssssssssppppppppLLL",
+      "FFFFFFffffprsssssssssppppppppLLL",
+      "FFFFFFffffprsssssssssppppppppLLL"
+    ],
+    "overlay": [
+      "............!!!!!!!!!!!!!!!!....",
+      "............!!!!!!!!!!!!!!!!....",
+      "............!!!!!!!!!!!!!!!!....",
+      "................................",
+      "..........=.....................",
+      "..........=.......!!!!!!!!!!....",
+      "..........=.......!!!!!!!!!!....",
+      "..........=.......!!!!!!!!!!....",
+      "..........=.......!!!!!!!!!!....",
+      "..........=.......!!!!!!!!!!....",
+      "..........=.......!!!!!!!!!!....",
+      "..........=.......!!!!!!!!!!....",
+      "=================.!!!!!!!!!!....",
+      ".............=..=.!!!!!!!!!!....",
+      ".............=..=.!!!!!!!!!!....",
+      ".............=..=.!!!!!!!!!!....",
+      ".............=....!!!!!!!!!!....",
+      ".............=....!!!!!!!!!!....",
+      "!!!!!!.......=....!!!!!!!!!!....",
+      "!!!!!!......!=!!!!!!!...........",
+      "!!!!!!......!=!!!!!!!...........",
+      "!!!!!!......!!!!!!!!!...........",
+      "!!!!!!......!!!!!!!!!...........",
+      "!!!!!!......!!!!!!!!!..........."
+    ],
+    "sites": [
+      {
+        "id": "cinderhold",
+        "name": "Cinderhold",
+        "kind": "town",
+        "size": "town",
+        "col": 6,
+        "row": 12
+      },
+      {
+        "id": "gutterwick",
+        "name": "Gutterwick",
+        "kind": "town",
+        "size": "town",
+        "col": 16,
+        "row": 15
+      },
+      {
+        "id": "lanternfall",
+        "name": "Lanternfall",
+        "kind": "town",
+        "size": "village",
+        "col": 10,
+        "row": 4
+      },
+      {
+        "id": "mirewatch",
+        "name": "Mirewatch",
+        "kind": "town",
+        "size": "village",
+        "col": 13,
+        "row": 20
+      }
+    ],
+    "start": "cinderhold",
+    "exits": [
+      {
+        "name": "the west road to the Borderlands",
+        "col": 0,
+        "row": 12,
+        "to": {
+          "region": "borderlands",
+          "col": 23,
+          "row": 8
+        }
+      }
+    ],
+    "encounters": {
+      "plains": "dl-plains",
+      "ford": "dl-plains",
+      "forest": "dl-forest",
+      "deep-forest": "dl-forest",
+      "hills": "dl-hills",
+      "mountains": "dl-mountains",
+      "swamp": "dl-swamp",
+      "badlands": "dl-badlands"
+    },
+    "garrisons": [
+      {
+        "order": "ruinfield-gate",
+        "col": 18,
+        "row": 12,
+        "enemies": [["bound-orc-guard", "bound-orc-guard"], ["bound-orc-captain"]]
+      }
+    ]
+  }
+]

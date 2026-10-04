@@ -222,5 +222,12 @@
     "replace": "superheated",
     "pdfPage": 75,
     "note": "\"super heated\" is \"superheated\" in the PDF; the mirror split the word in two (spells/fury-of-the-elements)."
+  },
+  {
+    "file": "1.0 Character Creation/1.6.0 Foci.md",
+    "find": "with a normal at tack,",
+    "replace": "with a normal attack,",
+    "pdfPage": 46,
+    "note": "\"at tack\" is \"attack\" in the PDF; the mirror split the word in two (foci/whirlwind-assault)."
   }
 ]

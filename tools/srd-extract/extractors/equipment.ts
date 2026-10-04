@@ -1,4 +1,10 @@
-import type { Armor, Gear, Weapon, WeaponTrait } from '../../../src/data/schemas/index.ts';
+import type {
+  Armor,
+  Gear,
+  GearBundle,
+  Weapon,
+  WeaponTrait,
+} from '../../../src/data/schemas/index.ts';
 import { findHeading, parseTables, sectionLines, slug, type Table } from '../markdown.ts';
 import { parseAttributes, parseCost, parseDice, parseInt10 } from '../parse-values.ts';
 import type { SrdReader } from '../reader.ts';
@@ -121,7 +127,7 @@ export function extractArmor(reader: SrdReader): Armor[] {
   );
 }
 
-/** The Adventuring Gear table only; Beasts and Transport and Gear Bundles wait for Phase 3d starting gear. */
+/** The Adventuring Gear table; Beasts and Transport wait for overland travel in Phase 5. */
 export function extractGear(reader: SrdReader): Gear[] {
   const doc = reader.doc(GEAR);
   const heading = findHeading(doc, 'Adventuring Gear');
@@ -144,6 +150,25 @@ export function extractGear(reader: SrdReader): Gear[] {
       weightless: raw === '*',
       freeWhenWorn: raw.endsWith('§'),
       bundlesOfThree: raw.endsWith('#'),
+    };
+  });
+}
+
+/** SRD 3.2.1 Gear Bundles: one item standing for a role's whole kit. */
+export function extractGearBundles(reader: SrdReader): GearBundle[] {
+  const doc = reader.doc(GEAR);
+  const heading = findHeading(doc, 'Gear Bundles');
+  const table = onlyTable(parseTables(sectionLines(doc, heading)), 'Item', doc.file);
+  return table.rows.map((row) => {
+    const [name, cost, enc] = cells(row, 3, doc.file);
+    const parsedCost = parseCost(cost ?? '');
+    if (!parsedCost) throw new Error(`${doc.file}: ${name} has no cost`);
+    return {
+      id: slug(name ?? ''),
+      name: name ?? '',
+      source: { file: doc.file, heading: heading.text },
+      cost: parsedCost,
+      encumbrance: parseInt10(enc ?? ''),
     };
   });
 }

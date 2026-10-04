@@ -1,0 +1,310 @@
+.world {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.world-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+}
+
+.world-bar .date {
+  font-weight: 600;
+  margin-right: auto;
+}
+
+.world-main {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+
+@media (max-width: 860px) {
+  .world-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.world-side {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.map-wrap {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px;
+  overflow: auto;
+}
+
+.hex-map {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.hex polygon {
+  stroke: #00000033;
+  stroke-width: 0.6;
+  cursor: pointer;
+}
+
+.hex.fog polygon {
+  fill: var(--line);
+  cursor: default;
+}
+
+.t-plains polygon {
+  fill: #c9d68f;
+}
+.t-forest polygon {
+  fill: #7fae6a;
+}
+.t-deep-forest polygon {
+  fill: #4f7d4a;
+}
+.t-hills polygon {
+  fill: #b7a77a;
+}
+.t-mountains polygon {
+  fill: #8d8478;
+}
+.t-swamp polygon {
+  fill: #7a8f6e;
+}
+.t-badlands polygon {
+  fill: #c4986a;
+}
+.t-lake polygon,
+.t-river polygon {
+  fill: #6f9cc4;
+}
+.t-ford polygon {
+  fill: #9fc0d8;
+}
+
+.hex:not(.visited):not(.fog) polygon {
+  filter: saturate(0.5) brightness(0.92);
+}
+
+.hex.route polygon {
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.hex.destination polygon {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+.hex .road {
+  fill: #6b5a3e;
+}
+
+.hex .site {
+  fill: #fffdf8;
+  stroke: #1f1b16;
+  stroke-width: 1;
+}
+
+.hex .site-name {
+  font-size: 9px;
+  text-anchor: middle;
+  fill: #1f1b16;
+  paint-order: stroke;
+  stroke: #fffdf8;
+  stroke-width: 2px;
+  pointer-events: none;
+}
+
+.hex .party {
+  fill: var(--error);
+  stroke: #fff;
+  stroke-width: 1.5;
+  pointer-events: none;
+}
+
+.quarter-panel .tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.quarter-panel .tabs [aria-checked='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--panel);
+}
+
+.roles {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.party-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.party-panel li {
+  display: grid;
+  gap: 2px;
+}
+
+.party-panel li.gone {
+  opacity: 0.5;
+}
+
+.encounter p {
+  font-weight: 600;
+}
+
+.encounter .parley,
+.npc-panel .first-aid {
+  margin-top: 8px;
+}
+
+.hex.quest polygon {
+  stroke: var(--error);
+  stroke-width: 3;
+  stroke-dasharray: 4 2;
+}
+
+.hex .exit {
+  fill: #c9a227;
+  stroke: #2b2420;
+  stroke-width: 1;
+}
+
+.hex .dungeon {
+  fill: #2b2420;
+  stroke: #fffdf8;
+  stroke-width: 1;
+}
+
+.dungeon-main {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  justify-items: center;
+}
+
+.dungeon-view {
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #0d0c0b;
+}
+
+.dungeon-view .ceiling {
+  fill: #1a1b20;
+}
+
+.dungeon-view .floor {
+  fill: #2e2924;
+}
+
+.dungeon-view polygon {
+  stroke: #0d0c0b;
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+
+.dungeon-view .door-frame {
+  fill: #2a1d12;
+}
+
+.dungeon .bump {
+  min-height: 1.4em;
+  margin: 0;
+  color: var(--error);
+}
+
+.dungeon .moves {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 8em));
+  gap: 6px;
+}
+
+.automap {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  background: #1a1b20;
+}
+
+.automap .seen {
+  fill: #4d463e;
+}
+
+.automap .seen.up,
+.automap .seen.down {
+  fill: #8a7a4a;
+}
+
+.automap line {
+  stroke: #e8e1d2;
+  stroke-width: 2;
+  stroke-linecap: square;
+}
+
+.automap line.door {
+  stroke: #c47a3a;
+  stroke-width: 3;
+}
+
+.automap .party {
+  fill: var(--error);
+}
+
+.dungeon-view.dark .ceiling,
+.dungeon-view.dark .floor {
+  fill: #050505;
+}
+
+.dungeon-view .pitch-dark {
+  fill: #6b6258;
+  font-size: 14px;
+  text-anchor: middle;
+}
+
+.automap .seen.trap {
+  fill: #a3412f;
+}
+
+.setting-notes {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.raid-alarm {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--error);
+  border-radius: 4px;
+}
+
+.raid-alarm p {
+  margin: 0;
+  flex: 1;
+}
+
+.raided {
+  color: var(--error);
+}

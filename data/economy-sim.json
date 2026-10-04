@@ -1,0 +1,45 @@
+{
+  "party": {
+    "maxHp": [8, 7, 2, 5],
+    "hpPerLevel": 4,
+    "purse": 85
+  },
+  "delve": {
+    "table": "barrow",
+    "level": 1,
+    "fights": 4,
+    "days": 2
+  },
+  "fight": {
+    "hpLost": 0.15,
+    "deathChance": 0.03,
+    "xp": 0.5,
+    "deathFalloff": 0.5
+  },
+  "hirelings": ["guard", "mundane-physician"],
+  "ruin": {
+    "id": "old-mine",
+    "every": 4
+  },
+  "raiseQuest": {
+    "days": 10
+  },
+  "travelDays": 3,
+  "policies": [
+    {
+      "id": "stay-home",
+      "towns": ["westhold"]
+    },
+    {
+      "id": "rotate",
+      "towns": ["westhold", "eastmarch", "highcairn"]
+    }
+  ],
+  "seeds": 50,
+  "delves": 50,
+  "lockouts": {
+    "worthlessDays": 30,
+    "stuckDelves": 15,
+    "belowLevel": 5
+  }
+}

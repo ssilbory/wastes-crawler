@@ -1,0 +1,422 @@
+[
+  {
+    "id": "sunken-chapel",
+    "name": "The Sunken Chapel",
+    "kind": "delve",
+    "region": "borderlands",
+    "level": 1,
+    "col": 2,
+    "row": 10,
+    "depth": 1,
+    "size": {
+      "min": 8,
+      "max": 9
+    },
+    "wander": {
+      "every": 3,
+      "table": "barrow"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 6
+      }
+    ],
+    "vault": {
+      "guards": [["barrow-golem", "barrow-golem", "barrow-golem", "barrow-golem", "barrow-golem"]],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 6
+        }
+      ],
+      "component": "grave-garnet"
+    }
+  },
+  {
+    "id": "old-mine",
+    "name": "The Old Mine",
+    "kind": "delve",
+    "region": "borderlands",
+    "level": 2,
+    "col": 3,
+    "row": 2,
+    "depth": 2,
+    "size": {
+      "min": 8,
+      "max": 10
+    },
+    "wander": {
+      "every": 3,
+      "table": "barrow"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 6
+      }
+    ],
+    "vault": {
+      "guards": [
+        [
+          "thug-or-militia",
+          "thug-or-militia",
+          "thug-or-militia",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "stone-golem"
+        ]
+      ],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 8
+        }
+      ],
+      "component": "cold-iron"
+    }
+  },
+  {
+    "id": "cinder-pits",
+    "name": "The Cinder Pits",
+    "kind": "delve",
+    "region": "dark-lands",
+    "level": 3,
+    "col": 24,
+    "row": 8,
+    "depth": 2,
+    "size": {
+      "min": 8,
+      "max": 10
+    },
+    "wander": {
+      "every": 3,
+      "table": "ashgate"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 8
+      }
+    ],
+    "vault": {
+      "guards": [
+        [
+          "clockwork-servitor",
+          "clockwork-servitor",
+          "clockwork-servitor",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier"
+        ]
+      ],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 10
+        }
+      ],
+      "component": "cold-iron"
+    }
+  },
+  {
+    "id": "drowned-depot",
+    "name": "The Drowned Depot",
+    "kind": "delve",
+    "region": "dark-lands",
+    "level": 3,
+    "col": 19,
+    "row": 20,
+    "depth": 2,
+    "size": {
+      "min": 8,
+      "max": 10
+    },
+    "wander": {
+      "every": 2,
+      "table": "vats"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 8
+      }
+    ],
+    "vault": {
+      "guards": [
+        ["beastman-trooper", "beastman-trooper", "vat-spawn", "vat-spawn", "cull-horror"],
+        ["slaver"]
+      ],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 10
+        }
+      ],
+      "component": "ooze-essence"
+    }
+  },
+  {
+    "id": "gallows-crypts",
+    "name": "The Gallows Crypts",
+    "kind": "delve",
+    "region": "dark-lands",
+    "level": 4,
+    "col": 3,
+    "row": 16,
+    "depth": 3,
+    "size": {
+      "min": 9,
+      "max": 10
+    },
+    "wander": {
+      "every": 2,
+      "table": "barrow"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 10
+      }
+    ],
+    "vault": {
+      "guards": [
+        [
+          "barrow-golem",
+          "barrow-golem",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier"
+        ]
+      ],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 10
+        }
+      ],
+      "component": "grave-garnet"
+    }
+  },
+  {
+    "id": "shattered-foundry",
+    "name": "The Shattered Foundry",
+    "kind": "delve",
+    "region": "dark-lands",
+    "level": 4,
+    "col": 14,
+    "row": 1,
+    "depth": 3,
+    "size": {
+      "min": 9,
+      "max": 10
+    },
+    "wander": {
+      "every": 2,
+      "table": "bunker"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 10
+      }
+    ],
+    "vault": {
+      "guards": [
+        [
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier"
+        ],
+        ["clockwork-servitor"]
+      ],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 10
+        }
+      ],
+      "component": "cold-iron"
+    }
+  },
+  {
+    "id": "watchers-spire",
+    "name": "The Watcher's Spire",
+    "kind": "tower",
+    "region": "borderlands",
+    "level": 2,
+    "col": 21,
+    "row": 14,
+    "depth": 3,
+    "size": {
+      "min": 5,
+      "max": 6
+    },
+    "wander": {
+      "every": 3,
+      "table": "barrow"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 6
+      }
+    ],
+    "vault": {
+      "guards": [
+        [
+          "thug-or-militia",
+          "thug-or-militia",
+          "paladin-champion",
+          "paladin-champion",
+          "paladin-champion"
+        ]
+      ],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 8
+        }
+      ],
+      "component": "ironwood"
+    }
+  },
+  {
+    "id": "old-westgate",
+    "name": "Old Westgate",
+    "kind": "city",
+    "region": "borderlands",
+    "level": 2,
+    "col": 8,
+    "row": 10,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 13
+    },
+    "wander": {
+      "every": 3,
+      "table": "plains"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 6
+      }
+    ],
+    "vault": {
+      "guards": [
+        [
+          "thug-or-militia",
+          "thug-or-militia",
+          "thug-or-militia",
+          "paladin-champion",
+          "paladin-champion",
+          "paladin-champion",
+          "paladin"
+        ]
+      ],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 10
+        }
+      ],
+      "component": "cold-iron"
+    }
+  },
+  {
+    "id": "black-spire",
+    "name": "The Black Spire",
+    "kind": "tower",
+    "region": "dark-lands",
+    "level": 5,
+    "col": 27,
+    "row": 10,
+    "depth": 4,
+    "size": {
+      "min": 5,
+      "max": 7
+    },
+    "wander": {
+      "every": 2,
+      "table": "bunker"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 10
+      }
+    ],
+    "vault": {
+      "guards": [
+        [
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier"
+        ]
+      ],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 10
+        }
+      ],
+      "component": "cold-iron"
+    }
+  },
+  {
+    "id": "duskmere",
+    "name": "Duskmere, the Sacked City",
+    "kind": "city",
+    "sewer": true,
+    "region": "dark-lands",
+    "level": 5,
+    "col": 8,
+    "row": 8,
+    "depth": 1,
+    "size": {
+      "min": 13,
+      "max": 14
+    },
+    "wander": {
+      "every": 2,
+      "table": "dl-plains"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 8
+      }
+    ],
+    "vault": {
+      "guards": [
+        [
+          "beastman-trooper",
+          "beastman-trooper",
+          "war-engine",
+          "war-engine",
+          "war-engine",
+          "war-engine",
+          "war-engine",
+          "war-engine"
+        ],
+        ["flesh-crafter"]
+      ],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 10
+        }
+      ],
+      "component": "ooze-essence"
+    }
+  }
+]

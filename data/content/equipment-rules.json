@@ -1,0 +1,19 @@
+{
+  "barding": {
+    "costMultiplier": 2,
+    "encumbranceMultiplier": 2
+  },
+  "noUnskilledPenalty": ["crossbow"],
+  "numerous": {
+    "trait": "numerous",
+    "perItem": 5
+  },
+  "startingCrowns": {
+    "dice": {
+      "count": 3,
+      "sides": 6,
+      "modifier": 0
+    },
+    "multiplier": 10
+  }
+}

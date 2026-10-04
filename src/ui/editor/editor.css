@@ -1,0 +1,92 @@
+.editor {
+  padding: 0 1rem 2rem;
+}
+
+.editor-bar input[type='number'] {
+  width: 3.5rem;
+}
+
+.editor-main {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.editor-grid {
+  flex: 0 0 auto;
+  max-width: 100%;
+  height: auto;
+  background: var(--panel, #fffdf6);
+}
+
+.editor-grid .cell {
+  fill: #e9e2d0;
+  cursor: pointer;
+}
+
+.editor-grid .cell.up,
+.editor-grid .cell.down {
+  fill: #d8c79a;
+}
+
+.editor-grid .cell.trap {
+  fill: #e0a49c;
+}
+
+.editor-grid .cell.npc {
+  fill: #b9c9df;
+}
+
+.editor-grid .glyph {
+  font: bold 14px monospace;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.editor-grid .edge {
+  stroke-width: 5;
+  stroke-linecap: round;
+  cursor: pointer;
+}
+
+.editor-grid .edge.wall {
+  stroke: #3d3528;
+}
+
+.editor-grid .edge.open {
+  stroke: rgb(0 0 0 / 6%);
+}
+
+.editor-grid .edge.door {
+  stroke: #a0642a;
+}
+
+.editor-grid .edge.secret {
+  stroke: #8a3fb0;
+  stroke-dasharray: 3 3;
+}
+
+.editor-grid .edge.border {
+  cursor: default;
+}
+
+.editor-grid .walker {
+  fill: #2d6a3e;
+}
+
+.editor-side {
+  flex: 1 1 22rem;
+  min-width: 0;
+}
+
+.editor-side textarea {
+  width: 100%;
+  font-family: monospace;
+}
+
+.walk-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}

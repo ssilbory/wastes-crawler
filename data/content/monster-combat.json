@@ -1,0 +1,284 @@
+[
+  {
+    "id": "peaceful-human",
+    "weapon": "club",
+    "tags": [],
+    "loot": {
+      "count": 1,
+      "sides": 4
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "thug-or-militia",
+    "weapon": "spear-light",
+    "tags": ["metal"],
+    "loot": {
+      "count": 1,
+      "sides": 6
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "barbarian-fighter",
+    "weapon": "axe-war",
+    "tags": ["metal"],
+    "loot": {
+      "count": 1,
+      "sides": 6
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "veteran-soldier",
+    "weapon": "spear-light",
+    "tags": ["metal"],
+    "loot": {
+      "count": 1,
+      "sides": 6
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "skilled-veteran",
+    "weapon": "sword-long",
+    "tags": ["metal"],
+    "loot": {
+      "count": 2,
+      "sides": 6
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "elites-or-special-guards",
+    "weapon": "halberd",
+    "tags": ["metal"],
+    "loot": {
+      "count": 3,
+      "sides": 6
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "knight-or-minor-hero",
+    "weapon": "sword-long",
+    "tags": ["metal"],
+    "loot": {
+      "count": 4,
+      "sides": 6
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "warrior-baron",
+    "weapon": "sword-great",
+    "tags": ["metal"],
+    "loot": {
+      "count": 6,
+      "sides": 6
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "barbarian-warlord",
+    "weapon": "axe-war",
+    "tags": ["metal"],
+    "loot": {
+      "count": 8,
+      "sides": 6
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "mighty-general",
+    "weapon": "sword-long",
+    "tags": ["metal"],
+    "loot": {
+      "count": 8,
+      "sides": 6
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "major-hero",
+    "weapon": "sword-great",
+    "tags": ["metal"],
+    "loot": {
+      "count": 10,
+      "sides": 6
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "great-warrior-king",
+    "weapon": "sword-great",
+    "tags": ["metal"],
+    "loot": {
+      "count": 12,
+      "sides": 6
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "petty-mage",
+    "weapon": "dagger",
+    "tags": ["metal"],
+    "loot": {
+      "count": 2,
+      "sides": 6
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "tribal-shaman",
+    "weapon": "staff",
+    "tags": [],
+    "loot": {
+      "count": 4,
+      "sides": 6
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "skilled-sorcerer",
+    "weapon": "dagger",
+    "tags": ["metal"],
+    "loot": {
+      "count": 5,
+      "sides": 6
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "master-wizard",
+    "weapon": "staff",
+    "tags": [],
+    "loot": {
+      "count": 8,
+      "sides": 6
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "famous-arch-mage",
+    "weapon": "staff",
+    "tags": [],
+    "loot": {
+      "count": 10,
+      "sides": 6
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "small-pack-predator",
+    "tags": [],
+    "mind": "animal"
+  },
+  {
+    "id": "large-solitary-predator",
+    "tags": [],
+    "mind": "animal"
+  },
+  {
+    "id": "apex-predator",
+    "tags": [],
+    "mind": "animal"
+  },
+  {
+    "id": "herd-beast",
+    "tags": [],
+    "mind": "animal"
+  },
+  {
+    "id": "vicious-large-herbivore",
+    "tags": [],
+    "mind": "animal"
+  },
+  {
+    "id": "elephantine-grazer",
+    "tags": ["reach"],
+    "mind": "animal"
+  },
+  {
+    "id": "automaton-humanlike",
+    "weapon": "mace",
+    "tags": ["unliving", "metal"],
+    "loot": {
+      "count": 1,
+      "sides": 6
+    },
+    "mind": "mindless"
+  },
+  {
+    "id": "automaton-laborer",
+    "tags": ["unliving", "metal"],
+    "loot": {
+      "count": 1,
+      "sides": 6
+    },
+    "mind": "mindless"
+  },
+  {
+    "id": "automaton-military",
+    "tags": ["unliving", "metal"],
+    "loot": {
+      "count": 2,
+      "sides": 6
+    },
+    "mind": "mindless"
+  },
+  {
+    "id": "automaton-warbot",
+    "tags": ["unliving", "metal", "reach"],
+    "loot": {
+      "count": 5,
+      "sides": 6
+    },
+    "mind": "mindless"
+  },
+  {
+    "id": "slime-or-ooze",
+    "tags": ["unliving"],
+    "mind": "mindless"
+  },
+  {
+    "id": "predator-small-vicious",
+    "tags": [],
+    "mind": "monster"
+  },
+  {
+    "id": "predator-large-vicious",
+    "tags": [],
+    "mind": "monster"
+  },
+  {
+    "id": "predator-hulking",
+    "tags": ["reach"],
+    "mind": "monster"
+  },
+  {
+    "id": "predator-hellbeast",
+    "tags": [],
+    "mind": "monster"
+  },
+  {
+    "id": "unnatural-swarm",
+    "tags": ["flying"],
+    "mind": "mindless"
+  },
+  {
+    "id": "terrible-warbeast",
+    "tags": ["reach"],
+    "mind": "monster"
+  },
+  {
+    "id": "legendary-god-titan",
+    "tags": ["reach"],
+    "mind": "monster"
+  },
+  {
+    "id": "vorpal-hare",
+    "tags": [],
+    "mind": "monster"
+  }
+]

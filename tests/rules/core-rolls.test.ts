@@ -3,6 +3,7 @@ import { netSteps, roll2d6WithEdge, rollD20WithEdge } from '../../src/rules/adva
 import {
   attributeModifier,
   bestModifier,
+  boostedModifier,
   type AttributeScores,
 } from '../../src/rules/attributes.ts';
 import {
@@ -35,6 +36,10 @@ describe('attributeModifier', () => {
 
   it('picks the best of several attributes', () => {
     expect(bestModifier(scores({ str: 18, con: 4 }), ['str', 'con'])).toBe(2);
+    expect(boostedModifier(18, 1)).toBe(3);
+    expect(boostedModifier(18, 2)).toBe(3);
+    expect(boostedModifier(7, 1)).toBe(0);
+    expect(boostedModifier(10)).toBe(0);
   });
 });
 
@@ -99,12 +104,33 @@ describe('push', () => {
 
   it('rerolls a failed check for one strain', () => {
     const r = pushCheck(scriptedRng([5, 4]), input, failed, { strain: 0, max: 10, broken: false });
-    expect(r).toMatchObject({ kind: 'pushed', result: { success: true }, strain: { strain: 1 } });
+    expect(r).toMatchObject({
+      kind: 'pushed',
+      result: { success: true, pushed: true },
+      strain: { strain: 1 },
+    });
   });
 
   it('breaks the character when the push reaches maximum strain', () => {
     const r = pushCheck(scriptedRng([1, 1]), input, failed, { strain: 9, max: 10, broken: false });
     expect(r).toMatchObject({ kind: 'pushed', strain: { strain: 10, broken: true } });
+  });
+
+  it('allows only one push per check, and the breaking reroll is not at disadvantage', () => {
+    const first = pushCheck(scriptedRng([1, 2]), input, failed, {
+      strain: 9,
+      max: 10,
+      broken: false,
+    });
+    if (first.kind !== 'pushed') throw new Error('push refused');
+    expect(first.result).toMatchObject({ dice: [1, 2], success: false, pushed: true });
+    expect(first.strain.broken).toBe(true);
+    expect(
+      pushCheck(scriptedRng([]), input, first.result, { strain: 0, max: 10, broken: false }),
+    ).toEqual({
+      kind: 'refused',
+      reason: 'already-pushed',
+    });
   });
 
   it('refuses when Broken, at maximum strain, or when the check succeeded', () => {
@@ -132,6 +158,9 @@ describe('saves', () => {
     expect(pcSaveTarget(1, s, 'evasion')).toBe(16);
     expect(pcSaveTarget(1, s, 'mental')).toBe(14);
     expect(pcSaveTarget(1, s, 'luck')).toBe(15);
+    // Developed Attribute: +1 to a modifier, never past +3.
+    expect(pcSaveTarget(1, s, 'evasion', { dex: 1 })).toBe(15);
+    expect(pcSaveTarget(1, scores({ str: 18 }), 'physical', { str: 2 })).toBe(12);
     expect(pcSaveTarget(10, s, 'luck')).toBe(6);
     expect(pcSaveTarget(15, s, 'physical')).toBe(2);
   });

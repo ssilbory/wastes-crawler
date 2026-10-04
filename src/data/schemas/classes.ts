@@ -13,6 +13,7 @@ export const FocusPickSchema = z.strictObject({
   count: z.int().min(1),
   category: z.enum(['any', 'warrior', 'expert']),
 });
+export type FocusPick = z.infer<typeof FocusPickSchema>;
 
 /** A level table for one full class or partial-class combination. */
 export const ProgressionSchema = z.strictObject({

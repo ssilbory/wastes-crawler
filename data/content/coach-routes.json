@@ -1,0 +1,14 @@
+[
+  {
+    "id": "west-road",
+    "towns": ["westhold", "eastmarch"],
+    "fare": 15,
+    "ambushDie": 6
+  },
+  {
+    "id": "ash-road",
+    "towns": ["cinderhold", "gutterwick"],
+    "fare": 20,
+    "ambushDie": 4
+  }
+]

@@ -66,6 +66,12 @@ describe('hitDamage', () => {
     expect(hitDamage(scriptedRng([1]), sword, { ...open, targetAc: 18 }).total).toBe(2);
   });
 
+  it('loses the Shock floor to a shield or immunity', () => {
+    const low = { ...sword, shockBonus: 3 };
+    expect(hitDamage(scriptedRng([1]), low, { ...open, shieldNegates: true }).total).toBe(2);
+    expect(hitDamage(scriptedRng([1]), low, { ...open, immune: true }).total).toBe(2);
+  });
+
   it('never goes below zero', () => {
     expect(
       hitDamage(scriptedRng([1]), { ...sword, attributeModifier: -2, shock: null }, open).total,

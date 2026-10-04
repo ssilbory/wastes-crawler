@@ -1,0 +1,40 @@
+[
+  {
+    "id": "ruinfield-gate",
+    "name": "Hold the Ruinfield Gate",
+    "text": "An orc garrison still holds the old gate into the Ruinfields, as ordered twenty years ago. Nobody has relieved them, and nobody gets through.",
+    "countersign": "The ash remembers",
+    "bluff": 13,
+    "recruit": "guard"
+  },
+  {
+    "id": "ash-road-patrol",
+    "name": "Patrol the Ash Road",
+    "text": "Old goblins still walk the hill roads in pairs and threes, asking every traveller for a password.",
+    "countersign": "Iron and salt",
+    "bluff": 11,
+    "complete": "ash-road-relief"
+  },
+  {
+    "id": "ashgate-hold",
+    "name": "Hold Ashgate Until Relieved",
+    "text": "Ashgate's bound garrison was ordered to hold the keep until relieved. Twenty years on, they are still waiting.",
+    "countersign": "The banner stays",
+    "bluff": 12,
+    "recruit": "guard"
+  },
+  {
+    "id": "bunker-watch",
+    "name": "Guard the War Bunker",
+    "text": "Vael's machines and the bound in his bunker guard it as ordered, against everyone but the lieutenant's own.",
+    "countersign": "Steel without end",
+    "bluff": 13
+  },
+  {
+    "id": "vaels-war",
+    "name": "Win the War for the Dark Lord",
+    "text": "Lieutenant Vael was bound to win the Dark Lord's war. No one has told him it is over, and no one can.",
+    "countersign": "The Dark Lord rides again",
+    "bluff": 15
+  }
+]

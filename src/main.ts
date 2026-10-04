@@ -1,7 +1,10 @@
-const canvas = document.querySelector<HTMLCanvasElement>('#view');
-const ctx = canvas?.getContext('2d');
+import { h, render } from 'preact';
+import { Shell } from './ui/Shell.tsx';
+import './ui/builder/builder.css';
+import './ui/arena/setup.css';
+import './ui/arena/fight.css';
+import './ui/world/world.css';
+import './ui/town/town.css';
 
-if (canvas && ctx) {
-  ctx.fillStyle = '#000';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-}
+const root = document.querySelector<HTMLElement>('#app');
+if (root) render(h(Shell, null), root);

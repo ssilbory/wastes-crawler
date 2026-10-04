@@ -17,6 +17,9 @@ describe('XP', () => {
 
   it('finds the level for an XP total', () => {
     expect([0, 2, 3, 92, 93, 116, 117, 144].map(levelForXp)).toEqual([1, 1, 2, 9, 10, 10, 11, 12]);
+    expect(levelForXp(-5)).toBe(1);
+    expect(() => levelForXp(Infinity)).toThrow();
+    expect(() => levelForXp(Number.NaN)).toThrow();
   });
 });
 

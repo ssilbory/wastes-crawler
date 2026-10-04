@@ -1,0 +1,7 @@
+{
+  "region": "dark-lands",
+  "warningDays": 7,
+  "raiders": [["human-raider", "human-raider", "human-raider"], ["alliance-ranger"]],
+  "reward": 60,
+  "surcharge": 0.5
+}
