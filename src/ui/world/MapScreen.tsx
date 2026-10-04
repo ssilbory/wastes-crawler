@@ -10,6 +10,7 @@ import { data } from '../builder/data.ts';
 import { HEX_SIZE, HexMap } from './HexMap.tsx';
 import { PartyPanel } from './PartyPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
+import { FactionsPanel } from './FactionsPanel.tsx';
 import { SettingPanel } from './SettingPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { QuestLog } from './QuestLog.tsx';
@@ -120,6 +121,7 @@ export function MapScreen(props: {
           <NpcPanel world={w} onChange={props.onChange} />
           <QuestLog world={w} onChange={props.onChange} />
           <SettingPanel world={w} inTown={town !== undefined} onChange={props.onChange} />
+          <FactionsPanel world={w} />
           <section class="panel log" aria-label="Journey log">
             <h3>Journal</h3>
             <ol>

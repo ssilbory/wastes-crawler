@@ -35,6 +35,8 @@ export interface WorldBattle {
   quest: string | null;
   /** The garrison post these enemies hold, if any. */
   garrison: string | null;
+  /** The faction patrol they are, as faction:uid, if any (Phase 13b). */
+  patrol: string | null;
 }
 
 function npcSetup(data: GameData, n: Npc): NpcSetup {
@@ -56,7 +58,12 @@ const fighters = (w: World) => alive(w).filter((m) => m.character.hp.current > 0
 export function encounterBattle(w: World, data: GameData): WorldBattle {
   if (!w.encounter) throw new Error('no encounter to fight');
   const fight = partyBattle(w, data, w.encounter.enemies, true, w.encounter.captive);
-  return { ...fight, quest: w.encounter.quest, garrison: w.encounter.garrison ?? null };
+  return {
+    ...fight,
+    quest: w.encounter.quest,
+    garrison: w.encounter.garrison ?? null,
+    patrol: w.encounter.patrol ?? null,
+  };
 }
 
 /** A fight's starting line-up as plain data, so the XP simulation can replay it in a worker. */
@@ -143,6 +150,7 @@ export function partyBattle(
     captive,
     quest: null,
     garrison: null,
+    patrol: null,
   };
 }
 
@@ -233,7 +241,12 @@ export function applyBattle(
     winnings(w, data, fight.enemies);
     if (difficulty) award(w, data, fight, difficulty);
     if (fight.captive) freeCaptive(w, data, fight.captive);
-    emit(w, data, { kind: 'fight-won', quest: fight.quest, garrison: fight.garrison });
+    emit(w, data, {
+      kind: 'fight-won',
+      quest: fight.quest,
+      garrison: fight.garrison,
+      patrol: fight.patrol,
+    });
   }
   const tier = difficulty && difficultyTier(data, difficulty).name;
   const dangerous = tier !== null && data.content.npcRules.moraleTiers.includes(tier);

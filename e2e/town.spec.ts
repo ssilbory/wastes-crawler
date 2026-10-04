@@ -60,6 +60,17 @@ test('rests at the inn, shops, and changes the party at the tavern', async ({ pa
 
 test('levels up a character with XP to spend', async ({ page }, testInfo) => {
   await startInWesthold(page);
+  // Wait for the autosave to hold the party before editing it.
+  await expect
+    .poll(() =>
+      page.evaluate((key) => {
+        const save = JSON.parse(localStorage.getItem(key) ?? 'null');
+        return save?.members?.some(
+          (m: { character: { name: string } }) => m.character.name === 'Snag',
+        );
+      }, WORLD_KEY),
+    )
+    .toBe(true);
   // Grant Snag the 3 XP for 2nd level through the autosave, then pick the journey back up.
   await page.evaluate((key) => {
     const save = JSON.parse(localStorage.getItem(key) as string);

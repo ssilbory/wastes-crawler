@@ -12,6 +12,7 @@ import { factionIncome, factionMaxHp } from '../../rules/factions.ts';
 import type { GameData } from '../character/context.ts';
 import type { WorldEvent } from '../world/bus.ts';
 import { moveClock } from '../world/clock.ts';
+import { note } from '../world/members.ts';
 import type { World } from '../world/types.ts';
 import {
   attackAction,
@@ -23,12 +24,16 @@ import {
   type OnStrike,
 } from './actions.ts';
 import { checkGoal, pickGoal, weakestBase } from './goals.ts';
+import { patrolBeaten } from './patrols.ts';
+import { warnRaid } from './raid.ts';
+import { hurtAsset } from './combat.ts';
+import { strikesFor } from './strikes.ts';
 import {
+  assetName,
   assetRule,
   factionOf,
   hasDamage,
   isActive,
-  locationName,
   ratings,
   srdAsset,
   startFactions,
@@ -72,7 +77,7 @@ export function takeAction(w: World, data: GameData, id: string, onStrike: OnStr
     return false;
   }
   if (readyAttackers(w, data, id).length > 0) {
-    attackAction(w, data, id, onStrike);
+    attackAction(w, data, id, onStrike, warnRaid(w, data, id));
     return true;
   }
   // Build up first while short of fighters or flush with Treasure, then march.
@@ -98,21 +103,41 @@ export function factionTurn(w: World, data: GameData): void {
     if (!s.goal) pickGoal(w, data, id, 0);
     s.treasure += factionIncome(ratings(s));
     assetIncome(w, data, s);
-    const onStrike: OnStrike = (victim, at, r) => {
-      const goal = s.goal as NonNullable<FactionState['goal']>;
-      if (goal.kind === 'blood-the-enemy') goal.progress += r.dealt;
-      if (r.razed && goal.target?.faction === victim && goal.target.at === at) goal.progress = 1;
-      if (r.razed && id === clockFaction)
-        moveClock(w, data, 1, `${factionOf(data, id).name} takes ${locationName(data, at)}.`);
-    };
+    const onStrike = strikesFor(w, data, id);
     const attacked = takeAction(w, data, id, onStrike);
     if (checkGoal(w, data, id, attacked) && id === clockFaction)
       moveClock(w, data, 1, `${factionOf(data, id).name} grows stronger.`);
   }
 }
 
-/** The factions' bus listener: a turn as each month begins. */
+/**
+ * The quests and rescues that knock the warlord's clock back also hurt the clock faction's
+ * sturdiest asset (Phase 13b).
+ */
+function knockBack(w: World, data: GameData): void {
+  const { faction, knockback } = data.content.campaign.clock;
+  const s = w.factions[faction];
+  if (!isActive(s) || s.assets.length === 0) return;
+  const sturdiest = s.assets.reduce((a, b) => (b.hp > a.hp ? b : a));
+  note(
+    w,
+    `${factionOf(data, faction).name}'s ${assetName(data, faction, sturdiest.asset)} feels the blow.`,
+  );
+  hurtAsset(w, data, faction, sturdiest, knockback.damage);
+}
+
+/**
+ * The factions' bus listener: a turn as each month begins, a beaten patrol's asset hurt, and the
+ * clock faction hurt by a knock back.
+ */
 export function factionsListener(w: World, data: GameData, e: WorldEvent): void {
+  const { knockback } = data.content.campaign.clock;
   if (e.kind === 'day-passed' && (w.day + 1) % data.content.overlandRules.daysPerMonth === 0)
     factionTurn(w, data);
+  else if (e.kind === 'fight-won' && e.patrol) patrolBeaten(w, data, e.patrol);
+  else if (
+    (e.kind === 'quest-done' && knockback.quests.includes(e.quest)) ||
+    (e.kind === 'captive-freed' && knockback.captives.includes(e.captive))
+  )
+    knockBack(w, data);
 }

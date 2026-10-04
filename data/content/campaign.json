@@ -5,7 +5,8 @@
     "perTier": 2,
     "knockback": {
       "quests": ["cull-records", "mire-slavers"],
-      "captives": ["held-crafter"]
+      "captives": ["held-crafter"],
+      "damage": 6
     }
   },
   "notes": {

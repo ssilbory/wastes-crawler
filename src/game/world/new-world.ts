@@ -4,6 +4,7 @@ import { toTenths } from '../../rules/economy.ts';
 import { hexKey } from '../../rules/hex.ts';
 import type { Rng } from '../../rules/rng.ts';
 import type { GameData } from '../character/context.ts';
+import { startFactions } from '../factions/state.ts';
 import { newMember, note } from './members.ts';
 import { regionMap } from './region.ts';
 import { enterTown, FULL_RATIONS } from './town.ts';
@@ -74,6 +75,7 @@ export function newWorld(data: GameData, rng: Rng, party: Recruit[], regionId?: 
     encounter: null,
     log: [],
   };
+  startFactions(w, data);
   note(w, `The party gathers in ${map.start.name}.`);
   enterTown(w, data, map.start.id, true);
   return w;

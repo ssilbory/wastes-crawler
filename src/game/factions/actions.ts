@@ -42,10 +42,16 @@ export function readyAttackers(w: World, data: GameData, id: string) {
   return s.assets.filter((a) => hasDamage(data, a.asset) && victimAt(w, data, id, a.at));
 }
 
-/** Attack: every ready asset strikes once. */
-export function attackAction(w: World, data: GameData, id: string, onStrike: OnStrike): void {
+/** Attack: every ready asset strikes once, except any held back at `holdAt` for a raid. */
+export function attackAction(
+  w: World,
+  data: GameData,
+  id: string,
+  onStrike: OnStrike,
+  holdAt: string | null = null,
+): void {
   const stolen = new Set<string>();
-  for (const held of readyAttackers(w, data, id)) {
+  for (const held of readyAttackers(w, data, id).filter((a) => a.at !== holdAt)) {
     // An earlier strike may have razed or destroyed everything here.
     const victim = victimAt(w, data, id, held.at);
     if (!victim) continue;

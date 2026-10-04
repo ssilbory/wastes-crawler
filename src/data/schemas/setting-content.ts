@@ -32,6 +32,8 @@ export type Authority = z.infer<typeof AuthoritySchema>;
 
 /** The monthly raid threat on the Dark Lands' settlements (Sam's call). */
 export const RaidRulesSchema = z.strictObject({
+  /** The faction whose attacks on the region's settlements come as raids (Phase 13b). */
+  faction: IdSchema,
   /** The region whose settlements are raided. */
   region: IdSchema,
   /** Days from the warning to the raid. */
@@ -56,7 +58,12 @@ export const CampaignSchema = z.strictObject({
     /** Segments per tier; each tier adds warlord patrols and boss reinforcements. */
     perTier: z.int().min(1),
     /** Quests turned in and captives freed that knock the clock back one segment. */
-    knockback: z.strictObject({ quests: z.array(IdSchema), captives: z.array(IdSchema) }),
+    knockback: z.strictObject({
+      quests: z.array(IdSchema),
+      captives: z.array(IdSchema),
+      /** Damage to the clock faction's sturdiest asset with each knock back (Phase 13b). */
+      damage: z.int().min(0),
+    }),
   }),
   notes: z.strictObject({
     sets: z.array(z.strictObject({ id: IdSchema, name: z.string().min(1) })).min(1),

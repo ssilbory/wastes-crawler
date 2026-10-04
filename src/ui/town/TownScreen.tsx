@@ -7,6 +7,7 @@ import { crowns, lootText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { NpcPanel } from '../world/NpcPanel.tsx';
 import { QuestLog } from '../world/QuestLog.tsx';
+import { FactionsPanel } from '../world/FactionsPanel.tsx';
 import { SettingPanel } from '../world/SettingPanel.tsx';
 import { raidedText } from '../../render/setting-view.ts';
 import { PartyPanel } from '../world/PartyPanel.tsx';
@@ -110,6 +111,7 @@ export function TownScreen(props: {
           <NpcPanel world={w} onChange={props.onChange} />
           <QuestLog world={w} onChange={props.onChange} />
           <SettingPanel world={w} inTown onChange={props.onChange} />
+          <FactionsPanel world={w} />
           <section class="panel log" aria-label="Journey log">
             <h3>Journal</h3>
             <ol>

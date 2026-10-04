@@ -1,3 +1,4 @@
+import { allMonsters } from './monsters.ts';
 import type { ContentData, FactionMagic, SrdData } from './schemas/index.ts';
 
 const MAGIC: readonly FactionMagic[] = ['none', 'low', 'medium', 'high'];
@@ -5,7 +6,8 @@ const MAGIC: readonly FactionMagic[] = ['none', 'low', 'medium', 'high'];
 /**
  * Factions (Phase 13) stand on map hexes, buy SRD assets from the curated list that their ratings
  * and Magic allow (vendor/wwn-srd/6.0 Factions/Faction Turn Actions.md, Create Asset), start with
- * no more assets of an attribute than its rating, and name real rivals.
+ * no more assets of an attribute than its rating, name real rivals, and send patrols of known
+ * monsters; the raiding faction exists.
  */
 export function factionReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const errors: string[] = [];
@@ -27,6 +29,7 @@ export function factionReferenceErrors(srd: SrdData, content: ContentData): stri
       errors.push(`factions: unknown asset ${a.asset}`);
   }
   const ids = new Set(factions.map((f) => f.id));
+  const monsters = new Set(allMonsters(srd, content).map((m) => m.id));
   if (ids.size !== factions.length) errors.push('factions: duplicate faction');
   for (const f of factions) {
     const where = `factions/${f.id}`;
@@ -52,6 +55,13 @@ export function factionReferenceErrors(srd: SrdData, content: ContentData): stri
     if (new Set(f.raise).size !== 3) errors.push(`${where}: raise must list each attribute once`);
     for (const id of Object.keys(f.names))
       if (!curated.has(id)) errors.push(`${where}: a name for unknown asset ${id}`);
+    for (const p of f.patrols) {
+      if (!curated.has(p.asset)) errors.push(`${where}: a patrol for unknown asset ${p.asset}`);
+      for (const id of new Set(p.enemies.flat()))
+        if (!monsters.has(id)) errors.push(`${where}: patrol of unknown monster ${id}`);
+    }
   }
+  if (!ids.has(content.raidRules.faction))
+    errors.push(`raidRules: unknown faction ${content.raidRules.faction}`);
   return errors;
 }

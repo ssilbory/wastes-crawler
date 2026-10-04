@@ -88,7 +88,7 @@ export interface World {
   caches: string[];
   ordersEnded: string[];
   authority: string[];
-  raid: { town: string; day: number; fighting: boolean } | null;
+  raid: WorldSave['raid'];
   raided: Record<string, number>;
   craftsmen: Record<string, CraftsmanState>;
   commissions: Commission[];

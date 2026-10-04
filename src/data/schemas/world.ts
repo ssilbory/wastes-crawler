@@ -83,6 +83,8 @@ export const PendingEncounterSchema = z.strictObject({
   order: IdSchema.optional(),
   /** The garrison post this group holds, by key, so a won fight clears it (Phase 12c). */
   garrison: z.string().optional(),
+  /** The faction asset this patrol belongs to, as faction:uid (Phase 13b). */
+  patrol: z.string().optional(),
 });
 
 /** Crowns spent and loot cashed in at one town, at listed value, since `since` (a day). */
@@ -279,7 +281,15 @@ export const WorldSaveSchema = z.strictObject({
   /** Tokens of command authority the party carries. */
   authority: z.array(IdSchema),
   /** The settlement raiders mean to hit, the day they strike, and whether the party is fighting them. */
-  raid: z.strictObject({ town: IdSchema, day: z.int().min(0), fighting: z.boolean() }).nullable(),
+  raid: z
+    .strictObject({
+      town: IdSchema,
+      day: z.int().min(0),
+      fighting: z.boolean(),
+      /** The raiding faction's asset that leads it (Phase 13b). */
+      asset: z.string().optional(),
+    })
+    .nullable(),
   /** Raided settlements and the day their prices recover. */
   raided: z.record(IdSchema, z.int().min(0)),
   /** Each craftsman's month, by id, once the party has visited. */

@@ -48,7 +48,7 @@ export type FactionTag = z.infer<typeof FactionTagSchema>;
 /**
  * A faction (6.7.0): its ratings and Magic, tags, headquarters, starting Treasure, other Bases of
  * Influence and assets, the assets it buys, its goals in turn, its rivals, and the order it raises
- * attributes with experience, and what it calls its assets.
+ * attributes with experience, what it calls its assets, and the patrols they send out.
  */
 export const FactionSchema = z.strictObject({
   id: IdSchema,
@@ -69,11 +69,20 @@ export const FactionSchema = z.strictObject({
   raise: z.array(FactionAttributeSchema).length(3),
   /** What its assets are called in the news, where the SRD name doesn't fit. */
   names: z.record(IdSchema, z.string().min(1)),
+  /** The group the party meets near an asset of this kind (Phase 13b); none for friends. */
+  patrols: z.array(
+    z.strictObject({
+      asset: IdSchema,
+      enemies: z.array(z.array(IdSchema).min(1).max(8)).min(1).max(3),
+    }),
+  ),
 });
 export type Faction = z.infer<typeof FactionSchema>;
 
 export const FactionContentSchema = z.strictObject({
   locations: z.array(FactionLocationSchema).min(1),
+  /** An encounter within `radius` hexes of a patrolling asset is its patrol 1 time in `chance`. */
+  patrol: z.strictObject({ radius: z.int().min(0), chance: z.int().min(1) }),
   assets: z.array(FactionAssetRuleSchema).min(1),
   factions: z.array(FactionSchema).min(1),
 });

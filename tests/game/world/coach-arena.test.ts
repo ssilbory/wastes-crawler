@@ -134,6 +134,7 @@ describe('coach routes (docs/rules-adaptation.md, Coach routes)', () => {
       captive: null,
       quest: null,
       garrison: null,
+      patrol: null,
     };
     settleByFighting(
       w,
@@ -162,6 +163,7 @@ describe('coach routes (docs/rules-adaptation.md, Coach routes)', () => {
       captive: null,
       quest: null,
       garrison: null,
+      patrol: null,
     };
     settleByFighting(
       w,

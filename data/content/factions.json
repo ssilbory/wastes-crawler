@@ -50,6 +50,10 @@
       "row": 4
     }
   ],
+  "patrol": {
+    "radius": 3,
+    "chance": 2
+  },
   "assets": [
     {
       "asset": "thugs"
@@ -193,7 +197,40 @@
         "armed-guards": "Slaver Guards",
         "worker-mob": "Slave Gangs",
         "manufactory": "Breeding Pens"
-      }
+      },
+      "patrols": [
+        {
+          "asset": "infantry",
+          "enemies": [
+            ["beastman-trooper", "beastman-trooper", "beastman-trooper"],
+            ["predator-beastman"]
+          ]
+        },
+        {
+          "asset": "scouts",
+          "enemies": [["predator-beastman", "predator-beastman"]]
+        },
+        {
+          "asset": "thugs",
+          "enemies": [["deserter-beastman", "deserter-beastman", "deserter-beastman"]]
+        },
+        {
+          "asset": "reserve-corps",
+          "enemies": [["beastman-trooper", "beastman-trooper"]]
+        },
+        {
+          "asset": "temple-fanatics",
+          "enemies": [["predator-beastman", "predator-beastman", "predator-beastman"]]
+        },
+        {
+          "asset": "cavalry",
+          "enemies": [["warbreed-hound", "warbreed-hound", "warbreed-hound"]]
+        },
+        {
+          "asset": "siege-experts",
+          "enemies": [["war-engine"], ["beastman-trooper", "beastman-trooper"]]
+        }
+      ]
     },
     {
       "id": "settlements",
@@ -260,7 +297,8 @@
         "front-merchant": "Traders",
         "worker-mob": "Dockhands",
         "manufactory": "Forges"
-      }
+      },
+      "patrols": []
     },
     {
       "id": "bastion",
@@ -318,7 +356,37 @@
         "idealistic-thugs": "Crusading Mob",
         "armed-guards": "Bastion Guards",
         "front-merchant": "Overseas Factors"
-      }
+      },
+      "patrols": [
+        {
+          "asset": "infantry",
+          "enemies": [["human-raider", "human-raider", "human-raider"], ["alliance-ranger"]]
+        },
+        {
+          "asset": "scouts",
+          "enemies": [["alliance-ranger", "alliance-ranger"]]
+        },
+        {
+          "asset": "enchanted-elites",
+          "enemies": [["paladin", "paladin"], ["half-elf-zealot"]]
+        },
+        {
+          "asset": "witch-hunters",
+          "enemies": [["half-elf-zealot", "half-elf-zealot"]]
+        },
+        {
+          "asset": "temple-fanatics",
+          "enemies": [["half-elf-zealot", "half-elf-zealot", "half-elf-zealot"]]
+        },
+        {
+          "asset": "cavalry",
+          "enemies": [["paladin", "paladin", "paladin"]]
+        },
+        {
+          "asset": "idealistic-thugs",
+          "enemies": [["human-raider", "human-raider", "human-raider", "human-raider"]]
+        }
+      ]
     },
     {
       "id": "loyalists",
@@ -366,7 +434,24 @@
         "armed-guards": "Temple Guards",
         "front-merchant": "Relic Dealers",
         "worker-mob": "Penitents"
-      }
+      },
+      "patrols": [
+        {
+          "asset": "thugs",
+          "enemies": [["thug-or-militia", "thug-or-militia", "thug-or-militia"]]
+        },
+        {
+          "asset": "idealistic-thugs",
+          "enemies": [
+            ["thug-or-militia", "thug-or-militia", "thug-or-militia", "thug-or-militia"],
+            ["petty-mage"]
+          ]
+        },
+        {
+          "asset": "armed-guards",
+          "enemies": [["thug-or-militia", "thug-or-militia"]]
+        }
+      ]
     }
   ]
 }

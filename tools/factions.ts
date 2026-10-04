@@ -1,10 +1,12 @@
 // pnpm factions: the faction turn run headless for two years, many times over (Phase 13). It
 // reports, every six months, how often each faction still stands, its bases and assets on
-// average, and where the warlord's clock sits, with no party in the world to change anything.
+// average, and where the warlord's clock sits, with no party in the world to change anything:
+// every raid comes undefended.
 //
 //   pnpm factions -- --runs 200 --seed factions --months 24
 import { loadContent } from '../src/data/content.ts';
 import { loadSrd } from '../src/data/load.ts';
+import { resolveRaid } from '../src/game/factions/raid.ts';
 import { startFactions } from '../src/game/factions/state.ts';
 import { factionTurn } from '../src/game/factions/turn.ts';
 import type { World } from '../src/game/world/types.ts';
@@ -27,11 +29,22 @@ const clocks = new Map<number, number[]>();
 
 for (let run = 0; run < RUNS; run++) {
   // Only what the faction turn touches; the party plays no part.
-  const w = { rng: createRng(`${SEED}-${run}`), factions: {}, clock: 0, day: 0, log: [] };
+  const w = {
+    rng: createRng(`${SEED}-${run}`),
+    factions: {},
+    clock: 0,
+    day: 0,
+    log: [],
+    raid: null,
+    raided: {},
+  };
   const world = w as unknown as World;
   startFactions(world, data);
   for (let month = 1; month <= MONTHS; month++) {
     world.log = [];
+    // A raid announced last month has come and gone, undefended.
+    if (world.raid) resolveRaid(world, data, world.raid.town);
+    world.raid = null;
     factionTurn(world, data);
     if (!checkpoints.includes(month)) continue;
     clocks.set(month, [...(clocks.get(month) ?? []), world.clock]);
@@ -59,4 +72,6 @@ for (const id of ids) {
   console.log(`| ${id} | ${cells.join(' | ')} |`);
 }
 const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)];
-console.log(`| clock (median) | ${checkpoints.map((m) => median(clocks.get(m) ?? [])).join(' | ')} |`);
+console.log(
+  `| clock (median) | ${checkpoints.map((m) => median(clocks.get(m) ?? [])).join(' | ')} |`,
+);

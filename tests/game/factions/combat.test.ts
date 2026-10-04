@@ -78,6 +78,8 @@ describe('faction damage (6.6.0, 6.1.0)', () => {
     const w = factionWorld();
     const s = faction(w, 'warhost');
     expect(defenderAt(s, 'grisks-hold')?.valueOf()).toBe(held(w, 'warhost', 'infantry'));
+    s.assets.reverse();
+    expect(defenderAt(s, 'grisks-hold')?.valueOf()).toBe(held(w, 'warhost', 'infantry'));
     s.assets = [];
     expect(defenderAt(s, 'grisks-hold')).toBe('base');
     expect(defenderAt(s, 'cinderhold')).toBeNull();

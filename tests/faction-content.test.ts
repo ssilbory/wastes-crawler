@@ -67,6 +67,7 @@ describe('faction content (Phase 13)', () => {
       enemies: ['warhost', 'pirates'],
       raise: ['force', 'force', 'wealth'],
       names: { dragon: 'Dragon' },
+      patrols: [{ asset: 'dragon', enemies: [['wyrm']] }],
     };
     expect(
       factionReferenceErrors(
@@ -89,10 +90,13 @@ describe('faction content (Phase 13)', () => {
       'factions/warhost: bad rival pirates',
       'factions/warhost: raise must list each attribute once',
       'factions/warhost: a name for unknown asset dragon',
+      'factions/warhost: a patrol for unknown asset dragon',
+      'factions/warhost: patrol of unknown monster wyrm',
       // The bastion is left out of this content.
       'factions/settlements: bad rival bastion',
       'factions/settlements: a second base at its HQ',
       'factions/settlements: bad rival bastion',
+      'raidRules: unknown faction bastion',
     ]);
     // Magic: the settlements have none.
     expect(
@@ -104,7 +108,13 @@ describe('faction content (Phase 13)', () => {
       'factions/settlements: witch-hunters needs low magic',
       'factions/settlements: bad rival warhost',
       'factions/settlements: bad rival bastion',
+      'raidRules: unknown faction bastion',
     ]);
+  });
+
+  it('needs the raiding faction to exist', () => {
+    const broken = { ...content, raidRules: { ...content.raidRules, faction: 'pirates' } };
+    expect(factionReferenceErrors(srd, broken)).toEqual(['raidRules: unknown faction pirates']);
   });
 
   it('needs the clock faction to exist', () => {

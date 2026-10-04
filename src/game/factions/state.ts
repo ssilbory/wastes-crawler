@@ -6,6 +6,7 @@ import type {
   FactionAsset,
   FactionAssetRule,
   FactionAttribute,
+  FactionLocation,
   FactionState,
 } from '../../data/schemas/index.ts';
 import { factionMaxHp, type Ratings } from '../../rules/factions.ts';
@@ -95,3 +96,7 @@ export function hasDamage(data: GameData, asset: string): boolean {
   const attack = srdAsset(data, asset).attack;
   return attack?.kind === 'check' && attack.damage !== null;
 }
+
+/** A location's hex; content checks guarantee every location an asset stands on exists. */
+export const locationOf = (data: GameData, id: string) =>
+  data.content.factions.locations.find((l) => l.id === id) as FactionLocation;

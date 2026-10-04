@@ -244,7 +244,7 @@ Thirteen phases, each gated by an exit criterion Claude Code can verify. The are
     - Scope: full game save, load, export, and import (characters save from Phase 4, the world from Phase 5), character JSON import in the release build, settings, key remapping, optional sound, and an in-game level editor for the ASCII format (ADR 0003)
     - Exit: save mid-dungeon, reload, identical state including RNG
 12. **Content and campaign**
-    - Scope: levels 1 to N, encounter tables, quest chain, boss; optional WWN faction turn between delves
+    - Scope: levels 1 to N, encounter tables, quest chain, boss; optional WWN faction turn between delves (built after the exit as Phase 13, a monthly faction turn: docs/rules-adaptation.md, Factions in Phase 13)
     - Exit: a complete campaign is playable start to finish
 
 ## Open decisions
