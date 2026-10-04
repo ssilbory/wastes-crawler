@@ -204,8 +204,6 @@ export const CombatMagicSchema = z.strictObject({
    * it for the scene on the first use only, later uses that scene being free (Healing Touch).
    */
   effort: z.enum(['scene', 'day', 'committed', 'activate']).optional(),
-  /** Only on an ally within one formation column, unless the user is a Far Healer (Phase 15). */
-  touch: z.literal(true).optional(),
   /** Usable once per scene, or once per target per scene. */
   limit: z.enum(['scene', 'target-scene']).optional(),
   effect: CombatEffectSchema,

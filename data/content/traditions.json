@@ -87,6 +87,6 @@
     "artLevels": {
       "revive-the-fallen": 8
     },
-    "excludedArts": ["limb-restoration", "purge-ailment", "the-healers-knife"]
+    "excludedArts": ["far-healer", "limb-restoration", "purge-ailment", "the-healers-knife"]
   }
 ]

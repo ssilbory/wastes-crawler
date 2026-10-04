@@ -10,7 +10,7 @@ import type { SaveType } from '../../rules/saves.ts';
 import { addStrain } from '../../rules/strain.ts';
 import { effectiveAc, harm, save, say } from './damage.ts';
 import { attackSteps, hitModifier, isUp } from './targeting.ts';
-import { artEffect, counterSpell, retainsSpell, touching } from './arts.ts';
+import { artEffect, counterSpell, retainsSpell } from './arts.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
 
 export function combatMagic(b: Battle, id: string): CombatMagic | undefined {
@@ -42,9 +42,6 @@ export function canUse(
   if (!c || !(c.canCast || (m.source === 'art' && c.armorFree.includes(m.id)))) return false;
   // Retain Sorcery's stress and Swift Casting's spell hold off other spells (Phase 15).
   if (m.source === 'spell' && c.castLock >= b.round) return false;
-  // A touch reaches the next formation column at most, unless the healer is a Far Healer.
-  const t = b.combatants.find((x) => x.id === target);
-  if (m.touch && t && !c.arts.includes('far-healer') && !touching(actor, t)) return false;
   if (m.limit === 'scene' && c.usedThisScene.has(m.id)) return false;
   if (m.limit === 'target-scene' && c.usedThisScene.has(`${m.id}:${target ?? ''}`)) return false;
   if (m.source === 'art')

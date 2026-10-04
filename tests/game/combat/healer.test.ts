@@ -118,6 +118,15 @@ describe('Healing Touch', () => {
     expect(casterOf(snag).effortUsed).toBe(casterOf(snag).effortMax);
   });
 
+  it('reaches anyone in the party, however far along the line', () => {
+    const b = battle(priest());
+    const grukk = hurtGrukk(b);
+    grukk.column = 3;
+    b.rng = scriptedRng([1, 1]);
+    expect(castMagic(b, who(b, 'Snag'), 'healing-touch', grukk.id, undefined)).toBe(true);
+    expect(grukk.hp).toBe(4);
+  });
+
   it('adds the level when Empowered, and revives the Mortally Wounded', () => {
     const b = battle(priest(3, ['healing-touch', 'empowered-healer']));
     const snag = who(b, 'Snag');
