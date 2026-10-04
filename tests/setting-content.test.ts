@@ -171,9 +171,25 @@ describe('setting content (Phase 12b)', () => {
       'ruins/lake: not on passable land',
       'ruins/town: shares its hex with a settlement or dungeon',
       'ruins/odd: size range is empty',
+      'ruins/odd: shares its hex with another ruin',
       'ruins/odd: unknown table nowhere',
       'ruins/odd: unknown monster dragon',
       'ruins/odd: unknown component unobtainium',
+      'ruins/odd: shares its hex with another ruin',
+    ]);
+    const sized = [
+      { ...ruin, id: 'big', size: { min: 8, max: 12 } },
+      { ...ruin, id: 'deep-city', kind: 'city' as const, depth: 2, size: { min: 12, max: 12 } },
+      { ...ruin, id: 'wet-tower', kind: 'tower' as const, sewer: true, size: { min: 5, max: 5 } },
+    ].map((r, i) => ({ ...r, col: i + 1, row: 9 }));
+    expect(
+      settingReferenceErrors(srd, { ...content, ruins: sized }).filter((e) =>
+        e.startsWith('ruins'),
+      ),
+    ).toEqual([
+      "ruins/big: a delve's levels are 8 to 10 cells",
+      'ruins/deep-city: a city is one level',
+      'ruins/wet-tower: only cities have sewers',
     ]);
   });
 });

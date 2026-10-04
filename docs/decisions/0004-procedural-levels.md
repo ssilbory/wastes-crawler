@@ -24,3 +24,4 @@ Sam's call: optional side dungeons.
 - Ruin sites are content (data/content/ruins.json); the generator is src/game/dungeon/generate.ts.
 - A ruin's dungeon id carries its seed (`<ruin>-v<seed>`), so a save reloads the same layout without storing the map.
 - The game validates each new layout with the level validator before the party enters; `pnpm validate:levels` also checks every ruin under 100 seeds.
+- Sam's call: three kinds of ruin. Delves go down to a vault, towers climb up to one, and ruined cities are a street level of buildings with an optional sewer (src/game/dungeon/city.ts). Shared pieces are in src/game/dungeon/maze.ts.

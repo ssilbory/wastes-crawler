@@ -1,6 +1,6 @@
 import { parseLevelMap } from './dungeon-map.ts';
 import { allMonsters } from './monsters.ts';
-import type { ContentData, SrdData } from './schemas/index.ts';
+import { RUIN_SIZES, type ContentData, type SrdData } from './schemas/index.ts';
 
 /**
  * Phase 12b and 12c's setting systems point at things that exist: standing orders at quests and
@@ -127,7 +127,18 @@ function ruinErrors(content: ContentData, monsters: Set<string>): string[] {
       )
     )
       errors.push(`${where}: shares its hex with a settlement or dungeon`);
+    const sizes = RUIN_SIZES[r.kind];
     if (r.size.min > r.size.max) errors.push(`${where}: size range is empty`);
+    else if (r.size.min < sizes.min || r.size.max > sizes.max)
+      errors.push(`${where}: a ${r.kind}'s levels are ${sizes.min} to ${sizes.max} cells`);
+    if (r.kind === 'city' && r.depth !== 1) errors.push(`${where}: a city is one level`);
+    if (r.sewer && r.kind !== 'city') errors.push(`${where}: only cities have sewers`);
+    if (
+      content.ruins.some(
+        (o) => o !== r && o.region === r.region && o.col === r.col && o.row === r.row,
+      )
+    )
+      errors.push(`${where}: shares its hex with another ruin`);
     if (!content.encounterTables.some((t) => t.id === r.wander.table))
       errors.push(`${where}: unknown table ${r.wander.table}`);
     for (const id of new Set(r.vault.guards.flat()))

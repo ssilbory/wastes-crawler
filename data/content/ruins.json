@@ -2,6 +2,7 @@
   {
     "id": "sunken-chapel",
     "name": "The Sunken Chapel",
+    "kind": "delve",
     "region": "borderlands",
     "col": 2,
     "row": 10,
@@ -34,6 +35,7 @@
   {
     "id": "old-mine",
     "name": "The Old Mine",
+    "kind": "delve",
     "region": "borderlands",
     "col": 3,
     "row": 2,
@@ -66,6 +68,7 @@
   {
     "id": "cinder-pits",
     "name": "The Cinder Pits",
+    "kind": "delve",
     "region": "dark-lands",
     "col": 24,
     "row": 8,
@@ -98,6 +101,7 @@
   {
     "id": "drowned-depot",
     "name": "The Drowned Depot",
+    "kind": "delve",
     "region": "dark-lands",
     "col": 19,
     "row": 20,
@@ -130,6 +134,7 @@
   {
     "id": "gallows-crypts",
     "name": "The Gallows Crypts",
+    "kind": "delve",
     "region": "dark-lands",
     "col": 3,
     "row": 16,
@@ -162,6 +167,7 @@
   {
     "id": "shattered-foundry",
     "name": "The Shattered Foundry",
+    "kind": "delve",
     "region": "dark-lands",
     "col": 14,
     "row": 1,
@@ -189,6 +195,139 @@
         }
       ],
       "component": "cold-iron"
+    }
+  },
+  {
+    "id": "watchers-spire",
+    "name": "The Watcher's Spire",
+    "kind": "tower",
+    "region": "borderlands",
+    "col": 21,
+    "row": 14,
+    "depth": 3,
+    "size": {
+      "min": 5,
+      "max": 6
+    },
+    "wander": {
+      "every": 3,
+      "table": "barrow"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 6
+      }
+    ],
+    "vault": {
+      "guards": [["thug-or-militia", "thug-or-militia"]],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 8
+        }
+      ],
+      "component": "ironwood"
+    }
+  },
+  {
+    "id": "old-westgate",
+    "name": "Old Westgate",
+    "kind": "city",
+    "region": "borderlands",
+    "col": 8,
+    "row": 10,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 13
+    },
+    "wander": {
+      "every": 3,
+      "table": "plains"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 6
+      }
+    ],
+    "vault": {
+      "guards": [["thug-or-militia", "thug-or-militia", "thug-or-militia"]],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 10
+        }
+      ],
+      "component": "cold-iron"
+    }
+  },
+  {
+    "id": "black-spire",
+    "name": "The Black Spire",
+    "kind": "tower",
+    "region": "dark-lands",
+    "col": 27,
+    "row": 10,
+    "depth": 4,
+    "size": {
+      "min": 5,
+      "max": 7
+    },
+    "wander": {
+      "every": 2,
+      "table": "bunker"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 10
+      }
+    ],
+    "vault": {
+      "guards": [["clockwork-soldier", "clockwork-soldier"]],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 10
+        }
+      ],
+      "component": "cold-iron"
+    }
+  },
+  {
+    "id": "duskmere",
+    "name": "Duskmere, the Sacked City",
+    "kind": "city",
+    "sewer": true,
+    "region": "dark-lands",
+    "col": 8,
+    "row": 8,
+    "depth": 1,
+    "size": {
+      "min": 13,
+      "max": 14
+    },
+    "wander": {
+      "every": 2,
+      "table": "dl-plains"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 8
+      }
+    ],
+    "vault": {
+      "guards": [["beastman-trooper", "beastman-trooper"], ["flesh-crafter"]],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 10
+        }
+      ],
+      "component": "ooze-essence"
     }
   }
 ]

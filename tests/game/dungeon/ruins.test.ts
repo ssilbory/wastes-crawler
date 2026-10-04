@@ -177,3 +177,64 @@ describe('ruins in play (docs/rules-adaptation.md, Ruins)', () => {
     expect(w.log.join('\n')).toContain('The party takes mystery.');
   });
 });
+
+describe('towers and ruined cities (Sam’s call)', () => {
+  const SPIRE = ruinOf('black-spire');
+  const DUSKMERE = ruinOf('duskmere');
+  const WESTGATE = ruinOf('old-westgate');
+
+  it('climb a tower floor by floor to a vault at the top', () => {
+    const d = generateRuin(SPIRE, 2);
+    expect(d.levels.map((l) => l.name)).toEqual([
+      'The Black Spire, floor 1',
+      'The Black Spire, floor 2',
+      'The Black Spire, floor 3',
+      'The Black Spire, floor 4',
+    ]);
+    // The ground floor's way out and every way on are stairs up; above it, stairs down lead back.
+    const glyph = (i: number, at: { x: number; y: number }) =>
+      d.levels[i]?.map[2 * at.y + 1]?.[2 * at.x + 1];
+    for (const [i, l] of d.levels.entries())
+      for (const link of l.links) {
+        const to = link.to;
+        const back = 'surface' in to || d.levels.findIndex((x) => x.id === to.level) < i;
+        expect(glyph(i, link.at)).toBe(back && i > 0 ? '>' : '<');
+      }
+    expect(d.levels[3]?.specials.some((s) => s.kind === 'cache' && s.vault)).toBe(true);
+  });
+
+  it('lay out a city as streets and buildings, its vault in the biggest building', () => {
+    const d = generateRuin(WESTGATE, 4);
+    expect(d.levels).toHaveLength(1);
+    const [street] = d.levels;
+    expect(street?.name).toBe('Old Westgate, the streets');
+    expect(street?.links).toEqual([{ at: d.entry.at, to: { surface: true } }]);
+    expect(street?.traps).toHaveLength(2);
+    expect(street?.specials.filter((s) => s.kind === 'cache' && s.vault)).toHaveLength(1);
+  });
+
+  it('put a sewer under some cities, with two manholes and the vault below', () => {
+    const d = generateRuin(DUSKMERE, 4);
+    expect(d.levels.map((l) => l.id)).toEqual(['duskmere-streets', 'duskmere-sewer']);
+    const [street, sewer] = d.levels;
+    expect(street?.links.filter((l) => 'level' in l.to)).toHaveLength(2);
+    expect(sewer?.links).toHaveLength(2);
+    expect(street?.specials.some((s) => s.kind === 'cache' && s.vault)).toBe(false);
+    expect(sewer?.specials.some((s) => s.kind === 'cache' && s.vault)).toBe(true);
+  });
+
+  it('pass the level validation, every kind, under many seeds', () => {
+    for (const ruin of [SPIRE, DUSKMERE, WESTGATE, ruinOf('watchers-spire')])
+      for (let seed = 1; seed <= 40; seed++)
+        expect(
+          dungeonReferenceErrors({ ...data.content, dungeons: [generateRuin(ruin, seed)] }),
+        ).toEqual([]);
+  });
+
+  it('can be entered from the map', () => {
+    const w = atRuin(DUSKMERE);
+    expect(wayDownHere(w, data)?.name).toBe('Duskmere, the Sacked City');
+    expect(enterDungeon(w, data)).toEqual({ ok: true });
+    expect(w.log.join('\n')).toContain('The party reaches Duskmere, the Sacked City, the streets.');
+  });
+});
