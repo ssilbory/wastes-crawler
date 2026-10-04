@@ -26,13 +26,29 @@ test('edits, validates, test-walks, and exports a level', async ({ page }, testI
   await page.getByRole('button', { name: 'Revert level' }).click();
   await expect(problems).toContainText('The dungeon is valid.');
 
-  // A trap needs its details in the level JSON, and the validator says so.
+  // Phase 17: a painted trap gets details to edit, so the level stays valid.
   await page.getByRole('radio', { name: 'Trap' }).click();
   await page.locator('[data-cell="0,0"]').click();
-  await expect(problems).toContainText('the trap at 0,0 has no details');
+  await expect(problems).toContainText('The dungeon is valid.');
+  const cell = page.getByRole('region', { name: 'Cell details' });
+  await expect(cell).toContainText('Cell 0,0');
+  await cell.getByRole('textbox', { name: 'Name' }).fill('spiked pit');
+  await cell.getByRole('combobox', { name: 'Effect' }).selectOption('poison');
+  await cell.getByRole('checkbox', { name: 'Safe to camp' }).check();
+  await expect(page.locator('[data-cell="0,0"]')).toHaveClass(/safe/);
+
+  // An NPC is a captive held by guards, or a guard post on plain floor.
+  await page.getByRole('radio', { name: 'NPC' }).click();
+  await page.locator('[data-cell="0,0"]').click();
+  await expect(cell.getByRole('combobox', { name: 'Captive', exact: true })).toBeVisible();
+  await cell.getByRole('combobox', { name: 'Kind' }).selectOption('guard');
+  await expect(cell.getByRole('combobox', { name: 'Standing order' })).toBeVisible();
+  await expect(problems).toContainText('The dungeon is valid.');
+  await page.screenshot({ path: testInfo.outputPath('editor-cell.png'), fullPage: true });
   await page.getByRole('radio', { name: 'Floor' }).click();
   await page.locator('[data-cell="0,0"]').click();
   await expect(problems).toContainText('The dungeon is valid.');
+  await expect(cell.getByRole('combobox', { name: 'Kind' })).toHaveCount(0);
 
   // Walk it: west across the entry room into the wall.
   await page.getByRole('button', { name: 'Walk this level' }).click();

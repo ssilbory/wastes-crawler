@@ -1,23 +1,26 @@
 import { useState } from 'preact/hooks';
 import type { CellKind, EdgeKind } from '../../data/dungeon-map.ts';
 import type { Dungeon } from '../../data/schemas/index.ts';
+import { paintCell } from '../../game/dungeon/level-details.ts';
 import {
   blankMap,
   editorErrors,
   exportDungeons,
-  setCell,
   setEdge,
   withLevelMap,
 } from '../../game/dungeon/level-edit.ts';
+import type { Cell } from '../../rules/grid.ts';
 import type { Walk } from '../../game/dungeon/sandbox.ts';
 import { EDIT_CELL, editorGrid } from '../../render/level-editor-view.ts';
 import { data } from '../builder/data.ts';
 import '../world/world.css';
 import './editor.css';
+import { CellPanel } from './CellPanel.tsx';
 import { WalkPanel } from './WalkPanel.tsx';
 
-type Tool = { cell: CellKind } | { edge: EdgeKind };
+type Tool = { cell: CellKind } | { edge: EdgeKind } | { select: true };
 const TOOLS: [string, Tool][] = [
+  ['Select', { select: true }],
   ['Wall', { edge: 'wall' }],
   ['Open', { edge: 'open' }],
   ['Door', { edge: 'door' }],
@@ -55,21 +58,22 @@ function LevelEditor(props: { original: Dungeon; onDungeon: (id: string) => void
   const { original } = props;
   const dungeonId = original.id;
   const [levelId, setLevelId] = useState(original.levels[0]?.id ?? '');
-  const [edits, setEdits] = useState<Record<string, string[]>>({});
+  const [edited, setEdited] = useState<Dungeon>(original);
   const [tool, setTool] = useState(0);
   const [walk, setWalk] = useState<Walk | null>(null);
   const [size, setSize] = useState({ w: 8, h: 8 });
-  const edited = Object.entries(edits).reduce(
-    (d, [id, rows]) => withLevelMap(d, id, rows),
-    original,
-  );
+  /** The cell whose details are shown, on the level it was picked on. */
+  const [selected, setSelected] = useState<{ level: string; cell: Cell } | null>(null);
   const level =
     edited.levels.find((l) => l.id === levelId) ??
     (edited.levels[0] as (typeof original.levels)[0]);
   const rows = level.map;
   const grid = editorGrid(rows);
   const errors = editorErrors(data.content, edited);
-  const update = (next: string[]) => setEdits({ ...edits, [level.id]: next });
+  const update = (next: string[]) => setEdited(withLevelMap(edited, level.id, next));
+  const picked = selected?.level === level.id ? selected.cell : null;
+  const posts = new Set(level.garrisons.map((g) => `${g.at.x},${g.at.y}`));
+  const safe = new Set(level.safe.map((c) => `${c.x},${c.y}`));
   const current = (TOOLS[tool] as [string, Tool])[1];
   const walkingHere = walk?.level === level.id ? walk : null;
 
@@ -108,9 +112,11 @@ function LevelEditor(props: { original: Dungeon; onDungeon: (id: string) => void
         <button
           type="button"
           onClick={() =>
-            setEdits({
-              ...edits,
-              [level.id]: original.levels.find((l) => l.id === level.id)?.map ?? rows,
+            setEdited({
+              ...edited,
+              levels: edited.levels.map(
+                (l) => original.levels.find((o) => o.id === l.id && l.id === level.id) ?? l,
+              ),
             })
           }
         >
@@ -165,26 +171,31 @@ function LevelEditor(props: { original: Dungeon; onDungeon: (id: string) => void
             {grid.cells.map((c) => (
               <rect
                 key={`${c.x},${c.y}`}
-                class={`cell ${c.kind}`}
+                class={`cell ${c.kind}${safe.has(`${c.x},${c.y}`) ? ' safe' : ''}${
+                  picked?.x === c.x && picked.y === c.y ? ' picked' : ''
+                }`}
                 data-cell={`${c.x},${c.y}`}
                 x={c.x * EDIT_CELL}
                 y={c.y * EDIT_CELL}
                 width={EDIT_CELL}
                 height={EDIT_CELL}
                 onClick={() => {
-                  if ('cell' in current) update(setCell(rows, c, current.cell));
+                  const cell = { x: c.x, y: c.y };
+                  if ('cell' in current)
+                    setEdited(paintCell(data.content, edited, level.id, cell, current.cell));
+                  if (!('edge' in current)) setSelected({ level: level.id, cell });
                 }}
               />
             ))}
             {grid.cells.map((c) =>
-              c.kind === 'floor' ? null : (
+              c.kind === 'floor' && !posts.has(`${c.x},${c.y}`) ? null : (
                 <text
                   key={`t-${c.x},${c.y}`}
                   class="glyph"
                   x={(c.x + 0.5) * EDIT_CELL}
                   y={(c.y + 0.68) * EDIT_CELL}
                 >
-                  {{ up: '<', down: '>', trap: 'T', npc: 'N' }[c.kind]}
+                  {{ floor: 'G', up: '<', down: '>', trap: 'T', npc: 'N' }[c.kind]}
                 </text>
               ),
             )}
@@ -231,6 +242,9 @@ function LevelEditor(props: { original: Dungeon; onDungeon: (id: string) => void
               </>
             )}
           </section>
+          {picked && (
+            <CellPanel dungeon={edited} level={level.id} cell={picked} onChange={setEdited} />
+          )}
           <WalkPanel
             dungeon={edited}
             level={level.id}

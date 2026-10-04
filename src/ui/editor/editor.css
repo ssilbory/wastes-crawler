@@ -90,3 +90,23 @@
   flex-wrap: wrap;
   gap: 0.3rem;
 }
+
+/* Safe camping squares and the cell whose details are shown (Phase 17). */
+.editor-grid .cell.safe {
+  stroke: var(--ok);
+  stroke-width: 2;
+}
+
+.editor-grid .cell.picked {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+.cell-panel fieldset {
+  margin-top: 0.75rem;
+}
+
+.cell-panel .dice {
+  display: flex;
+  gap: 0.5rem;
+}
