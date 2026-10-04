@@ -13,6 +13,7 @@ async function startAtBarrow(page: Page) {
   await page.getByRole('combobox', { name: 'Front row, slot 2' }).selectOption({ label: 'Grukk' });
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('dungeon-e2e');
   await page.getByRole('button', { name: 'Start a new world' }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
   // Put the party on the barrow's hex through the autosave, then pick the journey back up.
   await page.evaluate((key) => {
     const save = JSON.parse(localStorage.getItem(key) as string);

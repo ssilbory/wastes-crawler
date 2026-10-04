@@ -113,6 +113,7 @@ describe('setting content (Phase 12b)', () => {
     const lostCampaign: ContentData = {
       ...content,
       campaign: {
+        intro: campaign.intro,
         clock: {
           ...campaign.clock,
           segments: 1,

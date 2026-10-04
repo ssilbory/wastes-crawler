@@ -37,6 +37,7 @@ test('follows the factions month by month, and hears of a Bastion raid', async (
   await page.getByRole('combobox', { name: 'Front row, slot 2' }).selectOption({ label: 'Grukk' });
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('factions-e2e');
   await page.getByRole('button', { name: 'Start a new world' }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
   // The Borderlands have no factions.
   await expect(page.getByRole('region', { name: 'Factions' })).toHaveCount(0);
   await edit(

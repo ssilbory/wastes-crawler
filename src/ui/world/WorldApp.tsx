@@ -28,6 +28,7 @@ import { assess } from './assess.ts';
 import { MapScreen } from './MapScreen.tsx';
 import { DungeonScreen } from './DungeonScreen.tsx';
 import { enterDungeon } from '../../game/dungeon/explore.ts';
+import { IntroScreen } from './IntroScreen.tsx';
 import { StartScreen } from './StartScreen.tsx';
 import { crossOver } from '../../game/world/crossing.ts';
 
@@ -45,7 +46,7 @@ export function WorldApp() {
   const [slot, setSlot] = useState<Slot>(activeSlot);
   const world = useRef<World | null>(null);
   const [version, setVersion] = useState(0);
-  const [screen, setScreen] = useState<'start' | 'map' | 'town'>('start');
+  const [screen, setScreen] = useState<'start' | 'intro' | 'map' | 'town'>('start');
   /** The fight on screen, what settles it, and where the party goes after. */
   const [fight, setFight] = useState<{
     battle: WorldBattle;
@@ -80,7 +81,7 @@ export function WorldApp() {
   const start = (party: Recruit[], seed: string) => {
     world.current = newWorld(data, seed.trim() ? createRng(seed.trim()) : freshRng(), party);
     setErrors([]);
-    setScreen('map');
+    setScreen('intro');
     changed();
   };
 
@@ -128,6 +129,8 @@ export function WorldApp() {
         onImport={(file) => void file.text().then(open)}
       />
     );
+  if (screen === 'intro')
+    return <IntroScreen intro={data.content.campaign.intro} onBegin={() => setScreen('map')} />;
   if (fight) {
     const done = () => {
       setFight(null);

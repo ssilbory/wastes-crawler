@@ -18,6 +18,7 @@ async function begin(page: Page, seed: string) {
   await page.getByRole('link', { name: 'Overland' }).click();
   await party(page, seed);
   await page.getByRole('button', { name: 'Start a new world' }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
 }
 
 const saved = (page: Page) =>
@@ -34,6 +35,7 @@ test('keeps worlds in three slots', async ({ page }) => {
   await slots.getByRole('radio', { name: /^Slot 2/ }).check();
   await party(page, 'slot-two');
   await page.getByRole('button', { name: 'Start a new world', exact: true }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
   await page.locator('[data-hex="4,8"]').click();
   await page.getByRole('button', { name: 'Pass the quarter' }).click();
   await page.reload();

@@ -51,6 +51,11 @@ export type RaidRules = z.infer<typeof RaidRulesSchema>;
  * party's choice over the Seal of Command.
  */
 export const CampaignSchema = z.strictObject({
+  /** The setting in brief, shown once when a new world starts (Phase 16; docs/setting.md). */
+  intro: z.strictObject({
+    title: z.string().min(1),
+    paragraphs: z.array(z.string().min(1)).min(1).max(6),
+  }),
   clock: z.strictObject({
     /** The faction whose met goals advance the clock (Phase 13). */
     faction: IdSchema,

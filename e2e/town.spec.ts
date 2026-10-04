@@ -14,6 +14,7 @@ async function startInRubblegate(page: Page) {
   await page.getByRole('combobox', { name: 'Front row, slot 2' }).selectOption({ label: 'Grukk' });
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('town-e2e');
   await page.getByRole('button', { name: 'Start a new world' }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
   await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
   await expect(page.getByRole('heading', { name: 'Rubblegate' })).toBeVisible();
 }

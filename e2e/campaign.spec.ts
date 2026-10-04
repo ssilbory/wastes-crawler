@@ -27,6 +27,7 @@ test('takes on the Ashgate Rolls and meets the gatehouse post', async ({ page },
   await page.getByRole('combobox', { name: 'Front row, slot 2' }).selectOption({ label: 'Grukk' });
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('campaign-e2e');
   await page.getByRole('button', { name: 'Start a new world' }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
   await edit(
     page,
     `Object.assign(save, { region: 'dark-lands', elsewhere: { borderlands: save.visited },

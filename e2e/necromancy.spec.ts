@@ -28,6 +28,7 @@ test('raises a skeleton from the fallen and releases it', async ({ page }, testI
     .selectOption({ label: 'Fizzwick' });
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('necromancy-e2e');
   await page.getByRole('button', { name: 'Start a new world' }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
   await expect(page.getByRole('region', { name: 'Necromancy' })).toHaveCount(0);
   await edit(
     page,

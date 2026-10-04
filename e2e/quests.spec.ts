@@ -40,6 +40,7 @@ test('takes a quest in town, finishes it on the map, and collects the reward', a
     await page.getByRole('combobox', { name: slot }).selectOption({ label: name });
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('quest-e2e');
   await page.getByRole('button', { name: 'Start a new world' }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
 
   // The reeve's map shows the way: the land between Rubblegate and the camp is known.
   await page.evaluate(() => {

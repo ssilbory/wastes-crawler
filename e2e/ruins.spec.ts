@@ -28,6 +28,7 @@ test('enters the Sunken Chapel, and finds the same ruin after a reload', async (
   await page.getByRole('combobox', { name: 'Front row, slot 2' }).selectOption({ label: 'Grukk' });
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('ruins-e2e');
   await page.getByRole('button', { name: 'Start a new world' }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
   await edit(page, `save.position = { col: 2, row: 10 }; save.visited.push('2,10');`);
   await expect(page.locator('[data-hex="2,10"] .dungeon')).toBeVisible();
   await page.getByRole('button', { name: 'Enter The Sunken Chapel' }).click();

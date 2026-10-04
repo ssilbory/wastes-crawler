@@ -20,6 +20,7 @@ async function start(page: Page, seed: string) {
     await page.getByRole('combobox', { name: slot }).selectOption({ label: name });
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill(seed);
   await page.getByRole('button', { name: 'Start a new world' }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
   // Enough crowns for fares and fees.
   await page.evaluate(() => {
     const save = JSON.parse(localStorage.getItem('wastes-crawler.world') as string);

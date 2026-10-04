@@ -14,6 +14,7 @@ async function intoBarrow(page: Page) {
   await page.getByRole('combobox', { name: 'Front row, slot 2' }).selectOption({ label: 'Grukk' });
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('settings-e2e');
   await page.getByRole('button', { name: 'Start a new world' }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
   await page.evaluate((key) => {
     const save = JSON.parse(localStorage.getItem(key) as string);
     save.position = { col: 5, row: 10 };

@@ -1,4 +1,13 @@
 {
+  "intro": {
+    "title": "The Dark Lands",
+    "paragraphs": [
+      "For a thousand years the Dark Lord ruled this continent. His flesh crafters bred the orcs and goblins as his slaves, and elves and gnomes served as his overseers, some willingly, some bound to his will.",
+      "Twenty years ago he vanished. The human alliance that fought him has gone home, leaving fanatics in their strongholds and raiders on the coast. The orcs and goblins are still bound to him, and no one knows what would happen if he returned or someone took his place.",
+      "The former slaves are digging out of the rubble and building settlements in the Borderlands and beyond. Warlords raise beastman armies, flesh-crafted monsters roam the wastes, and the ruins of the empire wait below. Only two gods were ever allowed here: the Blood God and the Lady.",
+      "Your party sets out from Rubblegate, on the edge of the Borderlands. Find work, find coin, and perhaps find out what became of him."
+    ]
+  },
   "clock": {
     "faction": "warhost",
     "segments": 6,
