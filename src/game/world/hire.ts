@@ -53,7 +53,14 @@ export function dismiss(w: World, data: GameData, id: string): TownResult {
     w.purse = toTenths(w.purse + n.refund);
     note(w, `${n.name} is let go and hands back ${n.refund} crowns of the signing fee.`);
   } else
-    note(w, n.kind === 'hireling' ? `${n.name} is let go.` : `The party leaves ${n.name} behind.`);
+    note(
+      w,
+      n.kind === 'hireling'
+        ? `${n.name} is let go.`
+        : n.kind === 'undead'
+          ? `${n.name} is released and falls still.`
+          : `The party leaves ${n.name} behind.`,
+    );
   if (n.kind === 'escort') emit(w, data, { kind: 'npc-died', npc: n });
   return { ok: true };
 }

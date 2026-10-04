@@ -79,6 +79,10 @@ function magicAction(b: Battle, actor: Combatant): Action | null {
     );
     if (rows.length > 0) return { kind: 'cast', magic: sleep.id, row: rows[0] as number };
   }
+  // Smite the Dead on the row with the most undead (Phase 14b).
+  const dead = [0, 1, 2].map((r) => foes.filter((f) => f.row === r && f.tags.has('undead')).length);
+  if (Math.max(...dead) > 0 && ready('smite-the-dead'))
+    return { kind: 'cast', magic: 'smite-the-dead', row: dead.indexOf(Math.max(...dead)) };
   for (const strain of [false, true]) {
     if (ready('the-coruscating-coffin', strain) && (!strain || foes.length >= 2)) {
       return { kind: 'cast', magic: 'the-coruscating-coffin', target: toughest.id, strain };

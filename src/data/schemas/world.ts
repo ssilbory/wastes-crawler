@@ -6,7 +6,7 @@ import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { FactionStateSchema } from './faction-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 21;
+export const WORLD_SCHEMA_VERSION = 22;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -34,8 +34,8 @@ export const MemberSaveSchema = z.strictObject({
 /** A hireling or a freed captive in one of the party's NPC slots (docs/rules-adaptation.md). */
 export const NpcSaveSchema = z.strictObject({
   id: z.string().min(1),
-  kind: z.enum(['hireling', 'captive', 'escort']),
-  /** The hireling type, captive id, or escort quest id. */
+  kind: z.enum(['hireling', 'captive', 'escort', 'undead']),
+  /** The hireling type, captive id, escort quest id, or an undead servant's monster id. */
   type: IdSchema,
   name: z.string().min(1),
   hp: z.int().min(0),
@@ -50,6 +50,8 @@ export const NpcSaveSchema = z.strictObject({
   owed: z.number().min(0),
   /** Crowns of the signing fee returned if they are let go alive in a settlement. */
   refund: z.number().min(0),
+  /** The necromancer an undead servant answers to, by member id (Phase 14b). */
+  master: z.string().optional(),
 });
 export type NpcSave = z.infer<typeof NpcSaveSchema>;
 
@@ -295,6 +297,11 @@ export const WorldSaveSchema = z.strictObject({
   /** Each craftsman's month, by id, once the party has visited. */
   craftsmen: z.record(IdSchema, CraftsmanStateSchema),
   commissions: z.array(CommissionSchema),
+  /**
+   * Corpses left by the party's last won fight, as each one's hit dice, and where they lie: a hex
+   * key above ground, or dungeon/level/cell below (Phase 14b).
+   */
+  corpses: z.strictObject({ at: z.string(), hitDice: z.array(z.int().min(1)) }).nullable(),
   /** Each faction's state, by id, once it has started (Phase 13). */
   factions: z.record(IdSchema, FactionStateSchema),
   log: z.array(z.string()),

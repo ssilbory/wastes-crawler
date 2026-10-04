@@ -295,5 +295,126 @@
     "tradition": "elementalist",
     "automatic": false,
     "text": "Commit Effort for the scene as an Instant action to immediately negate one instance of fire or frost damage to any single visible ally or object. This defense lasts only long enough to nullify the single instance of damage."
+  },
+  {
+    "id": "bonetalker",
+    "name": "Bonetalker",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.14 The Necromancer.md",
+      "heading": "1.5.14.1 Necromancer Arts"
+    },
+    "tradition": "necromancer",
+    "automatic": false,
+    "text": "You can see and communicate with any undead creature, regardless of a shared language or the creature’s natural state of invisibility. By Committing Effort for the scene you can sense the surface thoughts of any visible undead, including an impression of any commands or behavior it has been ordered to carry out. Unintelligent undead will not attack you or your companions unless specifically compelled to do so by a command or a master. Even intelligent undead will generally pause at least for an initial parley before attacking."
+  },
+  {
+    "id": "cold-flesh",
+    "name": "Cold Flesh",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.14 The Necromancer.md",
+      "heading": "1.5.14.1 Necromancer Arts"
+    },
+    "tradition": "necromancer",
+    "automatic": false,
+    "text": "You no longer require sleep and feel pain only in an abstract sense. You can suffer no more than 2 points of damage from any given instance of Shock and you have a natural Armor Class equal to 12 plus half your level, rounded down. Consume Life Energy: By making a Punch attack or using a melee weapon you have spent at least an hour properly consecrating, you can absorb a portion of the damage you inflict on others as healing to yourself. For each successful attack you make with such implements, you heal 1d6 damage, up to a maximum of the damage done by the attack. You cannot drain more life than the target has remaining hit points."
+  },
+  {
+    "id": "false-death",
+    "name": "False Death",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.14 The Necromancer.md",
+      "heading": "1.5.14.1 Necromancer Arts"
+    },
+    "tradition": "necromancer",
+    "automatic": false,
+    "text": "Commit Effort as an Instant action; while it remains Committed you appear dead to all mundane examination. You lose your Main Actions while “dead”, but can move and perceive normally and do not need to eat, drink, breathe, or perform other bodily functions. Poisons and diseases do not progress in you while you are “dead”. You can maintain this state of death for up to one day per level before needing at least an hour to recover."
+  },
+  {
+    "id": "gravesight",
+    "name": "Gravesight",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.14 The Necromancer.md",
+      "heading": "1.5.14.1 Necromancer Arts"
+    },
+    "tradition": "necromancer",
+    "automatic": false,
+    "text": "Commit Effort as an On Turn action; while it remains Committed, you can see the life energies of living creatures around you as various glowing patterns, regardless of the mundane illumination available. You can perceive sicknesses, poisons, and other physical qualities on sight. As a side effect of this ability, you can see normally even in perfect blackness."
+  },
+  {
+    "id": "keeper-of-the-gate",
+    "name": "Keeper of the Gate",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.14 The Necromancer.md",
+      "heading": "1.5.14.1 Necromancer Arts"
+    },
+    "tradition": "necromancer",
+    "automatic": false,
+    "text": "At your discretion, creatures within twenty feet of you per character level that are Mortally Wounded will die instantly and cannot be revived by magic or medicine. Conversely, you can Commit Effort for the day to automatically stabilize any or all within that range, increasing their System Strain by 1 point. This benefit cannot aid creatures that have been dismembered, shredded, or otherwise suffered unsurvivable injuries."
+  },
+  {
+    "id": "life-bridge",
+    "name": "Life Bridge",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.14 The Necromancer.md",
+      "heading": "1.5.14.1 Necromancer Arts"
+    },
+    "tradition": "necromancer",
+    "automatic": false,
+    "text": "You can transfer life force between willing or helpless participants. Commit Effort for the day; for the rest of the scene, you can shift hit points from one willing or helpless target no smaller than a dog to another as a Main Action, provided you are touching both. You can shift enough hit points to Mortally Wound a donor, but you can’t give more to the recipient than would refresh their maximum allowed hit points."
+  },
+  {
+    "id": "master-of-bones",
+    "name": "Master of Bones",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.14 The Necromancer.md",
+      "heading": "1.5.14.1 Necromancer Arts"
+    },
+    "tradition": "necromancer",
+    "automatic": false,
+    "text": "Undead must roll twice to save versus your abilities or spells and take the worse roll. You may Commit Effort for the scene as an Instant action to negate any single attack, magical power or spell an undead uses against you. Undead with more than twice as many hit dice as you have levels cannot be foiled this way."
+  },
+  {
+    "id": "red-harvest",
+    "name": "Red Harvest",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.14 The Necromancer.md",
+      "heading": "1.5.14.1 Necromancer Arts"
+    },
+    "tradition": "necromancer",
+    "automatic": false,
+    "text": "You are empowered by death. As an Instant action, whenever an intelligent living creature with at least one hit die perishes within fifty feet of you, Commit Effort for the day to either heal 1d6 plus your level in lost hit points or gain a +4 bonus on your next hit roll this scene. This art cannot be stacked, and it can be used only once per round."
+  },
+  {
+    "id": "unaging",
+    "name": "Unaging",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.14 The Necromancer.md",
+      "heading": "1.5.14.1 Necromancer Arts"
+    },
+    "tradition": "necromancer",
+    "automatic": false,
+    "text": "You no longer naturally age, and will remain perfectly hale and vigorous up to your species’ natural maximum age plus 20% per character level, after which you will collapse into dust and decay. Immortality beyond this point is possible, but generally re quires consistent supplies of life energy, occult materials, or other difficult-to-acquire or morally questionable materials. You also become immune to poisons and diseases."
+  },
+  {
+    "id": "uncanny-ichor",
+    "name": "Uncanny Ichor",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.14 The Necromancer.md",
+      "heading": "1.5.14.1 Necromancer Arts"
+    },
+    "tradition": "necromancer",
+    "automatic": false,
+    "text": "Your blood is not like the blood of normal beings. Predators find it nauseating and will not bite you unless provoked. Unintelligent predators will not consider you edible. This ichor is reluctant to leave your body, and stabbing or puncture injuries can Mortally Wound you but cannot result in your death unless you are entirely pincushioned by your foes or suffer catastrophic physical damage."
+  },
+  {
+    "id": "unliving-persistence",
+    "name": "Unliving Persistence",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.14 The Necromancer.md",
+      "heading": "1.5.14.1 Necromancer Arts"
+    },
+    "tradition": "necromancer",
+    "automatic": false,
+    "text": "Commit Effort for the day as an On Turn action to automatically stabilize when Mortally Wounded. You may use this ability to benefit others if you are able to touch them. This ability cannot save a subject that has experienced dismemberment or other extremely final deaths."
   }
 ]

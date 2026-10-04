@@ -14,6 +14,7 @@ import { accrueShares, fights, moraleAfterFight, npcMonster, removeNpc, typeOf }
 import { emit } from './bus.ts';
 import { inDark } from '../dungeon/light.ts';
 import { onSpecial } from '../dungeon/specials.ts';
+import { leaveCorpses } from './necromancy.ts';
 import { freeCaptive } from './rescue.ts';
 import { addLoot } from './shop.ts';
 import { wipe } from './town.ts';
@@ -239,6 +240,7 @@ export function applyBattle(
   else {
     note(w, `The party wins after ${result.rounds} round${result.rounds === 1 ? '' : 's'}.`);
     winnings(w, data, fight.enemies);
+    leaveCorpses(w, data, fight.enemies);
     if (difficulty) award(w, data, fight, difficulty);
     if (fight.captive) freeCaptive(w, data, fight.captive);
     emit(w, data, {

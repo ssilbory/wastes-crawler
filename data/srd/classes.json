@@ -112,5 +112,24 @@
         "text": "Elementalist Effort is calculated as usual, with each PC’s maximum being equal to one plus their Magic skill level plus the better of their Intelligence or Charisma modifiers. Partial Elementalists have a score one point lower than this, albeit not less than one."
       }
     ]
+  },
+  {
+    "id": "necromancer",
+    "name": "Necromancer",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.14 The Necromancer.md",
+      "heading": "1.5.14 The Necromancer"
+    },
+    "description": "Necromancers are those spellcasting Mages who deal with the energies of life and death.",
+    "abilities": [
+      {
+        "name": "Necromancer Benefits",
+        "text": "All Necromancers gain Magic as a bonus skill, acquiring it at Level-0, or Level-1 if was already Level-0.\n\nNecromancers can prepare and cast High Magic spells in addition to the spells specific to Necromancers. Some of the latter are given on the following pages, but others doubtless exist. As usual for spellcasters, Necromancers can’t cast spells or use arts while armored or holding a shield.\n\nNecromancers are not as talented at general High Magic re search as High Mages are, but their studies still bear fruit in time. Each time they advance a level, they can pick a new High Magic spell or a Necromancer spell to add to their spellbook. They must be able to cast the spell to add it to their selection.\n\nNecromancers can pick an art specific to their tradition from the adjacent list. Further arts are learned as they advance in character level, as given in the tables below. Once chosen, an art cannot be changed."
+      },
+      {
+        "name": "Necromancer Arts",
+        "text": "Necromancer Effort is calculated as usual, with each PC’s maximum being equal to one plus their Magic skill level plus the better of their Intelligence or Charisma modifiers. Partial Necromancers have a score one point lower than this, albeit not less than one."
+      }
+    ]
   }
 ]

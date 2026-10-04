@@ -122,6 +122,8 @@ export const WORLD_MIGRATIONS: Migrations = {
   19: (raw) => ({ ...raw, schemaVersion: 20, ruins: {}, caches: [] }),
   // Version 21 adds the factions (Phase 13): each starts from its content at the next faction turn.
   20: (raw) => ({ ...raw, schemaVersion: 21, factions: {} }),
+  // Version 22 adds corpses for the Necromancer (Phase 14b): none lying anywhere.
+  21: (raw) => ({ ...raw, schemaVersion: 22, corpses: null }),
 };
 
 export function serializeWorld(w: World): string {
@@ -174,6 +176,7 @@ export function serializeWorld(w: World): string {
     raided: w.raided,
     craftsmen: w.craftsmen,
     commissions: w.commissions,
+    corpses: w.corpses,
     factions: w.factions,
     log: w.log.slice(-SAVED_LOG_LINES),
   };
@@ -272,6 +275,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       raided: s.raided,
       craftsmen: s.craftsmen,
       commissions: s.commissions,
+      corpses: s.corpses,
       factions: s.factions,
       log: s.log,
       rng: rngFromState(s.rng),

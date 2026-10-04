@@ -49,14 +49,18 @@ export const npcMonster = (data: GameData, n: Npc) =>
       ? hirelingType(data, n.type).monster
       : n.kind === 'captive'
         ? captiveOf(data, n.type).monster
-        : escortMonster(data, n.type),
+        : n.kind === 'undead'
+          ? n.type
+          : escortMonster(data, n.type),
   );
 
 /** The hireling type behind an NPC, or undefined for a captive. */
 export const typeOf = (data: GameData, n: Npc) =>
   n.kind === 'hireling' ? hirelingType(data, n.type) : undefined;
 
-export const fights = (data: GameData, n: Npc) => typeOf(data, n)?.role === 'fighter';
+/** Fighting hirelings and undead servants fight; everyone else stays out of it. */
+export const fights = (data: GameData, n: Npc) =>
+  n.kind === 'undead' || typeOf(data, n)?.role === 'fighter';
 export const hirelings = (w: World) => w.npcs.filter((n) => n.kind === 'hireling');
 
 /** A conscious Wilderness Guide in the party, if any. */
@@ -135,11 +139,22 @@ export function removeNpc(w: World, id: string): Npc {
   return n;
 }
 
-/** Fed and sheltered NPCs heal their hit dice overnight. Hirelings draw no wage (shares.ts). */
+/** The Grave Knight's monster id. */
+export const GRAVE_KNIGHT = 'grave-knight';
+
+/**
+ * Fed and sheltered NPCs heal their hit dice overnight. Hirelings draw no wage (shares.ts). The
+ * raised dead never heal, but a Grave Knight is whole again at dusk (vendor/wwn-srd/4.0 Magic and
+ * Spellcasting/4.6.0 Necromancer Spells.md).
+ */
 export function nightForNpcs(w: World, data: GameData, rested: boolean): void {
-  if (!rested) return;
-  for (const n of w.npcs) n.hp = Math.min(n.maxHp, n.hp + npcMonster(data, n).hitDice);
+  for (const n of w.npcs) {
+    if (n.kind === 'undead') {
+      if (n.type === GRAVE_KNIGHT) n.hp = n.maxHp;
+    } else if (rested) n.hp = Math.min(n.maxHp, n.hp + npcMonster(data, n).hitDice);
+  }
 }
+
 
 /** SRD 3.3.0: after a particularly dangerous fight, each hireling checks Morale or quits. */
 export function moraleAfterFight(w: World, data: GameData): void {

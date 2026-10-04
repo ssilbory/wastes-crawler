@@ -325,7 +325,7 @@
   },
   {
     "id": "grave-wyrm",
-    "tags": ["flying", "unliving"],
+    "tags": ["flying", "unliving", "undead"],
     "loot": {
       "count": 15,
       "sides": 6
@@ -381,7 +381,7 @@
   },
   {
     "id": "gnawing-dead",
-    "tags": ["unliving"],
+    "tags": ["unliving", "undead"],
     "mind": "mindless",
     "routine": [
       {
@@ -688,7 +688,7 @@
   {
     "id": "vampire",
     "weapon": "sword-long",
-    "tags": ["unliving", "metal"],
+    "tags": ["unliving", "metal", "undead"],
     "loot": {
       "count": 8,
       "sides": 6
@@ -697,11 +697,32 @@
   },
   {
     "id": "zombie",
-    "tags": ["unliving", "slow"],
+    "tags": ["unliving", "slow", "undead"],
     "mind": "mindless",
     "resist": {
       "blunt": "half",
       "missiles": "one"
     }
+  },
+  {
+    "id": "raised-zombie",
+    "tags": ["unliving", "undead"],
+    "mind": "mindless",
+    "resist": {
+      "blunt": "half"
+    }
+  },
+  {
+    "id": "raised-skeleton",
+    "tags": ["unliving", "undead"],
+    "mind": "mindless",
+    "resist": {
+      "edged": "half"
+    }
+  },
+  {
+    "id": "grave-knight",
+    "tags": ["unliving", "undead"],
+    "mind": "sapient"
   }
 ]

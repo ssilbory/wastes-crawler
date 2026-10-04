@@ -8,7 +8,7 @@ export const TraditionSchema = z.strictObject({
   /** Granted as a creation skill pick when the class is taken. */
   bonusSkill: IdSchema,
   /** Spell traditions the caster can learn from. */
-  spellLists: z.array(z.enum(['high-magic', 'elementalist'])).min(1),
+  spellLists: z.array(z.enum(['high-magic', 'elementalist', 'necromancer'])).min(1),
   /** Effort maximum: 1 + best skill + best attribute modifier, one lower for partial casters. */
   effort: z.strictObject({
     skills: z.array(IdSchema).min(1),

@@ -108,5 +108,20 @@
     "effect": {
       "kind": "force-save-reroll"
     }
+  },
+  {
+    "id": "smite-the-dead",
+    "source": "spell",
+    "target": "enemy-row",
+    "effect": {
+      "kind": "smite",
+      "perLevel": {
+        "count": 1,
+        "sides": 10,
+        "modifier": 0
+      },
+      "save": "physical",
+      "requiresTag": "undead"
+    }
   }
 ]

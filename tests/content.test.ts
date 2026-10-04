@@ -210,7 +210,7 @@ describe('magic content', () => {
       traditions: [
         {
           ...hm,
-          id: 'necromancer',
+          id: 'witch',
           bonusSkill: 'necromancy',
           effort: { ...hm.effort, skills: ['death'] },
         },
@@ -228,9 +228,9 @@ describe('magic content', () => {
       ],
     };
     expect(magicReferenceErrors(srd, broken)).toEqual([
-      'traditions/necromancer: unknown skill necromancy',
-      'traditions/necromancer: unknown skill death',
-      'traditions/necromancer: has no arts',
+      'traditions/witch: unknown skill necromancy',
+      'traditions/witch: unknown skill death',
+      'traditions/witch: has no arts',
       'classOptions/full-wizard: unknown progression',
       'classOptions/full-high-mage: unknown casting table nope',
       'classOptions/full-high-mage: unknown tradition bard',
@@ -312,7 +312,7 @@ describe('combat content', () => {
       ...content,
       monsterCombat: [
         ...content.monsterCombat.filter((m) => !ids.includes(m.id)),
-        as('petty-mage', { tradition: 'necromancer' }),
+        as('petty-mage', { tradition: 'witch' }),
         as('tribal-shaman', { slots: 'bardic' }),
         // 5 HD: six prepared; an elementalist spell and art for a high mage, and unknown magic.
         as('skilled-sorcerer', {
@@ -343,7 +343,7 @@ describe('combat content', () => {
       ],
     };
     expect(combatReferenceErrors(srd, broken)).toEqual([
-      'monsterCombat/petty-mage: unknown tradition necromancer',
+      'monsterCombat/petty-mage: unknown tradition witch',
       'monsterCombat/tribal-shaman: unknown casting table bardic',
       'monsterCombat/skilled-sorcerer: prepares more than 6 spells',
       'monsterCombat/skilled-sorcerer: no combat spell fireball',

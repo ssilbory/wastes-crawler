@@ -42,14 +42,15 @@ export type Strike = z.infer<typeof StrikeSchema>;
 /**
  * How an SRD monster fights in the engine: the SRD weapon behind a "Wpn" damage entry, and tags.
  * `flying` ignores formation and cover, `reach` attacks from the second row, `unliving` doesn't
- * sleep, `metal` carries enough metal for Stunning Shock, and `slow` always acts last. `loot` is
+ * sleep, `metal` carries enough metal for Stunning Shock, `slow` always acts last, and `undead`
+ * answers to necromancy (Phase 14b). `loot` is
  * what each one drops when the party wins; none for beasts and the mindless. `caster` makes it
  * cast.
  */
 export const MonsterCombatSchema = z.strictObject({
   id: IdSchema,
   weapon: IdSchema.optional(),
-  tags: z.array(z.enum(['flying', 'reach', 'unliving', 'metal', 'slow'])),
+  tags: z.array(z.enum(['flying', 'reach', 'unliving', 'metal', 'slow', 'undead'])),
   loot: LootDiceSchema.optional(),
   /** Who can be parleyed with: people always, animals and monsters with foci, the mindless never. */
   mind: z.enum(['sapient', 'animal', 'monster', 'mindless']),
@@ -113,6 +114,16 @@ export const CombatEffectSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('ac-bonus'), amount: z.int().min(1), maxAc: z.int() }),
   /** The target loses its next Main Action, or only its Move action on a save. */
   z.strictObject({ kind: z.literal('stun'), save: Save, requiresTag: z.literal('metal') }),
+  /**
+   * Smite the Dead (4.6.0): damage dice per caster level to every hostile creature with the tag in
+   * one row; those with hit dice no more than the caster level fail a save or are destroyed.
+   */
+  z.strictObject({
+    kind: z.literal('smite'),
+    perLevel: DiceSchema,
+    save: Save,
+    requiresTag: z.literal('undead'),
+  }),
   /** Reroll a spell's damage and keep the better (Empowered Sorcery). */
   z.strictObject({ kind: z.literal('reroll-damage') }),
   /** Make an enemy reroll a successful save and keep the worse (Inexorable Effect). */

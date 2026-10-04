@@ -92,6 +92,8 @@ export interface World {
   raided: Record<string, number>;
   craftsmen: Record<string, CraftsmanState>;
   commissions: Commission[];
+  /** Corpses lying where the last won fight was (Phase 14b). */
+  corpses: WorldSave['corpses'];
   /** Faction state by id (Phase 13). */
   factions: Record<string, FactionState>;
   log: string[];

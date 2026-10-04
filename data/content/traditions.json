@@ -18,5 +18,15 @@
       "skills": ["magic"],
       "attributes": ["int", "cha"]
     }
+  },
+  {
+    "id": "necromancer",
+    "name": "Necromancer",
+    "bonusSkill": "magic",
+    "spellLists": ["high-magic", "necromancer"],
+    "effort": {
+      "skills": ["magic"],
+      "attributes": ["int", "cha"]
+    }
   }
 ]

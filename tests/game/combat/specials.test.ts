@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { act } from '../../../src/game/combat/actions.ts';
-import { monsterAction } from '../../../src/game/combat/ai.ts';
+import { monsterAction, partyAction } from '../../../src/game/combat/ai.ts';
 import { resolveAttack } from '../../../src/game/combat/attack.ts';
 import { monsterCombatant } from '../../../src/game/combat/monster-combatant.ts';
 import { beginRound, runRound, takeTurn } from '../../../src/game/combat/round.ts';
@@ -173,5 +173,40 @@ describe('on-hit effects', () => {
     const wait = () => ({ kind: 'wait' as const });
     runRound(b, wait, wait);
     expect(snag.heldRounds).toBe(2);
+  });
+});
+
+describe('Smite the Dead (4.6.0)', () => {
+  it('blasts every undead in the row, destroying the weak that fail to save', () => {
+    const b = standardBattle([['zombie', 'grave-wyrm', 'thug-or-militia']]);
+    const fizz = who(b, 'Fizzwick');
+    const caster = fizz.caster as NonNullable<typeof fizz.caster>;
+    caster.prepared.push('smite-the-dead');
+    caster.spellsLeft = 1;
+    caster.level = 2;
+    const [zombie, wyrm, thug] = ['foe-0-0', 'foe-0-1', 'foe-0-2'].map((id) => who(b, id));
+    for (const c of [zombie, wyrm, thug]) (c as Combatant).hp = 50;
+    // The party AI picks Smite on the row with undead.
+    const party = partyAction(b, fizz);
+    expect(party).toEqual({ kind: 'cast', magic: 'smite-the-dead', row: 0 });
+    // The zombie (2 HD) fails its save (1) and is destroyed; the wyrm takes 2d10 = 7.
+    b.rng = scriptedRng([1, 3, 4]);
+    act(b, fizz, party);
+    expect((zombie as Combatant).status).toBe('dead');
+    expect((wyrm as Combatant).hp).toBe(43);
+    expect((thug as Combatant).hp).toBe(50);
+    // A zombie that saves takes the damage instead.
+    const c = standardBattle([['zombie']]);
+    const f = who(c, 'Fizzwick');
+    const cc = f.caster as NonNullable<typeof f.caster>;
+    cc.prepared.push('smite-the-dead');
+    cc.level = 2;
+    // No Inexorable Effect to force a second save.
+    cc.arts = [];
+    const z = who(c, 'foe-0-0');
+    z.hp = 50;
+    c.rng = scriptedRng([20, 5, 5]);
+    act(c, f, { kind: 'cast', magic: 'smite-the-dead', row: 0 });
+    expect(z.hp).toBe(40);
   });
 });

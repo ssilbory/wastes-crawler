@@ -483,5 +483,80 @@
     "skill": 0,
     "save": 14,
     "description": "A corpse on its feet and nothing behind its eyes. Slow and silent, it shrugs off clubs and arrows and has to be hacked apart before it stops."
+  },
+  {
+    "id": "raised-zombie",
+    "name": "Raised Zombie",
+    "category": "Unnatural Entities",
+    "hitDice": 1,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 1,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "shock": null,
+    "move": 30,
+    "morale": 12,
+    "instinct": 0,
+    "skill": 0,
+    "save": 15,
+    "description": "A corpse raised by Raise Corpse (vendor/wwn-srd 4.6.0), flesh still on its bones. It obeys its necromancer with a human degree of understanding and no will of its own, and blunt blows sink into it."
+  },
+  {
+    "id": "raised-skeleton",
+    "name": "Raised Skeleton",
+    "category": "Unnatural Entities",
+    "hitDice": 1,
+    "ac": 14,
+    "armored": false,
+    "attackBonus": 1,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "shock": null,
+    "move": 30,
+    "morale": 12,
+    "instinct": 0,
+    "skill": 0,
+    "save": 15,
+    "description": "A corpse raised by Raise Corpse and stripped to the bone: a little harder to hit, and blades find little to cut. It obeys its necromancer without question."
+  },
+  {
+    "id": "grave-knight",
+    "name": "Grave Knight",
+    "category": "Unnatural Entities",
+    "hitDice": 4,
+    "ac": 15,
+    "armored": false,
+    "attackBonus": 6,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 10,
+        "modifier": 0
+      }
+    },
+    "shock": null,
+    "move": 40,
+    "morale": 12,
+    "instinct": 0,
+    "skill": 1,
+    "save": 13,
+    "description": "A powerful corpse raised by Raise Grave Knight (vendor/wwn-srd 4.6.0): fully intelligent, utterly devoted to its creator, and whole again at every dusk."
   }
 ]

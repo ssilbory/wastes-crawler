@@ -1,0 +1,54 @@
+import { expect, test, type Page } from '@playwright/test';
+
+// Phase 14b: a Necromancer raises a skeleton from the corpses of a won fight into an NPC slot,
+// then releases it.
+const starters = ['snag', 'fizzwick'].map((n) => `tools/sim/parties/starter/${n}.json`);
+const WORLD_KEY = 'wastes-crawler.world';
+
+async function edit(page: Page, change: string) {
+  await page.evaluate(
+    ([key, body]) => {
+      const save = JSON.parse(localStorage.getItem(key as string) as string);
+      new Function('save', body as string)(save);
+      localStorage.setItem(key as string, JSON.stringify(save));
+    },
+    [WORLD_KEY, change],
+  );
+  await page.reload();
+  await page.getByRole('button', { name: 'Continue journey' }).click();
+}
+
+test('raises a skeleton from the fallen and releases it', async ({ page }, testInfo) => {
+  await page.goto('/#/arena');
+  await page.getByLabel('Import character files').setInputFiles(starters);
+  await page.getByRole('link', { name: 'Overland' }).click();
+  await page.getByRole('combobox', { name: 'Front row, slot 1' }).selectOption({ label: 'Snag' });
+  await page
+    .getByRole('combobox', { name: 'Rear row, slot 1' })
+    .selectOption({ label: 'Fizzwick' });
+  await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('necromancy-e2e');
+  await page.getByRole('button', { name: 'Start a new world' }).click();
+  await expect(page.getByRole('region', { name: 'Necromancy' })).toHaveCount(0);
+  await edit(
+    page,
+    `const fizz = save.members.find((m) => m.character.name === 'Fizzwick').character;
+     fizz.classes = { current: 'full-necromancer', levels: { 'full-necromancer': 3 } };
+     fizz.spells = { known: ['raise-corpse', 'command-the-dead', 'smite-the-dead', 'query-the-skull'],
+       prepared: ['raise-corpse', 'command-the-dead', 'smite-the-dead'] };
+     fizz.arts = ['bonetalker'];
+     save.corpses = { at: save.region + '/' + save.position.col + ',' + save.position.row, hitDice: [1, 1] };`,
+  );
+  const panel = page.getByRole('region', { name: 'Necromancy' });
+  await expect(panel).toContainText('2 corpses lie here.');
+  await expect(panel).toContainText('Fizzwick: 2 spells left today');
+  await panel.getByRole('button', { name: 'Raise a skeleton' }).click();
+  await expect(panel).toContainText('A corpse lies here.');
+  const npcs = page.getByRole('region', { name: 'NPCs' });
+  await expect(npcs).toContainText('Raised Skeleton undead, serving Fizzwick');
+  await page.screenshot({ path: testInfo.outputPath('necromancy.png'), fullPage: true });
+  await npcs.getByRole('button', { name: 'Release' }).click();
+  await expect(npcs).not.toContainText('Raised Skeleton');
+  await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
+    'Raised Skeleton is released and falls still.',
+  );
+});

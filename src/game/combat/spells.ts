@@ -1,6 +1,6 @@
 // Spells and arts in combat, from data/content/combat-magic.json (each entry's mechanics follow its
-// SRD text in vendor/wwn-srd/4.0 Magic and Spellcasting/ and 1.5.7/1.5.10 arts). Slots and Effort
-// as in 4.2.0; strain casting from docs/rules-adaptation.md.
+// SRD text in vendor/wwn-srd/4.0 Magic and Spellcasting/, including 4.6.0's Smite the Dead, and
+// 1.5.7/1.5.10 arts). Slots and Effort as in 4.2.0; strain casting from docs/rules-adaptation.md.
 import type { CombatMagic } from '../../data/schemas/index.ts';
 import { attackRoll } from '../../rules/attacks.ts';
 import { netSteps } from '../../rules/advantage.ts';
@@ -156,6 +156,18 @@ export function castMagic(
     case 'ac-bonus':
       actor.acBonus = e.amount;
       return true;
+    case 'smite': {
+      const dice = { ...e.perLevel, count: e.perLevel.count * c.level };
+      for (const t of b.combatants.filter(
+        (x) => x.side !== actor.side && x.row === row && isUp(x) && x.tags.has(e.requiresTag),
+      )) {
+        if (t.hitDice <= c.level && !enemySave(b, actor, t, e.save)) {
+          say(b, `${t.name} is destroyed.`);
+          harm(b, t, t.hp);
+        } else harm(b, t, roll(b.rng, dice).total);
+      }
+      return true;
+    }
     case 'stun':
       if (
         target &&

@@ -19,7 +19,7 @@ import type { SrdReader } from '../reader.ts';
 
 const CLASS_DIR = '1.0 Character Creation/1.5.0 Class List';
 
-/** Phase 1 scope: the base classes, the Mage umbrella, and two Mage traditions. */
+/** The base classes, the Mage umbrella, and three Mage traditions (the Necromancer in Phase 14b). */
 export const CLASS_FILES = [
   '1.5.1 The Adventurer.md',
   '1.5.8 The Expert.md',
@@ -27,6 +27,7 @@ export const CLASS_FILES = [
   '1.5.12 The Mage.md',
   '1.5.10 The High Mage.md',
   '1.5.7 The Elementalist.md',
+  '1.5.14 The Necromancer.md',
 ].map((f) => `${CLASS_DIR}/${f}`);
 
 export interface ClassExtract {

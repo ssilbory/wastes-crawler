@@ -117,3 +117,32 @@ test('a partial Elementalist warrior has Effort one lower, 1', async ({ page }) 
   // Orc: Int 14 (+1), Cha 9 - 2 = 7: 1 + 0 + 1 - 1 = 1.
   await expect(sheet).toContainText('Effort 1.');
 });
+
+test('a Gnome Necromancer picks a necromancer art and spells from both lists (Phase 14b)', async ({
+  page,
+}) => {
+  const spells = [
+    'Command the Dead',
+    'Smite the Dead',
+    'Query the Skull',
+    'The Coruscating Coffin',
+  ];
+  const sheet = await caster(page, {
+    people: 'Gnome',
+    bg: 'Scavenger',
+    picks: ['Sneak', 'Trade'],
+    className: 'Necromancer',
+    foci: [
+      ['Racial focus 1', 'Artisan'],
+      ['Racial focus 2', 'Polymath'],
+      ['Bonus skill for Racial focus 2', 'Heal'],
+      ['Any focus', 'Armored Magic'],
+    ],
+    arts: ['Bonetalker'],
+    spells,
+    prepare: spells.slice(0, 3),
+  });
+  await expect(sheet).toContainText('Effort 2. Casts 1 a day, prepares 3, up to level 1.');
+  await expect(sheet).toContainText('Arts: Bonetalker.');
+  await expect(sheet).toContainText('Command the Dead (prepared)');
+});
