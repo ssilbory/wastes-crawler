@@ -52,3 +52,27 @@ describe('levelling without a player (Phase 12f)', () => {
     expect(grukk.foci).toContainEqual({ id: 'developed-attribute', level: 1, attribute: 'con' });
   });
 });
+
+describe('level-gated arts in auto-levelling (Phase 14d)', () => {
+  it('takes a Healer art gated to 8th level only once it opens', () => {
+    const fizz = starter('fizzwick');
+    const open = data.srd.arts
+      .filter(
+        (a) =>
+          a.tradition === 'healer' && !['limb-restoration', 'revive-the-fallen'].includes(a.id),
+      )
+      .map((a) => a.id);
+    const priest = (level: number) => ({
+      ...fizz,
+      classes: { current: 'healer-partial-mage', levels: { 'healer-partial-mage': level } },
+      skills: { ...fizz.skills, heal: 1 },
+      arts: open,
+      spells: { known: [], prepared: [] },
+    });
+    // Every open Healer art is held: at 4th level there is nothing to pick.
+    expect(() => autoLevel(data, priest(3), 4, createRng('p'))).toThrow(
+      "Fizzwick can't level up automatically",
+    );
+    expect(autoLevel(data, priest(7), 8, createRng('p')).arts).toContain('limb-restoration');
+  });
+});

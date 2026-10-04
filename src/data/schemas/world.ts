@@ -6,7 +6,7 @@ import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { FactionStateSchema } from './faction-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 22;
+export const WORLD_SCHEMA_VERSION = 23;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -29,6 +29,8 @@ export const MemberSaveSchema = z.strictObject({
   effortDay: z.int().min(0),
   /** XP won while dead, granted when raised. */
   pendingXp: z.number().min(0).multipleOf(0.5),
+  /** Revived by a Healer and unconscious until the next night passes (Phase 14d). */
+  reviving: z.boolean(),
 });
 
 /** A hireling or a freed captive in one of the party's NPC slots (docs/rules-adaptation.md). */
@@ -302,6 +304,11 @@ export const WorldSaveSchema = z.strictObject({
    * key above ground, or dungeon/level/cell below (Phase 14b).
    */
   corpses: z.strictObject({ at: z.string(), hitDice: z.array(z.int().min(1)) }).nullable(),
+  /**
+   * Members slain in the party's last fight, and where it was fought: a Healer can revive them
+   * there before the party moves on or the day ends (Phase 14d).
+   */
+  fallen: z.strictObject({ at: z.string(), members: z.array(z.string()) }).nullable(),
   /** Each faction's state, by id, once it has started (Phase 13). */
   factions: z.record(IdSchema, FactionStateSchema),
   log: z.array(z.string()),

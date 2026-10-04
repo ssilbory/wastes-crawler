@@ -155,7 +155,6 @@ export function nightForNpcs(w: World, data: GameData, rested: boolean): void {
   }
 }
 
-
 /** SRD 3.3.0: after a particularly dangerous fight, each hireling checks Morale or quits. */
 export function moraleAfterFight(w: World, data: GameData): void {
   // Herd-Loyal beastmen steady the hirelings (docs/rules-adaptation.md, Regions and setting).

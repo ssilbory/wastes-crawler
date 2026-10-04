@@ -99,7 +99,10 @@ describe('quest content', () => {
     ]);
   });
 
-  it('keeps raising to one crypt or mortuary per settlement, none in villages', () => {
+  it('keeps raising to one crypt, mortuary, or temple per settlement, none in villages', () => {
+    const raisers = content.missionGivers.filter((g) => g.raises);
+    expect(raisers.map((g) => [g.id, g.raises])).toContainEqual(['mother-skrell', 'temple']);
+    expect(raisers.map((g) => [g.id, g.raises])).toContainEqual(['brother-aldo', 'mortuary']);
     const ysolde = content.missionGivers.find((g) => g.raises === 'crypt');
     const raising = content.quests.find((q) => q.reward.raise);
     if (!ysolde || !raising) throw new Error('missing content');
@@ -109,12 +112,15 @@ describe('quest content', () => {
         ...content.missionGivers,
         { ...ysolde, id: 'second', raises: 'mortuary' as const },
         { ...ysolde, id: 'hill', town: 'highcairn' },
+        { ...ysolde, id: 'shrine', town: 'highcairn', raises: 'temple' as const },
       ],
       quests: [...content.quests, { ...raising, id: 'stray', giver: 'reeve-halda' }],
     };
     expect(questReferenceErrors(srd, broken)).toEqual([
       'missionGivers/second: westhold already raises the dead',
       'missionGivers/hill: a village has no crypt',
+      'missionGivers/shrine: a village has no temple',
+      'missionGivers/shrine: highcairn already raises the dead',
       "quests/stray: reeve-halda can't raise the dead",
     ]);
   });

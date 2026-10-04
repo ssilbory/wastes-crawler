@@ -21,8 +21,10 @@ export const TraditionSchema = z.strictObject({
     partialPenalty: z.boolean(),
     floorOne: z.boolean(),
   }),
-  /** Its arts work in armor and with a shield (the Blood Priest's miracles). */
+  /** Its arts work in armor and with a shield (the Blood Priest's miracles, the Healer's arts). */
   armoredArts: z.boolean(),
+  /** Arts that can't be learned before a character level (the Healer's Revive the Fallen: 8). */
+  artLevels: z.record(IdSchema, z.int().min(2).max(10)),
 });
 export type Tradition = z.infer<typeof TraditionSchema>;
 
@@ -55,6 +57,8 @@ export const ClassOptionSchema = z.strictObject({
       startingSpells: z.int().min(0),
       /** SRD 2.7.1.7: two for High Mages, one for other Mages. */
       spellsPerLevel: z.int().min(0),
+      /** Spells the class can never learn (Sam's call: Priests of Death create no undead). */
+      excludedSpells: z.array(IdSchema),
     })
     .optional(),
 });

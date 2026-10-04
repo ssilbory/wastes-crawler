@@ -27,7 +27,8 @@
       ],
       "slots": "full-high-mage-arts-and-spells",
       "startingSpells": 4,
-      "spellsPerLevel": 2
+      "spellsPerLevel": 2,
+      "excludedSpells": []
     }
   },
   {
@@ -43,7 +44,8 @@
       ],
       "slots": "full-elementalist-arts-and-spells",
       "startingSpells": 4,
-      "spellsPerLevel": 1
+      "spellsPerLevel": 1,
+      "excludedSpells": []
     }
   },
   {
@@ -59,7 +61,8 @@
       ],
       "slots": "partial-high-mage-arts-and-spells",
       "startingSpells": 2,
-      "spellsPerLevel": 2
+      "spellsPerLevel": 2,
+      "excludedSpells": []
     },
     "abilities": ["quick-learner"]
   },
@@ -76,7 +79,8 @@
       ],
       "slots": "partial-high-mage-arts-and-spells",
       "startingSpells": 2,
-      "spellsPerLevel": 2
+      "spellsPerLevel": 2,
+      "excludedSpells": []
     }
   },
   {
@@ -92,7 +96,8 @@
       ],
       "slots": "partial-elementalist-arts-and-spells",
       "startingSpells": 2,
-      "spellsPerLevel": 1
+      "spellsPerLevel": 1,
+      "excludedSpells": []
     },
     "abilities": ["quick-learner"]
   },
@@ -109,7 +114,8 @@
       ],
       "slots": "partial-elementalist-arts-and-spells",
       "startingSpells": 2,
-      "spellsPerLevel": 1
+      "spellsPerLevel": 1,
+      "excludedSpells": []
     }
   },
   {
@@ -130,7 +136,8 @@
       ],
       "slots": "dual-partial-spellcasters",
       "startingSpells": 4,
-      "spellsPerLevel": 2
+      "spellsPerLevel": 2,
+      "excludedSpells": []
     }
   },
   {
@@ -146,7 +153,8 @@
       ],
       "slots": "full-necromancer-arts-and-spells",
       "startingSpells": 4,
-      "spellsPerLevel": 1
+      "spellsPerLevel": 1,
+      "excludedSpells": []
     }
   },
   {
@@ -162,7 +170,8 @@
       ],
       "slots": "partial-necromancer-arts-and-spells",
       "startingSpells": 2,
-      "spellsPerLevel": 1
+      "spellsPerLevel": 1,
+      "excludedSpells": []
     },
     "abilities": ["quick-learner"]
   },
@@ -179,7 +188,8 @@
       ],
       "slots": "partial-necromancer-arts-and-spells",
       "startingSpells": 2,
-      "spellsPerLevel": 1
+      "spellsPerLevel": 1,
+      "excludedSpells": []
     }
   },
   {
@@ -200,7 +210,8 @@
       ],
       "slots": "dual-partial-spellcasters",
       "startingSpells": 4,
-      "spellsPerLevel": 2
+      "spellsPerLevel": 2,
+      "excludedSpells": []
     }
   },
   {
@@ -221,7 +232,8 @@
       ],
       "slots": "dual-partial-spellcasters",
       "startingSpells": 4,
-      "spellsPerLevel": 2
+      "spellsPerLevel": 2,
+      "excludedSpells": []
     }
   },
   {
@@ -237,7 +249,52 @@
       ],
       "slots": "blood-priest-arts",
       "startingSpells": 0,
-      "spellsPerLevel": 0
+      "spellsPerLevel": 0,
+      "excludedSpells": []
+    }
+  },
+  {
+    "id": "healer-partial-mage",
+    "name": "Adventurer: Priest of Death (Partial Necromancer/Partial Healer)",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "necromancer",
+          "partial": true,
+          "arts": "partial-necromancer-arts-and-spells"
+        },
+        {
+          "tradition": "healer",
+          "partial": true,
+          "arts": "healer-arts"
+        }
+      ],
+      "slots": "partial-necromancer-arts-and-spells",
+      "startingSpells": 2,
+      "spellsPerLevel": 1,
+      "excludedSpells": ["raise-corpse", "raise-grave-knight"]
+    }
+  },
+  {
+    "id": "blood-priest-partial-mage",
+    "name": "Adventurer: Partial Blood Priest/Partial Healer",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "blood-priest",
+          "partial": true,
+          "arts": "blood-priest-arts"
+        },
+        {
+          "tradition": "healer",
+          "partial": true,
+          "arts": "healer-arts"
+        }
+      ],
+      "slots": "blood-priest-arts",
+      "startingSpells": 0,
+      "spellsPerLevel": 0,
+      "excludedSpells": []
     }
   }
 ]

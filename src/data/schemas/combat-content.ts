@@ -157,6 +157,18 @@ export const CombatEffectSchema = z.discriminatedUnion('kind', [
   }),
   /** Wrath of the Most High: the target's next damage by the end of next round adds `dice` + level. */
   z.strictObject({ kind: z.literal('wrath'), dice: DiceSchema }),
+  /**
+   * Healing Touch (1.5.9.1): `dice` plus the caster's skill, adding `strain` System Strain to the
+   * target each time; it revives the Mortally Wounded. Empowered Healer adds the level.
+   */
+  z.strictObject({
+    kind: z.literal('touch-heal'),
+    dice: DiceSchema,
+    skill: IdSchema,
+    strain: z.int().min(0),
+  }),
+  /** Final Repose: the target takes the caster's skill as a Physical save penalty for the scene. */
+  z.strictObject({ kind: z.literal('repose'), skill: IdSchema }),
   /** Reroll a spell's damage and keep the better (Empowered Sorcery). */
   z.strictObject({ kind: z.literal('reroll-damage') }),
   /** Make an enemy reroll a successful save and keep the worse (Inexorable Effect). */
@@ -179,8 +191,11 @@ export const CombatMagicSchema = z.strictObject({
     'self',
     'none',
   ]),
-  /** Arts commit Effort for the scene, the day, or as long as the effect lasts. */
-  effort: z.enum(['scene', 'day', 'committed']).optional(),
+  /**
+   * Arts commit Effort for the scene, the day, or as long as the effect lasts; `activate` commits
+   * it for the scene on the first use only, later uses that scene being free (Healing Touch).
+   */
+  effort: z.enum(['scene', 'day', 'committed', 'activate']).optional(),
   /** Usable once per scene, or once per target per scene. */
   limit: z.enum(['scene', 'target-scene']).optional(),
   effect: CombatEffectSchema,

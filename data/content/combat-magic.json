@@ -234,5 +234,32 @@
         "modifier": 0
       }
     }
+  },
+  {
+    "id": "healing-touch",
+    "source": "art",
+    "target": "wounded-ally",
+    "effort": "activate",
+    "effect": {
+      "kind": "touch-heal",
+      "dice": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      },
+      "skill": "heal",
+      "strain": 1
+    }
+  },
+  {
+    "id": "final-repose",
+    "source": "art",
+    "target": "enemy",
+    "effort": "day",
+    "limit": "target-scene",
+    "effect": {
+      "kind": "repose",
+      "skill": "heal"
+    }
   }
 ]

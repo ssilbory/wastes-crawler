@@ -34,7 +34,12 @@ export function combatReferenceErrors(srd: SrdData, content: ContentData): strin
     const known = m.source === 'spell' ? srd.spells : srd.arts;
     if (!known.some((k) => k.id === m.id)) errors.push(`combatMagic/${m.id}: unknown ${m.source}`);
     const e = m.effect;
-    const skill = e.kind === 'blast' ? e.skill : e.kind === 'enthrall' ? e.penaltySkill : undefined;
+    const skill =
+      e.kind === 'blast' || e.kind === 'touch-heal' || e.kind === 'repose'
+        ? e.skill
+        : e.kind === 'enthrall'
+          ? e.penaltySkill
+          : undefined;
     if (skill !== undefined && !skills.has(skill)) {
       errors.push(`combatMagic/${m.id}: unknown skill ${skill}`);
     }

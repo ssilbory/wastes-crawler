@@ -36,6 +36,7 @@ export interface Member {
   spellsCast: number;
   effortDay: number;
   pendingXp: number;
+  reviving: boolean;
 }
 
 export type Npc = NpcSave;
@@ -94,6 +95,7 @@ export interface World {
   commissions: Commission[];
   /** Corpses lying where the last won fight was (Phase 14b). */
   corpses: WorldSave['corpses'];
+  fallen: WorldSave['fallen'];
   /** Faction state by id (Phase 13). */
   factions: Record<string, FactionState>;
   log: string[];

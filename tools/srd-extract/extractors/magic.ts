@@ -67,6 +67,18 @@ const ART_SECTIONS: {
     automatic: false,
   },
   {
+    file: `${CLASS_DIR}/1.5.9 The Healer.md`,
+    heading: /^1\.5\.9\.1 Healer Arts$/,
+    tradition: 'healer',
+    automatic: true,
+  },
+  {
+    file: `${CLASS_DIR}/1.5.9 The Healer.md`,
+    heading: /^Other Healer Arts$/,
+    tradition: 'healer',
+    automatic: false,
+  },
+  {
     file: `${CLASS_DIR}/1.5.5 The Blood Priest.md`,
     heading: /^1\.5\.5\.1 Blood Priest Arts$/,
     tradition: 'blood-priest',

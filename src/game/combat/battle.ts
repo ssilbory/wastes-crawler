@@ -111,7 +111,9 @@ export function createBattle(s: BattleSetup): Battle {
     ...monsterRows(s, allies, 'party', 'ally'),
   ];
   const enemies = monsterRows(s, s.enemies, 'enemy', 'foe');
-  if (s.antiMagic) for (const c of [...party, ...enemies]) if (c.caster) c.caster.canCast = false;
+  if (s.antiMagic)
+    for (const c of [...party, ...enemies])
+      if (c.caster) Object.assign(c.caster, { canCast: false, armorFree: [] });
   const b: Battle = {
     data: s.data,
     rng: s.rng,

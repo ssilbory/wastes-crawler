@@ -1,7 +1,7 @@
 import type { ClassOption } from '../../data/schemas/index.ts';
 import type { MagicChoice, StepStatus } from '../../game/character/creation.ts';
 import { findTradition } from '../../game/character/class-step.ts';
-import { artPicks, learnableSpells, spellSlots } from '../../game/character/magic.ts';
+import { artChoices, artPicks, learnableSpells, spellSlots } from '../../game/character/magic.ts';
 import { data } from './data.ts';
 import { Step } from './Field.tsx';
 
@@ -60,9 +60,7 @@ export function MagicStep(props: {
     <Step title="6. Magic" status={props.status}>
       {artPicks(data, mage).map((p) => {
         const tradition = findTradition(data, p.tradition)?.name ?? p.tradition;
-        const options = data.srd.arts.filter(
-          (a) => a.tradition === p.tradition && !p.automatic.includes(a.id),
-        );
+        const options = artChoices(data, p, [], 1);
         return (
           <fieldset key={p.tradition} class="picks">
             <legend>

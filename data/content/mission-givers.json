@@ -29,7 +29,7 @@
     "name": "Brother Aldo",
     "town": "eastmarch",
     "raises": "mortuary",
-    "text": "A grey-robed priest of the god of death. His mortuary can send the dead back, if the god is paid, in crowns or in service."
+    "text": "A grey-robed Priest of Death, a partial necromancer and healer who raises no undead. His mortuary can send the dead back, if the god is paid, in crowns or in service."
   },
   {
     "id": "necromancer-vashti",
@@ -42,8 +42,8 @@
     "id": "mother-skrell",
     "name": "Mother Skrell",
     "town": "gutterwick",
-    "raises": "mortuary",
-    "text": "A goblin death priest who keeps Gutterwick's mortuary. The god of death takes crowns, or service."
+    "raises": "temple",
+    "text": "A goblin blood priestess who keeps Gutterwick's temple to the god of blood. Her god takes crowns, or service, and gives back what the grave took."
   },
   {
     "id": "elder-gorvash",

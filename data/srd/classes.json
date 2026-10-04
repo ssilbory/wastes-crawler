@@ -150,5 +150,24 @@
         "text": "Blood Priest Effort is calculated with Pray, with their total maximum Effort being equal to their Pray skill plus the higher of their Wisdom or Charisma modifiers, to a minimum of one point.\n\nAt first level, the Blood Priest may choose two of the following miracles to master, and gain more as they advance in levels. Once chosen, a miracle pick is permanent and cannot be changed later. Miracles are not hindered by the wearing of armor and require no gestures or free hand to employ, though usually a prayer must be vocalized as part of the action."
       }
     ]
+  },
+  {
+    "id": "healer",
+    "name": "Healer",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.9 The Healer.md",
+      "heading": "1.5.9 The Healer"
+    },
+    "description": "The Healer is a partial Mage class that does not use spells. Instead, they gain specific arts that allow them to mend wounds, cure illnesses, and otherwise sustain their allies.",
+    "abilities": [
+      {
+        "name": "Healer Benefits",
+        "text": "The Healer class exists only as a partial Mage class, to be taken by an Adventurer along with another partial class. Thus, a Partial Warrior/Partial Healer might be a grizzled combat medic, a Partial Expert/Partial Healer might be an erudite physician gifted in both mundane and magical healing methods, and a Partial Necromancer/Partial Healer might be an adept of life and death.\n\nAll Healers gain Heal as a bonus skill, acquiring it at level-0, or level-1 if they already have it at level-0. A basic grounding in mundane healing techniques is necessary in order to learn their more sophisticated magical arts.\n\nHealers do not learn how to cast spells. Instead, they focus on their special arcane healing arts. Wielding these arts usually requires nothing more than touching the target and concentrating on the desired effect, and the process is direct and simple enough to perform even when burdened by armor or carrying a shield.\n\nThese arts are usually quite subtle, and don’t produce visible or audible indications of their use.\n\nAt first level, a Healer gains the Healing Touch art and can pick one more of their choice. As they advance in levels afterwards, they can learn new arts. Once chosen, an art is permanent and cannot be exchanged."
+      },
+      {
+        "name": "Healer Arts",
+        "text": "Healer Effort is calculated with Heal rather than Magic, with each PC’s maximum being equal to their Heal skill level plus the better of their Intelligence or Charisma modifiers, to a minimum of one point.\n\nAll Healers are trained in the Healing Touch art, but may develop other techniques with time."
+      }
+    ]
   }
 ]

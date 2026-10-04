@@ -9,6 +9,7 @@ import type { GameData } from '../character/context.ts';
 import { characterSheet, finalScores } from '../character/derived.ts';
 import { activeEffects } from '../character/equipment.ts';
 import { modifierBonuses } from '../character/foci.ts';
+import { armorFreeArts } from '../character/magic.ts';
 import { findItem } from '../character/items.ts';
 import type { Attack, Combatant } from './types.ts';
 
@@ -62,6 +63,7 @@ export function base(
     actsLast: false,
     acFloor: 0,
     wrath: null,
+    reposePenalty: 0,
   };
 }
 
@@ -145,6 +147,8 @@ export function pcCombatant(data: GameData, c: Character, id = c.id): Combatant 
           magicSkill: c.skills.magic ?? 0,
           castModifier: Math.max(sheet.modifiers.int, sheet.modifiers.cha),
           canCast: magic.canCast,
+          armorFree: armorFreeArts(data, c.classes, c.arts),
+          swiftLeft: c.arts.includes('swift-healer') ? casterLevel : 0,
           usedThisScene: new Set(),
         }
       : null,

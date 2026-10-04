@@ -137,10 +137,14 @@ function moveChoices(b: Battle, actor: Combatant): Choice[] {
 export function commandsFor(b: Battle, actor: Combatant): Command[] {
   const commands = attackCommands(b, actor);
   const c = actor.caster;
-  if (c?.canCast) {
+  if (c) {
     commands.push(...smiteCommands(b, actor));
     for (const m of b.data.content.combatMagic) {
-      const has = m.source === 'art' ? c.arts.includes(m.id) : c.known.includes(m.id);
+      // Armor blocks all but the arts that work in it (Phase 14d).
+      const has =
+        m.source === 'art'
+          ? c.arts.includes(m.id) && (c.canCast || c.armorFree.includes(m.id))
+          : c.canCast && c.known.includes(m.id);
       if (has) commands.push(...magicCommand(b, actor, m));
     }
   }

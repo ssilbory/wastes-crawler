@@ -14,6 +14,7 @@ import { accrueShares, fights, moraleAfterFight, npcMonster, removeNpc, typeOf }
 import { emit } from './bus.ts';
 import { inDark } from '../dungeon/light.ts';
 import { onSpecial } from '../dungeon/specials.ts';
+import { recordFallen } from './healer.ts';
 import { leaveCorpses } from './necromancy.ts';
 import { freeCaptive } from './rescue.ts';
 import { addLoot } from './shop.ts';
@@ -54,7 +55,7 @@ function npcSetup(data: GameData, n: Npc): NpcSetup {
   };
 }
 
-const fighters = (w: World) => alive(w).filter((m) => m.character.hp.current > 0);
+const fighters = (w: World) => alive(w).filter((m) => m.character.hp.current > 0 && !m.reviving);
 
 export function encounterBattle(w: World, data: GameData): WorldBattle {
   if (!w.encounter) throw new Error('no encounter to fight');
@@ -225,6 +226,7 @@ export function applyBattle(
     const m = w.members.find((x) => x.id === id) as Member;
     carryBack(data, m, fight.battle.combatants[i] as Battle['combatants'][number]);
   });
+  recordFallen(w, fight.memberIds, fight.battle);
   const npcLost = npcsBack(w, data, fight);
   w.encounter = null;
   if (result.outcome === 'enemy') {

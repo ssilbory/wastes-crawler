@@ -20,8 +20,8 @@ import type { SrdReader } from '../reader.ts';
 const CLASS_DIR = '1.0 Character Creation/1.5.0 Class List';
 
 /**
- * The base classes, the Mage umbrella, and four Mage traditions (the Necromancer in Phase 14b, the
- * Blood Priest in 14c).
+ * The base classes, the Mage umbrella, and five Mage traditions (the Necromancer in Phase 14b, the
+ * Blood Priest in 14c, the Healer in 14d).
  */
 export const CLASS_FILES = [
   '1.5.1 The Adventurer.md',
@@ -32,6 +32,7 @@ export const CLASS_FILES = [
   '1.5.7 The Elementalist.md',
   '1.5.14 The Necromancer.md',
   '1.5.5 The Blood Priest.md',
+  '1.5.9 The Healer.md',
 ].map((f) => `${CLASS_DIR}/${f}`);
 
 export interface ClassExtract {
@@ -162,8 +163,12 @@ function classFromDoc(doc: MdDoc, out: ClassExtract, seen: Map<string, string>):
         sources: [source],
         levels: progressionLevels(table, where),
       });
-    } else if (table && table.header.length === 2 && /Arts$/.test(table.header[1] ?? '')) {
-      // A tradition of arts alone (the Blood Priest): no spells at any level.
+    } else if (
+      table &&
+      table.header.length === 2 &&
+      /Arts( Gained)?$/.test(table.header[1] ?? '')
+    ) {
+      // A tradition of arts alone (the Blood Priest, the Healer): no spells at any level.
       addOnce(out.casting, seen, {
         id: slug(h.text),
         name: h.text,

@@ -22,6 +22,8 @@ export function monsterCaster(data: GameData, m: Monster, caster: MonsterCaster)
     magicSkill: m.skill,
     castModifier: 0,
     canCast: true,
+    armorFree: [],
+    swiftLeft: 0,
     usedThisScene: new Set(),
   };
 }

@@ -50,6 +50,10 @@ export interface CasterState {
   /** Best of Int or Cha, for spells; Elemental Blast may also use Dex. */
   castModifier: number;
   canCast: boolean;
+  /** Arts that work even when armor blocks casting (a Priest of Death's Healer arts, Phase 14d). */
+  armorFree: string[];
+  /** Swift Healer's On Turn Healing Touches left this fight (Phase 14d). */
+  swiftLeft: number;
   /** Arts and spells already used this scene, and targets of once-per-target ones. */
   usedThisScene: Set<string>;
 }
@@ -125,6 +129,8 @@ export interface Combatant {
   /** Phase 14c: Armor of God's natural AC (0 if none), and Wrath's pending extra damage. */
   acFloor: number;
   wrath: { until: number; bonus: number } | null;
+  /** Phase 14d: Final Repose's Physical save penalty for the scene. */
+  reposePenalty: number;
 }
 
 export type Action =

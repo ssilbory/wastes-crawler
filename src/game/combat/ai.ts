@@ -50,6 +50,9 @@ export function monsterAction(b: Battle, actor: Combatant): Action {
   return { kind: 'attack', attack: choice.index, target: target.id };
 }
 
+/** Healing arts, in the order the AI reaches for them. */
+const HEALING = ['merciful-healing', 'healing-touch'];
+
 const enemiesOf = (b: Battle, actor: Combatant) =>
   b.combatants.filter((c) => c.side !== actor.side && isUp(c));
 
@@ -74,10 +77,25 @@ export function freeActions(b: Battle, actor: Combatant): void {
     const allies = b.combatants.filter((c) => c.side === actor.side && canAct(c)).length;
     if (hitDice >= allies) castMagic(b, actor, bless.id, undefined, undefined);
   }
+  // Swift Healer: Healing Touch On Turn for the dying or an ally at half their hit points or less.
+  const touch = combatMagic(b, 'healing-touch');
+  const c = actor.caster;
+  if (touch && c?.arts.includes('swift-healer') && c.swiftLeft > 0) {
+    const hurt = b.combatants.find(
+      (x) =>
+        x.side === actor.side &&
+        (x.status === 'dying' || (canAct(x) && x.hp * 2 <= x.maxHp)) &&
+        canUse(b, actor, touch, false, x.id),
+    );
+    if (hurt) {
+      c.swiftLeft -= 1;
+      castMagic(b, actor, touch.id, hurt.id, undefined);
+    }
+  }
 }
 
 function magicAction(b: Battle, actor: Combatant): Action | null {
-  if (!actor.caster?.canCast) return null;
+  if (!actor.caster) return null;
   const foes = enemiesOf(b, actor).filter((f) => f.status === 'active');
   if (foes.length === 0) return null;
   const ready = (id: string, strain = false, target?: string) => {
@@ -90,10 +108,10 @@ function magicAction(b: Battle, actor: Combatant): Action | null {
     const tags = turn.effect.tags;
     if (foes.some((f) => tags.some((t) => f.tags.has(t)))) return { kind: 'cast', magic: turn.id };
   }
-  // Merciful Healing for an ally down to a third of their hit points.
   const hurt = b.combatants.find((c) => c.side === actor.side && canAct(c) && c.hp * 3 <= c.maxHp);
-  if (hurt && ready('merciful-healing'))
-    return { kind: 'cast', magic: 'merciful-healing', target: hurt.id };
+  // Merciful Healing or Healing Touch for an ally down to a third of their hit points.
+  const healing = HEALING.find((id) => ready(id));
+  if (hurt && healing) return { kind: 'cast', magic: healing, target: hurt.id };
   const toughest = foes.reduce((a, f) => (f.hp > a.hp ? f : a));
   const weakest = foes.reduce((a, f) => (f.hp < a.hp ? f : a));
   const sleep = combatMagic(b, 'the-wind-of-the-final-repose');
@@ -143,10 +161,11 @@ function noncombatantAction(b: Battle, actor: Combatant): Action {
 
 export function partyAction(b: Battle, actor: Combatant): Action {
   const first = firstDying(b, actor);
-  // Merciful Healing revives the Mortally Wounded, even in melee (Phase 14c).
-  const healing = combatMagic(b, 'merciful-healing');
-  if (first && healing && canUse(b, actor, healing))
-    return { kind: 'cast', magic: healing.id, target: first.id };
+  // Healing magic revives the Mortally Wounded, even in melee (Phases 14c and 14d).
+  const healing = HEALING.map((id) => combatMagic(b, id)).find(
+    (m) => m && canUse(b, actor, m, false, first?.id),
+  );
+  if (first && healing) return { kind: 'cast', magic: healing.id, target: first.id };
   if (first && !inMelee(b, actor)) return { kind: 'stabilize', target: first.id };
   const magic = magicAction(b, actor);
   if (magic) return magic;

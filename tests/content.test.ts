@@ -213,6 +213,7 @@ describe('magic content', () => {
           id: 'witch',
           bonusSkill: 'necromancy',
           effort: { ...hm.effort, skills: ['death'] },
+          artLevels: { 'revive-the-fallen': 8 },
         },
       ],
       classOptions: [
@@ -223,6 +224,7 @@ describe('magic content', () => {
             ...caster.mage,
             slots: 'nope',
             traditions: [{ tradition: 'bard', partial: false, arts: 'none' }],
+            excludedSpells: ['raise-corpse', 'no-such-spell'],
           },
         },
       ],
@@ -231,10 +233,12 @@ describe('magic content', () => {
       'traditions/witch: unknown skill necromancy',
       'traditions/witch: unknown skill death',
       'traditions/witch: has no arts',
+      "traditions/witch: revive-the-fallen isn't one of its arts",
       'classOptions/full-wizard: unknown progression',
       'classOptions/full-high-mage: unknown casting table nope',
       'classOptions/full-high-mage: unknown tradition bard',
       'classOptions/full-high-mage: unknown casting table none',
+      'classOptions/full-high-mage: unknown excluded spell no-such-spell',
     ]);
   });
 });
@@ -276,6 +280,9 @@ describe('combat content', () => {
         { ...blast, effect: { ...blast.effect, skill: 'blasting' } },
         { ...shackles, effect: { ...shackles.effect, penaltySkill: 'charm' } },
         { ...blast, id: 'fireball', source: 'spell' as const },
+        ...content.combatMagic
+          .filter((m) => m.effect.kind === 'touch-heal' || m.effect.kind === 'repose')
+          .map((m) => ({ ...m, effect: { ...m.effect, skill: 'mending' } })),
       ],
     };
     expect(combatReferenceErrors(srd, broken)).toEqual([
@@ -288,6 +295,8 @@ describe('combat content', () => {
       'combatMagic/elemental-blast: unknown skill blasting',
       'combatMagic/ineluctable-shackles-of-volition: unknown skill charm',
       'combatMagic/fireball: unknown spell',
+      'combatMagic/healing-touch: unknown skill mending',
+      'combatMagic/final-repose: unknown skill mending',
     ]);
   });
 
@@ -356,11 +365,15 @@ describe('combat content', () => {
 });
 
 describe('the Blood Priest (Phase 14c)', () => {
-  it('is offered only as a Partial Warrior, with miracles and no spells', () => {
+  it('is offered as a Partial Warrior or a Partial Healer, with miracles and no spells', () => {
     const priests = content.classOptions.filter((o) =>
       o.mage?.traditions.some((t) => t.tradition === 'blood-priest'),
     );
-    expect(priests.map((o) => o.id)).toEqual(['blood-priest-partial-warrior']);
+    expect(priests.map((o) => o.id)).toEqual([
+      'blood-priest-partial-warrior',
+      'blood-priest-partial-mage',
+    ]);
+    expect(priests[1]?.mage).toMatchObject({ startingSpells: 0, spellsPerLevel: 0 });
     expect(priests[0]?.mage).toMatchObject({ startingSpells: 0, spellsPerLevel: 0 });
     expect(content.traditions.find((t) => t.id === 'blood-priest')).toMatchObject({
       bonusSkill: 'pray',

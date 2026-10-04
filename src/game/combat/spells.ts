@@ -1,6 +1,6 @@
 // Spells and arts in combat, from data/content/combat-magic.json (each entry's mechanics follow its
 // SRD text in vendor/wwn-srd/4.0 Magic and Spellcasting/, including 4.6.0's Smite the Dead, and
-// 1.5.7/1.5.10 arts). Slots and Effort as in 4.2.0; strain casting from docs/rules-adaptation.md.
+// 1.5.7/1.5.9/1.5.10 arts). Slots and Effort as in 4.2.0; strain casting from docs/rules-adaptation.md.
 import type { CombatMagic } from '../../data/schemas/index.ts';
 import { attackRoll } from '../../rules/attacks.ts';
 import { netSteps } from '../../rules/advantage.ts';
@@ -25,6 +25,10 @@ function hasEffort(c: CasterState, art: string): boolean {
   return c.arts.includes(art) && c.effortUsed < c.effortMax;
 }
 
+/** Healing Touch costs nothing once active this scene, or ever with Facile Healer (1.5.9.1). */
+const freeUse = (c: CasterState, m: CombatMagic) =>
+  m.effort === 'activate' && (c.usedThisScene.has(m.id) || c.arts.includes('facile-healer'));
+
 /** Whether the caster can use this spell or art now, on this target. */
 export function canUse(
   b: Battle,
@@ -34,10 +38,11 @@ export function canUse(
   target?: string,
 ): boolean {
   const c = actor.caster;
-  if (!c?.canCast) return false;
+  if (!c || !(c.canCast || (m.source === 'art' && c.armorFree.includes(m.id)))) return false;
   if (m.limit === 'scene' && c.usedThisScene.has(m.id)) return false;
   if (m.limit === 'target-scene' && c.usedThisScene.has(`${m.id}:${target ?? ''}`)) return false;
-  if (m.source === 'art') return hasEffort(c, m.id) && m.target !== 'none';
+  if (m.source === 'art')
+    return (freeUse(c, m) ? c.arts.includes(m.id) : hasEffort(c, m.id)) && m.target !== 'none';
   if (strain) {
     const s = actor.strain;
     return (
@@ -70,12 +75,25 @@ function enemySave(
 function pay(b: Battle, actor: Combatant, m: CombatMagic, strain: boolean): void {
   const c = actor.caster as CasterState;
   if (m.source === 'art') {
+    if (freeUse(c, m)) return;
     c.effortUsed += 1;
     if (m.effort === 'day') c.effortDay += 1;
   } else if (strain && actor.strain) {
     const outcome = addStrain(actor.strain, strainCastCost(spellLevel(b, m.id)), 'strain-cast');
     actor.strain = outcome.state;
   } else c.spellsLeft -= 1;
+}
+
+/** Healing that revives the Mortally Wounded and adds System Strain. */
+function restore(b: Battle, target: Combatant, amount: number, strain: number): void {
+  const healed = Math.max(0, amount);
+  if (target.status === 'dying' || target.status === 'stable') {
+    target.status = 'active';
+    target.hp = Math.min(target.maxHp, healed);
+  } else target.hp = Math.min(target.maxHp, target.hp + healed);
+  if (target.strain && strain > 0)
+    target.strain = addStrain(target.strain, strain, 'healing').state;
+  say(b, `${target.name} is healed for ${healed}.`);
 }
 
 /** The highest tier the level reaches (the first, below them all). */
@@ -176,18 +194,19 @@ export function castMagic(
     case 'ac-floor':
       actor.acFloor = e.base + Math.floor(c.level / 2);
       return true;
-    case 'heal': {
+    case 'heal':
+      if (target) restore(b, target, roll(b.rng, tierAt(e.tiers, c.level).dice).total, e.strain);
+      return true;
+    case 'touch-heal': {
       if (!target) return true;
-      const healed = Math.max(0, roll(b.rng, tierAt(e.tiers, c.level).dice).total);
-      if (target.status === 'dying' || target.status === 'stable') {
-        target.status = 'active';
-        target.hp = Math.min(target.maxHp, healed);
-      } else target.hp = Math.min(target.maxHp, target.hp + healed);
-      if (target.strain && e.strain > 0)
-        target.strain = addStrain(target.strain, e.strain, 'healing').state;
-      say(b, `${target.name} is healed for ${healed}.`);
+      const empowered = c.arts.includes('empowered-healer') ? c.level : 0;
+      const dice = roll(b.rng, e.dice).total;
+      restore(b, target, dice + (actor.skills[e.skill] ?? 0) + empowered, e.strain);
       return true;
     }
+    case 'repose':
+      if (target && !target.tags.has('unliving')) target.reposePenalty = actor.skills[e.skill] ?? 0;
+      return true;
     case 'bless': {
       const bonus = tierAt(e.tiers, c.level).bonus;
       b.hitModifier[actor.side] += bonus;

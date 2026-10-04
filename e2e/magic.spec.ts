@@ -170,3 +170,61 @@ test('a Partial Warrior/Blood Priest works miracles in armor, with no spells (Ph
   await expect(sheet).toContainText('Effort 1. Miracles only.');
   await expect(sheet).toContainText('Arts: Armor of God, Merciful Healing.');
 });
+
+test('a Priest of Death heals and binds the dead, but learns no raising (Phase 14d)', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page
+    .getByRole('combobox', { name: 'Class', exact: true })
+    .selectOption({ label: 'Adventurer: Priest of Death (Partial Necromancer/Partial Healer)' });
+  const magic = page.locator('section.step', { hasText: '6. Magic' });
+  await expect(magic).toContainText('Healer arts: pick 1, plus Healing Touch');
+  // Revive the Fallen and Limb Restoration wait for 8th level.
+  await expect(magic.getByLabel('Revive the Fallen', { exact: true })).toHaveCount(0);
+  await expect(magic.getByLabel('Limb Restoration', { exact: true })).toHaveCount(0);
+  const sheet = await caster(page, {
+    people: 'Gnome',
+    bg: 'Scavenger',
+    picks: ['Sneak', 'Trade'],
+    className: 'Adventurer: Priest of Death (Partial Necromancer/Partial Healer)',
+    foci: [
+      ['Racial focus 1', 'Artisan'],
+      ['Racial focus 2', 'Polymath'],
+      ['Bonus skill for Racial focus 2', 'Heal'],
+      ['Any focus', 'Die Hard'],
+    ],
+    arts: ['Bonetalker', 'Vital Furnace'],
+    spells: ['Command the Dead', 'Smite the Dead'],
+    prepare: ['Command the Dead', 'Smite the Dead'],
+  });
+  await expect(sheet).toContainText('Arts: Healing Touch, Bonetalker, Vital Furnace.');
+  await expect(sheet).toContainText('Command the Dead (prepared)');
+  await expect(sheet).toContainText('Heal-1');
+});
+
+test('a Partial Blood Priest/Partial Healer works miracles and heals (Phase 14d)', async ({
+  page,
+}) => {
+  const sheet = await caster(page, {
+    people: 'Gnome',
+    bg: 'Scavenger',
+    picks: ['Sneak', 'Trade'],
+    className: 'Adventurer: Partial Blood Priest/Partial Healer',
+    foci: [
+      ['Racial focus 1', 'Artisan'],
+      ['Racial focus 2', 'Polymath'],
+      ['Bonus skill for Racial focus 2', 'Trade'],
+      ['Any focus', 'Die Hard'],
+    ],
+    arts: ['Armor of God', 'Merciful Healing', 'Swift Healer'],
+    spells: [],
+    prepare: [],
+  });
+  await expect(sheet).toContainText('Miracles only.');
+  await expect(sheet).toContainText(
+    'Arts: Healing Touch, Armor of God, Merciful Healing, Swift Healer.',
+  );
+  await expect(sheet).toContainText('Pray-0');
+  await expect(sheet).toContainText('Heal-0');
+});

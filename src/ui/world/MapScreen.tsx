@@ -12,6 +12,7 @@ import { PartyPanel } from './PartyPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
 import { FactionsPanel } from './FactionsPanel.tsx';
 import { SettingPanel } from './SettingPanel.tsx';
+import { HealerPanel } from './HealerPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { QuestLog } from './QuestLog.tsx';
@@ -121,6 +122,7 @@ export function MapScreen(props: {
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />
+          <HealerPanel world={w} onChange={props.onChange} />
           <QuestLog world={w} onChange={props.onChange} />
           <SettingPanel world={w} inTown={town !== undefined} onChange={props.onChange} />
           <FactionsPanel world={w} />

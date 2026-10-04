@@ -9,7 +9,7 @@ import { advance, levelPlan, type LevelChoices, type LevelPlan } from './advance
 import { classOption } from './class-step.ts';
 import type { GameData } from './context.ts';
 import { allowedSkills, focusInfo, type FocusChoice } from './foci.ts';
-import { learnableSpells } from './magic.ts';
+import { artChoices, learnableSpells } from './magic.ts';
 import { raiseSkill } from './training.ts';
 
 const COMBAT = ['stab', 'shoot', 'punch'] as const;
@@ -28,10 +28,7 @@ function choiceFor(data: GameData, id: string): FocusChoice {
 /** The first arts and spells the plan can take. */
 function learning(data: GameData, c: Character, plan: LevelPlan): Omit<LevelChoices, 'foci'> {
   const arts = plan.arts.flatMap((p) =>
-    data.srd.arts
-      .filter(
-        (a) => a.tradition === p.tradition && !c.arts.includes(a.id) && !p.automatic.includes(a.id),
-      )
+    artChoices(data, p, c.arts, plan.classLevel)
       .slice(0, p.picks)
       .map((a) => a.id),
   );

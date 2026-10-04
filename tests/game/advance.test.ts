@@ -1,13 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import type { Character } from '../../src/data/schemas/index.ts';
+import type { Character, ClassOption } from '../../src/data/schemas/index.ts';
 import {
   advance,
   canLevelUp,
   levelPlan,
   type LevelChoices,
+  type LevelPlan,
 } from '../../src/game/character/advance.ts';
+import { classOption } from '../../src/game/character/class-step.ts';
 import { characterSheet } from '../../src/game/character/derived.ts';
+import { artChoices, learnableSpells } from '../../src/game/character/magic.ts';
+import { xpForLevel } from '../../src/rules/advancement.ts';
 import { changeClass } from '../../src/game/character/training.ts';
+import { createRng } from '../../src/rules/rng.ts';
 import { scriptedRng } from '../helpers/scripted-rng.ts';
 import { data, starter } from './combat/helpers.ts';
 
@@ -236,5 +241,52 @@ describe('spells and arts at a new level (SRD 2.7.1.7)', () => {
     const r = ok(advance(data, mage, choices, scriptedRng([1, 1, 1, 1, 1])));
     expect(r.character.skills.magic).toBe(1);
     expect(characterSheet(r.character, data).magic).not.toBeNull();
+  });
+});
+
+describe('level-gated arts (Phase 14d)', () => {
+  /** Fizzwick as a Priest of Death of `level`, with XP for the next. */
+  function priest(level: number): Character {
+    const fizz = starter('fizzwick');
+    return {
+      ...fizz,
+      xp: xpForLevel(level + 1),
+      classes: { current: 'healer-partial-mage', levels: { 'healer-partial-mage': level } },
+      skills: { ...fizz.skills, heal: 1 },
+      arts: ['healing-touch'],
+      spells: { known: [], prepared: [] },
+    };
+  }
+
+  /** The level's picks, with `healer` as the Healer art and the first open others. */
+  function choices(c: Character, healer: string): LevelChoices {
+    const plan = levelPlan(data, c) as LevelPlan;
+    const mage = (classOption(data, plan.classId) as ClassOption).mage as NonNullable<
+      ClassOption['mage']
+    >;
+    return {
+      foci: [],
+      arts: plan.arts.flatMap((p) =>
+        p.tradition === 'healer'
+          ? [healer]
+          : artChoices(data, p, c.arts, plan.classLevel)
+              .slice(0, p.picks)
+              .map((a) => a.id),
+      ),
+      spells: learnableSpells(data, mage, plan.maxSpellLevel)
+        .slice(0, plan.spells)
+        .map((s) => s.id),
+    };
+  }
+
+  it('refuses Revive the Fallen before 8th level, and takes it at 8th', () => {
+    const young = priest(3);
+    expect(advance(data, young, choices(young, 'revive-the-fallen'), scriptedRng([1]))).toEqual({
+      ok: false,
+      reason: 'revive-the-fallen waits for a higher level',
+    });
+    const old = priest(7);
+    const r = ok(advance(data, old, choices(old, 'revive-the-fallen'), createRng('old')));
+    expect(r.character.arts).toContain('revive-the-fallen');
   });
 });

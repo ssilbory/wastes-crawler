@@ -1,7 +1,7 @@
 // Arts and starting spells: vendor/wwn-srd/4.0 Magic and Spellcasting/4.1.0 Spells and Arts.md,
 // 4.2.0 Preparing and Casting Spells.md, 4.3.0 Dual Partial Spellcasters.md, and 1.7.5 Mages Choose
 // Starting Spells. Effort across classes: docs/rules-adaptation.md (Class switching).
-import type { ClassOption, Spell } from '../../data/schemas/index.ts';
+import type { Art, ClassOption, Spell } from '../../data/schemas/index.ts';
 import {
   boostedModifier,
   type AttributeScores,
@@ -50,7 +50,33 @@ export function learnableSpells(data: GameData, mage: Mage, maxLevel: number): S
   const lists = new Set(
     mage.traditions.flatMap((t) => findTradition(data, t.tradition)?.spellLists ?? []),
   );
-  return data.srd.spells.filter((s) => lists.has(s.tradition) && s.level <= maxLevel);
+  return data.srd.spells.filter(
+    (s) => lists.has(s.tradition) && s.level <= maxLevel && !mage.excludedSpells.includes(s.id),
+  );
+}
+
+/**
+ * Whether an art is open to a character of the class level: some arts wait for a level the SRD
+ * names in their text (the Healer's Limb Restoration and Revive the Fallen, at 8th).
+ */
+export function artOpen(data: GameData, tradition: string, art: string, level: number): boolean {
+  return (findTradition(data, tradition)?.artLevels[art] ?? 1) <= level;
+}
+
+/** The arts a pick can choose: the tradition's, not held or granted, open at the level. */
+export function artChoices(
+  data: GameData,
+  p: ArtPick,
+  held: readonly string[],
+  level: number,
+): Art[] {
+  return data.srd.arts.filter(
+    (a) =>
+      a.tradition === p.tradition &&
+      !held.includes(a.id) &&
+      !p.automatic.includes(a.id) &&
+      artOpen(data, p.tradition, a.id, level),
+  );
 }
 
 export interface MagicChoice {
@@ -98,6 +124,8 @@ export function evaluateMagic(
     );
     if (chosen.some((id) => p.automatic.includes(id)))
       return done(fail('that art is already granted'));
+    const early = chosen.find((id) => !artOpen(data, p.tradition, id, 1));
+    if (early) return done(fail(`${early} waits for a higher level`));
     if (chosen.length > p.picks) return done(fail(`pick ${p.picks} ${p.tradition} arts`));
     if (chosen.length < p.picks) short = true;
   }
@@ -124,6 +152,12 @@ export function evaluateMagic(
   return done(short || choice.known.length < mage.startingSpells ? INCOMPLETE : OK);
 }
 
+/** The traditions of every casting class the character holds a level in. */
+const heldTraditions = (data: GameData, classes: ClassLevels) =>
+  Object.entries(classes.levels)
+    .filter(([, level]) => level >= 1)
+    .flatMap(([id]) => classOption(data, id)?.mage?.traditions ?? []);
+
 /**
  * One Effort pool from every casting class held: the best Effort skill and the best attribute any
  * of them allows, one lower only when all are partial. Null for characters with no casting class.
@@ -135,10 +169,7 @@ export function effortFor(
   scores: AttributeScores,
   bonuses: ModifierBonuses,
 ): number | null {
-  const held = Object.entries(classes.levels)
-    .filter(([, level]) => level >= 1)
-    .flatMap(([id]) => classOption(data, id)?.mage?.traditions ?? []);
-  const effort = held.flatMap((t) => {
+  const effort = heldTraditions(data, classes).flatMap((t) => {
     const tradition = findTradition(data, t.tradition);
     return tradition ? [{ ...tradition.effort, partial: t.partial }] : [];
   });
@@ -148,18 +179,34 @@ export function effortFor(
     attributeModifier: Math.max(
       ...effort.flatMap((e) => e.attributes.map((a) => boostedModifier(scores[a], bonuses[a]))),
     ),
-    partialOnly: effort.every((e) => e.partial && e.partialPenalty),
-    base: Math.max(...effort.map((e) => e.base)),
-    floorOne: effort.some((e) => e.floorOne),
+    offset: Math.max(...effort.map((e) => e.base - (e.partial && e.partialPenalty ? 1 : 0))),
+    floorOne: effort.some((e) => e.floorOne || (e.partial && e.partialPenalty)),
   });
 }
 
 /** Whether every tradition the character holds works its arts in armor (the Blood Priest). */
 export function armoredArts(data: GameData, classes: ClassLevels): boolean {
-  const held = Object.entries(classes.levels)
-    .filter(([, level]) => level >= 1)
-    .flatMap(([id]) => classOption(data, id)?.mage?.traditions ?? []);
+  const held = heldTraditions(data, classes);
   return held.length > 0 && held.every((t) => findTradition(data, t.tradition)?.armoredArts);
+}
+
+/**
+ * The held arts of traditions that work in armor, usable when armor blocks the rest: a Priest of
+ * Death's Healer arts (1.5.9: "simple enough to perform even when burdened by armor").
+ */
+export function armorFreeArts(
+  data: GameData,
+  classes: ClassLevels,
+  arts: readonly string[],
+): string[] {
+  const traditions = new Set(
+    heldTraditions(data, classes)
+      .filter((t) => findTradition(data, t.tradition)?.armoredArts)
+      .map((t) => t.tradition),
+  );
+  return arts.filter((id) =>
+    traditions.has(data.srd.arts.find((a) => a.id === id)?.tradition ?? ''),
+  );
 }
 
 /** Worn armor (barding included) and shields block casting unless Armored Magic allows them. */

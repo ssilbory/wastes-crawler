@@ -11,7 +11,8 @@
       "partialPenalty": true,
       "floorOne": false
     },
-    "armoredArts": false
+    "armoredArts": false,
+    "artLevels": {}
   },
   {
     "id": "elementalist",
@@ -25,7 +26,8 @@
       "partialPenalty": true,
       "floorOne": false
     },
-    "armoredArts": false
+    "armoredArts": false,
+    "artLevels": {}
   },
   {
     "id": "necromancer",
@@ -39,7 +41,8 @@
       "partialPenalty": true,
       "floorOne": false
     },
-    "armoredArts": false
+    "armoredArts": false,
+    "artLevels": {}
   },
   {
     "id": "blood-priest",
@@ -53,6 +56,25 @@
       "partialPenalty": false,
       "floorOne": true
     },
-    "armoredArts": true
+    "armoredArts": true,
+    "artLevels": {}
+  },
+  {
+    "id": "healer",
+    "name": "Healer",
+    "bonusSkill": "heal",
+    "spellLists": [],
+    "effort": {
+      "skills": ["heal"],
+      "attributes": ["int", "cha"],
+      "base": 0,
+      "partialPenalty": false,
+      "floorOne": true
+    },
+    "armoredArts": true,
+    "artLevels": {
+      "limb-restoration": 8,
+      "revive-the-fallen": 8
+    }
   }
 ]

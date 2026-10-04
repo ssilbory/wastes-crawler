@@ -9,6 +9,7 @@ import { dateOf } from './calendar.ts';
 import { addMemberStrain, alive, healNight, note } from './members.ts';
 import { npcCheck } from '../../rules/checks.ts';
 import { emit } from './bus.ts';
+import { wakeRevived } from './healer.ts';
 import { firstPhysician, nightForNpcs } from './npcs.ts';
 import { regionMap } from './region.ts';
 import type { World } from './types.ts';
@@ -31,7 +32,8 @@ export function endOfDay(w: World, data: GameData, waystation = false): void {
   // Underground there is no weather.
   const cold = !sheltered && !w.dungeon && isHarshNight(map.terrainAt(w.position).harsh, season);
   if (physician) tendFrail(w, data, physician.name);
-  for (const m of alive(w)) {
+  // The revived sleep the night through, untouched by hunger, cold, or rest (Phase 14d).
+  for (const m of alive(w).filter((x) => !x.reviving)) {
     m.hungry = !fed;
     // Sam's call: a physician's draughts and care keep off everything but hunger.
     m.sleepless = !m.slept && !physician;
@@ -52,6 +54,8 @@ export function endOfDay(w: World, data: GameData, waystation = false): void {
   if (!sheltered && !cold)
     note(w, `A night without shelter at ${hexKey(w.position)}: no one recovers.`);
   nightForNpcs(w, data, fed && sheltered && !w.noRecovery);
+  wakeRevived(w);
+  w.fallen = null;
   emit(w, data, { kind: 'day-passed' });
   w.camp = 'none';
   w.noRecovery = false;

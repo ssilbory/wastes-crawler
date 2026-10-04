@@ -118,5 +118,6 @@ export function newMember(
     spellsCast: 0,
     effortDay: 0,
     pendingXp: 0,
+    reviving: false,
   };
 }
