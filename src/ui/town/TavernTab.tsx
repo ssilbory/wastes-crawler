@@ -57,9 +57,10 @@ export function TavernTab(props: { world: World; roster: RosterEntry[]; act: Act
           Hirelings ({w.npcs.length}/{MAX_NPCS} NPC slots)
         </h2>
         <p class="hint">
-          {data.content.npcRules.signingFee} crowns to sign on, then a share of the loot won while
-          they travel with the party, paid in the next town. A hireling the party can't pay leaves,
-          and any may quit after a dangerous fight.
+          {data.content.npcRules.signingFee} crowns to sign on (
+          {data.content.npcRules.signingRefund} back if let go alive in a settlement), then a share
+          of the loot won while they travel with the party, paid in the next town. A hireling the
+          party can't pay leaves, and any may quit after a dangerous fight.
         </p>
         {w.deadShares.map((d, i) => (
           <div key={d.name} class="parley" role="group" aria-label={`${d.name}'s share`}>

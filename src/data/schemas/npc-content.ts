@@ -23,6 +23,8 @@ export const NpcRulesSchema = z.strictObject({
   names: z.array(z.string().min(1)).min(1),
   /** Crowns paid to sign any hireling on in town. */
   signingFee: z.number().min(0),
+  /** Crowns of the fee returned when a hireling is let go alive in a settlement. */
+  signingRefund: z.number().min(0),
   /** SRD 3.3.0: common hirelings have a total +1 on relevant skill checks. */
   skillBonus: z.int(),
   /** Fight tiers dangerous enough to test hirelings' Morale (SRD 3.3.0). */

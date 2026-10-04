@@ -114,7 +114,7 @@ export const WORLD_MIGRATIONS: Migrations = {
   18: (raw) => ({
     ...raw,
     schemaVersion: 19,
-    npcs: (raw.npcs as Raw[]).map((n) => ({ ...n, owed: 0 })),
+    npcs: (raw.npcs as Raw[]).map((n) => ({ ...n, owed: 0, refund: 0 })),
     deadShares: [],
     hireBans: {},
   }),

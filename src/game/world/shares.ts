@@ -11,7 +11,7 @@ import { hirelings, removeNpc } from './npcs.ts';
 import type { TownResult } from './services.ts';
 import { exchangeLoot } from './shop.ts';
 import { townHere } from './town.ts';
-import type { World } from './types.ts';
+import type { Npc, World } from './types.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 
@@ -33,6 +33,15 @@ export function payShares(w: World, data: GameData): void {
     w.purse = 0;
     removeNpc(w, n.id);
   }
+}
+
+/** Pays a departing hireling what they are owed from the purse, or all of it if short. */
+export function settleShare(w: World, n: Npc): void {
+  if (n.owed === 0) return;
+  const paid = Math.min(n.owed, w.purse);
+  w.purse = toTenths(w.purse - paid);
+  note(w, `${n.name} takes their share: ${paid} crowns.`);
+  n.owed = 0;
 }
 
 /** Why the party can't hire here, or null. */

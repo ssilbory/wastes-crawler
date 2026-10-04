@@ -47,6 +47,8 @@ export const NpcSaveSchema = z.strictObject({
   inventory: CharacterSchema.shape.inventory,
   /** A hireling's share of loot taken since the party was last in town, in crowns (Phase 12). */
   owed: z.number().min(0),
+  /** Crowns of the signing fee returned if they are let go alive in a settlement. */
+  refund: z.number().min(0),
 });
 export type NpcSave = z.infer<typeof NpcSaveSchema>;
 

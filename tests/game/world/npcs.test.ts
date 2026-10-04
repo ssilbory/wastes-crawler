@@ -41,6 +41,7 @@ describe('hiring (SRD 3.3.0)', () => {
         quitting: false,
         inventory: [],
         owed: 0,
+        refund: 10,
       },
     ]);
     expect(w.log.at(-1)).toContain('Aldo signs on as a Guard for a quarter share of the loot.');
@@ -88,12 +89,38 @@ describe('hiring (SRD 3.3.0)', () => {
     hire(w, data, 'porter');
     stowWithPorter(w, data, 'm-0', 4, 'npc-1');
     expect(dismiss(w, data, 'npc-1')).toEqual({ ok: false, reason: "Take Brenna's load first." });
+    // Let go alive in a settlement: half the signing fee comes back.
+    const purse = w.purse;
     expect(dismiss(w, data, 'npc-0')).toEqual({ ok: true });
-    expect(w.log.at(-1)).toContain('Aldo is let go.');
+    expect(w.purse).toBe(purse + 10);
+    expect(w.log.at(-1)).toContain('Aldo is let go and hands back 10 crowns of the signing fee.');
     addNpc(w, data, 'captive', 'merchant', 'peaceful-human', 'Merrit', false);
     dismiss(w, data, 'npc-0');
     expect(w.log.at(-1)).toContain('The party leaves Merrit behind.');
     expect(() => dismiss(w, data, 'npc-9')).toThrow('no NPC npc-9');
+  });
+
+  it('pays a hireling’s share on letting them go, with no refund outside a settlement', () => {
+    const w = town([4, 4]);
+    hire(w, data, 'guard');
+    hire(w, data, 'guard');
+    w.position = { col: 5, row: 9 };
+    w.purse = 3;
+    (w.npcs[0] as Npc).owed = 2;
+    dismiss(w, data, 'npc-0');
+    expect(w.purse).toBe(1);
+    expect(w.log.at(-1)).toContain('Aldo is let go.');
+    // Short of crowns, they take what there is.
+    (w.npcs[0] as Npc).owed = 5;
+    dismiss(w, data, 'npc-1');
+    expect(w.purse).toBe(0);
+    expect(w.log.at(-2)).toContain('Brenna takes their share: 1 crowns.');
+    // A recruit who signed on free gets nothing back, even in town.
+    const t = town([4]);
+    addNpc(t, data, 'hireling', 'guard', 'thug-or-militia', 'Cato', true);
+    const purse = t.purse;
+    dismiss(t, data, 'npc-0');
+    expect(t.purse).toBe(purse);
   });
 });
 

@@ -13,7 +13,9 @@ import { addNpc, hirelingType, MAX_NPCS, npcRoom, removeNpc } from './npcs.ts';
 import { hireBlocked } from './shares.ts';
 import type { TownResult } from './services.ts';
 import { inventoryProblem } from './shop.ts';
-import { priceHere, spend, townHere } from './town.ts';
+import { toTenths } from '../../rules/economy.ts';
+import { settleShare } from './shares.ts';
+import { currentTown, priceHere, spend, townHere } from './town.ts';
 import { shareText } from './wording.ts';
 import type { Npc, World } from './types.ts';
 
@@ -31,17 +33,27 @@ export function hire(w: World, data: GameData, typeId: string): TownResult {
   const fee = data.content.npcRules.signingFee;
   if (!spend(w, data, fee)) return no(`Signing on costs ${priceHere(w, data, fee)} crowns.`);
   const npc = addNpc(w, data, 'hireling', t.id, t.monster, null, t.role === 'fighter') as Npc;
+  npc.refund = data.content.npcRules.signingRefund;
   note(w, `${npc.name} signs on as a ${t.name} for ${shareText(t.share)} of the loot.`);
   return { ok: true };
 }
 
-/** Sends an NPC away anywhere; a captive left behind is abandoned. */
+/**
+ * Sends an NPC away anywhere; a captive left behind is abandoned. A hireling is paid what they are
+ * owed first, and let go in a settlement returns part of their signing fee (Sam's call).
+ */
 export function dismiss(w: World, data: GameData, id: string): TownResult {
   const n = w.npcs.find((x) => x.id === id);
   if (!n) throw new Error(`no NPC ${id}`);
   if (n.inventory.length > 0) return no(`Take ${n.name}'s load first.`);
+  if (n.kind === 'hireling') settleShare(w, n);
   removeNpc(w, id);
-  note(w, n.kind === 'hireling' ? `${n.name} is let go.` : `The party leaves ${n.name} behind.`);
+  const inTown = !w.dungeon && currentTown(w, data) !== undefined;
+  if (n.kind === 'hireling' && inTown && n.refund > 0) {
+    w.purse = toTenths(w.purse + n.refund);
+    note(w, `${n.name} is let go and hands back ${n.refund} crowns of the signing fee.`);
+  } else
+    note(w, n.kind === 'hireling' ? `${n.name} is let go.` : `The party leaves ${n.name} behind.`);
   if (n.kind === 'escort') emit(w, data, { kind: 'npc-died', npc: n });
   return { ok: true };
 }

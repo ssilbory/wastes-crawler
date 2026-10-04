@@ -62,6 +62,7 @@
     "Pell"
   ],
   "signingFee": 20,
+  "signingRefund": 10,
   "skillBonus": 1,
   "porterCapacity": 12,
   "parley": {

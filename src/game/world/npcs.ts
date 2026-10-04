@@ -122,6 +122,7 @@ export function addNpc(
     quitting: false,
     inventory: [],
     owed: 0,
+    refund: 0,
   };
   w.npcs.push(npc);
   return npc;
