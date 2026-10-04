@@ -6,6 +6,7 @@ import { coachQuarter } from '../../game/world/coach.ts';
 import { difficultySeed } from '../../game/world/difficulty.ts';
 import { encounterBattle, type WorldBattle } from '../../game/world/fight.ts';
 import { passQuarter, settleByFighting, settleByLeaving } from '../../game/world/quarter.ts';
+import { addStarterParty } from '../../game/character/roster.ts';
 import { mergeRoster, parseSave, serializeBundle } from '../../game/world/bundle.ts';
 import { serializeWorld } from '../../game/world/save.ts';
 import { slotSummary } from '../../render/save-view.ts';
@@ -29,6 +30,7 @@ import { MapScreen } from './MapScreen.tsx';
 import { DungeonScreen } from './DungeonScreen.tsx';
 import { enterDungeon } from '../../game/dungeon/explore.ts';
 import { IntroScreen } from './IntroScreen.tsx';
+import { CharacterScreen } from './CharacterScreen.tsx';
 import { StartScreen } from './StartScreen.tsx';
 import { crossOver } from '../../game/world/crossing.ts';
 
@@ -46,7 +48,7 @@ export function WorldApp() {
   const [slot, setSlot] = useState<Slot>(activeSlot);
   const world = useRef<World | null>(null);
   const [version, setVersion] = useState(0);
-  const [screen, setScreen] = useState<'start' | 'intro' | 'map' | 'town'>('start');
+  const [screen, setScreen] = useState<'start' | 'intro' | 'map' | 'town' | 'character'>('start');
   /** The fight on screen, what settles it, and where the party goes after. */
   const [fight, setFight] = useState<{
     battle: WorldBattle;
@@ -126,6 +128,12 @@ export function WorldApp() {
         errors={errors}
         onContinue={() => open(loadWorldText())}
         onNew={start}
+        onStarters={() => {
+          const added = addStarterParty(roster, data);
+          saveRoster(added.entries);
+          setRoster(added.entries);
+          return added.placement;
+        }}
         onImport={(file) => void file.text().then(open)}
       />
     );
@@ -164,6 +172,8 @@ export function WorldApp() {
       </div>
     );
   }
+  if (screen === 'character')
+    return <CharacterScreen world={w} onChange={changed} onBack={() => setScreen('map')} />;
   if (w.dungeon)
     return (
       <DungeonScreen
@@ -172,6 +182,7 @@ export function WorldApp() {
         onChange={changed}
         onFight={startFight}
         onLeave={leave}
+        onCharacters={() => setScreen('character')}
       />
     );
   if (screen === 'town')
@@ -214,6 +225,7 @@ export function WorldApp() {
         changed();
       }}
       onTown={() => setScreen('town')}
+      onCharacters={() => setScreen('character')}
       onLeave={leave}
       onExport={() => download(serializeBundle(w, roster))}
       onAbandon={() => {

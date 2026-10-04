@@ -15,6 +15,8 @@ export function StartScreen(props: {
   errors: string[];
   onContinue: () => void;
   onNew: (party: Recruit[], seed: string) => void;
+  /** Adds the starter party to the roster and returns where its members stand. */
+  onStarters: () => Placement;
   onImport: (file: File) => void;
 }) {
   const [placement, setPlacement] = useState<Placement>({});
@@ -73,8 +75,9 @@ export function StartScreen(props: {
       <main class="arena-setup">
         {props.roster.length === 0 ? (
           <p class="hint">
-            The roster is empty. Make characters in the <a href="#/builder">character builder</a> or
-            import them in the <a href="#/arena">arena</a>, then come back to set out.
+            The roster is empty. Use the starter party, make characters in the{' '}
+            <a href="#/builder">character builder</a>, or import them in the{' '}
+            <a href="#/arena">arena</a>.
           </p>
         ) : (
           <PartySetup entries={props.roster} placement={placement} onChange={setPlacement} />
@@ -85,6 +88,9 @@ export function StartScreen(props: {
           Seed (optional){' '}
           <input value={seed} onInput={(e) => setSeed((e.target as HTMLInputElement).value)} />
         </label>
+        <button type="button" onClick={() => setPlacement(props.onStarters())}>
+          Use the starter party
+        </button>
         {party.length > MAX_PCS && <span class="hint">A party holds {MAX_PCS} PCs.</span>}
         <button
           type="button"

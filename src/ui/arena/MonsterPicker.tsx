@@ -13,11 +13,12 @@ export const MAX_PER_ROW = 8;
 export function MonsterPicker(props: {
   title: string;
   rows: string[][];
-  onChange: (rows: string[][]) => void;
+  /** Takes an update rather than a value, so quick clicks in a row build on each other. */
+  onChange: (update: (rows: string[][]) => string[][]) => void;
 }) {
   const [pick, setPick] = useState<string>(monsters[0]?.id ?? '');
-  const setRow = (index: number, row: string[]) =>
-    props.onChange(props.rows.map((r, i) => (i === index ? row : r)));
+  const setRow = (index: number, change: (row: string[]) => string[]) =>
+    props.onChange((rows) => rows.map((r, i) => (i === index ? change(r) : r)));
   return (
     <section class="panel monster-picker" aria-label={props.title}>
       <h2>{props.title}</h2>
@@ -41,12 +42,7 @@ export function MonsterPicker(props: {
                 type="button"
                 class="chip removable"
                 aria-label={`Remove ${nameOf(id)} from the ${ROW_NAMES[index]?.toLowerCase()}`}
-                onClick={() =>
-                  setRow(
-                    index,
-                    row.filter((_, j) => j !== i),
-                  )
-                }
+                onClick={() => setRow(index, (r) => r.filter((_, j) => j !== i))}
               >
                 {nameOf(id)} ×
               </button>
@@ -55,7 +51,7 @@ export function MonsterPicker(props: {
           <button
             type="button"
             disabled={row.length >= MAX_PER_ROW || !pick}
-            onClick={() => setRow(index, [...row, pick])}
+            onClick={() => setRow(index, (r) => (r.length >= MAX_PER_ROW ? r : [...r, pick]))}
           >
             Add to {ROW_NAMES[index]?.toLowerCase()}
           </button>

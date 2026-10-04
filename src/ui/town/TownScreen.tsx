@@ -10,6 +10,7 @@ import { QuestLog } from '../world/QuestLog.tsx';
 import { FactionsPanel } from '../world/FactionsPanel.tsx';
 import { SettingPanel } from '../world/SettingPanel.tsx';
 import { raidedText } from '../../render/setting-view.ts';
+import { InventoryPanel } from '../world/InventoryPanel.tsx';
 import { PartyPanel } from '../world/PartyPanel.tsx';
 import { QuestsTab } from './QuestsTab.tsx';
 import { ServicesTab } from './ServicesTab.tsx';
@@ -109,6 +110,7 @@ export function TownScreen(props: {
         <div class="world-side">
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
+          <InventoryPanel world={w} onChange={props.onChange} />
           <QuestLog world={w} onChange={props.onChange} />
           <SettingPanel world={w} inTown onChange={props.onChange} />
           <FactionsPanel world={w} />

@@ -3,6 +3,7 @@
 import type {
   Attribute,
   AttackMode,
+  Character,
   Dice,
   MonsterCombat,
   MonsterTag,
@@ -131,6 +132,8 @@ export interface Combatant {
   /** Phase 14c: Armor of God's natural AC (0 if none), and Wrath's pending extra damage. */
   acFloor: number;
   wrath: { until: number; bonus: number } | null;
+  /** A PC's character, whose gear can be readied or stowed mid-fight (Phase 17); null otherwise. */
+  character: Character | null;
   /** Phase 14d: Final Repose's Physical save penalty for the scene. */
   reposePenalty: number;
   /**
@@ -156,6 +159,7 @@ export type Action =
   | { kind: 'total-defense' }
   | { kind: 'stabilize'; target: string }
   | { kind: 'move'; row: number; column: number }
+  | { kind: 'gear'; item: number; location: 'readied' | 'stowed' }
   | { kind: 'wait' };
 
 export type Outcome = 'party' | 'enemy' | 'draw';

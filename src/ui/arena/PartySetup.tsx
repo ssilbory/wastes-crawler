@@ -12,13 +12,15 @@ const ROWS = [
 export function PartySetup(props: {
   entries: RosterEntry[];
   placement: Placement;
-  onChange: (placement: Placement) => void;
+  /** Takes an update rather than a value, so quick picks in a row build on each other. */
+  onChange: (update: (placement: Placement) => Placement) => void;
 }) {
   const placed = new Set(Object.values(props.placement));
-  const set = (key: string, id: string) => {
-    const rest = Object.entries(props.placement).filter(([k]) => k !== key);
-    props.onChange(Object.fromEntries(id ? [...rest, [key, id]] : rest));
-  };
+  const set = (key: string, id: string) =>
+    props.onChange((placement) => {
+      const rest = Object.entries(placement).filter(([k]) => k !== key);
+      return Object.fromEntries(id ? [...rest, [key, id]] : rest);
+    });
   return (
     <section class="panel party-setup" aria-label="Party formation">
       <h2>Party formation</h2>

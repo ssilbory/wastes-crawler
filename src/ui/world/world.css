@@ -324,3 +324,27 @@
 .intro-text button {
   margin-top: 1rem;
 }
+
+/* The inventory panel (Phase 17). */
+.inventory .gear {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.inventory .gear li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.inventory .gear-name {
+  flex: 1 1 100%;
+}
+
+.inventory input[type='number'] {
+  width: 4rem;
+}

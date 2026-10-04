@@ -69,3 +69,28 @@ export function setDefaultAction(
 ): RosterEntry[] {
   return entries.map((e) => (e.id === id ? { ...e, defaultAction: preset } : e));
 }
+
+/**
+ * Adds the content's starter party, reusing any member already in the roster unchanged, and
+ * returns the formation placement for setting out with it (row-column key to roster id).
+ */
+export function addStarterParty(
+  entries: readonly RosterEntry[],
+  data: GameData,
+): { entries: RosterEntry[]; placement: Record<string, string> } {
+  let next = [...entries];
+  const placement: Record<string, string> = {};
+  for (const s of data.content.starterParty) {
+    // Loaded the way a stored roster is, so a starter added before compares equal.
+    const loaded = importCharacter(JSON.stringify(s.character), data);
+    if (!loaded.ok) throw new Error(`starter ${s.character.name}: ${loaded.errors.join('; ')}`);
+    const same = JSON.stringify(loaded.character);
+    let entry = next.find((e) => JSON.stringify(e.character) === same);
+    if (!entry) {
+      next = addToRoster(next, loaded.character);
+      entry = next.at(-1) as RosterEntry;
+    }
+    placement[`${s.row}-${s.column}`] = entry.id;
+  }
+  return { entries: next, placement };
+}

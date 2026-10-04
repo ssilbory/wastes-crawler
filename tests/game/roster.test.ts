@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  addStarterParty,
   addToRoster,
   parseRoster,
   removeFromRoster,
@@ -54,5 +55,41 @@ describe('the character roster', () => {
       'snag-3',
       'character',
     ]);
+  });
+});
+
+describe('the starter party', () => {
+  it('joins the roster once, placed in its formation slots', () => {
+    const first = addStarterParty([], data);
+    expect(first.entries.map((e) => e.character.name)).toEqual([
+      'Snag',
+      'Grukk',
+      'Lirael',
+      'Fizzwick',
+    ]);
+    expect(first.placement).toEqual({
+      '0-0': 'snag',
+      '0-1': 'grukk',
+      '1-0': 'lirael',
+      '1-1': 'fizzwick',
+    });
+    // Added again, after a round trip through storage, nothing is duplicated.
+    const stored = parseRoster(serializeRoster(first.entries), data).entries;
+    const again = addStarterParty(stored, data);
+    expect(again.entries).toHaveLength(4);
+    expect(again.placement).toEqual(first.placement);
+  });
+
+  it('refuses a starter that no longer imports', () => {
+    const [snag] = data.content.starterParty;
+    if (!snag) throw new Error('missing starter');
+    const broken = {
+      ...data,
+      content: {
+        ...data.content,
+        starterParty: [{ ...snag, character: { ...snag.character, people: 'dwarf' } }],
+      },
+    };
+    expect(() => addStarterParty([], broken)).toThrow(/^starter Snag: /);
   });
 });

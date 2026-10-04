@@ -1,13 +1,14 @@
 // The command menu: every action a combatant can legally take right now, with its targets. Combat
 // actions follow vendor/wwn-srd/2.0 The Rules of the Game/2.4.3 Combat Actions.md; moving rows is
 // the Formation rules' "Moving rows" in docs/rules-adaptation.md.
+import { findItem } from '../character/items.ts';
 import type { CombatMagic } from '../../data/schemas/index.ts';
 import { ROW_SLOTS } from '../../rules/formation.ts';
 import { canUse, magicName } from './spells.ts';
 import { isUp, targets } from './targeting.ts';
 import type { Action, Battle, Combatant } from './types.ts';
 
-export type CommandGroup = 'attack' | 'magic' | 'defend' | 'aid' | 'move' | 'wait';
+export type CommandGroup = 'attack' | 'magic' | 'defend' | 'aid' | 'gear' | 'move' | 'wait';
 
 export interface Choice {
   label: string;
@@ -170,6 +171,16 @@ export function commandsFor(b: Battle, actor: Combatant): Command[] {
       })),
     });
   }
+  // Ready or Stow an Item (SRD 2.4.0), a Main Action, for a PC's gear in hand or in the pack.
+  const gear = (actor.character?.inventory ?? []).flatMap((e, item): Choice[] => {
+    if (e.location === 'worn') return [];
+    const location = e.location === 'readied' ? ('stowed' as const) : ('readied' as const);
+    const name = findItem(b.data, e.id)?.name ?? e.id;
+    const label = `${location === 'readied' ? 'Ready' : 'Stow'} ${name}`;
+    return [{ label, action: { kind: 'gear', item, location } }];
+  });
+  if (gear.length > 0)
+    commands.push({ key: 'gear', group: 'gear', label: 'Ready or stow', choices: gear });
   const moves = moveChoices(b, actor);
   if (moves.length > 0)
     commands.push({ key: 'move', group: 'move', label: 'Change slot', choices: moves });

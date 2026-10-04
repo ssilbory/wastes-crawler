@@ -10,6 +10,8 @@ async function start(page: Page, seed: string) {
   await page.goto('/#/arena');
   await page.getByLabel('Import character files').setInputFiles(starters);
   await page.getByRole('link', { name: 'Overland' }).click();
+  // The arena has a formation of its own: wait for the Overland page before picking slots.
+  await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();
   const slots: [string, string][] = [
     ['Front row, slot 1', 'Snag'],
     ['Front row, slot 2', 'Grukk'],

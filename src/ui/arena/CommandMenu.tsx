@@ -19,6 +19,7 @@ const GROUP_NAMES: Record<Command['group'], string> = {
   magic: 'Magic',
   defend: 'Defend',
   aid: 'Aid',
+  gear: 'Gear',
   move: 'Move',
   wait: 'Other',
 };

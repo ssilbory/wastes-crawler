@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { CharacterSchema } from './character.ts';
 import { AttributeSchema, IdSchema } from './common.ts';
 import {
   EquipmentRulesSchema,
@@ -194,6 +195,17 @@ export const ContentSchemas = {
   craftsmen: z.array(CraftsmanSchema),
   settingsDefaults: SettingsDefaultsSchema,
   soundCues: z.array(SoundCueSchema).min(1),
+  /** The ready-made party offered when setting out with no characters of one's own. */
+  starterParty: z
+    .array(
+      z.strictObject({
+        row: z.int().min(0).max(1),
+        column: z.int().min(0).max(3),
+        character: CharacterSchema,
+      }),
+    )
+    .min(1)
+    .max(8),
 } as const;
 export type ContentData = {
   [K in keyof typeof ContentSchemas]: z.infer<(typeof ContentSchemas)[K]>;

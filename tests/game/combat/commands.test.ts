@@ -19,6 +19,7 @@ describe('the command menu (SRD 2.4.3)', () => {
       'attack:3',
       'attack:4',
       'total-defense',
+      'gear',
       'move',
       'wait',
     ]);

@@ -1,5 +1,6 @@
 // Resolving one chosen action (vendor/wwn-srd/2.0 The Rules of the Game/2.4.3 Combat Actions.md),
 // including stabilizing the dying (2.5.1).
+import { readyOrStow } from './gear.ts';
 import { skillCheck } from '../../rules/checks.ts';
 import { stabilizeDifficulty } from '../../rules/combat.ts';
 import { ROW_SLOTS } from '../../rules/formation.ts';
@@ -80,6 +81,9 @@ export function act(b: Battle, actor: Combatant, action: Action): void {
       }
       return;
     }
+    case 'gear':
+      readyOrStow(b, actor, action.item, action.location);
+      return;
     case 'wait':
       return;
   }

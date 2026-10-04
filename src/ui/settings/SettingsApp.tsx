@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useLayoutEffect, useState } from 'preact/hooks';
 import {
   CombatSpeedSchema,
   KeyActionSchema,
@@ -17,7 +17,8 @@ export function SettingsApp() {
   const s = useSettings();
   /** The action and slot waiting for a key press, if any. */
   const [listening, setListening] = useState<{ action: KeyAction; slot: 0 | 1 } | null>(null);
-  useEffect(() => {
+  // A layout effect listens from the same commit that shows "Press a key…", so no key is missed.
+  useLayoutEffect(() => {
     if (!listening) return;
     const onKey = (e: KeyboardEvent) => {
       e.preventDefault();

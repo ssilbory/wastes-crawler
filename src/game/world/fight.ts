@@ -182,6 +182,8 @@ export function carryBack(data: GameData, m: Member, c: Battle['combatants'][num
   if (c.strain) {
     m.character = { ...m.character, strain: { value: c.strain.strain, broken: c.strain.broken } };
   }
+  // Gear readied or stowed mid-fight stays where it was put.
+  if (c.character) m.character = { ...m.character, inventory: c.character.inventory };
   if (c.caster) {
     // The same character fights as a caster outside the battle too.
     const fresh = pcCombatant(data, m.character).caster as CasterState;

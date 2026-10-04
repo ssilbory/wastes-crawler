@@ -1,0 +1,447 @@
+[
+  {
+    "row": 0,
+    "column": 0,
+    "character": {
+      "schemaVersion": 6,
+      "id": "char-d94fc45abe146131",
+      "name": "Snag",
+      "goal": "",
+      "people": "goblin",
+      "background": "raider",
+      "attributes": {
+        "base": {
+          "str": 14,
+          "dex": 12,
+          "con": 11,
+          "int": 10,
+          "wis": 9,
+          "cha": 7
+        },
+        "people": {
+          "str": -2,
+          "dex": 2,
+          "int": 1
+        },
+        "background": {},
+        "advancement": {}
+      },
+      "foci": [
+        {
+          "id": "warren-born",
+          "level": 1
+        },
+        {
+          "id": "scrounger",
+          "level": 1
+        },
+        {
+          "id": "alert",
+          "level": 1
+        },
+        {
+          "id": "armsmaster",
+          "level": 1
+        },
+        {
+          "id": "lucky",
+          "level": 1
+        }
+      ],
+      "arts": [],
+      "spells": {
+        "known": [],
+        "prepared": []
+      },
+      "inventory": [
+        {
+          "id": "spear-light",
+          "quantity": 1,
+          "location": "readied"
+        },
+        {
+          "id": "large-shield",
+          "quantity": 1,
+          "location": "worn"
+        },
+        {
+          "id": "cuirass-and-greaves",
+          "quantity": 1,
+          "location": "worn",
+          "small": true
+        },
+        {
+          "id": "dagger",
+          "quantity": 1,
+          "location": "readied"
+        },
+        {
+          "id": "dungeoneering-kit",
+          "quantity": 1,
+          "location": "stowed"
+        }
+      ],
+      "crowns": 10,
+      "skills": {
+        "stab": 1,
+        "sneak": 1,
+        "exert": 0,
+        "survive": 0,
+        "notice": 1
+      },
+      "classes": {
+        "current": "full-warrior",
+        "levels": {
+          "full-warrior": 1
+        }
+      },
+      "hp": {
+        "max": 8,
+        "current": 8
+      },
+      "xp": 0,
+      "advancement": {
+        "skillPoints": 0,
+        "quickPoints": 0,
+        "skillCredit": {}
+      },
+      "strain": {
+        "value": 0,
+        "broken": false
+      }
+    }
+  },
+  {
+    "row": 0,
+    "column": 1,
+    "character": {
+      "schemaVersion": 6,
+      "id": "char-892d217a8244817b",
+      "name": "Grukk",
+      "goal": "",
+      "people": "orc",
+      "background": "pit-fighter",
+      "attributes": {
+        "base": {
+          "str": 14,
+          "dex": 12,
+          "con": 11,
+          "int": 10,
+          "wis": 9,
+          "cha": 7
+        },
+        "people": {
+          "str": 2,
+          "con": 1,
+          "cha": -2
+        },
+        "background": {},
+        "advancement": {}
+      },
+      "foci": [
+        {
+          "id": "war-bred",
+          "level": 1
+        },
+        {
+          "id": "iron-gut",
+          "level": 1
+        },
+        {
+          "id": "die-hard",
+          "level": 1
+        },
+        {
+          "id": "shocking-assault",
+          "level": 1
+        },
+        {
+          "id": "armsmaster",
+          "level": 1
+        }
+      ],
+      "arts": [],
+      "spells": {
+        "known": [],
+        "prepared": []
+      },
+      "inventory": [
+        {
+          "id": "axe-war",
+          "quantity": 1,
+          "location": "readied"
+        },
+        {
+          "id": "pieced-armor",
+          "quantity": 1,
+          "location": "worn"
+        },
+        {
+          "id": "dagger",
+          "quantity": 1,
+          "location": "readied"
+        },
+        {
+          "id": "dungeoneering-kit",
+          "quantity": 1,
+          "location": "stowed"
+        }
+      ],
+      "crowns": 15,
+      "skills": {
+        "punch": 1,
+        "exert": 1,
+        "notice": 0,
+        "stab": 1,
+        "heal": 0
+      },
+      "classes": {
+        "current": "full-warrior",
+        "levels": {
+          "full-warrior": 1
+        }
+      },
+      "hp": {
+        "max": 7,
+        "current": 7
+      },
+      "xp": 0,
+      "advancement": {
+        "skillPoints": 0,
+        "quickPoints": 0,
+        "skillCredit": {}
+      },
+      "strain": {
+        "value": 0,
+        "broken": false
+      }
+    }
+  },
+  {
+    "row": 1,
+    "column": 0,
+    "character": {
+      "schemaVersion": 6,
+      "id": "char-40aca9044a9dfe62",
+      "name": "Lirael",
+      "goal": "",
+      "people": "elf",
+      "background": "warden",
+      "attributes": {
+        "base": {
+          "str": 10,
+          "dex": 14,
+          "con": 12,
+          "int": 11,
+          "wis": 9,
+          "cha": 7
+        },
+        "people": {
+          "str": -2,
+          "dex": 2,
+          "cha": 1
+        },
+        "background": {},
+        "advancement": {}
+      },
+      "foci": [
+        {
+          "id": "elder-sight",
+          "level": 1
+        },
+        {
+          "id": "deadeye",
+          "level": 1
+        },
+        {
+          "id": "cultured",
+          "level": 1
+        },
+        {
+          "id": "gifted-chirurgeon",
+          "level": 1
+        },
+        {
+          "id": "well-met",
+          "level": 1
+        }
+      ],
+      "arts": [],
+      "spells": {
+        "known": [],
+        "prepared": []
+      },
+      "inventory": [
+        {
+          "id": "bow-small",
+          "quantity": 1,
+          "location": "readied"
+        },
+        {
+          "id": "arrows-20",
+          "quantity": 1,
+          "location": "readied"
+        },
+        {
+          "id": "sword-short",
+          "quantity": 1,
+          "location": "readied"
+        },
+        {
+          "id": "linothorax",
+          "quantity": 1,
+          "location": "worn"
+        },
+        {
+          "id": "wilderness-travel-gear",
+          "quantity": 1,
+          "location": "stowed"
+        }
+      ],
+      "crowns": 10,
+      "skills": {
+        "shoot": 1,
+        "sneak": 0,
+        "heal": 1,
+        "notice": 1,
+        "connect": 0
+      },
+      "classes": {
+        "current": "full-expert",
+        "levels": {
+          "full-expert": 1
+        }
+      },
+      "hp": {
+        "max": 2,
+        "current": 2
+      },
+      "xp": 0,
+      "advancement": {
+        "skillPoints": 0,
+        "quickPoints": 0,
+        "skillCredit": {}
+      },
+      "strain": {
+        "value": 0,
+        "broken": false
+      }
+    }
+  },
+  {
+    "row": 1,
+    "column": 1,
+    "character": {
+      "schemaVersion": 6,
+      "id": "char-f07502da73f6efd3",
+      "name": "Fizzwick",
+      "goal": "",
+      "people": "gnome",
+      "background": "hedge-scholar",
+      "attributes": {
+        "base": {
+          "str": 7,
+          "dex": 12,
+          "con": 11,
+          "int": 14,
+          "wis": 10,
+          "cha": 9
+        },
+        "people": {
+          "str": -2,
+          "int": 2,
+          "wis": 1
+        },
+        "background": {},
+        "advancement": {}
+      },
+      "foci": [
+        {
+          "id": "hidden-lore",
+          "level": 1
+        },
+        {
+          "id": "artisan",
+          "level": 1
+        },
+        {
+          "id": "polymath",
+          "level": 1
+        },
+        {
+          "id": "die-hard",
+          "level": 1
+        }
+      ],
+      "arts": ["empowered-sorcery", "inexorable-effect"],
+      "spells": {
+        "known": [
+          "the-coruscating-coffin",
+          "the-wind-of-the-final-repose",
+          "damnation-of-the-sense",
+          "wardpact-invocation"
+        ],
+        "prepared": [
+          "the-coruscating-coffin",
+          "the-wind-of-the-final-repose",
+          "damnation-of-the-sense"
+        ]
+      },
+      "inventory": [
+        {
+          "id": "staff",
+          "quantity": 1,
+          "location": "readied"
+        },
+        {
+          "id": "dagger",
+          "quantity": 1,
+          "location": "readied"
+        },
+        {
+          "id": "writing-kit",
+          "quantity": 1,
+          "location": "stowed"
+        },
+        {
+          "id": "paper-10-sheets",
+          "quantity": 1,
+          "location": "stowed"
+        },
+        {
+          "id": "backpack",
+          "quantity": 1,
+          "location": "worn"
+        }
+      ],
+      "crowns": 50,
+      "skills": {
+        "know": 1,
+        "heal": 1,
+        "notice": 1,
+        "magic": 0,
+        "craft": 0
+      },
+      "classes": {
+        "current": "full-high-mage",
+        "levels": {
+          "full-high-mage": 1
+        }
+      },
+      "hp": {
+        "max": 5,
+        "current": 5
+      },
+      "xp": 0,
+      "advancement": {
+        "skillPoints": 0,
+        "quickPoints": 0,
+        "skillCredit": {}
+      },
+      "strain": {
+        "value": 0,
+        "broken": false
+      }
+    }
+  }
+]

@@ -11,6 +11,8 @@ test('takes the east road into the Dark Lands and visits Cinderhold', async ({
   await page.goto('/#/arena');
   await page.getByLabel('Import character files').setInputFiles(starters);
   await page.getByRole('link', { name: 'Overland' }).click();
+  // The arena has a formation of its own: wait for the Overland page before picking slots.
+  await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();
   await page.getByRole('combobox', { name: 'Front row, slot 1' }).selectOption({ label: 'Snag' });
   await page.getByRole('combobox', { name: 'Front row, slot 2' }).selectOption({ label: 'Grukk' });
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('regions-e2e');
