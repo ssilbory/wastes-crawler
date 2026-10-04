@@ -62,6 +62,15 @@ export const RegionSchema = z.strictObject({
   /** The town a new party starts in. */
   start: IdSchema,
   exits: z.array(RegionExitSchema),
+  /** Bound garrisons at fixed posts, met on entering the hex (Phase 12b). */
+  garrisons: z.array(
+    z.strictObject({
+      order: IdSchema,
+      col: z.int().min(0),
+      row: z.int().min(0),
+      enemies: z.array(z.array(IdSchema).min(1).max(8)).min(1).max(3),
+    }),
+  ),
   /** Encounter tables by terrain id, in place of each terrain's own. */
   encounters: z.record(IdSchema, IdSchema),
 });
@@ -89,6 +98,10 @@ export const EncounterTableSchema = z.strictObject({
         groups: z.array(EncounterGroupSchema).min(1),
         /** A captive the group holds, freed by winning or by parley. */
         captive: IdSchema.optional(),
+        /** A bound patrol's standing order (Phase 12b). */
+        order: IdSchema.optional(),
+        /** Paladin 'rescuers', who fight a party with elves or gnomes in it (Phase 12b). */
+        rescuers: z.literal(true).optional(),
       }),
     )
     .min(1),

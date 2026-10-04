@@ -217,6 +217,15 @@
             "text": "Old bones are heaped against the wall, picked clean."
           },
           {
+            "kind": "countersign",
+            "at": {
+              "x": 3,
+              "y": 7
+            },
+            "order": "ruinfield-gate",
+            "text": "A dead orc courier lies here, a satchel of orders under him. One names the Ruinfield Gate, and the countersign its garrison asks for."
+          },
+          {
             "kind": "spinner",
             "at": {
               "x": 6,

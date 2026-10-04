@@ -1,9 +1,11 @@
 // Special squares (docs/rules-adaptation.md, Dungeon exploration): messages, teleporters,
-// spinners, anti-map, darkness, and anti-magic, keyed by cell in the level's content.
+// spinners, anti-map, darkness, and anti-magic, keyed by cell in the level's content; and clues that
+// teach a standing order's countersign (Phase 12b).
 import type { Special } from '../../data/schemas/index.ts';
 import { FACINGS, type Facing } from '../../rules/grid.ts';
 import type { GameData } from '../character/context.ts';
 import { note } from '../world/members.ts';
+import { learnCountersign } from '../world/orders.ts';
 import type { World } from '../world/types.ts';
 import { levelOf } from './explore.ts';
 
@@ -29,6 +31,10 @@ export function arriveOn(w: World, data: GameData): void {
       if (read.includes(key)) continue;
       s.read[s.level] = [...read, key];
       note(w, sp.text);
+    } else if (sp.kind === 'countersign') {
+      if (w.countersigns.includes(sp.order)) continue;
+      note(w, sp.text);
+      learnCountersign(w, data, sp.order);
     } else if (sp.kind === 'spinner') {
       s.facing = FACINGS[w.rng.int(0, 3)] as Facing;
     } else if (sp.kind === 'teleporter') {

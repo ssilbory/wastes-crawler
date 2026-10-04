@@ -87,10 +87,19 @@ export const QuestSchema = z.strictObject({
       loot: z.array(LootDiceSchema),
       /** A raising quest: the giver raises one dead PC for free, and pays nothing else. */
       raise: z.literal(true).optional(),
+      /** Standing orders whose countersigns the giver tells the party (Phase 12b). */
+      countersigns: z.array(IdSchema).optional(),
+      /** A token of command authority handed over (Phase 12b). */
+      authority: IdSchema.optional(),
     })
-    .refine((r) => !r.raise || (r.crowns === 0 && r.xp === 0 && r.loot.length === 0), {
-      message: 'a raising quest pays nothing but the raising',
-    }),
+    .refine(
+      (r) =>
+        !r.raise ||
+        (r.crowns === 0 && r.xp === 0 && r.loot.length === 0 && !r.countersigns && !r.authority),
+      {
+        message: 'a raising quest pays nothing but the raising',
+      },
+    ),
 });
 export type Quest = z.infer<typeof QuestSchema>;
 

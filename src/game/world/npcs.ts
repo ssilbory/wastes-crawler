@@ -8,7 +8,8 @@ import { moraleHolds } from '../../rules/combat.ts';
 import { rollDie } from '../../rules/dice.ts';
 import { toTenths } from '../../rules/economy.ts';
 import { findMonster, type GameData } from '../character/context.ts';
-import { note } from './members.ts';
+import { activeEffects } from '../character/equipment.ts';
+import { alive, note } from './members.ts';
 import type { Npc, World } from './types.ts';
 
 export const MAX_NPCS = 2;
@@ -147,10 +148,19 @@ export function nightForNpcs(w: World, data: GameData, rested: boolean): void {
 
 /** SRD 3.3.0: after a particularly dangerous fight, each hireling checks Morale or quits. */
 export function moraleAfterFight(w: World, data: GameData): void {
+  // Herd-Loyal beastmen steady the hirelings (docs/rules-adaptation.md, Regions and setting).
+  const steady = Math.max(
+    0,
+    ...alive(w).flatMap((m) =>
+      activeEffects(data, m.character.foci).flatMap((e) =>
+        e.kind === 'hireling-morale' ? [e.amount] : [],
+      ),
+    ),
+  );
   for (const n of hirelings(w)) {
     if (n.quitting) continue;
     const { morale } = npcMonster(data, n);
-    if (moraleHolds(w.rng, morale)) continue;
+    if (moraleHolds(w.rng, Math.min(12, morale + steady))) continue;
     n.quitting = true;
     note(w, `${n.name} has had enough and will leave at the next town.`);
   }

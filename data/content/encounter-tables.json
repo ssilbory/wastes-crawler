@@ -678,7 +678,8 @@
             "count": 1,
             "row": 1
           }
-        ]
+        ],
+        "rescuers": true
       },
       {
         "weight": 1,
@@ -728,7 +729,8 @@
             },
             "row": 0
           }
-        ]
+        ],
+        "order": "ash-road-patrol"
       },
       {
         "weight": 1,
@@ -860,6 +862,23 @@
           }
         ],
         "captive": "pilgrim"
+      },
+      {
+        "weight": 1,
+        "nature": "wary",
+        "rescuers": true,
+        "groups": [
+          {
+            "monster": "paladin",
+            "count": 1,
+            "row": 0
+          },
+          {
+            "monster": "alliance-ranger",
+            "count": 2,
+            "row": 1
+          }
+        ]
       }
     ]
   },

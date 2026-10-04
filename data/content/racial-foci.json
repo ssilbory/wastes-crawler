@@ -167,7 +167,7 @@
   {
     "id": "pounce",
     "name": "Pounce",
-    "description": "Lion-blooded centaurs strike hardest at the end of a charge.",
+    "description": "Lion-blooded centaurs and predator-stock beastmen strike hardest at the end of a charge.",
     "levels": [
       {
         "level": 1,
@@ -279,5 +279,69 @@
       "kind": "skill",
       "skill": "know"
     }
+  },
+  {
+    "id": "herd-loyal",
+    "name": "Herd-Loyal",
+    "description": "Herd beastmen were bred for loyalty, and loyalty answers loyalty.",
+    "levels": [
+      {
+        "level": 1,
+        "text": "Gain Lead as a bonus skill. Hirelings travelling with the party get +1 to their Morale."
+      },
+      {
+        "level": 2,
+        "text": "Hirelings travelling with the party get +2 to their Morale instead."
+      }
+    ],
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "lead"
+    },
+    "effects": [
+      {
+        "kind": "hireling-morale",
+        "level": 1,
+        "amount": 1
+      },
+      {
+        "kind": "hireling-morale",
+        "level": 2,
+        "amount": 2
+      }
+    ]
+  },
+  {
+    "id": "pack-sense",
+    "name": "Pack Sense",
+    "description": "Pack-stock beastmen hunt together and always know where the others are.",
+    "levels": [
+      {
+        "level": 1,
+        "text": "Gain Notice as a bonus skill. Your side gets +1 to initiative rolls while you are conscious."
+      },
+      {
+        "level": 2,
+        "text": "Your side gets +2 to initiative rolls instead."
+      }
+    ],
+    "bonusSkill": {
+      "kind": "skill",
+      "skill": "notice"
+    },
+    "effects": [
+      {
+        "kind": "initiative",
+        "level": 1,
+        "bonus": 1,
+        "actsFirst": false
+      },
+      {
+        "kind": "initiative",
+        "level": 2,
+        "bonus": 2,
+        "actsFirst": false
+      }
+    ]
   }
 ]

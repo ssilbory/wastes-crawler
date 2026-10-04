@@ -1,0 +1,17 @@
+[
+  {
+    "id": "ruinfield-gate",
+    "name": "Hold the Ruinfield Gate",
+    "text": "An orc garrison still holds the old gate into the Ruinfields, as ordered twenty years ago. Nobody has relieved them, and nobody gets through.",
+    "countersign": "The ash remembers",
+    "bluff": 13,
+    "recruit": "guard"
+  },
+  {
+    "id": "ash-road-patrol",
+    "name": "Patrol the Ash Road",
+    "text": "Old goblins still walk the hill roads in pairs and threes, asking every traveller for a password.",
+    "countersign": "Iron and salt",
+    "bluff": 11
+  }
+]

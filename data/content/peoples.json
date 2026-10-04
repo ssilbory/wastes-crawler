@@ -129,14 +129,14 @@
   {
     "id": "beastman",
     "name": "Beastman",
-    "description": "Horned, goat-headed raiders who ran ahead of the Dark Lord’s armies; they are tough beyond reason and have little use for letters.",
+    "description": "Flesh-crafted soldiers born of animal mothers, a year from birth to the battle line. Every free beastman is a deserter from some army, and their source animal shapes what they are.",
     "attributeModifiers": {
       "con": 2,
       "str": 1,
       "int": -2
     },
     "size": "standard",
-    "signatureFoci": ["horned", "feral-hardiness"],
+    "signatureFoci": ["feral-hardiness"],
     "racialFocusPicks": [
       "die-hard",
       "unarmed-combatant",
@@ -144,6 +144,38 @@
       "whirlwind-assault",
       "alert",
       "henchkeeper"
+    ],
+    "lineages": [
+      {
+        "id": "herd",
+        "name": "Herd",
+        "description": "Goat, sheep, or cattle stock: the common kind, horned, bred for loyalty.",
+        "attributeModifiers": {
+          "con": 1,
+          "dex": -1
+        },
+        "signatureFoci": ["horned", "herd-loyal"]
+      },
+      {
+        "id": "pack",
+        "name": "Pack",
+        "description": "Dog or wolf stock: less common, quick to move as one.",
+        "attributeModifiers": {
+          "wis": 1,
+          "cha": -1
+        },
+        "signatureFoci": ["pack-sense"]
+      },
+      {
+        "id": "predator",
+        "name": "Predator",
+        "description": "Big-cat or bear stock: rare, made to be set loose behind enemy lines, with an infiltrator's or a feral past.",
+        "attributeModifiers": {
+          "dex": 1,
+          "cha": -1
+        },
+        "signatureFoci": ["pounce"]
+      }
     ]
   },
   {

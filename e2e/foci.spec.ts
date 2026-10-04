@@ -69,14 +69,15 @@ for (const c of CASES) {
     }
 
     // Class picks: combat-only for the Warrior pick, and never a focus already held racially.
-    const first = c.people.racialFocusPicks[0] as string;
-    await select(racialLabels[0] as string, name(first));
+    // A Herd beastman's three racial foci are all signature foci.
+    const first = racialCount > 0 ? (c.people.racialFocusPicks[0] as string) : undefined;
+    if (first) await select(racialLabels[0] as string, name(first));
     const combat = await optionsOf(page, 'Combat focus');
     const any = await optionsOf(page, 'Any focus');
     expect(combat).not.toContain('Lucky');
     expect(combat).toContain('Rider'); // counts as both combat and non-combat
     expect(any).toContain('Lucky');
-    for (const id of [...c.signature, first]) {
+    for (const id of [...c.signature, ...(first ? [first] : [])]) {
       expect(combat).not.toContain(name(id));
       expect(any).not.toContain(name(id));
     }

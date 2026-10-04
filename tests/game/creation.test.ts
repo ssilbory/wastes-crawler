@@ -217,7 +217,7 @@ describe('finishCharacter', () => {
     const result = finishCharacter(raider(), data, scriptedRng([4, 0xabc, 0xdef]));
     if (!result.ok) throw new Error(result.errors.join('; '));
     expect(result.character).toMatchObject({
-      schemaVersion: 5,
+      schemaVersion: 6,
       id: 'char-00000abc00000def',
       name: 'Snag',
       people: 'goblin',

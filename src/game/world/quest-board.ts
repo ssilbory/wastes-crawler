@@ -7,6 +7,7 @@ import type { GameData } from '../character/context.ts';
 import { partyLevel } from './difficulty.ts';
 import { note } from './members.ts';
 import { addNpc } from './npcs.ts';
+import { fulfilOrders, gainAuthority, learnCountersign } from './orders.ts';
 import { failQuest, giverName, questOf } from './quests.ts';
 import { anyDead, isRaising, raisingBlocked } from './raising.ts';
 import { revive, type TownResult } from './services.ts';
@@ -101,6 +102,9 @@ export function turnInQuest(w: World, data: GameData, id: string, raise?: string
     w,
     `${giverName(data, q)} pays for ${q.name}: ${q.reward.crowns} crowns and ${q.reward.xp} XP each.`,
   );
+  for (const o of q.reward.countersigns ?? []) learnCountersign(w, data, o);
+  if (q.reward.authority) gainAuthority(w, data, q.reward.authority);
+  fulfilOrders(w, data, id);
   return { ok: true };
 }
 

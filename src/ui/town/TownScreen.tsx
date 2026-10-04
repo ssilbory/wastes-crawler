@@ -7,6 +7,8 @@ import { crowns, lootText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { NpcPanel } from '../world/NpcPanel.tsx';
 import { QuestLog } from '../world/QuestLog.tsx';
+import { SettingPanel } from '../world/SettingPanel.tsx';
+import { raidedText } from '../../render/setting-view.ts';
 import { PartyPanel } from '../world/PartyPanel.tsx';
 import { QuestsTab } from './QuestsTab.tsx';
 import { ServicesTab } from './ServicesTab.tsx';
@@ -59,10 +61,19 @@ export function TownScreen(props: {
         <h1 class="date">{town.name}</h1>
         <span>Purse: {crowns(w.purse)}</span>
         <span>Loot: {lootText(w.loot)}</span>
+        {raidedText(w, town.id) && <span class="raided">{raidedText(w, town.id)}</span>}
         <button type="button" onClick={props.onLeave}>
           Back to the map
         </button>
       </div>
+      {w.encounter && (
+        <div class="raid-alarm" role="alert">
+          <p>{w.encounter.text}</p>
+          <button type="button" class="create" onClick={props.onLeave}>
+            To the gates
+          </button>
+        </div>
+      )}
       <div class="tabs town-tabs" role="tablist" aria-label="Town">
         {(Object.keys(TABS) as Tab[]).map((t) => (
           <button
@@ -98,6 +109,7 @@ export function TownScreen(props: {
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
           <QuestLog world={w} onChange={props.onChange} />
+          <SettingPanel world={w} />
           <section class="panel log" aria-label="Journey log">
             <h3>Journal</h3>
             <ol>

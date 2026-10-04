@@ -77,10 +77,24 @@ const EXPECTED: {
   },
   {
     people: 'beastman',
-    lineage: null,
-    adjust: { con: 2, str: 1, int: -2 },
+    lineage: 'herd',
+    adjust: { con: 3, str: 1, int: -2, dex: -1 },
+    size: 'standard',
+    racial: [null, null, null],
+  },
+  {
+    people: 'beastman',
+    lineage: 'pack',
+    adjust: { con: 2, str: 1, int: -2, wis: 1, cha: -1 },
     size: 'standard',
     racial: [null, null, { id: 'die-hard' }],
+  },
+  {
+    people: 'beastman',
+    lineage: 'predator',
+    adjust: { con: 2, str: 1, int: -2, dex: 1, cha: -1 },
+    size: 'standard',
+    racial: [null, { id: 'pounce', skill: 'stab' }, { id: 'die-hard' }],
   },
   {
     people: 'gnome',
@@ -136,6 +150,25 @@ describe('every people and lineage', () => {
       p.lineages ? p.lineages.map((l) => `${p.id}/${l.id}`) : [p.id],
     );
     expect(all).toEqual(EXPECTED.map((e) => (e.lineage ? `${e.people}/${e.lineage}` : e.people)));
+  });
+});
+
+describe('beastmen made before source animals (character schema 6)', () => {
+  it('load as herd stock; other peoples are left alone', () => {
+    const built = (people: string, lineage: string | null, racial: (FocusChoice | null)[]) => {
+      const r = finishCharacter(choicesFor(people, lineage, racial), data, scriptedRng([5, 1, 2]));
+      if (!r.ok) throw new Error(r.errors.join('; '));
+      return r.character;
+    };
+    const old = (c: ReturnType<typeof built>) => {
+      const raw: Record<string, unknown> = { ...c, schemaVersion: 5 };
+      delete raw.lineage;
+      return JSON.stringify(raw);
+    };
+    const herd = built('beastman', 'herd', [null, null, null]);
+    expect(importCharacter(old(herd), data)).toEqual({ ok: true, character: herd });
+    const goblin = built('goblin', null, [null, null, { id: 'alert' }]);
+    expect(importCharacter(old(goblin), data)).toEqual({ ok: true, character: goblin });
   });
 });
 

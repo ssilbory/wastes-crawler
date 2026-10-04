@@ -167,6 +167,24 @@ describe('wages, healing, Morale, and shares', () => {
     moraleAfterFight(w, data);
   });
 
+  it('steadies hirelings by a living Herd-Loyal beastman’s bonus', () => {
+    const w = town([5, 5]);
+    hire(w, data, 'guard');
+    const snag = member(w, 'Snag');
+    snag.character = {
+      ...snag.character,
+      foci: [...snag.character.foci, { id: 'herd-loyal', level: 2 }],
+    };
+    // Thug Morale 7 + 2: a roll of 9 holds.
+    w.rng = scriptedRng([6, 3]);
+    moraleAfterFight(w, data);
+    expect(w.npcs[0]?.quitting).toBe(false);
+    snag.dead = true;
+    w.rng = scriptedRng([6, 3]);
+    moraleAfterFight(w, data);
+    expect(w.npcs[0]?.quitting).toBe(true);
+  });
+
   it('gives hirelings half a PC’s share of loot', () => {
     const w = town([5, 5]);
     expect(hirelingCut(w, data, 90)).toBe(0);

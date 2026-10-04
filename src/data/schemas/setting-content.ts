@@ -1,0 +1,45 @@
+import { z } from 'zod';
+import { IdSchema } from './common.ts';
+
+/**
+ * A standing order (docs/setting.md, The binding and standing orders): what a bound garrison or
+ * patrol still carries out, and the ways it can be ended without a fight (Sam's calls).
+ */
+export const StandingOrderSchema = z.strictObject({
+  id: IdSchema,
+  name: z.string().min(1),
+  text: z.string().min(1),
+  /** The countersign the bound still ask for; knowing it makes them stand aside. */
+  countersign: z.string().min(1),
+  /** A Lead check at this difficulty bluffs them; failing makes them fight. */
+  bluff: z.int().min(6).max(16),
+  /** A quest whose completion fulfils the order, so they stand down. */
+  complete: IdSchema.optional(),
+  /** A hireling type one of them offers to sign on as, once released. */
+  recruit: IdSchema.optional(),
+});
+export type StandingOrder = z.infer<typeof StandingOrderSchema>;
+
+/** Command authority (docs/setting.md): a token the bound obey, for some orders or all. */
+export const AuthoritySchema = z.strictObject({
+  id: IdSchema,
+  name: z.string().min(1),
+  text: z.string().min(1),
+  /** The orders it can countermand, or all of them. */
+  commands: z.union([z.literal('all'), z.array(IdSchema).min(1)]),
+});
+export type Authority = z.infer<typeof AuthoritySchema>;
+
+/** The monthly raid threat on the Dark Lands' settlements (Sam's call). */
+export const RaidRulesSchema = z.strictObject({
+  /** The region whose settlements are raided. */
+  region: IdSchema,
+  /** Days from the warning to the raid. */
+  warningDays: z.int().min(1),
+  raiders: z.array(z.array(IdSchema).min(1).max(8)).min(1).max(3),
+  /** Crowns the settlement pays defenders. */
+  reward: z.number().min(0),
+  /** A raided town's prices rise by this fraction for a month. */
+  surcharge: z.number().min(0),
+});
+export type RaidRules = z.infer<typeof RaidRulesSchema>;

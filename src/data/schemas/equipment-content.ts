@@ -74,6 +74,8 @@ export const FocusEffectSchema = z.discriminatedUnion('kind', [
     bonus: z.int(),
     actsFirst: z.boolean(),
   }),
+  /** Herd-Loyal: hirelings travelling with the party get this much more Morale (Phase 12b). */
+  z.strictObject({ kind: z.literal('hireling-morale'), level: Level, amount: z.int().min(1) }),
   /** Well-Met: a bonus to reaction rolls while the character travels with the party. */
   z.strictObject({ kind: z.literal('reaction-bonus'), level: Level, amount: z.int().min(1) }),
   /**

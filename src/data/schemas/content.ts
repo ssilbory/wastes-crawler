@@ -17,6 +17,7 @@ import {
 } from './overland-content.ts';
 import { TownRulesSchema } from './town-content.ts';
 import { SettingsDefaultsSchema, SoundCueSchema } from './settings.ts';
+import { AuthoritySchema, RaidRulesSchema, StandingOrderSchema } from './setting-content.ts';
 import {
   ComponentSchema,
   CraftingRulesSchema,
@@ -174,6 +175,9 @@ export const ContentSchemas = {
   dungeons: z.array(DungeonSchema),
   /** Setting monsters on existing stat lines; their combat entries are added on loading. */
   settingMonsters: z.array(SettingMonsterSchema),
+  standingOrders: z.array(StandingOrderSchema),
+  authorities: z.array(AuthoritySchema),
+  raidRules: RaidRulesSchema,
   craftingRules: CraftingRulesSchema,
   components: z.array(ComponentSchema).min(1),
   mods: z.array(ModSchema).min(1),

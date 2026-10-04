@@ -3,7 +3,9 @@
 import type { GameData } from '../character/context.ts';
 import { craftingListener } from './crafting.ts';
 import { maintenanceListener } from './maintenance.ts';
+import { ordersListener } from './orders.ts';
 import { questListener } from './quests.ts';
+import { raidsListener } from './raids.ts';
 import { raisingListener } from './raising.ts';
 import { rescueListener } from '../dungeon/rescues.ts';
 import type { Npc, World } from './types.ts';
@@ -31,6 +33,8 @@ const LISTENERS: readonly Listener[] = [
   raisingListener,
   craftingListener,
   maintenanceListener,
+  ordersListener,
+  raidsListener,
 ];
 
 export function emit(w: World, data: GameData, e: WorldEvent): void {

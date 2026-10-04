@@ -26,6 +26,12 @@ export const MIGRATIONS: Migrations = {
     advancement: { skillPoints: 0, quickPoints: 0, skillCredit: {} },
     schemaVersion: 5,
   }),
+  // Version 6 gives beastmen a source animal (Phase 12b); older beastmen were herd stock.
+  5: (raw) => ({
+    ...raw,
+    ...(raw.people === 'beastman' && raw.lineage === undefined ? { lineage: 'herd' } : {}),
+    schemaVersion: 6,
+  }),
 };
 
 export function exportCharacter(c: Character): string {

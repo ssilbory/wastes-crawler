@@ -81,7 +81,8 @@
         }
       }
     ],
-    "encounters": {}
+    "encounters": {},
+    "garrisons": []
   },
   {
     "id": "dark-lands",
@@ -194,6 +195,14 @@
       "mountains": "dl-mountains",
       "swamp": "dl-swamp",
       "badlands": "dl-badlands"
-    }
+    },
+    "garrisons": [
+      {
+        "order": "ruinfield-gate",
+        "col": 18,
+        "row": 12,
+        "enemies": [["bound-orc-guard", "bound-orc-guard"], ["bound-orc-captain"]]
+      }
+    ]
   }
 ]

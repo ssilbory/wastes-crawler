@@ -9,6 +9,7 @@ import { note } from './members.ts';
 import { regionMap } from './region.ts';
 import { emit } from './bus.ts';
 import { enterRegion } from './crossing.ts';
+import { raidedCost } from './raids.ts';
 import { arriveNpcs } from './rescue.ts';
 import type { World } from './types.ts';
 
@@ -49,7 +50,8 @@ export function priceHere(w: World, data: GameData, listed: number): number {
   const town = townHere(w, data);
   const rules = data.content.townRules;
   const { spent } = currentLedger(w, data, town);
-  return surchargedCost(spent, listed, spendingThreshold(data, town), rules.surchargeRate);
+  const cost = surchargedCost(spent, listed, spendingThreshold(data, town), rules.surchargeRate);
+  return raidedCost(w, data, town.id, cost);
 }
 
 /** Pays for `listed` crowns of goods or services from the purse; false if it can't. */

@@ -94,6 +94,16 @@ export const WORLD_MIGRATIONS: Migrations = {
   12: (raw) => ({ ...raw, schemaVersion: 13, craftsmen: {}, commissions: [] }),
   // Version 14 adds regions (Phase 12): every hex explored so far is in the current one.
   13: (raw) => ({ ...raw, schemaVersion: 14, elsewhere: {} }),
+  // Version 15 adds standing orders and raids (Phase 12b): nothing known, ended, or threatened.
+  14: (raw) => ({
+    ...raw,
+    schemaVersion: 15,
+    countersigns: [],
+    ordersEnded: [],
+    authority: [],
+    raid: null,
+    raided: {},
+  }),
 };
 
 export function serializeWorld(w: World): string {
@@ -130,6 +140,11 @@ export function serializeWorld(w: World): string {
     projects: w.projects,
     workshops: w.workshops,
     components: w.components,
+    countersigns: w.countersigns,
+    ordersEnded: w.ordersEnded,
+    authority: w.authority,
+    raid: w.raid,
+    raided: w.raided,
     craftsmen: w.craftsmen,
     commissions: w.commissions,
     log: w.log.slice(-SAVED_LOG_LINES),
@@ -213,6 +228,11 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       projects: s.projects,
       workshops: s.workshops,
       components: s.components,
+      countersigns: s.countersigns,
+      ordersEnded: s.ordersEnded,
+      authority: s.authority,
+      raid: s.raid,
+      raided: s.raided,
       craftsmen: s.craftsmen,
       commissions: s.commissions,
       log: s.log,

@@ -5,7 +5,7 @@ import { CharacterSchema } from './character.ts';
 import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 14;
+export const WORLD_SCHEMA_VERSION = 15;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -74,6 +74,8 @@ export const PendingEncounterSchema = z.strictObject({
   /** The party spotted them first and can slip away. */
   spotted: z.boolean(),
   text: z.string(),
+  /** A bound garrison's or patrol's standing order (Phase 12b). */
+  order: IdSchema.optional(),
 });
 
 /** Crowns spent and loot cashed in at one town, at listed value, since `since` (a day). */
@@ -243,6 +245,15 @@ export const WorldSaveSchema = z.strictObject({
   workshops: z.array(IdSchema),
   /** Crafting components carried, by id; like loot dice they weigh nothing. */
   components: z.record(IdSchema, z.int().min(1)),
+  /** Standing orders whose countersigns the party knows, and those it has ended (Phase 12b). */
+  countersigns: z.array(IdSchema),
+  ordersEnded: z.array(IdSchema),
+  /** Tokens of command authority the party carries. */
+  authority: z.array(IdSchema),
+  /** The settlement raiders mean to hit, the day they strike, and whether the party is fighting them. */
+  raid: z.strictObject({ town: IdSchema, day: z.int().min(0), fighting: z.boolean() }).nullable(),
+  /** Raided settlements and the day their prices recover. */
+  raided: z.record(IdSchema, z.int().min(0)),
   /** Each craftsman's month, by id, once the party has visited. */
   craftsmen: z.record(IdSchema, CraftsmanStateSchema),
   commissions: z.array(CommissionSchema),

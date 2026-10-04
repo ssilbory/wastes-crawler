@@ -57,6 +57,7 @@ const CASES: {
   },
   {
     people: 'Beastman',
+    lineage: 'Pack',
     bg: 'Tunneler',
     picks: ['Exert', 'Craft'],
     dex: 12,

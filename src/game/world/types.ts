@@ -71,6 +71,11 @@ export interface World {
   projects: Project[];
   workshops: string[];
   components: Record<string, number>;
+  countersigns: string[];
+  ordersEnded: string[];
+  authority: string[];
+  raid: { town: string; day: number; fighting: boolean } | null;
+  raided: Record<string, number>;
   craftsmen: Record<string, CraftsmanState>;
   commissions: Commission[];
   log: string[];

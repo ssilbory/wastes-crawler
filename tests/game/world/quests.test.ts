@@ -293,7 +293,8 @@ describe('deadlines, turning in, and abandoning', () => {
     expect(member(w, 'Grukk').character.xp).toBe(3);
     expect(member(w, 'Snag').pendingXp).toBe(3);
     expect(w.loot).toEqual([{ count: 2, sides: 6 }]);
-    expect(w.log.at(-1)).toContain(
+    expect(w.countersigns).toEqual(['ash-road-patrol']);
+    expect(w.log.at(-2)).toContain(
       'Warden Osk pays for The Old Watchtower: 80 crowns and 3 XP each.',
     );
   });

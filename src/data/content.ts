@@ -31,12 +31,16 @@ import craftsmen from '../../data/content/craftsmen.json';
 import settingsDefaults from '../../data/content/settings-defaults.json';
 import soundCues from '../../data/content/sound-cues.json';
 import settingMonsters from '../../data/content/setting-monsters.json';
+import standingOrders from '../../data/content/standing-orders.json';
+import authorities from '../../data/content/authorities.json';
+import raidRules from '../../data/content/raid-rules.json';
 import { withSettingMonsters } from './monsters.ts';
 import { combatReferenceErrors } from './combat-check.ts';
 import { equipmentReferenceErrors } from './equipment-check.ts';
 import { focusReferenceErrors } from './focus-content.ts';
 import { magicReferenceErrors } from './magic-check.ts';
 import { overlandReferenceErrors } from './overland-check.ts';
+import { settingReferenceErrors } from './setting-check.ts';
 import { townReferenceErrors } from './town-check.ts';
 import { npcReferenceErrors } from './npc-check.ts';
 import { travelReferenceErrors } from './travel-check.ts';
@@ -80,6 +84,9 @@ export function loadContent(): ContentData {
     settingsDefaults: ContentSchemas.settingsDefaults.parse(settingsDefaults),
     soundCues: ContentSchemas.soundCues.parse(soundCues),
     settingMonsters: ContentSchemas.settingMonsters.parse(settingMonsters),
+    standingOrders: ContentSchemas.standingOrders.parse(standingOrders),
+    authorities: ContentSchemas.authorities.parse(authorities),
+    raidRules: ContentSchemas.raidRules.parse(raidRules),
   });
 }
 
@@ -135,6 +142,8 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['mods', content.mods],
     ['craftsmen', content.craftsmen],
     ['settingMonsters', content.settingMonsters],
+    ['standingOrders', content.standingOrders],
+    ['authorities', content.authorities],
     ...content.dungeons.map((d): [string, { id: string }[]] => [
       `dungeons/${d.id} levels`,
       d.levels,
@@ -164,5 +173,6 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...questReferenceErrors(srd, content),
     ...dungeonReferenceErrors(content),
     ...craftingReferenceErrors(srd, content),
+    ...settingReferenceErrors(srd, content),
   ];
 }

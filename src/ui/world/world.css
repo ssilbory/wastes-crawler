@@ -284,3 +284,27 @@
 .automap .seen.trap {
   fill: #a3412f;
 }
+
+.setting-notes {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.raid-alarm {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--error);
+  border-radius: 4px;
+}
+
+.raid-alarm p {
+  margin: 0;
+  flex: 1;
+}
+
+.raided {
+  color: var(--error);
+}
