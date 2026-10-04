@@ -52,5 +52,14 @@
     "reward": 50,
     "xp": 1,
     "text": "An old-breed goblin is bound between them."
+  },
+  {
+    "id": "held-crafter",
+    "name": "the warlord's flesh crafter",
+    "monster": "peaceful-human",
+    "destination": "gutterwick",
+    "reward": 60,
+    "xp": 2,
+    "text": "A flesh crafter in chains works among them."
   }
 ]

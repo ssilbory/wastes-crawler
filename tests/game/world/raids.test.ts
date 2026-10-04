@@ -31,7 +31,7 @@ describe('raids (docs/rules-adaptation.md, Raids)', () => {
     w.rng = scriptedRng([1]);
     emit(w, data, { kind: 'day-passed' });
     expect(w.raid).toEqual({ town: 'gutterwick', day: 37, fighting: false });
-    expect(w.log.at(-1)).toContain('human raiders will strike Gutterwick within 7 days');
+    expect(w.log.at(-2)).toContain('human raiders will strike Gutterwick within 7 days');
     // One raid at a time.
     w.raid = { town: 'gutterwick', day: 100, fighting: false };
     w.day = 59;

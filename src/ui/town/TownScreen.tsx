@@ -109,7 +109,7 @@ export function TownScreen(props: {
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
           <QuestLog world={w} onChange={props.onChange} />
-          <SettingPanel world={w} />
+          <SettingPanel world={w} inTown onChange={props.onChange} />
           <section class="panel log" aria-label="Journey log">
             <h3>Journal</h3>
             <ol>

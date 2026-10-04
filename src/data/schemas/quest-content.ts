@@ -52,6 +52,8 @@ export const ObjectiveSchema = z.discriminatedUnion('kind', [
     level: IdSchema,
     at: CellSchema,
     enemies: z.array(z.array(IdSchema).min(1).max(8)).min(1).max(3),
+    /** One more of this monster in the front row per tier of the warlord's clock (Phase 12d). */
+    reinforce: IdSchema.optional(),
     text: z.string().min(1),
   }),
   /** Pick up a quest item lying on a dungeon cell. */

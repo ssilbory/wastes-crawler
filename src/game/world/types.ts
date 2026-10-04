@@ -74,6 +74,10 @@ export interface World {
   countersigns: string[];
   /** Garrison posts beaten in a fight, by key (orders.ts). */
   beaten: string[];
+  /** The warlord's clock, crafter's notes, and the seal's fate (Phase 12d). */
+  clock: number;
+  notes: Record<string, 'found' | 'burned' | 'sold' | 'kept' | 'paid'>;
+  ending: 'destroy' | 'give' | 'keep' | null;
   ordersEnded: string[];
   authority: string[];
   raid: { town: string; day: number; fighting: boolean } | null;

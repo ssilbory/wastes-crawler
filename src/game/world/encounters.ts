@@ -30,9 +30,11 @@ export interface Rolled {
 export function rollEnemies(w: World, data: GameData, tableId: string): Rolled {
   const table = data.content.encounterTables.find((t) => t.id === tableId);
   if (!table) throw new Error(`unknown encounter table ${tableId}`);
-  const total = table.entries.reduce((sum, e) => sum + e.weight, 0);
+  // Warlord patrols join the tables as the clock fills (Phase 12d).
+  const entries = table.entries.filter((e) => (e.minClock ?? 0) <= w.clock);
+  const total = entries.reduce((sum, e) => sum + e.weight, 0);
   let pick = w.rng.int(1, total);
-  const entry = table.entries.find((e) => (pick -= e.weight) <= 0) as (typeof table.entries)[0];
+  const entry = entries.find((e) => (pick -= e.weight) <= 0) as (typeof entries)[0];
   const rows: string[][] = [[], [], []];
   for (const g of entry.groups) {
     const n = typeof g.count === 'number' ? g.count : Math.max(1, roll(w.rng, g.count).total);

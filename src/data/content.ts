@@ -34,6 +34,7 @@ import settingMonsters from '../../data/content/setting-monsters.json';
 import standingOrders from '../../data/content/standing-orders.json';
 import authorities from '../../data/content/authorities.json';
 import raidRules from '../../data/content/raid-rules.json';
+import campaign from '../../data/content/campaign.json';
 import { withSettingMonsters } from './monsters.ts';
 import { combatReferenceErrors } from './combat-check.ts';
 import { equipmentReferenceErrors } from './equipment-check.ts';
@@ -87,6 +88,7 @@ export function loadContent(): ContentData {
     standingOrders: ContentSchemas.standingOrders.parse(standingOrders),
     authorities: ContentSchemas.authorities.parse(authorities),
     raidRules: ContentSchemas.raidRules.parse(raidRules),
+    campaign: ContentSchemas.campaign.parse(campaign),
   });
 }
 

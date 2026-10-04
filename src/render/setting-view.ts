@@ -1,15 +1,25 @@
-// What the party knows of the Dark Lands' standing orders and raids (Phase 12b), as text. Pure.
+// What the party knows of the Dark Lands' standing orders, raids (Phase 12b), and the endgame (Phase
+// 12d), as text. Pure.
 import type { GameData } from '../game/character/context.ts';
 import { authorityFor, orderOf, pendingOrder } from '../game/world/orders.ts';
+import { pendingNotes, setName } from '../game/world/notes.ts';
 import { isRaided } from '../game/world/raids.ts';
+import { epilogue, sealBlocked } from '../game/world/seal.ts';
 import type { World } from '../game/world/types.ts';
 
 const siteName = (data: GameData, id: string) =>
   data.content.regions.flatMap((r) => r.sites).find((s) => s.id === id)?.name ?? id;
 
-/** One line per threat, countersign, and token, in that order. */
+/** One line for the ending, the clock, each threat, countersign, and token, in that order. */
 export function settingNotes(w: World, data: GameData): string[] {
   const lines: string[] = [];
+  const end = epilogue(w, data);
+  if (end) lines.push(end);
+  const { segments, perTier } = data.content.campaign.clock;
+  if (w.clock > 0)
+    lines.push(
+      `The warlord's clock: ${w.clock} of ${segments}. Every ${perTier} segments, bolder patrols.`,
+    );
   if (w.raid)
     lines.push(
       w.raid.fighting
@@ -54,4 +64,18 @@ export function orderChoices(w: World, data: GameData): OrderChoices | null {
 /** The raided surcharge, for the town bar. */
 export function raidedText(w: World, town: string): string | null {
   return isRaided(w, town) ? 'Raided: prices up' : null;
+}
+
+/** Notes waiting for the party's decision, and whether an agent can buy them here. */
+export function notesChoices(
+  w: World,
+  data: GameData,
+  inTown: boolean,
+): { id: string; name: string; canSell: boolean }[] {
+  return pendingNotes(w).map((id) => ({ id, name: setName(data, id), canSell: inTown }));
+}
+
+/** Whether the seal's choice is open at this giver, in this town. */
+export function sealOpen(w: World, data: GameData, giver: string, town: string): boolean {
+  return data.content.campaign.seal.giver === giver && sealBlocked(w, data, town) === null;
 }

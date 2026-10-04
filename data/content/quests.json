@@ -474,5 +474,84 @@
         }
       ]
     }
+  },
+  {
+    "id": "lieutenants-seal",
+    "name": "The Lieutenant's Seal",
+    "giver": "elder-gorvash",
+    "summary": "The cull records answered to Lieutenant Vael, whose war bunker is in the Ash Mountains at 20,2. Vael was trusted with the Seal of Command. Gorvash wants it out of that bunker before a warlord gets there first.",
+    "prerequisites": {
+      "quests": ["cull-records"],
+      "minLevel": 3
+    },
+    "objectives": [
+      {
+        "kind": "reach",
+        "dungeon": "vaels-bunker",
+        "level": "bunker-command",
+        "text": "Get down to the bunker's command deck."
+      },
+      {
+        "kind": "retrieve",
+        "dungeon": "vaels-bunker",
+        "level": "bunker-command",
+        "at": {
+          "x": 0,
+          "y": 0
+        },
+        "item": "the Seal of Command",
+        "text": "Take the Seal of Command from Vael's vault."
+      }
+    ],
+    "reward": {
+      "crowns": 200,
+      "xp": 4,
+      "loot": [
+        {
+          "count": 2,
+          "sides": 10
+        }
+      ]
+    }
+  },
+  {
+    "id": "warlord-falls",
+    "name": "The Warlord Falls",
+    "giver": "elder-gorvash",
+    "summary": "Warlord Grisk holds a stockade in Gallows Wood at 2,21, a crafter to breed his army, and he has heard about the seal. Strike before his herds give birth.",
+    "prerequisites": {
+      "quests": ["lieutenants-seal"],
+      "minLevel": 4
+    },
+    "objectives": [
+      {
+        "kind": "reach",
+        "dungeon": "grisks-hold",
+        "level": "hold-hall",
+        "text": "Fight down to the warlord's hall."
+      },
+      {
+        "kind": "guardian",
+        "dungeon": "grisks-hold",
+        "level": "hold-hall",
+        "at": {
+          "x": 3,
+          "y": 1
+        },
+        "enemies": [["beastman-trooper", "beastman-trooper"], ["warlord"]],
+        "reinforce": "beastman-trooper",
+        "text": "Kill Warlord Grisk on his throne."
+      }
+    ],
+    "reward": {
+      "crowns": 300,
+      "xp": 6,
+      "loot": [
+        {
+          "count": 3,
+          "sides": 10
+        }
+      ]
+    }
   }
 ]

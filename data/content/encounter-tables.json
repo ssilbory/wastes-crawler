@@ -695,6 +695,57 @@
             "row": 0
           }
         ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "minClock": 2,
+        "groups": [
+          {
+            "monster": "beastman-trooper",
+            "count": 3,
+            "row": 0
+          },
+          {
+            "monster": "predator-beastman",
+            "count": 1,
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "minClock": 4,
+        "groups": [
+          {
+            "monster": "predator-beastman",
+            "count": 2,
+            "row": 0
+          },
+          {
+            "monster": "beastman-trooper",
+            "count": 2,
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "minClock": 6,
+        "groups": [
+          {
+            "monster": "war-engine",
+            "count": 1,
+            "row": 0
+          },
+          {
+            "monster": "beastman-trooper",
+            "count": 2,
+            "row": 1
+          }
+        ]
       }
     ]
   },
@@ -782,6 +833,57 @@
               "modifier": 0
             },
             "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "minClock": 2,
+        "groups": [
+          {
+            "monster": "beastman-trooper",
+            "count": 3,
+            "row": 0
+          },
+          {
+            "monster": "predator-beastman",
+            "count": 1,
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "minClock": 4,
+        "groups": [
+          {
+            "monster": "predator-beastman",
+            "count": 2,
+            "row": 0
+          },
+          {
+            "monster": "beastman-trooper",
+            "count": 2,
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "minClock": 6,
+        "groups": [
+          {
+            "monster": "war-engine",
+            "count": 1,
+            "row": 0
+          },
+          {
+            "monster": "beastman-trooper",
+            "count": 2,
+            "row": 1
           }
         ]
       }
@@ -875,6 +977,57 @@
           },
           {
             "monster": "alliance-ranger",
+            "count": 2,
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "minClock": 2,
+        "groups": [
+          {
+            "monster": "beastman-trooper",
+            "count": 3,
+            "row": 0
+          },
+          {
+            "monster": "predator-beastman",
+            "count": 1,
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "minClock": 4,
+        "groups": [
+          {
+            "monster": "predator-beastman",
+            "count": 2,
+            "row": 0
+          },
+          {
+            "monster": "beastman-trooper",
+            "count": 2,
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "minClock": 6,
+        "groups": [
+          {
+            "monster": "war-engine",
+            "count": 1,
+            "row": 0
+          },
+          {
+            "monster": "beastman-trooper",
             "count": 2,
             "row": 1
           }
@@ -1244,6 +1397,119 @@
           {
             "monster": "predator-beastman",
             "count": 1,
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bunker",
+    "entries": [
+      {
+        "weight": 3,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "clockwork-servitor",
+            "count": {
+              "count": 1,
+              "sides": 2,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "bound-orc-guard",
+            "count": 2,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "clockwork-soldier",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stronghold",
+    "entries": [
+      {
+        "weight": 3,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "beastman-trooper",
+            "count": 2,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "warbreed-hound",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "beastman-trooper",
+            "count": 1,
+            "row": 0
+          },
+          {
+            "monster": "slaver",
+            "count": 1,
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "minClock": 2,
+        "groups": [
+          {
+            "monster": "beastman-trooper",
+            "count": 3,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "minClock": 4,
+        "groups": [
+          {
+            "monster": "predator-beastman",
+            "count": 2,
             "row": 0
           }
         ]

@@ -22,5 +22,19 @@
     "countersign": "The banner stays",
     "bluff": 12,
     "recruit": "guard"
+  },
+  {
+    "id": "bunker-watch",
+    "name": "Guard the War Bunker",
+    "text": "Vael's machines and the bound in his bunker guard it as ordered, against everyone but the lieutenant's own.",
+    "countersign": "Steel without end",
+    "bluff": 13
+  },
+  {
+    "id": "vaels-war",
+    "name": "Win the War for the Dark Lord",
+    "text": "Lieutenant Vael was bound to win the Dark Lord's war. No one has told him it is over, and no one can.",
+    "countersign": "The Dark Lord rides again",
+    "bluff": 15
   }
 ]

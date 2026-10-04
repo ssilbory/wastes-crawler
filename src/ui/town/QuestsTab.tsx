@@ -6,15 +6,25 @@ import {
   standing,
   turnInQuest,
 } from '../../game/world/quest-board.ts';
+import { decideSeal, type SealChoice } from '../../game/world/seal.ts';
+import { townHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
+import { sealOpen } from '../../render/setting-view.ts';
 import { questStatus, rewardText } from '../../render/quest-view.ts';
 import { data } from '../builder/data.ts';
 import type { Act } from './TownScreen.tsx';
+
+const SEAL: [SealChoice, string][] = [
+  ['destroy', 'Destroy the seal'],
+  ['give', 'Give it to the council'],
+  ['keep', 'Keep it'],
+];
 
 /** The town's mission givers and their quests (docs/rules-adaptation.md, Quests). */
 export function QuestsTab(props: { world: World; act: Act }) {
   const w = props.world;
   const givers = giversHere(w, data);
+  const town = townHere(w, data);
   return (
     <>
       {givers.length === 0 && <p class="hint">No one here has work for the party.</p>}
@@ -72,6 +82,22 @@ export function QuestsTab(props: { world: World; act: Act }) {
               );
             })}
           </ul>
+          {sealOpen(w, data, g.id, town.id) && (
+            <div class="parley" role="group" aria-label="The Seal of Command">
+              <p>
+                The warlord is dead, and the party holds the Seal of Command. What becomes of it?
+              </p>
+              {SEAL.map(([choice, label]) => (
+                <button
+                  key={choice}
+                  type="button"
+                  onClick={() => props.act(() => decideSeal(w, data, town.id, choice))}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          )}
         </section>
       ))}
     </>

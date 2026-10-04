@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { orderChoices, raidedText, settingNotes } from '../../src/render/setting-view.ts';
+import {
+  notesChoices,
+  orderChoices,
+  raidedText,
+  sealOpen,
+  settingNotes,
+} from '../../src/render/setting-view.ts';
 import { data, encounter, world } from '../game/world/helpers.ts';
 
 describe('setting view (Phase 12b)', () => {
@@ -45,5 +51,25 @@ describe('setting view (Phase 12b)', () => {
       authority: 'The Seal of Command',
       bluff: false,
     });
+  });
+
+  it('shows the clock, the ending, and the notes and seal choices (Phase 12d)', () => {
+    const w = world();
+    w.clock = 3;
+    expect(settingNotes(w, data)).toEqual([
+      "The warlord's clock: 3 of 6. Every 2 segments, bolder patrols.",
+    ]);
+    w.ending = 'give';
+    expect(settingNotes(w, data)[0]).toContain('Elder Gorvash takes the seal');
+    w.notes = { 'vats-notes': 'found', 'grisk-notes': 'sold' };
+    expect(notesChoices(w, data, false)).toEqual([
+      { id: 'vats-notes', name: "the vat-master's notes", canSell: false },
+    ]);
+    expect(sealOpen(w, data, 'elder-gorvash', 'cinderhold')).toBe(false);
+    w.ending = null;
+    w.quests['warlord-falls'] = { status: 'done', step: 2, acceptedDay: 0 };
+    w.authority = ['seal-of-command'];
+    expect(sealOpen(w, data, 'elder-gorvash', 'cinderhold')).toBe(true);
+    expect(sealOpen(w, data, 'foreman-tikka', 'cinderhold')).toBe(false);
   });
 });

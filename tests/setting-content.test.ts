@@ -14,6 +14,8 @@ describe('setting content (Phase 12b)', () => {
       'ruinfield-gate',
       'ash-road-patrol',
       'ashgate-hold',
+      'bunker-watch',
+      'vaels-war',
     ]);
     expect(content.raidRules.region).toBe('dark-lands');
   });
@@ -54,6 +56,8 @@ describe('setting content (Phase 12b)', () => {
               specials: [
                 { kind: 'countersign', at: { x: 0, y: 0 }, order: 'lost', text: 'x' },
                 { kind: 'message', at: { x: 0, y: 0 }, text: 'x', people: ['human'] },
+                { kind: 'notes', at: { x: 0, y: 0 }, set: 'lost', text: 'x' },
+                { kind: 'token', at: { x: 0, y: 0 }, authority: 'lost', text: 'x' },
               ],
               garrisons: [
                 { at: { x: 99, y: 0 }, order: 'lost', enemies: [['dragon']], text: 'x' },
@@ -76,7 +80,8 @@ describe('setting content (Phase 12b)', () => {
         raiders: [['dragon']],
       },
     };
-    expect(settingReferenceErrors(srd, broken)).toEqual([
+    // The campaign's own references are checked below.
+    expect(settingReferenceErrors(srd, broken).filter((e) => !e.startsWith('campaign'))).toEqual([
       'standingOrders/ruinfield-gate: unknown quest nothing',
       'standingOrders/ruinfield-gate: unknown hireling type jester',
       'authorities/a: unknown order lost',
@@ -87,6 +92,8 @@ describe('setting content (Phase 12b)', () => {
       `encounterTables/${table.id}: unknown order lost`,
       `dungeons/${dungeon.id}/${level.id}: unknown order lost`,
       `dungeons/${dungeon.id}/${level.id}: message for unknown people human`,
+      `dungeons/${dungeon.id}/${level.id}: unknown notes lost`,
+      `dungeons/${dungeon.id}/${level.id}: unknown authority lost`,
       `dungeons/${dungeon.id}/${level.id}: the garrison at 99,0 has unknown order lost`,
       `dungeons/${dungeon.id}/${level.id}: the garrison at 99,0 is not on a plain floor cell`,
       `dungeons/${dungeon.id}/${level.id}: the garrison at 99,0: unknown monster dragon`,
@@ -96,6 +103,36 @@ describe('setting content (Phase 12b)', () => {
       'raidRules: the warning must come within the month',
       'raidRules: unknown monster dragon',
     ]);
+    const campaign = content.campaign;
+    const lostCampaign: ContentData = {
+      ...content,
+      campaign: {
+        clock: { ...campaign.clock, segments: 1, knockback: { quests: ['q'], captives: ['c'] } },
+        notes: { ...campaign.notes, giver: 'nobody' },
+        seal: { ...campaign.seal, quest: 'q2', giver: 'nobody', authority: 'crown' },
+      },
+      quests: content.quests.map((q) =>
+        q.id === 'warlord-falls'
+          ? {
+              ...q,
+              objectives: q.objectives.map((o) =>
+                o.kind === 'guardian' ? { ...o, reinforce: 'dragon' } : o,
+              ),
+            }
+          : q,
+      ),
+    };
+    const lost = settingReferenceErrors(srd, lostCampaign);
+    expect(lost.filter((e) => e.startsWith('campaign'))).toEqual([
+      'campaign: unknown quest q',
+      'campaign: unknown quest q2',
+      'campaign: unknown captive c',
+      'campaign: unknown giver nobody',
+      'campaign: unknown giver nobody',
+      'campaign: unknown authority crown',
+    ]);
+    expect(lost).toContain('quests/warlord-falls: unknown monster dragon');
+    expect(lost).toContain('encounterTables/dl-plains: a patrol needs more than 1 segments');
     const empty = { ...dark, sites: [] };
     expect(
       settingReferenceErrors(srd, { ...content, regions: [empty] }).filter((e) =>

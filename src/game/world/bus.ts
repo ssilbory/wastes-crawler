@@ -1,8 +1,10 @@
 // The world's event bus (docs/plan.md, Quest: driven by an event bus from the game layer). The
 // game layer emits what happened; listeners, the quests for now, react to it.
 import type { GameData } from '../character/context.ts';
+import { clockListener } from './clock.ts';
 import { craftingListener } from './crafting.ts';
 import { maintenanceListener } from './maintenance.ts';
+import { notesListener } from './notes.ts';
 import { ordersListener } from './orders.ts';
 import { questListener } from './quests.ts';
 import { raidsListener } from './raids.ts';
@@ -23,7 +25,9 @@ export type WorldEvent =
   | { kind: 'level-entered' }
   | { kind: 'cell-entered' }
   /** A captive was freed into the party, or went their own way. */
-  | { kind: 'captive-freed'; captive: string };
+  | { kind: 'captive-freed'; captive: string }
+  /** A quest was turned in to its giver (Phase 12d). */
+  | { kind: 'quest-done'; quest: string };
 
 type Listener = (w: World, data: GameData, e: WorldEvent) => void;
 
@@ -35,6 +39,8 @@ const LISTENERS: readonly Listener[] = [
   maintenanceListener,
   ordersListener,
   raidsListener,
+  clockListener,
+  notesListener,
 ];
 
 export function emit(w: World, data: GameData, e: WorldEvent): void {

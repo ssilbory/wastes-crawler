@@ -809,6 +809,15 @@
               "x": 0,
               "y": 7
             }
+          },
+          {
+            "kind": "notes",
+            "at": {
+              "x": 1,
+              "y": 1
+            },
+            "set": "vats-notes",
+            "text": "Under the laboratory bench, wrapped in oilcloth: the vat-master's working notes."
           }
         ],
         "captives": [],
@@ -906,6 +915,539 @@
         ],
         "captives": [],
         "garrisons": []
+      }
+    ]
+  },
+  {
+    "id": "vaels-bunker",
+    "name": "Vael's Bunker",
+    "region": "dark-lands",
+    "entrance": {
+      "col": 20,
+      "row": 2
+    },
+    "entry": {
+      "level": "bunker-barracks",
+      "at": {
+        "x": 0,
+        "y": 0
+      },
+      "facing": "e"
+    },
+    "levels": [
+      {
+        "id": "bunker-barracks",
+        "name": "The Barracks Deck",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|<    | | | | | | | |",
+          "+ + + +-+-+-+-+-+-+-+",
+          "|     d    T        |",
+          "+ + + +-+d+-+-+d+-+-+",
+          "|     |     |       |",
+          "+-+d+-+ + + + + + + +",
+          "|     |     |       |",
+          "+ + + + + + + + + + +",
+          "|     |     |       |",
+          "+ + + +-+d+-+-+-+-+-+",
+          "|     |           | |",
+          "+ + + + + + + + + +-+",
+          "|     d           d |",
+          "+ + + + + + + + + + +",
+          "|     |           |>|",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 7
+            },
+            "to": {
+              "level": "bunker-command",
+              "at": {
+                "x": 7,
+                "y": 7
+              },
+              "facing": "w"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "bunker"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 7
+          },
+          {
+            "x": 1,
+            "y": 7
+          }
+        ],
+        "secrets": [],
+        "traps": [
+          {
+            "at": {
+              "x": 5,
+              "y": 1
+            },
+            "name": "needle plate",
+            "notice": 10,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 10
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "token",
+            "at": {
+              "x": 3,
+              "y": 4
+            },
+            "authority": "lieutenants-token",
+            "text": "In the officers' quarters, a brass token hangs on a hook by the door, waiting for whoever has the watch."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 5
+            },
+            "text": "Records of the civil wars fill the map room: which lieutenant betrayed which, and when. Vael is in none of them as a traitor."
+          }
+        ],
+        "captives": [],
+        "garrisons": [
+          {
+            "at": {
+              "x": 7,
+              "y": 2
+            },
+            "order": "bunker-watch",
+            "enemies": [["clockwork-servitor", "clockwork-servitor"]],
+            "text": "Two clockwork servitors stand to beside their bunks, as they have every morning for twenty years."
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 6
+            },
+            "order": "bunker-watch",
+            "enemies": [["clockwork-soldier"], ["clockwork-servitor"]],
+            "text": "A clockwork soldier guards the stair down to the command deck."
+          }
+        ]
+      },
+      {
+        "id": "bunker-command",
+        "name": "The Command Deck",
+        "map": [
+          "+-+-+-+-+-+-+-+-+",
+          "|       |       |",
+          "+ + + + + + + + +",
+          "|       |       |",
+          "+ + + + + + + + +",
+          "|       |       |",
+          "+ + + + + + + + +",
+          "|       |       |",
+          "+-+d+-+-+-+d+-+-+",
+          "|       |       |",
+          "+-+-+d+-+-+-+ +-+",
+          "|       |       |",
+          "+ + + + + + + + +",
+          "|       d       |",
+          "+ + + + + + + + +",
+          "|       |      <|",
+          "+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 7,
+              "y": 7
+            },
+            "to": {
+              "level": "bunker-barracks",
+              "at": {
+                "x": 9,
+                "y": 7
+              },
+              "facing": "w"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "bunker"
+        },
+        "safe": [
+          {
+            "x": 7,
+            "y": 0
+          },
+          {
+            "x": 7,
+            "y": 1
+          }
+        ],
+        "secrets": [],
+        "traps": [],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 2,
+              "y": 6
+            },
+            "text": "Maps of a war that ended twenty years ago cover the walls, and someone still moves the pins each morning."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 5,
+              "y": 1
+            },
+            "text": "Orders in Vael's hand, dated every day for twenty years: hold the line, await the Dark Lord's word."
+          },
+          {
+            "kind": "token",
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "authority": "seal-of-command",
+            "text": "In the vault lies the Seal of Command, the Dark Lord's own, left with his most trusted lieutenant."
+          }
+        ],
+        "captives": [],
+        "garrisons": [
+          {
+            "at": {
+              "x": 4,
+              "y": 6
+            },
+            "order": "bunker-watch",
+            "enemies": [["iron-golem"]],
+            "text": "The Iron Golem stands at the war room door, and turns its head."
+          },
+          {
+            "at": {
+              "x": 1,
+              "y": 4
+            },
+            "order": "vaels-war",
+            "enemies": [["clockwork-soldier"], ["bound-lieutenant"]],
+            "text": "Lieutenant Vael, an elf in a uniform twenty years old, bars the vault door. \"You are not my relief,\" he says."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "grisks-hold",
+    "name": "Grisk's Hold",
+    "region": "dark-lands",
+    "entrance": {
+      "col": 2,
+      "row": 21
+    },
+    "entry": {
+      "level": "hold-stockade",
+      "at": {
+        "x": 4,
+        "y": 9
+      },
+      "facing": "n"
+    },
+    "levels": [
+      {
+        "id": "hold-stockade",
+        "name": "The Stockade",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "| | |>          | | |",
+          "+-+-+ + + + + + +-+-+",
+          "| | |           | | |",
+          "+-+-+ + + + + + +-+-+",
+          "| | |           | | |",
+          "+-+-+ + + + + + +-+-+",
+          "| | |           | | |",
+          "+-+-+-+-+d+-+-+-+-+-+",
+          "| | | | |  T| | |   |",
+          "+-+-+-+-+ +-+-+-+ + +",
+          "|   |           |   |",
+          "+ + + + + + + + + + +",
+          "|   |           d   |",
+          "+ + + + + + + + + + +",
+          "|   d           |   |",
+          "+ + + + + + + + + + +",
+          "|   |           |   |",
+          "+ + + + + + + + + + +",
+          "|   |    <      |   |",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 4,
+              "y": 9
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 0
+            },
+            "to": {
+              "level": "hold-barns",
+              "at": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": "s"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "stronghold"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 9
+          },
+          {
+            "x": 1,
+            "y": 9
+          }
+        ],
+        "secrets": [],
+        "traps": [
+          {
+            "at": {
+              "x": 5,
+              "y": 4
+            },
+            "name": "spiked pit",
+            "notice": 9,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 9
+            },
+            "save": "evasion",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 2,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 4,
+              "y": 7
+            },
+            "text": "The stockade is new timber over old stone. Fresh beastmen drill in the yard, none of them a year old."
+          }
+        ],
+        "captives": [],
+        "garrisons": []
+      },
+      {
+        "id": "hold-barns",
+        "name": "The Breeding Barns",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|<      |           |",
+          "+ + + + + + + + + + +",
+          "|       d           |",
+          "+ + + + + + + + + + +",
+          "|       |           |",
+          "+ + + + + + + + + + +",
+          "|       |           |",
+          "+-+d+-+-+-+-+-+d+-+-+",
+          "|         |         |",
+          "+ + + + + + + + + + +",
+          "|         |         |",
+          "+ + + + + + + + + + +",
+          "|         d         |",
+          "+ + + + + + + + + + +",
+          "|      N  |        >|",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "to": {
+              "level": "hold-stockade",
+              "at": {
+                "x": 2,
+                "y": 0
+              },
+              "facing": "e"
+            }
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 7
+            },
+            "to": {
+              "level": "hold-hall",
+              "at": {
+                "x": 7,
+                "y": 7
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "stronghold"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 7
+          },
+          {
+            "x": 1,
+            "y": 7
+          }
+        ],
+        "secrets": [],
+        "traps": [],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 1
+            },
+            "text": "Herd after herd of pregnant goats. Grisk has an army due within the year."
+          },
+          {
+            "kind": "notes",
+            "at": {
+              "x": 0,
+              "y": 6
+            },
+            "set": "grisk-notes",
+            "text": "The crafter's writing desk holds a bound book: herbs, doses, and the words of the training."
+          }
+        ],
+        "captives": [
+          {
+            "at": {
+              "x": 3,
+              "y": 7
+            },
+            "captive": "held-crafter",
+            "guards": [["beastman-trooper", "beastman-trooper"]],
+            "text": "Two troopers keep the warlord's crafter at her work."
+          }
+        ],
+        "garrisons": []
+      },
+      {
+        "id": "hold-hall",
+        "name": "The Warlord's Hall",
+        "map": [
+          "+-+-+-+-+-+-+-+-+",
+          "|               |",
+          "+ + + + + + + + +",
+          "|               |",
+          "+ + + + + + + + +",
+          "|               |",
+          "+ + + + + + + + +",
+          "|               |",
+          "+-+d+-+-+-+-+d+-+",
+          "|               |",
+          "+ + + + + + + + +",
+          "|               |",
+          "+ + + + + + + + +",
+          "|               |",
+          "+ + + + + + + + +",
+          "|              <|",
+          "+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 7,
+              "y": 7
+            },
+            "to": {
+              "level": "hold-barns",
+              "at": {
+                "x": 9,
+                "y": 7
+              },
+              "facing": "w"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "stronghold"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 7
+          },
+          {
+            "x": 1,
+            "y": 7
+          }
+        ],
+        "secrets": [],
+        "traps": [],
+        "captives": [],
+        "garrisons": [],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 3,
+              "y": 5
+            },
+            "text": "A throne of old siege timber stands under the banners of three dead lieutenants."
+          }
+        ]
       }
     ]
   }

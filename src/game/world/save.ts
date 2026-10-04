@@ -106,6 +106,8 @@ export const WORLD_MIGRATIONS: Migrations = {
   }),
   // Version 16 records beaten garrisons (Phase 12c): none yet.
   15: (raw) => ({ ...raw, schemaVersion: 16, beaten: [] }),
+  // Version 17 adds the endgame (Phase 12d): the clock at zero, no notes, no ending.
+  16: (raw) => ({ ...raw, schemaVersion: 17, clock: 0, notes: {}, ending: null }),
 };
 
 export function serializeWorld(w: World): string {
@@ -144,6 +146,9 @@ export function serializeWorld(w: World): string {
     components: w.components,
     countersigns: w.countersigns,
     beaten: w.beaten,
+    clock: w.clock,
+    notes: w.notes,
+    ending: w.ending,
     ordersEnded: w.ordersEnded,
     authority: w.authority,
     raid: w.raid,
@@ -233,6 +238,9 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       components: s.components,
       countersigns: s.countersigns,
       beaten: s.beaten,
+      clock: s.clock,
+      notes: s.notes,
+      ending: s.ending,
       ordersEnded: s.ordersEnded,
       authority: s.authority,
       raid: s.raid,

@@ -19,6 +19,8 @@ describe('the Command authority chain begins (docs/rules-adaptation.md, Campaign
     expect(questBoard(w, data, 'elder-gorvash').map((q) => q.id)).toEqual([
       'ashgate-rolls',
       'cull-records',
+      'lieutenants-seal',
+      'warlord-falls',
     ]);
     expect(cannotAccept(w, data, questOf(data, 'cull-records'))).toBe('First: The Ashgate Rolls.');
     expect(acceptQuest(w, data, 'ashgate-rolls')).toEqual({ ok: true });

@@ -4,6 +4,7 @@
 import type { MissionGiver, Quest, QuestState } from '../../data/schemas/index.ts';
 import { toTenths } from '../../rules/economy.ts';
 import type { GameData } from '../character/context.ts';
+import { emit } from './bus.ts';
 import { partyLevel } from './difficulty.ts';
 import { note } from './members.ts';
 import { addNpc } from './npcs.ts';
@@ -105,6 +106,7 @@ export function turnInQuest(w: World, data: GameData, id: string, raise?: string
   for (const o of q.reward.countersigns ?? []) learnCountersign(w, data, o);
   if (q.reward.authority) gainAuthority(w, data, q.reward.authority);
   fulfilOrders(w, data, id);
+  emit(w, data, { kind: 'quest-done', quest: id });
   return { ok: true };
 }
 

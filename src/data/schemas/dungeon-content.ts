@@ -95,6 +95,15 @@ export const SpecialSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('darkness'), ...At }),
   /** No spells or arts in a fight here. */
   z.strictObject({ kind: z.literal('anti-magic'), ...At }),
+  /** A set of crafter's notes, found the first time the party steps here (Phase 12d). */
+  z.strictObject({ kind: z.literal('notes'), ...At, set: IdSchema, text: z.string().min(1) }),
+  /** A token of command authority, taken the first time the party steps here (Phase 12d). */
+  z.strictObject({
+    kind: z.literal('token'),
+    ...At,
+    authority: IdSchema,
+    text: z.string().min(1),
+  }),
   /** A clue that teaches a standing order's countersign the first time the party steps here. */
   z.strictObject({
     kind: z.literal('countersign'),

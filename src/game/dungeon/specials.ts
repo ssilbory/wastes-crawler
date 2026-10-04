@@ -5,7 +5,8 @@ import type { Special } from '../../data/schemas/index.ts';
 import { FACINGS, type Facing } from '../../rules/grid.ts';
 import type { GameData } from '../character/context.ts';
 import { alive, note } from '../world/members.ts';
-import { learnCountersign } from '../world/orders.ts';
+import { findNotes } from '../world/notes.ts';
+import { gainAuthority, learnCountersign } from '../world/orders.ts';
 import type { World } from '../world/types.ts';
 import { levelOf } from './explore.ts';
 
@@ -37,6 +38,12 @@ export function arriveOn(w: World, data: GameData): void {
         : null;
       if (reader === undefined) continue;
       note(w, sp.text.replaceAll('{pc}', reader?.character.name ?? ''));
+    } else if (sp.kind === 'notes') {
+      findNotes(w, data, sp.set, sp.text);
+    } else if (sp.kind === 'token') {
+      if (w.authority.includes(sp.authority)) continue;
+      note(w, sp.text);
+      gainAuthority(w, data, sp.authority);
     } else if (sp.kind === 'countersign') {
       if (w.countersigns.includes(sp.order)) continue;
       note(w, sp.text);

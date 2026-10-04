@@ -39,12 +39,16 @@ export function settingReferenceErrors(srd: SrdData, content: ContentData): stri
       if (e.order && !orders.has(e.order))
         errors.push(`encounterTables/${t.id}: unknown order ${e.order}`);
   const peoples = new Set(content.peoples.map((p) => p.id));
+  const sets = new Set(content.campaign.notes.sets.map((s) => s.id));
   for (const d of content.dungeons)
     for (const l of d.levels) {
       const where = `dungeons/${d.id}/${l.id}`;
       for (const s of l.specials) {
         if (s.kind === 'countersign' && !orders.has(s.order))
           errors.push(`${where}: unknown order ${s.order}`);
+        if (s.kind === 'notes' && !sets.has(s.set)) errors.push(`${where}: unknown notes ${s.set}`);
+        if (s.kind === 'token' && !content.authorities.some((a) => a.id === s.authority))
+          errors.push(`${where}: unknown authority ${s.authority}`);
         if (s.kind === 'message')
           for (const p of s.people ?? [])
             if (!peoples.has(p)) errors.push(`${where}: message for unknown people ${p}`);
@@ -65,6 +69,7 @@ export function settingReferenceErrors(srd: SrdData, content: ContentData): stri
     if (token && !content.authorities.some((a) => a.id === token))
       errors.push(`quests/${q.id}: unknown authority ${token}`);
   }
+  errors.push(...campaignErrors(content, monsters));
   const raid = content.raidRules;
   const region = content.regions.find((r) => r.id === raid.region);
   if (!region) errors.push(`raidRules: unknown region ${raid.region}`);
@@ -72,5 +77,30 @@ export function settingReferenceErrors(srd: SrdData, content: ContentData): stri
   if (raid.warningDays >= content.overlandRules.daysPerMonth)
     errors.push('raidRules: the warning must come within the month');
   unknownMonsters('raidRules', raid.raiders);
+  return errors;
+}
+
+/** The endgame's quests, captives, givers, tokens, and monsters exist, and its patrols can come. */
+function campaignErrors(content: ContentData, monsters: Set<string>): string[] {
+  const errors: string[] = [];
+  const { clock, notes, seal } = content.campaign;
+  const quests = new Set(content.quests.map((q) => q.id));
+  const givers = new Set(content.missionGivers.map((g) => g.id));
+  for (const id of [...clock.knockback.quests, seal.quest])
+    if (!quests.has(id)) errors.push(`campaign: unknown quest ${id}`);
+  for (const id of clock.knockback.captives)
+    if (!content.captives.some((c) => c.id === id)) errors.push(`campaign: unknown captive ${id}`);
+  for (const id of [notes.giver, seal.giver])
+    if (!givers.has(id)) errors.push(`campaign: unknown giver ${id}`);
+  if (!content.authorities.some((a) => a.id === seal.authority))
+    errors.push(`campaign: unknown authority ${seal.authority}`);
+  for (const t of content.encounterTables)
+    for (const e of t.entries)
+      if ((e.minClock ?? 0) > clock.segments)
+        errors.push(`encounterTables/${t.id}: a patrol needs more than ${clock.segments} segments`);
+  for (const q of content.quests)
+    for (const o of q.objectives)
+      if (o.kind === 'guardian' && o.reinforce && !monsters.has(o.reinforce))
+        errors.push(`quests/${q.id}: unknown monster ${o.reinforce}`);
   return errors;
 }

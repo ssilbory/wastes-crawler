@@ -43,3 +43,43 @@ export const RaidRulesSchema = z.strictObject({
   surcharge: z.number().min(0),
 });
 export type RaidRules = z.infer<typeof RaidRulesSchema>;
+
+/**
+ * The campaign's endgame (Phase 12d; Sam's calls): the warlord's clock, crafter's notes, and the
+ * party's choice over the Seal of Command.
+ */
+export const CampaignSchema = z.strictObject({
+  clock: z.strictObject({
+    segments: z.int().min(1),
+    /** Segments per tier; each tier adds warlord patrols and boss reinforcements. */
+    perTier: z.int().min(1),
+    /** Quests turned in and captives freed that knock the clock back one segment. */
+    knockback: z.strictObject({ quests: z.array(IdSchema), captives: z.array(IdSchema) }),
+  }),
+  notes: z.strictObject({
+    sets: z.array(z.strictObject({ id: IdSchema, name: z.string().min(1) })).min(1),
+    /** Crowns a warlord's agent pays for a set, in any town. */
+    sell: z.number().min(0),
+    /** Crowns the giver pays for each set the party keeps, on its next visit. */
+    keep: z.number().min(0),
+    giver: IdSchema,
+  }),
+  seal: z.strictObject({
+    authority: IdSchema,
+    /** The quest that must be done before the choice. */
+    quest: IdSchema,
+    giver: IdSchema,
+    /** Crowns for giving the seal to the giver. */
+    give: z.number().min(0),
+    /** XP each for destroying it. */
+    destroyXp: z.number().min(0),
+    epilogues: z.strictObject({
+      destroy: z.string().min(1),
+      give: z.string().min(1),
+      keep: z.string().min(1),
+    }),
+    /** The epilogue's line on kept notes; `{n}` is the number kept. */
+    notesEpilogue: z.strictObject({ none: z.string().min(1), some: z.string().min(1) }),
+  }),
+});
+export type Campaign = z.infer<typeof CampaignSchema>;

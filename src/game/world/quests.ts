@@ -7,6 +7,7 @@ import type { Cell } from '../../rules/grid.ts';
 import { levelOf } from '../dungeon/explore.ts';
 import type { GameData } from '../character/context.ts';
 import type { WorldEvent } from './bus.ts';
+import { reinforced } from './clock.ts';
 import { meetGroup } from './encounters.ts';
 import { note } from './members.ts';
 import { removeNpc } from './npcs.ts';
@@ -53,7 +54,7 @@ function springSlay(w: World, data: GameData, id: string): void {
     meetGroup(
       w,
       data,
-      o.enemies,
+      reinforced(w, data, o.enemies, o.reinforce),
       'hostile',
       null,
       id,

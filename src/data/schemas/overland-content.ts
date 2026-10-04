@@ -102,6 +102,8 @@ export const EncounterTableSchema = z.strictObject({
         order: IdSchema.optional(),
         /** Paladin 'rescuers', who fight a party with elves or gnomes in it (Phase 12b). */
         rescuers: z.literal(true).optional(),
+        /** Rolled only once the warlord's clock has reached this many segments (Phase 12d). */
+        minClock: z.int().min(1).optional(),
       }),
     )
     .min(1),

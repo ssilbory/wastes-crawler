@@ -3,7 +3,7 @@
     "id": "lieutenants-token",
     "name": "A Lieutenant's Token",
     "text": "A brass token stamped with a lieutenant's mark. The bound of that command still obey it.",
-    "commands": ["ruinfield-gate", "ash-road-patrol", "ashgate-hold"]
+    "commands": ["ruinfield-gate", "ash-road-patrol", "ashgate-hold", "bunker-watch"]
   },
   {
     "id": "seal-of-command",

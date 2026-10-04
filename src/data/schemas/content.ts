@@ -17,7 +17,12 @@ import {
 } from './overland-content.ts';
 import { TownRulesSchema } from './town-content.ts';
 import { SettingsDefaultsSchema, SoundCueSchema } from './settings.ts';
-import { AuthoritySchema, RaidRulesSchema, StandingOrderSchema } from './setting-content.ts';
+import {
+  AuthoritySchema,
+  CampaignSchema,
+  RaidRulesSchema,
+  StandingOrderSchema,
+} from './setting-content.ts';
 import {
   ComponentSchema,
   CraftingRulesSchema,
@@ -178,6 +183,7 @@ export const ContentSchemas = {
   standingOrders: z.array(StandingOrderSchema),
   authorities: z.array(AuthoritySchema),
   raidRules: RaidRulesSchema,
+  campaign: CampaignSchema,
   craftingRules: CraftingRulesSchema,
   components: z.array(ComponentSchema).min(1),
   mods: z.array(ModSchema).min(1),
