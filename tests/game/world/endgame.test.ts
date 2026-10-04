@@ -100,7 +100,13 @@ describe("the warlord's clock (docs/rules-adaptation.md, Warlord's clock)", () =
     expect(reinforced(w, data, enemies, 'beastman-trooper')).toEqual(enemies);
     w.clock = 5;
     expect(reinforced(w, data, enemies, 'beastman-trooper')[0]).toHaveLength(4);
-    expect(reinforced(w, data, [Array<string>(8).fill('x')], 'y')[0]).toHaveLength(8);
+    expect(reinforced(w, data, [Array<string>(8).fill('x')], 'y')).toEqual([
+      Array<string>(8).fill('x'),
+      ['y', 'y'],
+    ]);
+    expect(
+      reinforced(w, data, [Array<string>(8).fill('x'), Array<string>(8).fill('z')], 'y'),
+    ).toEqual([Array<string>(8).fill('x'), Array<string>(8).fill('z')]);
     expect(reinforced(w, data, [], 'y')).toEqual([['y', 'y']]);
   });
 
@@ -112,9 +118,19 @@ describe("the warlord's clock (docs/rules-adaptation.md, Warlord's clock)", () =
     w.quests['warlord-falls'] = { status: 'active', step: 1, acceptedDay: 0 };
     place(w, 'hold-hall', 3, 2, 'n');
     step(w, data, 'forward');
+    // Tier 2: two more troopers, one to fill the front row and one beside the warlord.
     expect(w.encounter?.enemies).toEqual([
-      ['beastman-trooper', 'beastman-trooper', 'beastman-trooper', 'beastman-trooper'],
-      ['warlord'],
+      [
+        'beastman-trooper',
+        'beastman-trooper',
+        'war-engine',
+        'war-engine',
+        'predator-beastman',
+        'predator-beastman',
+        'war-engine',
+        'beastman-trooper',
+      ],
+      ['warlord', 'beastman-trooper'],
     ]);
   });
 });

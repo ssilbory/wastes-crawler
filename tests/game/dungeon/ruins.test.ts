@@ -77,10 +77,10 @@ describe('ruins in play (docs/rules-adaptation.md, Ruins)', () => {
   it('are found on their hexes and shown on the map', () => {
     const w = atRuin(CHAPEL);
     expect(ruinHere(w, data)?.id).toBe('sunken-chapel');
-    expect(wayDownHere(w, data)?.name).toBe('The Sunken Chapel');
+    expect(wayDownHere(w, data)).toEqual({ name: 'The Sunken Chapel', level: 1 });
     expect(entrancesIn(data, 'borderlands').map((e) => e.name)).toContain('The Old Mine');
     w.position = { col: 5, row: 10 };
-    expect(wayDownHere(w, data)?.name).toBe('The Old Barrow');
+    expect(wayDownHere(w, data)).toEqual({ name: 'The Old Barrow', level: null });
   });
 
   it('draw a seed on the first visit and keep the layout', () => {

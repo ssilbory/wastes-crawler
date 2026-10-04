@@ -24,6 +24,8 @@ export const RuinSchema = z.strictObject({
   region: IdSchema,
   col: z.int().min(0),
   row: z.int().min(0),
+  /** The party level the ruin is meant for: its vault is tuned to it (Phase 12f). */
+  level: z.int().min(1),
   /** Levels or floors, each a step denser with traps; a city's is 1. */
   depth: z.int().min(1).max(4),
   /** Each level's width and height are drawn from this range of cells, within the kind's sizes. */

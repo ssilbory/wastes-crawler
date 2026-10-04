@@ -4,6 +4,7 @@
     "name": "The Sunken Chapel",
     "kind": "delve",
     "region": "borderlands",
+    "level": 1,
     "col": 2,
     "row": 10,
     "depth": 1,
@@ -22,7 +23,7 @@
       }
     ],
     "vault": {
-      "guards": [["barrow-golem"]],
+      "guards": [["barrow-golem", "barrow-golem", "barrow-golem", "barrow-golem", "barrow-golem"]],
       "loot": [
         {
           "count": 2,
@@ -37,6 +38,7 @@
     "name": "The Old Mine",
     "kind": "delve",
     "region": "borderlands",
+    "level": 2,
     "col": 3,
     "row": 2,
     "depth": 2,
@@ -55,7 +57,16 @@
       }
     ],
     "vault": {
-      "guards": [["thug-or-militia", "thug-or-militia", "thug-or-militia"]],
+      "guards": [
+        [
+          "thug-or-militia",
+          "thug-or-militia",
+          "thug-or-militia",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "stone-golem"
+        ]
+      ],
       "loot": [
         {
           "count": 2,
@@ -70,6 +81,7 @@
     "name": "The Cinder Pits",
     "kind": "delve",
     "region": "dark-lands",
+    "level": 3,
     "col": 24,
     "row": 8,
     "depth": 2,
@@ -88,7 +100,16 @@
       }
     ],
     "vault": {
-      "guards": [["clockwork-servitor", "clockwork-servitor"]],
+      "guards": [
+        [
+          "clockwork-servitor",
+          "clockwork-servitor",
+          "clockwork-servitor",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier"
+        ]
+      ],
       "loot": [
         {
           "count": 2,
@@ -103,6 +124,7 @@
     "name": "The Drowned Depot",
     "kind": "delve",
     "region": "dark-lands",
+    "level": 3,
     "col": 19,
     "row": 20,
     "depth": 2,
@@ -121,7 +143,10 @@
       }
     ],
     "vault": {
-      "guards": [["beastman-trooper", "beastman-trooper"], ["slaver"]],
+      "guards": [
+        ["beastman-trooper", "beastman-trooper", "vat-spawn", "vat-spawn", "cull-horror"],
+        ["slaver"]
+      ],
       "loot": [
         {
           "count": 2,
@@ -136,6 +161,7 @@
     "name": "The Gallows Crypts",
     "kind": "delve",
     "region": "dark-lands",
+    "level": 4,
     "col": 3,
     "row": 16,
     "depth": 3,
@@ -154,7 +180,16 @@
       }
     ],
     "vault": {
-      "guards": [["barrow-golem", "barrow-golem"]],
+      "guards": [
+        [
+          "barrow-golem",
+          "barrow-golem",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier"
+        ]
+      ],
       "loot": [
         {
           "count": 3,
@@ -169,6 +204,7 @@
     "name": "The Shattered Foundry",
     "kind": "delve",
     "region": "dark-lands",
+    "level": 4,
     "col": 14,
     "row": 1,
     "depth": 3,
@@ -187,7 +223,16 @@
       }
     ],
     "vault": {
-      "guards": [["clockwork-soldier"], ["clockwork-servitor"]],
+      "guards": [
+        [
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier"
+        ],
+        ["clockwork-servitor"]
+      ],
       "loot": [
         {
           "count": 3,
@@ -202,6 +247,7 @@
     "name": "The Watcher's Spire",
     "kind": "tower",
     "region": "borderlands",
+    "level": 2,
     "col": 21,
     "row": 14,
     "depth": 3,
@@ -220,7 +266,15 @@
       }
     ],
     "vault": {
-      "guards": [["thug-or-militia", "thug-or-militia"]],
+      "guards": [
+        [
+          "thug-or-militia",
+          "thug-or-militia",
+          "paladin-champion",
+          "paladin-champion",
+          "paladin-champion"
+        ]
+      ],
       "loot": [
         {
           "count": 2,
@@ -235,6 +289,7 @@
     "name": "Old Westgate",
     "kind": "city",
     "region": "borderlands",
+    "level": 2,
     "col": 8,
     "row": 10,
     "depth": 1,
@@ -253,7 +308,17 @@
       }
     ],
     "vault": {
-      "guards": [["thug-or-militia", "thug-or-militia", "thug-or-militia"]],
+      "guards": [
+        [
+          "thug-or-militia",
+          "thug-or-militia",
+          "thug-or-militia",
+          "paladin-champion",
+          "paladin-champion",
+          "paladin-champion",
+          "paladin"
+        ]
+      ],
       "loot": [
         {
           "count": 2,
@@ -268,6 +333,7 @@
     "name": "The Black Spire",
     "kind": "tower",
     "region": "dark-lands",
+    "level": 5,
     "col": 27,
     "row": 10,
     "depth": 4,
@@ -286,7 +352,17 @@
       }
     ],
     "vault": {
-      "guards": [["clockwork-soldier", "clockwork-soldier"]],
+      "guards": [
+        [
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier",
+          "clockwork-soldier"
+        ]
+      ],
       "loot": [
         {
           "count": 3,
@@ -302,6 +378,7 @@
     "kind": "city",
     "sewer": true,
     "region": "dark-lands",
+    "level": 5,
     "col": 8,
     "row": 8,
     "depth": 1,
@@ -320,7 +397,19 @@
       }
     ],
     "vault": {
-      "guards": [["beastman-trooper", "beastman-trooper"], ["flesh-crafter"]],
+      "guards": [
+        [
+          "beastman-trooper",
+          "beastman-trooper",
+          "war-engine",
+          "war-engine",
+          "war-engine",
+          "war-engine",
+          "war-engine",
+          "war-engine"
+        ],
+        ["flesh-crafter"]
+      ],
       "loot": [
         {
           "count": 3,

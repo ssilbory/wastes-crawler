@@ -27,7 +27,10 @@ export function moveClock(w: World, data: GameData, by: number, why: string): vo
   if (clockTier(w, data) > tier) note(w, "The warlord's patrols grow bolder.");
 }
 
-/** A guardian's enemies, with one more of `reinforce` in the front row per tier of the clock. */
+/**
+ * A guardian's enemies, with one more of `reinforce` per tier of the clock: in the front row while
+ * it has room, then the row behind.
+ */
 export function reinforced(
   w: World,
   data: GameData,
@@ -35,9 +38,17 @@ export function reinforced(
   reinforce: string | undefined,
 ): string[][] {
   if (!reinforce) return enemies;
-  const [front = [], ...rest] = enemies;
-  const extra = Math.min(clockTier(w, data), MAX_PER_ROW - front.length);
-  return [[...front, ...Array<string>(Math.max(0, extra)).fill(reinforce)], ...rest];
+  const [front = [], second = [], ...rest] = enemies;
+  const tier = clockTier(w, data);
+  // A full front row sends the rest to the row behind it (Phase 12f).
+  const toFront = Math.min(tier, MAX_PER_ROW - front.length);
+  const toSecond = Math.min(tier - toFront, MAX_PER_ROW - second.length);
+  const rows = [
+    [...front, ...Array<string>(toFront).fill(reinforce)],
+    [...second, ...Array<string>(toSecond).fill(reinforce)],
+    ...rest,
+  ];
+  return rows.filter((r) => r.length > 0);
 }
 
 /** The clock's bus listener. */

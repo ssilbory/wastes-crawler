@@ -1,9 +1,9 @@
 // One run of the economy validator (docs/rules-adaptation.md, Economy validator in Phase 9): an
-// abstract party delves, comes back to a town, cashes in its loot, raises its dead, rests at the
-// inn, and levels up, over and over. Fights are drawn from the delve's real encounter table for
+// abstract party delves (a ruin every few delves, Phase 12f), comes back to a town, cashes in its
+// loot, pays its hirelings' shares, raises its dead, rests at the inn, and levels up, over and over. Fights are drawn from the delve's real encounter table for
 // their loot dice; wounds, deaths, and XP come from rates measured with the combat sim. Town costs
 // go through the real thresholds, surcharges, payouts, resets, and climate (src/rules/economy.ts).
-import type { EconomySim, Site } from '../../data/schemas/index.ts';
+import type { EconomySim, LootDice, Site } from '../../data/schemas/index.ts';
 import { levelForXp, xpForLevel } from '../../rules/advancement.ts';
 import { roll } from '../../rules/dice.ts';
 import { lootPayout, rollClimate, surchargedCost, toTenths } from '../../rules/economy.ts';
@@ -44,10 +44,12 @@ export interface RunResult {
   campNights: number;
   /** The dead raised by a raising quest, raised for crowns, and replaced from the tavern. */
   raised: { quest: number; paid: number; recruited: number };
+  /** Hirelings who left unpaid. */
+  hirelingsLeft: number;
 }
 
 /** Loot dice from one fight drawn from the table: each monster's own dice, rolled now. */
-function fightLoot(rng: Rng, data: GameData, tableId: string): number {
+function fightLoot(rng: Rng, data: GameData, tableId: string): LootDice[] {
   const table = data.content.encounterTables.find((t) => t.id === tableId);
   if (!table) throw new Error(`unknown encounter table ${tableId}`);
   let pick = rng.int(
@@ -55,14 +57,44 @@ function fightLoot(rng: Rng, data: GameData, tableId: string): number {
     table.entries.reduce((sum, e) => sum + e.weight, 0),
   );
   const entry = table.entries.find((e) => (pick -= e.weight) <= 0) as (typeof table.entries)[0];
-  let crowns = 0;
+  const dice: LootDice[] = [];
   for (const g of entry.groups) {
     const n = typeof g.count === 'number' ? g.count : Math.max(1, roll(rng, g.count).total);
     const loot = data.content.monsterCombat.find((m) => m.id === g.monster)?.loot;
-    for (let i = 0; loot && i < n; i++)
-      crowns += roll(rng, { count: loot.count, sides: loot.sides, modifier: 0 }).total;
+    for (let i = 0; loot && i < n; i++) dice.push(loot);
   }
-  return crowns;
+  return dice;
+}
+
+const rollDice = (rng: Rng, dice: readonly LootDice[]) =>
+  dice.reduce(
+    (sum, d) => sum + roll(rng, { count: d.count, sides: d.sides, modifier: 0 }).total,
+    0,
+  );
+
+/**
+ * One delve's loot dice and fights: the delve's table, or every `ruin.every` delves the ruin's
+ * wandering fight on each level, its caches (1 or 2 a level), and its vault (Phase 12f).
+ */
+function delveLoot(rng: Rng, data: GameData, sim: EconomySim, delve: number) {
+  if (delve % sim.ruin.every !== 0)
+    return {
+      fights: sim.delve.fights,
+      dice: () => fightLoot(rng, data, sim.delve.table),
+    };
+  const ruin = data.content.ruins.find((r) => r.id === sim.ruin.id);
+  if (!ruin) throw new Error(`unknown ruin ${sim.ruin.id}`);
+  const levels = ruin.kind === 'city' ? (ruin.sewer ? 2 : 1) : ruin.depth;
+  return {
+    fights: levels + 1,
+    dice: (f: number) =>
+      f < levels
+        ? [
+            ...fightLoot(rng, data, ruin.wander.table),
+            ...Array.from({ length: rng.int(1, 2) }, () => ruin.cache).flat(),
+          ]
+        : ruin.vault.loot,
+  };
 }
 
 function townOf(data: GameData, id: string): Site {
@@ -107,6 +139,15 @@ export function runEconomy(
   let here = towns[0] as string;
   // The first town is home: visited, with no climate roll, as in a new world.
   ledgers.set(here, { spent: 0, looted: 0, since: 0 });
+  const sign = (type: string) => {
+    const t = data.content.npcRules.hirelings.find((h) => h.id === type);
+    if (!t) throw new Error(`unknown hireling ${type}`);
+    return { share: t.share, owed: 0 };
+  };
+  // Hirelings sign on at home before the first delve.
+  const hired = sim.hirelings.map(sign);
+  purse = toTenths(purse - data.content.npcRules.signingFee * hired.length);
+  let left = 0;
 
   for (let delve = 1; delve <= sim.delves; delve++) {
     // Down into the dungeon.
@@ -115,10 +156,16 @@ export function runEconomy(
     const best = Math.max(...pcs.filter((p) => !p.dead).map((p) => p.level), 1);
     const deathChance =
       sim.fight.deathChance * sim.fight.deathFalloff ** Math.max(0, best - sim.delve.level);
-    for (let f = 0; f < sim.delve.fights; f++) {
+    const trip = delveLoot(rng, data, sim, delve);
+    for (let f = 0; f < trip.fights; f++) {
       const living = pcs.filter((p) => !p.dead);
       if (living.length === 0) break;
-      loot += fightLoot(rng, data, sim.delve.table);
+      const dice = trip.dice(f);
+      loot += rollDice(rng, dice);
+      // Hirelings' shares at the dice's average (docs/rules-adaptation.md, Wages and shares).
+      const value = dice.reduce((sum, d) => sum + (d.count * (d.sides + 1)) / 2, 0);
+      const shares = hired.reduce((sum, h) => sum + h.share, 0);
+      for (const h of hired) h.owed += (value * h.share) / (living.length + shares);
       for (const p of living) {
         if (rng.next() < deathChance) {
           p.dead = true;
@@ -153,10 +200,23 @@ export function runEconomy(
       return true;
     };
 
-    // Cash in the loot.
+    // Cash in the loot, and pay the hirelings; one the purse can't pay leaves, and the party signs
+    // on another of the same kind when it can afford the fee.
     const lootThreshold = threshold * rules.lootThresholdFraction;
     purse = toTenths(purse + lootPayout(ledger.looted, loot, lootThreshold, rules.lootDropRate));
     ledger.looted += loot;
+    for (const h of [...hired]) {
+      if (purse >= h.owed) {
+        purse = toTenths(purse - h.owed);
+        h.owed = 0;
+      } else {
+        purse = 0;
+        hired.splice(hired.indexOf(h), 1);
+        left += 1;
+      }
+    }
+    while (hired.length < sim.hirelings.length && pay(data.content.npcRules.signingFee))
+      hired.push(sign(sim.hirelings[hired.length] as string));
     if (lootPayout(ledger.looted, 1, lootThreshold, rules.lootDropRate) > 0) worthlessSince = null;
     else if (worthlessSince === null) worthlessSince = day;
     else if (day - worthlessSince > lock.worthlessDays) flag('loot-worthless', delve);
@@ -217,5 +277,6 @@ export function runEconomy(
     innNights,
     campNights,
     raised,
+    hirelingsLeft: left,
   };
 }

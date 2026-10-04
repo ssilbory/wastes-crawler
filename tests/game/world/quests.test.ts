@@ -105,7 +105,10 @@ describe('slay and scout steps', () => {
     expect(w.encounter).toMatchObject({
       quest: 'bandit-camp',
       hostile: true,
-      enemies: [['human-raider', 'human-raider', 'human-raider'], ['alliance-ranger']],
+      enemies: [
+        ['human-raider', 'human-raider', 'human-raider', 'paladin', 'paladin', 'paladin'],
+        ['alliance-ranger'],
+      ],
     });
     expect(w.encounter?.text).toContain(
       'Break the raider camp in the forest at 6,12. The enemy is here.',

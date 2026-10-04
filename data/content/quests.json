@@ -17,7 +17,10 @@
           "col": 6,
           "row": 12
         },
-        "enemies": [["human-raider", "human-raider", "human-raider"], ["alliance-ranger"]],
+        "enemies": [
+          ["human-raider", "human-raider", "human-raider", "paladin", "paladin", "paladin"],
+          ["alliance-ranger"]
+        ],
         "text": "Break the raider camp in the forest at 6,12."
       }
     ],
@@ -101,7 +104,18 @@
           "col": 12,
           "row": 2
         },
-        "enemies": [["beastman-trooper", "beastman-trooper"], ["tribal-shaman"]],
+        "enemies": [
+          [
+            "beastman-trooper",
+            "beastman-trooper",
+            "predator-beastman",
+            "predator-beastman",
+            "predator-beastman",
+            "predator-beastman",
+            "predator-beastman"
+          ],
+          ["tribal-shaman"]
+        ],
         "text": "Drive the beastmen out of the watchtower."
       }
     ],
@@ -141,7 +155,7 @@
           "x": 7,
           "y": 3
         },
-        "enemies": [["barrow-golem", "barrow-golem"]],
+        "enemies": [["barrow-golem", "barrow-golem", "barrow-golem", "barrow-golem"]],
         "text": "Destroy the golems guarding the east hall of the lower barrow."
       },
       {
@@ -262,7 +276,9 @@
           "col": 21,
           "row": 10
         },
-        "enemies": [["thug-or-militia", "thug-or-militia", "thug-or-militia"]],
+        "enemies": [
+          ["thug-or-militia", "thug-or-militia", "thug-or-militia", "paladin", "paladin", "paladin"]
+        ],
         "text": "Stop the corpse-thieves at the graves at 21,10."
       }
     ],
@@ -291,7 +307,15 @@
           "col": 4,
           "row": 16
         },
-        "enemies": [["cull-horror"]],
+        "enemies": [
+          [
+            "cull-horror",
+            "predator-beastman",
+            "predator-beastman",
+            "predator-beastman",
+            "predator-beastman"
+          ]
+        ],
         "text": "Kill the cull horror in the Gallows Wood at 4,16."
       }
     ],
@@ -391,8 +415,8 @@
           "x": 5,
           "y": 2
         },
-        "enemies": [["cull-horror"]],
-        "text": "Kill the cull horror that still keeps the cull pit."
+        "enemies": [["cull-horror", "cull-horror", "cull-horror", "cull-horror", "cull-horror"]],
+        "text": "Kill the cull horrors that still keep the cull pit."
       },
       {
         "kind": "retrieve",
@@ -458,8 +482,17 @@
           "row": 21
         },
         "enemies": [
-          ["beastman-trooper", "beastman-trooper"],
-          ["slaver", "slaver"]
+          [
+            "beastman-trooper",
+            "beastman-trooper",
+            "predator-beastman",
+            "predator-beastman",
+            "predator-beastman",
+            "predator-beastman",
+            "predator-beastman",
+            "predator-beastman"
+          ],
+          ["slaver", "slaver", "flesh-crafter"]
         ],
         "text": "Break the slavers' camp in the Mire at 15,21."
       }
@@ -538,7 +571,18 @@
           "x": 3,
           "y": 1
         },
-        "enemies": [["beastman-trooper", "beastman-trooper"], ["warlord"]],
+        "enemies": [
+          [
+            "beastman-trooper",
+            "beastman-trooper",
+            "war-engine",
+            "war-engine",
+            "predator-beastman",
+            "predator-beastman",
+            "war-engine"
+          ],
+          ["warlord"]
+        ],
         "reinforce": "beastman-trooper",
         "text": "Kill Warlord Grisk on his throne."
       }

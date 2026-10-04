@@ -31,6 +31,10 @@ export const EconomySimSchema = z.strictObject({
     /** XP each living PC earns per fight. */
     xp: z.number().min(0),
   }),
+  /** Hireling types the party signs on at home and keeps, paid their loot shares (Phase 12f). */
+  hirelings: z.array(IdSchema).max(2),
+  /** Every so many delves, the party takes on this ruin instead (Phase 12f). */
+  ruin: z.strictObject({ id: IdSchema, every: z.int().min(1) }),
   /** A raising quest: days it takes the party, at most one taken a month. */
   raiseQuest: z.strictObject({ days: z.int().min(1) }),
   /** Days on the road between towns. */

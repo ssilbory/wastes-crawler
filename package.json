@@ -22,6 +22,7 @@
     "test:e2e": "playwright test",
     "sim": "tsx tools/sim/index.ts",
     "economy": "tsx tools/economy.ts",
+    "balance": "tsx tools/balance.ts",
     "validate:levels": "tsx tools/validate-levels.ts"
   },
   "dependencies": {

@@ -22,6 +22,8 @@ export interface PolicyReport {
   medianDays: number;
   /** The dead over every seed: raised by quest, raised for crowns, and replaced. */
   raised: { quest: number; paid: number; recruited: number };
+  /** Hirelings who left unpaid, over every seed. */
+  hirelingsLeft: number;
 }
 
 const median = (xs: number[]) => {
@@ -54,6 +56,7 @@ export function economyReport(data: GameData, sim: EconomySim): PolicyReport[] {
         paid: runs.reduce((n, r) => n + r.raised.paid, 0),
         recruited: runs.reduce((n, r) => n + r.raised.recruited, 0),
       },
+      hirelingsLeft: runs.reduce((n, r) => n + r.hirelingsLeft, 0),
     };
   });
 }

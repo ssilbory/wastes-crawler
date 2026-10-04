@@ -65,6 +65,7 @@ export function MapScreen(props: {
         {way && !w.encounter && !w.coach && (
           <button type="button" onClick={props.onEnter}>
             Enter {way.name}
+            {way.level !== null && ` (for level ${way.level})`}
           </button>
         )}
         {road && !w.encounter && !w.coach && (

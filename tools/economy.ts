@@ -17,6 +17,7 @@ for (const r of reports) {
   );
   const { quest, paid, recruited } = r.raised;
   console.log(`  the dead: ${quest} raised by quest, ${paid} for crowns, ${recruited} replaced`);
+  console.log(`  hirelings who left unpaid: ${r.hirelingsLeft}`);
   for (const k of LOCKOUTS) {
     const l = r.locks[k];
     console.log(

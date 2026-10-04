@@ -22,9 +22,15 @@ const MAX_SEED = 2 ** 31 - 1;
 export const ruinHere = (w: World, data: GameData): Ruin | undefined =>
   data.content.ruins.find((r) => r.region === w.region && hexKey(r) === hexKey(w.position));
 
-/** The way down at the party's hex, hand-made or ruin, by name. */
-export function wayDownHere(w: World, data: GameData): { name: string } | undefined {
-  return dungeonHere(w, data) ?? ruinHere(w, data);
+/** The way down at the party's hex, hand-made or ruin, by name, with a ruin's party level. */
+export function wayDownHere(
+  w: World,
+  data: GameData,
+): { name: string; level: number | null } | undefined {
+  const d = dungeonHere(w, data);
+  if (d) return { name: d.name, level: null };
+  const r = ruinHere(w, data);
+  return r && { name: r.name, level: r.level };
 }
 
 /** Every way down in the party's region, hand-made and ruins, for the map. */

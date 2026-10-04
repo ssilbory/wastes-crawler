@@ -16,6 +16,11 @@
     "xp": 0.5,
     "deathFalloff": 0.5
   },
+  "hirelings": ["guard", "mundane-physician"],
+  "ruin": {
+    "id": "old-mine",
+    "every": 4
+  },
   "raiseQuest": {
     "days": 10
   },

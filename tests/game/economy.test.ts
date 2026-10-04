@@ -9,6 +9,8 @@ const base: EconomySim = {
   party: { maxHp: [8, 7], hpPerLevel: 4, purse: 85 },
   delve: { table: 'barrow', level: 1, fights: 4, days: 2 },
   fight: { hpLost: 0.15, deathChance: 0, deathFalloff: 0.5, xp: 0.5 },
+  hirelings: [],
+  ruin: { id: 'old-mine', every: 1000 },
   raiseQuest: { days: 10 },
   travelDays: 3,
   policies: [{ id: 'home', towns: ['westhold'] }],
@@ -135,5 +137,33 @@ describe('the economy validator (docs/rules-adaptation.md, Economy validator in 
     const grim = economyReport(data, sim({ seeds: 2, fight: { ...base.fight, xp: 0 } }));
     expect(grim[0]?.locks['no-progress']).toEqual({ seeds: 2, firstDelve: 2 });
     expect(passes(grim)).toBe(false);
+  });
+
+  it('takes on a ruin every few delves: its levels, caches, and vault (Phase 12f)', () => {
+    const plain = run(sim({ delves: 1 }));
+    const ruin = run(sim({ delves: 1, ruin: { id: 'old-mine', every: 1 } }));
+    expect(ruin.purse).toBeGreaterThan(plain.purse);
+    const city = { id: 'duskmere', every: 1 };
+    expect(run(sim({ delves: 1, ruin: city })).purse).toBeGreaterThan(0);
+    expect(run(sim({ delves: 1, ruin: { id: 'old-westgate', every: 1 } })).purse).toBeGreaterThan(
+      0,
+    );
+    expect(() => run(sim({ ruin: { id: 'atlantis', every: 1 } }))).toThrow('unknown ruin atlantis');
+  });
+
+  it('signs on hirelings at home, pays their shares, and replaces one who leaves unpaid', () => {
+    const r = run(sim({ hirelings: ['guard'], delves: 4 }));
+    expect(r.hirelingsLeft).toBe(0);
+    const broke = run(
+      sim({
+        hirelings: ['guard', 'mundane-physician'],
+        party: { ...base.party, purse: 0 },
+        delves: 6,
+      }),
+    );
+    expect(broke.hirelingsLeft).toBeGreaterThan(0);
+    expect(() => run(sim({ hirelings: ['jester'] }))).toThrow('unknown hireling jester');
+    const report = economyReport(data, sim({ hirelings: ['guard'] }));
+    expect(report[0]?.hirelingsLeft).toBeGreaterThanOrEqual(0);
   });
 });

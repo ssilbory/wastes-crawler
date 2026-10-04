@@ -1155,7 +1155,10 @@
               "y": 4
             },
             "order": "vaels-war",
-            "enemies": [["clockwork-soldier"], ["bound-lieutenant"]],
+            "enemies": [
+              ["clockwork-soldier", "clockwork-soldier", "clockwork-soldier", "clockwork-soldier"],
+              ["bound-lieutenant"]
+            ],
             "text": "Lieutenant Vael, an elf in a uniform twenty years old, bars the vault door. \"You are not my relief,\" he says."
           }
         ]
