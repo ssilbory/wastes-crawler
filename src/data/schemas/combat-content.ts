@@ -124,6 +124,39 @@ export const CombatEffectSchema = z.discriminatedUnion('kind', [
     save: Save,
     requiresTag: z.literal('undead'),
   }),
+  /** Armor of God (1.5.5.1): a natural AC of `base` plus half the level, rounded down. */
+  z.strictObject({ kind: z.literal('ac-floor'), base: z.int().min(10) }),
+  /**
+   * Merciful Healing: the dice of the highest tier reached, adding `strain` System Strain in
+   * combat; it revives the Mortally Wounded.
+   */
+  z.strictObject({
+    kind: z.literal('heal'),
+    tiers: z.array(z.strictObject({ level: z.int().min(1), dice: DiceSchema })).min(1),
+    strain: z.int().min(0),
+  }),
+  /** God Wills It: the caster's side gains the tier's bonus to hit, damage, and Shock. */
+  z.strictObject({
+    kind: z.literal('bless'),
+    tiers: z.array(z.strictObject({ level: z.int().min(1), bonus: z.int().min(1) })).min(1),
+  }),
+  /**
+   * Smite the Wicked: an attack with `hit` more to hit, the level in automatic damage, and the
+   * damage dice rolled twice, the better kept.
+   */
+  z.strictObject({ kind: z.literal('smite-wicked'), hit: z.int().min(1) }),
+  /**
+   * Turn False Life: `dice` plus the level in hit dice of foes with the tags, none with more than
+   * twice the level, weakest first; each fails a save or cowers, out of the fight.
+   */
+  z.strictObject({
+    kind: z.literal('turn'),
+    dice: DiceSchema,
+    save: Save,
+    tags: z.array(z.enum(['undead', 'unliving'])).min(1),
+  }),
+  /** Wrath of the Most High: the target's next damage by the end of next round adds `dice` + level. */
+  z.strictObject({ kind: z.literal('wrath'), dice: DiceSchema }),
   /** Reroll a spell's damage and keep the better (Empowered Sorcery). */
   z.strictObject({ kind: z.literal('reroll-damage') }),
   /** Make an enemy reroll a successful save and keep the worse (Inexorable Effect). */
@@ -134,7 +167,18 @@ export type CombatEffect = z.infer<typeof CombatEffectSchema>;
 export const CombatMagicSchema = z.strictObject({
   id: IdSchema,
   source: z.enum(['spell', 'art']),
-  target: z.enum(['enemy', 'enemy-row', 'ally', 'ally-not-self', 'self', 'none']),
+  /** `allies` and `enemies` are whole sides; `wounded-ally` takes the Mortally Wounded too. */
+  target: z.enum([
+    'enemy',
+    'enemy-row',
+    'enemies',
+    'ally',
+    'ally-not-self',
+    'wounded-ally',
+    'allies',
+    'self',
+    'none',
+  ]),
   /** Arts commit Effort for the scene, the day, or as long as the effect lasts. */
   effort: z.enum(['scene', 'day', 'committed']).optional(),
   /** Usable once per scene, or once per target per scene. */

@@ -17,7 +17,7 @@ import type { Evaluation } from './creation.ts';
 import { loadoutSummary, type EquipmentSummary } from './equipment.ts';
 import { classOption } from './class-step.ts';
 import { modifierBonuses } from './foci.ts';
-import { castingAllowed, effortFor, spellSlots } from './magic.ts';
+import { armoredArts, castingAllowed, effortFor, spellSlots } from './magic.ts';
 import { findPeople } from './people.ts';
 
 export interface Sheet {
@@ -57,7 +57,8 @@ function sheetMagic(
   return {
     effort,
     slots: spellSlots(data, mage, caster[1]),
-    canCast: castingAllowed(data, c.inventory, c.foci),
+    // Blood Priest miracles ignore armor (1.5.5.1); so does a caster with no other tradition.
+    canCast: armoredArts(data, c.classes) || castingAllowed(data, c.inventory, c.foci),
   };
 }
 

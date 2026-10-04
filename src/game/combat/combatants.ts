@@ -60,6 +60,8 @@ export function base(
     heldRounds: 0,
     resist: null,
     actsLast: false,
+    acFloor: 0,
+    wrath: null,
   };
 }
 

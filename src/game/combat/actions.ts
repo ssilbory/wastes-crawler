@@ -3,12 +3,12 @@
 import { skillCheck } from '../../rules/checks.ts';
 import { stabilizeDifficulty } from '../../rules/combat.ts';
 import { ROW_SLOTS } from '../../rules/formation.ts';
-import { resolveAttack } from './attack.ts';
+import { resolveAttack, type AttackBoost } from './attack.ts';
 import { say } from './damage.ts';
 import { breathe } from './specials.ts';
-import { castMagic } from './spells.ts';
+import { castMagic, combatMagic } from './spells.ts';
 import { targets } from './targeting.ts';
-import type { Action, Battle, Combatant } from './types.ts';
+import type { Action, Battle, CasterState, Combatant } from './types.ts';
 
 export function stabilize(b: Battle, actor: Combatant, target: Combatant): void {
   if (target.status !== 'dying' || b.stabilizedThisRound.has(target.id)) return;
@@ -24,13 +24,23 @@ export function stabilize(b: Battle, actor: Combatant, target: Combatant): void 
   say(b, `${actor.name} stabilizes ${target.name}.`);
 }
 
+/** Spends Smite the Wicked on the target, if the actor can, for its boost. */
+function smiteBoost(b: Battle, actor: Combatant, target: Combatant): AttackBoost | null {
+  const m = combatMagic(b, 'smite-the-wicked');
+  if (m?.effect.kind !== 'smite-wicked' || !castMagic(b, actor, m.id, target.id, undefined))
+    return null;
+  return { hit: m.effect.hit, damage: (actor.caster as CasterState).level };
+}
+
 export function act(b: Battle, actor: Combatant, action: Action): void {
   const target = 'target' in action ? b.combatants.find((c) => c.id === action.target) : undefined;
   switch (action.kind) {
     case 'attack': {
       const attack = actor.attacks[action.attack];
-      if (attack && target && targets(b, actor, attack).includes(target))
-        resolveAttack(b, actor, attack, target);
+      if (!attack || !target || !targets(b, actor, attack).includes(target)) return;
+      // Smite the Wicked (Phase 14c): paid for as the attack is made, once per target a scene.
+      const smite = action.smite ? smiteBoost(b, actor, target) : null;
+      resolveAttack(b, actor, attack, target, smite);
       return;
     }
     case 'cast':

@@ -44,10 +44,20 @@ function attackCommands(b: Battle, actor: Combatant): Command[] {
   });
 }
 
-function magicTargets(b: Battle, actor: Combatant, m: CombatMagic): (Combatant | number)[] {
+/** Targets for a spell or art: combatants, row numbers, or 'all' for a whole side. */
+function magicTargets(b: Battle, actor: Combatant, m: CombatMagic): (Combatant | number | 'all')[] {
   const foes = b.combatants.filter((c) => c.side !== actor.side && isUp(c));
   const allies = b.combatants.filter((c) => c.side === actor.side && isUp(c));
   switch (m.target) {
+    case 'enemies':
+    case 'allies':
+      return ['all'];
+    case 'wounded-ally':
+      return b.combatants.filter(
+        (c) =>
+          c.side === actor.side &&
+          (c.status === 'dying' || c.status === 'stable' || (isUp(c) && c.hp < c.maxHp)),
+      );
     case 'enemy':
       return foes;
     case 'enemy-row':
@@ -64,7 +74,13 @@ function magicTargets(b: Battle, actor: Combatant, m: CombatMagic): (Combatant |
 }
 
 function magicCommand(b: Battle, actor: Combatant, m: CombatMagic): Command[] {
+  // Smite the Wicked rides on an attack instead (smiteCommands).
+  if (m.effect.kind === 'smite-wicked') return [];
   const choices = magicTargets(b, actor, m).flatMap((t): Choice[] => {
+    if (t === 'all')
+      return canUse(b, actor, m)
+        ? [{ label: 'Everyone', action: { kind: 'cast', magic: m.id } }]
+        : [];
     const target = typeof t === 'number' ? undefined : t;
     const base = target
       ? { label: describe(target), targetId: target.id }
@@ -86,6 +102,24 @@ function magicCommand(b: Battle, actor: Combatant, m: CombatMagic): Command[] {
   return [{ key: `magic:${m.id}`, group: 'magic', label: magicName(b, m.id), choices }];
 }
 
+/** Each attack again with Smite the Wicked, on the targets it hasn't been used on this scene. */
+function smiteCommands(b: Battle, actor: Combatant): Command[] {
+  const smite = b.data.content.combatMagic.find((m) => m.effect.kind === 'smite-wicked');
+  if (!smite || !actor.caster?.arts.includes(smite.id)) return [];
+  return actor.attacks.flatMap((attack, index) => {
+    const choices = targets(b, actor, attack)
+      .filter((t) => canUse(b, actor, smite, false, t.id))
+      .map((t) => ({
+        label: describe(t),
+        targetId: t.id,
+        action: { kind: 'attack' as const, attack: index, target: t.id, smite: true as const },
+      }));
+    if (choices.length === 0) return [];
+    const label = `${attack.name} with ${magicName(b, smite.id)}`;
+    return [{ key: `smite:${index}`, group: 'attack' as const, label, choices }];
+  });
+}
+
 function moveChoices(b: Battle, actor: Combatant): Choice[] {
   if (b.layout[actor.side] !== 'formation') return [];
   const taken = (row: number, column: number) =>
@@ -104,6 +138,7 @@ export function commandsFor(b: Battle, actor: Combatant): Command[] {
   const commands = attackCommands(b, actor);
   const c = actor.caster;
   if (c?.canCast) {
+    commands.push(...smiteCommands(b, actor));
     for (const m of b.data.content.combatMagic) {
       const has = m.source === 'art' ? c.arts.includes(m.id) : c.known.includes(m.id);
       if (has) commands.push(...magicCommand(b, actor, m));

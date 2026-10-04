@@ -223,5 +223,21 @@
       "startingSpells": 4,
       "spellsPerLevel": 2
     }
+  },
+  {
+    "id": "blood-priest-partial-warrior",
+    "name": "Adventurer: Partial Blood Priest/Partial Warrior",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "blood-priest",
+          "partial": true,
+          "arts": "blood-priest-arts"
+        }
+      ],
+      "slots": "blood-priest-arts",
+      "startingSpells": 0,
+      "spellsPerLevel": 0
+    }
   }
 ]

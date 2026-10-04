@@ -123,5 +123,116 @@
       "save": "physical",
       "requiresTag": "undead"
     }
+  },
+  {
+    "id": "armor-of-god",
+    "source": "art",
+    "target": "self",
+    "effort": "committed",
+    "effect": {
+      "kind": "ac-floor",
+      "base": 15
+    }
+  },
+  {
+    "id": "merciful-healing",
+    "source": "art",
+    "target": "wounded-ally",
+    "effort": "day",
+    "effect": {
+      "kind": "heal",
+      "tiers": [
+        {
+          "level": 1,
+          "dice": {
+            "count": 1,
+            "sides": 6,
+            "modifier": 2
+          }
+        },
+        {
+          "level": 4,
+          "dice": {
+            "count": 2,
+            "sides": 6,
+            "modifier": 4
+          }
+        },
+        {
+          "level": 8,
+          "dice": {
+            "count": 4,
+            "sides": 6,
+            "modifier": 8
+          }
+        }
+      ],
+      "strain": 1
+    }
+  },
+  {
+    "id": "god-wills-it",
+    "source": "art",
+    "target": "allies",
+    "effort": "day",
+    "limit": "scene",
+    "effect": {
+      "kind": "bless",
+      "tiers": [
+        {
+          "level": 1,
+          "bonus": 1
+        },
+        {
+          "level": 5,
+          "bonus": 2
+        },
+        {
+          "level": 10,
+          "bonus": 3
+        }
+      ]
+    }
+  },
+  {
+    "id": "smite-the-wicked",
+    "source": "art",
+    "target": "enemy",
+    "effort": "day",
+    "limit": "target-scene",
+    "effect": {
+      "kind": "smite-wicked",
+      "hit": 4
+    }
+  },
+  {
+    "id": "turn-false-life",
+    "source": "art",
+    "target": "enemies",
+    "effort": "day",
+    "effect": {
+      "kind": "turn",
+      "dice": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      },
+      "save": "mental",
+      "tags": ["undead", "unliving"]
+    }
+  },
+  {
+    "id": "wrath-of-the-most-high",
+    "source": "art",
+    "target": "enemy",
+    "effort": "scene",
+    "effect": {
+      "kind": "wrath",
+      "dice": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      }
+    }
   }
 ]

@@ -14,6 +14,15 @@ describe('effortMaximum', () => {
   });
 });
 
+describe('effortMaximum for the Blood Priest (1.5.5.1)', () => {
+  it('is Pray plus Wisdom or Charisma, with no partial penalty, never below 1', () => {
+    const priest = { partialOnly: false, base: 0, floorOne: true };
+    expect(effortMaximum({ ...priest, skill: 1, attributeModifier: 1 })).toBe(2);
+    expect(effortMaximum({ ...priest, skill: 0, attributeModifier: 0 })).toBe(1);
+    expect(effortMaximum({ ...priest, skill: 0, attributeModifier: -2 })).toBe(1);
+  });
+});
+
 describe('strainCastCost', () => {
   it('costs the spell level, for levels 1 to 5', () => {
     expect(strainCastCost(1)).toBe(1);

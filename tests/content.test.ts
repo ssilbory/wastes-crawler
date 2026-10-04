@@ -354,3 +354,18 @@ describe('combat content', () => {
     ]);
   });
 });
+
+describe('the Blood Priest (Phase 14c)', () => {
+  it('is offered only as a Partial Warrior, with miracles and no spells', () => {
+    const priests = content.classOptions.filter((o) =>
+      o.mage?.traditions.some((t) => t.tradition === 'blood-priest'),
+    );
+    expect(priests.map((o) => o.id)).toEqual(['blood-priest-partial-warrior']);
+    expect(priests[0]?.mage).toMatchObject({ startingSpells: 0, spellsPerLevel: 0 });
+    expect(content.traditions.find((t) => t.id === 'blood-priest')).toMatchObject({
+      bonusSkill: 'pray',
+      spellLists: [],
+      armoredArts: true,
+    });
+  });
+});

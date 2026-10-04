@@ -146,3 +146,27 @@ test('a Gnome Necromancer picks a necromancer art and spells from both lists (Ph
   await expect(sheet).toContainText('Arts: Bonetalker.');
   await expect(sheet).toContainText('Command the Dead (prepared)');
 });
+
+test('a Partial Warrior/Blood Priest works miracles in armor, with no spells (Phase 14c)', async ({
+  page,
+}) => {
+  const sheet = await caster(page, {
+    people: 'Gnome',
+    bg: 'Scavenger',
+    picks: ['Sneak', 'Trade'],
+    className: 'Adventurer: Partial Blood Priest/Partial Warrior',
+    foci: [
+      ['Racial focus 1', 'Artisan'],
+      ['Racial focus 2', 'Polymath'],
+      ['Bonus skill for Racial focus 2', 'Heal'],
+      ['Combat focus', 'Armsmaster'],
+      ['Any focus', 'Die Hard'],
+    ],
+    arts: ['Armor of God', 'Merciful Healing'],
+    spells: [],
+    prepare: [],
+  });
+  // Pray-0 plus Wisdom 10 (+0), at least 1.
+  await expect(sheet).toContainText('Effort 1. Miracles only.');
+  await expect(sheet).toContainText('Arts: Armor of God, Merciful Healing.');
+});

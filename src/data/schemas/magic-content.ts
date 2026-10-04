@@ -7,13 +7,22 @@ export const TraditionSchema = z.strictObject({
   name: z.string().min(1),
   /** Granted as a creation skill pick when the class is taken. */
   bonusSkill: IdSchema,
-  /** Spell traditions the caster can learn from. */
-  spellLists: z.array(z.enum(['high-magic', 'elementalist', 'necromancer'])).min(1),
-  /** Effort maximum: 1 + best skill + best attribute modifier, one lower for partial casters. */
+  /** Spell traditions the caster can learn from; none for a tradition of arts alone. */
+  spellLists: z.array(z.enum(['high-magic', 'elementalist', 'necromancer'])),
+  /**
+   * Effort maximum: `base` + best skill + best attribute modifier, one lower for partial casters if
+   * `partialPenalty`; at least 1 when partial or `floorOne`. Mages: 1, with the penalty. The Blood
+   * Priest (1.5.5.1): Pray plus Wisdom or Charisma, at least 1.
+   */
   effort: z.strictObject({
     skills: z.array(IdSchema).min(1),
     attributes: z.array(AttributeSchema).min(1),
+    base: z.int().min(0).max(1),
+    partialPenalty: z.boolean(),
+    floorOne: z.boolean(),
   }),
+  /** Its arts work in armor and with a shield (the Blood Priest's miracles). */
+  armoredArts: z.boolean(),
 });
 export type Tradition = z.infer<typeof TraditionSchema>;
 
@@ -43,9 +52,9 @@ export const ClassOptionSchema = z.strictObject({
       /** The casting table for spells cast and prepared. */
       slots: IdSchema,
       /** SRD 1.7.5: four first-level spells for full or dual casters, two for partial. */
-      startingSpells: z.int().min(1),
+      startingSpells: z.int().min(0),
       /** SRD 2.7.1.7: two for High Mages, one for other Mages. */
-      spellsPerLevel: z.int().min(1),
+      spellsPerLevel: z.int().min(0),
     })
     .optional(),
 });

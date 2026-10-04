@@ -6,8 +6,12 @@
     "spellLists": ["high-magic"],
     "effort": {
       "skills": ["magic"],
-      "attributes": ["int", "cha"]
-    }
+      "attributes": ["int", "cha"],
+      "base": 1,
+      "partialPenalty": true,
+      "floorOne": false
+    },
+    "armoredArts": false
   },
   {
     "id": "elementalist",
@@ -16,8 +20,12 @@
     "spellLists": ["high-magic", "elementalist"],
     "effort": {
       "skills": ["magic"],
-      "attributes": ["int", "cha"]
-    }
+      "attributes": ["int", "cha"],
+      "base": 1,
+      "partialPenalty": true,
+      "floorOne": false
+    },
+    "armoredArts": false
   },
   {
     "id": "necromancer",
@@ -26,7 +34,25 @@
     "spellLists": ["high-magic", "necromancer"],
     "effort": {
       "skills": ["magic"],
-      "attributes": ["int", "cha"]
-    }
+      "attributes": ["int", "cha"],
+      "base": 1,
+      "partialPenalty": true,
+      "floorOne": false
+    },
+    "armoredArts": false
+  },
+  {
+    "id": "blood-priest",
+    "name": "Blood Priest",
+    "bonusSkill": "pray",
+    "spellLists": [],
+    "effort": {
+      "skills": ["pray"],
+      "attributes": ["wis", "cha"],
+      "base": 0,
+      "partialPenalty": false,
+      "floorOne": true
+    },
+    "armoredArts": true
   }
 ]

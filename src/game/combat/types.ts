@@ -122,10 +122,13 @@ export interface Combatant {
   heldRounds: number;
   resist: NonNullable<MonsterCombat['resist']> | null;
   actsLast: boolean;
+  /** Phase 14c: Armor of God's natural AC (0 if none), and Wrath's pending extra damage. */
+  acFloor: number;
+  wrath: { until: number; bonus: number } | null;
 }
 
 export type Action =
-  | { kind: 'attack'; attack: number; target: string }
+  | { kind: 'attack'; attack: number; target: string; smite?: true }
   | { kind: 'cast'; magic: string; target?: string; row?: number; strain?: boolean }
   | { kind: 'breath'; row: number }
   | { kind: 'total-defense' }
@@ -163,6 +166,8 @@ export interface Battle {
   stabilizedThisRound: Set<string>;
   /** Attack roll modifier by side: -4 for a party fighting in the dark (docs/rules-adaptation.md). */
   hitModifier: Record<SideId, number>;
+  /** God Wills It's bonus to damage and Shock, by side (Phase 14c). */
+  damageBonus: Record<SideId, number>;
   log: string[] | null;
   outcome: Outcome | null;
 }

@@ -67,6 +67,12 @@ const ART_SECTIONS: {
     automatic: false,
   },
   {
+    file: `${CLASS_DIR}/1.5.5 The Blood Priest.md`,
+    heading: /^1\.5\.5\.1 Blood Priest Arts$/,
+    tradition: 'blood-priest',
+    automatic: false,
+  },
+  {
     file: `${CLASS_DIR}/1.5.14 The Necromancer.md`,
     heading: /^1\.5\.14\.1 Necromancer Arts$/,
     tradition: 'necromancer',

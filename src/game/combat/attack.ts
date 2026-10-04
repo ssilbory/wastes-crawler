@@ -19,8 +19,11 @@ function shockContext(target: Combatant, attack: Attack): ShockContext {
 
 /** Shock on a miss; a shield soaks the first Shock its bearer would take each round. */
 function missShock(b: Battle, attacker: Combatant, target: Combatant, attack: Attack): void {
+  const blessed = b.damageBonus[attacker.side];
   const amount =
-    attack.mode === 'melee' ? shockDamage(attack.shock, 0, 0, shockContext(target, attack)) : 0;
+    attack.mode === 'melee'
+      ? shockDamage(attack.shock, 0, blessed, shockContext(target, attack))
+      : 0;
   if (amount === 0) {
     say(b, `${attacker.name} misses ${target.name}.`);
     return;
@@ -35,14 +38,22 @@ function missShock(b: Battle, attacker: Combatant, target: Combatant, attack: At
   harm(b, target, dealt);
 }
 
+/** Smite the Wicked's edge on one attack (Phase 14c). */
+export interface AttackBoost {
+  hit: number;
+  /** Automatic damage on a hit. */
+  damage: number;
+}
+
 export function resolveAttack(
   b: Battle,
   actor: Combatant,
   attack: Attack,
   target: Combatant,
+  boost: AttackBoost | null = null,
 ): void {
   const roll = attackRoll(b.rng, {
-    attackBonus: attack.hit,
+    attackBonus: attack.hit + (boost?.hit ?? 0),
     attributeModifier: 0,
     skill: 0,
     modifier: rangedModifier(b, actor, attack) + b.hitModifier[actor.side],
@@ -57,16 +68,21 @@ export function resolveAttack(
     say(b, `${actor.name}'s blow slides off the ward around ${target.name}.`);
     return;
   }
-  const rolled = hitDamage(
-    b.rng,
-    {
-      dice: attack.damage,
-      attributeModifier: 0,
-      bonus: attack.damageBonus,
-      shock: attack.mode === 'melee' ? attack.shock : null,
-    },
-    shockContext(target, attack),
-  ).total;
+  const blessed = b.damageBonus[actor.side];
+  const damageRoll = () =>
+    hitDamage(
+      b.rng,
+      {
+        dice: attack.damage,
+        attributeModifier: 0,
+        bonus: attack.damageBonus + blessed,
+        shock: attack.mode === 'melee' ? attack.shock : null,
+        shockBonus: blessed,
+      },
+      shockContext(target, attack),
+    ).total;
+  // Smite the Wicked rolls the damage twice and keeps the better, then adds the level.
+  const rolled = boost ? Math.max(damageRoll(), damageRoll()) + boost.damage : damageRoll();
   const damage = resisted(target, attack, rolled);
   // Veteran's Luck: once per scene, turn a hit that would drop the Warrior into a miss.
   if (target.veteransLuck && target.status === 'active' && damage >= target.hp) {

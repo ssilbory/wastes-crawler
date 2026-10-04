@@ -148,8 +148,18 @@ export function effortFor(
     attributeModifier: Math.max(
       ...effort.flatMap((e) => e.attributes.map((a) => boostedModifier(scores[a], bonuses[a]))),
     ),
-    partialOnly: effort.every((e) => e.partial),
+    partialOnly: effort.every((e) => e.partial && e.partialPenalty),
+    base: Math.max(...effort.map((e) => e.base)),
+    floorOne: effort.some((e) => e.floorOne),
   });
+}
+
+/** Whether every tradition the character holds works its arts in armor (the Blood Priest). */
+export function armoredArts(data: GameData, classes: ClassLevels): boolean {
+  const held = Object.entries(classes.levels)
+    .filter(([, level]) => level >= 1)
+    .flatMap(([id]) => classOption(data, id)?.mage?.traditions ?? []);
+  return held.length > 0 && held.every((t) => findTradition(data, t.tradition)?.armoredArts);
 }
 
 /** Worn armor (barding included) and shields block casting unless Armored Magic allows them. */

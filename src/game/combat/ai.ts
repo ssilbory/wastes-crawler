@@ -53,11 +53,27 @@ export function monsterAction(b: Battle, actor: Combatant): Action {
 const enemiesOf = (b: Battle, actor: Combatant) =>
   b.combatants.filter((c) => c.side !== actor.side && isUp(c));
 
-/** On Turn magic taken before the main action: Pavis of Elements. */
+/**
+ * On Turn and Instant magic taken before the main action: Pavis of Elements, Armor of God when
+ * it beats the armor worn, and God Wills It in a hard fight, one where the foes' hit dice match or
+ * pass the number of allies standing (Phase 14c).
+ */
 export function freeActions(b: Battle, actor: Combatant): void {
   const pavis = combatMagic(b, 'pavis-of-elements');
   if (pavis && actor.acBonus === 0 && canUse(b, actor, pavis))
     castMagic(b, actor, pavis.id, actor.id, undefined);
+  const armor = combatMagic(b, 'armor-of-god');
+  const level = actor.caster?.level ?? 0;
+  if (armor?.effect.kind === 'ac-floor' && actor.acFloor === 0 && canUse(b, actor, armor)) {
+    if (armor.effect.base + Math.floor(level / 2) > actor.ac)
+      castMagic(b, actor, armor.id, actor.id, undefined);
+  }
+  const bless = combatMagic(b, 'god-wills-it');
+  if (bless && canUse(b, actor, bless)) {
+    const hitDice = enemiesOf(b, actor).reduce((sum, f) => sum + f.hitDice, 0);
+    const allies = b.combatants.filter((c) => c.side === actor.side && canAct(c)).length;
+    if (hitDice >= allies) castMagic(b, actor, bless.id, undefined, undefined);
+  }
 }
 
 function magicAction(b: Battle, actor: Combatant): Action | null {
@@ -68,6 +84,16 @@ function magicAction(b: Battle, actor: Combatant): Action | null {
     const m = combatMagic(b, id);
     return m !== undefined && canUse(b, actor, m, strain, target);
   };
+  // Turn False Life when the unnatural stand against the party (Phase 14c).
+  const turn = combatMagic(b, 'turn-false-life');
+  if (turn?.effect.kind === 'turn' && ready(turn.id)) {
+    const tags = turn.effect.tags;
+    if (foes.some((f) => tags.some((t) => f.tags.has(t)))) return { kind: 'cast', magic: turn.id };
+  }
+  // Merciful Healing for an ally down to a third of their hit points.
+  const hurt = b.combatants.find((c) => c.side === actor.side && canAct(c) && c.hp * 3 <= c.maxHp);
+  if (hurt && ready('merciful-healing'))
+    return { kind: 'cast', magic: 'merciful-healing', target: hurt.id };
   const toughest = foes.reduce((a, f) => (f.hp > a.hp ? f : a));
   const weakest = foes.reduce((a, f) => (f.hp < a.hp ? f : a));
   const sleep = combatMagic(b, 'the-wind-of-the-final-repose');
@@ -117,6 +143,10 @@ function noncombatantAction(b: Battle, actor: Combatant): Action {
 
 export function partyAction(b: Battle, actor: Combatant): Action {
   const first = firstDying(b, actor);
+  // Merciful Healing revives the Mortally Wounded, even in melee (Phase 14c).
+  const healing = combatMagic(b, 'merciful-healing');
+  if (first && healing && canUse(b, actor, healing))
+    return { kind: 'cast', magic: healing.id, target: first.id };
   if (first && !inMelee(b, actor)) return { kind: 'stabilize', target: first.id };
   const magic = magicAction(b, actor);
   if (magic) return magic;
@@ -129,6 +159,11 @@ export function partyAction(b: Battle, actor: Combatant): Action {
 export function attackWeakest(b: Battle, actor: Combatant): Action | null {
   const choice = bestAttack(b, actor);
   if (!choice) return null;
-  const target = choice.foes.filter(canAct).sort((x, y) => x.hp - y.hp)[0] ?? choice.foes[0];
-  return { kind: 'attack', attack: choice.index, target: (target as Combatant).id };
+  const target = (choice.foes.filter(canAct).sort((x, y) => x.hp - y.hp)[0] ??
+    choice.foes[0]) as Combatant;
+  // Smite the Wicked is saved for foes of 3 hit dice or more (Phase 14c).
+  const smite = combatMagic(b, 'smite-the-wicked');
+  if (smite && target.hitDice >= 3 && canUse(b, actor, smite, false, target.id))
+    return { kind: 'attack', attack: choice.index, target: target.id, smite: true };
+  return { kind: 'attack', attack: choice.index, target: target.id };
 }

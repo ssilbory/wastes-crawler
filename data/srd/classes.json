@@ -131,5 +131,24 @@
         "text": "Necromancer Effort is calculated as usual, with each PC’s maximum being equal to one plus their Magic skill level plus the better of their Intelligence or Charisma modifiers. Partial Necromancers have a score one point lower than this, albeit not less than one."
       }
     ]
+  },
+  {
+    "id": "blood-priest",
+    "name": "Blood Priest",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.5 The Blood Priest.md",
+      "heading": "1.5.5 The Blood Priest"
+    },
+    "description": "As the devotee of a sanguinary god, a blood priest has magical powers for strengthening and supporting their allies.",
+    "abilities": [
+      {
+        "name": "Blood Priest Benefits",
+        "text": "The Blood Priest exists only as a partial Mage class, to be taken by an Adventurer alongside another partial class. A Partial Warrior/ Blood Priest might be a crusader for their god, wielding steel and terror against the evils of this world. A Partial Expert/Blood Priest might be an inquisitor, investigating dubious figures and sifting out the truth of mysterious events.\n\nAll Blood Priests gain Pray as a bonus skill, acquiring it at level-0, or level-1 if they already have it at level-0. Even a “Blood Priest” who has only learned their abilities through study of their scriptures must master a wide variety of ecclesiastical rites and rituals in order to activate their powers."
+      },
+      {
+        "name": "Blood Priest Arts",
+        "text": "Blood Priest Effort is calculated with Pray, with their total maximum Effort being equal to their Pray skill plus the higher of their Wisdom or Charisma modifiers, to a minimum of one point.\n\nAt first level, the Blood Priest may choose two of the following miracles to master, and gain more as they advance in levels. Once chosen, a miracle pick is permanent and cannot be changed later. Miracles are not hindered by the wearing of armor and require no gestures or free hand to employ, though usually a prayer must be vocalized as part of the action."
+      }
+    ]
   }
 ]

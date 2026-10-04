@@ -171,8 +171,10 @@ export function CharacterSheet(props: { character: Character }) {
         <>
           <h3>Magic</h3>
           <p>
-            Effort {sheet.magic.effort}. Casts {sheet.magic.slots.spellsCast} a day, prepares{' '}
-            {sheet.magic.slots.spellsPrepared}, up to level {sheet.magic.slots.maxSpellLevel}.
+            Effort {sheet.magic.effort}.{' '}
+            {sheet.magic.slots.spellsCast === 0
+              ? 'Miracles only.'
+              : `Casts ${sheet.magic.slots.spellsCast} a day, prepares ${sheet.magic.slots.spellsPrepared}, up to level ${sheet.magic.slots.maxSpellLevel}.`}
             {sheet.magic.canCast ? '' : ' Armor or a shield blocks casting.'}
           </p>
           <p>

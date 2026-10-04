@@ -127,6 +127,7 @@ export function createBattle(s: BattleSetup): Battle {
     startCount: { party: party.length, enemy: enemies.length },
     stabilizedThisRound: new Set(),
     hitModifier: { party: s.dark ? DARK_HIT_MODIFIER : 0, enemy: 0 },
+    damageBonus: { party: 0, enemy: 0 },
     log: s.log ? [] : null,
     outcome: null,
   };

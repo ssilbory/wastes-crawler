@@ -19,6 +19,11 @@ export function harm(b: Battle, target: Combatant, amount: number): void {
     return;
   }
   if (target.status === 'asleep') target.status = 'active';
+  // Wrath of the Most High falls with the first damage before it lapses (Phase 14c).
+  if (target.wrath) {
+    if (b.round <= target.wrath.until) amount += target.wrath.bonus;
+    target.wrath = null;
+  }
   target.hp = Math.max(0, target.hp - amount);
   if (target.hp > 0) return;
   if (target.kind === 'monster' || target.frail) {
@@ -37,8 +42,12 @@ export function save(b: Battle, target: Combatant, type: SaveType, modifier = 0)
   return rollSave(b.rng, target.saves[type], { modifier, steps });
 }
 
-/** AC with Total Defense (+2) and Pavis of Elements (+4, never above 18). */
+/**
+ * AC with Armor of God's natural AC if better, Total Defense (+2), and Pavis of Elements (+4,
+ * never above 18).
+ */
 export function effectiveAc(c: Combatant): number {
-  const pavis = c.acBonus > 0 ? Math.max(c.ac, Math.min(c.ac + c.acBonus, 18)) : c.ac;
+  const ac = Math.max(c.ac, c.acFloor);
+  const pavis = c.acBonus > 0 ? Math.max(ac, Math.min(ac + c.acBonus, 18)) : ac;
   return pavis + (c.totalDefense ? 2 : 0);
 }

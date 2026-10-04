@@ -78,6 +78,11 @@ function pay(b: Battle, actor: Combatant, m: CombatMagic, strain: boolean): void
   } else c.spellsLeft -= 1;
 }
 
+/** The highest tier the level reaches (the first, below them all). */
+function tierAt<T extends { level: number }>(tiers: readonly T[], level: number): T {
+  return tiers.reduce((best, t) => (t.level <= level ? t : best));
+}
+
 export function castMagic(
   b: Battle,
   actor: Combatant,
@@ -168,6 +173,50 @@ export function castMagic(
       }
       return true;
     }
+    case 'ac-floor':
+      actor.acFloor = e.base + Math.floor(c.level / 2);
+      return true;
+    case 'heal': {
+      if (!target) return true;
+      const healed = Math.max(0, roll(b.rng, tierAt(e.tiers, c.level).dice).total);
+      if (target.status === 'dying' || target.status === 'stable') {
+        target.status = 'active';
+        target.hp = Math.min(target.maxHp, healed);
+      } else target.hp = Math.min(target.maxHp, target.hp + healed);
+      if (target.strain && e.strain > 0)
+        target.strain = addStrain(target.strain, e.strain, 'healing').state;
+      say(b, `${target.name} is healed for ${healed}.`);
+      return true;
+    }
+    case 'bless': {
+      const bonus = tierAt(e.tiers, c.level).bonus;
+      b.hitModifier[actor.side] += bonus;
+      b.damageBonus[actor.side] += bonus;
+      return true;
+    }
+    case 'turn': {
+      let budget = roll(b.rng, e.dice).total + c.level;
+      const foes = b.combatants
+        .filter(
+          (x) =>
+            x.side !== actor.side &&
+            isUp(x) &&
+            e.tags.some((tag) => x.tags.has(tag)) &&
+            x.hitDice <= 2 * c.level,
+        )
+        .sort((x, y) => x.hitDice - y.hitDice);
+      for (const t of foes) {
+        if (t.hitDice > budget) continue;
+        budget -= t.hitDice;
+        if (enemySave(b, actor, t, e.save)) continue;
+        t.status = 'out';
+        say(b, `${t.name} cowers.`);
+      }
+      return true;
+    }
+    case 'wrath':
+      if (target) target.wrath = { until: b.round + 1, bonus: roll(b.rng, e.dice).total + c.level };
+      return true;
     case 'stun':
       if (
         target &&
