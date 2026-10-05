@@ -59,6 +59,11 @@ export function HexMap(props: {
               <title>{c.dungeon}</title>
             </polygon>
           )}
+          {c.grove && (
+            <circle class="grove" cx={c.cx} cy={c.cy + SIZE * 0.2} r={SIZE * 0.3}>
+              <title>{c.grove}</title>
+            </circle>
+          )}
           {c.exit && (
             <polygon
               class="exit"

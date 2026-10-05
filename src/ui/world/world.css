@@ -205,6 +205,12 @@
   stroke-width: 1;
 }
 
+.hex .grove {
+  fill: #3f6b2a;
+  stroke: #1d2f13;
+  stroke-width: 1.5;
+}
+
 .dungeon-main {
   display: grid;
   gap: 8px;

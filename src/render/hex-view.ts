@@ -27,6 +27,8 @@ export interface HexCell {
   dungeon: string | null;
   /** A road off the map, once the hex is known (Phase 12). */
   exit: string | null;
+  /** A grove of walking trees not yet cleared, once the hex is known. */
+  grove: string | null;
 }
 
 const SQRT3 = Math.sqrt(3);
@@ -60,9 +62,11 @@ export function hexCells(
   size: number,
   questHexes: readonly Hex[] = [],
   entrances: readonly (Hex & { name: string })[] = [],
+  groves: readonly (Hex & { name: string })[] = [],
 ): HexCell[] {
   const quests = new Set(questHexes.map(hexKey));
   const ways = new Map(entrances.map((e) => [hexKey(e), e.name]));
+  const woods = new Map(groves.map((g) => [hexKey(g), g.name]));
   const seen = seenHexes(map, w.visited);
   const onRoute = new Set(routeHexes.map(hexKey));
   const cells: HexCell[] = [];
@@ -92,6 +96,7 @@ export function hexCells(
         quest: quests.has(key),
         dungeon: known ? (ways.get(key) ?? null) : null,
         exit: known ? (map.exitAt(h)?.name ?? null) : null,
+        grove: known ? (woods.get(key) ?? null) : null,
       });
     }
   }

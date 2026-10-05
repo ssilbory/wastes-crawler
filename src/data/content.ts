@@ -39,6 +39,7 @@ import authorities from '../../data/content/authorities.json';
 import raidRules from '../../data/content/raid-rules.json';
 import campaign from '../../data/content/campaign.json';
 import ruins from '../../data/content/ruins.json';
+import groves from '../../data/content/groves.json';
 import factions from '../../data/content/factions.json';
 import { withSettingMonsters } from './monsters.ts';
 import { combatReferenceErrors } from './combat-check.ts';
@@ -57,6 +58,7 @@ import { craftingReferenceErrors } from './crafting-check.ts';
 import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.ts';
 import { gameSkills, skillRuleErrors } from './skills.ts';
 import { spellRuleErrors } from './spells.ts';
+import { groveReferenceErrors } from './grove-check.ts';
 
 export function loadContent(): ContentData {
   return withSettingMonsters({
@@ -101,6 +103,7 @@ export function loadContent(): ContentData {
     raidRules: ContentSchemas.raidRules.parse(raidRules),
     campaign: ContentSchemas.campaign.parse(campaign),
     ruins: ContentSchemas.ruins.parse(ruins),
+    groves: ContentSchemas.groves.parse(groves),
     factions: ContentSchemas.factions.parse(factions),
   });
 }
@@ -159,6 +162,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['settingMonsters', content.settingMonsters],
     ['standingOrders', content.standingOrders],
     ['authorities', content.authorities],
+    ['groves', content.groves],
     ...content.dungeons.map((d): [string, { id: string }[]] => [
       `dungeons/${d.id} levels`,
       d.levels,
@@ -192,5 +196,6 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...dungeonReferenceErrors(content),
     ...craftingReferenceErrors(srd, content),
     ...settingReferenceErrors(srd, content),
+    ...groveReferenceErrors(srd, content),
   ];
 }

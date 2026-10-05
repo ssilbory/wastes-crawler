@@ -109,7 +109,7 @@ export function startEncounter(
   watcher: Member | undefined,
   steps: number | null,
   where: string,
-): void {
+): PendingEncounter {
   const { rows, captive } = rolled;
   const taken = rolled.rescuers ? rescueTarget(w) : undefined;
   const nature = taken ? 'hostile' : rolled.nature;
@@ -162,6 +162,7 @@ export function startEncounter(
     e.patrol = rolled.patrol.key;
     note(w, `They march for ${rolled.patrol.name}.`);
   }
+  return e;
 }
 
 /**

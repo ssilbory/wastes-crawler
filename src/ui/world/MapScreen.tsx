@@ -24,6 +24,7 @@ import { QuarterPanel } from './QuarterPanel.tsx';
 import { typeOf } from '../../game/world/npcs.ts';
 import { entrancesIn, wayDownHere } from '../../game/dungeon/ruins.ts';
 import type { QuarterPlan } from '../../game/world/types.ts';
+import { grovesHere } from '../../game/world/groves.ts';
 
 export function MapScreen(props: {
   world: World;
@@ -92,7 +93,15 @@ export function MapScreen(props: {
       <div class="world-main">
         <div class="map-wrap">
           <HexMap
-            cells={hexCells(map, w, route(w, data), HEX_SIZE, questTargets(w, data), entrances)}
+            cells={hexCells(
+              map,
+              w,
+              route(w, data),
+              HEX_SIZE,
+              questTargets(w, data),
+              entrances,
+              grovesHere(w, data),
+            )}
             width={width}
             height={height}
             onPick={(col, row) => {

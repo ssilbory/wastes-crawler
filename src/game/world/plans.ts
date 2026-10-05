@@ -5,6 +5,7 @@ import { hexKey, type Hex } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
 import { alive, bestAt, checkBonus } from './members.ts';
 import { firstGuide } from './npcs.ts';
+import { hexesToAvoid } from './groves.ts';
 import { findPath, regionMap, seenHexes } from './region.ts';
 import type { Activity, Member, QuarterPlan, World } from './types.ts';
 
@@ -15,7 +16,8 @@ export function setDestination(w: World, data: GameData, to: Hex | null): boolea
     return to !== null;
   }
   const map = regionMap(data, w.region);
-  if (!findPath(map, w.position, to, seenHexes(map, w.visited))) return false;
+  if (!findPath(map, w.position, to, seenHexes(map, w.visited), hexesToAvoid(w, data, to)))
+    return false;
   w.destination = to;
   return true;
 }
@@ -24,7 +26,8 @@ export function setDestination(w: World, data: GameData, to: Hex | null): boolea
 export function route(w: World, data: GameData): Hex[] {
   if (!w.destination) return [];
   const map = regionMap(data, w.region);
-  return findPath(map, w.position, w.destination, seenHexes(map, w.visited)) ?? [];
+  const avoid = hexesToAvoid(w, data);
+  return findPath(map, w.position, w.destination, seenHexes(map, w.visited), avoid) ?? [];
 }
 
 const able = (w: World) => alive(w).filter((m) => m.character.hp.current > 0);

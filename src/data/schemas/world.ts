@@ -94,7 +94,7 @@ export const PendingEncounterSchema = z.strictObject({
   text: z.string(),
   /** A bound garrison's or patrol's standing order (Phase 12b). */
   order: IdSchema.optional(),
-  /** The garrison post this group holds, by key, so a won fight clears it (Phase 12c). */
+  /** The garrison post (Phase 12c) or grove this group holds, by key, so a won fight clears it. */
   garrison: z.string().optional(),
   /** The faction asset this patrol belongs to, as faction:uid (Phase 13b). */
   patrol: z.string().optional(),
