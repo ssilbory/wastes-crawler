@@ -1,5 +1,5 @@
 // Beasts feed the party instead of paying it (Sam's calls, Phase 17; docs/rules-adaptation.md,
-// Resource dice). The animals slain in a won fight make a ration die one size per so many hit dice,
+// Resource dice). The animals beaten in a won fight make a ration die one size per so many hit dice,
 // rounded up, as far as d12. The party's rations become that die, or step up one size when they
 // are already at least as large.
 import type { Monster } from '../../data/schemas/index.ts';

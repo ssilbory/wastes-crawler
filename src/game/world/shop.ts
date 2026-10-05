@@ -37,17 +37,25 @@ export function listedPrice(data: GameData, itemId: string): number {
 export const shopPrice = (w: World, data: GameData, itemId: string) =>
   priceHere(w, data, listedPrice(data, itemId));
 
-/** Checks a changed inventory: worn and readied limits, sizing, and not too heavy to move. */
+/**
+ * Checks a changed inventory: worn and readied limits, sizing, and not too heavy to move. With
+ * `before`, a change that leaves the member too heavy is still allowed when it lightens the load.
+ */
 export function inventoryProblem(
   data: GameData,
   m: Member,
   inventory: InventoryEntry[],
+  before?: InventoryEntry[],
 ): string | null {
   const c = m.character;
   const errors = inventoryErrors(data, inventory, peopleOf(data, m));
   if (errors.length > 0) return errors.join('; ');
-  const { load } = characterSheet({ ...c, inventory }, data).equipment;
-  return load.state === 'too-heavy' ? `${c.name} can't carry that much` : null;
+  const loadOf = (inv: InventoryEntry[]) =>
+    characterSheet({ ...c, inventory: inv }, data).equipment.load;
+  const after = loadOf(inventory);
+  if (after.state !== 'too-heavy') return null;
+  if (before && after.excess < loadOf(before).excess) return null;
+  return `${c.name} can't carry that much`;
 }
 
 /** Merges a bought unit into a matching stowed line, or adds one. */

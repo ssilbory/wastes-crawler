@@ -3,7 +3,13 @@
 // text, so hand-written and edited levels stay interchangeable.
 import { dungeonReferenceErrors } from '../../data/dungeon-check.ts';
 import type { CellKind, EdgeKind } from '../../data/dungeon-map.ts';
-import type { ContentData, Dungeon } from '../../data/schemas/index.ts';
+import {
+  DungeonSchema,
+  type ContentData,
+  type Dungeon,
+  type SrdData,
+} from '../../data/schemas/index.ts';
+import { settingReferenceErrors } from '../../data/setting-check.ts';
 import type { Cell, Facing } from '../../rules/grid.ts';
 
 const CELL_GLYPHS: Record<CellKind, string> = {
@@ -49,11 +55,22 @@ export function withLevelMap(d: Dungeon, levelId: string, rows: readonly string[
   return { ...d, levels: d.levels.map((l) => (l.id === levelId ? { ...l, map: [...rows] } : l)) };
 }
 
-/** The dungeon's problems with the edited map in place, from the level validator. */
-export function editorErrors(content: ContentData, edited: Dungeon): string[] {
+/**
+ * The dungeon's problems with the edits in place: its shape against the content schema, the level
+ * validator, and, given the SRD, the garrison and special-square checks, so an export loads.
+ */
+export function editorErrors(content: ContentData, edited: Dungeon, srd?: SrdData): string[] {
   const dungeons = content.dungeons.map((d) => (d.id === edited.id ? edited : d));
   const prefix = `dungeons/${edited.id}`;
-  return dungeonReferenceErrors({ ...content, dungeons }).filter((e) => e.startsWith(prefix));
+  const parsed = DungeonSchema.safeParse(edited);
+  const shape = parsed.success
+    ? []
+    : parsed.error.issues.map((i) => `${prefix}: ${i.path.join('.')}: ${i.message}`);
+  const next = { ...content, dungeons };
+  const setting = srd ? settingReferenceErrors(srd, next) : [];
+  return [...shape, ...dungeonReferenceErrors(next), ...setting].filter((e) =>
+    e.startsWith(prefix),
+  );
 }
 
 /** data/content/dungeons.json with the edited dungeon in place, ready to save over the file. */

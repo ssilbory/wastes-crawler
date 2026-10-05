@@ -1,6 +1,7 @@
 import { useState } from 'preact/hooks';
 import type { Attribute, Character } from '../../data/schemas/index.ts';
-import type { LevelChoices, LevelPlan } from '../../game/character/advance.ts';
+import { advance, type LevelChoices, type LevelPlan } from '../../game/character/advance.ts';
+import { createRng } from '../../rules/rng.ts';
 import { classOption } from '../../game/character/class-step.ts';
 import { allowedSkills, focusInfo, type FocusChoice } from '../../game/character/foci.ts';
 import { artChoices, learnableSpells } from '../../game/character/magic.ts';
@@ -52,6 +53,10 @@ export function LevelUpForm(props: {
     ...(arts.length < artPicks ? [`Pick ${artPicks - arts.length} more art(s).`] : []),
     ...(spells.length < spellPicks ? [`Pick ${spellPicks - spells.length} more spell(s).`] : []),
   ];
+  const choices = { foci: foci.filter((f) => f.id !== ''), arts, spells };
+  // The game's own check decides; a throwaway RNG leaves the real one untouched.
+  const check = advance(data, c, choices, createRng('level-check'));
+  const shown = needed.length > 0 || check.ok ? needed : [check.reason];
   return (
     <section class="panel level-up" aria-label="Level up">
       <h3>Level up</h3>
@@ -165,9 +170,9 @@ export function LevelUpForm(props: {
           ))}
         </fieldset>
       )}
-      {needed.length > 0 && (
+      {shown.length > 0 && (
         <ul class="hint needed" aria-label="Still needed">
-          {needed.map((n) => (
+          {shown.map((n) => (
             <li key={n}>{n}</li>
           ))}
         </ul>
@@ -175,8 +180,8 @@ export function LevelUpForm(props: {
       <button
         type="button"
         class="create"
-        disabled={needed.length > 0}
-        onClick={() => props.onConfirm({ foci: foci.filter((f) => f.id !== ''), arts, spells })}
+        disabled={!check.ok}
+        onClick={() => props.onConfirm(choices)}
       >
         Level up
       </button>

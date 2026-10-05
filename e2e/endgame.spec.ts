@@ -22,6 +22,9 @@ async function edit(page: Page, change: string) {
 async function inCinderhold(page: Page, seed: string, extra: string) {
   await page.goto('/#/arena');
   await page.getByLabel('Import character files').setInputFiles(starters);
+  await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(
+    starters.length,
+  );
   await page.getByRole('link', { name: 'Overland' }).click();
   // The arena has a formation of its own: wait for the Overland page before picking slots.
   await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();

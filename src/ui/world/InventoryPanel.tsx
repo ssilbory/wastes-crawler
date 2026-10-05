@@ -50,7 +50,8 @@ export function InventoryPanel(props: {
       <ul class="gear">
         {view.lines.map((line) => (
           <GearRow
-            key={`${who}-${line.index}`}
+            // Any change to the line starts its row afresh, so an armed Drop never lands on another.
+            key={`${who}-${line.index}-${line.name}-${line.location}-${line.quantity}`}
             line={line}
             others={view.others}
             disabled={view.blocked !== null}

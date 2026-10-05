@@ -28,29 +28,29 @@ const withLevel = (d: Dungeon, levelId: string, change: (l: DungeonLevel) => Dun
   levels: d.levels.map((l) => (l.id === levelId ? change(l) : l)),
 });
 
-/** The first of each kind of detail in the content, to start a new one from. */
-function templates(content: ContentData) {
-  const levels = content.dungeons.flatMap((d) => d.levels);
-  const first = <T>(list: T[], kind: string): T => {
-    const found = list[0];
-    if (found === undefined) throw new Error(`the content has no ${kind} to copy`);
-    return found;
-  };
-  return {
-    trap: first(
-      levels.flatMap((l) => l.traps),
-      'trap',
-    ),
-    captive: first(
-      levels.flatMap((l) => l.captives),
-      'held captive',
-    ),
-    garrison: first(
-      levels.flatMap((l) => l.garrisons),
-      'garrison post',
-    ),
-  };
+const levelsOf = (content: ContentData) => content.dungeons.flatMap((d) => d.levels);
+
+/** The first detail of a kind in the content, to start a new one from; asked for only when needed. */
+function first<T>(list: T[], kind: string): T {
+  const found = list[0];
+  if (found === undefined) throw new Error(`the content has no ${kind} to copy`);
+  return found;
 }
+const trapTemplate = (content: ContentData) =>
+  first(
+    levelsOf(content).flatMap((l) => l.traps),
+    'trap',
+  );
+const captiveTemplate = (content: ContentData) =>
+  first(
+    levelsOf(content).flatMap((l) => l.captives),
+    'held captive',
+  );
+const garrisonTemplate = (content: ContentData) =>
+  first(
+    levelsOf(content).flatMap((l) => l.garrisons),
+    'garrison post',
+  );
 
 /** What a cell holds besides its glyph. */
 export interface CellDetails {
@@ -78,7 +78,6 @@ export function paintCell(
   c: Cell,
   kind: CellKind,
 ): Dungeon {
-  const t = templates(content);
   return withLevel(d, levelId, (l) => {
     const trap = l.traps.find(at(c));
     const captive = l.captives.find(at(c));
@@ -87,11 +86,11 @@ export function paintCell(
       map: setCell(l.map, c, kind),
       traps: [
         ...l.traps.filter(not(c)),
-        ...(kind === 'trap' ? [trap ?? { ...t.trap, at: c }] : []),
+        ...(kind === 'trap' ? [trap ?? { ...trapTemplate(content), at: c }] : []),
       ],
       captives: [
         ...l.captives.filter(not(c)),
-        ...(kind === 'npc' ? [captive ?? { ...t.captive, at: c }] : []),
+        ...(kind === 'npc' ? [captive ?? { ...captiveTemplate(content), at: c }] : []),
       ],
       garrisons: l.garrisons.filter(not(c)),
     };
@@ -109,7 +108,7 @@ export function setNpcKind(
   if (kind === 'captive') return paintCell(content, d, levelId, c, 'npc');
   const existing = level(d, levelId).garrisons.find(at(c));
   const floor = paintCell(content, d, levelId, c, 'floor');
-  const post = existing ?? { ...templates(content).garrison, at: c };
+  const post = existing ?? { ...garrisonTemplate(content), at: c };
   return withLevel(floor, levelId, (l) => ({ ...l, garrisons: [...l.garrisons, post] }));
 }
 

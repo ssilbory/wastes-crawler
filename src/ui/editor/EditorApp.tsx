@@ -59,7 +59,8 @@ function LevelEditor(props: { original: Dungeon; onDungeon: (id: string) => void
   const dungeonId = original.id;
   const [levelId, setLevelId] = useState(original.levels[0]?.id ?? '');
   const [edited, setEdited] = useState<Dungeon>(original);
-  const [tool, setTool] = useState(0);
+  // Painting walls is the usual first job, as it was before the Select tool came first.
+  const [tool, setTool] = useState(TOOLS.findIndex(([name]) => name === 'Wall'));
   const [walk, setWalk] = useState<Walk | null>(null);
   const [size, setSize] = useState({ w: 8, h: 8 });
   /** The cell whose details are shown, on the level it was picked on. */
@@ -69,7 +70,7 @@ function LevelEditor(props: { original: Dungeon; onDungeon: (id: string) => void
     (edited.levels[0] as (typeof original.levels)[0]);
   const rows = level.map;
   const grid = editorGrid(rows);
-  const errors = editorErrors(data.content, edited);
+  const errors = editorErrors(data.content, edited, data.srd);
   const update = (next: string[]) => setEdited(withLevelMap(edited, level.id, next));
   const picked = selected?.level === level.id ? selected.cell : null;
   const posts = new Set(level.garrisons.map((g) => `${g.at.x},${g.at.y}`));

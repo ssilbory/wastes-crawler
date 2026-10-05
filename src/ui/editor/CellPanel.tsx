@@ -156,7 +156,14 @@ function TextField(props: { label: string; value: string; onChange: (v: string) 
       <textarea
         rows={2}
         value={props.value}
-        onInput={(e) => props.onChange((e.target as HTMLTextAreaElement).value)}
+        onInput={(e) => {
+          const v = (e.target as HTMLTextAreaElement).value;
+          if (v.trim()) props.onChange(v);
+        }}
+        // An empty entry isn't kept; leaving the field shows the text that was.
+        onBlur={(e) => {
+          (e.target as HTMLTextAreaElement).value = props.value;
+        }}
       />
     </label>
   );

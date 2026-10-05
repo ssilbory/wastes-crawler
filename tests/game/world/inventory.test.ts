@@ -121,6 +121,59 @@ describe('managing gear (Phase 17)', () => {
   });
 });
 
+describe('stacking and lightening (review fixes)', () => {
+  it('joins lines alike whatever their key order, and never unlike ones', () => {
+    const a = { id: 'spear-light', quantity: 1, location: 'stowed' as const };
+    const reordered = {
+      location: 'stowed' as const,
+      quantity: 2,
+      id: 'spear-light',
+      small: undefined,
+    };
+    expect(putLine([a], reordered)).toEqual([{ ...a, quantity: 3 }]);
+    const modded = { ...a, mods: [{ id: 'customized', components: ['b', 'a'] }] };
+    expect(putLine([a], modded)).toHaveLength(2);
+    const sameMods = { ...a, mods: [{ id: 'customized', components: ['a', 'b'] }] };
+    expect(putLine([modded], sameMods)).toHaveLength(1);
+    for (const extra of [
+      { serial: 'S1' },
+      { maker: 'Hagen' },
+      { bonus: 1 },
+      { upkeep: 2 },
+      { quality: 'mastercrafted' as const },
+    ])
+      expect(putLine([a], { ...a, ...extra })).toHaveLength(2);
+  });
+
+  it('lets a member too heavy to move shift gear that lightens the load', () => {
+    const w = world();
+    const fizz = member(w, 'Fizzwick');
+    const c = fizz.character;
+    fizz.character = {
+      ...c,
+      attributes: {
+        ...c.attributes,
+        base: { ...c.attributes.base, str: 3 },
+        people: {},
+        background: {},
+        advancement: {},
+      },
+      inventory: [
+        { id: 'dagger', quantity: 4, location: 'readied' },
+        { id: 'dagger', quantity: 1, location: 'stowed' },
+      ],
+    };
+    // Readied 4 of 1 and Stowed 1 of 3: too heavy. Stowing one dagger lightens it.
+    expect(moveGear(w, data, fizz.id, 0, 'stowed', 1)).toEqual({ ok: true });
+    // Readying one back makes it heavier again, and is refused.
+    const stowed = fizz.character.inventory.findIndex((e) => e.location === 'stowed');
+    expect(moveGear(w, data, fizz.id, stowed, 'readied', 1)).toEqual({
+      ok: false,
+      reason: "Fizzwick can't carry that much",
+    });
+  });
+});
+
 describe('the inventory view', () => {
   it('shows each line’s encumbrance, the load, who could take it, and what blocks or costs', () => {
     const w = world();

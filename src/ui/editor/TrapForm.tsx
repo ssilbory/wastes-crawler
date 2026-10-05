@@ -21,6 +21,10 @@ function NumberField(props: {
           const v = Number((e.target as HTMLInputElement).value);
           if (Number.isInteger(v) && v >= props.min) props.onChange(v);
         }}
+        // A refused entry isn't kept; leaving the field shows the value that was.
+        onBlur={(e) => {
+          (e.target as HTMLInputElement).value = String(props.value);
+        }}
       />
     </label>
   );
@@ -42,6 +46,9 @@ export function TrapForm(props: { trap: Trap; onChange: (t: Trap) => void }) {
           onInput={(e) => {
             const name = (e.target as HTMLInputElement).value;
             if (name.trim()) set({ name });
+          }}
+          onBlur={(e) => {
+            (e.target as HTMLInputElement).value = trap.name;
           }}
         />
       </label>

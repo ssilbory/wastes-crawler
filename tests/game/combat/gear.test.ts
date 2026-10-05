@@ -61,7 +61,9 @@ describe('Ready or Stow an Item (SRD 2.4.0)', () => {
     const before = fizz.character.inventory;
     expect(readyOrStow(b, fizz, 1, 'readied')).toBe(false);
     expect(fizz.character.inventory).toBe(before);
-    expect(b.log?.at(-1)).toContain('Fizzwick has no room to ready that.');
+    // Nor is the move offered, so the action is never wasted on it.
+    const gear = commandsFor(b, fizz).find((x) => x.key === 'gear');
+    expect(gear?.choices.map((x) => x.label)).toEqual(['Stow Dagger']);
   });
 
   it('keeps gear where it was put when the fight is over', () => {
@@ -73,6 +75,15 @@ describe('Ready or Stow an Item (SRD 2.4.0)', () => {
     readyOrStow(b, pc, dagger, 'stowed');
     carryBack(data, snag, pc);
     expect(snag.character.inventory.find((e) => e.id === 'dagger')?.location).toBe('stowed');
+    // A PC who falls in the fight keeps the gear where they put it.
+    const fallen = member(w, 'Grukk');
+    const g = who(b, 'Grukk');
+    const axe = g.character?.inventory.findIndex((e) => e.location === 'readied') ?? -1;
+    readyOrStow(b, g, axe, 'stowed');
+    g.status = 'dead';
+    carryBack(data, fallen, g);
+    expect(fallen.dead).toBe(true);
+    expect(fallen.character.inventory).toEqual(g.character?.inventory);
     // A combatant without a character leaves the member's gear as it was.
     const kept = snag.character.inventory;
     carryBack(data, snag, { ...pc, character: null });
@@ -84,9 +95,18 @@ describe('Ready or Stow an Item (SRD 2.4.0)', () => {
     const snag = who(b, 'Snag');
     const c = snag.character;
     if (!c) throw new Error('no character');
-    snag.character = { ...c, inventory: [{ id: 'lost-thing', quantity: 1, location: 'stowed' }] };
+    snag.character = {
+      ...c,
+      inventory: [
+        { id: 'lost-thing', quantity: 1, location: 'stowed' },
+        { id: 'spear-light', quantity: 1, location: 'stowed', bonus: 1, quality: 'mastercrafted' },
+      ],
+    };
     const gear = commandsFor(b, snag).find((x) => x.key === 'gear');
-    expect(gear?.choices.map((x) => x.label)).toEqual(['Ready lost-thing']);
+    expect(gear?.choices.map((x) => x.label)).toEqual([
+      'Ready lost-thing',
+      'Ready Spear, Light +1 (mastercrafted)',
+    ]);
     readyOrStow(b, snag, 0, 'readied');
     expect(b.log?.at(-1)).toContain('Snag readies lost-thing.');
   });

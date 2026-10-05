@@ -19,7 +19,11 @@ test('sets out with the starter party and sorts gear on the character screen', a
   await expect(gear).toContainText(/Readied \d+\/\d+, Stowed \d+\/\d+/);
   const dagger = gear.getByRole('group', { name: 'Dagger' });
   await expect(dagger).toContainText('(enc 1)');
+  // Arming Drop and then moving the line disarms it, so the drop can't land on another line.
+  await dagger.getByRole('button', { name: 'Drop' }).click();
+  await expect(dagger.getByRole('button', { name: 'Drop for good' })).toBeVisible();
   await dagger.getByRole('combobox', { name: 'Where Dagger is carried' }).selectOption('stowed');
+  await expect(gear.getByRole('button', { name: 'Drop for good' })).toHaveCount(0);
   await expect(dagger.getByRole('combobox', { name: 'Where Dagger is carried' })).toHaveValue(
     'stowed',
   );

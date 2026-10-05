@@ -3,8 +3,19 @@ import type { InventoryEntry } from './items.ts';
 
 /** Two lines of the same thing, alike in everything but how many and where they are. */
 function sameKind(a: InventoryEntry, b: InventoryEntry): boolean {
-  const strip = (e: InventoryEntry) => JSON.stringify({ ...e, quantity: 0, location: 'stowed' });
-  return strip(a) === strip(b);
+  const kind = (e: InventoryEntry) =>
+    JSON.stringify([
+      e.id,
+      e.small === true,
+      e.barding === true,
+      e.quality ?? null,
+      e.serial ?? null,
+      e.maker ?? null,
+      e.bonus ?? 0,
+      e.upkeep ?? 0,
+      (e.mods ?? []).map((m) => [m.id, [...m.components].sort(), m.free === true]),
+    ]);
+  return kind(a) === kind(b);
 }
 
 /** Puts a line into an inventory, joining a matching line in the same place. */

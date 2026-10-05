@@ -89,7 +89,7 @@ function Shop(props: {
             checked={barding}
             onChange={(e) => setBarding((e.target as HTMLInputElement).checked)}
           />
-          As barding (double cost and encumbrance)
+          As barding (double cost)
         </label>
       )}
       <button type="button" disabled={!picked} onClick={buy}>

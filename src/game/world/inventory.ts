@@ -51,7 +51,7 @@ export function moveGear(
   if (entry.location === location) return no('It is already there.');
   const { taken, rest } = takeLine(m.character.inventory, index, quantity);
   const inventory = putLine(rest, { ...taken, location });
-  const problem = inventoryProblem(data, m, inventory);
+  const problem = inventoryProblem(data, m, inventory, m.character.inventory);
   if (problem) return no(problem);
   m.character = { ...m.character, inventory };
   return done(w, data);

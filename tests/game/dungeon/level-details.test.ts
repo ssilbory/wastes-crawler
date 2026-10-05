@@ -17,6 +17,29 @@ const upper = barrow.levels[0]?.id as string;
 /** A plain floor cell on the barrow's upper level with nothing on it. */
 const spot = { x: 1, y: 1 };
 
+describe('what the editor checks before export (review fixes)', () => {
+  it('reports details the content schema or the garrison checks would refuse', () => {
+    const held = paintCell(data.content, barrow, upper, spot, 'npc');
+    const captive = cellDetails(held, upper, spot).captive as NonNullable<
+      ReturnType<typeof cellDetails>['captive']
+    >;
+    const emptied = setCaptive(held, upper, { ...captive, guards: [[]], text: '' });
+    const errors = editorErrors(data.content, emptied, data.srd);
+    expect(errors.some((e) => e.includes('guards'))).toBe(true);
+    expect(errors.some((e) => e.includes('text'))).toBe(true);
+    const guarded = setNpcKind(data.content, barrow, upper, spot, 'guard');
+    const post = cellDetails(guarded, upper, spot).garrison as NonNullable<
+      ReturnType<typeof cellDetails>['garrison']
+    >;
+    const lost = setGarrison(guarded, upper, { ...post, order: 'no-such-order' });
+    expect(editorErrors(data.content, lost, data.srd)).toContain(
+      `dungeons/old-barrow/${upper}: the garrison at 1,1 has unknown order no-such-order`,
+    );
+    // Without the SRD the garrison checks are left out.
+    expect(editorErrors(data.content, lost)).toEqual([]);
+  });
+});
+
 describe('cell details in the level editor (Phase 17)', () => {
   it('gives a painted trap or NPC details copied from the content, and keeps the level valid', () => {
     expect(cellDetails(barrow, upper, spot)).toEqual({
@@ -99,6 +122,30 @@ describe('cell details in the level editor (Phase 17)', () => {
     };
     expect(() => paintCell(bare, barrow, upper, spot, 'trap')).toThrow(
       'the content has no trap to copy',
+    );
+    // Only the kind being painted needs one.
+    expect(
+      cellDetails(paintCell(bare, barrow, upper, spot, 'npc'), upper, spot).captive,
+    ).not.toBeNull();
+    const noPosts = {
+      ...data.content,
+      dungeons: data.content.dungeons.map((d) => ({
+        ...d,
+        levels: d.levels.map((l) => ({ ...l, garrisons: [] })),
+      })),
+    };
+    expect(() => setNpcKind(noPosts, barrow, upper, spot, 'guard')).toThrow(
+      'the content has no garrison post to copy',
+    );
+    const noCaptives = {
+      ...data.content,
+      dungeons: data.content.dungeons.map((d) => ({
+        ...d,
+        levels: d.levels.map((l) => ({ ...l, captives: [] })),
+      })),
+    };
+    expect(() => paintCell(noCaptives, barrow, upper, spot, 'npc')).toThrow(
+      'the content has no held captive to copy',
     );
   });
 });
