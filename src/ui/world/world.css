@@ -308,3 +308,19 @@
 .raided {
   color: var(--error);
 }
+
+/* The setting in brief when a new world starts (Phase 16). */
+.intro-text {
+  max-width: 40rem;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  line-height: 1.6;
+}
+
+.intro-text h1 {
+  margin-bottom: 1rem;
+}
+
+.intro-text button {
+  margin-top: 1rem;
+}

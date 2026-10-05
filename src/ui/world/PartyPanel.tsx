@@ -6,6 +6,7 @@ import { data } from '../builder/data.ts';
 function tags(m: Member): string[] {
   if (m.dead) return ['dead'];
   return [
+    m.reviving && 'unconscious',
     m.hungry && 'Hungry',
     m.sleepless && 'Sleepless',
     m.cold && 'Cold',

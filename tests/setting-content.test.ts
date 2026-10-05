@@ -113,7 +113,12 @@ describe('setting content (Phase 12b)', () => {
     const lostCampaign: ContentData = {
       ...content,
       campaign: {
-        clock: { ...campaign.clock, segments: 1, knockback: { quests: ['q'], captives: ['c'] } },
+        intro: campaign.intro,
+        clock: {
+          ...campaign.clock,
+          segments: 1,
+          knockback: { quests: ['q'], captives: ['c'], damage: 0 },
+        },
         notes: { ...campaign.notes, giver: 'nobody' },
         seal: { ...campaign.seal, quest: 'q2', giver: 'nobody', authority: 'crown' },
       },

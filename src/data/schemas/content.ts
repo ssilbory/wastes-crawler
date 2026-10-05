@@ -35,6 +35,7 @@ import { ArenaCardSchema, CoachRouteSchema, CoachRulesSchema } from './travel-co
 import { MissionGiverSchema, QuestSchema } from './quest-content.ts';
 import { AuthoredMonsterSchema, SettingMonsterSchema } from './monsters.ts';
 import { DungeonSchema } from './dungeon-content.ts';
+import { FactionContentSchema } from './faction-content.ts';
 
 const contentBase = {
   id: IdSchema,
@@ -186,6 +187,7 @@ export const ContentSchemas = {
   raidRules: RaidRulesSchema,
   campaign: CampaignSchema,
   ruins: z.array(RuinSchema),
+  factions: FactionContentSchema,
   craftingRules: CraftingRulesSchema,
   components: z.array(ComponentSchema).min(1),
   mods: z.array(ModSchema).min(1),

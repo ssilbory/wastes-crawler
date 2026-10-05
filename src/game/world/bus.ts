@@ -3,6 +3,7 @@
 import type { GameData } from '../character/context.ts';
 import { clockListener } from './clock.ts';
 import { craftingListener } from './crafting.ts';
+import { factionsListener } from '../factions/turn.ts';
 import { maintenanceListener } from './maintenance.ts';
 import { notesListener } from './notes.ts';
 import { sharesListener } from './shares.ts';
@@ -18,8 +19,9 @@ export type WorldEvent =
   /** The party moved into the hex it now stands in. */
   | { kind: 'hex-entered' }
   | { kind: 'town-entered'; town: string }
-  /** A won fight, the quest whose fixed encounter it was, and the garrison post it held. */
-  | { kind: 'fight-won'; quest: string | null; garrison: string | null }
+  /** A won fight, the quest whose fixed encounter it was, the garrison post it held, and the
+   * faction patrol it was (Phase 13b). */
+  | { kind: 'fight-won'; quest: string | null; garrison: string | null; patrol?: string | null }
   | { kind: 'npc-died'; npc: Npc }
   /** A day has ended. */
   | { kind: 'day-passed' }
@@ -41,6 +43,7 @@ const LISTENERS: readonly Listener[] = [
   maintenanceListener,
   ordersListener,
   raidsListener,
+  factionsListener,
   clockListener,
   notesListener,
   sharesListener,

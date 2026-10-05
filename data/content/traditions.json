@@ -6,8 +6,22 @@
     "spellLists": ["high-magic"],
     "effort": {
       "skills": ["magic"],
-      "attributes": ["int", "cha"]
-    }
+      "attributes": ["int", "cha"],
+      "base": 1,
+      "partialPenalty": true,
+      "floorOne": false
+    },
+    "armoredArts": false,
+    "artLevels": {},
+    "excludedArts": [
+      "arcane-lexicon",
+      "hang-sorcery",
+      "iron-resolution",
+      "preparatory-countermagic",
+      "restrained-casting",
+      "suppress-magic",
+      "ward-allies"
+    ]
   },
   {
     "id": "elementalist",
@@ -16,7 +30,63 @@
     "spellLists": ["high-magic", "elementalist"],
     "effort": {
       "skills": ["magic"],
-      "attributes": ["int", "cha"]
-    }
+      "attributes": ["int", "cha"],
+      "base": 1,
+      "partialPenalty": true,
+      "floorOne": false
+    },
+    "armoredArts": false,
+    "artLevels": {},
+    "excludedArts": ["beckoned-deluge", "elemental-sparks", "rune-of-destruction", "thermal-shield"]
+  },
+  {
+    "id": "necromancer",
+    "name": "Necromancer",
+    "bonusSkill": "magic",
+    "spellLists": ["high-magic", "necromancer"],
+    "effort": {
+      "skills": ["magic"],
+      "attributes": ["int", "cha"],
+      "base": 1,
+      "partialPenalty": true,
+      "floorOne": false
+    },
+    "armoredArts": false,
+    "artLevels": {},
+    "excludedArts": ["false-death", "life-bridge", "uncanny-ichor"]
+  },
+  {
+    "id": "blood-priest",
+    "name": "Blood Priest",
+    "bonusSkill": "pray",
+    "spellLists": [],
+    "effort": {
+      "skills": ["pray"],
+      "attributes": ["wis", "cha"],
+      "base": 0,
+      "partialPenalty": false,
+      "floorOne": true
+    },
+    "armoredArts": true,
+    "artLevels": {},
+    "excludedArts": ["a-thousand-tongues", "divine-guidance", "fear-no-flame"]
+  },
+  {
+    "id": "healer",
+    "name": "Healer",
+    "bonusSkill": "heal",
+    "spellLists": [],
+    "effort": {
+      "skills": ["heal"],
+      "attributes": ["int", "cha"],
+      "base": 0,
+      "partialPenalty": false,
+      "floorOne": true
+    },
+    "armoredArts": true,
+    "artLevels": {
+      "revive-the-fallen": 8
+    },
+    "excludedArts": ["far-healer", "limb-restoration", "purge-ailment", "the-healers-knife"]
   }
 ]

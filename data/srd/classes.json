@@ -112,5 +112,62 @@
         "text": "Elementalist Effort is calculated as usual, with each PC’s maximum being equal to one plus their Magic skill level plus the better of their Intelligence or Charisma modifiers. Partial Elementalists have a score one point lower than this, albeit not less than one."
       }
     ]
+  },
+  {
+    "id": "necromancer",
+    "name": "Necromancer",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.14 The Necromancer.md",
+      "heading": "1.5.14 The Necromancer"
+    },
+    "description": "Necromancers are those spellcasting Mages who deal with the energies of life and death.",
+    "abilities": [
+      {
+        "name": "Necromancer Benefits",
+        "text": "All Necromancers gain Magic as a bonus skill, acquiring it at Level-0, or Level-1 if was already Level-0.\n\nNecromancers can prepare and cast High Magic spells in addition to the spells specific to Necromancers. Some of the latter are given on the following pages, but others doubtless exist. As usual for spellcasters, Necromancers can’t cast spells or use arts while armored or holding a shield.\n\nNecromancers are not as talented at general High Magic re search as High Mages are, but their studies still bear fruit in time. Each time they advance a level, they can pick a new High Magic spell or a Necromancer spell to add to their spellbook. They must be able to cast the spell to add it to their selection.\n\nNecromancers can pick an art specific to their tradition from the adjacent list. Further arts are learned as they advance in character level, as given in the tables below. Once chosen, an art cannot be changed."
+      },
+      {
+        "name": "Necromancer Arts",
+        "text": "Necromancer Effort is calculated as usual, with each PC’s maximum being equal to one plus their Magic skill level plus the better of their Intelligence or Charisma modifiers. Partial Necromancers have a score one point lower than this, albeit not less than one."
+      }
+    ]
+  },
+  {
+    "id": "blood-priest",
+    "name": "Blood Priest",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.5 The Blood Priest.md",
+      "heading": "1.5.5 The Blood Priest"
+    },
+    "description": "As the devotee of a sanguinary god, a blood priest has magical powers for strengthening and supporting their allies.",
+    "abilities": [
+      {
+        "name": "Blood Priest Benefits",
+        "text": "The Blood Priest exists only as a partial Mage class, to be taken by an Adventurer alongside another partial class. A Partial Warrior/ Blood Priest might be a crusader for their god, wielding steel and terror against the evils of this world. A Partial Expert/Blood Priest might be an inquisitor, investigating dubious figures and sifting out the truth of mysterious events.\n\nAll Blood Priests gain Pray as a bonus skill, acquiring it at level-0, or level-1 if they already have it at level-0. Even a “Blood Priest” who has only learned their abilities through study of their scriptures must master a wide variety of ecclesiastical rites and rituals in order to activate their powers."
+      },
+      {
+        "name": "Blood Priest Arts",
+        "text": "Blood Priest Effort is calculated with Pray, with their total maximum Effort being equal to their Pray skill plus the higher of their Wisdom or Charisma modifiers, to a minimum of one point.\n\nAt first level, the Blood Priest may choose two of the following miracles to master, and gain more as they advance in levels. Once chosen, a miracle pick is permanent and cannot be changed later. Miracles are not hindered by the wearing of armor and require no gestures or free hand to employ, though usually a prayer must be vocalized as part of the action."
+      }
+    ]
+  },
+  {
+    "id": "healer",
+    "name": "Healer",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.9 The Healer.md",
+      "heading": "1.5.9 The Healer"
+    },
+    "description": "The Healer is a partial Mage class that does not use spells. Instead, they gain specific arts that allow them to mend wounds, cure illnesses, and otherwise sustain their allies.",
+    "abilities": [
+      {
+        "name": "Healer Benefits",
+        "text": "The Healer class exists only as a partial Mage class, to be taken by an Adventurer along with another partial class. Thus, a Partial Warrior/Partial Healer might be a grizzled combat medic, a Partial Expert/Partial Healer might be an erudite physician gifted in both mundane and magical healing methods, and a Partial Necromancer/Partial Healer might be an adept of life and death.\n\nAll Healers gain Heal as a bonus skill, acquiring it at level-0, or level-1 if they already have it at level-0. A basic grounding in mundane healing techniques is necessary in order to learn their more sophisticated magical arts.\n\nHealers do not learn how to cast spells. Instead, they focus on their special arcane healing arts. Wielding these arts usually requires nothing more than touching the target and concentrating on the desired effect, and the process is direct and simple enough to perform even when burdened by armor or carrying a shield.\n\nThese arts are usually quite subtle, and don’t produce visible or audible indications of their use.\n\nAt first level, a Healer gains the Healing Touch art and can pick one more of their choice. As they advance in levels afterwards, they can learn new arts. Once chosen, an art is permanent and cannot be exchanged."
+      },
+      {
+        "name": "Healer Arts",
+        "text": "Healer Effort is calculated with Heal rather than Magic, with each PC’s maximum being equal to their Heal skill level plus the better of their Intelligence or Charisma modifiers, to a minimum of one point.\n\nAll Healers are trained in the Healing Touch art, but may develop other techniques with time."
+      }
+    ]
   }
 ]

@@ -13,6 +13,7 @@ async function darkLands(page: Page, seed: string) {
   await page.getByRole('combobox', { name: 'Front row, slot 2' }).selectOption({ label: 'Grukk' });
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill(seed);
   await page.getByRole('button', { name: 'Start a new world' }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
   await expect(page.locator('.world-bar')).toContainText('The Borderlands');
 }
 

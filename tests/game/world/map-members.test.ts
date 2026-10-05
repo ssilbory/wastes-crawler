@@ -45,7 +45,7 @@ describe('the region map', () => {
     expect(map.terrainAt({ col: 8, row: 1 }).id).toBe('mountains');
     expect(map.dangerAt({ col: 8, row: 1 })).toBe('dangerous');
     expect(map.dangerAt({ col: 5, row: 8 })).toBe('road');
-    expect(map.siteAt({ col: 20, row: 8 })?.name).toBe('Eastmarch');
+    expect(map.siteAt({ col: 20, row: 8 })?.name).toBe('Scrapmarch');
     expect(map.siteAt({ col: 0, row: 0 })).toBeUndefined();
     expect(map.costOf({ col: 0, row: 0 })).toBe(2);
     expect(map.costOf({ col: 0, row: 8 })).toBe(1);

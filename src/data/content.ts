@@ -36,9 +36,11 @@ import authorities from '../../data/content/authorities.json';
 import raidRules from '../../data/content/raid-rules.json';
 import campaign from '../../data/content/campaign.json';
 import ruins from '../../data/content/ruins.json';
+import factions from '../../data/content/factions.json';
 import { withSettingMonsters } from './monsters.ts';
 import { combatReferenceErrors } from './combat-check.ts';
 import { equipmentReferenceErrors } from './equipment-check.ts';
+import { factionReferenceErrors } from './faction-check.ts';
 import { focusReferenceErrors } from './focus-content.ts';
 import { magicReferenceErrors } from './magic-check.ts';
 import { overlandReferenceErrors } from './overland-check.ts';
@@ -91,6 +93,7 @@ export function loadContent(): ContentData {
     raidRules: ContentSchemas.raidRules.parse(raidRules),
     campaign: ContentSchemas.campaign.parse(campaign),
     ruins: ContentSchemas.ruins.parse(ruins),
+    factions: ContentSchemas.factions.parse(factions),
   });
 }
 
@@ -170,6 +173,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...equipmentReferenceErrors(srd, content),
     ...magicReferenceErrors(srd, content),
     ...combatReferenceErrors(srd, content),
+    ...factionReferenceErrors(srd, content),
     ...overlandReferenceErrors(srd, content),
     ...townReferenceErrors(content),
     ...npcReferenceErrors(srd, content),

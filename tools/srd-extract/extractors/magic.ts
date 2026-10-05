@@ -15,6 +15,7 @@ const SPELL_FILES: { file: string; tradition: Spell['tradition'] }[] = [
     tradition: 'high-magic',
   },
   { file: '4.0 Magic and Spellcasting/4.5.0 Elementalist Spells.md', tradition: 'elementalist' },
+  { file: '4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md', tradition: 'necromancer' },
 ];
 
 export function extractSpells(reader: SrdReader): Spell[] {
@@ -63,6 +64,30 @@ const ART_SECTIONS: {
     file: `${CLASS_DIR}/1.5.7 The Elementalist.md`,
     heading: /^Other Elementalist Arts$/,
     tradition: 'elementalist',
+    automatic: false,
+  },
+  {
+    file: `${CLASS_DIR}/1.5.9 The Healer.md`,
+    heading: /^1\.5\.9\.1 Healer Arts$/,
+    tradition: 'healer',
+    automatic: true,
+  },
+  {
+    file: `${CLASS_DIR}/1.5.9 The Healer.md`,
+    heading: /^Other Healer Arts$/,
+    tradition: 'healer',
+    automatic: false,
+  },
+  {
+    file: `${CLASS_DIR}/1.5.5 The Blood Priest.md`,
+    heading: /^1\.5\.5\.1 Blood Priest Arts$/,
+    tradition: 'blood-priest',
+    automatic: false,
+  },
+  {
+    file: `${CLASS_DIR}/1.5.14 The Necromancer.md`,
+    heading: /^1\.5\.14\.1 Necromancer Arts$/,
+    tradition: 'necromancer',
     automatic: false,
   },
 ];

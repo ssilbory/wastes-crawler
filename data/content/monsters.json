@@ -27,5 +27,536 @@
     "skill": 2,
     "save": 15,
     "description": "A white hare with a fixed, glassy stare and teeth like a surgeon's shears. The Dark Lord's flesh crafters bred them either as a terror weapon or as a joke, and nobody who has met one has been able to say which; most suspect both. It knows no fear, it does not stop, and it goes for the throat."
+  },
+  {
+    "id": "grave-wyrm",
+    "name": "Grave Wyrm",
+    "category": "Unnatural Entities",
+    "hitDice": 11,
+    "ac": 20,
+    "armored": false,
+    "attackBonus": 12,
+    "attacks": 4,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 4,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 6,
+      "maxAc": null
+    },
+    "move": 30,
+    "morale": 10,
+    "instinct": 3,
+    "skill": 3,
+    "save": 10,
+    "description": "A dragon that would not die, its hide long since sloughed from a cage of black bone. It breathes a fog of grave-cold that rots what it does not freeze, and its claws leave the living rigid as corpses. Grave wyrms remember every hoard they ever lost."
+  },
+  {
+    "id": "gnawing-dead",
+    "name": "Gnawing Dead",
+    "category": "Unnatural Entities",
+    "hitDice": 2,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 3,
+    "attacks": 3,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": 13
+    },
+    "move": 30,
+    "morale": 12,
+    "instinct": 3,
+    "skill": 1,
+    "save": 14,
+    "description": "A corpse that rose hungry. It is quick where other dead are slow, all nails and teeth, and it goes for the soft parts. Those it bites sicken, and those who die of the sickness do not stay down."
+  },
+  {
+    "id": "colossus-bear",
+    "name": "Colossus Bear",
+    "category": "Normal animals",
+    "hitDice": 15,
+    "ac": 18,
+    "armored": false,
+    "attackBonus": 16,
+    "attacks": 3,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 8,
+      "maxAc": 15
+    },
+    "move": 30,
+    "morale": 11,
+    "instinct": 6,
+    "skill": 2,
+    "save": 8,
+    "description": "Some cubs never stop growing. A colossus bear stands as tall as a watchtower on its hind legs and is hungry every waking hour; whole valleys empty of game when one wakes from its winter sleep."
+  },
+  {
+    "id": "giant-ant",
+    "name": "Giant Ant",
+    "category": "Unnatural Entities",
+    "hitDice": 4,
+    "ac": 15,
+    "armored": false,
+    "attackBonus": 5,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 15
+    },
+    "move": 40,
+    "morale": 11,
+    "instinct": 5,
+    "skill": 1,
+    "save": 13,
+    "description": "An ant the size of a pony, red or black, in a chitin shell that turns blades. Shy at first sight, relentless once the fight starts. Their tunnels sometimes run through veins of raw gold, which they hoard for the shine."
+  },
+  {
+    "id": "cave-bear",
+    "name": "Cave Bear",
+    "category": "Normal animals",
+    "hitDice": 7,
+    "ac": 14,
+    "armored": false,
+    "attackBonus": 8,
+    "attacks": 3,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 3,
+      "maxAc": 15
+    },
+    "move": 30,
+    "morale": 9,
+    "instinct": 6,
+    "skill": 1,
+    "save": 12,
+    "description": "A shaggy brute bigger than any common bear, that kills anything its own size or smaller and drags it back to the dark. It crushes what it cannot bite."
+  },
+  {
+    "id": "chimera",
+    "name": "Chimera",
+    "category": "Unnatural Entities",
+    "hitDice": 9,
+    "ac": 16,
+    "armored": false,
+    "attackBonus": 10,
+    "attacks": 3,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 3,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 4,
+      "maxAc": 15
+    },
+    "move": 30,
+    "morale": 9,
+    "instinct": 4,
+    "skill": 2,
+    "save": 11,
+    "description": "Lion, goat, and dragon on one winged body: a crafter's showpiece from the old war that learned to breed. All three heads hate each other and everything else, and the dragon head breathes fire."
+  },
+  {
+    "id": "gnoll",
+    "name": "Gnoll",
+    "category": "Normal Humans",
+    "hitDice": 2,
+    "ac": 14,
+    "armored": true,
+    "attackBonus": 3,
+    "attacks": 1,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 1
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 1,
+      "ignoresAc": false
+    },
+    "move": 30,
+    "morale": 8,
+    "instinct": 5,
+    "skill": 1,
+    "save": 14,
+    "description": "Hyena-headed raiders who hunt in loose packs by night and see in the dark. Stronger than they look and crueler than they need to be, they follow whoever is biggest, and break when the biggest falls."
+  },
+  {
+    "id": "hill-giant",
+    "name": "Hill Giant",
+    "category": "Normal Humans",
+    "hitDice": 8,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 9,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 4,
+      "maxAc": 15
+    },
+    "move": 30,
+    "morale": 8,
+    "instinct": 5,
+    "skill": 1,
+    "save": 11,
+    "description": "Twelve feet of hide-wrapped muscle with a tree-trunk club and a short temper. Hill giants raid farms, bully ogres into service, and keep dire wolves as dogs."
+  },
+  {
+    "id": "manticore",
+    "name": "Manticore",
+    "category": "Unnatural Entities",
+    "hitDice": 6,
+    "ac": 16,
+    "armored": false,
+    "attackBonus": 7,
+    "attacks": 3,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 15
+    },
+    "move": 30,
+    "morale": 9,
+    "instinct": 5,
+    "skill": 2,
+    "save": 12,
+    "description": "A winged lion with a man's ruined face and a tail of iron spikes it flings like javelins. It wears prey down from the air before it lands to feed, and it prefers people."
+  },
+  {
+    "id": "giant-scorpion",
+    "name": "Giant Scorpion",
+    "category": "Normal animals",
+    "hitDice": 4,
+    "ac": 15,
+    "armored": false,
+    "attackBonus": 5,
+    "attacks": 3,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 10,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 15
+    },
+    "move": 40,
+    "morale": 11,
+    "instinct": 5,
+    "skill": 1,
+    "save": 13,
+    "description": "A scorpion the size of a donkey that attacks whatever it sees. Its claws pin, and its sting carries a venom that eats the strength out of the strongest."
+  },
+  {
+    "id": "giant-rattlesnake",
+    "name": "Giant Rattlesnake",
+    "category": "Normal animals",
+    "hitDice": 2,
+    "ac": 14,
+    "armored": false,
+    "attackBonus": 3,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": 13
+    },
+    "move": 30,
+    "morale": 8,
+    "instinct": 5,
+    "skill": 1,
+    "save": 14,
+    "description": "Twenty feet of diamond-backed snake whose rattle is the last warning anyone gets. Its venom swells the limb and burns for days."
+  },
+  {
+    "id": "giant-black-widow",
+    "name": "Giant Black Widow",
+    "category": "Normal animals",
+    "hitDice": 3,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 4,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": 13
+    },
+    "move": 20,
+    "morale": 8,
+    "instinct": 5,
+    "skill": 2,
+    "save": 14,
+    "description": "A glossy black spider a yard across with a red hourglass on its belly. It strings near-invisible webs across passages and waits; its venom is among the deadliest in the Dark Lands."
+  },
+  {
+    "id": "unicorn",
+    "name": "Unicorn",
+    "category": "Unnatural Entities",
+    "hitDice": 4,
+    "ac": 16,
+    "armored": false,
+    "attackBonus": 7,
+    "attacks": 3,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 3
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 15
+    },
+    "move": 50,
+    "morale": 7,
+    "instinct": 4,
+    "skill": 2,
+    "save": 13,
+    "description": "A white horse-shaped thing with a spiral horn that cuts like an enchanted blade. Shy and proud, it fights only for itself or its wood, and its horn's touch is said to close wounds."
+  },
+  {
+    "id": "alicorn",
+    "name": "Alicorn",
+    "category": "Unnatural Entities",
+    "hitDice": 4,
+    "ac": 16,
+    "armored": false,
+    "attackBonus": 5,
+    "attacks": 3,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 15
+    },
+    "move": 40,
+    "morale": 9,
+    "instinct": 5,
+    "skill": 2,
+    "save": 13,
+    "description": "A unicorn in every line save its burning red eyes and the fangs behind its lips. Where a unicorn defends, an alicorn hunts."
+  },
+  {
+    "id": "vampire",
+    "name": "Vampire",
+    "category": "Normal Humans",
+    "hitDice": 8,
+    "ac": 17,
+    "armored": false,
+    "attackBonus": 10,
+    "attacks": 2,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 3
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 3,
+      "ignoresAc": false
+    },
+    "move": 40,
+    "morale": 11,
+    "instinct": 3,
+    "skill": 3,
+    "save": 11,
+    "description": "A noble corpse that drinks the living. It casts no shadow and shows no reflection, its gaze bends the will, and every drop it drinks knits its wounds. Those it drains to death rise as its slaves."
+  },
+  {
+    "id": "zombie",
+    "name": "Zombie",
+    "category": "Unnatural Entities",
+    "hitDice": 2,
+    "ac": 12,
+    "armored": false,
+    "attackBonus": 2,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": 13
+    },
+    "move": 20,
+    "morale": 12,
+    "instinct": 3,
+    "skill": 0,
+    "save": 14,
+    "description": "A corpse on its feet and nothing behind its eyes. Slow and silent, it shrugs off clubs and arrows and has to be hacked apart before it stops."
+  },
+  {
+    "id": "raised-zombie",
+    "name": "Raised Zombie",
+    "category": "Unnatural Entities",
+    "hitDice": 1,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 1,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "shock": null,
+    "move": 30,
+    "morale": 12,
+    "instinct": 0,
+    "skill": 0,
+    "save": 15,
+    "description": "A corpse raised by Raise Corpse (vendor/wwn-srd 4.6.0), flesh still on its bones. It obeys its necromancer with a human degree of understanding and no will of its own, and blunt blows sink into it."
+  },
+  {
+    "id": "raised-skeleton",
+    "name": "Raised Skeleton",
+    "category": "Unnatural Entities",
+    "hitDice": 1,
+    "ac": 14,
+    "armored": false,
+    "attackBonus": 1,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "shock": null,
+    "move": 30,
+    "morale": 12,
+    "instinct": 0,
+    "skill": 0,
+    "save": 15,
+    "description": "A corpse raised by Raise Corpse and stripped to the bone: a little harder to hit, and blades find little to cut. It obeys its necromancer without question."
+  },
+  {
+    "id": "grave-knight",
+    "name": "Grave Knight",
+    "category": "Unnatural Entities",
+    "hitDice": 4,
+    "ac": 15,
+    "armored": false,
+    "attackBonus": 6,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 10,
+        "modifier": 0
+      }
+    },
+    "shock": null,
+    "move": 40,
+    "morale": 12,
+    "instinct": 0,
+    "skill": 1,
+    "save": 13,
+    "description": "A powerful corpse raised by Raise Grave Knight (vendor/wwn-srd 4.6.0): fully intelligent, utterly devoted to its creator, and whole again at every dusk."
   }
 ]

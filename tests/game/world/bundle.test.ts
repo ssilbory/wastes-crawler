@@ -56,7 +56,7 @@ describe('save slot summaries', () => {
     expect(slotSummary(null, data)).toBe('Empty');
     expect(slotSummary('{', data)).toBe('Damaged save');
     expect(slotSummary(serializeWorld(w), data)).toBe(
-      'Morning, 1 Seedtime, year 1 (spring) · Westhold · Snag, Grukk, Lirael, Fizzwick',
+      'Morning, 1 Seedtime, year 1 (spring) · Rubblegate · Snag, Grukk, Lirael, Fizzwick',
     );
     w.position = { col: 4, row: 8 };
     expect(slotSummary(serializeWorld(w), data)).toContain('the wilds at 4,8');

@@ -3,7 +3,7 @@ import { recordBase } from './common.ts';
 
 export const SpellSchema = z.strictObject({
   ...recordBase,
-  tradition: z.enum(['high-magic', 'elementalist']),
+  tradition: z.enum(['high-magic', 'elementalist', 'necromancer']),
   level: z.int().min(1).max(5),
   text: z.string().min(1),
 });
@@ -11,7 +11,7 @@ export type Spell = z.infer<typeof SpellSchema>;
 
 export const ArtSchema = z.strictObject({
   ...recordBase,
-  tradition: z.enum(['high-mage', 'elementalist']),
+  tradition: z.enum(['high-mage', 'elementalist', 'necromancer', 'blood-priest', 'healer']),
   /** Arts every member of the tradition gains at first level. */
   automatic: z.boolean(),
   text: z.string().min(1),

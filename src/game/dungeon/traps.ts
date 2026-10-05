@@ -12,13 +12,14 @@ import { ahead, cellKey, type Cell } from '../../rules/grid.ts';
 import { rollSave } from '../../rules/saves.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
+import { poisonProof } from '../world/arts.ts';
 import { HEALERS_KIT } from '../world/first-aid.ts';
 import { alive, bestAt, memberCheck, note, setHp } from '../world/members.ts';
 import type { TownResult } from '../world/services.ts';
 import { wipe } from '../world/town.ts';
 import type { Member, World } from '../world/types.ts';
 import { levelOf } from './explore.ts';
-import { inDark } from './light.ts';
+import { blind } from './light.ts';
 import { callWanderers, passTurn } from './time.ts';
 
 const state = (w: World) => w.dungeon as NonNullable<World['dungeon']>;
@@ -57,7 +58,7 @@ export function approach(w: World, data: GameData, target: Cell, stepIn: boolean
   if (!trap || stepIn) return null;
   if (known(w, target)) return `The ${trap.name} lies ahead.`;
   const eyes = bestAt(data, able(w), 'notice', ['wis']);
-  if (inDark(w, data) || !eyes) return null;
+  if (blind(w, data) || !eyes) return null;
   if (!memberCheck(w, data, eyes, 'notice', ['wis'], trap.notice).success) return null;
   mark(w, target, 'noticed');
   const text = `${eyes.character.name} spots a ${trap.name} ahead.`;
@@ -114,6 +115,11 @@ function spring(w: World, data: GameData, trap: Trap): void {
     return false;
   });
   for (const m of hit) {
+    // Unaging: immune to poisons (Phase 15).
+    if (e.kind === 'poison' && poisonProof(m)) {
+      note(w, `The poison does nothing to ${m.character.name}.`);
+      continue;
+    }
     const amount =
       e.kind === 'damage' ? roll(w.rng, e.dice).total : Math.ceil(m.character.hp.max / 2);
     wound(w, data, m, amount);
@@ -133,7 +139,7 @@ export function disarm(w: World, data: GameData): TownResult {
   if (w.encounter) return { ok: false, reason: 'Settle the encounter first.' };
   const trap = knownTrapAhead(w, data);
   if (!trap) return { ok: false, reason: 'There is no known trap ahead.' };
-  if (inDark(w, data)) return { ok: false, reason: 'It is too dark to work.' };
+  if (blind(w, data)) return { ok: false, reason: 'It is too dark to work.' };
   const { skill, attributes, difficulty } = trap.disarm;
   const hand = bestAt(data, able(w), skill, attributes) as Member;
   const check = memberCheck(w, data, hand, skill, attributes, difficulty);

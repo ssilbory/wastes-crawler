@@ -71,11 +71,15 @@ export function addMemberStrain(
   } else if (outcome.state.broken && !c.strain.broken) note(w, `${c.name} is Broken.`);
 }
 
-/** Recovers strain for a quarter of rest; none while Hungry, Sleepless, or Cold. */
-export function restQuarter(m: Member): void {
+/**
+ * A quarter of rest: limited arts come back (Sam's call, Phase 15), and strain recovers by 1, or
+ * `extra` more with Refined Restoration's care; none while Hungry, Sleepless, or Cold.
+ */
+export function restQuarter(m: Member, extra = 0): void {
+  m.artUses = {};
   if (m.hungry || m.sleepless || m.cold) return;
   const s = m.character.strain;
-  m.character = { ...m.character, strain: { ...s, value: Math.max(0, s.value - 1) } };
+  m.character = { ...m.character, strain: { ...s, value: Math.max(0, s.value - 1 - extra) } };
 }
 
 export function setHp(m: Member, hp: number): void {
@@ -118,5 +122,7 @@ export function newMember(
     spellsCast: 0,
     effortDay: 0,
     pendingXp: 0,
+    reviving: false,
+    artUses: {},
   };
 }

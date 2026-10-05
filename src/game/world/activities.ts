@@ -10,6 +10,7 @@ import { stepDie } from '../../rules/resource-die.ts';
 import { rollSave } from '../../rules/saves.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
+import { tended } from './arts.ts';
 import { addMemberStrain, alive, bestAt, hurt, memberCheck, note, restQuarter } from './members.ts';
 import { emit } from './bus.ts';
 import { firstGuide, guideOf } from './npcs.ts';
@@ -153,7 +154,10 @@ export function camp(
   const inTown = map.siteAt(w.position) !== undefined;
   const doing = (a: Activity) => alive(w).filter((m) => activities[m.id] === a);
   let extraChecks = 0;
-  for (const m of [...doing('rest'), ...doing('sleep')]) restQuarter(m);
+  // Refined Restoration: a Healer's care takes off one more strain from sleep (Phase 15).
+  const care = tended(w) ? 1 : 0;
+  for (const m of doing('rest')) restQuarter(m);
+  for (const m of doing('sleep')) restQuarter(m, care);
   for (const m of doing('sleep')) m.slept = true;
   const builder = doing('make-camp')[0];
   if (builder && w.camp !== 'made') {

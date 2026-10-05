@@ -27,7 +27,8 @@
       ],
       "slots": "full-high-mage-arts-and-spells",
       "startingSpells": 4,
-      "spellsPerLevel": 2
+      "spellsPerLevel": 2,
+      "excludedSpells": []
     }
   },
   {
@@ -43,7 +44,8 @@
       ],
       "slots": "full-elementalist-arts-and-spells",
       "startingSpells": 4,
-      "spellsPerLevel": 1
+      "spellsPerLevel": 1,
+      "excludedSpells": []
     }
   },
   {
@@ -59,7 +61,8 @@
       ],
       "slots": "partial-high-mage-arts-and-spells",
       "startingSpells": 2,
-      "spellsPerLevel": 2
+      "spellsPerLevel": 2,
+      "excludedSpells": []
     },
     "abilities": ["quick-learner"]
   },
@@ -76,7 +79,8 @@
       ],
       "slots": "partial-high-mage-arts-and-spells",
       "startingSpells": 2,
-      "spellsPerLevel": 2
+      "spellsPerLevel": 2,
+      "excludedSpells": []
     }
   },
   {
@@ -92,7 +96,8 @@
       ],
       "slots": "partial-elementalist-arts-and-spells",
       "startingSpells": 2,
-      "spellsPerLevel": 1
+      "spellsPerLevel": 1,
+      "excludedSpells": []
     },
     "abilities": ["quick-learner"]
   },
@@ -109,7 +114,8 @@
       ],
       "slots": "partial-elementalist-arts-and-spells",
       "startingSpells": 2,
-      "spellsPerLevel": 1
+      "spellsPerLevel": 1,
+      "excludedSpells": []
     }
   },
   {
@@ -130,7 +136,166 @@
       ],
       "slots": "dual-partial-spellcasters",
       "startingSpells": 4,
-      "spellsPerLevel": 2
+      "spellsPerLevel": 2,
+      "excludedSpells": []
+    }
+  },
+  {
+    "id": "full-necromancer",
+    "name": "Necromancer",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "necromancer",
+          "partial": false,
+          "arts": "full-necromancer-arts-and-spells"
+        }
+      ],
+      "slots": "full-necromancer-arts-and-spells",
+      "startingSpells": 4,
+      "spellsPerLevel": 1,
+      "excludedSpells": []
+    }
+  },
+  {
+    "id": "necromancer-partial-expert",
+    "name": "Adventurer: Partial Necromancer/Partial Expert",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "necromancer",
+          "partial": true,
+          "arts": "partial-necromancer-arts-and-spells"
+        }
+      ],
+      "slots": "partial-necromancer-arts-and-spells",
+      "startingSpells": 2,
+      "spellsPerLevel": 1,
+      "excludedSpells": []
+    },
+    "abilities": ["quick-learner"]
+  },
+  {
+    "id": "necromancer-partial-warrior",
+    "name": "Adventurer: Partial Necromancer/Partial Warrior",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "necromancer",
+          "partial": true,
+          "arts": "partial-necromancer-arts-and-spells"
+        }
+      ],
+      "slots": "partial-necromancer-arts-and-spells",
+      "startingSpells": 2,
+      "spellsPerLevel": 1,
+      "excludedSpells": []
+    }
+  },
+  {
+    "id": "necromancer-partial-other-mage",
+    "name": "Adventurer: Partial Necromancer/Partial High Mage",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "necromancer",
+          "partial": true,
+          "arts": "partial-necromancer-arts-and-spells"
+        },
+        {
+          "tradition": "high-mage",
+          "partial": true,
+          "arts": "partial-high-mage-arts-and-spells"
+        }
+      ],
+      "slots": "dual-partial-spellcasters",
+      "startingSpells": 4,
+      "spellsPerLevel": 2,
+      "excludedSpells": []
+    }
+  },
+  {
+    "id": "elementalist-partial-other-mage",
+    "name": "Adventurer: Partial Necromancer/Partial Elementalist",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "necromancer",
+          "partial": true,
+          "arts": "partial-necromancer-arts-and-spells"
+        },
+        {
+          "tradition": "elementalist",
+          "partial": true,
+          "arts": "partial-elementalist-arts-and-spells"
+        }
+      ],
+      "slots": "dual-partial-spellcasters",
+      "startingSpells": 4,
+      "spellsPerLevel": 2,
+      "excludedSpells": []
+    }
+  },
+  {
+    "id": "blood-priest-partial-warrior",
+    "name": "Adventurer: Partial Blood Priest/Partial Warrior",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "blood-priest",
+          "partial": true,
+          "arts": "blood-priest-arts"
+        }
+      ],
+      "slots": "blood-priest-arts",
+      "startingSpells": 0,
+      "spellsPerLevel": 0,
+      "excludedSpells": []
+    }
+  },
+  {
+    "id": "healer-partial-mage",
+    "name": "Adventurer: Priest of Death (Partial Necromancer/Partial Healer)",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "necromancer",
+          "partial": true,
+          "arts": "partial-necromancer-arts-and-spells"
+        },
+        {
+          "tradition": "healer",
+          "partial": true,
+          "arts": "healer-arts"
+        }
+      ],
+      "slots": "partial-necromancer-arts-and-spells",
+      "startingSpells": 2,
+      "spellsPerLevel": 1,
+      "excludedSpells": ["raise-corpse", "raise-grave-knight"],
+      "laysToRest": true
+    }
+  },
+  {
+    "id": "blood-priest-partial-mage",
+    "name": "Adventurer: Partial Blood Priest/Partial Healer",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "blood-priest",
+          "partial": true,
+          "arts": "blood-priest-arts"
+        },
+        {
+          "tradition": "healer",
+          "partial": true,
+          "arts": "healer-arts"
+        }
+      ],
+      "slots": "blood-priest-arts",
+      "startingSpells": 0,
+      "spellsPerLevel": 0,
+      "excludedSpells": []
     }
   }
 ]

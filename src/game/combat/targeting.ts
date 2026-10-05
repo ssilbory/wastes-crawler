@@ -6,9 +6,22 @@ import { coverSteps } from '../../rules/formation.ts';
 import type { Attack, Battle, Combatant } from './types.ts';
 
 export const isUp = (c: Combatant) => c.status === 'active' || c.status === 'asleep';
-export const canAct = (c: Combatant) => c.status === 'active';
+/** Up, awake, and not held by paralysis. */
+export const canAct = (c: Combatant) => c.status === 'active' && c.heldRounds === 0;
 
-const flying = (c: Combatant) => c.tags.has('flying');
+/** A flyer, or held aloft by Steps of Air (Phase 15). */
+export const flying = (c: Combatant) => c.tags.has('flying') || c.flyingRounds > 0;
+
+/** The party's attack modifier in darkness, a house rule: the SRD sets none. */
+export const DARK_HIT_MODIFIER = -4;
+
+/**
+ * The side's hit modifier (God Wills It), and -4 for a PC fighting in the dark who doesn't see in
+ * it (docs/rules-adaptation.md, Dungeon exploration and Phase 15).
+ */
+export const hitModifier = (b: Battle, actor: Combatant) =>
+  b.hitModifier[actor.side] +
+  (b.dark && actor.side === 'party' && !actor.seesInDark ? DARK_HIT_MODIFIER : 0);
 
 function side(b: Battle, s: Combatant['side']) {
   return b.combatants.filter((c) => c.side === s);
@@ -59,7 +72,10 @@ export function targets(b: Battle, actor: Combatant, attack: Attack): Combatant[
     if (attack.mode !== 'melee' || flying(actor) || flying(t)) return true;
     return t.row === 0 || exposed(b, t);
   };
-  const up = foes.filter((t) => isUp(t) && reachable(t));
+  // Sanctified Ward: foes look elsewhere unless acting on Instinct or out of other targets.
+  const reached = foes.filter((t) => isUp(t) && reachable(t));
+  const unwarded = reached.filter((t) => !t.sanctified);
+  const up = actor.instinctive || unwarded.length === 0 ? reached : unwarded;
   const fighting = up.filter((t) => !t.noncombatant);
   if (fighting.length > 0) return fighting;
   if (up.length > 0) return up;

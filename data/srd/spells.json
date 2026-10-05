@@ -735,5 +735,181 @@
     "tradition": "elementalist",
     "level": 5,
     "text": "The elementalist calls up a deep, rolling tremor from within the earth, centering it on a visible point and affecting all structures in a radius of up to five hundred feet. This spell’s effects build slowly, requiring five minutes to fully manifest, but they can successfully topple or destroy any structures, tunnels, or caves within the affected area unless such structures are magically reinforced. The effects are negated if the spell is dispelled within a minute after it was cast; after that, it’s too late to stop the effect."
+  },
+  {
+    "id": "command-the-dead",
+    "name": "Command the Dead",
+    "source": {
+      "file": "4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md",
+      "heading": "Command the Dead Level 1"
+    },
+    "tradition": "necromancer",
+    "level": 1,
+    "text": "The necromancer exerts their will over a number of hit dice worth of undead equal to twice their character level. These undead must be visible and within one hundred feet of the caster. Undead get a Mental saving throw to resist this binding, at a penalty equal to the caster’s Magic skill. Creatures only partially-bewitched by the spell due to their excess hit dice merely stand dazed for a round. Those fully within the hit die cap who are affected become suicidally loyal to the necromancer until they are released by the caster. Regardless of how often the caster uses this spell, they may have no more than twice their level worth of hit dice bound at any one time, with the oldest-enchanted being first released."
+  },
+  {
+    "id": "query-the-skull",
+    "name": "Query the Skull",
+    "source": {
+      "file": "4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md",
+      "heading": "Query the Skull Level 1"
+    },
+    "tradition": "necromancer",
+    "level": 1,
+    "text": "This spell requires a corpse with largely-intact organs of communication. The corpse cannot have been dead for more than one day per caster level. Once sorceled, the corpse will answer up to one question per caster level, with the caster understanding the answers regardless of the creature’s natural language. Corpses are laconic, and generally answer in no more than one or two sentences; their replies will be truthful, but tend to be literal and they have no power to hypothesize or make judgments. This spell may not be used twice on the same corpse."
+  },
+  {
+    "id": "smite-the-dead",
+    "name": "Smite the Dead",
+    "source": {
+      "file": "4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md",
+      "heading": "Smite the Dead Level 1"
+    },
+    "tradition": "necromancer",
+    "level": 1,
+    "text": "The necromancer conjures a blast of dispelling force at a point within one hundred feet per caster level, affecting an area up to 20 feet in radius. All hostile undead within that area immediately suffer 1d10 damage per caster level. Undead with hit dice equal or less than the caster’s level must make a Physical save or be destroyed outright. The necromancer may Commit Effort for the day immediately before casting this spell; if so, its casting does not count against the Necromancer’s available spell slots for the day."
+  },
+  {
+    "id": "terrible-liveliness",
+    "name": "Terrible Liveliness",
+    "source": {
+      "file": "4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md",
+      "heading": "Terrible Liveliness Level 1"
+    },
+    "tradition": "necromancer",
+    "level": 1,
+    "text": "A necromancer can give an undead creature the semblance of a healthy, normal living being with this spell. The target appears as it did in life, at any point in its lifespan that the necromancer so desires, and is capable of performing all normal human activities that its cognition allows it to perform. The spell uses the creature’s nature as a template for its effects, so the disguise is tangible and physically real until dispelled or the necromancer drops the effect. A necromancer can maintain only one such disguise per level, and it does not work on sentient unwilling targets."
+  },
+  {
+    "id": "augment-mortal-vitality",
+    "name": "Augment Mortal Vitality",
+    "source": {
+      "file": "4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md",
+      "heading": "Augment Mortal Vitality Level 2"
+    },
+    "tradition": "necromancer",
+    "level": 2,
+    "text": "The necromancer may refine and enhance the natural flow of vitality within a willing visible target. For the rest of the scene, all Physical saving throws they make gain a bonus equal to the necromancer’s Magic skill and they automatically stabilize when Mortally Wounded. Once during the scene, as an Instant action, they can immediately heal from all damage inflicted by an injury that did not Mortally Wound them. The recipient of this spell gains one System Strain."
+  },
+  {
+    "id": "enfeebling-wave",
+    "name": "Enfeebling Wave",
+    "source": {
+      "file": "4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md",
+      "heading": "Enfeebling Wave Level 2"
+    },
+    "tradition": "necromancer",
+    "level": 2,
+    "text": "A wash of debilitating force erupts in a 20-foot radius at a visible point within one hundred feet. All living creatures within the area must make a Physical saving throw or for the rest of the scene their movement rate is halved and they must make all attack and damage rolls twice and take the worse result. If the save is successful, these penalties apply only to their next turn."
+  },
+  {
+    "id": "final-death",
+    "name": "Final Death",
+    "source": {
+      "file": "4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md",
+      "heading": "Final Death Level 2"
+    },
+    "tradition": "necromancer",
+    "level": 2,
+    "text": "The necromancer curses one visible target per level. For the rest of the scene, these targets cannot recover or gain hit points and will die instantly if Mortally Wounded. After each failed instance of healing, a target can make a Physical save to throw off the spell."
+  },
+  {
+    "id": "raise-corpse",
+    "name": "Raise Corpse",
+    "source": {
+      "file": "4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md",
+      "heading": "Raise Corpse Level 2"
+    },
+    "tradition": "necromancer",
+    "level": 2,
+    "text": "The necromancer targets a mostly-intact skeleton or corpse, imbuing it with a semblance of life. Whatever the creature’s attributes were in life, it now has 1 HD, an AC of 13, a Move of 30’/round, a +0 skill bonus, saves of 15+, a +1/1d6 unarmed melee attack, Instinct 0, and a Morale of 12. Such corpses may be equipped with weapons or armor. Its decay or dissolution immediately ceases, and it becomes suicidally loyal to its creator. The corpse has no natural volition, but will obey commands with a human degree of intelligence. It has only vague memories of its prior life, and while it may retain human tics or habits it had in life it can answer only the simplest and most self-evident questions. Damage to a corpse can be repaired only by casting this spell on it again, which restores it to its original “health”. The corpse continues to exist until it is reduced to zero hit points or its creator releases it. A necromancer cannot have more active subjects of this spell than their character level."
+  },
+  {
+    "id": "compel-flesh",
+    "name": "Compel Flesh",
+    "source": {
+      "file": "4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md",
+      "heading": "Compel Flesh Level 3"
+    },
+    "tradition": "necromancer",
+    "level": 3,
+    "text": "A visible living creature or physically-bodied undead within 100 feet is ensorceled by this spell, their flesh and bones becoming tempo rarily enthralled to the caster’s will. The target becomes paralyzed unless commanded by the caster as an On Turn action; once given a command, their body will dutifully carry it out on their next turn. The user’s mind is not affected by this spell, so they cannot be made to cast spells, answer questions, or perform other intellectual tasks, but they will fight, move, and perform other non-suicidal physical acts as normal. The target may make a Physical saving throw at the start of each of their turns to throw off the effect, but they will inevitably suffer one point of damage per caster level with each attempt as their flesh writhes and tears. If not thrown off earlier, the spell lasts until the end of the scene."
+  },
+  {
+    "id": "festering-curse",
+    "name": "Festering Curse",
+    "source": {
+      "file": "4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md",
+      "heading": "Festering Curse Level 3"
+    },
+    "tradition": "necromancer",
+    "level": 3,
+    "text": "The qualities of a corpse are forced upon a visible living target. The subject begins to rot, fester, and decay in whatever ways the necromancer thinks appropriate. Food tastes like ashes, water does not quench thirst, and their body is numb to all physical pleasures. They suffer a -2 penalty to all social skill checks due to their repugnance. This transformation does not inflict physical injury, but it makes the tar get’s life an utterly joyless misery until it is dispelled or the necromancer lifts the curse. Creatures with more hit dice than the necromancer has levels can make a Physical save to resist the curse."
+  },
+  {
+    "id": "forgetting-the-grave",
+    "name": "Forgetting the Grave",
+    "source": {
+      "file": "4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md",
+      "heading": "Forgetting the Grave Level 3"
+    },
+    "tradition": "necromancer",
+    "level": 3,
+    "text": "A necromancer can temporarily suspend the mortality of a willing target within sight. For one round per Necromancer level, the creature simply cannot die, no matter how drastic their injuries. Those reduced to zero hit points lose their Move action each turn but can continue to act otherwise; if such a target is damaged yet again, they must make a Physical saving throw each time or become incapable of movement until healed. At the spell’s end targets reduced to zero hit points are Mortally Wounded; those that have been dismembered or otherwise slaughtered beyond the hope of survival die instantly."
+  },
+  {
+    "id": "merge-souls",
+    "name": "Merge Souls",
+    "source": {
+      "file": "4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md",
+      "heading": "Merge Souls Level 3"
+    },
+    "tradition": "necromancer",
+    "level": 3,
+    "text": "By molding the plasmic stuff of life force, the necromancer can create a bond between two willing or helpless targets. These subjects must be close enough for the necromancer to touch; thereafter, for as long as the spell is in effect, the two creatures pool their hit points. Injuries to either subtract from this pool, and neither dies until it is reduced to zero, whereupon both are Mortally Wounded. They can communicate telepathically at will while the spell is in effect. The power ends at daybreak; if dispelled sooner, the remaining pool is split proportionately."
+  },
+  {
+    "id": "boneshaper",
+    "name": "Boneshaper",
+    "source": {
+      "file": "4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md",
+      "heading": "Boneshaper Level 4"
+    },
+    "tradition": "necromancer",
+    "level": 4,
+    "text": "The clay of flesh and bone run obediently to the will of the necromancer. Whether living or undead, a willing or helpless victim under the effects of this spell can be reshaped into any roughly-equivalent form with an hour’s work. Limbs can be added or removed and existing tissue can be recolored, re-textured, or rearranged to the necromancer’s wishes. Perfect imitation of a particular creature requires a Dex/Magic skill check against difficulty 10. This spell is limited in the physical changes it can effect; a bonus of +1 can be added to modifier of Charisma or a physical attribute at the cost of a -1 penalty to the modifier of one of the same attributes, to a maximum of +2 or -2. This spell lasts until the necromancer lifts it or it is dispelled."
+  },
+  {
+    "id": "raise-grave-knight",
+    "name": "Raise Grave Knight",
+    "source": {
+      "file": "4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md",
+      "heading": "Raise Grave Knight Level 4"
+    },
+    "tradition": "necromancer",
+    "level": 4,
+    "text": "The corpse used for this spell must be of a relatively powerful creature with at least four hit dice or levels. The result is much like that of the Raise Corpse spell, but this undead servitor is much stronger, with 4 HD, AC 15, a Move of 40’/action, a +1 skill bonus, saves of 13+, Instinct 0, Morale of 12, and a melee attack of +6/1d10, assuming it doesn’t use a normal weapon. It is fully intelligent and self-willed, albeit utterly devoted to its creator, and it remembers a significant amount about its prior life. A grave knight regains all lost hit points at dusk each day, assuming it’s not destroyed. A caster may have only one grave knight active at a time. One that has been reduced to zero hit points is destroyed and can only be rebuilt with a month of painstaking repair and re-enchantment."
+  },
+  {
+    "id": "call-of-the-tomb",
+    "name": "Call of the Tomb",
+    "source": {
+      "file": "4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md",
+      "heading": "Call of the Tomb Level 5"
+    },
+    "tradition": "necromancer",
+    "level": 5,
+    "text": "The necromancer invokes the inescapable urge for self-dissolution within the substance of all that exists, amplifying the weight of their own mortality. All enemy creatures within forty feet are affected. Targets can make a Physical saving throw to resist, in which case the effects last only one round, otherwise lasting for one round per caster level. During this time all attacks made against the victims automatically hit and all damage dice they suffer are maximized. Any special defenses they may have against mundane weapons or certain types of injury are negated while the spell is on them."
+  },
+  {
+    "id": "everlasting",
+    "name": "Everlasting",
+    "source": {
+      "file": "4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md",
+      "heading": "Everlasting Level 5"
+    },
+    "tradition": "necromancer",
+    "level": 5,
+    "text": "The spell may be triggered as an Instant action by the caster, imparting a burst of unquenchable life force to all allied creatures within 50 feet. For the next five rounds, no affected ally can be reduced below 1 hit point, regardless of the damage inflicted upon them. At the end of the spell’s effect, the caster’s own life energy is exhausted, leaving them with only 1 hit point. A creature can benefit from this spell no more than once per day."
   }
 ]

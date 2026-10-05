@@ -1,7 +1,7 @@
-// The inn, the healer, and the crypt or mortuary (docs/rules-adaptation.md, Towns in Phase 6a and
-// Raising the dead). Inn: SRD 3.3.1's common lifestyle by the night. Healer: SRD 3.3.1 magical
-// healing, which adds System Strain like any magical healing (vendor/wwn-srd/2.0 The Rules of the
-// Game/2.5.0, 2.5.2); curing Frailty and raising the dead are house prices.
+// The inn, the healer, and the crypt, mortuary, or temple (docs/rules-adaptation.md, Towns in
+// Phase 6a and Raising the dead). Inn: SRD 3.3.1's common lifestyle by the night. Healer: SRD
+// 3.3.1 magical healing, which adds System Strain like any magical healing (vendor/wwn-srd/2.0
+// The Rules of the Game/2.5.0, 2.5.2); curing Frailty and raising the dead are house prices.
 import type { MissionGiver } from '../../data/schemas/index.ts';
 import { addStrain, fullRest } from '../../rules/strain.ts';
 import type { GameData } from '../character/context.ts';

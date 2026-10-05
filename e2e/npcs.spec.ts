@@ -13,6 +13,7 @@ async function start(page: Page) {
   await page.getByRole('combobox', { name: 'Front row, slot 2' }).selectOption({ label: 'Grukk' });
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('npc-e2e');
   await page.getByRole('button', { name: 'Start a new world' }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
 }
 
 /** Changes the autosaved world, then picks the journey back up. */
@@ -31,7 +32,7 @@ async function edit(page: Page, change: string) {
 
 test('hires a guard at the tavern', async ({ page }) => {
   await start(page);
-  await page.getByRole('button', { name: 'Visit Westhold' }).click();
+  await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
   await page.getByRole('tab', { name: 'Tavern' }).click();
   await page.getByRole('button', { name: 'Hire a Guard' }).click();
   const npcs = page.getByRole('region', { name: 'NPCs' });
@@ -60,7 +61,7 @@ test('bribes captors to free a captive, then brings them home', async ({ page },
   await encounter.getByRole('button', { name: 'Let them pass' }).click();
   await expect(page.getByRole('region', { name: 'Encounter' })).toHaveCount(0);
 
-  // One hex east along the road is Eastmarch, the merchant's home.
+  // One hex east along the road is Scrapmarch, the merchant's home.
   await page.locator('[data-hex="20,8"]').click();
   for (let i = 0; i < 4; i++) {
     if (await page.getByRole('region', { name: 'Encounter' }).isVisible()) break;

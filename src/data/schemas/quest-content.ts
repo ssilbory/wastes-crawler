@@ -111,7 +111,10 @@ export const MissionGiverSchema = z.strictObject({
   name: z.string().min(1),
   town: IdSchema,
   text: z.string().min(1),
-  /** A necromancer's crypt or a death priest's mortuary: raises the dead and gives raising quests. */
-  raises: z.enum(['crypt', 'mortuary']).optional(),
+  /**
+   * A necromancer's crypt, a Priest of Death's mortuary, or a Blood Priest temple (Phase 14d): raises
+   * the dead and gives raising quests.
+   */
+  raises: z.enum(['crypt', 'mortuary', 'temple']).optional(),
 });
 export type MissionGiver = z.infer<typeof MissionGiverSchema>;

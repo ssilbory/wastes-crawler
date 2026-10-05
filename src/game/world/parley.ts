@@ -2,6 +2,7 @@
 // (vendor/wwn-srd/5.0 Monsters and Foes/Reaction Rolls and Parlayeing.md): one try per encounter to
 // talk, intimidate, or bribe a group into a better mood. Friendlier groups back off and give up
 // captives; the most helpful pay tribute or offer to sign on.
+import { mercy } from './arts.ts';
 import type { Reaction } from '../../rules/reaction.ts';
 import { toTenths } from '../../rules/economy.ts';
 import type { GameData } from '../character/context.ts';
@@ -87,11 +88,17 @@ export function parley(
       alive(w).filter((m) => m.character.hp.current > 0).length +
       w.npcs.filter((n) => n.hp > 0 && npcFights(data, n)).length;
     const outnumber = approach === 'intimidate' && us > e.enemies.flat().length ? 1 : 0;
-    const check =
+    const talk = () => memberCheck(w, data, speaker, 'convince', ['cha'], difficulty).success;
+    success =
       approach === 'talk'
-        ? memberCheck(w, data, speaker, 'convince', ['cha'], difficulty)
-        : memberCheck(w, data, speaker, 'lead', ['str', 'cha'], difficulty, outnumber);
-    success = check.success;
+        ? talk()
+        : memberCheck(w, data, speaker, 'lead', ['str', 'cha'], difficulty, outnumber).success;
+    // Words of Mercy: a failed plea for peace may be made again, for Effort for the day.
+    const priest = approach === 'talk' && !success ? mercy(w, data) : undefined;
+    if (priest) {
+      note(w, `${priest.character.name} speaks words of mercy.`);
+      success = talk();
+    }
   }
   const band = BANDS.indexOf(e.reaction) + (success ? 1 : -1);
   e.reaction = BANDS[Math.max(0, Math.min(BANDS.length - 1, band))] as Reaction;

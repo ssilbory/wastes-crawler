@@ -1,7 +1,7 @@
 import type { ClassOption } from '../../data/schemas/index.ts';
 import type { MagicChoice, StepStatus } from '../../game/character/creation.ts';
 import { findTradition } from '../../game/character/class-step.ts';
-import { artPicks, learnableSpells, spellSlots } from '../../game/character/magic.ts';
+import { artChoices, artPicks, learnableSpells, spellSlots } from '../../game/character/magic.ts';
 import { data } from './data.ts';
 import { Step } from './Field.tsx';
 
@@ -60,9 +60,7 @@ export function MagicStep(props: {
     <Step title="6. Magic" status={props.status}>
       {artPicks(data, mage).map((p) => {
         const tradition = findTradition(data, p.tradition)?.name ?? p.tradition;
-        const options = data.srd.arts.filter(
-          (a) => a.tradition === p.tradition && !p.automatic.includes(a.id),
-        );
+        const options = artChoices(data, p, [], 1);
         return (
           <fieldset key={p.tradition} class="picks">
             <legend>
@@ -81,40 +79,46 @@ export function MagicStep(props: {
           </fieldset>
         );
       })}
-      <fieldset class="picks">
-        <legend>Spells known: pick {mage.startingSpells}</legend>
-        {spells.map((s) => (
-          <Check
-            key={s.id}
-            label={s.name}
-            title={s.text}
-            checked={choice.known.includes(s.id)}
-            onChange={(on) =>
-              set({
-                known: toggle(choice.known, s.id, on),
-                prepared: on ? choice.prepared : choice.prepared.filter((x) => x !== s.id),
-              })
-            }
-          />
-        ))}
-      </fieldset>
-      {choice.known.length > 0 && (
-        <fieldset class="picks">
-          <legend>Prepared: up to {slots.spellsPrepared}</legend>
-          {choice.known.map((id) => (
-            <Check
-              key={id}
-              label={`Prepare ${spellName(id)}`}
-              checked={choice.prepared.includes(id)}
-              onChange={(on) => set({ prepared: toggle(choice.prepared, id, on) })}
-            />
-          ))}
-        </fieldset>
+      {mage.startingSpells === 0 ? (
+        <p class="hint">No spells: miracles alone, worked with Effort, and unhindered by armor.</p>
+      ) : (
+        <>
+          <fieldset class="picks">
+            <legend>Spells known: pick {mage.startingSpells}</legend>
+            {spells.map((s) => (
+              <Check
+                key={s.id}
+                label={s.name}
+                title={s.text}
+                checked={choice.known.includes(s.id)}
+                onChange={(on) =>
+                  set({
+                    known: toggle(choice.known, s.id, on),
+                    prepared: on ? choice.prepared : choice.prepared.filter((x) => x !== s.id),
+                  })
+                }
+              />
+            ))}
+          </fieldset>
+          {choice.known.length > 0 && (
+            <fieldset class="picks">
+              <legend>Prepared: up to {slots.spellsPrepared}</legend>
+              {choice.known.map((id) => (
+                <Check
+                  key={id}
+                  label={`Prepare ${spellName(id)}`}
+                  checked={choice.prepared.includes(id)}
+                  onChange={(on) => set({ prepared: toggle(choice.prepared, id, on) })}
+                />
+              ))}
+            </fieldset>
+          )}
+          <p class="hint">
+            Casts {slots.spellsCast} spell{slots.spellsCast === 1 ? '' : 's'} a day. A known spell
+            can also be cast for System Strain equal to its level.
+          </p>
+        </>
       )}
-      <p class="hint">
-        Casts {slots.spellsCast} spell{slots.spellsCast === 1 ? '' : 's'} a day. A known spell can
-        also be cast for System Strain equal to its level.
-      </p>
     </Step>
   );
 }

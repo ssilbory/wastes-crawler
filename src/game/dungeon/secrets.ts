@@ -9,7 +9,7 @@ import { alive, bestAt, memberCheck, note } from '../world/members.ts';
 import type { TownResult } from '../world/services.ts';
 import type { World } from '../world/types.ts';
 import { levelOf } from './explore.ts';
-import { inDark } from './light.ts';
+import { blind } from './light.ts';
 import { passTurn } from './time.ts';
 
 export const SECRET_DIFFICULTY = 8;
@@ -77,7 +77,7 @@ export function search(w: World, data: GameData): TownResult {
   const s = w.dungeon;
   if (!s) throw new Error('the party is not in a dungeon');
   if (w.encounter) return { ok: false, reason: 'Settle the encounter first.' };
-  if (inDark(w, data)) return { ok: false, reason: 'It is too dark to search.' };
+  if (blind(w, data)) return { ok: false, reason: 'It is too dark to search.' };
   const cells = [s.at, ...FACINGS.map((f) => ahead(s.at, f))];
   if (look(w, data, hidden(w, data, cells), 0) === 0) note(w, 'The search turns up nothing.');
   passTurn(w, data);
@@ -87,7 +87,7 @@ export function search(w: World, data: GameData): TownResult {
 /** The free look at secret doors on the party's own cell, once each. */
 export function glimpse(w: World, data: GameData): void {
   const s = state(w);
-  if (inDark(w, data)) return;
+  if (blind(w, data)) return;
   const seen = new Set(s.glimpsed[s.level] ?? []);
   const doors = hidden(w, data, [s.at]).filter((d) => !seen.has(d.key));
   if (doors.length === 0) return;

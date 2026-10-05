@@ -5,11 +5,12 @@
 import { actsOnInstinct, MORTAL_ROUNDS } from '../../rules/combat.ts';
 import { frontDrops, ROW_SLOTS, type Formation, type FormationRow } from '../../rules/formation.ts';
 import { act, stabilize } from './actions.ts';
-import { freeActions, monsterAction, partyAction } from './ai.ts';
+import { monsterAction, partyAction } from './ai.ts';
+import { freeActions } from './free-actions.ts';
 import { say } from './damage.ts';
 import { checkMorale } from './morale.ts';
-import { canAct, isUp } from './targeting.ts';
-import type { Battle, Combatant, Controller, Outcome } from './types.ts';
+import { canAct, isUp, targets } from './targeting.ts';
+import type { Attack, Battle, Combatant, Controller, Outcome } from './types.ts';
 
 export const MAX_ROUNDS = 100;
 
@@ -22,7 +23,11 @@ export function beginRound(b: Battle): void {
   const first = pcs.filter((c) => c.actsFirst);
   const rest = pcs.filter((c) => !c.actsFirst);
   const sides = b.partyFirst ? [rest, foes] : [foes, rest];
-  b.queue = [...first, ...sides.flat()].map((c) => c.id);
+  // Slow creatures, such as zombies, always act last (Phase 14a).
+  const turns = [...first, ...sides.flat()];
+  b.queue = [...turns.filter((c) => !c.actsLast), ...turns.filter((c) => c.actsLast)].map(
+    (c) => c.id,
+  );
 }
 
 function checkEnd(b: Battle): void {
@@ -56,7 +61,7 @@ function beginTurn(b: Battle, actor: Combatant): void {
   if (b.turnBegun === actor.id) return;
   b.turnBegun = actor.id;
   actor.totalDefense = false;
-  if (actor.kind === 'pc') freeActions(b, actor);
+  freeActions(b, actor);
 }
 
 /** Plays the current actor's turn: free actions, then one action (monsters: one per attack). */
@@ -64,12 +69,32 @@ export function takeTurn(b: Battle, actor: Combatant, controller: Controller): v
   beginTurn(b, actor);
   b.queue.shift();
   b.turnBegun = null;
-  const swings = actor.kind === 'monster' ? actor.attacksPerRound : 1;
-  for (let i = 0; i < swings && canAct(actor) && !b.outcome; i++) {
-    act(b, actor, controller(b, actor));
+  const plan = swingPlan(b, actor);
+  for (let i = 0; i < plan.length && canAct(actor) && !b.outcome; i++) {
+    actor.forcedAttack = plan[i] as number | null;
+    const action = controller(b, actor);
+    actor.forcedAttack = null;
+    act(b, actor, action);
     checkMorale(b);
     checkEnd(b);
+    // Casting or breathing is the Main Action, whatever the monster's number of attacks.
+    if (action.kind === 'cast' || action.kind === 'breath') break;
   }
+}
+
+/**
+ * The attack each swing of a turn must use: a monster's routine, or its volley in the first round
+ * or when the routine can reach no one (Phase 14a); otherwise its best attack, once per attack it
+ * has (a PC: once).
+ */
+function swingPlan(b: Battle, actor: Combatant): (number | null)[] {
+  const { routine, volley } = actor;
+  if (routine) {
+    const reach = (i: number) => targets(b, actor, actor.attacks[i] as Attack).length > 0;
+    // A volley softens the party up in the first round, or serves when nothing is in reach.
+    return volley && (b.round === 1 || !reach(routine[0] as number)) ? volley : routine;
+  }
+  return Array<null>(actor.kind === 'monster' ? actor.attacksPerRound : 1).fill(null);
 }
 
 function formation(b: Battle): Formation {
@@ -109,7 +134,10 @@ function endOfRound(b: Battle): void {
     c.shieldUsed = false;
     c.instinctive = false;
     if (c.blindRounds > 0) c.blindRounds -= 1;
+    if (c.heldRounds > 0) c.heldRounds -= 1;
     if (c.wardRounds > 0) c.wardRounds -= 1;
+    if (c.rootedRounds > 0) c.rootedRounds -= 1;
+    if (c.flyingRounds > 0) c.flyingRounds -= 1;
   }
   if (b.layout.party === 'formation') shiftFormation(b);
   // Monster rows step up when their front row is empty.
@@ -117,7 +145,9 @@ function endOfRound(b: Battle): void {
   for (const side of ['party', 'enemy'] as const) {
     if (b.layout[side] !== 'rows') continue;
     const rows = monsters.filter((c) => c.side === side);
-    while (rows.length > 0 && !rows.some((e) => e.row === 0)) for (const e of rows) e.row -= 1;
+    // Petrifying Stare's rooted stay where they stand (Phase 15).
+    const movers = rows.filter((e) => e.rootedRounds === 0);
+    while (movers.length > 0 && !rows.some((e) => e.row === 0)) for (const e of movers) e.row -= 1;
   }
   b.stabilizedThisRound.clear();
   b.round += 1;

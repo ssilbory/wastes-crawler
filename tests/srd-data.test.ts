@@ -13,18 +13,49 @@ describe('data/srd', () => {
     expect(Object.fromEntries(Object.entries(srd).map(([k, v]) => [k, v.length]))).toEqual({
       skills: 21,
       foci: 35,
-      classes: 6,
-      progressions: 13,
-      'casting-progressions': 5,
+      classes: 9,
+      progressions: 23,
+      'casting-progressions': 9,
       'weapon-traits': 12,
       weapons: 29,
       armor: 15,
       gear: 29,
       'gear-bundles': 6,
-      spells: 67,
-      arts: 27,
+      spells: 83,
+      arts: 65,
       monsters: 35,
+      'faction-assets': 81,
     });
+  });
+
+  it('matches hand-checked faction assets (6.8.0 to 6.10.0)', () => {
+    const asset = (id: string) => srd['faction-assets'].find((a) => a.id === id);
+    expect(asset('infantry')).toMatchObject({
+      attribute: 'force',
+      rating: 3,
+      cost: 6,
+      hp: 6,
+      magic: 'none',
+      attack: {
+        kind: 'check',
+        attacker: 'force',
+        defender: 'force',
+        damage: { count: 1, sides: 8 },
+      },
+      counter: { count: 1, sides: 6, modifier: 0 },
+      qualities: [],
+    });
+    expect(asset('front-merchant')?.counter).toEqual({ count: 1, sides: 4, modifier: -1 });
+    expect(asset('informers')?.attack).toEqual({
+      kind: 'check',
+      attacker: 'cunning',
+      defender: 'cunning',
+      damage: null,
+    });
+    expect(asset('seditionists')?.attack).toEqual({ kind: 'special' });
+    expect(asset('farmers')).toMatchObject({ attack: null, qualities: ['action'] });
+    expect(asset('farmers')?.text).toContain('on a 5+, they gain 1 Treasure');
+    expect(asset('hired-legion')).toMatchObject({ attribute: 'wealth', rating: 8, cost: 30 });
   });
 
   it('matches hand-checked SRD values', () => {

@@ -11,6 +11,7 @@ import {
   extractWeaponTraits,
 } from './extractors/equipment.ts';
 import { extractArts, extractSpells } from './extractors/magic.ts';
+import { extractFactionAssets } from './extractors/factions.ts';
 import { extractMonsters } from './extractors/monsters.ts';
 import { extractFoci, extractSkills } from './extractors/skills-foci.ts';
 import { ErratumSchema, SrdReader } from './reader.ts';
@@ -42,6 +43,7 @@ const raw: SrdData = {
   spells: extractSpells(reader),
   arts: extractArts(reader),
   monsters: extractMonsters(reader),
+  'faction-assets': extractFactionAssets(reader),
 };
 
 const problems: string[] = [];

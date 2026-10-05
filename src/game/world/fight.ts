@@ -12,8 +12,11 @@ import { difficultyTier, type Difficulty } from './difficulty.ts';
 import { alive, note, setHp } from './members.ts';
 import { accrueShares, fights, moraleAfterFight, npcMonster, removeNpc, typeOf } from './npcs.ts';
 import { emit } from './bus.ts';
-import { inDark } from '../dungeon/light.ts';
+import { faithLit, inDark } from '../dungeon/light.ts';
+import { FAITH_LIGHT, userOf, vigor } from './arts.ts';
 import { onSpecial } from '../dungeon/specials.ts';
+import { recordFallen } from './healer.ts';
+import { leaveCorpses } from './necromancy.ts';
 import { freeCaptive } from './rescue.ts';
 import { addLoot } from './shop.ts';
 import { wipe } from './town.ts';
@@ -35,6 +38,8 @@ export interface WorldBattle {
   quest: string | null;
   /** The garrison post these enemies hold, if any. */
   garrison: string | null;
+  /** The faction patrol they are, as faction:uid, if any (Phase 13b). */
+  patrol: string | null;
 }
 
 function npcSetup(data: GameData, n: Npc): NpcSetup {
@@ -51,12 +56,17 @@ function npcSetup(data: GameData, n: Npc): NpcSetup {
   };
 }
 
-const fighters = (w: World) => alive(w).filter((m) => m.character.hp.current > 0);
+const fighters = (w: World) => alive(w).filter((m) => m.character.hp.current > 0 && !m.reviving);
 
 export function encounterBattle(w: World, data: GameData): WorldBattle {
   if (!w.encounter) throw new Error('no encounter to fight');
   const fight = partyBattle(w, data, w.encounter.enemies, true, w.encounter.captive);
-  return { ...fight, quest: w.encounter.quest, garrison: w.encounter.garrison ?? null };
+  return {
+    ...fight,
+    quest: w.encounter.quest,
+    garrison: w.encounter.garrison ?? null,
+    patrol: w.encounter.patrol ?? null,
+  };
 }
 
 /** A fight's starting line-up as plain data, so the XP simulation can replay it in a worker. */
@@ -68,6 +78,10 @@ export interface PartySetup {
     frail: boolean;
     spellsCast: number;
     effortDay: number;
+    /** Limited art uses since the last rest (Phase 15). */
+    artUses: Record<string, number>;
+    /** Effort already committed: Light of Faith lighting the way (Phase 15). */
+    committed: number;
   }[];
   npcs: NpcSetup[];
   enemies: string[][];
@@ -84,6 +98,7 @@ export function partySetup(
   enemies: string[][],
   withNpcs: boolean,
 ): PartySetup {
+  const faith = faithLit(w, data) ? userOf(w, data, FAITH_LIGHT) : undefined;
   return {
     party: fighters(w).map((m) => ({
       character: m.character,
@@ -92,6 +107,8 @@ export function partySetup(
       frail: m.frail,
       spellsCast: m.spellsCast,
       effortDay: m.effortDay,
+      artUses: { ...m.artUses },
+      committed: m === faith ? 1 : 0,
     })),
     npcs: withNpcs ? w.npcs.filter((n) => n.hp > 0).map((n) => npcSetup(data, n)) : [],
     enemies,
@@ -118,7 +135,8 @@ export function battleFrom(data: GameData, rng: Rng, setup: PartySetup, log: boo
     if (c.caster) {
       c.caster.spellsLeft = Math.max(0, c.caster.spellsLeft - p.spellsCast);
       c.caster.effortDay = Math.min(c.caster.effortMax, p.effortDay);
-      c.caster.effortUsed = c.caster.effortDay;
+      c.caster.effortUsed = Math.min(c.caster.effortMax, c.caster.effortDay + p.committed);
+      c.caster.uses = { ...p.artUses };
     }
   });
   return battle;
@@ -143,6 +161,7 @@ export function partyBattle(
     captive,
     quest: null,
     garrison: null,
+    patrol: null,
   };
 }
 
@@ -168,6 +187,7 @@ export function carryBack(data: GameData, m: Member, c: Battle['combatants'][num
     const fresh = pcCombatant(data, m.character).caster as CasterState;
     m.spellsCast = Math.max(0, fresh.spellsLeft - c.caster.spellsLeft);
     m.effortDay = c.caster.effortDay;
+    m.artUses = { ...c.caster.uses };
   }
 }
 
@@ -216,6 +236,9 @@ export function applyBattle(
     const m = w.members.find((x) => x.id === id) as Member;
     carryBack(data, m, fight.battle.combatants[i] as Battle['combatants'][number]);
   });
+  recordFallen(w, fight.memberIds, fight.battle);
+  // Tireless Vigor: a Healer regains a hit point after each fight (Phase 15).
+  vigor(w, data, 1);
   const npcLost = npcsBack(w, data, fight);
   w.encounter = null;
   if (result.outcome === 'enemy') {
@@ -231,9 +254,15 @@ export function applyBattle(
   else {
     note(w, `The party wins after ${result.rounds} round${result.rounds === 1 ? '' : 's'}.`);
     winnings(w, data, fight.enemies);
+    leaveCorpses(w, data, fight.enemies);
     if (difficulty) award(w, data, fight, difficulty);
     if (fight.captive) freeCaptive(w, data, fight.captive);
-    emit(w, data, { kind: 'fight-won', quest: fight.quest, garrison: fight.garrison });
+    emit(w, data, {
+      kind: 'fight-won',
+      quest: fight.quest,
+      garrison: fight.garrison,
+      patrol: fight.patrol,
+    });
   }
   const tier = difficulty && difficultyTier(data, difficulty).name;
   const dangerous = tier !== null && data.content.npcRules.moraleTiers.includes(tier);

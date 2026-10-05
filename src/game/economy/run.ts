@@ -226,7 +226,7 @@ export function runEconomy(
     // joins with the lowest XP of any PC in the world (docs/rules-adaptation.md, Towns in Phase
     // 6a). Then rest until everyone is whole: at the inn while the purse allows, then in a made
     // camp outside town, which heals as much for free (Food and Conditions).
-    // Only a town with a crypt or mortuary raises the dead; elsewhere they wait for one.
+    // Only a town with a crypt, mortuary, or temple raises the dead; elsewhere they wait for one.
     const raiser = data.content.missionGivers.some((g) => g.town === here && g.raises);
     pcs.forEach((p, i) => {
       if (!p.dead || !raiser) return;

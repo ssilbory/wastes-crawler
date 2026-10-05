@@ -210,9 +210,11 @@ describe('magic content', () => {
       traditions: [
         {
           ...hm,
-          id: 'necromancer',
+          id: 'witch',
           bonusSkill: 'necromancy',
           effort: { ...hm.effort, skills: ['death'] },
+          artLevels: { 'revive-the-fallen': 8 },
+          excludedArts: ['limb-restoration'],
         },
       ],
       classOptions: [
@@ -223,18 +225,22 @@ describe('magic content', () => {
             ...caster.mage,
             slots: 'nope',
             traditions: [{ tradition: 'bard', partial: false, arts: 'none' }],
+            excludedSpells: ['raise-corpse', 'no-such-spell'],
           },
         },
       ],
     };
     expect(magicReferenceErrors(srd, broken)).toEqual([
-      'traditions/necromancer: unknown skill necromancy',
-      'traditions/necromancer: unknown skill death',
-      'traditions/necromancer: has no arts',
+      'traditions/witch: unknown skill necromancy',
+      'traditions/witch: unknown skill death',
+      'traditions/witch: has no arts',
+      "traditions/witch: revive-the-fallen isn't one of its arts",
+      "traditions/witch: limb-restoration isn't one of its arts",
       'classOptions/full-wizard: unknown progression',
       'classOptions/full-high-mage: unknown casting table nope',
       'classOptions/full-high-mage: unknown tradition bard',
       'classOptions/full-high-mage: unknown casting table none',
+      'classOptions/full-high-mage: unknown excluded spell no-such-spell',
     ]);
   });
 });
@@ -254,24 +260,127 @@ describe('combat content', () => {
     const broken = {
       ...content,
       monsterCombat: [
-        ...content.monsterCombat.filter((m) => m.id !== 'herd-beast' && m.id !== 'thug-or-militia'),
+        ...content.monsterCombat
+          .filter((m) => !['herd-beast', 'thug-or-militia', 'giant-ant', 'zombie'].includes(m.id))
+          .map((m) => ({ ...m, caster: undefined })),
         { id: 'thug-or-militia', tags: [], mind: 'sapient' as const },
+        {
+          id: 'giant-ant',
+          tags: [],
+          mind: 'animal' as const,
+          routine: [{ name: 'Bite', damage: { count: 1, sides: 6, modifier: 0 }, count: 2 }],
+        },
+        {
+          id: 'zombie',
+          tags: [],
+          mind: 'mindless' as const,
+          volley: [{ name: 'Spit', damage: { count: 1, sides: 4, modifier: 0 }, count: 1 }],
+        },
         { id: 'dragon', weapon: 'breath', tags: [], mind: 'monster' as const },
       ],
       combatMagic: [
         { ...blast, effect: { ...blast.effect, skill: 'blasting' } },
         { ...shackles, effect: { ...shackles.effect, penaltySkill: 'charm' } },
         { ...blast, id: 'fireball', source: 'spell' as const },
+        ...content.combatMagic
+          .filter((m) => m.effect.kind === 'touch-heal' || m.effect.kind === 'repose')
+          .map((m) => ({ ...m, effect: { ...m.effect, skill: 'mending' } })),
       ],
     };
     expect(combatReferenceErrors(srd, broken)).toEqual([
       'monsterCombat/thug-or-militia: needs a weapon',
       'monsterCombat: no entry for herd-beast',
+      'monsterCombat/giant-ant: the routine makes 2 attacks, not 1',
+      'monsterCombat/zombie: a volley needs a routine',
       'monsterCombat/dragon: unknown monster',
       'monsterCombat/dragon: unknown weapon breath',
       'combatMagic/elemental-blast: unknown skill blasting',
       'combatMagic/ineluctable-shackles-of-volition: unknown skill charm',
       'combatMagic/fireball: unknown spell',
+      'combatMagic/healing-touch: unknown skill mending',
+      'combatMagic/final-repose: unknown skill mending',
     ]);
+  });
+
+  it('checks monster casters against the SRD tables and combat magic', () => {
+    const mage = content.monsterCombat.find((m) => m.id === 'petty-mage');
+    const coffin = content.combatMagic.find((m) => m.id === 'the-coruscating-coffin');
+    if (!mage?.caster || !coffin) throw new Error('missing content');
+    const base = mage.caster;
+    const as = (id: string, caster: Partial<typeof base>) => ({
+      ...mage,
+      id,
+      caster: { ...base, ...caster },
+    });
+    const ids = [
+      'petty-mage',
+      'tribal-shaman',
+      'skilled-sorcerer',
+      'master-wizard',
+      'flesh-crafter',
+    ];
+    const broken = {
+      ...content,
+      monsterCombat: [
+        ...content.monsterCombat.filter((m) => !ids.includes(m.id)),
+        as('petty-mage', { tradition: 'witch' }),
+        as('tribal-shaman', { slots: 'bardic' }),
+        // 5 HD: six prepared; an elementalist spell and art for a high mage, and unknown magic.
+        as('skilled-sorcerer', {
+          spells: [
+            'the-coruscating-coffin',
+            'damnation-of-the-sense',
+            'wardpact-invocation',
+            'ineluctable-shackles-of-volition',
+            'the-wind-of-the-final-repose',
+            'fireball',
+            'aqueous-harmony',
+          ],
+          arts: ['flight', 'elemental-blast'],
+        }),
+        // Elementalists cast from the high-magic list too.
+        as('master-wizard', {
+          tradition: 'elementalist',
+          spells: ['the-coruscating-coffin'],
+          arts: ['elemental-blast'],
+        }),
+        // 2 HD casts only first-level spells.
+        as('flesh-crafter', { spells: ['calculation-of-the-evoked-servitor'] }),
+      ],
+      combatMagic: [
+        ...content.combatMagic,
+        { ...coffin, id: 'aqueous-harmony' },
+        { ...coffin, id: 'calculation-of-the-evoked-servitor' },
+      ],
+    };
+    expect(combatReferenceErrors(srd, broken)).toEqual([
+      'monsterCombat/petty-mage: unknown tradition witch',
+      'monsterCombat/tribal-shaman: unknown casting table bardic',
+      'monsterCombat/skilled-sorcerer: prepares more than 6 spells',
+      'monsterCombat/skilled-sorcerer: no combat spell fireball',
+      "monsterCombat/skilled-sorcerer: aqueous-harmony is not on its tradition's lists",
+      'monsterCombat/skilled-sorcerer: no combat art flight',
+      'monsterCombat/skilled-sorcerer: elemental-blast is not a high-mage art',
+      'monsterCombat/flesh-crafter: calculation-of-the-evoked-servitor is above its spell level',
+    ]);
+  });
+});
+
+describe('the Blood Priest (Phase 14c)', () => {
+  it('is offered as a Partial Warrior or a Partial Healer, with miracles and no spells', () => {
+    const priests = content.classOptions.filter((o) =>
+      o.mage?.traditions.some((t) => t.tradition === 'blood-priest'),
+    );
+    expect(priests.map((o) => o.id)).toEqual([
+      'blood-priest-partial-warrior',
+      'blood-priest-partial-mage',
+    ]);
+    expect(priests[1]?.mage).toMatchObject({ startingSpells: 0, spellsPerLevel: 0 });
+    expect(priests[0]?.mage).toMatchObject({ startingSpells: 0, spellsPerLevel: 0 });
+    expect(content.traditions.find((t) => t.id === 'blood-priest')).toMatchObject({
+      bonusSkill: 'pray',
+      spellLists: [],
+      armoredArts: true,
+    });
   });
 });

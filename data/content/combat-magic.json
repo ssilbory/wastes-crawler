@@ -108,5 +108,247 @@
     "effect": {
       "kind": "force-save-reroll"
     }
+  },
+  {
+    "id": "smite-the-dead",
+    "source": "spell",
+    "target": "enemy-row",
+    "effect": {
+      "kind": "smite",
+      "perLevel": {
+        "count": 1,
+        "sides": 10,
+        "modifier": 0
+      },
+      "save": "physical",
+      "requiresTag": "undead"
+    }
+  },
+  {
+    "id": "armor-of-god",
+    "source": "art",
+    "target": "self",
+    "effort": "committed",
+    "effect": {
+      "kind": "ac-floor",
+      "base": 15
+    }
+  },
+  {
+    "id": "merciful-healing",
+    "source": "art",
+    "target": "wounded-ally",
+    "effort": "day",
+    "effect": {
+      "kind": "heal",
+      "tiers": [
+        {
+          "level": 1,
+          "dice": {
+            "count": 1,
+            "sides": 6,
+            "modifier": 2
+          }
+        },
+        {
+          "level": 4,
+          "dice": {
+            "count": 2,
+            "sides": 6,
+            "modifier": 4
+          }
+        },
+        {
+          "level": 8,
+          "dice": {
+            "count": 4,
+            "sides": 6,
+            "modifier": 8
+          }
+        }
+      ],
+      "strain": 1
+    }
+  },
+  {
+    "id": "god-wills-it",
+    "source": "art",
+    "target": "allies",
+    "effort": "day",
+    "limit": "scene",
+    "effect": {
+      "kind": "bless",
+      "tiers": [
+        {
+          "level": 1,
+          "bonus": 1
+        },
+        {
+          "level": 5,
+          "bonus": 2
+        },
+        {
+          "level": 10,
+          "bonus": 3
+        }
+      ]
+    }
+  },
+  {
+    "id": "smite-the-wicked",
+    "source": "art",
+    "target": "enemy",
+    "effort": "day",
+    "limit": "target-scene",
+    "effect": {
+      "kind": "smite-wicked",
+      "hit": 4
+    }
+  },
+  {
+    "id": "turn-false-life",
+    "source": "art",
+    "target": "enemies",
+    "effort": "day",
+    "effect": {
+      "kind": "turn",
+      "dice": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      },
+      "save": "mental",
+      "tags": ["undead", "unliving"]
+    }
+  },
+  {
+    "id": "wrath-of-the-most-high",
+    "source": "art",
+    "target": "enemy",
+    "effort": "scene",
+    "effect": {
+      "kind": "wrath",
+      "dice": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      }
+    }
+  },
+  {
+    "id": "healing-touch",
+    "source": "art",
+    "target": "wounded-ally",
+    "effort": "activate",
+    "effect": {
+      "kind": "touch-heal",
+      "dice": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      },
+      "skill": "heal",
+      "strain": 1
+    }
+  },
+  {
+    "id": "final-repose",
+    "source": "art",
+    "target": "enemy",
+    "effort": "day",
+    "limit": "target-scene",
+    "effect": {
+      "kind": "repose",
+      "skill": "heal"
+    }
+  },
+  {
+    "id": "sense-magic",
+    "source": "art",
+    "target": "self",
+    "effort": "committed",
+    "effect": {
+      "kind": "dark-sight",
+      "party": false
+    }
+  },
+  {
+    "id": "earthsight",
+    "source": "art",
+    "target": "self",
+    "effort": "scene",
+    "effect": {
+      "kind": "dark-sight",
+      "party": false
+    }
+  },
+  {
+    "id": "flamesight",
+    "source": "art",
+    "target": "self",
+    "effort": "committed",
+    "effect": {
+      "kind": "dark-sight",
+      "party": false
+    }
+  },
+  {
+    "id": "gravesight",
+    "source": "art",
+    "target": "self",
+    "effort": "committed",
+    "effect": {
+      "kind": "dark-sight",
+      "party": false
+    }
+  },
+  {
+    "id": "healers-eye",
+    "source": "art",
+    "target": "self",
+    "effort": "committed",
+    "effect": {
+      "kind": "dark-sight",
+      "party": false
+    }
+  },
+  {
+    "id": "the-light-of-faith",
+    "source": "art",
+    "target": "self",
+    "effort": "committed",
+    "effect": {
+      "kind": "dark-sight",
+      "party": true
+    }
+  },
+  {
+    "id": "steps-of-air",
+    "source": "art",
+    "target": "ally",
+    "effort": "scene",
+    "effect": {
+      "kind": "flight"
+    }
+  },
+  {
+    "id": "petrifying-stare",
+    "source": "art",
+    "target": "enemy",
+    "effort": "day",
+    "effect": {
+      "kind": "petrify",
+      "save": "physical"
+    }
+  },
+  {
+    "id": "sanctified-ward",
+    "source": "art",
+    "target": "self",
+    "effort": "committed",
+    "limit": "scene",
+    "effect": {
+      "kind": "sanctify"
+    }
   }
 ]

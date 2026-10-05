@@ -7,13 +7,26 @@ export const TraditionSchema = z.strictObject({
   name: z.string().min(1),
   /** Granted as a creation skill pick when the class is taken. */
   bonusSkill: IdSchema,
-  /** Spell traditions the caster can learn from. */
-  spellLists: z.array(z.enum(['high-magic', 'elementalist'])).min(1),
-  /** Effort maximum: 1 + best skill + best attribute modifier, one lower for partial casters. */
+  /** Spell traditions the caster can learn from; none for a tradition of arts alone. */
+  spellLists: z.array(z.enum(['high-magic', 'elementalist', 'necromancer'])),
+  /**
+   * Effort maximum: `base` + best skill + best attribute modifier, one lower for partial casters if
+   * `partialPenalty`; at least 1 when partial or `floorOne`. Mages: 1, with the penalty. The Blood
+   * Priest (1.5.5.1): Pray plus Wisdom or Charisma, at least 1.
+   */
   effort: z.strictObject({
     skills: z.array(IdSchema).min(1),
     attributes: z.array(AttributeSchema).min(1),
+    base: z.int().min(0).max(1),
+    partialPenalty: z.boolean(),
+    floorOne: z.boolean(),
   }),
+  /** Its arts work in armor and with a shield (the Blood Priest's miracles, the Healer's arts). */
+  armoredArts: z.boolean(),
+  /** Arts that can't be learned before a character level (the Healer's Revive the Fallen: 8). */
+  artLevels: z.record(IdSchema, z.int().min(2).max(10)),
+  /** Arts the game leaves out: nothing in it calls for them (the Healer's Limb Restoration). */
+  excludedArts: z.array(IdSchema),
 });
 export type Tradition = z.infer<typeof TraditionSchema>;
 
@@ -43,9 +56,16 @@ export const ClassOptionSchema = z.strictObject({
       /** The casting table for spells cast and prepared. */
       slots: IdSchema,
       /** SRD 1.7.5: four first-level spells for full or dual casters, two for partial. */
-      startingSpells: z.int().min(1),
+      startingSpells: z.int().min(0),
       /** SRD 2.7.1.7: two for High Mages, one for other Mages. */
-      spellsPerLevel: z.int().min(1),
+      spellsPerLevel: z.int().min(0),
+      /** Spells the class can never learn (Sam's call: Priests of Death create no undead). */
+      excludedSpells: z.array(IdSchema),
+      /**
+       * Command the Dead sends the undead it masters to their rest instead of binding them: the
+       * Priests of the Lady, to whom the undead are abominations (Phase 16; docs/setting.md).
+       */
+      laysToRest: z.literal(true).optional(),
     })
     .optional(),
 });

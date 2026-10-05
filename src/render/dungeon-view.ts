@@ -3,7 +3,7 @@
 // what is behind them. Secret doors look like walls until found, and traps show once known.
 import type { EdgeKind, LevelMap } from '../data/dungeon-map.ts';
 import { levelOf } from '../game/dungeon/explore.ts';
-import { inDark } from '../game/dungeon/light.ts';
+import { blind } from '../game/dungeon/light.ts';
 import { knownEdges } from '../game/dungeon/secrets.ts';
 import type { GameData } from '../game/character/context.ts';
 import type { World } from '../game/world/types.ts';
@@ -111,7 +111,7 @@ function panel(key: string, kind: 'wall' | 'door', q: Quad, depth: number, side:
 export function dungeonView(w: World, data: GameData): Panel[] {
   const s = w.dungeon;
   // In the dark there is nothing to see (docs/rules-adaptation.md, Dungeon exploration).
-  if (!s || inDark(w, data)) return [];
+  if (!s || blind(w, data)) return [];
   const { map } = levelOf(data, s.dungeon, s.level);
   const trapKnown = (c: Cell) => s.traps[s.level]?.[cellKey(c)] === 'noticed';
   return viewPanels(map, s.at, s.facing, knownEdges(w, data), trapKnown);

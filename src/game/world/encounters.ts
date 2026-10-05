@@ -8,7 +8,9 @@ import { hexKey } from '../../rules/hex.ts';
 import { encounterCheck } from '../../rules/overland.ts';
 import { reactionRoll, type Reaction } from '../../rules/reaction.ts';
 import { findMonster, type GameData } from '../character/context.ts';
+import { rollPatrol, type Patrol } from '../factions/patrols.ts';
 import { characterSheet } from '../character/derived.ts';
+import { bonetalker } from './arts.ts';
 import { alive, memberCheck, note } from './members.ts';
 import { reactionBonus } from './minds.ts';
 import { captiveOf, firstGuide } from './npcs.ts';
@@ -25,6 +27,8 @@ export interface Rolled {
   order?: string;
   /** Paladin "rescuers" (Phase 12b). */
   rescuers?: true;
+  /** A faction's patrol (Phase 13b). */
+  patrol?: Patrol;
 }
 
 export function rollEnemies(w: World, data: GameData, tableId: string): Rolled {
@@ -81,7 +85,11 @@ export function maybeEncounter(
   const map = regionMap(data, w.region);
   const die = data.content.overlandRules.encounterDice[map.dangerAt(w.position)];
   if (map.siteAt(w.position) || !encounterCheck(w.rng, die)) return false;
-  const rolled = rollEnemies(w, data, map.tableAt(w.position));
+  // A faction's patrol in reach may come instead (Phase 13b).
+  const patrol = rollPatrol(w, data);
+  const rolled: Rolled = patrol
+    ? { rows: patrol.rows, nature: 'hostile', captive: null, patrol }
+    : rollEnemies(w, data, map.tableAt(w.position));
   // A patrol whose standing order has ended no longer walks the roads.
   if (rolled.order && w.ordersEnded.includes(rolled.order)) return false;
   startEncounter(w, data, rolled, watcher, dark ? -1 : 0, hexKey(w.position));
@@ -146,7 +154,12 @@ export function startEncounter(
     lead,
     where,
   );
+  bonetalker(w, data, e);
   if (rolled.order) e.order = rolled.order;
+  if (rolled.patrol) {
+    e.patrol = rolled.patrol.key;
+    note(w, `They march for ${rolled.patrol.name}.`);
+  }
 }
 
 /**

@@ -12,6 +12,7 @@ import type {
   Project,
   Commission,
   CraftsmanState,
+  FactionState,
   Raising,
   TownLedger,
   WorldSave,
@@ -35,6 +36,8 @@ export interface Member {
   spellsCast: number;
   effortDay: number;
   pendingXp: number;
+  reviving: boolean;
+  artUses: Record<string, number>;
 }
 
 export type Npc = NpcSave;
@@ -87,10 +90,15 @@ export interface World {
   caches: string[];
   ordersEnded: string[];
   authority: string[];
-  raid: { town: string; day: number; fighting: boolean } | null;
+  raid: WorldSave['raid'];
   raided: Record<string, number>;
   craftsmen: Record<string, CraftsmanState>;
   commissions: Commission[];
+  /** Corpses lying where the last won fight was (Phase 14b). */
+  corpses: WorldSave['corpses'];
+  fallen: WorldSave['fallen'];
+  /** Faction state by id (Phase 13). */
+  factions: Record<string, FactionState>;
   log: string[];
 }
 

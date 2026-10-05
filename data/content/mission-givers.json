@@ -3,7 +3,7 @@
     "id": "reeve-halda",
     "name": "Reeve Halda",
     "town": "westhold",
-    "text": "An orc reeve who keeps the peace in Westhold, a settlement dug out of a fallen city's gatehouse, and pays those who help her keep it."
+    "text": "An orc reeve who keeps the peace in Rubblegate, a settlement dug out of a fallen city's gatehouse, and pays those who help her keep it."
   },
   {
     "id": "factor-imre",
@@ -22,14 +22,14 @@
     "name": "Ysolde the Necromancer",
     "town": "westhold",
     "raises": "crypt",
-    "text": "She keeps the crypt under the old chapel, and she can call the dead back up out of it, for a price or a service."
+    "text": "She keeps the crypt under the Lady's old chapel, and she can call the dead back up out of it, for a price or a service."
   },
   {
     "id": "brother-aldo",
     "name": "Brother Aldo",
     "town": "eastmarch",
     "raises": "mortuary",
-    "text": "A grey-robed priest of the god of death. His mortuary can send the dead back, if the god is paid, in crowns or in service."
+    "text": "A grey-robed Priest of Death, a partial necromancer and healer who raises no undead. His mortuary can send the dead back for a while, for crowns or for service; the Lady is patient."
   },
   {
     "id": "necromancer-vashti",
@@ -42,8 +42,8 @@
     "id": "mother-skrell",
     "name": "Mother Skrell",
     "town": "gutterwick",
-    "raises": "mortuary",
-    "text": "A goblin death priest who keeps Gutterwick's mortuary. The god of death takes crowns, or service."
+    "raises": "temple",
+    "text": "A goblin blood priestess who keeps Gutterwick's temple to the Blood God. Her god takes crowns, or service, and gives back what the grave took."
   },
   {
     "id": "elder-gorvash",

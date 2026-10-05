@@ -55,13 +55,14 @@ Map authoring tools such as Tiled are fine to use even if GPL, since the editor'
 
 The WWN SRD is CC0 and explicitly covers computer games, including verbatim text, tables, and spell names ([WWN SRD](https://wwn.quadrifons.com/)). Setting material and most GM tools from the full WWN book are excluded, so those get written from scratch.
 
-| Source                                 | Status                                                             | How we use it                                                                               |
-| -------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
-| [WWN SRD](https://wwn.quadrifons.com/) | CC0                                                                | Vendored into the repo, extracted into JSON data                                            |
-| WWN free/deluxe book (non-SRD parts)   | Reserved                                                           | Not used. No setting, NPCs, world tags, or GM tool text                                     |
-| [CWN SRD](https://cwn.quadrifons.com/) | Public domain, per the mirror; verify against the official release | Crafting, mod, and maintenance rules, reskinned for fantasy                                 |
-| Year Zero Engine                       | Mechanics only                                                     | Resource dice, Push, and journey rules from Forbidden Lands, reimplemented in our own words |
-| Art and audio                          | CC0 only                                                           | Kenney.nl, OpenGameArt with the CC0 filter                                                  |
+| Source                                                        | Status                                                             | How we use it                                                                                                |
+| ------------------------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| [WWN SRD](https://wwn.quadrifons.com/)                        | CC0                                                                | Vendored into the repo, extracted into JSON data                                                             |
+| WWN free/deluxe book (non-SRD parts)                          | Reserved                                                           | Not used. No setting, NPCs, world tags, or GM tool text                                                      |
+| [CWN SRD](https://cwn.quadrifons.com/)                        | Public domain, per the mirror; verify against the official release | Crafting, mod, and maintenance rules, reskinned for fantasy                                                  |
+| Basic Fantasy RPG bestiary (CC BY-SA 4.0), OSE SRD (OGL 1.0a) | Mechanics only                                                     | Creature statistics re-derived as WWN stat lines with our own names and text (Phase 14a); credited in NOTICE |
+| Year Zero Engine                                              | Mechanics only                                                     | Resource dice, Push, and journey rules from Forbidden Lands, reimplemented in our own words                  |
+| Art and audio                                                 | CC0 only                                                           | Kenney.nl, OpenGameArt with the CC0 filter                                                                   |
 
 The site above is a third-party mirror. Before extraction, diff it against Sine Nomine's official SRD release to confirm fidelity.
 
@@ -244,7 +245,7 @@ Thirteen phases, each gated by an exit criterion Claude Code can verify. The are
     - Scope: full game save, load, export, and import (characters save from Phase 4, the world from Phase 5), character JSON import in the release build, settings, key remapping, optional sound, and an in-game level editor for the ASCII format (ADR 0003)
     - Exit: save mid-dungeon, reload, identical state including RNG
 12. **Content and campaign**
-    - Scope: levels 1 to N, encounter tables, quest chain, boss; optional WWN faction turn between delves
+    - Scope: levels 1 to N, encounter tables, quest chain, boss; optional WWN faction turn between delves (built after the exit as Phase 13, a monthly faction turn: docs/rules-adaptation.md, Factions in Phase 13)
     - Exit: a complete campaign is playable start to finish
 
 ## Open decisions

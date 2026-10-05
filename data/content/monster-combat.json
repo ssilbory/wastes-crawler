@@ -127,7 +127,13 @@
       "count": 2,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "caster": {
+      "tradition": "high-mage",
+      "slots": "full-high-mage-arts-and-spells",
+      "spells": ["the-coruscating-coffin"],
+      "arts": ["empowered-sorcery"]
+    }
   },
   {
     "id": "tribal-shaman",
@@ -137,7 +143,13 @@
       "count": 4,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "caster": {
+      "tradition": "elementalist",
+      "slots": "full-elementalist-arts-and-spells",
+      "spells": ["the-coruscating-coffin"],
+      "arts": ["elemental-blast", "pavis-of-elements"]
+    }
   },
   {
     "id": "skilled-sorcerer",
@@ -147,7 +159,17 @@
       "count": 5,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "caster": {
+      "tradition": "high-mage",
+      "slots": "full-high-mage-arts-and-spells",
+      "spells": [
+        "the-wind-of-the-final-repose",
+        "the-coruscating-coffin",
+        "ineluctable-shackles-of-volition"
+      ],
+      "arts": ["empowered-sorcery", "inexorable-effect"]
+    }
   },
   {
     "id": "master-wizard",
@@ -157,7 +179,17 @@
       "count": 8,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "caster": {
+      "tradition": "high-mage",
+      "slots": "full-high-mage-arts-and-spells",
+      "spells": [
+        "the-wind-of-the-final-repose",
+        "the-coruscating-coffin",
+        "ineluctable-shackles-of-volition"
+      ],
+      "arts": ["empowered-sorcery", "inexorable-effect"]
+    }
   },
   {
     "id": "famous-arch-mage",
@@ -167,7 +199,17 @@
       "count": 10,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "caster": {
+      "tradition": "high-mage",
+      "slots": "full-high-mage-arts-and-spells",
+      "spells": [
+        "the-wind-of-the-final-repose",
+        "the-coruscating-coffin",
+        "ineluctable-shackles-of-volition"
+      ],
+      "arts": ["empowered-sorcery", "inexorable-effect"]
+    }
   },
   {
     "id": "small-pack-predator",
@@ -280,5 +322,407 @@
     "id": "vorpal-hare",
     "tags": [],
     "mind": "monster"
+  },
+  {
+    "id": "grave-wyrm",
+    "tags": ["flying", "unliving", "undead"],
+    "loot": {
+      "count": 15,
+      "sides": 6
+    },
+    "mind": "monster",
+    "routine": [
+      {
+        "name": "Claw",
+        "damage": {
+          "count": 1,
+          "sides": 8,
+          "modifier": 0
+        },
+        "count": 2,
+        "onHit": {
+          "kind": "paralysis",
+          "rounds": {
+            "count": 1,
+            "sides": 4,
+            "modifier": 0
+          }
+        }
+      },
+      {
+        "name": "Bite",
+        "damage": {
+          "count": 4,
+          "sides": 8,
+          "modifier": 0
+        },
+        "count": 1
+      },
+      {
+        "name": "Tail",
+        "damage": {
+          "count": 1,
+          "sides": 8,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ],
+    "breath": {
+      "name": "a fog of grave-cold",
+      "damage": {
+        "count": 4,
+        "sides": 8,
+        "modifier": 0
+      },
+      "save": "evasion",
+      "uses": 2
+    }
+  },
+  {
+    "id": "gnawing-dead",
+    "tags": ["unliving", "undead"],
+    "mind": "mindless",
+    "routine": [
+      {
+        "name": "Claw",
+        "damage": {
+          "count": 1,
+          "sides": 4,
+          "modifier": 0
+        },
+        "count": 2
+      },
+      {
+        "name": "Bite",
+        "damage": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "colossus-bear",
+    "tags": [],
+    "mind": "animal",
+    "routine": [
+      {
+        "name": "Claw",
+        "damage": {
+          "count": 2,
+          "sides": 6,
+          "modifier": 0
+        },
+        "count": 2
+      },
+      {
+        "name": "Bite",
+        "damage": {
+          "count": 2,
+          "sides": 8,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "giant-ant",
+    "tags": [],
+    "mind": "animal"
+  },
+  {
+    "id": "cave-bear",
+    "tags": [],
+    "mind": "animal",
+    "routine": [
+      {
+        "name": "Claw",
+        "damage": {
+          "count": 1,
+          "sides": 8,
+          "modifier": 0
+        },
+        "count": 2
+      },
+      {
+        "name": "Bite",
+        "damage": {
+          "count": 2,
+          "sides": 6,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "chimera",
+    "tags": ["flying"],
+    "loot": {
+      "count": 5,
+      "sides": 6
+    },
+    "mind": "monster",
+    "routine": [
+      {
+        "name": "Lion's bite",
+        "damage": {
+          "count": 2,
+          "sides": 4,
+          "modifier": 0
+        },
+        "count": 1
+      },
+      {
+        "name": "Goat's horns",
+        "damage": {
+          "count": 2,
+          "sides": 4,
+          "modifier": 0
+        },
+        "count": 1
+      },
+      {
+        "name": "Dragon's bite",
+        "damage": {
+          "count": 3,
+          "sides": 4,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ],
+    "breath": {
+      "name": "the dragon head's fire",
+      "damage": {
+        "count": 3,
+        "sides": 6,
+        "modifier": 0
+      },
+      "save": "evasion",
+      "uses": 2
+    }
+  },
+  {
+    "id": "gnoll",
+    "weapon": "axe-hand",
+    "tags": ["metal"],
+    "loot": {
+      "count": 2,
+      "sides": 6
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "hill-giant",
+    "tags": [],
+    "loot": {
+      "count": 6,
+      "sides": 6
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "manticore",
+    "tags": ["flying"],
+    "loot": {
+      "count": 4,
+      "sides": 6
+    },
+    "mind": "monster",
+    "routine": [
+      {
+        "name": "Claw",
+        "damage": {
+          "count": 1,
+          "sides": 4,
+          "modifier": 0
+        },
+        "count": 2
+      },
+      {
+        "name": "Bite",
+        "damage": {
+          "count": 2,
+          "sides": 4,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ],
+    "volley": [
+      {
+        "name": "Tail spike",
+        "damage": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 0
+        },
+        "count": 3
+      }
+    ]
+  },
+  {
+    "id": "giant-scorpion",
+    "tags": [],
+    "mind": "animal",
+    "routine": [
+      {
+        "name": "Claw",
+        "damage": {
+          "count": 1,
+          "sides": 10,
+          "modifier": 0
+        },
+        "count": 2
+      },
+      {
+        "name": "Sting",
+        "damage": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 0
+        },
+        "count": 1,
+        "onHit": {
+          "kind": "poison",
+          "penalty": 0
+        }
+      }
+    ]
+  },
+  {
+    "id": "giant-rattlesnake",
+    "tags": [],
+    "mind": "animal",
+    "routine": [
+      {
+        "name": "Bite",
+        "damage": {
+          "count": 1,
+          "sides": 8,
+          "modifier": 0
+        },
+        "count": 1,
+        "onHit": {
+          "kind": "poison",
+          "penalty": 0
+        }
+      }
+    ]
+  },
+  {
+    "id": "giant-black-widow",
+    "tags": [],
+    "mind": "animal",
+    "routine": [
+      {
+        "name": "Bite",
+        "damage": {
+          "count": 2,
+          "sides": 6,
+          "modifier": 0
+        },
+        "count": 1,
+        "onHit": {
+          "kind": "poison",
+          "penalty": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": "unicorn",
+    "tags": [],
+    "mind": "monster",
+    "routine": [
+      {
+        "name": "Hoof",
+        "damage": {
+          "count": 1,
+          "sides": 8,
+          "modifier": 0
+        },
+        "count": 2
+      },
+      {
+        "name": "Horn",
+        "damage": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 3
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "alicorn",
+    "tags": [],
+    "mind": "monster",
+    "routine": [
+      {
+        "name": "Hoof",
+        "damage": {
+          "count": 2,
+          "sides": 4,
+          "modifier": 0
+        },
+        "count": 2
+      },
+      {
+        "name": "Horn",
+        "damage": {
+          "count": 2,
+          "sides": 6,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "vampire",
+    "weapon": "sword-long",
+    "tags": ["unliving", "metal", "undead"],
+    "loot": {
+      "count": 8,
+      "sides": 6
+    },
+    "mind": "sapient"
+  },
+  {
+    "id": "zombie",
+    "tags": ["unliving", "slow", "undead"],
+    "mind": "mindless",
+    "resist": {
+      "blunt": "half",
+      "missiles": "one"
+    }
+  },
+  {
+    "id": "raised-zombie",
+    "tags": ["unliving", "undead"],
+    "mind": "mindless",
+    "resist": {
+      "blunt": "half"
+    }
+  },
+  {
+    "id": "raised-skeleton",
+    "tags": ["unliving", "undead"],
+    "mind": "mindless",
+    "resist": {
+      "edged": "half"
+    }
+  },
+  {
+    "id": "grave-knight",
+    "tags": ["unliving", "undead"],
+    "mind": "sapient"
   }
 ]

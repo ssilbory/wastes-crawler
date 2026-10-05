@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'preact/hooks';
 import type { Character } from '../../data/schemas/index.ts';
-import { ATTRIBUTES } from '../../game/character/attributes.ts';
+import { rollAttributes } from '../../game/character/attributes.ts';
 import {
   emptyChoices,
   evaluateChoices,
@@ -14,8 +14,7 @@ import { classBonusSkills, classOption } from '../../game/character/class-step.t
 import { rollStartingCrowns } from '../../game/character/gear.ts';
 import { addToRoster } from '../../game/character/roster.ts';
 import { backgroundOpenTo, findPeople } from '../../game/character/people.ts';
-import type { AttributeScores } from '../../rules/attributes.ts';
-import { AttributesStep, type DraftArray } from './AttributesStep.tsx';
+import { AttributesStep } from './AttributesStep.tsx';
 import { BackgroundStep } from './BackgroundStep.tsx';
 import { loadRoster, saveRoster } from '../storage.ts';
 import { data, freshRng } from './data.ts';
@@ -25,10 +24,6 @@ import { MagicStep } from './MagicStep.tsx';
 import { ClassStep, FreeSkillStep, IdentityStep } from './OtherSteps.tsx';
 import { PeopleStep } from './PeopleStep.tsx';
 import { CharacterSheet, PreviewSheet } from './Sheet.tsx';
-
-function toArray(draft: DraftArray): AttributeScores | null {
-  return ATTRIBUTES.every((a) => draft[a] !== undefined) ? (draft as AttributeScores) : null;
-}
 
 function download(character: Character) {
   const blob = new Blob([exportCharacter(character)], { type: 'application/json' });
@@ -43,8 +38,9 @@ function download(character: Character) {
 export function App() {
   const rng = useRef(freshRng());
   const [choices, setChoices] = useState<Choices>(() => emptyChoices());
-  const [draft, setDraft] = useState<DraftArray>({});
   const [character, setCharacter] = useState<Character | null>(null);
+  // Starting over clears the attribute step's own picks too.
+  const [resets, setResets] = useState(0);
   const [errors, setErrors] = useState<string[]>([]);
   const [saved, setSaved] = useState<string | null>(null);
 
@@ -84,7 +80,7 @@ export function App() {
     setSaved(null);
     setCharacter(null);
     setChoices(emptyChoices());
-    setDraft({});
+    setResets((n) => n + 1);
     setErrors([]);
   };
 
@@ -149,12 +145,12 @@ export function App() {
               }}
             />
             <AttributesStep
-              draft={draft}
+              key={resets}
+              method={choices.attributeMethod}
+              scores={choices.array}
               status={ev.steps.attributes}
-              onChange={(next) => {
-                setDraft(next);
-                update({ array: toArray(next) });
-              }}
+              roll={() => rollAttributes(rng.current)}
+              onChange={({ method, scores }) => update({ attributeMethod: method, array: scores })}
             />
             <BackgroundStep
               choices={choices}

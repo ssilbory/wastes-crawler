@@ -12,7 +12,7 @@ import { endQuarter } from '../world/quarter.ts';
 import { emit } from '../world/bus.ts';
 import { ruinDungeon } from './generate.ts';
 import { openRuin, ruinHere } from './ruins.ts';
-import { douse, drawKits, inDark, kindle } from './light.ts';
+import { douse, drawKits, blind, kindle } from './light.ts';
 import { glimpse, knownEdges } from './secrets.ts';
 import { arriveOn, onSpecial } from './specials.ts';
 import { countStep } from './time.ts';
@@ -53,7 +53,7 @@ export function dungeonHere(w: World, data: GameData): Dungeon | undefined {
 function look(w: World, data: GameData, s: DungeonState): void {
   // In the dark, or on an anti-map square, the party maps nothing (docs/rules-adaptation.md,
   // Dungeon exploration).
-  if (inDark(w, data) || onSpecial(w, data, 'anti-map')) return;
+  if (blind(w, data) || onSpecial(w, data, 'anti-map')) return;
   const { map } = levelOf(data, s.dungeon, s.level);
   const seen = new Set(s.seen[s.level] ?? []);
   let c: Cell = s.at;
@@ -65,9 +65,30 @@ function look(w: World, data: GameData, s: DungeonState): void {
   s.seen[s.level] = [...seen];
 }
 
+/**
+ * The way to face on arriving: as the content says, unless that faces a wall, then the first way
+ * that doesn't, turning right, left, then around (Borderlands polish, Phase 16).
+ */
+export function openFacing(map: LevelMap, at: Cell, facing: Facing): Facing {
+  const ways = [facing, turn(facing, 'right'), turn(facing, 'left'), turn(facing, 'around')];
+  const passable = (f: Facing) => map.edge(at, f) === 'open' || map.edge(at, f) === 'door';
+  return ways.find(passable) ?? facing;
+}
+
+/** Towers and cities are walked into and out of; delves are climbed down into and out of. */
+export function goesDown(data: GameData, dungeonId: string): boolean {
+  const ruin = data.content.ruins.find((r) => dungeonId.startsWith(`${r.id}-v`));
+  return ruin === undefined || ruin.kind === 'delve';
+}
+
+/** The button for the way out to the hex map. */
+export const exitLabel = (data: GameData, dungeonId: string) =>
+  `${goesDown(data, dungeonId) ? 'Climb out of' : 'Leave'} ${dungeonOf(data, dungeonId).name}`;
+
 function arrive(w: World, data: GameData, level: string, at: Cell, facing: Facing): void {
   const s = w.dungeon as NonNullable<World['dungeon']>;
-  Object.assign(s, { level, at, facing });
+  const { map } = levelOf(data, s.dungeon, level);
+  Object.assign(s, { level, at, facing: openFacing(map, at, facing) });
   look(w, data, s);
   note(w, `The party reaches ${levelOf(data, s.dungeon, level).level.name}.`);
   emit(w, data, { kind: 'level-entered' });
@@ -96,7 +117,7 @@ export function enterDungeon(w: World, data: GameData): TownResult {
     traps: {},
     read: {},
   };
-  note(w, `The party goes down into ${d.name}.`);
+  note(w, `The party ${goesDown(data, d.id) ? 'goes down into' : 'enters'} ${d.name}.`);
   drawKits(w);
   kindle(w);
   arrive(w, data, d.entry.level, d.entry.at, d.entry.facing);
@@ -158,7 +179,8 @@ export function takeStairs(w: World, data: GameData): TownResult {
   if (w.encounter) return no('Settle the encounter first.');
   const s = w.dungeon as NonNullable<World['dungeon']>;
   if ('surface' in link.to) {
-    note(w, `The party climbs out of ${dungeonOf(data, s.dungeon).name}.`);
+    const name = dungeonOf(data, s.dungeon).name;
+    note(w, `The party ${goesDown(data, s.dungeon) ? 'climbs out of' : 'leaves'} ${name}.`);
     w.dungeon = null;
     douse(w);
   } else arrive(w, data, link.to.level, link.to.at, link.to.facing);

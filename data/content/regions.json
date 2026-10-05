@@ -45,7 +45,7 @@
     "sites": [
       {
         "id": "westhold",
-        "name": "Westhold",
+        "name": "Rubblegate",
         "kind": "town",
         "col": 3,
         "row": 8,
@@ -53,7 +53,7 @@
       },
       {
         "id": "eastmarch",
-        "name": "Eastmarch",
+        "name": "Scrapmarch",
         "kind": "town",
         "col": 20,
         "row": 8,
@@ -61,7 +61,7 @@
       },
       {
         "id": "highcairn",
-        "name": "Highcairn",
+        "name": "Grimcairn",
         "kind": "town",
         "col": 17,
         "row": 4,

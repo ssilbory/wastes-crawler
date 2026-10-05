@@ -29,10 +29,17 @@ test('wanders the overland map, fighting what it meets', async ({ page }, testIn
     await page.getByRole('combobox', { name: slot }).selectOption({ label: name });
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('overland-e2e');
   await page.getByRole('button', { name: 'Start a new world' }).click();
+  // Phase 16: a new world opens on the setting in brief.
+  const intro = page.getByRole('region', { name: 'Introduction' });
+  await expect(intro.getByRole('heading', { name: 'The Dark Lands' })).toBeVisible();
+  await expect(intro).toContainText('Twenty years ago he vanished.');
+  await expect(page.getByRole('img', { name: 'Overland map' })).toHaveCount(0);
+  await page.screenshot({ path: testInfo.outputPath('intro.png'), fullPage: true });
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
   await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
-  await expect(page.locator('.world-bar')).toContainText('Westhold');
+  await expect(page.locator('.world-bar')).toContainText('Rubblegate');
 
-  // Walk east along the road, a hex ahead at a time, turning back at Eastmarch.
+  // Walk east along the road, a hex ahead at a time, turning back at Scrapmarch.
   let fights = 0;
   let east = true;
   for (let i = 0; i < 300 && fights < 2; i++) {
@@ -72,6 +79,7 @@ test('camps for the night with the suggested watches and shelter', async ({ page
   await page.getByRole('combobox', { name: 'Front row, slot 2' }).selectOption({ label: 'Grukk' });
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('camp-e2e');
   await page.getByRole('button', { name: 'Start a new world' }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
   await page.locator('[data-hex="3,7"]').click();
   const plan = page.getByRole('region', { name: 'Quarter plan' });
   await expect(plan.getByRole('radio', { name: 'Hike' })).toHaveAttribute('aria-checked', 'true');

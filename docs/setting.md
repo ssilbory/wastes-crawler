@@ -142,6 +142,61 @@ Other consequences:
 - A rescued crafter is the most volatile possible NPC-slot companion: orc and goblin PCs want them dead, beastman PCs have complicated feelings, elves may have done the same work.
 - Settlements may quietly make or buy beastman guards, which puts them at odds with the free beastmen they shelter.
 
+## Religion
+
+The Dark Lord allowed only two faiths, and they are still the only two in the Dark Lands.
+
+| Faith         | Priests                                                                                                  | In play                                                                                                              |
+| ------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| The Blood God | Blood priests and priestesses, who work miracles in armor                                                | Partial Blood Priest/Partial Warrior or Partial Healer PCs; Mother Skrell's temple in Gutterwick raises the dead     |
+| The Lady      | Death. The Priests of Death are partial necromancers and healers who raise no undead and serve no master | Priest of Death PCs; Brother Aldo's mortuary in Scrapmarch raises the dead. Necromancers like Ysolde keep her crypts |
+
+### Why only two
+
+The Dark Lord had no use for gods who might compete for loyalty. He kept the two faiths his armies could not do without: the Blood God, whose priests patched soldiers in the field and blessed the killing, and the Lady, whose priests laid the dead to rest and put down anything that rose. Every other cult was burned out in the first century of the empire. Twenty years after he vanished, no one has tried to found a third, and most of the dark races could not name another god if asked.
+
+### The Blood God
+
+| Aspect              | Detail                                                                                                                                                           |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Doctrine            | Blood is the price of everything. The god gives back what is paid for, in crowns, in service, or in blood, and never for nothing                                 |
+| Priesthood          | Blood priests and priestesses, mostly orcs and goblins; they fight beside the warbands and work miracles in armor. No high priest: each temple answers to itself |
+| Temples             | Squat stone shrines with a drain in the floor. Gutterwick's, kept by Mother Skrell, is the largest in the Dark Lands and raises the dead for its price           |
+| Under the Dark Lord | Army chaplains. Every warband had one, and most priests alive today learned the trade in his wars                                                                |
+| Today               | The faith of the settlements: weddings, oaths, and the dead brought back. Warlords court blood priests to bless their beastman armies, and many say yes          |
+| View of the party   | Friendly to orcs and goblins, who are "the god's own." Wary of elves and gnomes, who in the old days paid in others' blood rather than their own                 |
+
+### The Lady
+
+| Aspect              | Detail                                                                                                                                                                                                                                                               |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Doctrine            | The Lady is patient. Everyone comes to her gentle embrace in the end, and there is no hurry. The undead are an abomination: bodies held back from her by force, and her priests destroy them wherever they find them                                                 |
+| Priesthood          | The grey-robed Priests of Death: partial necromancers and healers who never raise the dead. Their power over the undead is for laying them down and sending them on to her, and they serve no master but her                                                         |
+| Places              | Mortuaries in the towns, such as Brother Aldo's in Scrapmarch, and the old crypts and chapels the empire built for her, many now empty or overrun                                                                                                                    |
+| Under the Dark Lord | Keepers of the empire's dead, and its executioners. They laid the fallen of his wars to rest so the battlefields would not rise on their own                                                                                                                         |
+| Necromancers        | Ysolde and Vashti keep the Lady's crypts and can call the dead back to life, which the priests allow, since the Lady can wait. Raising the dead as servants is another thing: the undead are abominations, and a necromancer who makes them is no friend of the Lady |
+| Today               | Fewer priests every year. The towns call on them for burials, the raising of the dead, and anything that walks when it should not                                                                                                                                    |
+| View of the party   | Even-handed: the Lady embraces every people alike. Priests of Death abhor any party that keeps undead in its ranks, and will not raise its fallen                                                                                                                    |
+
+### Faiths and the other powers
+
+| Power                      | The Blood God                                                     | The Lady                                                                              |
+| -------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Warlords                   | Bought: priests bless their armies and take their crowns          | Shunned: warlords who raise undead soldiers make abominations                         |
+| Loyalists                  | Split; some priests pray for his return, most pray he stays gone  | Hostile; loyalist necromancers would empty her crypts to raise an undead army for him |
+| Human raiders and paladins | Both faiths are heresy to them; blood priests are killed on sight | Priests are spared for trial, like elves and gnomes                                   |
+| Flesh crafters             | Indifferent; a beastman's blood pays as well as anyone's          | Disgusted; the culled and the failed were never given to her                          |
+| Bound orcs and goblins     | Chaplains still serve some bound garrisons, and know their orders | Priests lay to rest the bound who die at their posts                                  |
+
+### Hooks
+
+- A blood priest offers to bless the party's next fight, for a price that is not crowns.
+- A Priest of Death asks the party to clear an old imperial crypt before a necromancer claims its dead.
+- A warlord's chaplain knows his beastman army's weakness and will trade it for a rival priest's death.
+- Loyalists are emptying a chapel of the Lady to raise its dead as undead; the dead they take could be someone's kin.
+- Two temples, one town: the blood priest and the mortuary both claim the right to raise a dead hero, and the town wants the party to settle it.
+- Does either god answer, or do the miracles come from somewhere else? Neither priesthood will discuss it, and the Dark Lord never cared.
+
 ## Threats and factions today
 
 The settlements are squeezed from every side: monsters in the wilds, warlords building beastman armies, and human raiders from the strongholds and the coast.
@@ -159,7 +214,7 @@ The settlements are squeezed from every side: monsters in the wilds, warlords bu
 | Bound agents                        | Humans, elves, gnomes and others; still bound, acting on their own judgment      | Sleepers, infiltrators, tragic bosses; may hold secret orders to avenge or restore him |
 | Loyalists                           | Waiting for the Dark Lord's return                                               | Cultists, recurring enemy, hunt for command authority                                  |
 
-The fanatics may treat elves and gnomes differently from orcs and goblins: "rescue" and trial instead of extermination. To an elf PC, a rescue raid is a kidnapping.
+The fanatics may treat elves and gnomes differently from orcs and goblins: "rescue" and trial instead of extermination. To an elf PC, a rescue raid is a kidnapping. The groups sent to take elves and gnomes are generally half-elves, sometimes led by a high-ranking elven patriarch in armor, both mage and warrior.
 
 ## Content hooks
 

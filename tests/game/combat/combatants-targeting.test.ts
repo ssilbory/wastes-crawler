@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { monsterCombatant, pcCombatant } from '../../../src/game/combat/combatants.ts';
+import { pcCombatant } from '../../../src/game/combat/combatants.ts';
+import { monsterCombatant } from '../../../src/game/combat/monster-combatant.ts';
 import {
   attackSteps,
   covered,
@@ -142,6 +143,8 @@ describe('targeting (docs/rules-adaptation.md, Formation rules)', () => {
     shock: null,
     reach: false,
     twoHanded: false,
+    blunt: false,
+    onHit: null,
     ...atk,
   });
 

@@ -1835,5 +1835,1399 @@
         ]
       }
     ]
+  },
+  {
+    "id": "full-necromancer",
+    "name": "Full Necromancer",
+    "sources": [
+      {
+        "file": "1.0 Character Creation/1.5.0 Class List/1.5.14 The Necromancer.md",
+        "heading": "Full Necromancer"
+      }
+    ],
+    "levels": [
+      {
+        "level": 1,
+        "hitDice": {
+          "count": 1,
+          "sides": 6,
+          "modifier": -1
+        },
+        "attackBonus": 0,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "hitDice": {
+          "count": 2,
+          "sides": 6,
+          "modifier": -2
+        },
+        "attackBonus": 0,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "hitDice": {
+          "count": 3,
+          "sides": 6,
+          "modifier": -3
+        },
+        "attackBonus": 0,
+        "focusPicks": []
+      },
+      {
+        "level": 4,
+        "hitDice": {
+          "count": 4,
+          "sides": 6,
+          "modifier": -4
+        },
+        "attackBonus": 0,
+        "focusPicks": []
+      },
+      {
+        "level": 5,
+        "hitDice": {
+          "count": 5,
+          "sides": 6,
+          "modifier": -5
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "hitDice": {
+          "count": 6,
+          "sides": 6,
+          "modifier": -6
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 7,
+        "hitDice": {
+          "count": 7,
+          "sides": 6,
+          "modifier": -7
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "hitDice": {
+          "count": 8,
+          "sides": 6,
+          "modifier": -8
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 9,
+        "hitDice": {
+          "count": 9,
+          "sides": 6,
+          "modifier": -9
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 10,
+        "hitDice": {
+          "count": 10,
+          "sides": 6,
+          "modifier": -10
+        },
+        "attackBonus": 2,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "necromancer-partial-expert",
+    "name": "Partial Expert/Necromancer",
+    "sources": [
+      {
+        "file": "1.0 Character Creation/1.5.0 Class List/1.5.14 The Necromancer.md",
+        "heading": "Partial Expert/Necromancer"
+      }
+    ],
+    "levels": [
+      {
+        "level": 1,
+        "hitDice": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 0,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "expert"
+          },
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "hitDice": {
+          "count": 2,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "hitDice": {
+          "count": 3,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 4,
+        "hitDice": {
+          "count": 4,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 2,
+        "focusPicks": []
+      },
+      {
+        "level": 5,
+        "hitDice": {
+          "count": 5,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 2,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "hitDice": {
+          "count": 6,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 3,
+        "focusPicks": []
+      },
+      {
+        "level": 7,
+        "hitDice": {
+          "count": 7,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 3,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "hitDice": {
+          "count": 8,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 4,
+        "focusPicks": []
+      },
+      {
+        "level": 9,
+        "hitDice": {
+          "count": 9,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 4,
+        "focusPicks": []
+      },
+      {
+        "level": 10,
+        "hitDice": {
+          "count": 10,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 5,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "necromancer-partial-other-mage",
+    "name": "Partial Other Mage/Necromancer",
+    "sources": [
+      {
+        "file": "1.0 Character Creation/1.5.0 Class List/1.5.14 The Necromancer.md",
+        "heading": "Partial Other Mage/Necromancer"
+      }
+    ],
+    "levels": [
+      {
+        "level": 1,
+        "hitDice": {
+          "count": 1,
+          "sides": 6,
+          "modifier": -1
+        },
+        "attackBonus": 0,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "hitDice": {
+          "count": 2,
+          "sides": 6,
+          "modifier": -2
+        },
+        "attackBonus": 0,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "hitDice": {
+          "count": 3,
+          "sides": 6,
+          "modifier": -3
+        },
+        "attackBonus": 0,
+        "focusPicks": []
+      },
+      {
+        "level": 4,
+        "hitDice": {
+          "count": 4,
+          "sides": 6,
+          "modifier": -4
+        },
+        "attackBonus": 0,
+        "focusPicks": []
+      },
+      {
+        "level": 5,
+        "hitDice": {
+          "count": 5,
+          "sides": 6,
+          "modifier": -5
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "hitDice": {
+          "count": 6,
+          "sides": 6,
+          "modifier": -6
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 7,
+        "hitDice": {
+          "count": 7,
+          "sides": 6,
+          "modifier": -7
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "hitDice": {
+          "count": 8,
+          "sides": 6,
+          "modifier": -8
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 9,
+        "hitDice": {
+          "count": 9,
+          "sides": 6,
+          "modifier": -9
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 10,
+        "hitDice": {
+          "count": 10,
+          "sides": 6,
+          "modifier": -10
+        },
+        "attackBonus": 2,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "necromancer-partial-warrior",
+    "name": "Partial Warrior/Necromancer",
+    "sources": [
+      {
+        "file": "1.0 Character Creation/1.5.0 Class List/1.5.14 The Necromancer.md",
+        "heading": "Partial Warrior/Necromancer"
+      }
+    ],
+    "levels": [
+      {
+        "level": 1,
+        "hitDice": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 2
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "warrior"
+          },
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "hitDice": {
+          "count": 2,
+          "sides": 6,
+          "modifier": 4
+        },
+        "attackBonus": 2,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "hitDice": {
+          "count": 3,
+          "sides": 6,
+          "modifier": 6
+        },
+        "attackBonus": 2,
+        "focusPicks": []
+      },
+      {
+        "level": 4,
+        "hitDice": {
+          "count": 4,
+          "sides": 6,
+          "modifier": 8
+        },
+        "attackBonus": 3,
+        "focusPicks": []
+      },
+      {
+        "level": 5,
+        "hitDice": {
+          "count": 5,
+          "sides": 6,
+          "modifier": 10
+        },
+        "attackBonus": 4,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "hitDice": {
+          "count": 6,
+          "sides": 6,
+          "modifier": 12
+        },
+        "attackBonus": 5,
+        "focusPicks": []
+      },
+      {
+        "level": 7,
+        "hitDice": {
+          "count": 7,
+          "sides": 6,
+          "modifier": 14
+        },
+        "attackBonus": 5,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "hitDice": {
+          "count": 8,
+          "sides": 6,
+          "modifier": 16
+        },
+        "attackBonus": 6,
+        "focusPicks": []
+      },
+      {
+        "level": 9,
+        "hitDice": {
+          "count": 9,
+          "sides": 6,
+          "modifier": 18
+        },
+        "attackBonus": 6,
+        "focusPicks": []
+      },
+      {
+        "level": 10,
+        "hitDice": {
+          "count": 10,
+          "sides": 6,
+          "modifier": 20
+        },
+        "attackBonus": 7,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "blood-priest-partial-expert",
+    "name": "Partial Expert/Blood Priest",
+    "sources": [
+      {
+        "file": "1.0 Character Creation/1.5.0 Class List/1.5.5 The Blood Priest.md",
+        "heading": "Partial Expert/Blood Priest"
+      }
+    ],
+    "levels": [
+      {
+        "level": 1,
+        "hitDice": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 0,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "expert"
+          },
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "hitDice": {
+          "count": 2,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "hitDice": {
+          "count": 3,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 4,
+        "hitDice": {
+          "count": 4,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 2,
+        "focusPicks": []
+      },
+      {
+        "level": 5,
+        "hitDice": {
+          "count": 5,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 2,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "hitDice": {
+          "count": 6,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 3,
+        "focusPicks": []
+      },
+      {
+        "level": 7,
+        "hitDice": {
+          "count": 7,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 3,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "hitDice": {
+          "count": 8,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 4,
+        "focusPicks": []
+      },
+      {
+        "level": 9,
+        "hitDice": {
+          "count": 9,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 4,
+        "focusPicks": []
+      },
+      {
+        "level": 10,
+        "hitDice": {
+          "count": 10,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 5,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "blood-priest-partial-mage",
+    "name": "Partial Mage/Blood Priest",
+    "sources": [
+      {
+        "file": "1.0 Character Creation/1.5.0 Class List/1.5.5 The Blood Priest.md",
+        "heading": "Partial Mage/Blood Priest"
+      }
+    ],
+    "levels": [
+      {
+        "level": 1,
+        "hitDice": {
+          "count": 1,
+          "sides": 6,
+          "modifier": -1
+        },
+        "attackBonus": 0,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "hitDice": {
+          "count": 2,
+          "sides": 6,
+          "modifier": -2
+        },
+        "attackBonus": 0,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "hitDice": {
+          "count": 3,
+          "sides": 6,
+          "modifier": -3
+        },
+        "attackBonus": 0,
+        "focusPicks": []
+      },
+      {
+        "level": 4,
+        "hitDice": {
+          "count": 4,
+          "sides": 6,
+          "modifier": -4
+        },
+        "attackBonus": 0,
+        "focusPicks": []
+      },
+      {
+        "level": 5,
+        "hitDice": {
+          "count": 5,
+          "sides": 6,
+          "modifier": -5
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "hitDice": {
+          "count": 6,
+          "sides": 6,
+          "modifier": -6
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 7,
+        "hitDice": {
+          "count": 7,
+          "sides": 6,
+          "modifier": -7
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "hitDice": {
+          "count": 8,
+          "sides": 6,
+          "modifier": -8
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 9,
+        "hitDice": {
+          "count": 9,
+          "sides": 6,
+          "modifier": -9
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 10,
+        "hitDice": {
+          "count": 10,
+          "sides": 6,
+          "modifier": -10
+        },
+        "attackBonus": 2,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "blood-priest-partial-warrior",
+    "name": "Partial Warrior/Blood Priest",
+    "sources": [
+      {
+        "file": "1.0 Character Creation/1.5.0 Class List/1.5.5 The Blood Priest.md",
+        "heading": "Partial Warrior/Blood Priest"
+      }
+    ],
+    "levels": [
+      {
+        "level": 1,
+        "hitDice": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 2
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "warrior"
+          },
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "hitDice": {
+          "count": 2,
+          "sides": 6,
+          "modifier": 4
+        },
+        "attackBonus": 2,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "hitDice": {
+          "count": 3,
+          "sides": 6,
+          "modifier": 6
+        },
+        "attackBonus": 2,
+        "focusPicks": []
+      },
+      {
+        "level": 4,
+        "hitDice": {
+          "count": 4,
+          "sides": 6,
+          "modifier": 8
+        },
+        "attackBonus": 3,
+        "focusPicks": []
+      },
+      {
+        "level": 5,
+        "hitDice": {
+          "count": 5,
+          "sides": 6,
+          "modifier": 10
+        },
+        "attackBonus": 4,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "hitDice": {
+          "count": 6,
+          "sides": 6,
+          "modifier": 12
+        },
+        "attackBonus": 5,
+        "focusPicks": []
+      },
+      {
+        "level": 7,
+        "hitDice": {
+          "count": 7,
+          "sides": 6,
+          "modifier": 14
+        },
+        "attackBonus": 5,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "hitDice": {
+          "count": 8,
+          "sides": 6,
+          "modifier": 16
+        },
+        "attackBonus": 6,
+        "focusPicks": []
+      },
+      {
+        "level": 9,
+        "hitDice": {
+          "count": 9,
+          "sides": 6,
+          "modifier": 18
+        },
+        "attackBonus": 6,
+        "focusPicks": []
+      },
+      {
+        "level": 10,
+        "hitDice": {
+          "count": 10,
+          "sides": 6,
+          "modifier": 20
+        },
+        "attackBonus": 7,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "healer-partial-expert",
+    "name": "Partial Expert/Healer",
+    "sources": [
+      {
+        "file": "1.0 Character Creation/1.5.0 Class List/1.5.9 The Healer.md",
+        "heading": "Partial Expert/Healer"
+      }
+    ],
+    "levels": [
+      {
+        "level": 1,
+        "hitDice": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 0,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "expert"
+          },
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "hitDice": {
+          "count": 2,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "hitDice": {
+          "count": 3,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 4,
+        "hitDice": {
+          "count": 4,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 2,
+        "focusPicks": []
+      },
+      {
+        "level": 5,
+        "hitDice": {
+          "count": 5,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 2,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "hitDice": {
+          "count": 6,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 3,
+        "focusPicks": []
+      },
+      {
+        "level": 7,
+        "hitDice": {
+          "count": 7,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 3,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "hitDice": {
+          "count": 8,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 4,
+        "focusPicks": []
+      },
+      {
+        "level": 9,
+        "hitDice": {
+          "count": 9,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 4,
+        "focusPicks": []
+      },
+      {
+        "level": 10,
+        "hitDice": {
+          "count": 10,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 5,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "healer-partial-mage",
+    "name": "Partial Mage/Healer",
+    "sources": [
+      {
+        "file": "1.0 Character Creation/1.5.0 Class List/1.5.9 The Healer.md",
+        "heading": "Partial Mage/Healer"
+      }
+    ],
+    "levels": [
+      {
+        "level": 1,
+        "hitDice": {
+          "count": 1,
+          "sides": 6,
+          "modifier": -1
+        },
+        "attackBonus": 0,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "hitDice": {
+          "count": 2,
+          "sides": 6,
+          "modifier": -2
+        },
+        "attackBonus": 0,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "hitDice": {
+          "count": 3,
+          "sides": 6,
+          "modifier": -3
+        },
+        "attackBonus": 0,
+        "focusPicks": []
+      },
+      {
+        "level": 4,
+        "hitDice": {
+          "count": 4,
+          "sides": 6,
+          "modifier": -4
+        },
+        "attackBonus": 0,
+        "focusPicks": []
+      },
+      {
+        "level": 5,
+        "hitDice": {
+          "count": 5,
+          "sides": 6,
+          "modifier": -5
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "hitDice": {
+          "count": 6,
+          "sides": 6,
+          "modifier": -6
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 7,
+        "hitDice": {
+          "count": 7,
+          "sides": 6,
+          "modifier": -7
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "hitDice": {
+          "count": 8,
+          "sides": 6,
+          "modifier": -8
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 9,
+        "hitDice": {
+          "count": 9,
+          "sides": 6,
+          "modifier": -9
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 10,
+        "hitDice": {
+          "count": 10,
+          "sides": 6,
+          "modifier": -10
+        },
+        "attackBonus": 2,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "healer-partial-warrior",
+    "name": "Partial Warrior/Healer",
+    "sources": [
+      {
+        "file": "1.0 Character Creation/1.5.0 Class List/1.5.9 The Healer.md",
+        "heading": "Partial Warrior/Healer"
+      }
+    ],
+    "levels": [
+      {
+        "level": 1,
+        "hitDice": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 2
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "warrior"
+          },
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "hitDice": {
+          "count": 2,
+          "sides": 6,
+          "modifier": 4
+        },
+        "attackBonus": 2,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "hitDice": {
+          "count": 3,
+          "sides": 6,
+          "modifier": 6
+        },
+        "attackBonus": 2,
+        "focusPicks": []
+      },
+      {
+        "level": 4,
+        "hitDice": {
+          "count": 4,
+          "sides": 6,
+          "modifier": 8
+        },
+        "attackBonus": 3,
+        "focusPicks": []
+      },
+      {
+        "level": 5,
+        "hitDice": {
+          "count": 5,
+          "sides": 6,
+          "modifier": 10
+        },
+        "attackBonus": 4,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "hitDice": {
+          "count": 6,
+          "sides": 6,
+          "modifier": 12
+        },
+        "attackBonus": 5,
+        "focusPicks": []
+      },
+      {
+        "level": 7,
+        "hitDice": {
+          "count": 7,
+          "sides": 6,
+          "modifier": 14
+        },
+        "attackBonus": 5,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "hitDice": {
+          "count": 8,
+          "sides": 6,
+          "modifier": 16
+        },
+        "attackBonus": 6,
+        "focusPicks": []
+      },
+      {
+        "level": 9,
+        "hitDice": {
+          "count": 9,
+          "sides": 6,
+          "modifier": 18
+        },
+        "attackBonus": 6,
+        "focusPicks": []
+      },
+      {
+        "level": 10,
+        "hitDice": {
+          "count": 10,
+          "sides": 6,
+          "modifier": 20
+        },
+        "attackBonus": 7,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      }
+    ]
   }
 ]

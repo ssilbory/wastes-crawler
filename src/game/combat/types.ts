@@ -1,6 +1,13 @@
 // Battle state for the combat engine. The engine mutates a Battle it owns; callers get it back
 // from runBattle or step through it round by round.
-import type { Attribute, AttackMode, Dice, MonsterTag } from '../../data/schemas/index.ts';
+import type {
+  Attribute,
+  AttackMode,
+  Dice,
+  MonsterCombat,
+  MonsterTag,
+  OnHit,
+} from '../../data/schemas/index.ts';
 import type { ShockRating } from '../../rules/attacks.ts';
 import type { Rng } from '../../rules/rng.ts';
 import type { SaveType } from '../../rules/saves.ts';
@@ -23,6 +30,10 @@ export interface Attack {
   /** Can melee from the second row (the L trait, or a reach creature). */
   reach: boolean;
   twoHanded: boolean;
+  /** A crushing weapon, for creatures that shrug off blunt blows (Phase 14a). */
+  blunt: boolean;
+  /** Poison or paralysis on a hit (Phase 14a). */
+  onHit: OnHit | null;
 }
 
 export interface CasterState {
@@ -39,6 +50,12 @@ export interface CasterState {
   /** Best of Int or Cha, for spells; Elemental Blast may also use Dex. */
   castModifier: number;
   canCast: boolean;
+  /** Arts that work even when armor blocks casting (a Priest of Death's Healer arts, Phase 14d). */
+  armorFree: string[];
+  /** Uses of limited arts since the last quarter of rest, by art id (Phase 15). */
+  uses: Record<string, number>;
+  /** No spells through this round: Retain Sorcery's stress, or Swift Casting's spell (Phase 15). */
+  castLock: number;
   /** Arts and spells already used this scene, and targets of once-per-target ones. */
   usedThisScene: Set<string>;
 }
@@ -98,11 +115,44 @@ export interface Combatant {
   acBonus: number;
   /** A captive or non-combat hireling: never attacks, targeted only when no one else can be. */
   noncombatant: boolean;
+  /**
+   * Phase 14a: a monster's routine and volley as indices into its attacks, the attack its current
+   * swing must use, its breath weapon and the uses left this fight, rounds it is held paralyzed,
+   * its resistances, and whether it always acts last.
+   */
+  routine: number[] | null;
+  volley: number[] | null;
+  forcedAttack: number | null;
+  breath: NonNullable<MonsterCombat['breath']> | null;
+  breathLeft: number;
+  heldRounds: number;
+  resist: NonNullable<MonsterCombat['resist']> | null;
+  actsLast: boolean;
+  /** Phase 14c: Armor of God's natural AC (0 if none), and Wrath's pending extra damage. */
+  acFloor: number;
+  wrath: { until: number; bonus: number } | null;
+  /** Phase 14d: Final Repose's Physical save penalty for the scene. */
+  reposePenalty: number;
+  /**
+   * Phase 15 arts: sight that ignores darkness, Sanctified Ward, an intelligent creature (for Red
+   * Harvest), Petrifying Stare's rounds rooted, Steps of Air's rounds aloft, Red Harvest's next-hit
+   * bonus and the round it last fed, Cold Flesh's Shock cap, and Unaging's immunity to poison.
+   */
+  seesInDark: boolean;
+  sanctified: boolean;
+  sapient: boolean;
+  rootedRounds: number;
+  flyingRounds: number;
+  nextHitBonus: number;
+  harvestRound: number;
+  shockCap: number | null;
+  poisonImmune: boolean;
 }
 
 export type Action =
-  | { kind: 'attack'; attack: number; target: string }
+  | { kind: 'attack'; attack: number; target: string; smite?: true }
   | { kind: 'cast'; magic: string; target?: string; row?: number; strain?: boolean }
+  | { kind: 'breath'; row: number }
   | { kind: 'total-defense' }
   | { kind: 'stabilize'; target: string }
   | { kind: 'move'; row: number; column: number }
@@ -136,8 +186,12 @@ export interface Battle {
   /** Each side's starting number of combatants. */
   startCount: Record<SideId, number>;
   stabilizedThisRound: Set<string>;
-  /** Attack roll modifier by side: -4 for a party fighting in the dark (docs/rules-adaptation.md). */
+  /** Attack roll modifier by side, from God Wills It. */
   hitModifier: Record<SideId, number>;
+  /** The party fights without light; those who don't see in the dark take -4 to hit. */
+  dark: boolean;
+  /** God Wills It's bonus to damage and Shock, by side (Phase 14c). */
+  damageBonus: Record<SideId, number>;
   log: string[] | null;
   outcome: Outcome | null;
 }

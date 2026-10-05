@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { ArmorSchema } from './armor.ts';
+import { FactionAssetSchema } from './factions.ts';
 import { CastingProgressionSchema, ClassSchema, ProgressionSchema } from './classes.ts';
 import { FocusSchema } from './foci.ts';
 import { GearBundleSchema, GearSchema } from './gear.ts';
@@ -23,6 +24,7 @@ export const SrdSchemas = {
   spells: z.array(SpellSchema).min(1),
   arts: z.array(ArtSchema).min(1),
   monsters: z.array(MonsterSchema).min(1),
+  'faction-assets': z.array(FactionAssetSchema).min(1),
 } as const;
 
 export type SrdFile = keyof typeof SrdSchemas;
@@ -44,6 +46,8 @@ export * from './foci.ts';
 export * from './gear.ts';
 export * from './magic.ts';
 export * from './monsters.ts';
+export * from './factions.ts';
+export * from './faction-content.ts';
 export * from './skills.ts';
 export * from './weapons.ts';
 export * from './roster.ts';

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { MonsterCasterSchema } from './combat-content.ts';
 import { DiceSchema, IdSchema, recordBase } from './common.ts';
 
 /** The SRD 5.1.0 stat line every monster shares. */
@@ -60,5 +61,7 @@ export const SettingMonsterSchema = z.strictObject({
   /** The monster whose statistics, combat entry, loot, and component drops it shares. */
   base: IdSchema,
   description: z.string().min(1),
+  /** Magic of its own, in place of its base's (Sam's call: the elven patriarch). */
+  caster: MonsterCasterSchema.optional(),
 });
 export type SettingMonster = z.infer<typeof SettingMonsterSchema>;

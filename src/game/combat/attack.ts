@@ -1,24 +1,35 @@
 // Weapon attacks: vendor/wwn-srd/2.0 The Rules of the Game/2.4.0 Combat.md (2.4.5 attack rolls,
 // 2.4.6 damage and Shock, 2.4.4 Total Defense), shields ignoring the first Shock each round (3.4.2),
-// Wardpact Invocation (4.4.0), and the Warrior's Veteran's Luck (1.5.18).
+// Wardpact Invocation (4.4.0), the Warrior's Veteran's Luck (1.5.18), and creature resistances and
+// on-hit effects (specials.ts).
 import { netSteps } from '../../rules/advantage.ts';
 import { attackRoll, hitDamage, shockDamage, type ShockContext } from '../../rules/attacks.ts';
 import { effectiveAc, harm, save, say } from './damage.ts';
-import { attackSteps, rangedModifier } from './targeting.ts';
+import { afterHit, resisted } from './specials.ts';
+import { negatesUndead } from './reactions.ts';
+import { attackSteps, hitModifier, rangedModifier } from './targeting.ts';
 import type { Attack, Battle, Combatant } from './types.ts';
 
 function shockContext(target: Combatant, attack: Attack): ShockContext {
   return {
     targetAc: effectiveAc(target),
     shieldNegates: false,
-    immune: target.totalDefense || (attack.mode === 'melee' && target.meleeShockImmune),
+    immune:
+      target.totalDefense ||
+      target.sanctified ||
+      (attack.mode === 'melee' && target.meleeShockImmune),
+    // Cold Flesh: no more than 2 from any one Shock (Phase 15).
+    cap: target.shockCap,
   };
 }
 
 /** Shock on a miss; a shield soaks the first Shock its bearer would take each round. */
 function missShock(b: Battle, attacker: Combatant, target: Combatant, attack: Attack): void {
+  const blessed = b.damageBonus[attacker.side];
   const amount =
-    attack.mode === 'melee' ? shockDamage(attack.shock, 0, 0, shockContext(target, attack)) : 0;
+    attack.mode === 'melee'
+      ? shockDamage(attack.shock, 0, blessed, shockContext(target, attack))
+      : 0;
   if (amount === 0) {
     say(b, `${attacker.name} misses ${target.name}.`);
     return;
@@ -28,8 +39,16 @@ function missShock(b: Battle, attacker: Combatant, target: Combatant, attack: At
     say(b, `${target.name}'s shield turns ${attacker.name}'s blow.`);
     return;
   }
-  say(b, `${attacker.name} misses ${target.name} but deals ${amount} Shock.`);
-  harm(b, target, amount);
+  const dealt = resisted(target, attack, amount);
+  say(b, `${attacker.name} misses ${target.name} but deals ${dealt} Shock.`);
+  harm(b, target, dealt);
+}
+
+/** Smite the Wicked's edge on one attack (Phase 14c). */
+export interface AttackBoost {
+  hit: number;
+  /** Automatic damage on a hit. */
+  damage: number;
 }
 
 export function resolveAttack(
@@ -37,12 +56,16 @@ export function resolveAttack(
   actor: Combatant,
   attack: Attack,
   target: Combatant,
+  boost: AttackBoost | null = null,
 ): void {
+  // Red Harvest's +4 is spent on the next hit roll (Phase 15).
+  const harvest = actor.nextHitBonus;
+  actor.nextHitBonus = 0;
   const roll = attackRoll(b.rng, {
-    attackBonus: attack.hit,
+    attackBonus: attack.hit + (boost?.hit ?? 0) + harvest,
     attributeModifier: 0,
     skill: 0,
-    modifier: rangedModifier(b, actor, attack) + b.hitModifier[actor.side],
+    modifier: rangedModifier(b, actor, attack) + hitModifier(b, actor),
     steps: netSteps([attackSteps(b, actor, target, attack.mode)]),
     targetAc: effectiveAc(target),
   });
@@ -50,20 +73,27 @@ export function resolveAttack(
     missShock(b, actor, target, attack);
     return;
   }
+  if (negatesUndead(b, actor, target)) return;
   if (target.wardRounds > 0 && !save(b, actor, 'physical').success) {
     say(b, `${actor.name}'s blow slides off the ward around ${target.name}.`);
     return;
   }
-  const damage = hitDamage(
-    b.rng,
-    {
-      dice: attack.damage,
-      attributeModifier: 0,
-      bonus: attack.damageBonus,
-      shock: attack.mode === 'melee' ? attack.shock : null,
-    },
-    shockContext(target, attack),
-  ).total;
+  const blessed = b.damageBonus[actor.side];
+  const damageRoll = () =>
+    hitDamage(
+      b.rng,
+      {
+        dice: attack.damage,
+        attributeModifier: 0,
+        bonus: attack.damageBonus + blessed,
+        shock: attack.mode === 'melee' ? attack.shock : null,
+        shockBonus: blessed,
+      },
+      shockContext(target, attack),
+    ).total;
+  // Smite the Wicked rolls the damage twice and keeps the better, then adds the level.
+  const rolled = boost ? Math.max(damageRoll(), damageRoll()) + boost.damage : damageRoll();
+  const damage = resisted(target, attack, rolled);
   // Veteran's Luck: once per scene, turn a hit that would drop the Warrior into a miss.
   if (target.veteransLuck && target.status === 'active' && damage >= target.hp) {
     target.veteransLuck = false;
@@ -73,4 +103,5 @@ export function resolveAttack(
   }
   say(b, `${actor.name} hits ${target.name} with ${attack.name} for ${damage}.`);
   harm(b, target, damage);
+  afterHit(b, attack, target);
 }

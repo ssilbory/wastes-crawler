@@ -5,6 +5,7 @@
 // bundle's contents to the GM: vendor/wwn-srd/3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring
 // Gear.md).
 import { useResource, type ResourceDie } from '../../rules/resource-die.ts';
+import { FAITH_LIGHT, seer, userOf } from '../world/arts.ts';
 import { alive, note } from '../world/members.ts';
 import type { Member, World } from '../world/types.ts';
 import type { GameData } from '../character/context.ts';
@@ -83,10 +84,20 @@ export function kindle(w: World): boolean {
   return false;
 }
 
+/**
+ * Light of Faith lights the party while its priest has Effort to commit, unless magical darkness
+ * swallows it (Phase 15; vendor/wwn-srd/1.0 Character Creation/1.5.0 Class List/1.5.5 The Blood
+ * Priest.md).
+ */
+export const faithLit = (w: World, data: GameData) =>
+  w.dungeon !== null &&
+  !onSpecial(w, data, 'darkness') &&
+  userOf(w, data, FAITH_LIGHT) !== undefined;
+
 /** The light burns through one turn or one fight; a spent light is replaced if possible. */
-export function burn(w: World): void {
+export function burn(w: World, data: GameData): void {
   const l = w.light;
-  if (!l.lit) return;
+  if (!l.lit || faithLit(w, data)) return;
   const source = l.lit;
   const { die } = useResource(w.rng, l[source]);
   l[source] = die;
@@ -96,9 +107,13 @@ export function burn(w: World): void {
   kindle(w);
 }
 
-/** Underground with nothing burning, or on a square of magical darkness. */
+/** Underground with nothing burning and no Light of Faith, or on a square of magical darkness. */
 export const inDark = (w: World, data: GameData) =>
-  w.dungeon !== null && (w.light.lit === null || onSpecial(w, data, 'darkness'));
+  w.dungeon !== null &&
+  ((w.light.lit === null && !faithLit(w, data)) || onSpecial(w, data, 'darkness'));
+
+/** In the dark with no one whose arts see without light (Phase 15). */
+export const blind = (w: World, data: GameData) => inDark(w, data) && !seer(w, data);
 
 /** Lights go out on reaching the surface; what is left of them keeps. */
 export function douse(w: World): void {

@@ -42,9 +42,10 @@ export const CastingProgressionSchema = z.strictObject({
     .array(
       z.strictObject({
         level: z.int().min(1).max(10),
-        maxSpellLevel: z.int().min(1).max(5),
-        spellsCast: z.int().min(1),
-        spellsPrepared: z.int().min(1),
+        /** All 0 for a tradition of arts alone (the Blood Priest, 1.5.5). */
+        maxSpellLevel: z.int().min(0).max(5),
+        spellsCast: z.int().min(0),
+        spellsPrepared: z.int().min(0),
         /** Named art ids gained at this level. */
         arts: z.array(IdSchema),
         /** Free picks from the tradition's other arts. */

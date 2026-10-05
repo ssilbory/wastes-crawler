@@ -3,14 +3,17 @@ import { canCastIn, effortMaximum, strainCastCost } from '../../src/rules/magic.
 
 describe('effortMaximum', () => {
   it('is 1 + skill + attribute for full casters', () => {
-    expect(effortMaximum({ skill: 0, attributeModifier: 1, partialOnly: false })).toBe(2);
-    expect(effortMaximum({ skill: 1, attributeModifier: 2, partialOnly: false })).toBe(4);
-    expect(effortMaximum({ skill: 0, attributeModifier: -1, partialOnly: false })).toBe(0);
+    const full = { offset: 1, floorOne: false };
+    expect(effortMaximum({ ...full, skill: 0, attributeModifier: 1 })).toBe(2);
+    expect(effortMaximum({ ...full, skill: 1, attributeModifier: 2 })).toBe(4);
+    expect(effortMaximum({ ...full, skill: 0, attributeModifier: -1 })).toBe(0);
   });
 
-  it('is one lower for partial casters, but never below 1', () => {
-    expect(effortMaximum({ skill: 1, attributeModifier: 1, partialOnly: true })).toBe(2);
-    expect(effortMaximum({ skill: 0, attributeModifier: -1, partialOnly: true })).toBe(1);
+  it('is one lower for partial casters, and skill plus attribute for arts alone, never below 1', () => {
+    const partial = { offset: 0, floorOne: true };
+    expect(effortMaximum({ ...partial, skill: 1, attributeModifier: 1 })).toBe(2);
+    expect(effortMaximum({ ...partial, skill: 0, attributeModifier: -1 })).toBe(1);
+    expect(effortMaximum({ ...partial, skill: 0, attributeModifier: 0 })).toBe(1);
   });
 });
 

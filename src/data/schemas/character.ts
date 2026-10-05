@@ -22,7 +22,7 @@ export const CharacterSchema = z.strictObject({
   lineage: IdSchema.optional(),
   background: IdSchema,
   attributes: z.strictObject({
-    /** Scores from the standard array, before any adjustment. */
+    /** Scores from the standard array, 3d6, or the player's choice, before any adjustment. */
     base: z.record(AttributeSchema, Score),
     /** The people's modifiers as applied after clamping to 3–18. */
     people: Adjustments,

@@ -19,7 +19,7 @@ import type { Rng } from '../../rules/rng.ts';
 import {
   addAdjustments,
   applyPeopleModifiers,
-  isStandardArray,
+  scoresProblem,
   type Adjustments,
 } from './attributes.ts';
 import { evaluateBackground, type ChosenBackground } from './background.ts';
@@ -79,8 +79,9 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
   const peopleOutcome = evaluatePeople(data, choices.people, choices.lineage);
   const peopleStatus = peopleOutcome.status;
   steps.people = peopleStatus;
-  if (choices.array && !isStandardArray(choices.array)) {
-    steps.attributes = fail('scores must be 14, 12, 11, 10, 9, and 7, one each');
+  const problem = choices.array && scoresProblem(choices.attributeMethod, choices.array);
+  if (problem) {
+    steps.attributes = fail(problem);
   } else if (choices.array) {
     steps.attributes = OK;
     // Final scores need the people's modifiers, so they wait for a valid people and lineage.

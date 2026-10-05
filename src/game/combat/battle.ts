@@ -5,7 +5,8 @@ import { partyActsFirst, sideInitiative } from '../../rules/combat.ts';
 import { ROW_SLOTS } from '../../rules/formation.ts';
 import type { Rng } from '../../rules/rng.ts';
 import type { GameData } from '../character/context.ts';
-import { monsterCombatant, pcCombatant } from './combatants.ts';
+import { pcCombatant } from './combatants.ts';
+import { monsterCombatant } from './monster-combatant.ts';
 import { say } from './damage.ts';
 import { beginRound } from './round.ts';
 import { canAct } from './targeting.ts';
@@ -38,8 +39,7 @@ export interface NpcSetup {
   healer?: number;
 }
 
-/** The party's attack modifier in darkness, a house rule: the SRD sets none. */
-export const DARK_HIT_MODIFIER = -4;
+export { DARK_HIT_MODIFIER } from './targeting.ts';
 
 export interface BattleSetup {
   data: GameData;
@@ -110,7 +110,9 @@ export function createBattle(s: BattleSetup): Battle {
     ...monsterRows(s, allies, 'party', 'ally'),
   ];
   const enemies = monsterRows(s, s.enemies, 'enemy', 'foe');
-  if (s.antiMagic) for (const c of [...party, ...enemies]) if (c.caster) c.caster.canCast = false;
+  if (s.antiMagic)
+    for (const c of [...party, ...enemies])
+      if (c.caster) Object.assign(c.caster, { canCast: false, armorFree: [] });
   const b: Battle = {
     data: s.data,
     rng: s.rng,
@@ -125,7 +127,9 @@ export function createBattle(s: BattleSetup): Battle {
     halfChecked: new Set(),
     startCount: { party: party.length, enemy: enemies.length },
     stabilizedThisRound: new Set(),
-    hitModifier: { party: s.dark ? DARK_HIT_MODIFIER : 0, enemy: 0 },
+    hitModifier: { party: 0, enemy: 0 },
+    dark: s.dark ?? false,
+    damageBonus: { party: 0, enemy: 0 },
     log: s.log ? [] : null,
     outcome: null,
   };

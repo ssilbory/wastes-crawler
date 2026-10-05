@@ -1,6 +1,6 @@
 // The character creation choices and their evaluated result.
 import type { AttributeScores, ModifierBonuses } from '../../rules/attributes.ts';
-import type { Adjustments } from './attributes.ts';
+import type { Adjustments, AttributeMethod } from './attributes.ts';
 import type { ChosenBackground } from './background.ts';
 import type { EquipmentSummary } from './equipment.ts';
 import type { FocusChoice, FocusSlot, HeldFocus } from './foci.ts';
@@ -18,7 +18,10 @@ export interface Choices {
   people: string;
   /** Required when the people has lineages. */
   lineage: string | null;
+  /** The base scores, before the people and background, once all six are set. */
   array: AttributeScores | null;
+  /** How they were made: the standard array unless rolled or named (Phase 16). */
+  attributeMethod: AttributeMethod;
   background: ChosenBackground | null;
   classId: string | null;
   /** Replacements for class bonus skills that are already level-1, by position. */
@@ -63,6 +66,7 @@ export function emptyChoices(): Choices {
     people: '',
     lineage: null,
     array: null,
+    attributeMethod: { kind: 'array' },
     background: null,
     classId: null,
     classSkills: [],

@@ -15,6 +15,8 @@ import { crowns, lootText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import type { Act } from './TownScreen.tsx';
 
+/** Where each kind of raiser works (Phase 14d adds the Blood Priest temple). */
+const RAISER_PLACE = { crypt: 'Crypt', mortuary: 'Mortuary', temple: 'Temple' } as const;
 export function ServicesTab(props: { world: World; act: Act }) {
   const w = props.world;
   const price = (listed: number) => crowns(priceHere(w, data, listed));
@@ -86,8 +88,8 @@ export function ServicesTab(props: { world: World; act: Act }) {
         </table>
       </section>
       {raiser && (
-        <section class="panel" aria-label={raiser.raises === 'crypt' ? 'Crypt' : 'Mortuary'}>
-          <h2>{raiser.raises === 'crypt' ? 'Crypt' : 'Mortuary'}</h2>
+        <section class="panel" aria-label={RAISER_PLACE[raiser.raises ?? 'mortuary']}>
+          <h2>{RAISER_PLACE[raiser.raises ?? 'mortuary']}</h2>
           <p class="hint">{raiser.text}</p>
           {dead.length === 0 && <p class="hint">No one in the party is dead.</p>}
           {dead.map((m) => (

@@ -7,14 +7,19 @@ export interface EffortInput {
   skill: number;
   /** The best Effort attribute modifier among those classes. */
   attributeModifier: number;
-  /** True when every casting class is a partial one. */
-  partialOnly: boolean;
+  /**
+   * The best of each tradition's offset: 1 for a full Mage, 0 for a partial one (one lower), and 0
+   * for the Blood Priest and Healer, whose Effort is just skill plus attribute (1.5.5.1, 1.5.9.1).
+   */
+  offset: number;
+  /** Never below 1: any partial Mage, the Blood Priest, and the Healer. */
+  floorOne: boolean;
 }
 
-/** 1 + skill + attribute; partial casters are one lower, but never below 1. */
+/** offset + skill + attribute; never below 1 for partial casters and arts-only traditions. */
 export function effortMaximum(input: EffortInput): number {
-  const full = 1 + input.skill + input.attributeModifier;
-  return input.partialOnly ? Math.max(1, full - 1) : full;
+  const total = input.offset + input.skill + input.attributeModifier;
+  return input.floorOne ? Math.max(1, total) : total;
 }
 
 /** Strain casting costs System Strain equal to the spell's level. */

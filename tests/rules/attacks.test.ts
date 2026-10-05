@@ -34,6 +34,10 @@ describe('shockDamage', () => {
 
   it('applies "/-" Shock whatever the AC', () => {
     expect(shockDamage({ damage: 5, maxAc: null }, 0, 0, { ...open, targetAc: 22 })).toBe(5);
+    // Cold Flesh caps any one Shock at 2; a null cap is no cap.
+    expect(shockDamage({ damage: 5, maxAc: null }, 0, 0, { ...open, cap: 2 })).toBe(2);
+    expect(shockDamage({ damage: 1, maxAc: null }, 0, 0, { ...open, cap: 2 })).toBe(1);
+    expect(shockDamage({ damage: 5, maxAc: null }, 0, 0, { ...open, cap: null })).toBe(5);
   });
 
   it('is negated by shields and immunity, and by having no rating', () => {

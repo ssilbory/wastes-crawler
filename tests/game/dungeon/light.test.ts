@@ -81,19 +81,19 @@ describe('light underground (docs/rules-adaptation.md, Dungeon exploration)', ()
     const w = below();
     w.light.kitTorches = 0;
     w.rng = scriptedRng([3, 1, 3, 2]);
-    burn(w);
+    burn(w, data);
     expect(w.light.torch).toBe(6);
-    burn(w);
-    burn(w);
+    burn(w, data);
+    burn(w, data);
     expect(w.light.torch).toBe(4);
-    burn(w);
+    burn(w, data);
     expect(w.light).toMatchObject({ lit: null, torch: 0 });
     expect(w.log.slice(-2)).toEqual([
       'Day 1, day: The torch gutters out.',
       'Day 1, day: The party is in the dark.',
     ]);
     expect(inDark(w, data)).toBe(true);
-    burn(w);
+    burn(w, data);
     expect(w.light.lit).toBeNull();
   });
 
@@ -102,7 +102,7 @@ describe('light underground (docs/rules-adaptation.md, Dungeon exploration)', ()
     give(w, 'Snag', 'lantern', 1);
     w.light = { ...w.light, lit: 'lantern', lantern: 4 };
     w.rng = scriptedRng([1]);
-    burn(w);
+    burn(w, data);
     expect(w.log.slice(-2)).toEqual([
       'Day 1, day: The lantern runs dry.',
       'Day 1, day: A torch is lit.',
@@ -129,10 +129,10 @@ describe('fighting in the dark', () => {
     w.light.lit = null;
     const setup = partySetup(w, data, [['thug-or-militia']], true);
     expect(setup.dark).toBe(true);
-    expect(battleFrom(data, createRng('dark'), setup, false).hitModifier).toEqual({
-      party: -4,
-      enemy: 0,
-    });
+    const b = battleFrom(data, createRng('dark'), setup, false);
+    expect(b.dark).toBe(true);
+    const { hitModifier } = await import('../../../src/game/combat/targeting.ts');
+    expect(b.combatants.map((c) => hitModifier(b, c))).toContain(-4);
   });
 });
 

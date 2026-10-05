@@ -18,7 +18,7 @@ import { data, member, world } from './helpers.ts';
 const WESTHOLD = { col: 3, row: 8 };
 const EASTMARCH = { col: 20, row: 8 };
 
-/** The party back in Westhold with Snag dead, offered the pilgrimage. */
+/** The party back in Rubblegate with Snag dead, offered the pilgrimage. */
 function mourning(): World {
   const w = world();
   member(w, 'Snag').dead = true;

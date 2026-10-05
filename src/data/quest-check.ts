@@ -5,7 +5,8 @@ import type { ContentData, SrdData } from './schemas/index.ts';
 /**
  * Quests name real givers, towns, monsters, and earlier quests; their hexes are on passable land;
  * an escort is only ever a first step; and no quest needs itself, directly or not. A settlement has
- * at most one crypt or mortuary, and a village has none; only they give raising quests.
+ * at most one crypt, mortuary, or temple that raises the dead, and a village has none; only they
+ * give raising quests.
  */
 export function questReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const errors: string[] = [];

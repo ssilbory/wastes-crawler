@@ -5,7 +5,7 @@ import { expect, test, type Page } from '@playwright/test';
 const starters = ['snag', 'grukk', 'lirael'].map((n) => `tools/sim/parties/starter/${n}.json`);
 const WORLD_KEY = 'wastes-crawler.world';
 
-async function startInWesthold(page: Page) {
+async function startInRubblegate(page: Page) {
   await page.goto('/#/arena');
   await page.getByLabel('Import character files').setInputFiles(starters);
   await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(3);
@@ -14,21 +14,22 @@ async function startInWesthold(page: Page) {
   await page.getByRole('combobox', { name: 'Front row, slot 2' }).selectOption({ label: 'Grukk' });
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('town-e2e');
   await page.getByRole('button', { name: 'Start a new world' }).click();
-  await page.getByRole('button', { name: 'Visit Westhold' }).click();
-  await expect(page.getByRole('heading', { name: 'Westhold' })).toBeVisible();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
+  await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
+  await expect(page.getByRole('heading', { name: 'Rubblegate' })).toBeVisible();
 }
 
 const purse = async (page: Page) =>
   Number((await page.locator('.world-bar').innerText()).match(/Purse: ([\d.]+) crown/)?.[1]);
 
 test('rests at the inn, shops, and changes the party at the tavern', async ({ page }, testInfo) => {
-  await startInWesthold(page);
+  await startInRubblegate(page);
   const start = await purse(page);
   await page.getByRole('tab', { name: 'Inn and healer' }).click();
   await page.getByRole('button', { name: /^Stay the night \(6 crowns\)$/ }).click();
   expect(await purse(page)).toBe(start - 6);
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
-    'The party stays the night at the inn in Westhold.',
+    'The party stays the night at the inn in Rubblegate.',
   );
 
   await page.getByRole('tab', { name: 'Shop', exact: true }).click();
@@ -59,8 +60,22 @@ test('rests at the inn, shops, and changes the party at the tavern', async ({ pa
 });
 
 test('levels up a character with XP to spend', async ({ page }, testInfo) => {
-  await startInWesthold(page);
-  // Grant Snag the 3 XP for 2nd level through the autosave, then pick the journey back up.
+  await startInRubblegate(page);
+  // Wait for the autosave to hold the party, then edit it from the title screen, where nothing
+  // autosaves over the change (a pending town autosave could, which made this test flaky).
+  await expect
+    .poll(() =>
+      page.evaluate((key) => {
+        const save = JSON.parse(localStorage.getItem(key) ?? 'null');
+        return save?.members?.some(
+          (m: { character: { name: string } }) => m.character.name === 'Snag',
+        );
+      }, WORLD_KEY),
+    )
+    .toBe(true);
+  await page.reload();
+  await expect(page.getByRole('button', { name: 'Continue journey' })).toBeVisible();
+  // Grant Snag the 3 XP for 2nd level through the save, then pick the journey back up.
   await page.evaluate((key) => {
     const save = JSON.parse(localStorage.getItem(key) as string);
     const snag = save.members.find(
@@ -71,7 +86,7 @@ test('levels up a character with XP to spend', async ({ page }, testInfo) => {
   }, WORLD_KEY);
   await page.reload();
   await page.getByRole('button', { name: 'Continue journey' }).click();
-  await page.getByRole('button', { name: 'Visit Westhold' }).click();
+  await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
   await page.getByRole('tab', { name: 'Training' }).click();
   await page.getByRole('combobox', { name: 'Who' }).selectOption({ label: 'Snag' });
   const form = page.getByRole('region', { name: 'Level up' });

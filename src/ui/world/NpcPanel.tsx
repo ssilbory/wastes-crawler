@@ -15,6 +15,10 @@ function escortTo(questId: string): string {
 
 function role(w: World, n: Npc): string {
   const t = typeOf(data, n);
+  if (n.kind === 'undead') {
+    const master = w.members.find((m) => m.id === n.master)?.character.name;
+    return master ? `undead, serving ${master}` : 'undead';
+  }
   if (t) return `${t.name}, ${shareText(t.share)}${n.owed > 0 ? `, owed ${n.owed} crowns` : ''}`;
   const to = n.kind === 'captive' ? captiveOf(data, n.type).destination : escortTo(n.type);
   const town = regionMap(data, w.region).sites.find((s) => s.id === to)?.name ?? to;
@@ -29,7 +33,9 @@ export function NpcPanel(props: { world: World; onChange: () => void }) {
     ...w.members
       .filter((m) => !m.dead && m.character.hp.current < m.character.hp.max)
       .map((m) => ({ id: m.id, name: m.character.name })),
-    ...w.npcs.filter((n) => n.hp < n.maxHp).map((n) => ({ id: n.id, name: n.name })),
+    ...w.npcs
+      .filter((n) => n.kind !== 'undead' && n.hp < n.maxHp)
+      .map((n) => ({ id: n.id, name: n.name })),
   ];
   const [healer, setHealer] = useState('');
   const [patient, setPatient] = useState('');
@@ -56,7 +62,7 @@ export function NpcPanel(props: { world: World; onChange: () => void }) {
               {n.inventory.length > 0 && ` · carrying ${n.inventory.length} items`}
             </span>
             <button type="button" onClick={() => run(() => dismiss(w, data, n.id))}>
-              Dismiss
+              {n.kind === 'undead' ? 'Release' : 'Dismiss'}
             </button>
           </li>
         ))}

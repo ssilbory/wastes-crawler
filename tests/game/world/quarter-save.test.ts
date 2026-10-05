@@ -87,7 +87,7 @@ describe('new worlds', () => {
       'borderlands',
     );
     expect(w).toMatchObject({ region: 'borderlands', position: { col: 3, row: 8 }, rations: 12 });
-    expect(w.log[0]).toBe('Day 1, morning: The party gathers in Westhold.');
+    expect(w.log[0]).toBe('Day 1, morning: The party gathers in Rubblegate.');
   });
 });
 

@@ -3,7 +3,7 @@ import type { Attribute, Character } from '../../data/schemas/index.ts';
 import type { LevelChoices, LevelPlan } from '../../game/character/advance.ts';
 import { classOption } from '../../game/character/class-step.ts';
 import { allowedSkills, focusInfo, type FocusChoice } from '../../game/character/foci.ts';
-import { learnableSpells } from '../../game/character/magic.ts';
+import { artChoices, learnableSpells } from '../../game/character/magic.ts';
 import { ATTRIBUTE_NAMES, data, skillName } from '../builder/data.ts';
 
 const pickable = data.content.focusRules
@@ -110,26 +110,24 @@ export function LevelUpForm(props: {
             <legend>
               Arts ({p.picks} {p.tradition})
             </legend>
-            {data.srd.arts
-              .filter((a) => a.tradition === p.tradition && !c.arts.includes(a.id))
-              .map((a) => (
-                <label key={a.id} class="check">
-                  <input
-                    type="checkbox"
-                    checked={arts.includes(a.id)}
-                    onChange={() =>
-                      setArts(
-                        toggle(
-                          arts,
-                          a.id,
-                          plan.arts.reduce((n, x) => n + x.picks, 0),
-                        ),
-                      )
-                    }
-                  />{' '}
-                  {a.name}
-                </label>
-              ))}
+            {artChoices(data, p, c.arts, plan.classLevel).map((a) => (
+              <label key={a.id} class="check">
+                <input
+                  type="checkbox"
+                  checked={arts.includes(a.id)}
+                  onChange={() =>
+                    setArts(
+                      toggle(
+                        arts,
+                        a.id,
+                        plan.arts.reduce((n, x) => n + x.picks, 0),
+                      ),
+                    )
+                  }
+                />{' '}
+                {a.name}
+              </label>
+            ))}
           </fieldset>
         ))}
       {plan.spells > 0 && (

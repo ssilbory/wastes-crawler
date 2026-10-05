@@ -15,6 +15,7 @@ test('takes the east road into the Dark Lands and visits Cinderhold', async ({
   await page.getByRole('combobox', { name: 'Front row, slot 2' }).selectOption({ label: 'Grukk' });
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('regions-e2e');
   await page.getByRole('button', { name: 'Start a new world' }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
   const bar = page.locator('.world-bar');
   await expect(bar).toContainText('The Borderlands');
   await page.evaluate((key) => {

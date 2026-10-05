@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import {
-  dungeonOf,
+  exitLabel,
   levelOf,
   stairsHere,
   step,
@@ -14,11 +14,13 @@ import { automap, FACING_NAMES, MAP_CELL } from '../../render/automap-view.ts';
 import { dungeonView, VIEW_HEIGHT, VIEW_WIDTH } from '../../render/dungeon-view.ts';
 import { data } from '../builder/data.ts';
 import { PartyPanel } from './PartyPanel.tsx';
+import { HealerPanel } from './HealerPanel.tsx';
+import { NecromancyPanel } from './NecromancyPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { QuestLog } from './QuestLog.tsx';
 import { CampPanel } from './CampPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
-import { inDark } from '../../game/dungeon/light.ts';
+import { blind } from '../../game/dungeon/light.ts';
 import { onSafeSquare } from '../../game/dungeon/time.ts';
 import { search } from '../../game/dungeon/secrets.ts';
 import { disarm, knownTrapAhead } from '../../game/dungeon/traps.ts';
@@ -92,7 +94,7 @@ export function DungeonScreen(props: {
   const stairsLabel = !stairs
     ? null
     : 'surface' in stairs.to
-      ? `Climb out of ${dungeonOf(data, s.dungeon).name}`
+      ? exitLabel(data, s.dungeon)
       : `Take the stairs to ${levelOf(data, s.dungeon, stairs.to.level).level.name}`;
   return (
     <div class="world dungeon">
@@ -107,7 +109,7 @@ export function DungeonScreen(props: {
       <div class="world-main">
         <div class="dungeon-main">
           <svg
-            class={inDark(w, data) ? 'dungeon-view dark' : 'dungeon-view'}
+            class={blind(w, data) ? 'dungeon-view dark' : 'dungeon-view'}
             viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}
             role="img"
             aria-label="Dungeon view"
@@ -120,7 +122,7 @@ export function DungeonScreen(props: {
                 {p.frame && <polygon class="door-frame" points={p.frame} />}
               </g>
             ))}
-            {inDark(w, data) && (
+            {blind(w, data) && (
               <text class="pitch-dark" x={VIEW_WIDTH / 2} y={VIEW_HEIGHT / 2}>
                 Pitch dark
               </text>
@@ -217,6 +219,8 @@ export function DungeonScreen(props: {
           )}
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
+          <NecromancyPanel world={w} onChange={props.onChange} />
+          <HealerPanel world={w} onChange={props.onChange} />
           <QuestLog world={w} onChange={props.onChange} />
           <section class="panel log" aria-label="Journey log">
             <h3>Journal</h3>
