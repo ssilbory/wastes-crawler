@@ -2,6 +2,7 @@ import { useState } from 'preact/hooks';
 import type { RosterEntry } from '../../game/character/roster.ts';
 import { MAX_PCS, type Recruit } from '../../game/world/new-world.ts';
 import { PartySetup, type Placement } from '../arena/PartySetup.tsx';
+import { RosterList } from './RosterList.tsx';
 import { SLOTS, type Slot } from '../storage.ts';
 
 /** Starting a new world from the roster, continuing a saved one, or loading a save file. */
@@ -18,6 +19,7 @@ export function StartScreen(props: {
   /** Adds the starter party to the roster and returns where its members stand. */
   onStarters: () => Placement;
   onImport: (file: File) => void;
+  onDelete: (id: string) => void;
 }) {
   const [placement, setPlacement] = useState<Placement>({});
   const [seed, setSeed] = useState('');
@@ -82,6 +84,15 @@ export function StartScreen(props: {
         ) : (
           <PartySetup entries={props.roster} placement={placement} onChange={setPlacement} />
         )}
+        <RosterList
+          entries={props.roster}
+          onDelete={(id) => {
+            setPlacement(
+              Object.fromEntries(Object.entries(placement).filter(([, placed]) => placed !== id)),
+            );
+            props.onDelete(id);
+          }}
+        />
       </main>
       <div class="start-row">
         <label>

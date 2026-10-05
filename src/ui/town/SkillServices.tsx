@@ -1,11 +1,12 @@
 import { useState } from 'preact/hooks';
+import { awake } from '../../game/world/members.ts';
 import { playedTonight, playForLodging } from '../../game/world/perform.ts';
 import { pray, prayedToday, type Prayer } from '../../game/world/prayer.ts';
 import type { World } from '../../game/world/types.ts';
 import { data } from '../builder/data.ts';
 import type { Act } from './TownScreen.tsx';
 
-const able = (w: World) => w.members.filter((m) => !m.dead && m.character.hp.current > 0);
+const able = (w: World) => w.members.filter(awake);
 
 /** Playing the inn's common room for the party's lodging (docs/rules-adaptation.md, Skills). */
 export function PerformForm(props: { world: World; act: Act }) {
@@ -40,7 +41,9 @@ export function PrayerForm(props: { world: World; act: Act }) {
   const ready = able(w).filter((m) => !prayedToday(w, m));
   const frail = w.members.filter((m) => !m.dead && m.frail);
   const [who, setWho] = useState(ready[0]?.id ?? '');
-  const [purpose, setPurpose] = useState('strain');
+  const [chosen, setPurpose] = useState('strain');
+  // Once the chosen member's Frailty is gone, the prayer goes back to easing strain.
+  const purpose = frail.some((m) => m.id === chosen) ? chosen : 'strain';
   const prayer = ready.find((m) => m.id === who) ?? ready[0];
   if (!prayer) return <p class="hint">Everyone has prayed today.</p>;
   const asked: Prayer =

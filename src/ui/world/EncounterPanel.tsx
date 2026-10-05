@@ -1,10 +1,11 @@
 import { useState } from 'preact/hooks';
 import { bluff, giveCountersign, presentAuthority } from '../../game/world/orders.ts';
-import { acceptBeast, handlers } from '../../game/world/beasts.ts';
+import { acceptBeast, beastRefusal, handlers } from '../../game/world/beasts.ts';
 import { acceptOffer, bribePrice, canParley, parley } from '../../game/world/parley.ts';
+import { bestSpeaker, type Speech } from '../../game/world/speech.ts';
 import type { TownResult } from '../../game/world/services.ts';
 import type { World } from '../../game/world/types.ts';
-import { knownFoes } from '../../render/bestiary-view.ts';
+import { beastOfferText, knownFoes } from '../../render/bestiary-view.ts';
 import { orderChoices } from '../../render/setting-view.ts';
 import { crowns } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
@@ -22,14 +23,19 @@ export function EncounterPanel(props: {
 }) {
   const w = props.world;
   const e = w.encounter;
-  const able = w.members.filter((m) => !m.dead && m.character.hp.current > 0);
-  const [speaker, setSpeaker] = useState(able[0]?.id ?? '');
   const keepers = handlers(w, data);
   const [handler, setHandler] = useState('');
   const [message, setMessage] = useState<string | null>(null);
   if (!e) return null;
   const order = orderChoices(w, data);
+  // Each kind of speech goes to whoever in the party is best at it.
+  const speaker = (speech: Speech) => bestSpeaker(w, data, speech);
+  const who = (speech: Speech) => {
+    const m = speaker(speech);
+    return m ? ` (${m.character.name})` : '';
+  };
   const keeper = keepers.find((m) => m.id === handler) ?? keepers[0];
+  const refusal = e.beast ? beastRefusal(w, data) : null;
   const run = (action: () => TownResult) => {
     const r = action();
     setMessage(r.ok ? null : r.reason);
@@ -55,8 +61,10 @@ export function EncounterPanel(props: {
           </button>
         )}
       </div>
-      {e.beast && keeper && (
+      {e.beast && refusal && <p class="hint">{refusal}</p>}
+      {e.beast && !refusal && keeper && (
         <div class="beast" role="group" aria-label="Beast">
+          <p class="hint">{beastOfferText(w, data)}</p>
           <label>
             Handler{' '}
             <select
@@ -71,7 +79,7 @@ export function EncounterPanel(props: {
             </select>
           </label>{' '}
           <button type="button" onClick={() => run(() => acceptBeast(w, data, keeper.id))}>
-            Win the beast over
+            Win it over
           </button>
         </div>
       )}
@@ -89,34 +97,30 @@ export function EncounterPanel(props: {
             </button>
           )}
           {order.bluff && (
-            <button type="button" onClick={() => run(() => bluff(w, data, speaker))}>
-              Bluff
+            <button
+              type="button"
+              onClick={() => run(() => bluff(w, data, speaker('bluff')?.id ?? ''))}
+            >
+              Bluff{who('bluff')}
             </button>
           )}
         </div>
       )}
-      {(canParley(w, data) || order?.bluff) && (
-        <label>
-          Speaker{' '}
-          <select
-            value={speaker}
-            onChange={(ev) => setSpeaker((ev.target as HTMLSelectElement).value)}
-          >
-            {able.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.character.name}
-              </option>
-            ))}
-          </select>
-        </label>
-      )}
       {canParley(w, data) && (
         <div class="parley" role="group" aria-label="Parley">
-          <button type="button" onClick={() => run(() => parley(w, data, 'talk', speaker))}>
-            Talk
+          <button
+            type="button"
+            onClick={() => run(() => parley(w, data, 'talk', speaker('talk')?.id ?? null))}
+          >
+            Talk{who('talk')}
           </button>
-          <button type="button" onClick={() => run(() => parley(w, data, 'intimidate', speaker))}>
-            Intimidate
+          <button
+            type="button"
+            onClick={() =>
+              run(() => parley(w, data, 'intimidate', speaker('intimidate')?.id ?? null))
+            }
+          >
+            Intimidate{who('intimidate')}
           </button>
           <button type="button" onClick={() => run(() => parley(w, data, 'bribe', null))}>
             Bribe ({crowns(bribePrice(w, data))})

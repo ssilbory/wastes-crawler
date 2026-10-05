@@ -26,6 +26,10 @@ export function skillRuleErrors(srd: SrdData, content: ContentData): string[] {
   for (const a of content.skillRules.added) {
     if (srdIds.has(a.id)) errors.push(`skillRules/added/${a.id}: clashes with an SRD skill`);
   }
+  for (const id of content.skillRules.retiredFoci) {
+    if (content.focusRules.find((f) => f.id === id)?.availability !== 'excluded')
+      errors.push(`skillRules/retiredFoci/${id}: not an excluded focus`);
+  }
   if (!game.has(content.skillRules.animalKen.skill))
     errors.push(`skillRules/animalKen: unknown skill ${content.skillRules.animalKen.skill}`);
   return errors;

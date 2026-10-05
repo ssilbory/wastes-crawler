@@ -5,7 +5,7 @@
 import type { FocusEffect, Mind } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
 import { activeEffects } from '../character/equipment.ts';
-import { alive } from './members.ts';
+import { alive, awake } from './members.ts';
 import type { World } from './types.ts';
 
 export function mindOf(data: GameData, monsterId: string): Mind {
@@ -41,12 +41,10 @@ export function parleyReach(w: World, data: GameData): ParleyReach {
   };
 }
 
-/** Anyone conscious with Animal Ken, who can talk to beasts (docs/rules-adaptation.md, Skills). */
+/** Anyone awake with Animal Ken, who can talk to beasts (docs/rules-adaptation.md, Skills). */
 export const beastSpeaker = (w: World, data: GameData) =>
-  alive(w).some(
-    (m) =>
-      m.character.hp.current > 0 &&
-      m.character.skills[data.content.skillRules.animalKen.skill] !== undefined,
+  w.members.some(
+    (m) => awake(m) && m.character.skills[data.content.skillRules.animalKen.skill] !== undefined,
   );
 
 /** True when every monster in the rows is an animal. */

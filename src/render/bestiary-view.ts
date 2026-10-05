@@ -1,7 +1,9 @@
-// What the party knows of the monsters it has named with Know (docs/rules-adaptation.md, Skills).
+// What the party knows of the monsters it has named with Know, and what a beast offering to follow
+// would cost (docs/rules-adaptation.md, Skills).
 import type { Dice, Monster } from '../data/schemas/index.ts';
 import { findMonster, type GameData } from '../game/character/context.ts';
 import type { World } from '../game/world/types.ts';
+import { RESOURCE_DICE, stepDie } from '../rules/resource-die.ts';
 
 export interface KnownFoe {
   id: string;
@@ -46,4 +48,19 @@ export function knownFoes(
       const m = findMonster(data, id) as Monster;
       return { id, name: m.name, stats: monsterStats(m) };
     });
+}
+
+const die = (n: number) => (n === 0 ? 'empty' : `d${n}`);
+
+/** "Win the Herd Beast over (2 steps of rations: d8 to d4)", or why the rations fall short. */
+export function beastOfferText(w: World, data: GameData): string | null {
+  const id = w.encounter?.beast;
+  if (!id) return null;
+  const m = findMonster(data, id) as Monster;
+  const steps = m.hitDice;
+  if (RESOURCE_DICE.indexOf(w.rations) < steps)
+    return `The ${m.name} wants ${steps} steps of rations; the rations are ${die(w.rations)}`;
+  const after = stepDie(w.rations, -steps);
+  const warning = after === 0 ? ', emptying the rations' : '';
+  return `Win the ${m.name} over (${steps} steps of rations: ${die(w.rations)} to ${die(after)}${warning})`;
 }

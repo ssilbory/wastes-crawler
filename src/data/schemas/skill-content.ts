@@ -13,6 +13,8 @@ const Percent = z.int().min(0).max(100);
 export const SkillRulesSchema = z.strictObject({
   /** SRD skills the game has no use for yet; characters holding one get `becomes` instead. */
   removed: z.array(z.strictObject({ id: IdSchema, becomes: IdSchema, why: z.string().min(1) })),
+  /** Foci no longer offered; a character holding one gets a free focus pick per level instead. */
+  retiredFoci: z.array(IdSchema),
   /** Skills the game adds, in the SRD's shape without a source. */
   added: z.array(
     z.strictObject({ id: IdSchema, name: z.string().min(1), description: z.string().min(1) }),

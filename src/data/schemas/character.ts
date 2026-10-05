@@ -3,7 +3,7 @@ import { AttributeSchema, IdSchema } from './common.ts';
 import { QualitySchema } from './crafting-content.ts';
 import { ItemLocationSchema } from './equipment-content.ts';
 
-export const CHARACTER_SCHEMA_VERSION = 6;
+export const CHARACTER_SCHEMA_VERSION = 7;
 
 const Score = z.int().min(3).max(18);
 const Adjustments = z.partialRecord(AttributeSchema, z.int());

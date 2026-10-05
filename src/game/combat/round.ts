@@ -4,13 +4,13 @@
 // command (advance) or let controllers decide everything (runRound, runBattle).
 import { actsOnInstinct, MORTAL_ROUNDS } from '../../rules/combat.ts';
 import { frontDrops, ROW_SLOTS, type Formation, type FormationRow } from '../../rules/formation.ts';
-import { act, stabilize } from './actions.ts';
+import { act } from './actions.ts';
 import { monsterAction, partyAction } from './ai.ts';
 import { freeActions } from './free-actions.ts';
 import { say } from './damage.ts';
 import { checkMorale } from './morale.ts';
 import { canAct, isUp, targets } from './targeting.ts';
-import type { Attack, Battle, Combatant, Controller, Outcome } from './types.ts';
+import type { Attack, Battle, Combatant, Controller } from './types.ts';
 
 export const MAX_ROUNDS = 100;
 
@@ -125,7 +125,7 @@ function shiftFormation(b: Battle): void {
   }
 }
 
-function endOfRound(b: Battle): void {
+export function endOfRound(b: Battle): void {
   for (const c of b.combatants) {
     if (c.status === 'dying' && b.round - c.fellRound >= MORTAL_ROUNDS) {
       c.status = 'dead';
@@ -200,39 +200,4 @@ export function runRound(
   for (let actor = currentActor(b); actor; actor = currentActor(b))
     takeTurn(b, actor, controllerFor(actor, party, enemy));
   closeRound(b);
-}
-
-const heal = (c: Combatant) => c.skills.heal ?? -1;
-
-/** After a win, the party keeps trying to stabilize the dying until each lives or dies. */
-function aftermath(b: Battle): void {
-  while (b.combatants.some((c) => c.side === 'party' && c.status === 'dying')) {
-    const medics = b.combatants.filter((c) => c.side === 'party' && canAct(c));
-    for (const victim of b.combatants.filter((c) => c.side === 'party' && c.status === 'dying')) {
-      const medic = medics.sort((x, y) => heal(y) - heal(x))[0];
-      if (medic) stabilize(b, medic, victim);
-    }
-    endOfRound(b);
-  }
-}
-
-export interface BattleResult {
-  outcome: Outcome;
-  rounds: number;
-  deaths: number;
-  battle: Battle;
-}
-
-/** Sums up a finished battle, tending the party's dying first after a win. */
-export function concludeBattle(b: Battle): BattleResult {
-  const outcome: Outcome = b.outcome ?? 'draw';
-  const rounds = Math.min(b.round, MAX_ROUNDS);
-  if (outcome === 'party') aftermath(b);
-  const deaths = b.combatants.filter((c) => c.side === 'party' && c.status === 'dead').length;
-  return { outcome, rounds, deaths, battle: b };
-}
-
-export function runBattle(b: Battle, party?: Controller, enemy?: Controller): BattleResult {
-  while (!b.outcome) runRound(b, party, enemy);
-  return concludeBattle(b);
 }

@@ -3,7 +3,7 @@
 // lifts one member's Frailty.
 import type { MissionGiver } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
-import { alive, memberCheck, note } from './members.ts';
+import { alive, awake, memberCheck, note } from './members.ts';
 import type { TownResult } from './services.ts';
 import { townHere } from './town.ts';
 import type { World } from './types.ts';
@@ -27,7 +27,7 @@ export function pray(w: World, data: GameData, memberId: string, prayer: Prayer)
   if (w.encounter) return no('Settle the encounter first.');
   const shrine = shrineHere(w, data);
   if (!shrine) return no(`${townHere(w, data).name} has no temple or mortuary.`);
-  const m = alive(w).find((x) => x.id === memberId && x.character.hp.current > 0);
+  const m = w.members.find((x) => x.id === memberId && awake(x));
   if (!m) return no('Choose someone to pray.');
   const name = m.character.name;
   if (prayedToday(w, m)) return no(`${name} has already prayed today.`);

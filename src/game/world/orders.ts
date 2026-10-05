@@ -10,9 +10,10 @@ import type { GameData } from '../character/context.ts';
 import { levelOf } from '../dungeon/explore.ts';
 import type { WorldEvent } from './bus.ts';
 import { meetGroup } from './encounters.ts';
-import { alive, memberCheck, note } from './members.ts';
+import { awake, memberCheck, note } from './members.ts';
 import { hirelingType } from './npcs.ts';
 import type { TownResult } from './services.ts';
+import { speechCheck } from './speech.ts';
 import type { World } from './types.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
@@ -96,10 +97,11 @@ export function bluff(w: World, data: GameData, speakerId: string): TownResult {
   const e = w.encounter;
   if (!o || !e) return no('No one here to bluff.');
   if (e.parleyed) return no('They have heard enough.');
-  const speaker = alive(w).find((m) => m.id === speakerId && m.character.hp.current > 0);
+  const speaker = w.members.find((m) => m.id === speakerId && awake(m));
   if (!speaker) return no('Choose someone to do the talking.');
   e.parleyed = true;
-  if (memberCheck(w, data, speaker, 'convince', ['cha'], o.bluff).success) {
+  const { skill, attrs } = speechCheck(data, e.enemies, 'bluff');
+  if (memberCheck(w, data, speaker, skill, attrs, o.bluff).success) {
     e.hostile = false;
     e.spotted = true;
     note(w, `${speaker.character.name} talks their way past. The bound let the party through.`);

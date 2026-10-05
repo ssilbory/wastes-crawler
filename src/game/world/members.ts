@@ -15,6 +15,9 @@ export function note(w: World, text: string): void {
 
 export const alive = (w: World) => w.members.filter((m) => !m.dead);
 
+/** Living, conscious, and not asleep after a Healer's revive. */
+export const awake = (m: Member) => !m.dead && !m.reviving && m.character.hp.current > 0;
+
 const sheet = (data: GameData, m: Member) => characterSheet(m.character, data);
 
 /** A member's best attribute modifier among `attrs` plus their skill (−1 untrained). */

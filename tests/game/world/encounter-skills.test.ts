@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Monster } from '../../../src/data/schemas/index.ts';
 import {
   acceptBeast,
+  beastRefusal,
   beastsOf,
   handlerRoom,
   handlers,
@@ -12,9 +13,11 @@ import { identify } from '../../../src/game/world/bestiary.ts';
 import { meetGroup } from '../../../src/game/world/encounters.ts';
 import { dismiss } from '../../../src/game/world/hire.ts';
 import { canParley, parley } from '../../../src/game/world/parley.ts';
-import { addNpc, fights, npcMonster } from '../../../src/game/world/npcs.ts';
+import { bestSpeaker, speechCheck } from '../../../src/game/world/speech.ts';
+import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
+import { addNpc, fights, freshName, npcMonster } from '../../../src/game/world/npcs.ts';
 import type { Member } from '../../../src/game/world/types.ts';
-import { knownFoes, monsterStats } from '../../../src/render/bestiary-view.ts';
+import { beastOfferText, knownFoes, monsterStats } from '../../../src/render/bestiary-view.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { data, encounter, member, world } from './helpers.ts';
 
@@ -221,5 +224,95 @@ describe('Animal Ken (docs/rules-adaptation.md, Skills)', () => {
     const beast = addNpc(w, data, 'beast', 'herd-beast', 'herd-beast', 'Bess', true);
     expect(dismiss(w, data, beast?.id ?? '')).toEqual({ ok: true });
     expect(w.log.at(-1)).toContain('Bess is set loose and lopes off into the wastes.');
+  });
+});
+
+describe('the review fixes for Animal Ken and Know', () => {
+  it('has the best member at each speech speak: Talk, Intimidate, and Bluff', () => {
+    const w = world();
+    for (const m of w.members) plain(m, {});
+    plain(member(w, 'Grukk'), { convince: 2 });
+    plain(member(w, 'Fizzwick'), { 'animal-ken': 1 });
+    plain(member(w, 'Snag'), { lead: 2 });
+    w.encounter = encounter([['thug-or-militia', 'herd-beast']]);
+    expect(speechCheck(data, w.encounter.enemies, 'talk')).toEqual({
+      skill: 'convince',
+      attrs: ['cha'],
+    });
+    expect(bestSpeaker(w, data, 'talk')?.character.name).toBe('Grukk');
+    expect(bestSpeaker(w, data, 'bluff')?.character.name).toBe('Grukk');
+    expect(bestSpeaker(w, data, 'intimidate')?.character.name).toBe('Snag');
+    w.encounter = encounter([['herd-beast']]);
+    expect(speechCheck(data, w.encounter.enemies, 'talk')).toEqual({
+      skill: 'animal-ken',
+      attrs: ['wis', 'cha'],
+    });
+    expect(bestSpeaker(w, data, 'talk')?.character.name).toBe('Fizzwick');
+    // With no encounter the check is Convince; with no one awake, no one speaks.
+    w.encounter = null;
+    expect(bestSpeaker(w, data, 'talk')?.character.name).toBe('Grukk');
+    for (const m of w.members) m.reviving = true;
+    expect(bestSpeaker(w, data, 'talk')).toBeUndefined();
+  });
+
+  it('leaves a member asleep after a revive out of naming, handling, and talking to beasts', () => {
+    const w = world();
+    for (const m of w.members) plain(m, {});
+    const lirael = member(w, 'Lirael');
+    plain(lirael, { know: 1, 'animal-ken': 0 });
+    lirael.reviving = true;
+    w.rng = scriptedRng([]);
+    expect(identify(w, data, [['herd-beast']])).toBe('');
+    expect(handlers(w, data)).toEqual([]);
+    w.encounter = encounter([['herd-beast']]);
+    expect(canParley(w, data)).toBe(false);
+  });
+
+  it('says why no one can take a beast, and what one costs', () => {
+    const w = world();
+    expect(beastOfferText(w, data)).toBeNull();
+    w.encounter = encounter([['herd-beast']], { beast: 'herd-beast' });
+    expect(beastRefusal(w, data)).toBe('No one awake with Animal Ken has room for another beast.');
+    plain(member(w, 'Snag'), { 'animal-ken': 1 });
+    expect(beastRefusal(w, data)).toBeNull();
+    w.rations = 8;
+    expect(beastOfferText(w, data)).toBe('Win the Herd Beast over (2 steps of rations: d8 to d4)');
+    w.rations = 6;
+    expect(beastOfferText(w, data)).toBe(
+      'Win the Herd Beast over (2 steps of rations: d6 to empty, emptying the rations)',
+    );
+    expect(acceptBeast(w, data, member(w, 'Snag').id)).toEqual({ ok: true });
+    expect(w.rations).toBe(0);
+    w.encounter.beast = 'herd-beast';
+    expect(beastOfferText(w, data)).toBe(
+      'The Herd Beast wants 2 steps of rations; the rations are empty',
+    );
+    addNpc(w, data, 'hireling', 'guard', 'thug-or-militia', 'Aldo', true);
+    expect(beastRefusal(w, data)).toBe('There is no room in the party.');
+  });
+
+  it('names a new NPC after the first free number', () => {
+    const w = world();
+    expect(freshName(w, 'Herd Beast')).toBe('Herd Beast');
+    addNpc(w, data, 'beast', 'herd-beast', 'herd-beast', 'Herd Beast', true);
+    addNpc(w, data, 'beast', 'herd-beast', 'herd-beast', 'Herd Beast 3', true);
+    expect(freshName(w, 'Herd Beast')).toBe('Herd Beast 2');
+  });
+
+  it('keeps a beast, its handler, and an offer through a save', () => {
+    const w = world();
+    const beast = addNpc(w, data, 'beast', 'herd-beast', 'herd-beast', 'Bess', true);
+    Object.assign(beast ?? {}, { master: member(w, 'Snag').id });
+    w.encounter = encounter([['herd-beast']], { beast: 'herd-beast' });
+    w.bestiary = ['herd-beast'];
+    const loaded = parseWorld(serializeWorld(w), data);
+    if (!loaded.ok) throw new Error(loaded.errors.join('; '));
+    expect(loaded.world.npcs[0]).toMatchObject({
+      kind: 'beast',
+      name: 'Bess',
+      master: member(w, 'Snag').id,
+    });
+    expect(loaded.world.encounter?.beast).toBe('herd-beast');
+    expect(loaded.world.bestiary).toEqual(['herd-beast']);
   });
 });

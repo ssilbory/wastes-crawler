@@ -6,9 +6,9 @@
 import type { PendingEncounter } from '../../data/schemas/index.ts';
 import { RESOURCE_DICE, stepDie, useResource } from '../../rules/resource-die.ts';
 import type { GameData } from '../character/context.ts';
-import { alive, note } from './members.ts';
+import { alive, awake, note } from './members.ts';
 import { mindOf } from './minds.ts';
-import { addNpc, monsterOf, removeNpc } from './npcs.ts';
+import { addNpc, freshName, monsterOf, npcRoom, removeNpc } from './npcs.ts';
 import type { TownResult } from './services.ts';
 import type { Member, Npc, World } from './types.ts';
 
@@ -36,9 +36,16 @@ export function handlerRoom(w: World, data: GameData, m: Member): number {
   return level + ken.beastsPerHandler - beastsOf(w, m.id).length;
 }
 
-/** Conscious members with Animal Ken and room for another beast. */
+/** Awake members with Animal Ken and room for another beast. */
 export const handlers = (w: World, data: GameData): Member[] =>
-  alive(w).filter((m) => m.character.hp.current > 0 && handlerRoom(w, data, m) > 0);
+  w.members.filter((m) => awake(m) && handlerRoom(w, data, m) > 0);
+
+/** Why no one can take the offered beast, or null when someone can. */
+export function beastRefusal(w: World, data: GameData): string | null {
+  if (handlers(w, data).length === 0)
+    return 'No one awake with Animal Ken has room for another beast.';
+  return npcRoom(w, true) ? null : 'There is no room in the party.';
+}
 
 export function acceptBeast(w: World, data: GameData, handlerId: string): TownResult {
   const e = w.encounter;
@@ -49,9 +56,7 @@ export function acceptBeast(w: World, data: GameData, handlerId: string): TownRe
   const steps = monster.hitDice;
   if (RESOURCE_DICE.indexOf(w.rations) < steps)
     return no(`Winning the ${monster.name} over takes ${steps} steps of the rations die.`);
-  const count = w.npcs.filter((n) => n.kind === 'beast' && n.type === e.beast).length;
-  const name = count ? `${monster.name} ${count + 1}` : monster.name;
-  const npc = addNpc(w, data, 'beast', e.beast, e.beast, name, true);
+  const npc = addNpc(w, data, 'beast', e.beast, e.beast, freshName(w, monster.name), true);
   if (!npc) return no('There is no room in the party.');
   npc.master = m.id;
   w.rations = stepDie(w.rations, -steps);

@@ -159,3 +159,29 @@ describe('Prayer (docs/rules-adaptation.md, Skills)', () => {
     expect(prayedToday(w, snag)).toBe(false);
   });
 });
+
+describe('town skills by town size, and the sleeping', () => {
+  it('plays a village for 7 and 1d4 of tips', () => {
+    const w = world();
+    w.position = { col: 17, row: 4 };
+    const snag = member(w, 'Snag');
+    plain(snag, { perform: 0 });
+    const purse = w.purse;
+    // 5 + 5 + 0 = 10 beats a village's 7 by 3.
+    w.rng = scriptedThen([5, 5, 3], createRng('village'));
+    playForLodging(w, data, snag.id);
+    expect(w.purse).toBe(purse + 3);
+  });
+
+  it('turns away a member asleep after a revive', () => {
+    const w = world();
+    const snag = member(w, 'Snag');
+    snag.reviving = true;
+    expect(playForLodging(w, data, snag.id).ok).toBe(false);
+    w.position = EASTMARCH;
+    expect(pray(w, data, snag.id, { kind: 'strain' })).toEqual({
+      ok: false,
+      reason: 'Choose someone to pray.',
+    });
+  });
+});

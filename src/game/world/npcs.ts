@@ -95,6 +95,14 @@ function nextId(w: World): string {
   return `npc-${n}`;
 }
 
+/** `base`, or `base 2`, `base 3`, … for the first one no NPC in the party has. */
+export function freshName(w: World, base: string): string {
+  const taken = new Set(w.npcs.map((n) => n.name));
+  let name = base;
+  for (let n = 2; taken.has(name); n++) name = `${base} ${n}`;
+  return name;
+}
+
 function nextName(w: World, data: GameData): string {
   const names = data.content.npcRules.names;
   return names.find((name) => !w.npcs.some((x) => x.name === name)) ?? (names[0] as string);

@@ -14,7 +14,7 @@ import { findMonster, type GameData } from '../character/context.ts';
 import { classOption } from '../character/class-step.ts';
 import { characterSheet } from '../character/derived.ts';
 import { note } from './members.ts';
-import { addNpc, GRAVE_KNIGHT, npcMonster, npcRoom } from './npcs.ts';
+import { addNpc, freshName, GRAVE_KNIGHT, npcMonster, npcRoom } from './npcs.ts';
 import type { TownResult } from './services.ts';
 import type { Member, Npc, World } from './types.ts';
 
@@ -73,9 +73,7 @@ const servants = (w: World, m: Member) =>
 const isRaised = (n: Npc) => Object.values<string>(RAISED).includes(n.type);
 
 function serve(w: World, data: GameData, m: Member, type: string): Npc {
-  const base = monster(data, type).name;
-  const count = w.npcs.filter((n) => n.kind === 'undead' && n.type === type).length;
-  const npc = addNpc(w, data, 'undead', type, type, count ? `${base} ${count + 1}` : base, true);
+  const npc = addNpc(w, data, 'undead', type, type, freshName(w, monster(data, type).name), true);
   // Callers check for room first.
   (npc as Npc).master = m.id;
   return npc as Npc;

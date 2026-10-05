@@ -4,7 +4,7 @@
 import { roll } from '../../rules/dice.ts';
 import { toTenths } from '../../rules/economy.ts';
 import type { GameData } from '../character/context.ts';
-import { alive, memberCheck, note } from './members.ts';
+import { awake, memberCheck, note } from './members.ts';
 import { restAtInn, type TownResult } from './services.ts';
 import { townHere } from './town.ts';
 import type { World } from './types.ts';
@@ -18,7 +18,7 @@ export function playForLodging(w: World, data: GameData, memberId: string): Town
   if (w.encounter) return no('Settle the encounter first.');
   const town = townHere(w, data);
   if (playedTonight(w)) return no('The common room has had its show tonight.');
-  const m = alive(w).find((x) => x.id === memberId && x.character.hp.current > 0);
+  const m = w.members.find((x) => x.id === memberId && awake(x));
   if (!m) return no('Choose someone to play.');
   const rules = data.content.skillRules.perform;
   const difficulty = rules.difficulty[town.size];

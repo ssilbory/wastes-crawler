@@ -157,8 +157,8 @@ describe('export and import', () => {
 
   it('rejects newer versions and versions with no upgrade path', () => {
     const c = goblinWarrior();
-    expect(importCharacter(JSON.stringify({ ...c, schemaVersion: 7 }), data)).toMatchObject({
-      errors: ['made by a newer version of the game (schema 7)'],
+    expect(importCharacter(JSON.stringify({ ...c, schemaVersion: 8 }), data)).toMatchObject({
+      errors: ['made by a newer version of the game (schema 8)'],
     });
     expect(importCharacter(JSON.stringify({ ...c, schemaVersion: 0 }), data)).toMatchObject({
       errors: ['no upgrade from schema 0'],
@@ -182,7 +182,7 @@ describe('export and import', () => {
     const v1 = { ...goblinWarrior(), schemaVersion: 1, foci: undefined };
     expect(importCharacter(JSON.stringify(v1), data)).toMatchObject({
       ok: true,
-      character: { schemaVersion: 6, foci: [], inventory: [], crowns: 0, arts: [] },
+      character: { schemaVersion: 7, foci: [], inventory: [], crowns: 0, arts: [] },
     });
   });
 

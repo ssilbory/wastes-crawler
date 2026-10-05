@@ -6,7 +6,7 @@ import { coachQuarter } from '../../game/world/coach.ts';
 import { difficultySeed } from '../../game/world/difficulty.ts';
 import { encounterBattle, type WorldBattle } from '../../game/world/fight.ts';
 import { passQuarter, settleByFighting, settleByLeaving } from '../../game/world/quarter.ts';
-import { addStarterParty } from '../../game/character/roster.ts';
+import { addStarterParty, removeFromRoster } from '../../game/character/roster.ts';
 import { mergeRoster, parseSave, serializeBundle } from '../../game/world/bundle.ts';
 import { serializeWorld } from '../../game/world/save.ts';
 import { slotSummary } from '../../render/save-view.ts';
@@ -136,6 +136,11 @@ export function WorldApp() {
           return added.placement;
         }}
         onImport={(file) => void file.text().then(open)}
+        onDelete={(id) => {
+          const next = removeFromRoster(roster, id);
+          saveRoster(next);
+          setRoster(next);
+        }}
       />
     );
   if (screen === 'intro')

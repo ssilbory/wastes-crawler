@@ -18,8 +18,7 @@ export function retire(data: GameData, c: Character): Character {
     skills = merged(skills, r.id, r.becomes);
     credit = merged(credit, r.id, r.becomes);
   }
-  const gone = (id: string) =>
-    data.content.focusRules.find((f) => f.id === id)?.availability === 'excluded';
+  const gone = (id: string) => data.content.skillRules.retiredFoci.includes(id);
   const owed = c.foci.filter((f) => gone(f.id)).reduce((sum, f) => sum + f.level, 0);
   const freeFoci = (c.advancement.freeFoci ?? 0) + owed;
   return {

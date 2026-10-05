@@ -26,6 +26,7 @@
       "why": "The party plies no trade between delves."
     }
   ],
+  "retiredFoci": ["rider"],
   "added": [
     {
       "id": "animal-ken",

@@ -25,6 +25,12 @@ describe('skills and foci the game took away (docs/rules-adaptation.md, Skills)'
     expect(c.skills).toEqual({ 'animal-ken': 1, exert: 2, convince: 0 });
     expect(c.advancement.skillCredit).toEqual({ stab: 1, 'animal-ken': 2 });
     expect(c.advancement.freeFoci).toBeUndefined();
+    // Credit toward the replacement keeps the larger amount.
+    const both = retire(data, {
+      ...snag,
+      advancement: { ...snag.advancement, skillCredit: { work: 1, exert: 2 } },
+    });
+    expect(both.advancement.skillCredit).toEqual({ exert: 2 });
   });
 
   it('swaps Rider for a free focus pick per level, kept until taken', () => {
@@ -36,9 +42,11 @@ describe('skills and foci the game took away (docs/rules-adaptation.md, Skills)'
     const c = retire(data, rider);
     expect(c.foci.some((f) => f.id === 'rider')).toBe(false);
     expect(c.advancement.freeFoci).toBe(3);
-    // Loading a file does the same.
-    const loaded = importCharacter(exportCharacter(rider), data);
-    expect(loaded.ok && loaded.character.advancement.freeFoci).toBe(3);
+    // Loading a file from before version 7 does the same; a version 7 file is left as it is.
+    const old = importCharacter(JSON.stringify({ ...rider, schemaVersion: 6 }), data);
+    expect(old.ok && old.character.advancement.freeFoci).toBe(3);
+    const current = importCharacter(exportCharacter(rider), data);
+    expect(current.ok && current.character.advancement.freeFoci).toBe(1);
   });
 
   it('takes an owed focus pick, any category, until none are left', () => {

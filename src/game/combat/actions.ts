@@ -11,12 +11,14 @@ import { castMagic, combatMagic } from './spells.ts';
 import { targets } from './targeting.ts';
 import type { Action, Battle, CasterState, Combatant } from './types.ts';
 
-export function stabilize(b: Battle, actor: Combatant, target: Combatant): void {
+/** `aid`: +1 when an ally's aiding check succeeded (SRD 2.3.3). */
+export function stabilize(b: Battle, actor: Combatant, target: Combatant, aid = 0): void {
   if (target.status !== 'dying' || b.stabilizedThisRound.has(target.id)) return;
   b.stabilizedThisRound.add(target.id);
   const check = skillCheck(b.rng, {
     skill: actor.skills.heal ?? null,
     attributeModifier: actor.healModifier,
+    modifier: aid,
     difficulty: stabilizeDifficulty(b.round - target.fellRound, actor.hasHealKit),
   });
   if (!check.success) return;

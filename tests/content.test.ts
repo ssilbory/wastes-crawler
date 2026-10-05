@@ -32,12 +32,14 @@ describe('data/content', () => {
         removed: [...rules.removed, { id: 'juggle', becomes: 'flying', why: 'x' }],
         added: [...rules.added, { id: 'stab', name: 'Stab', description: 'x' }],
         animalKen: { ...rules.animalKen, skill: 'whisper' },
+        retiredFoci: ['alert'],
       },
     };
     expect(contentReferenceErrors(srd, broken).filter((e) => e.startsWith('skillRules'))).toEqual([
       'skillRules/removed/juggle: not an SRD skill',
       'skillRules/removed/juggle: unknown skill flying',
       'skillRules/added/stab: clashes with an SRD skill',
+      'skillRules/retiredFoci/alert: not an excluded focus',
       'skillRules/animalKen: unknown skill whisper',
     ]);
     // Content may not give a removed skill.

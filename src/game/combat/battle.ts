@@ -13,17 +13,14 @@ import { canAct } from './targeting.ts';
 import type { Battle, Combatant, SideId } from './types.ts';
 
 export { act } from './actions.ts';
+export { advance, beginRound, currentActor, MAX_ROUNDS, runRound, takeTurn } from './round.ts';
 export {
-  advance,
-  beginRound,
+  awaitsRescue,
   concludeBattle,
-  currentActor,
-  MAX_ROUNDS,
   runBattle,
-  runRound,
-  takeTurn,
   type BattleResult,
-} from './round.ts';
+  type Rescue,
+} from './aftermath.ts';
 
 /** An NPC fighting from a formation slot, as its SRD stat line. */
 export interface NpcSetup {

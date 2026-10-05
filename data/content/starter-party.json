@@ -3,7 +3,7 @@
     "row": 0,
     "column": 0,
     "character": {
-      "schemaVersion": 6,
+      "schemaVersion": 7,
       "id": "char-d94fc45abe146131",
       "name": "Snag",
       "goal": "",
@@ -115,7 +115,7 @@
     "row": 0,
     "column": 1,
     "character": {
-      "schemaVersion": 6,
+      "schemaVersion": 7,
       "id": "char-892d217a8244817b",
       "name": "Grukk",
       "goal": "",
@@ -221,7 +221,7 @@
     "row": 1,
     "column": 0,
     "character": {
-      "schemaVersion": 6,
+      "schemaVersion": 7,
       "id": "char-40aca9044a9dfe62",
       "name": "Lirael",
       "goal": "",
@@ -332,7 +332,7 @@
     "row": 1,
     "column": 1,
     "character": {
-      "schemaVersion": 6,
+      "schemaVersion": 7,
       "id": "char-f07502da73f6efd3",
       "name": "Fizzwick",
       "goal": "",
