@@ -56,6 +56,7 @@ import { dungeonReferenceErrors } from './dungeon-check.ts';
 import { craftingReferenceErrors } from './crafting-check.ts';
 import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.ts';
 import { gameSkills, skillRuleErrors } from './skills.ts';
+import { spellRuleErrors } from './spells.ts';
 
 export function loadContent(): ContentData {
   return withSettingMonsters({
@@ -177,6 +178,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
   return [
     ...errors,
     ...skillRuleErrors(srd, content),
+    ...spellRuleErrors(srd, content),
     ...focusReferenceErrors(srd, content),
     ...equipmentReferenceErrors(srd, content),
     ...magicReferenceErrors(srd, content),

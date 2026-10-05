@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { AttributeSchema, DiceSchema, IdSchema } from './common.ts';
+import { SpellSchema } from './magic.ts';
 import { RaiserKindSchema } from './quest-content.ts';
 import { TownSizeSchema } from './town-content.ts';
 
@@ -59,7 +60,9 @@ export type SkillRules = z.infer<typeof SkillRulesSchema>;
 export const SpellRulesSchema = z.strictObject({
   /** Spells the game leaves out for good: nothing in play could use them. */
   excluded: z.array(IdSchema),
-  /** Spells the game uses outside fights, in code (the Necromancer's raisings). */
+  /** Spells the game uses outside fights, in code (the Necromancer's raisings, the tree spells). */
   outsideCombat: z.array(IdSchema),
+  /** Spells the game adds, in the SRD's shape without a source. */
+  added: z.array(SpellSchema.omit({ source: true })),
 });
 export type SpellRules = z.infer<typeof SpellRulesSchema>;

@@ -16,6 +16,7 @@ import { FreeFocusForm } from './FocusPicker.tsx';
 import { LevelUpForm } from './LevelUpForm.tsx';
 import { cue } from '../sound.ts';
 import type { Act } from './TownScreen.tsx';
+import { spellName } from '../builder/MagicStep.tsx';
 
 /** Leveling, spending skill points, preparing spells, and switching class. */
 export function TrainingTab(props: { world: World; act: Act }) {
@@ -115,7 +116,7 @@ export function TrainingTab(props: { world: World; act: Act }) {
                   checked={on}
                   onChange={() => train((x) => prepareSpells(data, x, next))}
                 />{' '}
-                {data.srd.spells.find((s) => s.id === id)?.name ?? id}
+                {spellName(id)}
               </label>
             );
           })}

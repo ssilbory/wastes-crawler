@@ -40,10 +40,10 @@ export const MemberSaveSchema = z.strictObject({
 /** A hireling or a freed captive in one of the party's NPC slots (docs/rules-adaptation.md). */
 export const NpcSaveSchema = z.strictObject({
   id: z.string().min(1),
-  kind: z.enum(['hireling', 'captive', 'escort', 'undead', 'beast', 'summon']),
+  kind: z.enum(['hireling', 'captive', 'escort', 'undead', 'beast', 'summon', 'tree']),
   /**
    * The hireling type, captive id, escort quest id, or the monster id of an undead servant, a
-   * beast, or a summoned servant (gone at dawn, Phase 18a).
+   * beast, a summoned servant (gone at dawn, Phase 18a), or a woken tree.
    */
   type: IdSchema,
   name: z.string().min(1),
@@ -59,7 +59,7 @@ export const NpcSaveSchema = z.strictObject({
   owed: z.number().min(0),
   /** Crowns of the signing fee returned if they are let go alive in a settlement. */
   refund: z.number().min(0),
-  /** Who an undead servant, a beast, or a summoned servant answers to, by member id. */
+  /** Who an undead servant, a beast, a summoned servant, or a tree answers to, by member id. */
   master: z.string().optional(),
 });
 export type NpcSave = z.infer<typeof NpcSaveSchema>;

@@ -13,15 +13,17 @@ import { attackSteps, hitModifier, isUp } from './targeting.ts';
 import { artEffect, counterSpell, retainsSpell } from './arts.ts';
 import { highMagicEffect } from './high-magic.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
+import { gameSpells } from '../../data/spells.ts';
 
 export function combatMagic(b: Battle, id: string): CombatMagic | undefined {
   return b.data.content.combatMagic.find((m) => m.id === id);
 }
 
 const spellLevel = (b: Battle, id: string) =>
-  b.data.srd.spells.find((s) => s.id === id)?.level ?? 1;
+  gameSpells(b.data.srd, b.data.content).find((s) => s.id === id)?.level ?? 1;
 export const magicName = (b: Battle, id: string) =>
-  [...b.data.srd.spells, ...b.data.srd.arts].find((x) => x.id === id)?.name ?? id;
+  [...gameSpells(b.data.srd, b.data.content), ...b.data.srd.arts].find((x) => x.id === id)?.name ??
+  id;
 
 function hasEffort(c: CasterState, art: string): boolean {
   return c.arts.includes(art) && c.effortUsed < c.effortMax;

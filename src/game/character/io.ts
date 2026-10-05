@@ -8,6 +8,7 @@ import { focusInfo } from './foci.ts';
 import { findItem } from './items.ts';
 import { findLineage, findPeople } from './people.ts';
 import { retire } from './retired.ts';
+import { gameSpells } from '../../data/spells.ts';
 
 export type Raw = Record<string, unknown>;
 export type Migrations = Readonly<Record<number, (raw: Raw) => Raw>>;
@@ -109,7 +110,8 @@ export function importCharacter(
     if (!data.srd.arts.some((a) => a.id === id)) errors.push(`arts: unknown ${id}`);
   }
   for (const id of [...c.spells.known, ...c.spells.prepared]) {
-    if (!data.srd.spells.some((sp) => sp.id === id)) errors.push(`spells: unknown ${id}`);
+    if (!gameSpells(data.srd, data.content).some((sp) => sp.id === id))
+      errors.push(`spells: unknown ${id}`);
   }
   for (const f of c.foci) {
     if (!focusInfo(data, f.id)) errors.push(`foci: unknown ${f.id}`);

@@ -1,6 +1,7 @@
 import { allMonsters } from './monsters.ts';
 import type { ContentData, Monster, MonsterCaster, SrdData } from './schemas/index.ts';
 import { gameSkills } from './skills.ts';
+import { gameSpells } from './spells.ts';
 
 /**
  * Every monster has combat data, Wpn monsters name a real weapon, routines make as many attacks as
@@ -38,7 +39,7 @@ export function combatReferenceErrors(srd: SrdData, content: ContentData): strin
       errors.push(`monsterCombat/${c.id}: plants give components, not loot`);
   }
   for (const m of content.combatMagic) {
-    const known = m.source === 'spell' ? srd.spells : srd.arts;
+    const known = m.source === 'spell' ? gameSpells(srd, content) : srd.arts;
     if (!known.some((k) => k.id === m.id)) errors.push(`combatMagic/${m.id}: unknown ${m.source}`);
     const e = m.effect;
     const skill =
@@ -75,7 +76,7 @@ function casterErrors(srd: SrdData, content: ContentData, m: Monster, c: Monster
   if (c.spells.length > row.spellsPrepared)
     errors.push(`${where}: prepares more than ${row.spellsPrepared} spells`);
   for (const id of c.spells) {
-    const spell = srd.spells.find((s) => s.id === id);
+    const spell = gameSpells(srd, content).find((s) => s.id === id);
     if (!spell || !content.combatMagic.some((x) => x.id === id && x.source === 'spell'))
       errors.push(`${where}: no combat spell ${id}`);
     else if (!(tradition.spellLists as string[]).includes(spell.tradition))

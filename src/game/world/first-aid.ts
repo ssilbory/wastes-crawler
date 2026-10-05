@@ -50,7 +50,7 @@ export function firstAid(w: World, data: GameData, healerId: string, targetId: s
   const amount = () =>
     Math.max(0, roll(w.rng, { count: 1, sides: 6, modifier: healer.bonus }).total);
   if (npc) {
-    if (npc.kind === 'undead' || npc.kind === 'summon')
+    if (npc.kind === 'undead' || npc.kind === 'summon' || npc.kind === 'tree')
       return no(`Bandages do nothing for ${npc.name}.`);
     if (npc.hp >= npc.maxHp) return no(`${npc.name} is unhurt.`);
     const healed = amount();

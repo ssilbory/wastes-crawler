@@ -1,7 +1,7 @@
 // Arts and starting spells: vendor/wwn-srd/4.0 Magic and Spellcasting/4.1.0 Spells and Arts.md,
 // 4.2.0 Preparing and Casting Spells.md, 4.3.0 Dual Partial Spellcasters.md, and 1.7.5 Mages Choose
 // Starting Spells. Effort across classes: docs/rules-adaptation.md (Class switching).
-import type { Art, ClassOption, Spell } from '../../data/schemas/index.ts';
+import type { Art, ClassOption } from '../../data/schemas/index.ts';
 import {
   boostedModifier,
   type AttributeScores,
@@ -16,6 +16,7 @@ import type { HeldFocus } from './foci.ts';
 import { entryEncumbrance, findItem, type InventoryEntry } from './items.ts';
 import type { Skills } from './skills.ts';
 import { fail, INCOMPLETE, OK, type StepStatus } from './steps.ts';
+import { gameSpells, type GameSpell } from '../../data/spells.ts';
 
 type Mage = NonNullable<ClassOption['mage']>;
 
@@ -59,11 +60,11 @@ export function playableSpell(data: GameData, id: string): boolean {
 }
 
 /** Spells from every list the class's traditions can learn, up to the castable level. */
-export function learnableSpells(data: GameData, mage: Mage, maxLevel: number): Spell[] {
+export function learnableSpells(data: GameData, mage: Mage, maxLevel: number): GameSpell[] {
   const lists = new Set(
     mage.traditions.flatMap((t) => findTradition(data, t.tradition)?.spellLists ?? []),
   );
-  return data.srd.spells.filter(
+  return gameSpells(data.srd, data.content).filter(
     (s) =>
       lists.has(s.tradition) &&
       s.level <= maxLevel &&

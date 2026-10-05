@@ -63,7 +63,9 @@ export function dismiss(w: World, data: GameData, id: string): TownResult {
             ? `${n.name} is set loose and lopes off into the wastes.`
             : n.kind === 'summon'
               ? `${n.name} is dismissed and fades.`
-              : `The party leaves ${n.name} behind.`,
+              : n.kind === 'tree'
+                ? `${n.name} is let go and roots where it stands.`
+                : `The party leaves ${n.name} behind.`,
     );
   if (n.kind === 'escort') emit(w, data, { kind: 'npc-died', npc: n });
   return { ok: true };
