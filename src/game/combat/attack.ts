@@ -73,7 +73,9 @@ export function resolveAttack(
     steps: netSteps([attackSteps(b, actor, target, attack.mode)]),
     targetAc: effectiveAc(target),
   });
-  if (!roll.hit) {
+  // Call of the Tomb: every blow lands on the doomed, for the most its dice can do (4.6.0).
+  const doomed = target.doomedUntil >= b.round;
+  if (!roll.hit && !doomed) {
     missShock(b, actor, target, attack);
     return;
   }
@@ -83,11 +85,15 @@ export function resolveAttack(
     return;
   }
   const blessed = b.damageBonus[actor.side];
-  const damageRoll = () =>
+  const d = attack.damage;
+  const dice = doomed
+    ? { count: d.count, sides: 1, modifier: d.modifier + d.count * (d.sides - 1) }
+    : d;
+  const once = () =>
     hitDamage(
       b.rng,
       {
-        dice: attack.damage,
+        dice,
         attributeModifier: 0,
         // Flame Without End adds to the hit's damage but not to Shock (4.5.0).
         bonus: attack.damageBonus + blessed + actor.flame,
@@ -96,9 +102,12 @@ export function resolveAttack(
       },
       shockContext(target, attack),
     ).total;
+  // Enfeebling Wave: damage rolled twice, the worse kept (4.6.0).
+  const damageRoll = () => (actor.enfeebledUntil >= b.round ? Math.min(once(), once()) : once());
   // Smite the Wicked rolls the damage twice and keeps the better, then adds the level.
   const rolled = boost ? Math.max(damageRoll(), damageRoll()) + boost.damage : damageRoll();
-  const damage = resisted(target, attack, rolled);
+  // The doomed lose their defenses against blows, too.
+  const damage = doomed ? rolled : resisted(target, attack, rolled);
   // Veteran's Luck: once per scene, turn a hit that would drop the Warrior into a miss.
   if (target.veteransLuck && target.status === 'active' && damage >= target.hp) {
     target.veteransLuck = false;

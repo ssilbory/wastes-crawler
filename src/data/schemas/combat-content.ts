@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { AttributeSchema, DiceSchema, IdSchema } from './common.ts';
 import { ElementalistEffects } from './elementalist-content.ts';
 import { HighMagicEffects } from './high-magic-content.ts';
+import { NecromancerEffects } from './necromancer-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
 /**
@@ -190,6 +191,7 @@ export const CombatEffectSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('force-save-reroll') }),
   ...HighMagicEffects,
   ...ElementalistEffects,
+  ...NecromancerEffects,
 ]);
 export type CombatEffect = z.infer<typeof CombatEffectSchema>;
 

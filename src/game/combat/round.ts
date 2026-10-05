@@ -8,7 +8,7 @@ import { act } from './actions.ts';
 import { monsterAction, partyAction } from './ai.ts';
 import { freeActions } from './free-actions.ts';
 import { say } from './damage.ts';
-import { echoes, landing, quickens, roundPasses, weakestSwing } from './conditions.ts';
+import { echoes, landing, quickens, roundPasses, struggle, weakestSwing } from './conditions.ts';
 import { checkMorale } from './morale.ts';
 import { canAct, isUp, targets } from './targeting.ts';
 import type { Attack, Battle, Combatant, Controller } from './types.ts';
@@ -72,6 +72,7 @@ export function takeTurn(b: Battle, actor: Combatant, controller: Controller): v
   beginTurn(b, actor);
   b.queue.shift();
   b.turnBegun = null;
+  struggle(b, actor);
   const plan = swingPlan(b, actor);
   for (let i = 0; i < plan.length && canAct(actor) && !b.outcome; i++) {
     actor.forcedAttack = plan[i] as number | null;

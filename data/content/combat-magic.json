@@ -668,5 +668,67 @@
         "modifier": 0
       }
     }
+  },
+  {
+    "id": "augment-mortal-vitality",
+    "source": "spell",
+    "target": "ally",
+    "effect": {
+      "kind": "vitality",
+      "skill": "magic",
+      "strain": 1
+    }
+  },
+  {
+    "id": "enfeebling-wave",
+    "source": "spell",
+    "target": "enemy-row",
+    "effect": {
+      "kind": "enfeeble",
+      "save": "physical"
+    }
+  },
+  {
+    "id": "compel-flesh",
+    "source": "spell",
+    "target": "enemy",
+    "effect": {
+      "kind": "compel",
+      "save": "physical"
+    }
+  },
+  {
+    "id": "forgetting-the-grave",
+    "source": "spell",
+    "target": "ally",
+    "effect": {
+      "kind": "deathless"
+    }
+  },
+  {
+    "id": "merge-souls",
+    "source": "spell",
+    "target": "ally-not-self",
+    "effect": {
+      "kind": "merge"
+    }
+  },
+  {
+    "id": "call-of-the-tomb",
+    "source": "spell",
+    "target": "enemies",
+    "effect": {
+      "kind": "tomb",
+      "save": "physical"
+    }
+  },
+  {
+    "id": "everlasting",
+    "source": "spell",
+    "target": "none",
+    "effect": {
+      "kind": "everlasting",
+      "rounds": 5
+    }
   }
 ]

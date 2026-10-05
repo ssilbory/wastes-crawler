@@ -5,9 +5,9 @@
 // Fury of the Elements from 4.5.0.
 import { roll } from '../../rules/dice.ts';
 import { addStrain } from '../../rules/strain.ts';
-import { harm, save, say } from './damage.ts';
+import { fall, harm, save, say } from './damage.ts';
 import { smite } from './elementalist.ts';
-import { canAct, targets } from './targeting.ts';
+import { canAct, isUp, targets } from './targeting.ts';
 import type { Action, Attack, Battle, Combatant } from './types.ts';
 
 /** Monster sides stand in up to three rows. */
@@ -121,8 +121,37 @@ function furyWanders(b: Battle): void {
   smite(b, f.side, f.row, roll(b.rng, f.damage).total);
 }
 
+/**
+ * Compel Flesh (4.6.0): at the start of its turn the compelled creature struggles, tearing its own
+ * flesh for a point a caster level, and a Physical save throws the spell off.
+ */
+export function struggle(b: Battle, actor: Combatant): void {
+  if (actor.compelled === 0) return;
+  say(b, `${actor.name}'s flesh writhes against the spell.`);
+  harm(b, actor, actor.compelled);
+  if (!canAct(actor) || !save(b, actor, 'physical').success) return;
+  actor.compelled = 0;
+  say(b, `${actor.name} throws off the compulsion.`);
+}
+
+/** Forgetting the Grave and Everlasting run out: the deathless at zero fall, the caster drains. */
+function livesRunOut(b: Battle): void {
+  for (const c of b.combatants) {
+    if (c.deathlessUntil === 0 || c.deathlessUntil >= b.round) continue;
+    c.deathlessUntil = 0;
+    if (c.hp === 0 && c.status === 'active') fall(b, c);
+  }
+  const e = b.everlasting;
+  if (!e || e.until >= b.round) return;
+  b.everlasting = null;
+  const caster = b.combatants.find((c) => c.id === e.caster) as Combatant;
+  if (isUp(caster)) caster.hp = 1;
+  say(b, `The everlasting life fades, and ${caster.name} is spent.`);
+}
+
 /** At a round's start, the banished come back and the Fury of the Elements wanders on. */
 export function roundPasses(b: Battle): void {
+  livesRunOut(b);
   furyWanders(b);
   for (const c of b.combatants) {
     if (c.returnsRound === 0 || c.returnsRound > b.round) continue;
@@ -130,4 +159,39 @@ export function roundPasses(b: Battle): void {
     c.status = 'active';
     say(b, `${c.name} returns from the black glass maze.`);
   }
+}
+
+/** Extirpate Arcana (4.4.0): the magic on every creature in the target's row on its side ends. */
+export function dispel(b: Battle, target: Combatant): void {
+  const affected = b.combatants.filter(
+    (x) => x.side === target.side && x.row === target.row && x.status !== 'dead',
+  );
+  for (const x of affected) {
+    if (x.status === 'asleep') x.status = 'active';
+    if (x.status === 'out' && x.spellbound) x.status = 'active';
+    Object.assign(x, {
+      spellbound: false,
+      blindRounds: 0,
+      wardRounds: 0,
+      acBonus: 0,
+      sanctified: false,
+      flyingRounds: 0,
+      rootedRounds: 0,
+      wrath: null,
+      reposePenalty: 0,
+      mantle: null,
+      echo: null,
+      torment: null,
+      berserk: false,
+      stunned: false,
+      flame: 0,
+      stone: 0,
+      misted: false,
+      vitality: null,
+      enfeebledUntil: 0,
+      compelled: 0,
+      doomedUntil: 0,
+    });
+  }
+  say(b, `The magic on ${target.name}'s row is swept away.`);
 }

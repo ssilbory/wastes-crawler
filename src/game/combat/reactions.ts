@@ -40,8 +40,8 @@ export function vitalFurnace(b: Battle, target: Combatant, amount: number): bool
  * Unliving Persistence does it for anyone in the party for the Necromancer's Effort for the day.
  */
 export function keepsDying(b: Battle, target: Combatant): boolean {
-  // Like the Stones: a body of stone stabilizes at zero on its own (4.5.0).
-  if (target.stone > 0) {
+  // Like the Stones and Augment Mortal Vitality: the body stabilizes at zero on its own.
+  if (target.stone > 0 || target.vitality) {
     say(b, `${target.name} falls, still as stone, but lives.`);
     return true;
   }
@@ -123,6 +123,30 @@ export function abnegate(b: Battle, target: Combatant): boolean {
     target.status = 'out';
     target.revives = { hp: effect.hpPerLevel * c.level, strain: effect.strain };
     say(b, `${target.name} is cut down in a spray of gore, to all eyes dead.`);
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Everlasting (4.6.0, an Instant spell): as a PC would fall, an ally with it prepared and a slot
+ * left casts it for them, once a fight; for its rounds no one on that side drops below 1 HP, and
+ * then the caster is left with 1 (conditions.ts).
+ */
+export function everlast(b: Battle, target: Combatant): boolean {
+  if (target.kind !== 'pc' || b.everlasting) return false;
+  for (const x of b.combatants) {
+    const c = x.caster;
+    if (x.side !== target.side || !(x === target || x.status === 'active')) continue;
+    if (!c?.canCast || c.spellsLeft === 0) continue;
+    const m = b.data.content.combatMagic.find(
+      (y) => y.effect.kind === 'everlasting' && c.prepared.includes(y.id),
+    );
+    if (m?.effect.kind !== 'everlasting' || c.usedThisScene.has(m.id)) continue;
+    c.spellsLeft -= 1;
+    c.usedThisScene.add(m.id);
+    b.everlasting = { side: x.side, caster: x.id, until: b.round + m.effect.rounds - 1 };
+    say(b, `${x.name} pours unquenchable life into ${b.sideNames[x.side]}.`);
     return true;
   }
   return false;
