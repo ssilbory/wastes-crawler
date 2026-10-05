@@ -33,7 +33,7 @@ describe('quarter days', () => {
   });
 
   it('waits on an encounter before the quarter ends', () => {
-    const w = world([1, 1, 3, 1, 1, 6, 6, 1, 1]);
+    const w = world([1, 1, 3, 1, 1, 6, 6, 1, 1, 1, 1]);
     w.position = { col: 5, row: 9 };
     w.camp = 'none';
     passQuarter(w, data, { kind: 'camp', activities: { 'm-0': 'watch' } });

@@ -33,6 +33,7 @@ import { IntroScreen } from './IntroScreen.tsx';
 import { CharacterScreen } from './CharacterScreen.tsx';
 import { StartScreen } from './StartScreen.tsx';
 import { crossOver } from '../../game/world/crossing.ts';
+import { knownFoes } from '../../render/bestiary-view.ts';
 
 function download(text: string) {
   const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
@@ -157,6 +158,7 @@ export function WorldApp() {
             if (m) m.defaultAction = preset;
           }}
           canLeave={false}
+          known={knownFoes(w, data, fight.battle.enemies)}
           doneLabel={
             fight.back === 'town'
               ? 'Back to town'

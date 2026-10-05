@@ -38,6 +38,7 @@ export interface Member {
   pendingXp: number;
   reviving: boolean;
   artUses: Record<string, number>;
+  prayedDay: number | null;
 }
 
 export type Npc = NpcSave;
@@ -97,6 +98,8 @@ export interface World {
   /** Corpses lying where the last won fight was (Phase 14b). */
   corpses: WorldSave['corpses'];
   fallen: WorldSave['fallen'];
+  performedDay: number | null;
+  bestiary: string[];
   /** Faction state by id (Phase 13). */
   factions: Record<string, FactionState>;
   log: string[];

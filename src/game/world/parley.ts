@@ -2,13 +2,15 @@
 // (vendor/wwn-srd/5.0 Monsters and Foes/Reaction Rolls and Parlayeing.md): one try per encounter to
 // talk, intimidate, or bribe a group into a better mood. Friendlier groups back off and give up
 // captives; the most helpful pay tribute or offer to sign on.
+import type { Attribute } from '../../data/schemas/index.ts';
 import { mercy } from './arts.ts';
 import type { Reaction } from '../../rules/reaction.ts';
 import { toTenths } from '../../rules/economy.ts';
 import type { GameData } from '../character/context.ts';
 import { fights, MOODS } from './encounters.ts';
 import { alive, memberCheck, note } from './members.ts';
-import { mindOf, parleyReach } from './minds.ts';
+import { allAnimals, mindOf, parleyReach } from './minds.ts';
+import { offerBeast } from './beasts.ts';
 import { accrueShares, addNpc, fights as npcFights, hirelingType, monsterOf } from './npcs.ts';
 import { freeCaptive } from './rescue.ts';
 import type { TownResult } from './services.ts';
@@ -62,6 +64,7 @@ function goodwill(w: World, data: GameData): void {
     e.offer = kin.id;
     note(w, `One of them offers to sign on as a ${kin.name}.`);
   }
+  offerBeast(w, data, e);
 }
 
 /** The party's one parley: success moves the mood one band friendlier, failure one band worse. */
@@ -88,7 +91,12 @@ export function parley(
       alive(w).filter((m) => m.character.hp.current > 0).length +
       w.npcs.filter((n) => n.hp > 0 && npcFights(data, n)).length;
     const outnumber = approach === 'intimidate' && us > e.enemies.flat().length ? 1 : 0;
-    const talk = () => memberCheck(w, data, speaker, 'convince', ['cha'], difficulty).success;
+    // Beasts are talked round with Animal Ken, people with Convince (docs/rules-adaptation.md, Skills).
+    const ken = data.content.skillRules.animalKen;
+    const animals = allAnimals(data, e.enemies);
+    const skill = animals ? ken.skill : 'convince';
+    const attrs: Attribute[] = animals ? ken.attributes : ['cha'];
+    const talk = () => memberCheck(w, data, speaker, skill, attrs, difficulty).success;
     success =
       approach === 'talk'
         ? talk()

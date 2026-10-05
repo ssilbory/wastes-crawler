@@ -105,6 +105,8 @@ export const QuestSchema = z.strictObject({
 });
 export type Quest = z.infer<typeof QuestSchema>;
 
+export const RaiserKindSchema = z.enum(['crypt', 'mortuary', 'temple']);
+
 /** Someone in a town who offers quests. */
 export const MissionGiverSchema = z.strictObject({
   id: IdSchema,
@@ -115,6 +117,6 @@ export const MissionGiverSchema = z.strictObject({
    * A necromancer's crypt, a Priest of Death's mortuary, or a Blood Priest temple (Phase 14d): raises
    * the dead and gives raising quests.
    */
-  raises: z.enum(['crypt', 'mortuary', 'temple']).optional(),
+  raises: RaiserKindSchema.optional(),
 });
 export type MissionGiver = z.infer<typeof MissionGiverSchema>;

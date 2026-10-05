@@ -1,16 +1,12 @@
 import { useState } from 'preact/hooks';
-import type { Attribute, Character } from '../../data/schemas/index.ts';
+import type { Character } from '../../data/schemas/index.ts';
 import { advance, type LevelChoices, type LevelPlan } from '../../game/character/advance.ts';
 import { createRng } from '../../rules/rng.ts';
 import { classOption } from '../../game/character/class-step.ts';
-import { allowedSkills, focusInfo, type FocusChoice } from '../../game/character/foci.ts';
+import type { FocusChoice } from '../../game/character/foci.ts';
 import { artChoices, learnableSpells } from '../../game/character/magic.ts';
-import { ATTRIBUTE_NAMES, data, skillName } from '../builder/data.ts';
-
-const pickable = data.content.focusRules
-  .filter((r) => r.availability === 'pickable')
-  .map((r) => focusInfo(data, r.id))
-  .filter((f) => f !== undefined);
+import { data } from '../builder/data.ts';
+import { FocusPicker, focusNeeds } from './FocusPicker.tsx';
 
 function toggle(list: string[], id: string, max: number): string[] {
   if (list.includes(id)) return list.filter((x) => x !== id);
@@ -40,16 +36,7 @@ export function LevelUpForm(props: {
   const spellPicks = Math.min(plan.spells, spellChoices.length);
   // What the level still asks for, said beside the button so a refusal never goes unseen.
   const needed = [
-    ...foci.flatMap((choice) => {
-      const f = focusInfo(data, choice.id);
-      if (!f) return ['Choose a focus.'];
-      if (c.foci.some((h) => h.id === f.id)) return [];
-      const skills = f.bonusSkill ? allowedSkills(data, f.bonusSkill) : [];
-      return [
-        ...(skills.length > 1 && !choice.skill ? [`Choose a skill for ${f.name}.`] : []),
-        ...(f.attributeChoice && !choice.attribute ? [`Choose an attribute for ${f.name}.`] : []),
-      ];
-    }),
+    ...foci.flatMap((choice) => focusNeeds(c, choice)),
     ...(arts.length < artPicks ? [`Pick ${artPicks - arts.length} more art(s).`] : []),
     ...(spells.length < spellPicks ? [`Pick ${spellPicks - spells.length} more spell(s).`] : []),
   ];
@@ -64,70 +51,14 @@ export function LevelUpForm(props: {
         Level {plan.classLevel} as {classOption(data, plan.classId)?.name}: +{plan.skillPoints}{' '}
         skill points{plan.quickPoints > 0 && ` and ${plan.quickPoints} Quick Learner point`}.
       </p>
-      {plan.focusPicks.map((slot, i) => {
-        const choice = foci[i] as FocusChoice;
-        const f = focusInfo(data, choice.id);
-        const skills = f?.bonusSkill ? allowedSkills(data, f.bonusSkill) : [];
-        return (
-          <div key={i} class="pick">
-            <label>
-              Focus ({slot}){' '}
-              <select
-                value={choice.id}
-                onChange={(e) => setFocus(i, { id: (e.target as HTMLSelectElement).value })}
-              >
-                <option value="">Choose…</option>
-                {pickable.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            {skills.length > 1 && (
-              <label>
-                {' '}
-                Skill{' '}
-                <select
-                  value={choice.skill ?? ''}
-                  onChange={(e) =>
-                    setFocus(i, { ...choice, skill: (e.target as HTMLSelectElement).value })
-                  }
-                >
-                  <option value="">Choose…</option>
-                  {skills.map((s) => (
-                    <option key={s} value={s}>
-                      {skillName(s)}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            )}
-            {f?.attributeChoice && (
-              <label>
-                {' '}
-                Attribute{' '}
-                <select
-                  value={choice.attribute ?? ''}
-                  onChange={(e) =>
-                    setFocus(i, {
-                      ...choice,
-                      attribute: (e.target as HTMLSelectElement).value as Attribute,
-                    })
-                  }
-                >
-                  <option value="">Choose…</option>
-                  {(Object.keys(ATTRIBUTE_NAMES) as Attribute[]).map((a) => (
-                    <option key={a} value={a}>
-                      {ATTRIBUTE_NAMES[a]}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            )}
-          </div>
-        );
-      })}
+      {plan.focusPicks.map((slot, i) => (
+        <FocusPicker
+          key={i}
+          label={`Focus (${slot})`}
+          choice={foci[i] as FocusChoice}
+          onChange={(choice) => setFocus(i, choice)}
+        />
+      ))}
       {plan.arts
         .filter((p) => p.picks > 0)
         .map((p) => (

@@ -138,9 +138,13 @@ describe('evaluateFoci', () => {
     expect(msg([null, null, { id: 'alert' }, { id: 'armsmaster' }], 'full-expert')).toBe(
       "Armsmaster isn't a non-combat focus",
     );
-    // Rider counts as both, so it fills a combat or a non-combat pick.
-    expect(msg(goblin({ id: 'rider' }, null, 'trapmaster'))).toBe('incomplete');
-    expect(msg([null, null, { id: 'alert' }, { id: 'rider' }], 'full-expert')).toBe('incomplete');
+    // Poisoner counts as both, so it fills a combat or a non-combat pick.
+    expect(msg(goblin({ id: 'poisoner' }, null, 'trapmaster'))).toBe('incomplete');
+    expect(msg([null, null, { id: 'alert' }, { id: 'poisoner' }], 'full-expert')).toBe(
+      'incomplete',
+    );
+    // Rider waits for mounts (docs/rules-adaptation.md, Skills).
+    expect(msg(goblin({ id: 'rider' }, null))).toBe("Rider can't be picked in this version");
   });
 
   it('raises a second pick of a focus to level 2 without another bonus skill', () => {
@@ -152,9 +156,16 @@ describe('evaluateFoci', () => {
     expect(r.status).toEqual({ state: 'ok' });
     expect(r.foci.find((f) => f.id === 'armsmaster')).toEqual({ id: 'armsmaster', level: 2 });
     expect(r.skills.stab).toBe(0);
-    const thrice = [null, null, { id: 'alert' }, { id: 'rider' }, { id: 'rider' }, { id: 'rider' }];
+    const thrice = [
+      null,
+      null,
+      { id: 'alert' },
+      { id: 'poisoner' },
+      { id: 'poisoner' },
+      { id: 'poisoner' },
+    ];
     expect(evaluate('goblin', 'partial-expert-partial-warrior', thrice).status).toMatchObject({
-      message: 'Rider has no next level',
+      message: 'Poisoner has no next level',
     });
   });
 
@@ -199,7 +210,11 @@ describe('evaluateFoci', () => {
     const expert = (choice: FocusChoice) =>
       evaluate('goblin', 'full-expert', [null, null, { id: 'alert' }, choice, { id: 'lucky' }])
         .status;
-    expect(expert({ id: 'polymath', skill: 'ride' })).toEqual({ state: 'ok' });
+    expect(expert({ id: 'polymath', skill: 'animal-ken' })).toEqual({ state: 'ok' });
+    // Removed skills are no longer offered (docs/rules-adaptation.md, Skills).
+    expect(expert({ id: 'polymath', skill: 'ride' })).toMatchObject({
+      message: "Polymath can't give ride",
+    });
     expect(expert({ id: 'specialist', skill: 'magic' })).toMatchObject({
       message: "Specialist can't give magic",
     });

@@ -1,9 +1,10 @@
 import type { ContentData, FocusEffect, SrdData } from './schemas/index.ts';
+import { gameSkills } from './skills.ts';
 
 /** Starting packages, shields, equipment rules, and focus effects reference real records. */
 export function equipmentReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const errors: string[] = [];
-  const skills = new Set(srd.skills.map((s) => s.id));
+  const skills = new Set(gameSkills(srd, content).map((s) => s.id));
   const weapons = new Set(srd.weapons.map((w) => w.id));
   const items = new Set([
     ...weapons,

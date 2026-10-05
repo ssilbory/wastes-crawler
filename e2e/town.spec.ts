@@ -108,3 +108,14 @@ test('levels up a character with XP to spend', async ({ page }, testInfo) => {
   await page.getByRole('button', { name: 'Raise Lead' }).click();
   await expect(page.getByRole('region', { name: 'Training' })).toContainText('2 skill points');
 });
+
+test('plays the common room for the party’s lodging', async ({ page }) => {
+  await startInRubblegate(page);
+  await page.getByRole('tab', { name: 'Inn and healer' }).click();
+  const show = page.getByRole('group', { name: 'Perform' });
+  await show.getByRole('combobox', { name: 'Performer' }).selectOption({ index: 1 });
+  await show.getByRole('button', { name: "Play for the party's lodging" }).click();
+  await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
+    /Grukk plays (to a cold room|the common room)/,
+  );
+});

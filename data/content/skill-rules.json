@@ -1,0 +1,66 @@
+{
+  "removed": [
+    {
+      "id": "administer",
+      "becomes": "know",
+      "why": "The party runs no organization yet."
+    },
+    {
+      "id": "connect",
+      "becomes": "convince",
+      "why": "Towns have no contacts to find yet."
+    },
+    {
+      "id": "ride",
+      "becomes": "animal-ken",
+      "why": "Returns when mounts are added."
+    },
+    {
+      "id": "sail",
+      "becomes": "survive",
+      "why": "The wastes have no water travel."
+    },
+    {
+      "id": "work",
+      "becomes": "exert",
+      "why": "The party plies no trade between delves."
+    }
+  ],
+  "added": [
+    {
+      "id": "animal-ken",
+      "name": "Animal Ken",
+      "description": "Read, calm, and win over beasts: talk down a pack of predators, coax a wild animal to follow you, and keep the beasts that do in hand. A party member with Animal Ken can parley with animals, and a helpful group may send one of its beasts to follow them."
+    }
+  ],
+  "trade": {
+    "percentAtZero": 5,
+    "percentPerLevel": 5,
+    "maxPercent": 20
+  },
+  "perform": {
+    "attributes": ["cha"],
+    "difficulty": { "village": 7, "town": 8, "city": 9 },
+    "tipMargin": 3,
+    "tips": {
+      "village": { "count": 1, "sides": 4, "modifier": 0 },
+      "town": { "count": 1, "sides": 6, "modifier": 0 },
+      "city": { "count": 2, "sides": 6, "modifier": 0 }
+    }
+  },
+  "prayer": {
+    "attributes": ["wis"],
+    "difficulty": 8,
+    "places": ["temple", "mortuary"]
+  },
+  "know": {
+    "attributes": ["int"],
+    "difficulty": 6,
+    "hitDicePerStep": 2
+  },
+  "animalKen": {
+    "skill": "animal-ken",
+    "attributes": ["wis", "cha"],
+    "beastsPerHandler": 1
+  }
+}

@@ -124,7 +124,7 @@
     "category": "non-combat",
     "bonusSkill": {
       "kind": "skill",
-      "skill": "connect"
+      "skill": "convince"
     }
   },
   {
@@ -133,7 +133,7 @@
     "category": "non-combat",
     "bonusSkill": {
       "kind": "skill",
-      "skill": "connect"
+      "skill": "convince"
     }
   },
   {
@@ -262,11 +262,11 @@
   },
   {
     "id": "rider",
-    "availability": "pickable",
+    "availability": "excluded",
     "category": "both",
     "bonusSkill": {
       "kind": "skill",
-      "skill": "ride"
+      "skill": "animal-ken"
     },
     "effects": [
       {

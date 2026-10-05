@@ -19,3 +19,18 @@ export function scriptedRng(faces: number[]): Rng & { remaining(): number } {
     remaining: () => queue.length,
   };
 }
+
+/** The given faces first, then `rest` for everything after them. */
+export function scriptedThen(faces: number[], rest: Rng): Rng {
+  const queue = [...faces];
+  return {
+    next: () => rest.next(),
+    int(min, max) {
+      const face = queue.shift();
+      if (face === undefined) return rest.int(min, max);
+      if (face < min || face > max) throw new Error(`face ${face} outside [${min}, ${max}]`);
+      return face;
+    },
+    state: () => rest.state(),
+  };
+}

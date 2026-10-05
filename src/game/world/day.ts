@@ -10,6 +10,7 @@ import { addMemberStrain, alive, healNight, note } from './members.ts';
 import { npcCheck } from '../../rules/checks.ts';
 import { emit } from './bus.ts';
 import { immuneTo, sacredBlood } from './arts.ts';
+import { nightForBeasts } from './beasts.ts';
 import { wakeRevived } from './healer.ts';
 import { firstPhysician, nightForNpcs } from './npcs.ts';
 import { regionMap } from './region.ts';
@@ -21,7 +22,8 @@ export function endOfDay(w: World, data: GameData, waystation = false): void {
   const inTown = waystation || map.siteAt(w.position) !== undefined;
   const { season } = dateOf(data.content.overlandRules, w.day);
   // Transubstantiation's sacred blood feeds the party in place of the rations (Phase 15).
-  let fed = inTown || sacredBlood(w, data);
+  const fedFree = inTown || sacredBlood(w, data);
+  let fed = fedFree;
   if (!fed) {
     const use = useResource(w.rng, w.rations);
     fed = use.available;
@@ -56,6 +58,7 @@ export function endOfDay(w: World, data: GameData, waystation = false): void {
   }
   if (!sheltered && !cold)
     note(w, `A night without shelter at ${hexKey(w.position)}: no one recovers.`);
+  nightForBeasts(w, data, fedFree);
   nightForNpcs(w, data, fed && sheltered && !w.noRecovery);
   wakeRevived(w);
   w.fallen = null;

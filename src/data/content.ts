@@ -15,6 +15,7 @@ import overlandRules from '../../data/content/overland-rules.json';
 import regions from '../../data/content/regions.json';
 import terrains from '../../data/content/terrains.json';
 import townRules from '../../data/content/town-rules.json';
+import skillRules from '../../data/content/skill-rules.json';
 import npcRules from '../../data/content/npc-rules.json';
 import captives from '../../data/content/captives.json';
 import coachRoutes from '../../data/content/coach-routes.json';
@@ -53,6 +54,7 @@ import { questReferenceErrors } from './quest-check.ts';
 import { dungeonReferenceErrors } from './dungeon-check.ts';
 import { craftingReferenceErrors } from './crafting-check.ts';
 import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.ts';
+import { gameSkills, skillRuleErrors } from './skills.ts';
 
 export function loadContent(): ContentData {
   return withSettingMonsters({
@@ -73,6 +75,7 @@ export function loadContent(): ContentData {
     mishaps: ContentSchemas.mishaps.parse(mishaps),
     overlandRules: ContentSchemas.overlandRules.parse(overlandRules),
     townRules: ContentSchemas.townRules.parse(townRules),
+    skillRules: ContentSchemas.skillRules.parse(skillRules),
     npcRules: ContentSchemas.npcRules.parse(npcRules),
     captives: ContentSchemas.captives.parse(captives),
     coachRoutes: ContentSchemas.coachRoutes.parse(coachRoutes),
@@ -101,7 +104,7 @@ export function loadContent(): ContentData {
 
 /** Authored content may only reference SRD records that exist. */
 export function contentReferenceErrors(srd: SrdData, content: ContentData): string[] {
-  const skills = new Set(srd.skills.map((s) => s.id));
+  const skills = new Set(gameSkills(srd, content).map((s) => s.id));
   const errors: string[] = [];
   const check = (where: string, skill: string) => {
     if (!skills.has(skill)) errors.push(`${where}: unknown skill ${skill}`);
@@ -171,6 +174,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
   }
   return [
     ...errors,
+    ...skillRuleErrors(srd, content),
     ...focusReferenceErrors(srd, content),
     ...equipmentReferenceErrors(srd, content),
     ...magicReferenceErrors(srd, content),

@@ -12,7 +12,7 @@ import { progressionLookup, type GameData } from './context.ts';
 import { characterSheet, finalScores } from './derived.ts';
 import { allowedSkills, focusInfo, hasDieHard, modifierBonuses, type FocusChoice } from './foci.ts';
 import { artBar, artPicks, learnableSpells, spellSlots, type ArtPick } from './magic.ts';
-import { creditSkill } from './training.ts';
+import { creditSkill, type TrainResult } from './training.ts';
 
 /** The three skill points a focus's bonus skill is worth when gained by advancement. */
 export const FOCUS_SKILL_POINTS = 3;
@@ -105,6 +105,19 @@ function takeFocus(
   const skill = choice.skill ?? (allowed.length === 1 ? allowed[0] : undefined);
   if (!skill || !allowed.includes(skill)) return `${f.name} needs one of: ${allowed.join(', ')}`;
   return creditSkill(gained, skill, FOCUS_SKILL_POINTS);
+}
+
+/** Takes a focus pick owed for a focus the game took away (docs/rules-adaptation.md, Skills). */
+export function takeFreeFocus(data: GameData, c: Character, choice: FocusChoice): TrainResult {
+  const owed = c.advancement.freeFoci ?? 0;
+  if (owed === 0) return { ok: false, reason: 'No focus pick is owed.' };
+  const took = takeFocus(data, c, 'any', choice);
+  if (typeof took === 'string') return { ok: false, reason: took };
+  const advancement = Object.fromEntries(
+    Object.entries(took.advancement).filter(([k]) => k !== 'freeFoci'),
+  ) as Character['advancement'];
+  const left = owed > 1 ? { ...advancement, freeFoci: owed - 1 } : advancement;
+  return { ok: true, character: { ...took, advancement: left } };
 }
 
 function learn(

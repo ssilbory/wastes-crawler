@@ -3,6 +3,7 @@ import { loadSrd } from '../../data/load.ts';
 import type { Attribute, GrowthEntry, LearningEntry } from '../../data/schemas/index.ts';
 import type { GameData } from '../../game/character/context.ts';
 import { createRng, type Rng } from '../../rules/rng.ts';
+import { gameSkills } from '../../data/skills.ts';
 
 export const data: GameData = { srd: loadSrd(), content: loadContent() };
 
@@ -15,7 +16,7 @@ export const ATTRIBUTE_NAMES: Record<Attribute, string> = {
   cha: 'Charisma',
 };
 
-export const skills = data.srd.skills.map((s) => ({ id: s.id, name: s.name }));
+export const skills = gameSkills(data.srd, data.content).map((s) => ({ id: s.id, name: s.name }));
 
 export function skillName(id: string): string {
   return skills.find((s) => s.id === id)?.name ?? id;

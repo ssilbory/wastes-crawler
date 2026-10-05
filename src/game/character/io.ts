@@ -7,6 +7,7 @@ import { findProgression, isSkill, type GameData } from './context.ts';
 import { focusInfo } from './foci.ts';
 import { findItem } from './items.ts';
 import { findLineage, findPeople } from './people.ts';
+import { retire } from './retired.ts';
 
 export type Raw = Record<string, unknown>;
 export type Migrations = Readonly<Record<number, (raw: Raw) => Raw>>;
@@ -79,7 +80,7 @@ export function importCharacter(
       errors: parsed.error.issues.map((i) => `${i.path.join('.') || '(file)'}: ${i.message}`),
     };
   }
-  const c = parsed.data;
+  const c = retire(data, parsed.data);
   const errors: string[] = [];
   const people = findPeople(data, c.people);
   if (!people) errors.push(`people: unknown ${c.people}`);

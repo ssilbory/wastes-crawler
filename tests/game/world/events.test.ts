@@ -60,7 +60,8 @@ describe('wandering encounters (SRD 2.12.6, 5.2.1)', () => {
     const w = world([2]);
     expect(maybeEncounter(out(w), data, undefined, false)).toBe(false);
     expect(maybeEncounter(out(w, { col: 3, row: 8 }), data, undefined, false)).toBe(false);
-    w.rng = scriptedRng([1, 1, 3, 1, 1]);
+    // The last two faces are Fizzwick's Know roll, which misses.
+    w.rng = scriptedRng([1, 1, 3, 1, 1, 1, 1]);
     expect(maybeEncounter(out(w), data, undefined, false)).toBe(true);
     expect(w.encounter).toEqual({
       enemies: [Array(4).fill('human-raider')],
@@ -77,7 +78,7 @@ describe('wandering encounters (SRD 2.12.6, 5.2.1)', () => {
     });
     expect(leaveEncounter(w)).toBe(false);
     w.encounter = null;
-    w.rng = scriptedRng([1, 7, 2, 6, 6]);
+    w.rng = scriptedRng([1, 7, 2, 6, 6, 1, 1]);
     maybeEncounter(out(w), data, undefined, false);
     expect(w.encounter).toMatchObject({ hostile: false, text: expect.stringContaining('wave') });
     expect(leaveEncounter(w)).toBe(true);
@@ -86,7 +87,7 @@ describe('wandering encounters (SRD 2.12.6, 5.2.1)', () => {
   });
 
   it('lets a watcher spot them first, at a disadvantage in the dark', () => {
-    const w = world([1, 1, 3, 1, 1, 1, 1, 6, 6, 1]);
+    const w = world([1, 1, 3, 1, 1, 1, 1, 6, 6, 1, 1, 1]);
     const snag = member(w, 'Snag');
     maybeEncounter(out(w), data, snag, true);
     expect(w.encounter).toMatchObject({

@@ -1,4 +1,5 @@
 import type { BonusSkill, ContentData, SrdData } from './schemas/index.ts';
+import { gameSkills } from './skills.ts';
 
 /** Most racial foci a character has: signature foci plus fill-in picks (docs/rules-adaptation.md). */
 export const RACIAL_FOCI = 3;
@@ -14,7 +15,7 @@ function bonusSkillIds(b: BonusSkill | undefined): string[] {
 /** Focus rules cover every SRD focus once; racial foci and pick lists reference real foci. */
 export function focusReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const errors: string[] = [];
-  const skills = new Set(srd.skills.map((s) => s.id));
+  const skills = new Set(gameSkills(srd, content).map((s) => s.id));
   const srdFoci = new Set(srd.foci.map((f) => f.id));
   const racial = new Set(content.racialFoci.map((f) => f.id));
   const ruled = new Set(content.focusRules.map((r) => r.id));

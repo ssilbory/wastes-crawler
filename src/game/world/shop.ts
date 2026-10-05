@@ -13,6 +13,7 @@ import { findPeople } from '../character/people.ts';
 import { note } from './members.ts';
 import { currentLedger, ledger, priceHere, spend, spendingThreshold, townHere } from './town.ts';
 import type { TownResult } from './services.ts';
+import { tradePercent } from './trade.ts';
 import type { Member, World } from './types.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
@@ -84,12 +85,14 @@ export function buy(w: World, data: GameData, memberId: string, itemId: string):
   return { ok: true };
 }
 
-/** What one unit of an inventory line sells for. */
-export function sellPrice(data: GameData, entry: InventoryEntry): number {
+/** What one unit of an inventory line sells for, after the party haggles. */
+export function sellPrice(w: World, data: GameData, entry: InventoryEntry): number {
   const item = findItem(data, entry.id);
   if (!item?.cost) return 0;
   const one = entryPrice(data, item, { ...entry, quantity: 1 }) / 10;
-  return toTenths(one * data.content.townRules.sellFraction);
+  return toTenths(
+    (one * data.content.townRules.sellFraction * (100 + tradePercent(w, data))) / 100,
+  );
 }
 
 export function sell(w: World, data: GameData, memberId: string, index: number): TownResult {
@@ -97,7 +100,7 @@ export function sell(w: World, data: GameData, memberId: string, index: number):
   const m = member(w, memberId);
   const entry = m.character.inventory[index];
   if (!entry) throw new Error(`no inventory line ${index}`);
-  const price = sellPrice(data, entry);
+  const price = sellPrice(w, data, entry);
   if (price === 0) return no('No one here will buy that.');
   const inventory =
     entry.quantity > 1

@@ -124,5 +124,6 @@ export function newMember(
     pendingXp: 0,
     reviving: false,
     artUses: {},
+    prayedDay: null,
   };
 }

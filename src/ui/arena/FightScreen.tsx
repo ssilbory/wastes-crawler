@@ -18,6 +18,8 @@ import {
   type Changes,
   type Presets,
 } from './fight.ts';
+import type { KnownFoe } from '../../render/bestiary-view.ts';
+import { KnownFoes } from '../world/KnownFoes.tsx';
 
 interface Session {
   battle: Battle;
@@ -43,6 +45,8 @@ export function FightScreen(props: {
   /** Whether the player may walk away mid-fight (the arena), or must see it through. */
   canLeave: boolean;
   doneLabel: string;
+  /** Monsters the party has named with Know, shown with their statistics. */
+  known?: KnownFoe[];
   onDone: (result: BattleResult | null) => void;
 }) {
   const [session, setSession] = useState<Session>(() => begin(props.createBattle()));
@@ -160,6 +164,7 @@ export function FightScreen(props: {
               onDefault={useDefault}
             />
           )}
+          <KnownFoes foes={props.known ?? []} />
           <BattleLog lines={b.log ?? []} from={changes.logFrom} />
         </div>
       </div>

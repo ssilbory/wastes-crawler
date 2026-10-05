@@ -1,5 +1,6 @@
 import { allMonsters } from './monsters.ts';
 import type { ContentData, Monster, MonsterCaster, SrdData } from './schemas/index.ts';
+import { gameSkills } from './skills.ts';
 
 /**
  * Every monster has combat data, Wpn monsters name a real weapon, routines make as many attacks as
@@ -8,7 +9,7 @@ import type { ContentData, Monster, MonsterCaster, SrdData } from './schemas/ind
 export function combatReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const errors: string[] = [];
   const weapons = new Set(srd.weapons.map((w) => w.id));
-  const skills = new Set(srd.skills.map((s) => s.id));
+  const skills = new Set(gameSkills(srd, content).map((s) => s.id));
   const monsters = allMonsters(srd, content);
   const ids = new Set(srd.monsters.map((m) => m.id));
   for (const m of content.monsters)

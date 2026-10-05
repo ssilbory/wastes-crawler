@@ -3,7 +3,7 @@ import type { RosterEntry } from '../../game/character/roster.ts';
 import type { TownResult } from '../../game/world/services.ts';
 import { townHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
-import { crowns, lootText } from '../../render/town-view.ts';
+import { crowns, lootText, tradeText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { NpcPanel } from '../world/NpcPanel.tsx';
 import { QuestLog } from '../world/QuestLog.tsx';
@@ -64,6 +64,7 @@ export function TownScreen(props: {
         <span>Purse: {crowns(w.purse)}</span>
         <span>Loot: {lootText(w.loot)}</span>
         {raidedText(w, town.id) && <span class="raided">{raidedText(w, town.id)}</span>}
+        {tradeText(w, data) && <span class="trade">{tradeText(w, data)}</span>}
         <button type="button" onClick={props.onLeave}>
           Back to the map
         </button>

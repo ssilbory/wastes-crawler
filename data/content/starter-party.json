@@ -304,7 +304,7 @@
         "sneak": 0,
         "heal": 1,
         "notice": 1,
-        "connect": 0
+        "convince": 0
       },
       "classes": {
         "current": "full-expert",

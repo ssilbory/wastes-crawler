@@ -169,8 +169,22 @@
 }
 
 .encounter .parley,
+.encounter .beast,
 .npc-panel .first-aid {
   margin-top: 8px;
+}
+
+.known-foes dl {
+  margin: 4px 0;
+}
+
+.known-foes dt {
+  font-weight: 600;
+}
+
+.known-foes dd {
+  margin: 0 0 6px;
+  font-size: 0.9em;
 }
 
 .hex.quest polygon {

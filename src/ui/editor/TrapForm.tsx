@@ -1,6 +1,6 @@
 import type { Attribute, Trap } from '../../data/schemas/index.ts';
 import { ATTRIBUTES } from '../../game/character/attributes.ts';
-import { data } from '../builder/data.ts';
+import { skills } from '../builder/data.ts';
 
 const SAVES = ['physical', 'evasion', 'mental', 'luck'] as const;
 
@@ -64,7 +64,7 @@ export function TrapForm(props: { trap: Trap; onChange: (t: Trap) => void }) {
           value={trap.disarm.skill}
           onChange={(e) => disarm({ skill: (e.target as HTMLSelectElement).value })}
         >
-          {data.srd.skills.map((s) => (
+          {skills.map((s) => (
             <option key={s.id} value={s.id}>
               {s.name}
             </option>

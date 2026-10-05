@@ -54,6 +54,7 @@ export * from './roster.ts';
 export * from './overland-content.ts';
 export * from './world.ts';
 export * from './town-content.ts';
+export * from './skill-content.ts';
 export * from './npc-content.ts';
 export * from './travel-content.ts';
 export * from './quest-content.ts';

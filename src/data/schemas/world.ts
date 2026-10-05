@@ -6,7 +6,7 @@ import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { FactionStateSchema } from './faction-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 24;
+export const WORLD_SCHEMA_VERSION = 25;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -33,13 +33,15 @@ export const MemberSaveSchema = z.strictObject({
   reviving: z.boolean(),
   /** Uses of limited arts since the last quarter of rest, by art id (Phase 15). */
   artUses: z.record(IdSchema, z.int().min(0)),
+  /** The day of the member's last prayer at a temple or mortuary. */
+  prayedDay: z.int().min(0).nullable(),
 });
 
 /** A hireling or a freed captive in one of the party's NPC slots (docs/rules-adaptation.md). */
 export const NpcSaveSchema = z.strictObject({
   id: z.string().min(1),
-  kind: z.enum(['hireling', 'captive', 'escort', 'undead']),
-  /** The hireling type, captive id, escort quest id, or an undead servant's monster id. */
+  kind: z.enum(['hireling', 'captive', 'escort', 'undead', 'beast']),
+  /** The hireling type, captive id, escort quest id, or an undead servant's or beast's monster id. */
   type: IdSchema,
   name: z.string().min(1),
   hp: z.int().min(0),
@@ -54,7 +56,7 @@ export const NpcSaveSchema = z.strictObject({
   owed: z.number().min(0),
   /** Crowns of the signing fee returned if they are let go alive in a settlement. */
   refund: z.number().min(0),
-  /** The necromancer an undead servant answers to, by member id (Phase 14b). */
+  /** The necromancer an undead servant answers to, or a beast's handler, by member id. */
   master: z.string().optional(),
 });
 export type NpcSave = z.infer<typeof NpcSaveSchema>;
@@ -80,6 +82,8 @@ export const PendingEncounterSchema = z.strictObject({
   quest: IdSchema.nullable(),
   /** A hireling type one of them offers to sign on as, after a helpful parley. */
   offer: IdSchema.nullable(),
+  /** A beast that offers to follow a handler with Animal Ken, after a helpful parley. */
+  beast: IdSchema.optional(),
   /** True when the group means to fight. */
   hostile: z.boolean(),
   /** The party spotted them first and can slip away. */
@@ -311,6 +315,10 @@ export const WorldSaveSchema = z.strictObject({
    * there before the party moves on or the day ends (Phase 14d).
    */
   fallen: z.strictObject({ at: z.string(), members: z.array(z.string()) }).nullable(),
+  /** The day a member last played the inn's common room for the party's lodging. */
+  performedDay: z.int().min(0).nullable(),
+  /** Monsters the party has named with Know, whose statistics it can see. */
+  bestiary: z.array(IdSchema),
   /** Each faction's state, by id, once it has started (Phase 13). */
   factions: z.record(IdSchema, FactionStateSchema),
   log: z.array(z.string()),

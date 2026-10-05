@@ -75,7 +75,8 @@ for (const c of CASES) {
     const combat = await optionsOf(page, 'Combat focus');
     const any = await optionsOf(page, 'Any focus');
     expect(combat).not.toContain('Lucky');
-    expect(combat).toContain('Rider'); // counts as both combat and non-combat
+    expect(combat).toContain('Poisoner'); // counts as both combat and non-combat
+    expect(any).not.toContain('Rider'); // waits for mounts
     expect(any).toContain('Lucky');
     for (const id of [...c.signature, ...(first ? [first] : [])]) {
       expect(combat).not.toContain(name(id));

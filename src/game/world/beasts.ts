@@ -1,0 +1,84 @@
+// Beasts that follow a handler (docs/rules-adaptation.md, Skills: Animal Ken). After a helpful
+// parley a group's strongest animal offers to follow someone with Animal Ken; winning it over costs
+// the rations die one step per hit die. Out of town each beast rolls the rations die again every
+// night and wanders off when there is nothing left, as it does when its handler is dead or gone.
+// A handler keeps Animal Ken + 1 beasts, and beasts take no share of the loot.
+import type { PendingEncounter } from '../../data/schemas/index.ts';
+import { RESOURCE_DICE, stepDie, useResource } from '../../rules/resource-die.ts';
+import type { GameData } from '../character/context.ts';
+import { alive, note } from './members.ts';
+import { mindOf } from './minds.ts';
+import { addNpc, monsterOf, removeNpc } from './npcs.ts';
+import type { TownResult } from './services.ts';
+import type { Member, Npc, World } from './types.ts';
+
+const no = (reason: string): TownResult => ({ ok: false, reason });
+
+/** Offers the strongest animal in a helpful group, if it has any. */
+export function offerBeast(w: World, data: GameData, e: PendingEncounter): void {
+  const animals = e.enemies.flat().filter((id) => mindOf(data, id) === 'animal');
+  const [first, ...rest] = animals;
+  if (first === undefined) return;
+  const hd = (id: string) => monsterOf(data, id).hitDice;
+  const best = rest.reduce((a, b) => (hd(b) > hd(a) ? b : a), first);
+  e.beast = best;
+  note(w, `The ${monsterOf(data, best).name} looks ready to follow someone who knows beasts.`);
+}
+
+export const beastsOf = (w: World, handlerId: string): Npc[] =>
+  w.npcs.filter((n) => n.kind === 'beast' && n.master === handlerId);
+
+/** How many more beasts a member can keep: none without Animal Ken. */
+export function handlerRoom(w: World, data: GameData, m: Member): number {
+  const ken = data.content.skillRules.animalKen;
+  const level = m.character.skills[ken.skill];
+  if (level === undefined) return 0;
+  return level + ken.beastsPerHandler - beastsOf(w, m.id).length;
+}
+
+/** Conscious members with Animal Ken and room for another beast. */
+export const handlers = (w: World, data: GameData): Member[] =>
+  alive(w).filter((m) => m.character.hp.current > 0 && handlerRoom(w, data, m) > 0);
+
+export function acceptBeast(w: World, data: GameData, handlerId: string): TownResult {
+  const e = w.encounter;
+  if (!e?.beast) return no('No beast has offered to follow.');
+  const m = handlers(w, data).find((x) => x.id === handlerId);
+  if (!m) return no('Choose someone with Animal Ken and room for another beast.');
+  const monster = monsterOf(data, e.beast);
+  const steps = monster.hitDice;
+  if (RESOURCE_DICE.indexOf(w.rations) < steps)
+    return no(`Winning the ${monster.name} over takes ${steps} steps of the rations die.`);
+  const count = w.npcs.filter((n) => n.kind === 'beast' && n.type === e.beast).length;
+  const name = count ? `${monster.name} ${count + 1}` : monster.name;
+  const npc = addNpc(w, data, 'beast', e.beast, e.beast, name, true);
+  if (!npc) return no('There is no room in the party.');
+  npc.master = m.id;
+  w.rations = stepDie(w.rations, -steps);
+  delete e.beast;
+  note(
+    w,
+    `The ${monster.name} follows ${m.character.name} now, won over with ${steps} steps of rations.`,
+  );
+  return { ok: true };
+}
+
+/**
+ * Each night beasts whose handler is dead or gone wander off; the rest eat from the rations die
+ * unless `fedFree` (a town or sacred blood feeds them), and wander off if there is nothing left.
+ */
+export function nightForBeasts(w: World, data: GameData, fedFree: boolean): void {
+  for (const n of w.npcs.filter((x) => x.kind === 'beast')) {
+    if (!alive(w).some((m) => m.id === n.master)) {
+      removeNpc(w, n.id);
+      note(w, `With its handler gone, ${n.name} wanders off.`);
+      continue;
+    }
+    if (fedFree) continue;
+    const use = useResource(w.rng, w.rations);
+    w.rations = use.die;
+    if (use.available) continue;
+    removeNpc(w, n.id);
+    note(w, `With nothing to eat, ${n.name} goes off to hunt and doesn't come back.`);
+  }
+}

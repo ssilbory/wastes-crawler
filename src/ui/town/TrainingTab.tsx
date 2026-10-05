@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks';
 import type { Attribute } from '../../data/schemas/index.ts';
-import { levelPlan } from '../../game/character/advance.ts';
+import { levelPlan, takeFreeFocus } from '../../game/character/advance.ts';
 import { characterSheet } from '../../game/character/derived.ts';
 import {
   boostAttribute,
@@ -12,6 +12,7 @@ import { levelUpMember, trainMember } from '../../game/world/training.ts';
 import type { World } from '../../game/world/types.ts';
 import { levelLine, pointsText } from '../../render/town-view.ts';
 import { ATTRIBUTE_NAMES, className, classes, data, skillName, skills } from '../builder/data.ts';
+import { FreeFocusForm } from './FocusPicker.tsx';
 import { LevelUpForm } from './LevelUpForm.tsx';
 import { cue } from '../sound.ts';
 import type { Act } from './TownScreen.tsx';
@@ -49,6 +50,13 @@ export function TrainingTab(props: { world: World; act: Act }) {
           {className(c.classes.current)} · {levelLine(data, c)} · {pointsText(c)}
         </p>
       </section>
+      {c.advancement.freeFoci && (
+        <FreeFocusForm
+          key={m.id}
+          character={c}
+          onTake={(choice) => train((x) => takeFreeFocus(data, x, choice))}
+        />
+      )}
       <section class="panel" aria-label="Skill points">
         <h3>Skill points</h3>
         <label>

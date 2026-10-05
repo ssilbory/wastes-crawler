@@ -49,7 +49,7 @@ export const npcMonster = (data: GameData, n: Npc) =>
       ? hirelingType(data, n.type).monster
       : n.kind === 'captive'
         ? captiveOf(data, n.type).monster
-        : n.kind === 'undead'
+        : n.kind === 'undead' || n.kind === 'beast'
           ? n.type
           : escortMonster(data, n.type),
   );
@@ -58,9 +58,9 @@ export const npcMonster = (data: GameData, n: Npc) =>
 export const typeOf = (data: GameData, n: Npc) =>
   n.kind === 'hireling' ? hirelingType(data, n.type) : undefined;
 
-/** Fighting hirelings and undead servants fight; everyone else stays out of it. */
+/** Fighting hirelings, undead servants, and beasts fight; everyone else stays out of it. */
 export const fights = (data: GameData, n: Npc) =>
-  n.kind === 'undead' || typeOf(data, n)?.role === 'fighter';
+  n.kind === 'undead' || n.kind === 'beast' || typeOf(data, n)?.role === 'fighter';
 export const hirelings = (w: World) => w.npcs.filter((n) => n.kind === 'hireling');
 
 /** A conscious Wilderness Guide in the party, if any. */
