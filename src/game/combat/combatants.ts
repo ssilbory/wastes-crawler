@@ -86,6 +86,12 @@ export function base(
     flame: 0,
     stone: 0,
     misted: false,
+    vitality: null,
+    enfeebledUntil: 0,
+    compelled: 0,
+    deathlessUntil: 0,
+    mergedWith: null,
+    doomedUntil: 0,
   };
 }
 

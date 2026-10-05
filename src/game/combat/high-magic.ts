@@ -8,6 +8,7 @@ import { roll, rollDie } from '../../rules/dice.ts';
 import type { SaveType } from '../../rules/saves.ts';
 import { harm, save, say } from './damage.ts';
 import { monsterCombatant } from './monster-combatant.ts';
+import { dispel } from './conditions.ts';
 import { flying, isUp } from './targeting.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
 
@@ -67,36 +68,6 @@ function burst(
 /** Allies first by row and column, so the front line is served first. */
 const inLine = (list: Combatant[]) =>
   [...list].sort((x, y) => x.row - y.row || x.column - y.column);
-
-function dispel(b: Battle, target: Combatant): void {
-  const affected = b.combatants.filter(
-    (x) => x.side === target.side && x.row === target.row && x.status !== 'dead',
-  );
-  for (const x of affected) {
-    if (x.status === 'asleep') x.status = 'active';
-    if (x.status === 'out' && x.spellbound) x.status = 'active';
-    Object.assign(x, {
-      spellbound: false,
-      blindRounds: 0,
-      wardRounds: 0,
-      acBonus: 0,
-      sanctified: false,
-      flyingRounds: 0,
-      rootedRounds: 0,
-      wrath: null,
-      reposePenalty: 0,
-      mantle: null,
-      echo: null,
-      torment: null,
-      berserk: false,
-      stunned: false,
-      flame: 0,
-      stone: 0,
-      misted: false,
-    });
-  }
-  say(b, `The magic on ${target.name}'s row is swept away.`);
-}
 
 function fear(b: Battle, actor: Combatant, e: Effect<'fear'>, level: number): void {
   for (const t of foesOf(b, actor).filter((x) => x.status === 'active' && x.morale < 12)) {

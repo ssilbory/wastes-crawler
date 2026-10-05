@@ -95,6 +95,8 @@ export function attackSteps(
 ): number {
   let steps = coverSteps(actor.row > 0, covered(b, target), flying(actor));
   if (actor.blindRounds > 0 && mode === 'melee') steps -= 1;
+  // Enfeebling Wave: attacks rolled twice, the worse kept, as for the blind (4.6.0).
+  if (actor.enfeebledUntil >= b.round) steps -= 1;
   if (actor.towerShield) steps -= 1;
   if (target.towerShield) steps -= 1;
   if (actor.strain?.broken) steps -= 1;

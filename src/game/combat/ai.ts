@@ -58,13 +58,15 @@ export function monsterAction(b: Battle, actor: Combatant): Action {
  */
 function cursedAction(b: Battle, actor: Combatant): Action | null {
   if (actor.misted) return { kind: 'end-mist' };
-  if (actor.berserk) {
-    // The mad strike at their own side with the swing their routine calls for, as reach allows.
+  if (actor.berserk || actor.compelled > 0) {
+    // The mad and the compelled strike at their own side with the swing their routine calls for,
+    // as reach allows; the compelled with no one to strike stand held.
     const indices = actor.forcedAttack !== null ? [actor.forcedAttack] : actor.attacks.keys();
     for (const index of indices) {
       const near = targets(b, actor, actor.attacks[index] as Attack, true);
       if (near.length > 0) return { kind: 'attack', attack: index, target: pickRandom(b, near).id };
     }
+    if (actor.compelled > 0) return { kind: 'wait' };
   }
   const t = actor.torment;
   if (t && !t.tried && !t.lasting && t.damage >= actor.hp) return { kind: 'shake-off' };

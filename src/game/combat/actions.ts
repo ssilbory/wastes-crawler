@@ -60,7 +60,12 @@ export function act(b: Battle, actor: Combatant, action: Action): void {
   switch (action.kind) {
     case 'attack': {
       const attack = actor.attacks[action.attack];
-      if (!attack || !target || !targets(b, actor, attack, actor.berserk).includes(target)) return;
+      if (
+        !attack ||
+        !target ||
+        !targets(b, actor, attack, actor.berserk || actor.compelled > 0).includes(target)
+      )
+        return;
       tormentStrike(b, actor);
       if (!canAct(actor)) return;
       // Smite the Wicked (Phase 14c): paid for as the attack is made, once per target a scene.

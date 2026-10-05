@@ -131,6 +131,7 @@ export function createBattle(s: BattleSetup): Battle {
     indoors: s.indoors ?? false,
     walls: [],
     fury: null,
+    everlasting: null,
     damageBonus: { party: 0, enemy: 0 },
     log: s.log ? [] : null,
     outcome: null,

@@ -173,6 +173,18 @@ export interface Combatant {
   flame: number;
   stone: number;
   misted: boolean;
+  /**
+   * Phase 18c Necromancer magic: Augment Mortal Vitality's save bonus and unspent healing, the last
+   * round Enfeebling Wave hinders it, Compel Flesh's damage per struggle (0 for none), the last
+   * round Forgetting the Grave keeps it from dying, the ally Merge Souls pools it with, and the
+   * last round Call of the Tomb dooms it.
+   */
+  vitality: { saveBonus: number; healReady: boolean } | null;
+  enfeebledUntil: number;
+  compelled: number;
+  deathlessUntil: number;
+  mergedWith: string | null;
+  doomedUntil: number;
 }
 
 export type Action =
@@ -229,6 +241,8 @@ export interface Battle {
    */
   walls: { side: SideId; damage: Dice; bonus: number; crossed: string[] }[];
   fury: { side: SideId; row: number; damage: Dice; roundsLeft: number } | null;
+  /** Everlasting (Phase 18c): no one on `side` drops below 1 HP through `until`; then the caster. */
+  everlasting: { side: SideId; caster: string; until: number } | null;
   /** God Wills It's bonus to damage and Shock, by side (Phase 14c). */
   damageBonus: Record<SideId, number>;
   log: string[] | null;
