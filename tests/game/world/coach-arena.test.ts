@@ -126,7 +126,7 @@ describe('coach routes (docs/rules-adaptation.md, Coach routes)', () => {
     expect(coachQuarter(w, data)).toBe(false);
     w.rng = createRng('fight');
     const fight = {
-      battle: null as never,
+      battle: { combatants: [] } as never,
       setup: null as never,
       memberIds: [],
       npcIds: [],
@@ -140,7 +140,7 @@ describe('coach routes (docs/rules-adaptation.md, Coach routes)', () => {
       w,
       data,
       fight,
-      { outcome: 'party', rounds: 1, deaths: 0, battle: null as never },
+      { outcome: 'party', rounds: 1, deaths: 0, battle: { combatants: [] } as never },
       null,
     );
     expect(w.quarter).toBe(1);
@@ -155,7 +155,7 @@ describe('coach routes (docs/rules-adaptation.md, Coach routes)', () => {
     ride(w, 1);
     w.encounter = encounter([['thug-or-militia']]);
     const fight = {
-      battle: null as never,
+      battle: { combatants: [] } as never,
       setup: null as never,
       memberIds: [],
       npcIds: [],
@@ -169,7 +169,7 @@ describe('coach routes (docs/rules-adaptation.md, Coach routes)', () => {
       w,
       data,
       fight,
-      { outcome: 'enemy', rounds: 1, deaths: 0, battle: null as never },
+      { outcome: 'enemy', rounds: 1, deaths: 0, battle: { combatants: [] } as never },
       null,
     );
     expect(w.coach).toBeNull();

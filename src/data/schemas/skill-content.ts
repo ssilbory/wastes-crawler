@@ -51,3 +51,15 @@ export const SkillRulesSchema = z.strictObject({
   }),
 });
 export type SkillRules = z.infer<typeof SkillRulesSchema>;
+
+/**
+ * Which spells can be learned (docs/rules-adaptation.md, High Magic): those with a combat effect in
+ * combat-magic.json or a use outside fights, less those left out for good.
+ */
+export const SpellRulesSchema = z.strictObject({
+  /** Spells the game leaves out for good: nothing in play could use them. */
+  excluded: z.array(IdSchema),
+  /** Spells the game uses outside fights, in code (the Necromancer's raisings). */
+  outsideCombat: z.array(IdSchema),
+});
+export type SpellRules = z.infer<typeof SpellRulesSchema>;

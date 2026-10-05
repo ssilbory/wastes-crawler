@@ -8,7 +8,8 @@ import { resolveAttack, type AttackBoost } from './attack.ts';
 import { say } from './damage.ts';
 import { breathe } from './specials.ts';
 import { castMagic, combatMagic } from './spells.ts';
-import { targets } from './targeting.ts';
+import { shakeOff, tormentStrike } from './conditions.ts';
+import { canAct, isUp, targets } from './targeting.ts';
 import type { Action, Battle, CasterState, Combatant } from './types.ts';
 
 /** `aid`: +1 when an ally's aiding check succeeded (SRD 2.3.3). */
@@ -52,7 +53,11 @@ export function act(b: Battle, actor: Combatant, action: Action): void {
   switch (action.kind) {
     case 'attack': {
       const attack = actor.attacks[action.attack];
-      if (!attack || !target || !targets(b, actor, attack).includes(target)) return;
+      // The Prismatic Hemicycle's mad turn on their own side (Phase 18a).
+      const mad = actor.berserk && target?.side === actor.side && target !== actor && isUp(target);
+      if (!attack || !target || !(mad || targets(b, actor, attack).includes(target))) return;
+      tormentStrike(b, actor);
+      if (!canAct(actor)) return;
       // Smite the Wicked (Phase 14c): paid for as the attack is made, once per target a scene.
       const smite = action.smite ? smiteBoost(b, actor, target) : null;
       resolveAttack(b, actor, attack, target, smite);
@@ -62,7 +67,11 @@ export function act(b: Battle, actor: Combatant, action: Action): void {
       castMagic(b, actor, action.magic, action.target, action.row, action.strain);
       return;
     case 'breath':
-      breathe(b, actor, action.row);
+      tormentStrike(b, actor);
+      if (canAct(actor)) breathe(b, actor, action.row);
+      return;
+    case 'shake-off':
+      shakeOff(b, actor);
       return;
     case 'total-defense':
       actor.totalDefense = true;

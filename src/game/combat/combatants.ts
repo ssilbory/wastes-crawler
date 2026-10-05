@@ -74,6 +74,15 @@ export function base(
     harvestRound: 0,
     shockCap: null,
     poisonImmune: false,
+    mantle: null,
+    echo: null,
+    torment: null,
+    spellbound: false,
+    returnsRound: 0,
+    berserk: false,
+    revives: null,
+    subdues: false,
+    summoned: null,
   };
 }
 

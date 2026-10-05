@@ -5,6 +5,7 @@
 // the fight screen, or the first option when no one is asked.
 import { skillCheck } from '../../rules/checks.ts';
 import { stabilizeDifficulty } from '../../rules/combat.ts';
+import { addStrain, type StrainState } from '../../rules/strain.ts';
 import { act, stabilize } from './actions.ts';
 import { say } from './damage.ts';
 import { endOfRound, MAX_ROUNDS, runRound } from './round.ts';
@@ -106,6 +107,23 @@ export const firstRescue: RescueDecider = (options) => options[0] ?? null;
 export const awaitsRescue = (b: Battle) =>
   b.outcome === 'party' && dyingOf(b).length > 0 && rescues(b).length > 0;
 
+/**
+ * Prudentially Transient Abnegation of Life (4.4.0): with the field held, the seemingly slain come
+ * back with their hit points and two System Strain. A lost field leaves them to the victors.
+ */
+function reassemble(b: Battle): void {
+  for (const c of b.combatants) {
+    const back = c.revives;
+    if (!back) continue;
+    c.status = 'active';
+    c.hp = Math.min(c.maxHp, back.hp);
+    c.revives = null;
+    // Only PCs are spared this way, and every PC bears System Strain.
+    c.strain = addStrain(c.strain as StrainState, back.strain, 'condition').state;
+    say(b, `${c.name}'s remains flow back together.`);
+  }
+}
+
 export interface BattleResult {
   outcome: Outcome;
   rounds: number;
@@ -118,6 +136,7 @@ export function concludeBattle(b: Battle, decide: RescueDecider = firstRescue): 
   const outcome: Outcome = b.outcome ?? 'draw';
   const rounds = Math.min(b.round, MAX_ROUNDS);
   if (outcome === 'party') tendDying(b, decide);
+  if (outcome !== 'enemy') reassemble(b);
   const deaths = b.combatants.filter((c) => c.side === 'party' && c.status === 'dead').length;
   return { outcome, rounds, deaths, battle: b };
 }

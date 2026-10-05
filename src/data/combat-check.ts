@@ -33,6 +33,9 @@ export function combatReferenceErrors(srd: SrdData, content: ContentData): strin
     // Beasts give rations instead of loot (Phase 17).
     if (c.mind === 'animal' && c.loot)
       errors.push(`monsterCombat/${c.id}: beasts give rations, not loot`);
+    // Plants give components instead (Phase 18a).
+    if (c.tags.includes('plant') && c.loot)
+      errors.push(`monsterCombat/${c.id}: plants give components, not loot`);
   }
   for (const m of content.combatMagic) {
     const known = m.source === 'spell' ? srd.spells : srd.arts;
@@ -41,12 +44,14 @@ export function combatReferenceErrors(srd: SrdData, content: ContentData): strin
     const skill =
       e.kind === 'blast' || e.kind === 'touch-heal' || e.kind === 'repose'
         ? e.skill
-        : e.kind === 'enthrall'
+        : e.kind === 'enthrall' || e.kind === 'skyward'
           ? e.penaltySkill
           : undefined;
     if (skill !== undefined && !skills.has(skill)) {
       errors.push(`combatMagic/${m.id}: unknown skill ${skill}`);
     }
+    if (e.kind === 'summon' && !monsters.some((x) => x.id === e.monster))
+      errors.push(`combatMagic/${m.id}: unknown monster ${e.monster}`);
   }
   return errors;
 }

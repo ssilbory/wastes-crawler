@@ -64,11 +64,15 @@ describe('beasts give rations (Phase 17)', () => {
     const content = {
       ...data.content,
       monsterCombat: data.content.monsterCombat.map((m) =>
-        m.id === 'cave-bear' ? { ...m, loot: { count: 1, sides: 6 } } : m,
+        m.id === 'cave-bear' || m.id === 'mushroom-king'
+          ? { ...m, loot: { count: 1, sides: 6 } }
+          : m,
       ),
     };
+    // Plants give crafting components instead (Phase 18a).
     expect(combatReferenceErrors(data.srd, content)).toEqual([
       'monsterCombat/cave-bear: beasts give rations, not loot',
+      'monsterCombat/mushroom-king: plants give components, not loot',
     ]);
   });
 });

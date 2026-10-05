@@ -16,7 +16,7 @@ import {
   RegionSchema,
   TerrainSchema,
 } from './overland-content.ts';
-import { SkillRulesSchema } from './skill-content.ts';
+import { SkillRulesSchema, SpellRulesSchema } from './skill-content.ts';
 import { TownRulesSchema } from './town-content.ts';
 import { SettingsDefaultsSchema, SoundCueSchema } from './settings.ts';
 import {
@@ -173,6 +173,7 @@ export const ContentSchemas = {
   overlandRules: OverlandRulesSchema,
   townRules: TownRulesSchema,
   skillRules: SkillRulesSchema,
+  spellRules: SpellRulesSchema,
   npcRules: NpcRulesSchema,
   captives: z.array(CaptiveSchema).min(1),
   coachRoutes: z.array(CoachRouteSchema).min(1),

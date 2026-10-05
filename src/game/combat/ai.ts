@@ -31,6 +31,8 @@ function bestAttack(b: Battle, actor: Combatant): { index: number; foes: Combata
 
 export function monsterAction(b: Battle, actor: Combatant): Action {
   if (actor.noncombatant) return noncombatantAction(b, actor);
+  const cursed = cursedAction(b, actor);
+  if (cursed) return cursed;
   const magic = actor.instinctive ? null : magicAction(b, actor);
   if (magic) return magic;
   // A breath weapon opens the turn while it lasts (Phase 14a).
@@ -48,6 +50,21 @@ export function monsterAction(b: Battle, actor: Combatant): Action {
     choice.foes.filter((t) => margin(t) === lowest),
   );
   return { kind: 'attack', attack: choice.index, target: target.id };
+}
+
+/**
+ * High Magic's curses (Phase 18a): the mad strike at their own side, and a creature whose torment
+ * would kill it spends its action trying to throw it off, if it still can.
+ */
+function cursedAction(b: Battle, actor: Combatant): Action | null {
+  if (actor.berserk) {
+    const near = b.combatants.filter((c) => c.side === actor.side && c !== actor && isUp(c));
+    if (near.length > 0 && actor.attacks.length > 0)
+      return { kind: 'attack', attack: 0, target: pickRandom(b, near).id };
+  }
+  const t = actor.torment;
+  if (t && !t.tried && !t.lasting && t.damage >= actor.hp) return { kind: 'shake-off' };
+  return null;
 }
 
 /** Healing arts, in the order the AI reaches for them. */

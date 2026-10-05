@@ -150,6 +150,22 @@ export interface Combatant {
   harvestRound: number;
   shockCap: number | null;
   poisonImmune: boolean;
+  /**
+   * Phase 18a High Magic: Mantle of Disjecting Dissection's blades, Resounding Temporal Echo's last
+   * round and strain, the Torment of Tumefaction, a spell holding the creature out
+   * of the fight that dispelling ends, the round a banished creature returns (0 for never), the
+   * Prismatic Hemicycle's madness, the hit points and strain Prudentially Transient Abnegation of
+   * Life brings it back with, blows that only knock foes out, and who summoned it as which monster.
+   */
+  mantle: { bonus: number; damage: Dice; save: SaveType } | null;
+  echo: { until: number; strain: number } | null;
+  torment: { damage: number; lasting: boolean; tried: boolean; round: number } | null;
+  spellbound: boolean;
+  returnsRound: number;
+  berserk: boolean;
+  revives: { hp: number; strain: number } | null;
+  subdues: boolean;
+  summoned: { by: string; monster: string } | null;
 }
 
 export type Action =
@@ -160,6 +176,8 @@ export type Action =
   | { kind: 'stabilize'; target: string }
   | { kind: 'move'; row: number; column: number }
   | { kind: 'gear'; item: number; location: 'readied' | 'stowed' }
+  /** Spend the Main Action trying to throw off the Torment of Tumefaction. */
+  | { kind: 'shake-off' }
   | { kind: 'wait' };
 
 export type Outcome = 'party' | 'enemy' | 'draw';
@@ -194,6 +212,8 @@ export interface Battle {
   hitModifier: Record<SideId, number>;
   /** The party fights without light; those who don't see in the dark take -4 to hit. */
   dark: boolean;
+  /** The fight is underground, where Deluge of Hell can't be cast. */
+  indoors: boolean;
   /** God Wills It's bonus to damage and Shock, by side (Phase 14c). */
   damageBonus: Record<SideId, number>;
   log: string[] | null;

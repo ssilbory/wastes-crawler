@@ -84,7 +84,7 @@ export function MagicStep(props: {
       ) : (
         <>
           <fieldset class="picks">
-            <legend>Spells known: pick {mage.startingSpells}</legend>
+            <legend>Spells known: pick {Math.min(mage.startingSpells, spells.length)}</legend>
             {spells.map((s) => (
               <Check
                 key={s.id}

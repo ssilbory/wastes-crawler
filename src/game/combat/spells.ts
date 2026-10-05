@@ -11,6 +11,7 @@ import { addStrain } from '../../rules/strain.ts';
 import { effectiveAc, harm, save, say } from './damage.ts';
 import { attackSteps, hitModifier, isUp } from './targeting.ts';
 import { artEffect, counterSpell, retainsSpell } from './arts.ts';
+import { highMagicEffect } from './high-magic.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
 
 export function combatMagic(b: Battle, id: string): CombatMagic | undefined {
@@ -42,6 +43,8 @@ export function canUse(
   if (!c || !(c.canCast || (m.source === 'art' && c.armorFree.includes(m.id)))) return false;
   // Retain Sorcery's stress and Swift Casting's spell hold off other spells (Phase 15).
   if (m.source === 'spell' && c.castLock >= b.round) return false;
+  // Deluge of Hell can't be cast indoors (4.4.0).
+  if (m.effect.kind === 'burst' && m.effect.outdoorsOnly && b.indoors) return false;
   if (m.limit === 'scene' && c.usedThisScene.has(m.id)) return false;
   if (m.limit === 'target-scene' && c.usedThisScene.has(`${m.id}:${target ?? ''}`)) return false;
   if (m.source === 'art')
@@ -166,6 +169,7 @@ export function castMagic(
     case 'enthrall':
       if (target && !enemySave(b, actor, target, e.save, -(actor.skills[e.penaltySkill] ?? 0))) {
         target.status = 'out';
+        target.spellbound = true;
         say(b, `${target.name} is enthralled and stops fighting.`);
       }
       return true;
@@ -236,6 +240,7 @@ export function castMagic(
         budget -= t.hitDice;
         if (enemySave(b, actor, t, e.save)) continue;
         t.status = 'out';
+        t.spellbound = true;
         say(b, `${t.name} cowers.`);
       }
       return true;
@@ -253,7 +258,10 @@ export function castMagic(
       }
       return true;
     default:
-      artEffect(b, actor, e, target);
+      if (!artEffect(b, actor, e, target))
+        highMagicEffect(b, actor, e, target, row, (t, type, mod) =>
+          enemySave(b, actor, t, type, mod),
+        );
       return true;
   }
 }

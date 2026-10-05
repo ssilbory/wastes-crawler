@@ -5,7 +5,7 @@ import { netSteps } from '../../rules/advantage.ts';
 import { rollSave, type SaveResult, type SaveType } from '../../rules/saves.ts';
 import { covered } from './targeting.ts';
 import { say } from './log.ts';
-import { keepsDying, redHarvest, vitalFurnace } from './reactions.ts';
+import { abnegate, keepsDying, redHarvest, vitalFurnace } from './reactions.ts';
 import type { Battle, Combatant } from './types.ts';
 
 export { say };
@@ -28,18 +28,30 @@ export function harm(b: Battle, target: Combatant, amount: number): void {
   if (vitalFurnace(b, target, amount)) return;
   target.hp = Math.max(0, target.hp - amount);
   if (target.hp > 0) return;
-  if (target.kind === 'monster' || target.frail) {
-    target.status = 'dead';
-    say(b, `${target.name} dies.`);
-    redHarvest(b, target);
-  } else if (keepsDying(b, target)) {
+  if (target.kind === 'monster') {
+    die(b, target);
+    return;
+  }
+  // The Frail die at once; Abnegation of Life still spares them (Phase 18a).
+  if (target.frail) {
+    if (!abnegate(b, target)) die(b, target);
+    return;
+  }
+  if (keepsDying(b, target)) {
     target.status = 'stable';
     target.fellRound = b.round;
-  } else {
-    target.status = 'dying';
-    target.fellRound = b.round;
-    say(b, `${target.name} falls, mortally wounded.`);
+    return;
   }
+  if (abnegate(b, target)) return;
+  target.status = 'dying';
+  target.fellRound = b.round;
+  say(b, `${target.name} falls, mortally wounded.`);
+}
+
+function die(b: Battle, target: Combatant): void {
+  target.status = 'dead';
+  say(b, `${target.name} dies.`);
+  redHarvest(b, target);
 }
 
 /** A save with rear-cover advantage and Broken disadvantage. */

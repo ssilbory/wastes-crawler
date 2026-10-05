@@ -15,9 +15,13 @@ function escortTo(questId: string): string {
 
 function role(w: World, n: Npc): string {
   const t = typeOf(data, n);
-  if (n.kind === 'undead' || n.kind === 'beast') {
+  if (n.kind === 'undead' || n.kind === 'beast' || n.kind === 'summon') {
     const master = w.members.find((m) => m.id === n.master)?.character.name;
-    const kind = n.kind === 'undead' ? 'undead, serving' : 'beast, following';
+    const kind = {
+      undead: 'undead, serving',
+      beast: 'beast, following',
+      summon: 'summoned until dawn, serving',
+    }[n.kind];
     return master ? `${kind} ${master}` : n.kind;
   }
   if (t) return `${t.name}, ${shareText(t.share)}${n.owed > 0 ? `, owed ${n.owed} crowns` : ''}`;
@@ -63,7 +67,11 @@ export function NpcPanel(props: { world: World; onChange: () => void }) {
               {n.inventory.length > 0 && ` · carrying ${n.inventory.length} items`}
             </span>
             <button type="button" onClick={() => run(() => dismiss(w, data, n.id))}>
-              {n.kind === 'undead' ? 'Release' : n.kind === 'beast' ? 'Set loose' : 'Dismiss'}
+              {n.kind === 'undead' || n.kind === 'summon'
+                ? 'Release'
+                : n.kind === 'beast'
+                  ? 'Set loose'
+                  : 'Dismiss'}
             </button>
           </li>
         ))}

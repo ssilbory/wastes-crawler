@@ -11,6 +11,7 @@ import { npcCheck } from '../../rules/checks.ts';
 import { emit } from './bus.ts';
 import { immuneTo, sacredBlood } from './arts.ts';
 import { nightForBeasts } from './beasts.ts';
+import { dawnTakesSummons } from './summons.ts';
 import { wakeRevived } from './healer.ts';
 import { firstPhysician, nightForNpcs } from './npcs.ts';
 import { regionMap } from './region.ts';
@@ -59,6 +60,7 @@ export function endOfDay(w: World, data: GameData, waystation = false): void {
   if (!sheltered && !cold)
     note(w, `A night without shelter at ${hexKey(w.position)}: no one recovers.`);
   nightForBeasts(w, data, fedFree);
+  dawnTakesSummons(w);
   nightForNpcs(w, data, fed && sheltered && !w.noRecovery);
   wakeRevived(w);
   w.fallen = null;

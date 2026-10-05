@@ -48,6 +48,18 @@
       {
         "monster": "tribal-shaman",
         "chance": 25
+      },
+      {
+        "monster": "walking-sapling",
+        "chance": 30
+      },
+      {
+        "monster": "wood-golem",
+        "chance": 60
+      },
+      {
+        "monster": "walking-tree",
+        "chance": 80
       }
     ]
   },
@@ -108,6 +120,34 @@
       {
         "monster": "petty-mage",
         "chance": 15
+      }
+    ]
+  },
+  {
+    "id": "spore-essence",
+    "name": "Spore essence",
+    "type": "essence",
+    "rarity": "common",
+    "sources": [
+      {
+        "monster": "mushroom-sporeling",
+        "chance": 20
+      },
+      {
+        "monster": "mushroom-warrior",
+        "chance": 30
+      },
+      {
+        "monster": "mushroom-spore-shaman",
+        "chance": 50
+      },
+      {
+        "monster": "swamp-thing",
+        "chance": 50
+      },
+      {
+        "monster": "mushroom-king",
+        "chance": 100
       }
     ]
   }

@@ -53,7 +53,11 @@ function magicTargets(b: Battle, actor: Combatant, m: CombatMagic): (Combatant |
   switch (m.target) {
     case 'enemies':
     case 'allies':
+    case 'place':
       return ['all'];
+    // Extirpate Arcana and Scorn the Fetters of Earth: anyone not dead or gone.
+    case 'any':
+      return b.combatants.filter((c) => c.status !== 'dead' && c.status !== 'fled');
     case 'wounded-ally':
       return b.combatants.filter(
         (c) =>
@@ -81,7 +85,12 @@ function magicCommand(b: Battle, actor: Combatant, m: CombatMagic): Command[] {
   const choices = magicTargets(b, actor, m).flatMap((t): Choice[] => {
     if (t === 'all')
       return canUse(b, actor, m)
-        ? [{ label: 'Everyone', action: { kind: 'cast', magic: m.id } }]
+        ? [
+            {
+              label: m.target === 'place' ? 'Cast it' : 'Everyone',
+              action: { kind: 'cast', magic: m.id },
+            },
+          ]
         : [];
     const target = typeof t === 'number' ? undefined : t;
     const base = target

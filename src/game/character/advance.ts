@@ -11,7 +11,14 @@ import { classBonusSkills, classOption } from './class-step.ts';
 import { progressionLookup, type GameData } from './context.ts';
 import { characterSheet, finalScores } from './derived.ts';
 import { allowedSkills, focusInfo, hasDieHard, modifierBonuses, type FocusChoice } from './foci.ts';
-import { artBar, artPicks, learnableSpells, spellSlots, type ArtPick } from './magic.ts';
+import {
+  artBar,
+  artPicks,
+  learnableSpells,
+  spellPicks,
+  spellSlots,
+  type ArtPick,
+} from './magic.ts';
 import { creditSkill, type TrainResult } from './training.ts';
 
 /** The three skill points a focus's bonus skill is worth when gained by advancement. */
@@ -55,7 +62,15 @@ export function levelPlan(data: GameData, c: Character): LevelPlan | null {
       Array<FocusPick['category']>(p.count).fill(p.category),
     ),
     arts: mage ? artPicks(data, mage, classLevel) : [],
-    spells: !mage ? 0 : classLevel === 1 ? mage.startingSpells : mage.spellsPerLevel,
+    spells: !mage
+      ? 0
+      : spellPicks(
+          data,
+          mage,
+          spellSlots(data, mage, classLevel).maxSpellLevel,
+          c.spells.known,
+          classLevel === 1 ? mage.startingSpells : mage.spellsPerLevel,
+        ),
     maxSpellLevel: mage ? spellSlots(data, mage, classLevel).maxSpellLevel : 0,
     skillPoints: skillPointsPerLevel(false),
     quickPoints: quick ? skillPointsPerLevel(true) - skillPointsPerLevel(false) : 0,

@@ -558,5 +558,266 @@
     "skill": 1,
     "save": 13,
     "description": "A powerful corpse raised by Raise Grave Knight (vendor/wwn-srd 4.6.0): fully intelligent, utterly devoted to its creator, and whole again at every dusk."
+  },
+  {
+    "id": "mushroom-sporeling",
+    "name": "Mushroom Sporeling",
+    "category": "Unnatural Entities",
+    "hitDice": 1,
+    "ac": 12,
+    "armored": false,
+    "attackBonus": 1,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": 13
+    },
+    "move": 20,
+    "morale": 8,
+    "instinct": 5,
+    "skill": 1,
+    "save": 15,
+    "description": "A knee-high mushroom on stubby root-legs, its cap still damp from the dark where it sprouted. Sporelings shamble about the deep places in mobs, clubbing at anything warm and planting their dead to feed the next crop."
+  },
+  {
+    "id": "mushroom-warrior",
+    "name": "Mushroom Warrior",
+    "category": "Unnatural Entities",
+    "hitDice": 2,
+    "ac": 14,
+    "armored": false,
+    "attackBonus": 3,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 13
+    },
+    "move": 30,
+    "morale": 9,
+    "instinct": 4,
+    "skill": 1,
+    "save": 14,
+    "description": "A man-sized fungus with a cap gone hard and woody as a shield-boss. Warriors guard the spore beds of their colony and swing knotted stalks like clubs; they make no sound but a wet creak."
+  },
+  {
+    "id": "mushroom-spore-shaman",
+    "name": "Mushroom Spore Shaman",
+    "category": "Unnatural Entities",
+    "hitDice": 4,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 4,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": 13
+    },
+    "move": 30,
+    "morale": 10,
+    "instinct": 4,
+    "skill": 2,
+    "save": 13,
+    "description": "An old, pale fungus hung with dangling gills. It speaks to its colony in clouds of scent, and its lashing tendrils burst into spores that lock a victim's limbs."
+  },
+  {
+    "id": "mushroom-king",
+    "name": "Mushroom King",
+    "category": "Unnatural Entities",
+    "hitDice": 6,
+    "ac": 15,
+    "armored": false,
+    "attackBonus": 7,
+    "attacks": 2,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 10,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 15
+    },
+    "move": 30,
+    "morale": 11,
+    "instinct": 3,
+    "skill": 2,
+    "save": 12,
+    "description": "The ancient heart of a fungal colony, a towering bulk of shelf-caps and pallid flesh that has fed for centuries on whatever died in the dark. The whole colony moves at its will."
+  },
+  {
+    "id": "walking-tree",
+    "name": "Walking Tree",
+    "category": "Unnatural Entities",
+    "hitDice": 8,
+    "ac": 16,
+    "armored": false,
+    "attackBonus": 9,
+    "attacks": 2,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 2
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 3,
+      "maxAc": 15
+    },
+    "move": 20,
+    "morale": 10,
+    "instinct": 4,
+    "skill": 1,
+    "save": 11,
+    "description": "An old tree that has pulled its roots from the ground and remembers how to walk. Walking trees are slow and patient and hate the axe; they crush what they catch with limbs like battering rams."
+  },
+  {
+    "id": "swamp-thing",
+    "name": "Swamp Thing",
+    "category": "Unnatural Entities",
+    "hitDice": 5,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 6,
+    "attacks": 2,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 13
+    },
+    "move": 30,
+    "morale": 10,
+    "instinct": 5,
+    "skill": 1,
+    "save": 13,
+    "description": "A heap of rotting reeds, moss, and black mud that rises from the mire in the shape of a man. Blows sink into it without effect, and it drags its prey down into the water to feed the bog."
+  },
+  {
+    "id": "wood-golem",
+    "name": "Wood Golem",
+    "category": "Unnatural Entities",
+    "hitDice": 4,
+    "ac": 15,
+    "armored": false,
+    "attackBonus": 5,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 10,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 13
+    },
+    "move": 30,
+    "morale": 12,
+    "instinct": 3,
+    "skill": 1,
+    "save": 13,
+    "description": "A guardian carved from heartwood and bound with old sorcery, its joints pegged and its face a blank of grain. It does not tire or sleep, and it does what it was made to do until it is splintered."
+  },
+  {
+    "id": "phantasmal-eidolon",
+    "name": "Phantasmal Eidolon",
+    "category": "Unnatural Entities",
+    "hitDice": 4,
+    "ac": 15,
+    "armored": false,
+    "attackBonus": 6,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 15
+    },
+    "move": 30,
+    "morale": 12,
+    "instinct": 1,
+    "skill": 1,
+    "save": 13,
+    "description": "A half-real servant called up by Calculation of the Phantasmal Eidolon, in whatever shape its caster wished. It obeys with fearless devotion until dawn, and its blows only knock foes senseless."
+  },
+  {
+    "id": "walking-sapling",
+    "name": "Walking Sapling",
+    "category": "Unnatural Entities",
+    "hitDice": 2,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 2,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": 13
+    },
+    "move": 20,
+    "morale": 9,
+    "instinct": 5,
+    "skill": 1,
+    "save": 14,
+    "description": "A young tree that has learned to walk before it learned patience. Saplings wander the forest edges alone, lashing at travelers with whip-thin limbs, and will one day root and grow into something far worse."
   }
 ]

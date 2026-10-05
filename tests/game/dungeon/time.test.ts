@@ -121,12 +121,17 @@ describe('exploration turns (SRD 2.13.2, 2.13.3)', () => {
     w.encounter = encounter([['thug-or-militia']]);
     // The fight burns the torch, then turns 2 and 3 burn it; turn 3 brings the level's check.
     w.rng = rng = scriptedRng([3, 3, 3, 2]);
-    const fight = { battle: null as never, setup: null as never, memberIds: [], npcIds: [] };
+    const fight = {
+      battle: { combatants: [] } as never,
+      setup: null as never,
+      memberIds: [],
+      npcIds: [],
+    };
     settleByFighting(
       w,
       data,
       { ...fight, enemies: [], captive: null, quest: null, garrison: null, patrol: null },
-      { outcome: 'party', rounds: 1, deaths: 0, battle: null as never },
+      { outcome: 'party', rounds: 1, deaths: 0, battle: { combatants: [] } as never },
       null,
     );
     expect(state(w).turn).toBe(3);

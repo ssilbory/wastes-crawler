@@ -8,6 +8,7 @@ import { act } from './actions.ts';
 import { monsterAction, partyAction } from './ai.ts';
 import { freeActions } from './free-actions.ts';
 import { say } from './damage.ts';
+import { echoes, quickens, roundPasses } from './conditions.ts';
 import { checkMorale } from './morale.ts';
 import { canAct, isUp, targets } from './targeting.ts';
 import type { Attack, Battle, Combatant, Controller } from './types.ts';
@@ -31,7 +32,9 @@ export function beginRound(b: Battle): void {
 }
 
 function checkEnd(b: Battle): void {
-  if (!b.combatants.some((c) => c.side === 'enemy' && canAct(c))) b.outcome = 'party';
+  // The banished who will find their way back keep the fight going (Phase 18a).
+  const left = (c: Combatant) => canAct(c) || c.returnsRound > 0;
+  if (!b.combatants.some((c) => c.side === 'enemy' && left(c))) b.outcome = 'party';
   else if (!b.combatants.some((c) => c.side === 'party' && canAct(c) && !c.noncombatant))
     b.outcome = 'enemy';
 }
@@ -80,6 +83,17 @@ export function takeTurn(b: Battle, actor: Combatant, controller: Controller): v
     // Casting or breathing is the Main Action, whatever the monster's number of attacks.
     if (action.kind === 'cast' || action.kind === 'breath') break;
   }
+  quickened(b, actor, controller);
+}
+
+/** Resounding Temporal Echo's extra Main Action: an attack, never magic (4.4.0). */
+function quickened(b: Battle, actor: Combatant, controller: Controller): void {
+  if (!quickens(b, actor)) return;
+  const action = controller(b, actor);
+  if (action.kind !== 'attack' || !echoes(b, actor)) return;
+  act(b, actor, action);
+  checkMorale(b);
+  checkEnd(b);
 }
 
 /**
@@ -151,6 +165,7 @@ export function endOfRound(b: Battle): void {
   }
   b.stabilizedThisRound.clear();
   b.round += 1;
+  roundPasses(b);
   // SRD 5.4.2: the second round of a fight tests the nerve of mobs and undisciplined fighters.
   if (b.round === 2) {
     for (const m of monsters)

@@ -16,6 +16,7 @@ import regions from '../../data/content/regions.json';
 import terrains from '../../data/content/terrains.json';
 import townRules from '../../data/content/town-rules.json';
 import skillRules from '../../data/content/skill-rules.json';
+import spellRules from '../../data/content/spell-rules.json';
 import npcRules from '../../data/content/npc-rules.json';
 import captives from '../../data/content/captives.json';
 import coachRoutes from '../../data/content/coach-routes.json';
@@ -76,6 +77,7 @@ export function loadContent(): ContentData {
     overlandRules: ContentSchemas.overlandRules.parse(overlandRules),
     townRules: ContentSchemas.townRules.parse(townRules),
     skillRules: ContentSchemas.skillRules.parse(skillRules),
+    spellRules: ContentSchemas.spellRules.parse(spellRules),
     npcRules: ContentSchemas.npcRules.parse(npcRules),
     captives: ContentSchemas.captives.parse(captives),
     coachRoutes: ContentSchemas.coachRoutes.parse(coachRoutes),

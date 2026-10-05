@@ -55,6 +55,8 @@ export interface BattleSetup {
   dark?: boolean;
   /** No one can cast spells or use arts: an anti-magic square. */
   antiMagic?: boolean;
+  /** Underground, where Deluge of Hell can't be cast. */
+  indoors?: boolean;
   log?: boolean;
 }
 
@@ -126,6 +128,7 @@ export function createBattle(s: BattleSetup): Battle {
     stabilizedThisRound: new Set(),
     hitModifier: { party: 0, enemy: 0 },
     dark: s.dark ?? false,
+    indoors: s.indoors ?? false,
     damageBonus: { party: 0, enemy: 0 },
     log: s.log ? [] : null,
     outcome: null,
