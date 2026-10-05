@@ -1,5 +1,7 @@
 import { allMonsters } from './monsters.ts';
 import type { ContentData, Monster, MonsterCaster, SrdData } from './schemas/index.ts';
+import { gameSkills } from './skills.ts';
+import { gameSpells } from './spells.ts';
 
 /**
  * Every monster has combat data, Wpn monsters name a real weapon, routines make as many attacks as
@@ -8,7 +10,7 @@ import type { ContentData, Monster, MonsterCaster, SrdData } from './schemas/ind
 export function combatReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const errors: string[] = [];
   const weapons = new Set(srd.weapons.map((w) => w.id));
-  const skills = new Set(srd.skills.map((s) => s.id));
+  const skills = new Set(gameSkills(srd, content).map((s) => s.id));
   const monsters = allMonsters(srd, content);
   const ids = new Set(srd.monsters.map((m) => m.id));
   for (const m of content.monsters)
@@ -29,20 +31,33 @@ export function combatReferenceErrors(srd: SrdData, content: ContentData): strin
     if (m && swings !== undefined && swings !== m.attacks)
       errors.push(`monsterCombat/${c.id}: the routine makes ${swings} attacks, not ${m.attacks}`);
     if (c.volley && !c.routine) errors.push(`monsterCombat/${c.id}: a volley needs a routine`);
+    // Beasts give rations instead of loot (Phase 17).
+    if (c.mind === 'animal' && c.loot)
+      errors.push(`monsterCombat/${c.id}: beasts give rations, not loot`);
+    // Plants give components instead (Phase 18a).
+    if (c.tags.includes('plant') && c.loot)
+      errors.push(`monsterCombat/${c.id}: plants give components, not loot`);
+    if (
+      c.tags.includes('plant') &&
+      !content.components.some((x) => x.sources.some((s) => s.monster === c.id))
+    )
+      errors.push(`monsterCombat/${c.id}: a plant needs a component to drop`);
   }
   for (const m of content.combatMagic) {
-    const known = m.source === 'spell' ? srd.spells : srd.arts;
+    const known = m.source === 'spell' ? gameSpells(srd, content) : srd.arts;
     if (!known.some((k) => k.id === m.id)) errors.push(`combatMagic/${m.id}: unknown ${m.source}`);
     const e = m.effect;
     const skill =
       e.kind === 'blast' || e.kind === 'touch-heal' || e.kind === 'repose'
         ? e.skill
-        : e.kind === 'enthrall'
+        : e.kind === 'enthrall' || e.kind === 'skyward'
           ? e.penaltySkill
           : undefined;
     if (skill !== undefined && !skills.has(skill)) {
       errors.push(`combatMagic/${m.id}: unknown skill ${skill}`);
     }
+    if (e.kind === 'summon' && !monsters.some((x) => x.id === e.monster))
+      errors.push(`combatMagic/${m.id}: unknown monster ${e.monster}`);
   }
   return errors;
 }
@@ -66,7 +81,7 @@ function casterErrors(srd: SrdData, content: ContentData, m: Monster, c: Monster
   if (c.spells.length > row.spellsPrepared)
     errors.push(`${where}: prepares more than ${row.spellsPrepared} spells`);
   for (const id of c.spells) {
-    const spell = srd.spells.find((s) => s.id === id);
+    const spell = gameSpells(srd, content).find((s) => s.id === id);
     if (!spell || !content.combatMagic.some((x) => x.id === id && x.source === 'spell'))
       errors.push(`${where}: no combat spell ${id}`);
     else if (!(tradition.spellLists as string[]).includes(spell.tradition))

@@ -63,6 +63,8 @@ export function serializeWorld(w: World): string {
     commissions: w.commissions,
     corpses: w.corpses,
     fallen: w.fallen,
+    performedDay: w.performedDay,
+    bestiary: [...w.bestiary],
     factions: w.factions,
     log: w.log.slice(-SAVED_LOG_LINES),
   };
@@ -163,6 +165,8 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       commissions: s.commissions,
       corpses: s.corpses,
       fallen: s.fallen,
+      performedDay: s.performedDay,
+      bestiary: [...s.bestiary],
       factions: s.factions,
       log: s.log,
       rng: rngFromState(s.rng),

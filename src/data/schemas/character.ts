@@ -3,7 +3,7 @@ import { AttributeSchema, IdSchema } from './common.ts';
 import { QualitySchema } from './crafting-content.ts';
 import { ItemLocationSchema } from './equipment-content.ts';
 
-export const CHARACTER_SCHEMA_VERSION = 6;
+export const CHARACTER_SCHEMA_VERSION = 7;
 
 const Score = z.int().min(3).max(18);
 const Adjustments = z.partialRecord(AttributeSchema, z.int());
@@ -92,6 +92,8 @@ export const CharacterSchema = z.strictObject({
     quickPoints: z.int().min(0),
     /** A focus's bonus skill points short of the skill's next level (SRD 2.7.1.6). */
     skillCredit: z.record(IdSchema, z.int().min(1)),
+    /** Focus picks owed for a focus the game took away, taken in town at any time. */
+    freeFoci: z.int().min(1).optional(),
   }),
   strain: z.strictObject({ value: z.int().min(0), broken: z.boolean() }),
 });

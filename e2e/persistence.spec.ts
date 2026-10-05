@@ -15,7 +15,12 @@ async function party(page: Page, seed: string) {
 async function begin(page: Page, seed: string) {
   await page.goto('/#/arena');
   await page.getByLabel('Import character files').setInputFiles(starters);
+  await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(
+    starters.length,
+  );
   await page.getByRole('link', { name: 'Overland' }).click();
+  // The arena has a formation of its own: wait for the Overland page before picking slots.
+  await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();
   await party(page, seed);
   await page.getByRole('button', { name: 'Start a new world' }).click();
   await page.getByRole('button', { name: 'Begin the journey' }).click();

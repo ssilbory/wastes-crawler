@@ -224,6 +224,37 @@
             "row": 0
           }
         ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "mushroom-sporeling",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          },
+          {
+            "monster": "mushroom-warrior",
+            "count": 1,
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "walking-sapling",
+            "count": 1,
+            "row": 0
+          }
+        ]
       }
     ]
   },
@@ -459,6 +490,21 @@
             "row": 0
           }
         ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "mushroom-sporeling",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
       }
     ]
   },
@@ -593,6 +639,163 @@
               "count": 1,
               "sides": 3,
               "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "mushroom-sporeling",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "deep-barrow",
+    "entries": [
+      {
+        "weight": 3,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "predator-small-vicious",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "barrow-golem",
+            "count": {
+              "count": 1,
+              "sides": 2,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "slime-or-ooze",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "unnatural-swarm",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "thug-or-militia",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "mushroom-sporeling",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "mushroom-warrior",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 0
+          },
+          {
+            "monster": "mushroom-spore-shaman",
+            "count": 1,
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "mushroom-king",
+            "count": 1,
+            "row": 0
+          },
+          {
+            "monster": "mushroom-sporeling",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 1
+            },
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "wood-golem",
+            "count": {
+              "count": 1,
+              "sides": 2,
+              "modifier": 0
             },
             "row": 0
           }
@@ -1132,6 +1335,17 @@
             "row": 0
           }
         ]
+      },
+      {
+        "weight": 1,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "walking-tree",
+            "count": 1,
+            "row": 0
+          }
+        ]
       }
     ]
   },
@@ -1186,6 +1400,17 @@
               "sides": 3,
               "modifier": 0
             },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "swamp-thing",
+            "count": 1,
             "row": 0
           }
         ]
@@ -1430,6 +1655,26 @@
             "monster": "predator-beastman",
             "count": 1,
             "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "mushroom-warrior",
+            "count": 1,
+            "row": 0
+          },
+          {
+            "monster": "mushroom-sporeling",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 1
           }
         ]
       }

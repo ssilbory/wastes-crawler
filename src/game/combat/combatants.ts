@@ -63,6 +63,7 @@ export function base(
     actsLast: false,
     acFloor: 0,
     wrath: null,
+    character: null,
     reposePenalty: 0,
     seesInDark: false,
     sanctified: false,
@@ -73,6 +74,18 @@ export function base(
     harvestRound: 0,
     shockCap: null,
     poisonImmune: false,
+    mantle: null,
+    echo: null,
+    torment: null,
+    spellbound: false,
+    returnsRound: 0,
+    berserk: false,
+    revives: null,
+    subdues: false,
+    summoned: null,
+    flame: 0,
+    stone: 0,
+    misted: false,
   };
 }
 
@@ -165,6 +178,7 @@ export function pcCombatant(data: GameData, c: Character, id = c.id): Combatant 
     strain: { strain: c.strain.value, max: sheet.strainMax, broken: c.strain.broken },
     status: c.hp.current > 0 ? 'active' : 'dead',
     sapient: true,
+    character: c,
     // Cold Flesh: Shock of 2 at most, and a natural AC of 12 plus half the level (1.5.14).
     ...(c.arts.includes('cold-flesh') ? { shockCap: 2, acFloor: 12 + Math.floor(level / 2) } : {}),
     // Unaging: immune to poisons (1.5.14).

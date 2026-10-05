@@ -3,13 +3,14 @@ import type { RosterEntry } from '../../game/character/roster.ts';
 import type { TownResult } from '../../game/world/services.ts';
 import { townHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
-import { crowns, lootText } from '../../render/town-view.ts';
+import { crowns, lootText, tradeText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { NpcPanel } from '../world/NpcPanel.tsx';
 import { QuestLog } from '../world/QuestLog.tsx';
 import { FactionsPanel } from '../world/FactionsPanel.tsx';
 import { SettingPanel } from '../world/SettingPanel.tsx';
 import { raidedText } from '../../render/setting-view.ts';
+import { InventoryPanel } from '../world/InventoryPanel.tsx';
 import { PartyPanel } from '../world/PartyPanel.tsx';
 import { QuestsTab } from './QuestsTab.tsx';
 import { ServicesTab } from './ServicesTab.tsx';
@@ -63,6 +64,7 @@ export function TownScreen(props: {
         <span>Purse: {crowns(w.purse)}</span>
         <span>Loot: {lootText(w.loot)}</span>
         {raidedText(w, town.id) && <span class="raided">{raidedText(w, town.id)}</span>}
+        {tradeText(w, data) && <span class="trade">{tradeText(w, data)}</span>}
         <button type="button" onClick={props.onLeave}>
           Back to the map
         </button>
@@ -109,6 +111,7 @@ export function TownScreen(props: {
         <div class="world-side">
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
+          <InventoryPanel world={w} onChange={props.onChange} />
           <QuestLog world={w} onChange={props.onChange} />
           <SettingPanel world={w} inTown onChange={props.onChange} />
           <FactionsPanel world={w} />

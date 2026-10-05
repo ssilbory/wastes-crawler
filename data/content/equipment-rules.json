@@ -1,7 +1,7 @@
 {
   "barding": {
     "costMultiplier": 2,
-    "encumbranceMultiplier": 2
+    "encumbranceMultiplier": 1
   },
   "noUnskilledPenalty": ["crossbow"],
   "numerous": {

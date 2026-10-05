@@ -1,7 +1,7 @@
 // Arts and starting spells: vendor/wwn-srd/4.0 Magic and Spellcasting/4.1.0 Spells and Arts.md,
 // 4.2.0 Preparing and Casting Spells.md, 4.3.0 Dual Partial Spellcasters.md, and 1.7.5 Mages Choose
 // Starting Spells. Effort across classes: docs/rules-adaptation.md (Class switching).
-import type { Art, ClassOption, Spell } from '../../data/schemas/index.ts';
+import type { Art, ClassOption } from '../../data/schemas/index.ts';
 import {
   boostedModifier,
   type AttributeScores,
@@ -16,6 +16,7 @@ import type { HeldFocus } from './foci.ts';
 import { entryEncumbrance, findItem, type InventoryEntry } from './items.ts';
 import type { Skills } from './skills.ts';
 import { fail, INCOMPLETE, OK, type StepStatus } from './steps.ts';
+import { gameSpells, type GameSpell } from '../../data/spells.ts';
 
 type Mage = NonNullable<ClassOption['mage']>;
 
@@ -48,14 +49,40 @@ export function spellSlots(data: GameData, mage: Mage, level = 1): CastingLevelR
   return castingRow(table(data, mage.slots), level);
 }
 
+/**
+ * Whether the game does anything with a spell: a combat effect, or a use outside fights, and not
+ * left out for good (docs/rules-adaptation.md, High Magic). Others wait until they are built.
+ */
+export function playableSpell(data: GameData, id: string): boolean {
+  const rules = data.content.spellRules;
+  if (rules.excluded.includes(id)) return false;
+  return rules.outsideCombat.includes(id) || data.content.combatMagic.some((m) => m.id === id);
+}
+
 /** Spells from every list the class's traditions can learn, up to the castable level. */
-export function learnableSpells(data: GameData, mage: Mage, maxLevel: number): Spell[] {
+export function learnableSpells(data: GameData, mage: Mage, maxLevel: number): GameSpell[] {
   const lists = new Set(
     mage.traditions.flatMap((t) => findTradition(data, t.tradition)?.spellLists ?? []),
   );
-  return data.srd.spells.filter(
-    (s) => lists.has(s.tradition) && s.level <= maxLevel && !mage.excludedSpells.includes(s.id),
+  return gameSpells(data.srd, data.content).filter(
+    (s) =>
+      lists.has(s.tradition) &&
+      s.level <= maxLevel &&
+      !mage.excludedSpells.includes(s.id) &&
+      playableSpell(data, s.id),
   );
+}
+
+/** How many new spells a level asks for: the class's number, or as many as are left to learn. */
+export function spellPicks(
+  data: GameData,
+  mage: Mage,
+  maxLevel: number,
+  known: readonly string[],
+  wanted: number,
+): number {
+  const left = learnableSpells(data, mage, maxLevel).filter((s) => !known.includes(s.id)).length;
+  return Math.min(wanted, left);
 }
 
 /**
@@ -154,8 +181,9 @@ export function evaluateMagic(
   const unknown = choice.known.find((id) => !learnable.has(id));
   if (unknown) return done(fail(`${unknown} isn't a spell you can learn yet`));
   if (dupes(choice.known).length > 0) return done(fail('each spell can be learned only once'));
-  if (choice.known.length > mage.startingSpells) {
-    return done(fail(`a new character knows ${mage.startingSpells} spells`));
+  const starting = Math.min(mage.startingSpells, learnable.size);
+  if (choice.known.length > starting) {
+    return done(fail(`a new character knows ${starting} spells`));
   }
   if (choice.prepared.some((id) => !choice.known.includes(id)) || dupes(choice.prepared).length) {
     return done(fail('prepare each known spell at most once'));
@@ -163,7 +191,7 @@ export function evaluateMagic(
   if (choice.prepared.length > slots.spellsPrepared) {
     return done(fail(`you can prepare ${slots.spellsPrepared} spells`));
   }
-  return done(short || choice.known.length < mage.startingSpells ? INCOMPLETE : OK);
+  return done(short || choice.known.length < starting ? INCOMPLETE : OK);
 }
 
 /** The traditions of every casting class the character holds a level in. */

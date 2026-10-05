@@ -15,9 +15,15 @@ function escortTo(questId: string): string {
 
 function role(w: World, n: Npc): string {
   const t = typeOf(data, n);
-  if (n.kind === 'undead') {
+  if (n.kind === 'undead' || n.kind === 'beast' || n.kind === 'summon' || n.kind === 'tree') {
     const master = w.members.find((m) => m.id === n.master)?.character.name;
-    return master ? `undead, serving ${master}` : 'undead';
+    const kind = {
+      undead: 'undead, serving',
+      beast: 'beast, following',
+      summon: 'summoned until dawn, serving',
+      tree: 'woken tree, serving',
+    }[n.kind];
+    return master ? `${kind} ${master}` : n.kind;
   }
   if (t) return `${t.name}, ${shareText(t.share)}${n.owed > 0 ? `, owed ${n.owed} crowns` : ''}`;
   const to = n.kind === 'captive' ? captiveOf(data, n.type).destination : escortTo(n.type);
@@ -34,7 +40,8 @@ export function NpcPanel(props: { world: World; onChange: () => void }) {
       .filter((m) => !m.dead && m.character.hp.current < m.character.hp.max)
       .map((m) => ({ id: m.id, name: m.character.name })),
     ...w.npcs
-      .filter((n) => n.kind !== 'undead' && n.hp < n.maxHp)
+      // Bandages do nothing for the undead, summoned servants, or trees.
+      .filter((n) => !['undead', 'summon', 'tree'].includes(n.kind) && n.hp < n.maxHp)
       .map((n) => ({ id: n.id, name: n.name })),
   ];
   const [healer, setHealer] = useState('');
@@ -62,7 +69,13 @@ export function NpcPanel(props: { world: World; onChange: () => void }) {
               {n.inventory.length > 0 && ` · carrying ${n.inventory.length} items`}
             </span>
             <button type="button" onClick={() => run(() => dismiss(w, data, n.id))}>
-              {n.kind === 'undead' ? 'Release' : 'Dismiss'}
+              {n.kind === 'undead' || n.kind === 'summon'
+                ? 'Release'
+                : n.kind === 'beast'
+                  ? 'Set loose'
+                  : n.kind === 'tree'
+                    ? 'Let it root'
+                    : 'Dismiss'}
             </button>
           </li>
         ))}

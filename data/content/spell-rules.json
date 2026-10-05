@@ -1,0 +1,31 @@
+{
+  "excluded": [
+    "cognitive-supersession-of-the-inferior-orders",
+    "imperceptible-cerebral-divulgence",
+    "the-grinding-geas",
+    "contingent-excision-of-arcana"
+  ],
+  "outsideCombat": [
+    "command-the-dead",
+    "raise-corpse",
+    "raise-grave-knight",
+    "rouse-the-sapling",
+    "call-the-elder-tree"
+  ],
+  "added": [
+    {
+      "id": "rouse-the-sapling",
+      "name": "Rouse the Sapling",
+      "tradition": "elementalist",
+      "level": 2,
+      "text": "The Elementalist calls a sapling up out of soil, stone, or a seed carried for the purpose, and wakes it to walk at their side. The walking sapling obeys the caster, fights for them, and roots each night to mend its wounds. An Elementalist can keep no more saplings than their character level. Cast on one of the caster's own saplings that is hurt, the spell makes it whole instead."
+    },
+    {
+      "id": "call-the-elder-tree",
+      "name": "Call the Elder Tree",
+      "tradition": "elementalist",
+      "level": 4,
+      "text": "The Elementalist sings an elder tree up from the land, or from the seed of one, and it pulls its roots free and walks beside them as a servant. It obeys the caster, fights for them with limbs like battering rams, and roots each night to mend its wounds. Only one elder tree answers a caster at a time. Cast on the caster's own elder tree when it is hurt, the spell makes it whole instead."
+    }
+  ]
+}

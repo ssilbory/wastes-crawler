@@ -1,13 +1,15 @@
 // The command menu: every action a combatant can legally take right now, with its targets. Combat
 // actions follow vendor/wwn-srd/2.0 The Rules of the Game/2.4.3 Combat Actions.md; moving rows is
 // the Formation rules' "Moving rows" in docs/rules-adaptation.md.
+import { lineLabel } from '../character/items.ts';
+import { afterMove } from './gear.ts';
 import type { CombatMagic } from '../../data/schemas/index.ts';
 import { ROW_SLOTS } from '../../rules/formation.ts';
 import { canUse, magicName } from './spells.ts';
 import { isUp, targets } from './targeting.ts';
 import type { Action, Battle, Combatant } from './types.ts';
 
-export type CommandGroup = 'attack' | 'magic' | 'defend' | 'aid' | 'move' | 'wait';
+export type CommandGroup = 'attack' | 'magic' | 'defend' | 'aid' | 'gear' | 'move' | 'wait';
 
 export interface Choice {
   label: string;
@@ -51,7 +53,11 @@ function magicTargets(b: Battle, actor: Combatant, m: CombatMagic): (Combatant |
   switch (m.target) {
     case 'enemies':
     case 'allies':
+    case 'place':
       return ['all'];
+    // Extirpate Arcana and Scorn the Fetters of Earth: anyone not dead or gone.
+    case 'any':
+      return b.combatants.filter((c) => c.status !== 'dead' && c.status !== 'fled');
     case 'wounded-ally':
       return b.combatants.filter(
         (c) =>
@@ -79,7 +85,12 @@ function magicCommand(b: Battle, actor: Combatant, m: CombatMagic): Command[] {
   const choices = magicTargets(b, actor, m).flatMap((t): Choice[] => {
     if (t === 'all')
       return canUse(b, actor, m)
-        ? [{ label: 'Everyone', action: { kind: 'cast', magic: m.id } }]
+        ? [
+            {
+              label: m.target === 'place' ? 'Cast it' : 'Everyone',
+              action: { kind: 'cast', magic: m.id },
+            },
+          ]
         : [];
     const target = typeof t === 'number' ? undefined : t;
     const base = target
@@ -135,6 +146,18 @@ function moveChoices(b: Battle, actor: Combatant): Choice[] {
 }
 
 export function commandsFor(b: Battle, actor: Combatant): Command[] {
+  // In Wind Walking's mist there is nothing to do but take form again (4.5.0).
+  if (actor.misted) {
+    const solid = { kind: 'end-mist' as const };
+    return [
+      {
+        key: 'end-mist',
+        group: 'defend',
+        label: 'Take form again',
+        choices: [{ label: 'Take form again', action: solid }],
+      },
+    ];
+  }
   const commands = attackCommands(b, actor);
   const c = actor.caster;
   if (c) {
@@ -170,6 +193,16 @@ export function commandsFor(b: Battle, actor: Combatant): Command[] {
       })),
     });
   }
+  // Ready or Stow an Item (SRD 2.4.0), a Main Action, for a PC's gear in hand or in the pack.
+  // Only moves that will be made are offered, so a refusal never wastes the action.
+  const gear = (actor.character?.inventory ?? []).flatMap((e, item): Choice[] => {
+    const location = e.location === 'readied' ? ('stowed' as const) : ('readied' as const);
+    if (!afterMove(b, actor, item, location)) return [];
+    const label = `${location === 'readied' ? 'Ready' : 'Stow'} ${lineLabel(b.data, e)}`;
+    return [{ label, action: { kind: 'gear', item, location } }];
+  });
+  if (gear.length > 0)
+    commands.push({ key: 'gear', group: 'gear', label: 'Ready or stow', choices: gear });
   const moves = moveChoices(b, actor);
   if (moves.length > 0)
     commands.push({ key: 'move', group: 'move', label: 'Change slot', choices: moves });

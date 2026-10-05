@@ -9,14 +9,12 @@ import { roll } from '../../rules/dice.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
 import { armorFreeArts } from '../character/magic.ts';
-import { alive, note, setHp } from './members.ts';
+import { alive, awake, note, setHp } from './members.ts';
 import type { Member, World } from './types.ts';
 
 /** Arts that see without light; Light of Faith lights the party instead. */
 export const SIGHT_ARTS = ['earthsight', 'flamesight', 'gravesight', 'sense-magic', 'healers-eye'];
 export const FAITH_LIGHT = 'the-light-of-faith';
-
-const awake = (m: Member) => !m.dead && !m.reviving && m.character.hp.current > 0;
 
 /** A conscious member holds the art, it works in what they wear, and they have Effort left. */
 export function artUsable(data: GameData, m: Member, art: string): boolean {

@@ -112,6 +112,7 @@ export function monsterCombatant(
     breathLeft: combat?.breath?.uses ?? 0,
     resist: combat?.resist ?? null,
     actsLast: tags.has('slow'),
+    subdues: combat?.nonLethal === true,
     // A caster's Magic skill is its skill bonus, for Shackles and Elemental Blast.
     ...(combat?.caster && {
       caster: monsterCaster(data, m, combat.caster),

@@ -211,7 +211,7 @@ describe('traps (docs/rules-adaptation.md, Dungeon exploration)', () => {
     springHere(w, withTrap({ save: null, effect: { kind: 'poison' } }));
     expect(member(w, 'Snag').character.hp.current).toBe(4);
     const loud = onTrap();
-    loud.rng = scriptedRng([1, 1, 1, 1, 1]);
+    loud.rng = scriptedRng([1, 1, 1, 1, 1, 1, 1]);
     springHere(loud, withTrap({ save: null, effect: { kind: 'alarm' } }));
     expect(loud.encounter?.spotted).toBe(false);
   });

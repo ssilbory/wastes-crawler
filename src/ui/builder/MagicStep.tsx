@@ -4,9 +4,11 @@ import { findTradition } from '../../game/character/class-step.ts';
 import { artChoices, artPicks, learnableSpells, spellSlots } from '../../game/character/magic.ts';
 import { data } from './data.ts';
 import { Step } from './Field.tsx';
+import { gameSpells } from '../../data/spells.ts';
 
 const artName = (id: string) => data.srd.arts.find((a) => a.id === id)?.name ?? id;
-export const spellName = (id: string) => data.srd.spells.find((s) => s.id === id)?.name ?? id;
+export const spellName = (id: string) =>
+  gameSpells(data.srd, data.content).find((s) => s.id === id)?.name ?? id;
 
 function toggle(list: readonly string[], id: string, on: boolean): string[] {
   return on ? [...list, id] : list.filter((x) => x !== id);
@@ -84,7 +86,7 @@ export function MagicStep(props: {
       ) : (
         <>
           <fieldset class="picks">
-            <legend>Spells known: pick {mage.startingSpells}</legend>
+            <legend>Spells known: pick {Math.min(mage.startingSpells, spells.length)}</legend>
             {spells.map((s) => (
               <Check
                 key={s.id}

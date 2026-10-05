@@ -119,14 +119,14 @@ describe('coach routes (docs/rules-adaptation.md, Coach routes)', () => {
   it('is ambushed on 1 in 6 a travel day, out for a fight, and rolls on after a win', () => {
     const w = westhold();
     boardCoach(w, data, 'west-road');
-    w.rng = scriptedRng([1, 1, 2, 1, 1]);
+    w.rng = scriptedRng([1, 1, 2, 1, 1, 1, 1]);
     expect(coachQuarter(w, data)).toBe(true);
     expect(w.encounter).toMatchObject({ hostile: true, spotted: false, nature: 'hostile' });
     expect(w.encounter?.text).toContain('Ambush! The coach is set upon at 3,8.');
     expect(coachQuarter(w, data)).toBe(false);
     w.rng = createRng('fight');
     const fight = {
-      battle: null as never,
+      battle: { combatants: [] } as never,
       setup: null as never,
       memberIds: [],
       npcIds: [],
@@ -140,7 +140,7 @@ describe('coach routes (docs/rules-adaptation.md, Coach routes)', () => {
       w,
       data,
       fight,
-      { outcome: 'party', rounds: 1, deaths: 0, battle: null as never },
+      { outcome: 'party', rounds: 1, deaths: 0, battle: { combatants: [] } as never },
       null,
     );
     expect(w.quarter).toBe(1);
@@ -155,7 +155,7 @@ describe('coach routes (docs/rules-adaptation.md, Coach routes)', () => {
     ride(w, 1);
     w.encounter = encounter([['thug-or-militia']]);
     const fight = {
-      battle: null as never,
+      battle: { combatants: [] } as never,
       setup: null as never,
       memberIds: [],
       npcIds: [],
@@ -169,7 +169,7 @@ describe('coach routes (docs/rules-adaptation.md, Coach routes)', () => {
       w,
       data,
       fight,
-      { outcome: 'enemy', rounds: 1, deaths: 0, battle: null as never },
+      { outcome: 'enemy', rounds: 1, deaths: 0, battle: { combatants: [] } as never },
       null,
     );
     expect(w.coach).toBeNull();

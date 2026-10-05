@@ -7,6 +7,8 @@ import { findProgression, isSkill, type GameData } from './context.ts';
 import { focusInfo } from './foci.ts';
 import { findItem } from './items.ts';
 import { findLineage, findPeople } from './people.ts';
+import { retire } from './retired.ts';
+import { gameSpells } from '../../data/spells.ts';
 
 export type Raw = Record<string, unknown>;
 export type Migrations = Readonly<Record<number, (raw: Raw) => Raw>>;
@@ -32,7 +34,13 @@ export const MIGRATIONS: Migrations = {
     ...(raw.people === 'beastman' && raw.lineage === undefined ? { lineage: 'herd' } : {}),
     schemaVersion: 6,
   }),
+  // Version 7 retires skills and the Rider focus (docs/rules-adaptation.md, Skills). The swap needs
+  // the content, so importCharacter makes it for files from before this version.
+  6: (raw) => ({ ...raw, schemaVersion: 7 }),
 };
+
+/** The first version made after the skills and Rider were retired. */
+const RETIRED_IN = 7;
 
 export function exportCharacter(c: Character): string {
   return `${JSON.stringify(c, null, 2)}\n`;
@@ -66,6 +74,7 @@ export function importCharacter(
   if (version > CHARACTER_SCHEMA_VERSION) {
     return { ok: false, errors: [`made by a newer version of the game (schema ${version})`] };
   }
+  const from = version;
   for (; version < CHARACTER_SCHEMA_VERSION; version++) {
     const migrate = migrations[version];
     if (!migrate) return { ok: false, errors: [`no upgrade from schema ${version}`] };
@@ -79,7 +88,7 @@ export function importCharacter(
       errors: parsed.error.issues.map((i) => `${i.path.join('.') || '(file)'}: ${i.message}`),
     };
   }
-  const c = parsed.data;
+  const c = from < RETIRED_IN ? retire(data, parsed.data) : parsed.data;
   const errors: string[] = [];
   const people = findPeople(data, c.people);
   if (!people) errors.push(`people: unknown ${c.people}`);
@@ -101,7 +110,8 @@ export function importCharacter(
     if (!data.srd.arts.some((a) => a.id === id)) errors.push(`arts: unknown ${id}`);
   }
   for (const id of [...c.spells.known, ...c.spells.prepared]) {
-    if (!data.srd.spells.some((sp) => sp.id === id)) errors.push(`spells: unknown ${id}`);
+    if (!gameSpells(data.srd, data.content).some((sp) => sp.id === id))
+      errors.push(`spells: unknown ${id}`);
   }
   for (const f of c.foci) {
     if (!focusInfo(data, f.id)) errors.push(`foci: unknown ${f.id}`);

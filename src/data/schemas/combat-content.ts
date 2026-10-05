@@ -1,5 +1,7 @@
 import { z } from 'zod';
 import { AttributeSchema, DiceSchema, IdSchema } from './common.ts';
+import { ElementalistEffects } from './elementalist-content.ts';
+import { HighMagicEffects } from './high-magic-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
 /**
@@ -42,15 +44,20 @@ export type Strike = z.infer<typeof StrikeSchema>;
 /**
  * How an SRD monster fights in the engine: the SRD weapon behind a "Wpn" damage entry, and tags.
  * `flying` ignores formation and cover, `reach` attacks from the second row, `unliving` doesn't
- * sleep, `metal` carries enough metal for Stunning Shock, `slow` always acts last, and `undead`
- * answers to necromancy (Phase 14b). `loot` is
+ * sleep, `metal` carries enough metal for Stunning Shock, `slow` always acts last, `undead`
+ * answers to necromancy (Phase 14b), `large` is bigger than a man (the Sigil of Aeolian
+ * Auctoritas can't move it), and `plant` withers under Decree of Ligneous Dissolution. `loot` is
  * what each one drops when the party wins; none for beasts and the mindless. `caster` makes it
  * cast.
  */
 export const MonsterCombatSchema = z.strictObject({
   id: IdSchema,
   weapon: IdSchema.optional(),
-  tags: z.array(z.enum(['flying', 'reach', 'unliving', 'metal', 'slow', 'undead'])),
+  tags: z.array(
+    z.enum(['flying', 'reach', 'unliving', 'metal', 'slow', 'undead', 'large', 'plant']),
+  ),
+  /** Its blows only knock foes out, as the Phantasmal Eidolon's (4.4.0). */
+  nonLethal: z.literal(true).optional(),
   loot: LootDiceSchema.optional(),
   /** Who can be parleyed with: people always, animals and monsters with foci, the mindless never. */
   mind: z.enum(['sapient', 'animal', 'monster', 'mindless']),
@@ -171,8 +178,8 @@ export const CombatEffectSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('repose'), skill: IdSchema }),
   /** Sight that ignores darkness: the user's, or with `party` the whole side's (Phase 15). */
   z.strictObject({ kind: z.literal('dark-sight'), party: z.boolean() }),
-  /** Steps of Air: the target flies for a round per caster level. */
-  z.strictObject({ kind: z.literal('flight') }),
+  /** Steps of Air: the target flies for a round per caster level; Boreal Wings, for the scene. */
+  z.strictObject({ kind: z.literal('flight'), scene: z.literal(true).optional() }),
   /** Petrifying Stare: a failed save lands a flyer and roots it for half the caster level. */
   z.strictObject({ kind: z.literal('petrify'), save: Save }),
   /** Sanctified Ward: +4 AC and saves, no Shock, and foes look elsewhere, until a hostile act. */
@@ -181,6 +188,8 @@ export const CombatEffectSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('reroll-damage') }),
   /** Make an enemy reroll a successful save and keep the worse (Inexorable Effect). */
   z.strictObject({ kind: z.literal('force-save-reroll') }),
+  ...HighMagicEffects,
+  ...ElementalistEffects,
 ]);
 export type CombatEffect = z.infer<typeof CombatEffectSchema>;
 
@@ -198,6 +207,8 @@ export const CombatMagicSchema = z.strictObject({
     'allies',
     'self',
     'none',
+    'any',
+    'place',
   ]),
   /**
    * Arts commit Effort for the scene, the day, or as long as the effect lasts; `activate` commits

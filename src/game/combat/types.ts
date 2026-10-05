@@ -3,6 +3,7 @@
 import type {
   Attribute,
   AttackMode,
+  Character,
   Dice,
   MonsterCombat,
   MonsterTag,
@@ -131,6 +132,8 @@ export interface Combatant {
   /** Phase 14c: Armor of God's natural AC (0 if none), and Wrath's pending extra damage. */
   acFloor: number;
   wrath: { until: number; bonus: number } | null;
+  /** A PC's character, whose gear can be readied or stowed mid-fight (Phase 17); null otherwise. */
+  character: Character | null;
   /** Phase 14d: Final Repose's Physical save penalty for the scene. */
   reposePenalty: number;
   /**
@@ -147,6 +150,29 @@ export interface Combatant {
   harvestRound: number;
   shockCap: number | null;
   poisonImmune: boolean;
+  /**
+   * Phase 18a High Magic: Mantle of Disjecting Dissection's blades, Resounding Temporal Echo's last
+   * round and strain, the Torment of Tumefaction, a spell holding the creature out
+   * of the fight that dispelling ends, the round a banished creature returns (0 for never), the
+   * Prismatic Hemicycle's madness, the hit points and strain Prudentially Transient Abnegation of
+   * Life brings it back with, blows that only knock foes out, and who summoned it as which monster.
+   */
+  mantle: { bonus: number; damage: Dice; save: SaveType } | null;
+  echo: { until: number; strain: number } | null;
+  torment: { damage: number; lasting: boolean; tried: boolean; round: number } | null;
+  spellbound: boolean;
+  returnsRound: number;
+  berserk: boolean;
+  revives: { hp: number; strain: number } | null;
+  subdues: boolean;
+  summoned: { by: string; monster: string } | null;
+  /**
+   * Phase 18b Elementalist magic: Flame Without End's extra damage on a hit, Like the Stones'
+   * points ignored from each harm, and Wind Walking's mist.
+   */
+  flame: number;
+  stone: number;
+  misted: boolean;
 }
 
 export type Action =
@@ -156,6 +182,11 @@ export type Action =
   | { kind: 'total-defense' }
   | { kind: 'stabilize'; target: string }
   | { kind: 'move'; row: number; column: number }
+  | { kind: 'gear'; item: number; location: 'readied' | 'stowed' }
+  /** Spend the Main Action trying to throw off the Torment of Tumefaction. */
+  | { kind: 'shake-off' }
+  /** Spend the Main Action taking form again out of Wind Walking's mist. */
+  | { kind: 'end-mist' }
   | { kind: 'wait' };
 
 export type Outcome = 'party' | 'enemy' | 'draw';
@@ -190,6 +221,14 @@ export interface Battle {
   hitModifier: Record<SideId, number>;
   /** The party fights without light; those who don't see in the dark take -4 to hit. */
   dark: boolean;
+  /** The fight is underground, where Deluge of Hell can't be cast. */
+  indoors: boolean;
+  /**
+   * Elemental Vallation's walls (Phase 18b): each burns, once, every foe of `side` that crosses
+   * it to strike in melee; and Fury of the Elements, wandering the foe's rows.
+   */
+  walls: { side: SideId; damage: Dice; bonus: number; crossed: string[] }[];
+  fury: { side: SideId; row: number; damage: Dice; roundsLeft: number } | null;
   /** God Wills It's bonus to damage and Shock, by side (Phase 14c). */
   damageBonus: Record<SideId, number>;
   log: string[] | null;

@@ -182,7 +182,7 @@ describe('spells and arts at a new level (SRD 2.7.1.7)', () => {
   const fizz = withXp(starter('fizzwick'), 3);
   const learn = (arts: string[], spells: string[], c = fizz) =>
     advance(data, c, { foci: [{ id: 'die-hard' }], arts, spells }, scriptedRng([1, 1]));
-  const two = ['apprehending-the-arcane-form', 'phantasmal-mimesis'];
+  const two = ['ineluctable-shackles-of-volition', 'decree-of-ligneous-dissolution'];
 
   it('takes the tradition’s art picks', () => {
     expect(learn([], two)).toEqual({ ok: false, reason: 'pick 1 high-mage arts' });
@@ -232,8 +232,8 @@ describe('spells and arts at a new level (SRD 2.7.1.7)', () => {
     const plan = levelPlan(data, mage);
     expect(plan).toMatchObject({ classLevel: 1, spells: 4, bonusSkills: ['magic'] });
     const spells = [
-      'apprehending-the-arcane-form',
-      'phantasmal-mimesis',
+      'ineluctable-shackles-of-volition',
+      'decree-of-ligneous-dissolution',
       'the-coruscating-coffin',
       'wardpact-invocation',
     ];

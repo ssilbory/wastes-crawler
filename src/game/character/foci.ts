@@ -1,6 +1,7 @@
 // vendor/wwn-srd/1.0 Character Creation/1.6.0 Foci.md and 1.2.0 Skills.md (1.2.2); racial foci,
 // focus categories, and the no-duplicate rule: docs/rules-adaptation.md (Foci).
 import { RACIAL_FOCI } from '../../data/focus-content.ts';
+import { gameSkills } from '../../data/skills.ts';
 import type {
   Attribute,
   BonusSkill,
@@ -11,7 +12,7 @@ import type {
   Progression,
 } from '../../data/schemas/index.ts';
 import type { ModifierBonuses } from '../../rules/attributes.ts';
-import type { GameData } from './context.ts';
+import { isSkill, type GameData } from './context.ts';
 import { addCreationSkill, COMBAT_SKILLS, type Skills } from './skills.ts';
 import { fail, INCOMPLETE, OK, type StepStatus } from './steps.ts';
 
@@ -115,7 +116,7 @@ export interface FociOutcome {
 
 /** The skills a bonus skill may become, before any level-1 replacement. */
 export function allowedSkills(data: GameData, b: BonusSkill): string[] {
-  const all = data.srd.skills.map((s) => s.id);
+  const all = gameSkills(data.srd, data.content).map((s) => s.id);
   if (b.kind === 'skill') return [b.skill];
   if (b.kind === 'one-of') return b.skills;
   if (b.kind === 'any-combat') return [...COMBAT_SKILLS];
@@ -138,7 +139,7 @@ function gainBonusSkill(
   const exhausted = allowed.every((s) => skills[s] === 1);
   const target = chosen ?? (allowed.length === 1 ? allowed[0] : undefined);
   if (target === undefined) return { error: INCOMPLETE };
-  if (!allowed.includes(target) && !(exhausted && data.srd.skills.some((s) => s.id === target))) {
+  if (!allowed.includes(target) && !(exhausted && isSkill(data, target))) {
     return { error: fail(`${focus.name} can't give ${target}`) };
   }
   const next = addCreationSkill(skills, target);

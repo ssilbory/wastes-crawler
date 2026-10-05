@@ -19,6 +19,7 @@ const GROUP_NAMES: Record<Command['group'], string> = {
   magic: 'Magic',
   defend: 'Defend',
   aid: 'Aid',
+  gear: 'Gear',
   move: 'Move',
   wait: 'Other',
 };
@@ -55,7 +56,12 @@ export function CommandMenu(props: CommandMenuProps) {
       {current ? (
         <div class="choices">
           <p>
-            {current.label}: choose {current.group === 'move' ? 'a slot' : 'a target'}
+            {current.label}: choose{' '}
+            {current.group === 'move'
+              ? 'a slot'
+              : current.group === 'gear'
+                ? 'an item'
+                : 'a target'}
           </p>
           {current.choices.map((ch) => (
             <button key={ch.label} type="button" onClick={() => props.onChoose(ch.action)}>

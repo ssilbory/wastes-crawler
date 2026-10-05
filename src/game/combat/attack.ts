@@ -1,9 +1,10 @@
 // Weapon attacks: vendor/wwn-srd/2.0 The Rules of the Game/2.4.0 Combat.md (2.4.5 attack rolls,
 // 2.4.6 damage and Shock, 2.4.4 Total Defense), shields ignoring the first Shock each round (3.4.2),
-// Wardpact Invocation (4.4.0), the Warrior's Veteran's Luck (1.5.18), and creature resistances and
-// on-hit effects (specials.ts).
+// Wardpact Invocation and Mantle of Disjecting Dissection (4.4.0), the Warrior's Veteran's Luck
+// (1.5.18), and creature resistances and on-hit effects (specials.ts).
 import { netSteps } from '../../rules/advantage.ts';
 import { attackRoll, hitDamage, shockDamage, type ShockContext } from '../../rules/attacks.ts';
+import { crossWall, mantleCut, subdue } from './conditions.ts';
 import { effectiveAc, harm, save, say } from './damage.ts';
 import { afterHit, resisted } from './specials.ts';
 import { negatesUndead } from './reactions.ts';
@@ -40,6 +41,8 @@ function missShock(b: Battle, attacker: Combatant, target: Combatant, attack: At
     return;
   }
   const dealt = resisted(target, attack, amount);
+  // The Phantasmal Eidolon's Shock can't kill either (4.4.0).
+  if (subdue(b, attacker, target, dealt)) return;
   say(b, `${attacker.name} misses ${target.name} but deals ${dealt} Shock.`);
   harm(b, target, dealt);
 }
@@ -58,6 +61,7 @@ export function resolveAttack(
   target: Combatant,
   boost: AttackBoost | null = null,
 ): void {
+  if (!crossWall(b, actor, attack) || !mantleCut(b, actor, target, attack)) return;
   // Red Harvest's +4 is spent on the next hit roll (Phase 15).
   const harvest = actor.nextHitBonus;
   actor.nextHitBonus = 0;
@@ -85,7 +89,8 @@ export function resolveAttack(
       {
         dice: attack.damage,
         attributeModifier: 0,
-        bonus: attack.damageBonus + blessed,
+        // Flame Without End adds to the hit's damage but not to Shock (4.5.0).
+        bonus: attack.damageBonus + blessed + actor.flame,
         shock: attack.mode === 'melee' ? attack.shock : null,
         shockBonus: blessed,
       },
@@ -101,6 +106,7 @@ export function resolveAttack(
     missShock(b, actor, target, attack);
     return;
   }
+  if (subdue(b, actor, target, damage)) return;
   say(b, `${actor.name} hits ${target.name} with ${attack.name} for ${damage}.`);
   harm(b, target, damage);
   afterHit(b, attack, target);

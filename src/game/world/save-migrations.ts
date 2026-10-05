@@ -135,4 +135,17 @@ export const WORLD_MIGRATIONS: Migrations = {
       Array.isArray(list) ? (list as Raw[]).map((m) => ({ ...m, artUses: {} })) : list;
     return { ...raw, schemaVersion: 24, members: fresh(raw.members), benched: fresh(raw.benched) };
   },
+  // Version 25 adds the town and encounter skills: no prayers, no show, no monsters named yet.
+  24: (raw) => {
+    const unprayed = (list: unknown) =>
+      Array.isArray(list) ? (list as Raw[]).map((m) => ({ ...m, prayedDay: null })) : list;
+    return {
+      ...raw,
+      schemaVersion: 25,
+      members: unprayed(raw.members),
+      benched: unprayed(raw.benched),
+      performedDay: null,
+      bestiary: [],
+    };
+  },
 };

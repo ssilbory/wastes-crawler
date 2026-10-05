@@ -13,17 +13,14 @@ import { canAct } from './targeting.ts';
 import type { Battle, Combatant, SideId } from './types.ts';
 
 export { act } from './actions.ts';
+export { advance, beginRound, currentActor, MAX_ROUNDS, runRound, takeTurn } from './round.ts';
 export {
-  advance,
-  beginRound,
+  awaitsRescue,
   concludeBattle,
-  currentActor,
-  MAX_ROUNDS,
   runBattle,
-  runRound,
-  takeTurn,
   type BattleResult,
-} from './round.ts';
+  type Rescue,
+} from './aftermath.ts';
 
 /** An NPC fighting from a formation slot, as its SRD stat line. */
 export interface NpcSetup {
@@ -58,6 +55,8 @@ export interface BattleSetup {
   dark?: boolean;
   /** No one can cast spells or use arts: an anti-magic square. */
   antiMagic?: boolean;
+  /** Underground, where Deluge of Hell can't be cast. */
+  indoors?: boolean;
   log?: boolean;
 }
 
@@ -129,6 +128,9 @@ export function createBattle(s: BattleSetup): Battle {
     stabilizedThisRound: new Set(),
     hitModifier: { party: 0, enemy: 0 },
     dark: s.dark ?? false,
+    indoors: s.indoors ?? false,
+    walls: [],
+    fury: null,
     damageBonus: { party: 0, enemy: 0 },
     log: s.log ? [] : null,
     outcome: null,

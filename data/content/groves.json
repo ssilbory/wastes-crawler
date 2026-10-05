@@ -1,0 +1,29 @@
+[
+  {
+    "id": "whispering-grove",
+    "name": "The Whispering Grove",
+    "region": "borderlands",
+    "col": 5,
+    "row": 13,
+    "text": "The trees of the Whispering Grove lean together as the party comes in among them, and one of the old ones takes a slow step forward.",
+    "enemies": [["walking-tree"], ["walking-sapling", "walking-sapling"]]
+  },
+  {
+    "id": "hanging-wood",
+    "name": "The Hanging Wood",
+    "region": "dark-lands",
+    "col": 3,
+    "row": 18,
+    "text": "Old chains and rope rot from the branches of the Hanging Wood. The tree that bore them turns, slowly, to look at the living.",
+    "enemies": [["walking-tree"], ["walking-sapling", "walking-sapling"]]
+  },
+  {
+    "id": "elder-stand",
+    "name": "The Elder Stand",
+    "region": "dark-lands",
+    "col": 1,
+    "row": 21,
+    "text": "Two trees older than the Dark Lord's reign stand in a ring of their fallen kin, and they do not care for axes.",
+    "enemies": [["walking-tree", "walking-tree"]]
+  }
+]

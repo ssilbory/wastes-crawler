@@ -13,6 +13,8 @@ import { EncounterPanel } from './EncounterPanel.tsx';
 import { FactionsPanel } from './FactionsPanel.tsx';
 import { SettingPanel } from './SettingPanel.tsx';
 import { HealerPanel } from './HealerPanel.tsx';
+import { InventoryPanel } from './InventoryPanel.tsx';
+import { GreenwoodPanel } from './GreenwoodPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { QuestLog } from './QuestLog.tsx';
@@ -22,6 +24,7 @@ import { QuarterPanel } from './QuarterPanel.tsx';
 import { typeOf } from '../../game/world/npcs.ts';
 import { entrancesIn, wayDownHere } from '../../game/dungeon/ruins.ts';
 import type { QuarterPlan } from '../../game/world/types.ts';
+import { grovesHere } from '../../game/world/groves.ts';
 
 export function MapScreen(props: {
   world: World;
@@ -31,6 +34,7 @@ export function MapScreen(props: {
   onFight: () => void;
   onLeave: () => void;
   onTown: () => void;
+  onCharacters: () => void;
   onRide: () => void;
   onEnter: () => void;
   onCross: () => void;
@@ -76,6 +80,9 @@ export function MapScreen(props: {
             Take {road.name}
           </button>
         )}
+        <button type="button" onClick={props.onCharacters}>
+          Characters
+        </button>
         <button type="button" class="secondary" onClick={props.onExport}>
           Export save
         </button>
@@ -86,7 +93,15 @@ export function MapScreen(props: {
       <div class="world-main">
         <div class="map-wrap">
           <HexMap
-            cells={hexCells(map, w, route(w, data), HEX_SIZE, questTargets(w, data), entrances)}
+            cells={hexCells(
+              map,
+              w,
+              route(w, data),
+              HEX_SIZE,
+              questTargets(w, data),
+              entrances,
+              grovesHere(w, data),
+            )}
             width={width}
             height={height}
             onPick={(col, row) => {
@@ -122,7 +137,9 @@ export function MapScreen(props: {
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />
+          <GreenwoodPanel world={w} onChange={props.onChange} />
           <HealerPanel world={w} onChange={props.onChange} />
+          <InventoryPanel world={w} onChange={props.onChange} />
           <QuestLog world={w} onChange={props.onChange} />
           <SettingPanel world={w} inTown={town !== undefined} onChange={props.onChange} />
           <FactionsPanel world={w} />

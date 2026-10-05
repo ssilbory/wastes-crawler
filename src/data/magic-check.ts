@@ -1,4 +1,6 @@
 import type { ContentData, SrdData } from './schemas/index.ts';
+import { gameSkills } from './skills.ts';
+import { gameSpells } from './spells.ts';
 
 /**
  * Class options and traditions reference real progressions, casting tables, skills, arts, and
@@ -6,7 +8,7 @@ import type { ContentData, SrdData } from './schemas/index.ts';
  */
 export function magicReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const errors: string[] = [];
-  const skills = new Set(srd.skills.map((s) => s.id));
+  const skills = new Set(gameSkills(srd, content).map((s) => s.id));
   const progressions = new Set(srd.progressions.map((p) => p.id));
   const casting = new Set(srd['casting-progressions'].map((c) => c.id));
   const traditions = new Set(content.traditions.map((t) => t.id));
@@ -35,7 +37,7 @@ export function magicReferenceErrors(srd: SrdData, content: ContentData): string
         errors.push(`classOptions/${c.id}: unknown casting table ${t.arts}`);
     }
     for (const id of c.mage.excludedSpells) {
-      if (!srd.spells.some((s) => s.id === id))
+      if (!gameSpells(srd, content).some((s) => s.id === id))
         errors.push(`classOptions/${c.id}: unknown excluded spell ${id}`);
     }
   }

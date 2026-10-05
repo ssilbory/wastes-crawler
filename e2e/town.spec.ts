@@ -10,6 +10,8 @@ async function startInRubblegate(page: Page) {
   await page.getByLabel('Import character files').setInputFiles(starters);
   await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(3);
   await page.getByRole('link', { name: 'Overland' }).click();
+  // The arena has a formation of its own: wait for the Overland page before picking slots.
+  await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();
   await page.getByRole('combobox', { name: 'Front row, slot 1' }).selectOption({ label: 'Snag' });
   await page.getByRole('combobox', { name: 'Front row, slot 2' }).selectOption({ label: 'Grukk' });
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('town-e2e');
@@ -91,7 +93,11 @@ test('levels up a character with XP to spend', async ({ page }, testInfo) => {
   await page.getByRole('combobox', { name: 'Who' }).selectOption({ label: 'Snag' });
   const form = page.getByRole('region', { name: 'Level up' });
   await expect(form).toBeVisible();
+  // Nothing picked yet: the form says what it needs and holds the button back.
+  await expect(form.getByRole('list', { name: 'Still needed' })).toContainText('Choose a focus.');
+  await expect(form.getByRole('button', { name: 'Level up' })).toBeDisabled();
   await form.getByRole('combobox', { name: 'Focus (any)' }).selectOption({ label: 'Die Hard' });
+  await expect(form.getByRole('list', { name: 'Still needed' })).toHaveCount(0);
   await page.screenshot({ path: testInfo.outputPath('town-level-up.png'), fullPage: true });
   await form.getByRole('button', { name: 'Level up' }).click();
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
@@ -101,4 +107,15 @@ test('levels up a character with XP to spend', async ({ page }, testInfo) => {
   await page.getByRole('combobox', { name: 'Skill' }).selectOption('lead');
   await page.getByRole('button', { name: 'Raise Lead' }).click();
   await expect(page.getByRole('region', { name: 'Training' })).toContainText('2 skill points');
+});
+
+test('plays the common room for the party’s lodging', async ({ page }) => {
+  await startInRubblegate(page);
+  await page.getByRole('tab', { name: 'Inn and healer' }).click();
+  const show = page.getByRole('group', { name: 'Perform' });
+  await show.getByRole('combobox', { name: 'Performer' }).selectOption({ index: 1 });
+  await show.getByRole('button', { name: "Play for the party's lodging" }).click();
+  await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
+    /Grukk plays (to a cold room|the common room)/,
+  );
 });

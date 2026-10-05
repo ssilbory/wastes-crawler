@@ -1,6 +1,7 @@
 // Arts that answer a blow or a death without a command. Vital Furnace (Phase 14d; vendor/wwn-srd/1.0
 // Character Creation/1.5.0 Class List/1.5.9 The Healer.md), and from Phase 15 the Necromancer's
-// Unliving Persistence, Master of Bones, and Red Harvest (1.5.14 The Necromancer.md).
+// Unliving Persistence, Master of Bones, and Red Harvest (1.5.14 The Necromancer.md), and in
+// Phase 18a the High Magic spell Prudentially Transient Abnegation of Life.
 import { roll } from '../../rules/dice.ts';
 import { say } from './log.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
@@ -39,6 +40,11 @@ export function vitalFurnace(b: Battle, target: Combatant, amount: number): bool
  * Unliving Persistence does it for anyone in the party for the Necromancer's Effort for the day.
  */
 export function keepsDying(b: Battle, target: Combatant): boolean {
+  // Like the Stones: a body of stone stabilizes at zero on its own (4.5.0).
+  if (target.stone > 0) {
+    say(b, `${target.name} falls, still as stone, but lives.`);
+    return true;
+  }
   const c = target.caster;
   if (c?.arts.includes('vital-furnace') && worksNow(target, 'vital-furnace')) {
     say(b, `${target.name} falls, but their life burns on.`);
@@ -97,4 +103,27 @@ export function redHarvest(b: Battle, dead: Combatant): void {
       say(b, `${x.name} drinks ${dead.name}'s death.`);
     }
   }
+}
+
+/**
+ * Prudentially Transient Abnegation of Life (4.4.0, an Instant spell): as a PC falls, an ally with
+ * it prepared and a slot left casts it, and the PC seems to die horribly; they come back after the
+ * fight (aftermath.ts). Cast for them, not chosen, as Instant spells can't wait for a command.
+ */
+export function abnegate(b: Battle, target: Combatant): boolean {
+  for (const x of b.combatants) {
+    const c = x.caster;
+    if (x.side !== target.side || !(x === target || x.status === 'active')) continue;
+    if (!c?.canCast || c.spellsLeft === 0) continue;
+    const effect = b.data.content.combatMagic.find(
+      (m) => m.effect.kind === 'abnegation' && c.prepared.includes(m.id),
+    )?.effect;
+    if (effect?.kind !== 'abnegation') continue;
+    c.spellsLeft -= 1;
+    target.status = 'out';
+    target.revives = { hp: effect.hpPerLevel * c.level, strain: effect.strain };
+    say(b, `${target.name} is cut down in a spray of gore, to all eyes dead.`);
+    return true;
+  }
+  return false;
 }

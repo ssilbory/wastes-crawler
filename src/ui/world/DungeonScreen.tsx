@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useLayoutEffect, useState } from 'preact/hooks';
 import {
   exitLabel,
   levelOf,
@@ -15,6 +15,8 @@ import { dungeonView, VIEW_HEIGHT, VIEW_WIDTH } from '../../render/dungeon-view.
 import { data } from '../builder/data.ts';
 import { PartyPanel } from './PartyPanel.tsx';
 import { HealerPanel } from './HealerPanel.tsx';
+import { InventoryPanel } from './InventoryPanel.tsx';
+import { GreenwoodPanel } from './GreenwoodPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { QuestLog } from './QuestLog.tsx';
@@ -51,6 +53,7 @@ export function DungeonScreen(props: {
   onChange: () => void;
   onFight: () => void;
   onLeave: () => void;
+  onCharacters: () => void;
 }) {
   const w = props.world;
   const s = w.dungeon as NonNullable<World['dungeon']>;
@@ -67,7 +70,8 @@ export function DungeonScreen(props: {
     }
     props.onChange();
   };
-  useEffect(() => {
+  // Re-listened in the same commit as each render, so keys pressed between renders aren't lost.
+  useLayoutEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
       if (target?.closest('input, select, textarea')) return;
@@ -105,6 +109,9 @@ export function DungeonScreen(props: {
         </span>
         <span class="turn">{turnText(w)}</span>
         <span class="light">{lightText(w)}</span>
+        <button type="button" onClick={props.onCharacters}>
+          Characters
+        </button>
       </div>
       <div class="world-main">
         <div class="dungeon-main">
@@ -220,7 +227,9 @@ export function DungeonScreen(props: {
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />
+          <GreenwoodPanel world={w} onChange={props.onChange} />
           <HealerPanel world={w} onChange={props.onChange} />
+          <InventoryPanel world={w} onChange={props.onChange} />
           <QuestLog world={w} onChange={props.onChange} />
           <section class="panel log" aria-label="Journey log">
             <h3>Journal</h3>

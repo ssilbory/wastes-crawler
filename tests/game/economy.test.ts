@@ -158,7 +158,7 @@ describe('the economy validator (docs/rules-adaptation.md, Economy validator in 
       sim({
         hirelings: ['guard', 'mundane-physician'],
         party: { ...base.party, purse: 0 },
-        delves: 6,
+        delves: 10,
       }),
     );
     expect(broke.hirelingsLeft).toBeGreaterThan(0);

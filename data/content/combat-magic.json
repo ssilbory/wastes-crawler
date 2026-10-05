@@ -350,5 +350,323 @@
     "effect": {
       "kind": "sanctify"
     }
+  },
+  {
+    "id": "decree-of-ligneous-dissolution",
+    "source": "spell",
+    "target": "enemy-row",
+    "effect": {
+      "kind": "burst",
+      "perLevel": {
+        "count": 1,
+        "sides": 10,
+        "modifier": 0
+      },
+      "levelsPerDie": 1,
+      "save": "physical",
+      "slayHitDice": 0,
+      "requiresTag": "plant"
+    }
+  },
+  {
+    "id": "conjunction-of-the-inexorable-step",
+    "source": "spell",
+    "target": "enemy",
+    "effect": {
+      "kind": "step",
+      "save": "mental"
+    }
+  },
+  {
+    "id": "mantle-of-disjecting-dissection",
+    "source": "spell",
+    "target": "ally",
+    "effect": {
+      "kind": "mantle",
+      "save": "evasion",
+      "damage": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    }
+  },
+  {
+    "id": "resounding-temporal-echo",
+    "source": "spell",
+    "target": "allies",
+    "effect": {
+      "kind": "echo",
+      "rounds": {
+        "count": 1,
+        "sides": 4,
+        "modifier": 1
+      },
+      "strain": 1
+    }
+  },
+  {
+    "id": "extirpate-arcana",
+    "source": "spell",
+    "target": "any",
+    "effect": {
+      "kind": "dispel"
+    }
+  },
+  {
+    "id": "prudentially-transient-abnegation-of-life",
+    "source": "spell",
+    "target": "none",
+    "effect": {
+      "kind": "abnegation",
+      "hpPerLevel": 2,
+      "strain": 2
+    }
+  },
+  {
+    "id": "exhalation-of-congelating-cold",
+    "source": "spell",
+    "target": "enemy-row",
+    "effect": {
+      "kind": "burst",
+      "perLevel": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      },
+      "levelsPerDie": 2,
+      "save": "physical",
+      "slayHitDice": 0,
+      "rootOnFail": {
+        "count": 1,
+        "sides": 4,
+        "modifier": 0
+      },
+      "livingOnly": true
+    }
+  },
+  {
+    "id": "the-howl-of-light",
+    "source": "spell",
+    "target": "enemy-row",
+    "effect": {
+      "kind": "burst",
+      "perLevel": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      },
+      "levelsPerDie": 1,
+      "save": "evasion",
+      "slayHitDice": 0
+    }
+  },
+  {
+    "id": "phobic-storm",
+    "source": "spell",
+    "target": "enemies",
+    "effect": {
+      "kind": "fear",
+      "penalty": 1
+    }
+  },
+  {
+    "id": "scorn-the-fetters-of-earth",
+    "source": "spell",
+    "target": "any",
+    "effect": {
+      "kind": "skyward",
+      "save": "physical",
+      "penaltySkill": "magic"
+    }
+  },
+  {
+    "id": "the-torment-of-tumefaction",
+    "source": "spell",
+    "target": "enemy",
+    "effect": {
+      "kind": "torment",
+      "perLevel": 2,
+      "save": "physical"
+    }
+  },
+  {
+    "id": "the-glass-chimes-of-the-bamboo-terrace",
+    "source": "spell",
+    "target": "place",
+    "effect": {
+      "kind": "shatter",
+      "damage": {
+        "count": 3,
+        "sides": 6,
+        "modifier": 0
+      }
+    }
+  },
+  {
+    "id": "evert-the-inwardness",
+    "source": "spell",
+    "target": "enemy",
+    "effect": {
+      "kind": "evert",
+      "perLevel": {
+        "count": 1,
+        "sides": 10,
+        "modifier": 0
+      },
+      "save": "physical"
+    }
+  },
+  {
+    "id": "sigil-of-aeolian-auctoritas",
+    "source": "spell",
+    "target": "enemy-row",
+    "effect": {
+      "kind": "gust",
+      "save": "physical",
+      "damage": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    }
+  },
+  {
+    "id": "calculation-of-the-phantasmal-eidolon",
+    "source": "spell",
+    "target": "place",
+    "effect": {
+      "kind": "summon",
+      "monster": "phantasmal-eidolon",
+      "hp": 20
+    }
+  },
+  {
+    "id": "banishment-to-the-black-glass-labyrinth",
+    "source": "spell",
+    "target": "enemy-row",
+    "effect": {
+      "kind": "banish",
+      "save": "mental",
+      "trappedHitDice": 5
+    }
+  },
+  {
+    "id": "the-dazzling-prismatic-hemicycle",
+    "source": "spell",
+    "target": "enemies",
+    "effect": {
+      "kind": "prismatic",
+      "save": "physical"
+    }
+  },
+  {
+    "id": "deluge-of-hell",
+    "source": "spell",
+    "target": "enemy-row",
+    "effect": {
+      "kind": "burst",
+      "perLevel": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      },
+      "levelsPerDie": 1,
+      "save": "physical",
+      "slayHitDice": 4,
+      "outdoorsOnly": true,
+      "backlash": "mental"
+    }
+  },
+  {
+    "id": "boreal-wings",
+    "source": "spell",
+    "target": "ally",
+    "effect": {
+      "kind": "flight",
+      "scene": true
+    }
+  },
+  {
+    "id": "flame-without-end",
+    "source": "spell",
+    "target": "ally",
+    "effect": {
+      "kind": "flame-weapon",
+      "bonus": 2
+    }
+  },
+  {
+    "id": "elemental-vallation",
+    "source": "spell",
+    "target": "place",
+    "effect": {
+      "kind": "wall",
+      "damage": {
+        "count": 3,
+        "sides": 6,
+        "modifier": 0
+      }
+    }
+  },
+  {
+    "id": "like-the-stones",
+    "source": "spell",
+    "target": "self",
+    "effect": {
+      "kind": "stone-form",
+      "ignore": 3
+    }
+  },
+  {
+    "id": "wind-walking",
+    "source": "spell",
+    "target": "any",
+    "effect": {
+      "kind": "mist"
+    }
+  },
+  {
+    "id": "calcifying-scourge",
+    "source": "spell",
+    "target": "enemy",
+    "effect": {
+      "kind": "calcify",
+      "save": "physical",
+      "slowed": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    }
+  },
+  {
+    "id": "elemental-guardian",
+    "source": "spell",
+    "target": "place",
+    "limit": "scene",
+    "effect": {
+      "kind": "summon",
+      "monster": "elemental-guardian",
+      "one": true
+    }
+  },
+  {
+    "id": "fury-of-the-elements",
+    "source": "spell",
+    "target": "enemy-row",
+    "effect": {
+      "kind": "fury",
+      "damage": {
+        "count": 10,
+        "sides": 6,
+        "modifier": 0
+      },
+      "rounds": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    }
   }
 ]

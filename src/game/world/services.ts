@@ -32,6 +32,12 @@ export const innListed = (w: World, data: GameData) =>
 export function stayAtInn(w: World, data: GameData): TownResult {
   const paid = pay(w, data, innListed(w, data));
   if (!paid.ok) return paid;
+  restAtInn(w, data);
+  return OK;
+}
+
+/** The night at the inn itself, however it was paid for. */
+export function restAtInn(w: World, data: GameData): void {
   for (const m of alive(w)) m.slept = true;
   w.camp = 'made';
   w.noRecovery = false;
@@ -45,7 +51,6 @@ export function stayAtInn(w: World, data: GameData): TownResult {
   w.day += 1;
   w.quarter = 0;
   note(w, `The party stays the night at the inn in ${townHere(w, data).name}.`);
-  return OK;
 }
 
 const levelOf = (data: GameData, m: Member) => characterSheet(m.character, data).level;

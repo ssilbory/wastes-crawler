@@ -4,6 +4,7 @@ import type { DefaultPreset } from '../../data/schemas/index.ts';
 import type { RosterEntry } from '../../game/character/roster.ts';
 import {
   advance,
+  awaitsRescue,
   concludeBattle,
   createBattle,
   type BattleResult,
@@ -61,7 +62,7 @@ export interface Changes {
 
 const snapshot = (b: Battle) => new Map(b.combatants.map((c) => [c.id, `${c.hp}:${c.status}`]));
 
-/** Runs some turns and reports what changed, concluding the battle once it has an outcome. */
+/** Runs some turns and reports what changed, concluding the battle once it is settled. */
 export function batch(
   b: Battle,
   run: () => void,
@@ -71,7 +72,9 @@ export function batch(
   run();
   const after = snapshot(b);
   const ids = new Set([...after].filter(([id, v]) => before.get(id) !== v).map(([id]) => id));
-  return { changes: { logFrom, ids }, result: b.outcome ? concludeBattle(b) : null };
+  // A win waits while healing magic could still save someone, so the player can choose.
+  const done = b.outcome !== null && !awaitsRescue(b);
+  return { changes: { logFrom, ids }, result: done ? concludeBattle(b) : null };
 }
 
 const isPc = (c: Combatant) => c.kind === 'pc';

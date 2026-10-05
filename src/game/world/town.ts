@@ -12,6 +12,7 @@ import { enterRegion } from './crossing.ts';
 import { raidedCost } from './raids.ts';
 import { arriveNpcs } from './rescue.ts';
 import { payShares } from './shares.ts';
+import { tradePercent } from './trade.ts';
 import type { World } from './types.ts';
 
 export const FULL_RATIONS = RESOURCE_DICE[RESOURCE_DICE.length - 1] as 12;
@@ -46,13 +47,14 @@ export function spendingThreshold(data: GameData, town: Site): number {
   return data.content.townRules.spendingThresholds[town.size];
 }
 
-/** What `listed` crowns of goods or services cost here right now. */
+/** What `listed` crowns of goods or services cost here right now, after the party haggles. */
 export function priceHere(w: World, data: GameData, listed: number): number {
   const town = townHere(w, data);
   const rules = data.content.townRules;
   const { spent } = currentLedger(w, data, town);
   const cost = surchargedCost(spent, listed, spendingThreshold(data, town), rules.surchargeRate);
-  return raidedCost(w, data, town.id, cost);
+  const haggled = (raidedCost(w, data, town.id, cost) * (100 - tradePercent(w, data))) / 100;
+  return toTenths(haggled);
 }
 
 /** Pays for `listed` crowns of goods or services from the purse; false if it can't. */

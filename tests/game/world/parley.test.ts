@@ -327,7 +327,7 @@ describe('first aid (SRD 2.5.4)', () => {
 
 describe('NPC odds and ends', () => {
   it('meets a group holding a captive', () => {
-    const w = out([1, 13, 2, 3, 4]);
+    const w = out([1, 13, 2, 3, 4, 1, 1]);
     expect(maybeEncounter(w, data, undefined, false)).toBe(true);
     expect(w.encounter).toMatchObject({ captive: 'merchant', nature: 'hostile' });
     expect(w.encounter?.text).toContain('A bound merchant sits among them.');

@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks';
 import type { Attribute } from '../../data/schemas/index.ts';
-import { levelPlan } from '../../game/character/advance.ts';
+import { levelPlan, takeFreeFocus } from '../../game/character/advance.ts';
 import { characterSheet } from '../../game/character/derived.ts';
 import {
   boostAttribute,
@@ -12,9 +12,11 @@ import { levelUpMember, trainMember } from '../../game/world/training.ts';
 import type { World } from '../../game/world/types.ts';
 import { levelLine, pointsText } from '../../render/town-view.ts';
 import { ATTRIBUTE_NAMES, className, classes, data, skillName, skills } from '../builder/data.ts';
+import { FreeFocusForm } from './FocusPicker.tsx';
 import { LevelUpForm } from './LevelUpForm.tsx';
 import { cue } from '../sound.ts';
 import type { Act } from './TownScreen.tsx';
+import { spellName } from '../builder/MagicStep.tsx';
 
 /** Leveling, spending skill points, preparing spells, and switching class. */
 export function TrainingTab(props: { world: World; act: Act }) {
@@ -49,14 +51,11 @@ export function TrainingTab(props: { world: World; act: Act }) {
           {className(c.classes.current)} · {levelLine(data, c)} · {pointsText(c)}
         </p>
       </section>
-      {plan && (
-        <LevelUpForm
-          key={`${m.id}-${c.xp}-${plan.classLevel}-${plan.classId}`}
+      {c.advancement.freeFoci && (
+        <FreeFocusForm
+          key={m.id}
           character={c}
-          plan={plan}
-          onConfirm={(choices) =>
-            props.act(() => cue(levelUpMember(w, data, m.id, choices), 'level'))
-          }
+          onTake={(choice) => train((x) => takeFreeFocus(data, x, choice))}
         />
       )}
       <section class="panel" aria-label="Skill points">
@@ -92,6 +91,16 @@ export function TrainingTab(props: { world: World; act: Act }) {
           Boost {ATTRIBUTE_NAMES[attribute]}
         </button>
       </section>
+      {plan && (
+        <LevelUpForm
+          key={`${m.id}-${c.xp}-${plan.classLevel}-${plan.classId}`}
+          character={c}
+          plan={plan}
+          onConfirm={(choices) =>
+            props.act(() => cue(levelUpMember(w, data, m.id, choices), 'level'))
+          }
+        />
+      )}
       {magic && (
         <section class="panel" aria-label="Prepared spells">
           <h3>Prepared spells ({magic.slots.spellsPrepared})</h3>
@@ -107,7 +116,7 @@ export function TrainingTab(props: { world: World; act: Act }) {
                   checked={on}
                   onChange={() => train((x) => prepareSpells(data, x, next))}
                 />{' '}
-                {data.srd.spells.find((s) => s.id === id)?.name ?? id}
+                {spellName(id)}
               </label>
             );
           })}

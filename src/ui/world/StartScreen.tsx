@@ -2,6 +2,7 @@ import { useState } from 'preact/hooks';
 import type { RosterEntry } from '../../game/character/roster.ts';
 import { MAX_PCS, type Recruit } from '../../game/world/new-world.ts';
 import { PartySetup, type Placement } from '../arena/PartySetup.tsx';
+import { RosterList } from './RosterList.tsx';
 import { SLOTS, type Slot } from '../storage.ts';
 
 /** Starting a new world from the roster, continuing a saved one, or loading a save file. */
@@ -15,7 +16,10 @@ export function StartScreen(props: {
   errors: string[];
   onContinue: () => void;
   onNew: (party: Recruit[], seed: string) => void;
+  /** Adds the starter party to the roster and returns where its members stand. */
+  onStarters: () => Placement;
   onImport: (file: File) => void;
+  onDelete: (id: string) => void;
 }) {
   const [placement, setPlacement] = useState<Placement>({});
   const [seed, setSeed] = useState('');
@@ -73,18 +77,31 @@ export function StartScreen(props: {
       <main class="arena-setup">
         {props.roster.length === 0 ? (
           <p class="hint">
-            The roster is empty. Make characters in the <a href="#/builder">character builder</a> or
-            import them in the <a href="#/arena">arena</a>, then come back to set out.
+            The roster is empty. Use the starter party, make characters in the{' '}
+            <a href="#/builder">character builder</a>, or import them in the{' '}
+            <a href="#/arena">arena</a>.
           </p>
         ) : (
           <PartySetup entries={props.roster} placement={placement} onChange={setPlacement} />
         )}
+        <RosterList
+          entries={props.roster}
+          onDelete={(id) => {
+            setPlacement(
+              Object.fromEntries(Object.entries(placement).filter(([, placed]) => placed !== id)),
+            );
+            props.onDelete(id);
+          }}
+        />
       </main>
       <div class="start-row">
         <label>
           Seed (optional){' '}
           <input value={seed} onInput={(e) => setSeed((e.target as HTMLInputElement).value)} />
         </label>
+        <button type="button" onClick={() => setPlacement(props.onStarters())}>
+          Use the starter party
+        </button>
         {party.length > MAX_PCS && <span class="hint">A party holds {MAX_PCS} PCs.</span>}
         <button
           type="button"

@@ -5,6 +5,8 @@ import { canLevelUp } from '../game/character/advance.ts';
 import type { GameData } from '../game/character/context.ts';
 import { characterSheet } from '../game/character/derived.ts';
 import { findItem, type InventoryEntry } from '../game/character/items.ts';
+import { haggler } from '../game/world/trade.ts';
+import type { World } from '../game/world/types.ts';
 import { xpForLevel } from '../rules/advancement.ts';
 
 /** "1 crown", "12.5 crowns". */
@@ -45,4 +47,11 @@ export function pointsText(c: Character): string {
   const { skillPoints, quickPoints } = c.advancement;
   const quick = quickPoints > 0 ? ` + ${quickPoints} Quick Learner` : '';
   return `${skillPoints} skill point${skillPoints === 1 ? '' : 's'}${quick}`;
+}
+
+/** "Snag haggles: prices 10% lower, gear sells for 10% more", or null with no trader. */
+export function tradeText(w: World, data: GameData): string | null {
+  const h = haggler(w, data);
+  if (!h) return null;
+  return `${h.member.character.name} haggles: prices ${h.percent}% lower, gear sells for ${h.percent}% more`;
 }

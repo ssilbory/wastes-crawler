@@ -63,7 +63,7 @@
       },
       {
         "kind": "skill",
-        "skill": "connect"
+        "skill": "convince"
       }
     ]
   },
@@ -71,7 +71,7 @@
     "id": "tunneler",
     "name": "Tunneler",
     "description": "You dug, shored, and patrolled the warrens beneath the wastes, where a bad beam or a quiet intruder can kill a whole clan.",
-    "freeSkill": "work",
+    "freeSkill": "exert",
     "growth": [
       {
         "kind": "attribute",
@@ -108,7 +108,7 @@
       },
       {
         "kind": "skill",
-        "skill": "work"
+        "skill": "exert"
       },
       {
         "kind": "skill",
@@ -209,7 +209,7 @@
     "id": "beast-herd",
     "name": "Beast-herd",
     "description": "You drove aurochs and bison between the scrub-pastures, and rode them when the herd had to move fast.",
-    "freeSkill": "ride",
+    "freeSkill": "animal-ken",
     "growth": [
       {
         "kind": "attribute",
@@ -242,7 +242,7 @@
     "learning": [
       {
         "kind": "skill",
-        "skill": "ride"
+        "skill": "animal-ken"
       },
       {
         "kind": "skill",
@@ -270,7 +270,7 @@
       },
       {
         "kind": "skill",
-        "skill": "work"
+        "skill": "exert"
       }
     ],
     "peoples": ["goblin", "orc", "elf", "beastman", "gnome"]
@@ -332,7 +332,7 @@
       },
       {
         "kind": "skill",
-        "skill": "connect"
+        "skill": "convince"
       },
       {
         "kind": "skill",
@@ -397,7 +397,7 @@
       },
       {
         "kind": "skill",
-        "skill": "work"
+        "skill": "exert"
       },
       {
         "kind": "skill",
@@ -405,7 +405,7 @@
       },
       {
         "kind": "skill",
-        "skill": "connect"
+        "skill": "convince"
       },
       {
         "kind": "skill",
@@ -471,7 +471,7 @@
       },
       {
         "kind": "skill",
-        "skill": "connect"
+        "skill": "convince"
       },
       {
         "kind": "any-combat"
@@ -616,7 +616,7 @@
       },
       {
         "kind": "skill",
-        "skill": "connect"
+        "skill": "convince"
       }
     ]
   },
@@ -682,11 +682,11 @@
       },
       {
         "kind": "skill",
-        "skill": "administer"
+        "skill": "know"
       },
       {
         "kind": "skill",
-        "skill": "connect"
+        "skill": "convince"
       }
     ]
   }

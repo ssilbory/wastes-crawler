@@ -71,7 +71,7 @@ describe('the shop (SRD 3.0 prices)', () => {
         { id: 'club', quantity: 1, location: 'readied' },
       ],
     };
-    expect(sellPrice(data, { id: 'crowbar', quantity: 2, location: 'stowed' })).toBe(2);
+    expect(sellPrice(world(), data, { id: 'crowbar', quantity: 2, location: 'stowed' })).toBe(2);
     expect(sell(w, data, 'm-0', 0)).toEqual({ ok: true });
     expect(snag.character.inventory[0]).toEqual({ id: 'crowbar', quantity: 1, location: 'stowed' });
     expect(sell(w, data, 'm-0', 0)).toEqual({ ok: true });

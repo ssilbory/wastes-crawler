@@ -19,6 +19,10 @@ test('wanders the overland map, fighting what it meets', async ({ page }, testIn
   await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(4);
 
   await page.getByRole('link', { name: 'Overland' }).click();
+
+  // The arena has a formation of its own: wait for the Overland page before picking slots.
+
+  await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();
   const slots: [string, string][] = [
     ['Front row, slot 1', 'Snag'],
     ['Front row, slot 2', 'Grukk'],
@@ -75,6 +79,8 @@ test('camps for the night with the suggested watches and shelter', async ({ page
   await page.goto('/#/arena');
   await page.getByLabel('Import character files').setInputFiles(starters.slice(0, 2));
   await page.getByRole('link', { name: 'Overland' }).click();
+  // The arena has a formation of its own: wait for the Overland page before picking slots.
+  await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();
   await page.getByRole('combobox', { name: 'Front row, slot 1' }).selectOption({ label: 'Snag' });
   await page.getByRole('combobox', { name: 'Front row, slot 2' }).selectOption({ label: 'Grukk' });
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('camp-e2e');

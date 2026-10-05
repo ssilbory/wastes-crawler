@@ -137,14 +137,15 @@ describe('arts and spells', () => {
     const hm = learnableSpells(data, mage('full-high-mage'), 1);
     const elem = learnableSpells(data, mage('full-elementalist'), 1);
     expect(hm.every((s) => s.tradition === 'high-magic' && s.level === 1)).toBe(true);
-    expect(elem.length - hm.length).toBe(4);
+    // The Elementalist's own spells wait to be built (docs/rules-adaptation.md, High Magic).
+    expect(elem).toEqual(hm);
   });
 
   const hm = mage('full-high-mage');
   const four = [
     'the-coruscating-coffin',
-    'phantasmal-mimesis',
-    'velocitous-imbuement',
+    'ineluctable-shackles-of-volition',
+    'decree-of-ligneous-dissolution',
     'wardpact-invocation',
   ];
   const ok: MagicChoice = {
@@ -237,9 +238,9 @@ describe('casting in armor (SRD 1.5.12, Armored Magic)', () => {
     expect(allowed([W('war-robe')], 2)).toBe(true);
     // Other focus effects don't help.
     expect(castingAllowed(data, [W('war-shirt')], [{ id: 'armsmaster', level: 2 }])).toBe(false);
-    // Barding counts at double encumbrance: linothorax barding is 2, pieced barding is 4.
-    expect(allowed([W('linothorax', { barding: true })], 1)).toBe(true);
-    expect(allowed([W('pieced-armor', { barding: true })], 1)).toBe(false);
+    // Barding counts at its armor's encumbrance: pieced barding is 2, war robe barding more.
+    expect(allowed([W('pieced-armor', { barding: true })], 1)).toBe(true);
+    expect(allowed([W('war-robe', { barding: true })], 1)).toBe(false);
   });
 });
 
@@ -270,8 +271,8 @@ describe('a finished caster', () => {
   function four() {
     return [
       'the-coruscating-coffin',
-      'phantasmal-mimesis',
-      'velocitous-imbuement',
+      'ineluctable-shackles-of-volition',
+      'decree-of-ligneous-dissolution',
       'wardpact-invocation',
     ];
   }

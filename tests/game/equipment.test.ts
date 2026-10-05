@@ -217,7 +217,7 @@ describe('attack fixtures (SRD 2.4.5)', () => {
 describe('encumbrance (docs/rules-adaptation.md)', () => {
   const load = (o: Partial<Loadout>) => loadoutLoad(data, loadout(o));
 
-  it('counts SRD encumbrance markers, the N trait, and double-weight barding', () => {
+  it("counts SRD encumbrance markers, the N trait, and barding at the armor's weight", () => {
     expect(load({ entries: [{ ...I('throwing-blade'), quantity: 5 }] }).readied).toBe(1);
     expect(load({ entries: [{ ...I('throwing-blade'), quantity: 6 }] }).readied).toBe(2);
     expect(load({ entries: [{ ...I('torch', 'stowed'), quantity: 4 }] }).stowed).toBe(2);
@@ -227,7 +227,7 @@ describe('encumbrance (docs/rules-adaptation.md)', () => {
     expect(load({ entries: [I('dungeoneering-kit', 'stowed')] }).stowed).toBe(6);
     expect(load({ entries: [I('tower-shield', 'worn')] }).readied).toBe(3);
     const barding = I('cuirass-and-greaves', 'worn', { barding: true });
-    expect(load({ people: people('centaur'), entries: [barding] }).readied).toBe(4);
+    expect(load({ people: people('centaur'), entries: [barding] }).readied).toBe(2);
     expect(load({ entries: [I('unarmed-attack')] }).readied).toBe(0);
     expect(load({ entries: [I('no-armor', 'worn')] }).readied).toBe(0);
     // Unknown items and foci are skipped rather than crashing a sheet.

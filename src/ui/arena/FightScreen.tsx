@@ -9,6 +9,7 @@ import { data } from '../builder/data.ts';
 import { getSettings } from '../settings-store.ts';
 import { play } from '../sound.ts';
 import { CommandMenu } from './CommandMenu.tsx';
+import { RescuePanel } from './RescuePanel.tsx';
 import { BattleLog, Field } from './Field.tsx';
 import {
   autoResolve,
@@ -18,6 +19,8 @@ import {
   type Changes,
   type Presets,
 } from './fight.ts';
+import type { KnownFoe } from '../../render/bestiary-view.ts';
+import { KnownFoes } from '../world/KnownFoes.tsx';
 
 interface Session {
   battle: Battle;
@@ -43,6 +46,8 @@ export function FightScreen(props: {
   /** Whether the player may walk away mid-fight (the arena), or must see it through. */
   canLeave: boolean;
   doneLabel: string;
+  /** Monsters the party has named with Know, shown with their statistics. */
+  known?: KnownFoe[];
   onDone: (result: BattleResult | null) => void;
 }) {
   const [session, setSession] = useState<Session>(() => begin(props.createBattle()));
@@ -65,6 +70,11 @@ export function FightScreen(props: {
     takeTurn(b, a, () => action);
     return nextCommand(b);
   };
+  const tend = (step: () => void) =>
+    run(() => {
+      step();
+      return null;
+    });
   const choose = (action: Action) => run((a) => (a ? command(a, action) : null));
   const useDefault = () => run((a) => (a ? command(a, presetAction(b, a, p)) : null));
   const defaultsForRound = () =>
@@ -87,7 +97,7 @@ export function FightScreen(props: {
     });
   };
   useEffect(() => {
-    if (!autoPlaying || result) return;
+    if (!autoPlaying || b.outcome) return;
     const timer = setTimeout(defaultsForRound, roundDelay(data, getSettings()));
     return () => clearTimeout(timer);
   });
@@ -112,7 +122,7 @@ export function FightScreen(props: {
     <div class="fight">
       <div class="fight-bar">
         <span class="round">Round {Math.min(b.round, 100)}</span>
-        {!result && (
+        {!b.outcome && (
           <>
             <button type="button" onClick={defaultsForRound}>
               Defaults for the round
@@ -160,6 +170,8 @@ export function FightScreen(props: {
               onDefault={useDefault}
             />
           )}
+          {b.outcome && !result && <RescuePanel battle={b} onTend={tend} />}
+          <KnownFoes foes={props.known ?? []} />
           <BattleLog lines={b.log ?? []} from={changes.logFrom} />
         </div>
       </div>

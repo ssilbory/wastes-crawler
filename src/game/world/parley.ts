@@ -7,12 +7,14 @@ import type { Reaction } from '../../rules/reaction.ts';
 import { toTenths } from '../../rules/economy.ts';
 import type { GameData } from '../character/context.ts';
 import { fights, MOODS } from './encounters.ts';
-import { alive, memberCheck, note } from './members.ts';
+import { alive, awake, memberCheck, note } from './members.ts';
 import { mindOf, parleyReach } from './minds.ts';
+import { offerBeast } from './beasts.ts';
 import { accrueShares, addNpc, fights as npcFights, hirelingType, monsterOf } from './npcs.ts';
 import { freeCaptive } from './rescue.ts';
 import type { TownResult } from './services.ts';
 import { addLoot } from './shop.ts';
+import { speechCheck } from './speech.ts';
 import { shareText } from './wording.ts';
 import type { World } from './types.ts';
 
@@ -62,6 +64,7 @@ function goodwill(w: World, data: GameData): void {
     e.offer = kin.id;
     note(w, `One of them offers to sign on as a ${kin.name}.`);
   }
+  offerBeast(w, data, e);
 }
 
 /** The party's one parley: success moves the mood one band friendlier, failure one band worse. */
@@ -81,18 +84,18 @@ export function parley(
     w.purse = toTenths(w.purse - price);
     note(w, `The party pays ${price} crowns.`);
   } else {
-    const speaker = alive(w).find((m) => m.id === speakerId && m.character.hp.current > 0);
+    const speaker = w.members.find((m) => m.id === speakerId && awake(m));
     if (!speaker) return no('Choose someone to do the talking.');
     const difficulty = rules.difficulty + (e.hostile ? rules.hostileExtra : 0);
     const us =
       alive(w).filter((m) => m.character.hp.current > 0).length +
       w.npcs.filter((n) => n.hp > 0 && npcFights(data, n)).length;
     const outnumber = approach === 'intimidate' && us > e.enemies.flat().length ? 1 : 0;
-    const talk = () => memberCheck(w, data, speaker, 'convince', ['cha'], difficulty).success;
-    success =
-      approach === 'talk'
-        ? talk()
-        : memberCheck(w, data, speaker, 'lead', ['str', 'cha'], difficulty, outnumber).success;
+    const check = speechCheck(data, e.enemies, approach);
+    const roll = (steps = 0) =>
+      memberCheck(w, data, speaker, check.skill, check.attrs, difficulty, steps).success;
+    const talk = () => roll();
+    success = roll(outnumber);
     // Words of Mercy: a failed plea for peace may be made again, for Effort for the day.
     const priest = approach === 'talk' && !success ? mercy(w, data) : undefined;
     if (priest) {

@@ -34,7 +34,7 @@ function turnIn(w: World, quest: string): void {
 describe('the Command authority campaign (Phase 12 exit)', () => {
   it('is playable from the Borderlands to the Seal of Command', () => {
     const w = world();
-    w.rng = createRng('campaign');
+    w.rng = createRng('campaign-0');
     const tries: Record<string, number> = {};
 
     // The east road into the Dark Lands.

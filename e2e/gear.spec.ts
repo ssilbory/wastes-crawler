@@ -34,7 +34,7 @@ test('buys small armor for a goblin and moves it between locations', async ({ pa
 test('lets a centaur buy barding at double cost', async ({ page }) => {
   const select = await start(page, 'Centaur', 'Goat');
   await select('Item to buy', 'War Shirt (5 crowns)');
-  await page.getByLabel('As barding (double cost and encumbrance)').check();
+  await page.getByLabel('As barding (double cost)').check();
   await page.getByRole('button', { name: 'Buy' }).click();
   await expect(page.locator('section.step', { hasText: '8. Gear' })).toContainText(
     'War Shirt (barding)',

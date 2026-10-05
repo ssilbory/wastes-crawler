@@ -84,7 +84,7 @@ describe('faction patrols (Phase 13b)', () => {
     const w = nearLanternfall();
     held(w, 'warhost', 'scouts').at = 'lanternfall';
     // The encounter die hits (1 on a d16), the patrol comes (1 on a d2), then the reaction roll.
-    w.rng = scriptedRng([1, 1, 1, 6, 6]);
+    w.rng = scriptedRng([1, 1, 1, 6, 6, 1, 1, 1, 1]);
     expect(maybeEncounter(w, data, undefined, false)).toBe(true);
     expect(w.encounter).toMatchObject({
       enemies: [['predator-beastman', 'predator-beastman']],

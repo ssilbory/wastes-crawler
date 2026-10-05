@@ -143,3 +143,13 @@ export function entryEncumbrance(data: GameData, item: CatalogItem, entry: Inven
     }
   }
 }
+
+/** A line's name with what sets it apart: "Pieced Armor (barding)", "Spear +1 (mastercrafted)". */
+export function lineLabel(data: GameData, e: InventoryEntry): string {
+  const name = findItem(data, e.id)?.name ?? e.id;
+  const mods = (e.mods ?? []).map(
+    (m) => data.content.mods.find((x) => x.id === m.id)?.name ?? m.id,
+  );
+  const notes = [e.quality, ...mods, e.small && 'small', e.barding && 'barding'].filter(Boolean);
+  return `${name}${e.bonus ? ` +${e.bonus}` : ''}${notes.length ? ` (${notes.join(', ')})` : ''}`;
+}

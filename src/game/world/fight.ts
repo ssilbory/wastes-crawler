@@ -15,12 +15,14 @@ import { emit } from './bus.ts';
 import { faithLit, inDark } from '../dungeon/light.ts';
 import { FAITH_LIGHT, userOf, vigor } from './arts.ts';
 import { onSpecial } from '../dungeon/specials.ts';
+import { butcher } from './butcher.ts';
 import { recordFallen } from './healer.ts';
 import { leaveCorpses } from './necromancy.ts';
 import { freeCaptive } from './rescue.ts';
 import { addLoot } from './shop.ts';
 import { wipe } from './town.ts';
 import type { Member, Npc, World } from './types.ts';
+import { keepSummons } from './summons.ts';
 
 export interface WorldBattle {
   battle: Battle;
@@ -89,6 +91,8 @@ export interface PartySetup {
   dark: boolean;
   /** The fight is on an anti-magic square. */
   antiMagic: boolean;
+  /** The fight is underground. */
+  indoors: boolean;
 }
 
 /** The conscious party as it stands, and its NPCs if `withNpcs`, against enemy rows. */
@@ -114,6 +118,7 @@ export function partySetup(
     enemies,
     dark: inDark(w, data),
     antiMagic: onSpecial(w, data, 'anti-magic'),
+    indoors: w.dungeon !== null,
   };
 }
 
@@ -127,6 +132,7 @@ export function battleFrom(data: GameData, rng: Rng, setup: PartySetup, log: boo
     enemies: setup.enemies.map((r) => [...r]),
     dark: setup.dark,
     antiMagic: setup.antiMagic,
+    indoors: setup.indoors,
     log,
   });
   setup.party.forEach((p, i) => {
@@ -166,6 +172,8 @@ export function partyBattle(
 }
 
 export function carryBack(data: GameData, m: Member, c: Battle['combatants'][number]): void {
+  // Gear readied or stowed mid-fight stays where it was put, even by the fallen.
+  if (c.character) m.character = { ...m.character, inventory: c.character.inventory };
   if (c.status === 'dead') {
     m.dead = true;
     setHp(m, 0);
@@ -200,6 +208,7 @@ function winnings(w: World, data: GameData, enemies: readonly (readonly string[]
     }),
   );
   componentDrops(w, data, enemies.flat());
+  butcher(w, data, enemies.flat());
   if (dice.length === 0) return;
   addLoot(w, dice);
   accrueShares(w, data, dice);
@@ -240,6 +249,7 @@ export function applyBattle(
   // Tireless Vigor: a Healer regains a hit point after each fight (Phase 15).
   vigor(w, data, 1);
   const npcLost = npcsBack(w, data, fight);
+  keepSummons(w, data, fight);
   w.encounter = null;
   if (result.outcome === 'enemy') {
     for (const n of w.npcs.filter((x) => x.kind !== 'hireling')) {

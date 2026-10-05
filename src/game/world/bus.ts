@@ -3,6 +3,7 @@
 import type { GameData } from '../character/context.ts';
 import { clockListener } from './clock.ts';
 import { craftingListener } from './crafting.ts';
+import { grovesListener } from './groves.ts';
 import { factionsListener } from '../factions/turn.ts';
 import { maintenanceListener } from './maintenance.ts';
 import { notesListener } from './notes.ts';
@@ -37,6 +38,7 @@ type Listener = (w: World, data: GameData, e: WorldEvent) => void;
 
 const LISTENERS: readonly Listener[] = [
   questListener,
+  grovesListener,
   rescueListener,
   raisingListener,
   craftingListener,

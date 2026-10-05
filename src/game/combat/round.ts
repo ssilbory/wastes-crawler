@@ -4,13 +4,14 @@
 // command (advance) or let controllers decide everything (runRound, runBattle).
 import { actsOnInstinct, MORTAL_ROUNDS } from '../../rules/combat.ts';
 import { frontDrops, ROW_SLOTS, type Formation, type FormationRow } from '../../rules/formation.ts';
-import { act, stabilize } from './actions.ts';
+import { act } from './actions.ts';
 import { monsterAction, partyAction } from './ai.ts';
 import { freeActions } from './free-actions.ts';
 import { say } from './damage.ts';
+import { echoes, landing, quickens, roundPasses, weakestSwing } from './conditions.ts';
 import { checkMorale } from './morale.ts';
 import { canAct, isUp, targets } from './targeting.ts';
-import type { Attack, Battle, Combatant, Controller, Outcome } from './types.ts';
+import type { Attack, Battle, Combatant, Controller } from './types.ts';
 
 export const MAX_ROUNDS = 100;
 
@@ -31,7 +32,9 @@ export function beginRound(b: Battle): void {
 }
 
 function checkEnd(b: Battle): void {
-  if (!b.combatants.some((c) => c.side === 'enemy' && canAct(c))) b.outcome = 'party';
+  // The banished who will find their way back keep the fight going (Phase 18a).
+  const left = (c: Combatant) => canAct(c) || c.returnsRound > 0;
+  if (!b.combatants.some((c) => c.side === 'enemy' && left(c))) b.outcome = 'party';
   else if (!b.combatants.some((c) => c.side === 'party' && canAct(c) && !c.noncombatant))
     b.outcome = 'enemy';
 }
@@ -80,6 +83,21 @@ export function takeTurn(b: Battle, actor: Combatant, controller: Controller): v
     // Casting or breathing is the Main Action, whatever the monster's number of attacks.
     if (action.kind === 'cast' || action.kind === 'breath') break;
   }
+  quickened(b, actor, controller);
+}
+
+/**
+ * Resounding Temporal Echo's extra Main Action: an attack, never magic (4.4.0). The one the
+ * controller asks for if it can land, else a swing at the weakest foe in reach; strain is paid
+ * only when there is a swing to make.
+ */
+function quickened(b: Battle, actor: Combatant, controller: Controller): void {
+  if (!quickens(b, actor)) return;
+  const swing = landing(b, actor, controller(b, actor)) ?? weakestSwing(b, actor);
+  if (!swing || !echoes(b, actor)) return;
+  act(b, actor, swing);
+  checkMorale(b);
+  checkEnd(b);
 }
 
 /**
@@ -125,7 +143,7 @@ function shiftFormation(b: Battle): void {
   }
 }
 
-function endOfRound(b: Battle): void {
+export function endOfRound(b: Battle): void {
   for (const c of b.combatants) {
     if (c.status === 'dying' && b.round - c.fellRound >= MORTAL_ROUNDS) {
       c.status = 'dead';
@@ -151,6 +169,7 @@ function endOfRound(b: Battle): void {
   }
   b.stabilizedThisRound.clear();
   b.round += 1;
+  roundPasses(b);
   // SRD 5.4.2: the second round of a fight tests the nerve of mobs and undisciplined fighters.
   if (b.round === 2) {
     for (const m of monsters)
@@ -200,39 +219,4 @@ export function runRound(
   for (let actor = currentActor(b); actor; actor = currentActor(b))
     takeTurn(b, actor, controllerFor(actor, party, enemy));
   closeRound(b);
-}
-
-const heal = (c: Combatant) => c.skills.heal ?? -1;
-
-/** After a win, the party keeps trying to stabilize the dying until each lives or dies. */
-function aftermath(b: Battle): void {
-  while (b.combatants.some((c) => c.side === 'party' && c.status === 'dying')) {
-    const medics = b.combatants.filter((c) => c.side === 'party' && canAct(c));
-    for (const victim of b.combatants.filter((c) => c.side === 'party' && c.status === 'dying')) {
-      const medic = medics.sort((x, y) => heal(y) - heal(x))[0];
-      if (medic) stabilize(b, medic, victim);
-    }
-    endOfRound(b);
-  }
-}
-
-export interface BattleResult {
-  outcome: Outcome;
-  rounds: number;
-  deaths: number;
-  battle: Battle;
-}
-
-/** Sums up a finished battle, tending the party's dying first after a win. */
-export function concludeBattle(b: Battle): BattleResult {
-  const outcome: Outcome = b.outcome ?? 'draw';
-  const rounds = Math.min(b.round, MAX_ROUNDS);
-  if (outcome === 'party') aftermath(b);
-  const deaths = b.combatants.filter((c) => c.side === 'party' && c.status === 'dead').length;
-  return { outcome, rounds, deaths, battle: b };
-}
-
-export function runBattle(b: Battle, party?: Controller, enemy?: Controller): BattleResult {
-  while (!b.outcome) runRound(b, party, enemy);
-  return concludeBattle(b);
 }

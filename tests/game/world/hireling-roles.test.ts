@@ -25,13 +25,13 @@ describe('Wilderness Guides (docs/rules-adaptation.md, Guides and porters)', () 
   it('make a second roll to spot a group when the watcher misses it', () => {
     const w = withHireling('wilderness-guide', 'Tam');
     // Reaction 3+3; theirs 1+1; the watcher 1+1 loses; the guide 6+6 wins.
-    w.rng = scriptedRng([3, 3, 4, 4, 1, 1, 6, 6]);
+    w.rng = scriptedRng([3, 3, 4, 4, 1, 1, 6, 6, 1, 1]);
     startEncounter(w, data, rolled, member(w, 'Snag'), 0, '5,9');
     expect(w.encounter?.spotted).toBe(true);
     expect(w.encounter?.text).toContain('Tam spots 1 Thug or Militia');
     // With no watcher at all, the guide still looks.
     Object.assign(w, { encounter: null });
-    w.rng = scriptedRng([3, 3, 6, 6, 1, 1]);
+    w.rng = scriptedRng([3, 3, 6, 6, 1, 1, 1, 1]);
     startEncounter(w, data, rolled, undefined, 0, '5,9');
     expect(w.encounter?.spotted).toBe(false);
     expect(w.encounter?.text).toContain('The party meets 1');
@@ -39,12 +39,12 @@ describe('Wilderness Guides (docs/rules-adaptation.md, Guides and porters)', () 
 
   it("don't roll when the watcher saw them first, or underground", () => {
     const w = withHireling('wilderness-guide', 'Tam');
-    w.rng = scriptedRng([3, 3, 1, 1, 6, 6]);
+    w.rng = scriptedRng([3, 3, 1, 1, 6, 6, 1, 1]);
     startEncounter(w, data, rolled, member(w, 'Snag'), 0, '5,9');
     expect(w.encounter?.text).toContain('Snag spots');
     const d = below();
     addNpc(d, data, 'hireling', 'wilderness-guide', 'peaceful-human', 'Tam', false);
-    d.rng = scriptedRng([3, 3]);
+    d.rng = scriptedRng([3, 3, 1, 1]);
     startEncounter(d, data, rolled, undefined, 0, 'here');
     expect(d.encounter?.spotted).toBe(false);
   });

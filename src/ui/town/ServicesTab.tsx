@@ -10,9 +10,11 @@ import {
 } from '../../game/world/services.ts';
 import { exchangeLoot } from '../../game/world/shop.ts';
 import { priceHere } from '../../game/world/town.ts';
+import { shrineHere } from '../../game/world/prayer.ts';
 import type { World } from '../../game/world/types.ts';
 import { crowns, lootText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
+import { PerformForm, PrayerForm } from './SkillServices.tsx';
 import type { Act } from './TownScreen.tsx';
 
 /** Where each kind of raiser works (Phase 14d adds the Blood Priest temple). */
@@ -22,6 +24,7 @@ export function ServicesTab(props: { world: World; act: Act }) {
   const price = (listed: number) => crowns(priceHere(w, data, listed));
   const rules = data.content.townRules;
   const raiser = raiserHere(w, data);
+  const shrine = shrineHere(w, data);
   const dead = w.members.filter((m) => m.dead);
   return (
     <>
@@ -34,6 +37,7 @@ export function ServicesTab(props: { world: World; act: Act }) {
         <button type="button" onClick={() => props.act(() => stayAtInn(w, data))}>
           Stay the night ({price(innListed(w, data))})
         </button>
+        <PerformForm world={w} act={props.act} />
       </section>
       <section class="panel" aria-label="Traders">
         <h2>Traders</h2>
@@ -91,6 +95,7 @@ export function ServicesTab(props: { world: World; act: Act }) {
         <section class="panel" aria-label={RAISER_PLACE[raiser.raises ?? 'mortuary']}>
           <h2>{RAISER_PLACE[raiser.raises ?? 'mortuary']}</h2>
           <p class="hint">{raiser.text}</p>
+          {shrine === raiser && <PrayerForm world={w} act={props.act} />}
           {dead.length === 0 && <p class="hint">No one in the party is dead.</p>}
           {dead.map((m) => (
             <button
@@ -101,6 +106,12 @@ export function ServicesTab(props: { world: World; act: Act }) {
               Raise {m.character.name} ({price(raiseListed(data, m))})
             </button>
           ))}
+        </section>
+      )}
+      {shrine && shrine !== raiser && (
+        <section class="panel" aria-label={RAISER_PLACE[shrine.raises ?? 'temple']}>
+          <h2>{RAISER_PLACE[shrine.raises ?? 'temple']}</h2>
+          <PrayerForm world={w} act={props.act} />
         </section>
       )}
     </>

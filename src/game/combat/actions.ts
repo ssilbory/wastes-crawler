@@ -1,5 +1,6 @@
 // Resolving one chosen action (vendor/wwn-srd/2.0 The Rules of the Game/2.4.3 Combat Actions.md),
 // including stabilizing the dying (2.5.1).
+import { readyOrStow } from './gear.ts';
 import { skillCheck } from '../../rules/checks.ts';
 import { stabilizeDifficulty } from '../../rules/combat.ts';
 import { ROW_SLOTS } from '../../rules/formation.ts';
@@ -7,15 +8,18 @@ import { resolveAttack, type AttackBoost } from './attack.ts';
 import { say } from './damage.ts';
 import { breathe } from './specials.ts';
 import { castMagic, combatMagic } from './spells.ts';
-import { targets } from './targeting.ts';
+import { shakeOff, tormentStrike } from './conditions.ts';
+import { canAct, targets } from './targeting.ts';
 import type { Action, Battle, CasterState, Combatant } from './types.ts';
 
-export function stabilize(b: Battle, actor: Combatant, target: Combatant): void {
+/** `aid`: +1 when an ally's aiding check succeeded (SRD 2.3.3). */
+export function stabilize(b: Battle, actor: Combatant, target: Combatant, aid = 0): void {
   if (target.status !== 'dying' || b.stabilizedThisRound.has(target.id)) return;
   b.stabilizedThisRound.add(target.id);
   const check = skillCheck(b.rng, {
     skill: actor.skills.heal ?? null,
     attributeModifier: actor.healModifier,
+    modifier: aid,
     difficulty: stabilizeDifficulty(b.round - target.fellRound, actor.hasHealKit),
   });
   if (!check.success) return;
@@ -36,8 +40,15 @@ function smiteBoost(b: Battle, actor: Combatant, target: Combatant): AttackBoost
 function hostile(b: Battle, action: Action): boolean {
   if (action.kind === 'attack') return true;
   if (action.kind !== 'cast') return false;
-  const target = b.data.content.combatMagic.find((m) => m.id === action.magic)?.target;
-  return target === 'enemy' || target === 'enemy-row' || target === 'enemies';
+  const m = b.data.content.combatMagic.find((x) => x.id === action.magic);
+  const target = m?.target;
+  // Shattering the Glass Chimes strikes everyone about the caster (4.4.0).
+  return (
+    target === 'enemy' ||
+    target === 'enemy-row' ||
+    target === 'enemies' ||
+    m?.effect.kind === 'shatter'
+  );
 }
 
 export function act(b: Battle, actor: Combatant, action: Action): void {
@@ -49,7 +60,9 @@ export function act(b: Battle, actor: Combatant, action: Action): void {
   switch (action.kind) {
     case 'attack': {
       const attack = actor.attacks[action.attack];
-      if (!attack || !target || !targets(b, actor, attack).includes(target)) return;
+      if (!attack || !target || !targets(b, actor, attack, actor.berserk).includes(target)) return;
+      tormentStrike(b, actor);
+      if (!canAct(actor)) return;
       // Smite the Wicked (Phase 14c): paid for as the attack is made, once per target a scene.
       const smite = action.smite ? smiteBoost(b, actor, target) : null;
       resolveAttack(b, actor, attack, target, smite);
@@ -59,7 +72,15 @@ export function act(b: Battle, actor: Combatant, action: Action): void {
       castMagic(b, actor, action.magic, action.target, action.row, action.strain);
       return;
     case 'breath':
-      breathe(b, actor, action.row);
+      tormentStrike(b, actor);
+      if (canAct(actor)) breathe(b, actor, action.row);
+      return;
+    case 'shake-off':
+      shakeOff(b, actor);
+      return;
+    case 'end-mist':
+      actor.misted = false;
+      say(b, `${actor.name} takes form again.`);
       return;
     case 'total-defense':
       actor.totalDefense = true;
@@ -80,6 +101,9 @@ export function act(b: Battle, actor: Combatant, action: Action): void {
       }
       return;
     }
+    case 'gear':
+      readyOrStow(b, actor, action.item, action.location);
+      return;
     case 'wait':
       return;
   }

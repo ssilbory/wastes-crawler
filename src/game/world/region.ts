@@ -70,14 +70,15 @@ export function seenHexes(map: RegionMap, visited: ReadonlySet<string>): Set<str
 }
 
 /**
- * The cheapest route by hike points through hexes the party knows (seen), ending at `to`. Returns
- * the hexes after `from`, or null if there's no route.
+ * The cheapest route by hike points through hexes the party knows (seen), ending at `to` and
+ * going around the hexes in `avoid`. Returns the hexes after `from`, or null if there's no route.
  */
 export function findPath(
   map: RegionMap,
   from: Hex,
   to: Hex,
   known: ReadonlySet<string>,
+  avoid: ReadonlySet<string> = new Set(),
 ): Hex[] | null {
   const goal = hexKey(to);
   if (!known.has(goal) || map.costOf(to) === null) return null;
@@ -93,7 +94,7 @@ export function findPath(
     for (const n of neighbors(hex)) {
       const step = map.costOf(n);
       const nKey = hexKey(n);
-      if (step === null || !known.has(nKey)) continue;
+      if (step === null || !known.has(nKey) || avoid.has(nKey)) continue;
       const next = cost + step;
       if (next < (best.get(nKey) ?? Infinity)) {
         best.set(nKey, next);

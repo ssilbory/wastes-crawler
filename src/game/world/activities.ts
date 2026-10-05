@@ -14,6 +14,7 @@ import { tended } from './arts.ts';
 import { addMemberStrain, alive, bestAt, hurt, memberCheck, note, restQuarter } from './members.ts';
 import { emit } from './bus.ts';
 import { firstGuide, guideOf } from './npcs.ts';
+import { hexesToAvoid } from './groves.ts';
 import { findPath, regionMap, seenHexes } from './region.ts';
 import { enterTown } from './town.ts';
 import type { Activity, Member, World } from './types.ts';
@@ -100,7 +101,9 @@ function leadTheWay(
 /** One quarter of hiking toward the destination. Returns extra encounter checks owed. */
 export function hike(w: World, data: GameData, leaderId: string | null, dark: boolean): number {
   const map = regionMap(data, w.region);
-  const path = w.destination && findPath(map, w.position, w.destination, seenHexes(map, w.visited));
+  const path =
+    w.destination &&
+    findPath(map, w.position, w.destination, seenHexes(map, w.visited), hexesToAvoid(w, data));
   if (!path) {
     note(w, 'The party has nowhere it can hike to.');
     return 0;

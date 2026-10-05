@@ -65,9 +65,13 @@ export function usable(b: Battle, actor: Combatant, attack: Attack): boolean {
 }
 
 /** Valid targets for an attack; the dying only when nobody else can be reached. */
-export function targets(b: Battle, actor: Combatant, attack: Attack): Combatant[] {
-  if (!usable(b, actor, attack)) return [];
-  const foes = b.combatants.filter((c) => c.side !== actor.side);
+export function targets(b: Battle, actor: Combatant, attack: Attack, mad = false): Combatant[] {
+  // Wind Walking's mist can't strike, nor be struck by weapons (4.5.0).
+  if (actor.misted || !usable(b, actor, attack)) return [];
+  // The Prismatic Hemicycle's mad turn on their own side (4.4.0).
+  const foes = b.combatants.filter(
+    (c) => (mad ? c.side === actor.side && c !== actor : c.side !== actor.side) && !c.misted,
+  );
   const reachable = (t: Combatant) => {
     if (attack.mode !== 'melee' || flying(actor) || flying(t)) return true;
     return t.row === 0 || exposed(b, t);

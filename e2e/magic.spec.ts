@@ -47,8 +47,8 @@ async function caster(
 
 const SPELLS = [
   'The Coruscating Coffin',
-  'Phantasmal Mimesis',
-  'Velocitous Imbuement',
+  'Ineluctable Shackles of Volition',
+  'Decree of Ligneous Dissolution',
   'Wardpact Invocation',
 ];
 
@@ -71,7 +71,9 @@ test('a Gnome High Mage has Effort 1 + Magic-0 + Int 16 (+1) = 2', async ({ page
   await expect(sheet).toContainText('Effort 2. Casts 1 a day, prepares 3, up to level 1.');
   await expect(sheet).toContainText('Arts: Counter Magic, Sense Magic.');
   await expect(sheet).toContainText('Wardpact Invocation');
-  await expect(sheet).toContainText('Phantasmal Mimesis (prepared)');
+  await expect(sheet).toContainText('Ineluctable Shackles of Volition (prepared)');
+  // Spells not yet built aren't offered (docs/rules-adaptation.md, High Magic in combat).
+  await expect(page.getByText('Phantasmal Mimesis')).toHaveCount(0);
   await expect(sheet).toContainText('Magic-0');
 });
 
@@ -87,8 +89,13 @@ test('a dual partial caster has Magic-1 and Effort 1 + 1 + 1 - 1 = 2', async ({ 
       ['Any focus', 'Well Met'],
     ],
     arts: ['Sense Magic', 'Flamesight'],
-    spells: ['Phantasmal Mimesis', 'Flame Scrying', 'Elemental Favor', 'Wardpact Invocation'],
-    prepare: ['Flame Scrying'],
+    spells: [
+      'The Coruscating Coffin',
+      'Damnation of the Sense',
+      'The Wind of the Final Repose',
+      'Wardpact Invocation',
+    ],
+    prepare: ['Damnation of the Sense'],
   });
   // Elf: Int 14, Cha 9 + 1 = 10, so Int (+1) is best; two Magic bonus picks make Magic-1.
   await expect(sheet).toContainText('Effort 2.');
@@ -109,8 +116,9 @@ test('a partial Elementalist warrior has Effort one lower, 1', async ({ page }) 
       ['Any focus', 'Lucky'],
     ],
     arts: ['Earthsight'],
-    spells: ['Flame Scrying', 'Elemental Spy'],
-    prepare: ['Flame Scrying', 'Elemental Spy'],
+    // The Elementalist's own spells wait to be built; High Magic serves meanwhile.
+    spells: ['Damnation of the Sense', 'The Wind of the Final Repose'],
+    prepare: ['Damnation of the Sense', 'The Wind of the Final Repose'],
   });
   // Orc: Int 14 (+1), Cha 9 - 2 = 7: 1 + 0 + 1 - 1 = 1.
   await expect(sheet).toContainText('Effort 1.');
@@ -122,7 +130,7 @@ test('a Gnome Necromancer picks a necromancer art and spells from both lists (Ph
   const spells = [
     'Command the Dead',
     'Smite the Dead',
-    'Query the Skull',
+    'Damnation of the Sense',
     'The Coruscating Coffin',
   ];
   const sheet = await caster(page, {

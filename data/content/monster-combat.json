@@ -218,12 +218,12 @@
   },
   {
     "id": "large-solitary-predator",
-    "tags": [],
+    "tags": ["large"],
     "mind": "animal"
   },
   {
     "id": "apex-predator",
-    "tags": [],
+    "tags": ["large"],
     "mind": "animal"
   },
   {
@@ -233,12 +233,12 @@
   },
   {
     "id": "vicious-large-herbivore",
-    "tags": [],
+    "tags": ["large"],
     "mind": "animal"
   },
   {
     "id": "elephantine-grazer",
-    "tags": ["reach"],
+    "tags": ["reach", "large"],
     "mind": "animal"
   },
   {
@@ -271,7 +271,7 @@
   },
   {
     "id": "automaton-warbot",
-    "tags": ["unliving", "metal", "reach"],
+    "tags": ["unliving", "metal", "reach", "large"],
     "loot": {
       "count": 5,
       "sides": 6
@@ -290,17 +290,17 @@
   },
   {
     "id": "predator-large-vicious",
-    "tags": [],
+    "tags": ["large"],
     "mind": "monster"
   },
   {
     "id": "predator-hulking",
-    "tags": ["reach"],
+    "tags": ["reach", "large"],
     "mind": "monster"
   },
   {
     "id": "predator-hellbeast",
-    "tags": [],
+    "tags": ["large"],
     "mind": "monster"
   },
   {
@@ -310,12 +310,12 @@
   },
   {
     "id": "terrible-warbeast",
-    "tags": ["reach"],
+    "tags": ["reach", "large"],
     "mind": "monster"
   },
   {
     "id": "legendary-god-titan",
-    "tags": ["reach"],
+    "tags": ["reach", "large"],
     "mind": "monster"
   },
   {
@@ -325,7 +325,7 @@
   },
   {
     "id": "grave-wyrm",
-    "tags": ["flying", "unliving", "undead"],
+    "tags": ["flying", "unliving", "undead", "large"],
     "loot": {
       "count": 15,
       "sides": 6
@@ -406,7 +406,7 @@
   },
   {
     "id": "colossus-bear",
-    "tags": [],
+    "tags": ["large"],
     "mind": "animal",
     "routine": [
       {
@@ -436,7 +436,7 @@
   },
   {
     "id": "cave-bear",
-    "tags": [],
+    "tags": ["large"],
     "mind": "animal",
     "routine": [
       {
@@ -461,7 +461,7 @@
   },
   {
     "id": "chimera",
-    "tags": ["flying"],
+    "tags": ["flying", "large"],
     "loot": {
       "count": 5,
       "sides": 6
@@ -519,7 +519,7 @@
   },
   {
     "id": "hill-giant",
-    "tags": [],
+    "tags": ["large"],
     "loot": {
       "count": 6,
       "sides": 6
@@ -528,7 +528,7 @@
   },
   {
     "id": "manticore",
-    "tags": ["flying"],
+    "tags": ["flying", "large"],
     "loot": {
       "count": 4,
       "sides": 6
@@ -637,7 +637,7 @@
   },
   {
     "id": "unicorn",
-    "tags": [],
+    "tags": ["large"],
     "mind": "monster",
     "routine": [
       {
@@ -662,7 +662,7 @@
   },
   {
     "id": "alicorn",
-    "tags": [],
+    "tags": ["large"],
     "mind": "monster",
     "routine": [
       {
@@ -724,5 +724,84 @@
     "id": "grave-knight",
     "tags": ["unliving", "undead"],
     "mind": "sapient"
+  },
+  {
+    "id": "mushroom-sporeling",
+    "tags": ["plant"],
+    "mind": "monster"
+  },
+  {
+    "id": "mushroom-warrior",
+    "tags": ["plant"],
+    "mind": "monster"
+  },
+  {
+    "id": "mushroom-spore-shaman",
+    "tags": ["plant"],
+    "mind": "monster",
+    "routine": [
+      {
+        "name": "Spore lash",
+        "damage": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 0
+        },
+        "count": 1,
+        "onHit": {
+          "kind": "paralysis",
+          "rounds": {
+            "count": 1,
+            "sides": 2,
+            "modifier": 0
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "mushroom-king",
+    "tags": ["plant", "large"],
+    "mind": "monster"
+  },
+  {
+    "id": "walking-sapling",
+    "tags": ["plant", "slow"],
+    "mind": "monster",
+    "resist": {
+      "missiles": "one"
+    }
+  },
+  {
+    "id": "walking-tree",
+    "tags": ["plant", "large", "slow"],
+    "mind": "monster",
+    "resist": {
+      "missiles": "one"
+    }
+  },
+  {
+    "id": "swamp-thing",
+    "tags": ["plant"],
+    "mind": "monster",
+    "resist": {
+      "blunt": "half"
+    }
+  },
+  {
+    "id": "wood-golem",
+    "tags": ["plant", "unliving"],
+    "mind": "mindless"
+  },
+  {
+    "id": "phantasmal-eidolon",
+    "tags": [],
+    "mind": "monster",
+    "nonLethal": true
+  },
+  {
+    "id": "elemental-guardian",
+    "tags": [],
+    "mind": "monster"
   }
 ]

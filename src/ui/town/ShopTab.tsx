@@ -95,7 +95,7 @@ export function ShopTab(props: { world: World; act: Act }) {
                 ))}
               </select>
               <button type="button" onClick={() => props.act(() => sell(w, data, m.id, i))}>
-                Sell ({crowns(sellPrice(data, entry))})
+                Sell ({crowns(sellPrice(w, data, entry))})
               </button>
               {others.length + porters.length > 0 && (
                 <select

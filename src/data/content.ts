@@ -15,6 +15,8 @@ import overlandRules from '../../data/content/overland-rules.json';
 import regions from '../../data/content/regions.json';
 import terrains from '../../data/content/terrains.json';
 import townRules from '../../data/content/town-rules.json';
+import skillRules from '../../data/content/skill-rules.json';
+import spellRules from '../../data/content/spell-rules.json';
 import npcRules from '../../data/content/npc-rules.json';
 import captives from '../../data/content/captives.json';
 import coachRoutes from '../../data/content/coach-routes.json';
@@ -30,12 +32,14 @@ import mods from '../../data/content/mods.json';
 import craftsmen from '../../data/content/craftsmen.json';
 import settingsDefaults from '../../data/content/settings-defaults.json';
 import soundCues from '../../data/content/sound-cues.json';
+import starterParty from '../../data/content/starter-party.json';
 import settingMonsters from '../../data/content/setting-monsters.json';
 import standingOrders from '../../data/content/standing-orders.json';
 import authorities from '../../data/content/authorities.json';
 import raidRules from '../../data/content/raid-rules.json';
 import campaign from '../../data/content/campaign.json';
 import ruins from '../../data/content/ruins.json';
+import groves from '../../data/content/groves.json';
 import factions from '../../data/content/factions.json';
 import { withSettingMonsters } from './monsters.ts';
 import { combatReferenceErrors } from './combat-check.ts';
@@ -52,6 +56,9 @@ import { questReferenceErrors } from './quest-check.ts';
 import { dungeonReferenceErrors } from './dungeon-check.ts';
 import { craftingReferenceErrors } from './crafting-check.ts';
 import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.ts';
+import { gameSkills, skillRuleErrors } from './skills.ts';
+import { spellRuleErrors } from './spells.ts';
+import { groveReferenceErrors } from './grove-check.ts';
 
 export function loadContent(): ContentData {
   return withSettingMonsters({
@@ -72,6 +79,8 @@ export function loadContent(): ContentData {
     mishaps: ContentSchemas.mishaps.parse(mishaps),
     overlandRules: ContentSchemas.overlandRules.parse(overlandRules),
     townRules: ContentSchemas.townRules.parse(townRules),
+    skillRules: ContentSchemas.skillRules.parse(skillRules),
+    spellRules: ContentSchemas.spellRules.parse(spellRules),
     npcRules: ContentSchemas.npcRules.parse(npcRules),
     captives: ContentSchemas.captives.parse(captives),
     coachRoutes: ContentSchemas.coachRoutes.parse(coachRoutes),
@@ -87,19 +96,21 @@ export function loadContent(): ContentData {
     craftsmen: ContentSchemas.craftsmen.parse(craftsmen),
     settingsDefaults: ContentSchemas.settingsDefaults.parse(settingsDefaults),
     soundCues: ContentSchemas.soundCues.parse(soundCues),
+    starterParty: ContentSchemas.starterParty.parse(starterParty),
     settingMonsters: ContentSchemas.settingMonsters.parse(settingMonsters),
     standingOrders: ContentSchemas.standingOrders.parse(standingOrders),
     authorities: ContentSchemas.authorities.parse(authorities),
     raidRules: ContentSchemas.raidRules.parse(raidRules),
     campaign: ContentSchemas.campaign.parse(campaign),
     ruins: ContentSchemas.ruins.parse(ruins),
+    groves: ContentSchemas.groves.parse(groves),
     factions: ContentSchemas.factions.parse(factions),
   });
 }
 
 /** Authored content may only reference SRD records that exist. */
 export function contentReferenceErrors(srd: SrdData, content: ContentData): string[] {
-  const skills = new Set(srd.skills.map((s) => s.id));
+  const skills = new Set(gameSkills(srd, content).map((s) => s.id));
   const errors: string[] = [];
   const check = (where: string, skill: string) => {
     if (!skills.has(skill)) errors.push(`${where}: unknown skill ${skill}`);
@@ -151,6 +162,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['settingMonsters', content.settingMonsters],
     ['standingOrders', content.standingOrders],
     ['authorities', content.authorities],
+    ['groves', content.groves],
     ...content.dungeons.map((d): [string, { id: string }[]] => [
       `dungeons/${d.id} levels`,
       d.levels,
@@ -169,6 +181,8 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
   }
   return [
     ...errors,
+    ...skillRuleErrors(srd, content),
+    ...spellRuleErrors(srd, content),
     ...focusReferenceErrors(srd, content),
     ...equipmentReferenceErrors(srd, content),
     ...magicReferenceErrors(srd, content),
@@ -182,5 +196,6 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...dungeonReferenceErrors(content),
     ...craftingReferenceErrors(srd, content),
     ...settingReferenceErrors(srd, content),
+    ...groveReferenceErrors(srd, content),
   ];
 }

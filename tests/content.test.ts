@@ -23,6 +23,35 @@ describe('data/content', () => {
     expect(content.backgrounds).toHaveLength(10);
   });
 
+  it('checks the skill changes (docs/rules-adaptation.md, Skills)', () => {
+    const rules = content.skillRules;
+    const broken = {
+      ...content,
+      skillRules: {
+        ...rules,
+        removed: [...rules.removed, { id: 'juggle', becomes: 'flying', why: 'x' }],
+        added: [...rules.added, { id: 'stab', name: 'Stab', description: 'x' }],
+        animalKen: { ...rules.animalKen, skill: 'whisper' },
+        retiredFoci: ['alert'],
+      },
+    };
+    expect(contentReferenceErrors(srd, broken).filter((e) => e.startsWith('skillRules'))).toEqual([
+      'skillRules/removed/juggle: not an SRD skill',
+      'skillRules/removed/juggle: unknown skill flying',
+      'skillRules/added/stab: clashes with an SRD skill',
+      'skillRules/retiredFoci/alert: not an excluded focus',
+      'skillRules/animalKen: unknown skill whisper',
+    ]);
+    // Content may not give a removed skill.
+    const riding = {
+      ...content,
+      backgrounds: content.backgrounds.map((b, i) => (i === 0 ? { ...b, freeSkill: 'ride' } : b)),
+    };
+    expect(contentReferenceErrors(srd, riding)).toContain(
+      `backgrounds/${content.backgrounds[0]?.id} free skill: unknown skill ride`,
+    );
+  });
+
   it('gives Goblins +2 Dex, +1 Int, and -2 Str', () => {
     expect(content.peoples[0]?.attributeModifiers).toEqual({ dex: 2, int: 1, str: -2 });
   });
@@ -73,7 +102,11 @@ describe('data/content', () => {
 
 describe('focus content', () => {
   it('matches each SRD bonus skill to the focus text (1.6.0 Foci.md)', () => {
-    const name = (n: string) => srd.skills.find((s) => s.name === n)?.id;
+    // A removed skill is given as its replacement (docs/rules-adaptation.md, Skills).
+    const name = (n: string) => {
+      const id = srd.skills.find((s) => s.name === n)?.id;
+      return content.skillRules.removed.find((r) => r.id === id)?.becomes ?? id;
+    };
     for (const rule of content.focusRules) {
       const text = srd.foci.find((f) => f.id === rule.id)?.levels[0]?.text ?? '';
       const one = /^Gain (\w+) as a bonus skill/.exec(text);

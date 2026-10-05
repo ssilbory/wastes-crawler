@@ -183,6 +183,28 @@ describe('world save version 1', () => {
     });
   });
 
+  it('loads a version 24 save with no prayers, show, or named monsters', () => {
+    const w = world();
+    w.benched = [w.members.pop() as (typeof w.members)[number]];
+    const save = JSON.parse(serializeWorld(w));
+    const { performedDay, bestiary, ...rest } = save;
+    expect([performedDay, bestiary]).toEqual([null, []]);
+    const unprayed = (list: Record<string, unknown>[]) =>
+      list.map((m) => Object.fromEntries(Object.entries(m).filter(([k]) => k !== 'prayedDay')));
+    const v24 = {
+      ...rest,
+      schemaVersion: 24,
+      members: unprayed(save.members),
+      benched: unprayed(save.benched),
+    };
+    const loaded = parseWorld(JSON.stringify(v24), data);
+    if (!loaded.ok) throw new Error(loaded.errors.join('; '));
+    expect(loaded.world).toMatchObject({ performedDay: null, bestiary: [] });
+    expect(
+      [...loaded.world.members, ...loaded.world.benched].every((m) => m.prayedDay === null),
+    ).toBe(true);
+  });
+
   it('round-trips benched members and the economy', () => {
     const w = world();
     w.benched = [w.members.pop() as (typeof w.members)[number]];

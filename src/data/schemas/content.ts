@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { CharacterSchema } from './character.ts';
 import { AttributeSchema, IdSchema } from './common.ts';
 import {
   EquipmentRulesSchema,
@@ -15,6 +16,8 @@ import {
   RegionSchema,
   TerrainSchema,
 } from './overland-content.ts';
+import { GroveSchema } from './grove-content.ts';
+import { SkillRulesSchema, SpellRulesSchema } from './skill-content.ts';
 import { TownRulesSchema } from './town-content.ts';
 import { SettingsDefaultsSchema, SoundCueSchema } from './settings.ts';
 import {
@@ -170,6 +173,8 @@ export const ContentSchemas = {
   mishaps: z.array(MishapSchema).min(1),
   overlandRules: OverlandRulesSchema,
   townRules: TownRulesSchema,
+  skillRules: SkillRulesSchema,
+  spellRules: SpellRulesSchema,
   npcRules: NpcRulesSchema,
   captives: z.array(CaptiveSchema).min(1),
   coachRoutes: z.array(CoachRouteSchema).min(1),
@@ -187,6 +192,7 @@ export const ContentSchemas = {
   raidRules: RaidRulesSchema,
   campaign: CampaignSchema,
   ruins: z.array(RuinSchema),
+  groves: z.array(GroveSchema),
   factions: FactionContentSchema,
   craftingRules: CraftingRulesSchema,
   components: z.array(ComponentSchema).min(1),
@@ -194,6 +200,17 @@ export const ContentSchemas = {
   craftsmen: z.array(CraftsmanSchema),
   settingsDefaults: SettingsDefaultsSchema,
   soundCues: z.array(SoundCueSchema).min(1),
+  /** The ready-made party offered when setting out with no characters of one's own. */
+  starterParty: z
+    .array(
+      z.strictObject({
+        row: z.int().min(0).max(1),
+        column: z.int().min(0).max(3),
+        character: CharacterSchema,
+      }),
+    )
+    .min(1)
+    .max(8),
 } as const;
 export type ContentData = {
   [K in keyof typeof ContentSchemas]: z.infer<(typeof ContentSchemas)[K]>;

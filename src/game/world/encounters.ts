@@ -16,6 +16,7 @@ import { reactionBonus } from './minds.ts';
 import { captiveOf, firstGuide } from './npcs.ts';
 import { regionMap } from './region.ts';
 import type { Member, World } from './types.ts';
+import { identify } from './bestiary.ts';
 
 const MAX_PER_ROW = 8;
 
@@ -108,7 +109,7 @@ export function startEncounter(
   watcher: Member | undefined,
   steps: number | null,
   where: string,
-): void {
+): PendingEncounter {
   const { rows, captive } = rolled;
   const taken = rolled.rescuers ? rescueTarget(w) : undefined;
   const nature = taken ? 'hostile' : rolled.nature;
@@ -144,6 +145,7 @@ export function startEncounter(
   const lead = `${spotter ? `${spotter} spots` : 'The party meets'} ${who}.${held}`;
   const e = setEncounter(
     w,
+    data,
     rows,
     nature,
     reaction,
@@ -160,6 +162,7 @@ export function startEncounter(
     e.patrol = rolled.patrol.key;
     note(w, `They march for ${rolled.patrol.name}.`);
   }
+  return e;
 }
 
 /**
@@ -171,6 +174,7 @@ const rescueTarget = (w: World) => alive(w).find((m) => RESCUED.includes(m.chara
 
 function setEncounter(
   w: World,
+  data: GameData,
   rows: string[][],
   nature: 'hostile' | 'wary',
   reaction: Reaction,
@@ -181,7 +185,8 @@ function setEncounter(
   lead: string,
   where: string,
 ): PendingEncounter {
-  const text = `${lead} ${MOODS[reaction]}`;
+  const known = identify(w, data, rows);
+  const text = `${lead} ${MOODS[reaction]}${known ? ` ${known}` : ''}`;
   const e: PendingEncounter = {
     enemies: rows,
     nature,
@@ -211,7 +216,7 @@ export function meetGroup(
   where = hexKey(w.position),
 ): PendingEncounter {
   const { reaction } = reactionRoll(w.rng, partyCha(w, data) + reactionBonus(w, data));
-  return setEncounter(w, rows, nature, reaction, captive, quest, true, false, lead, where);
+  return setEncounter(w, data, rows, nature, reaction, captive, quest, true, false, lead, where);
 }
 
 function partyCha(w: World, data: GameData): number {

@@ -169,8 +169,22 @@
 }
 
 .encounter .parley,
+.encounter .beast,
 .npc-panel .first-aid {
   margin-top: 8px;
+}
+
+.known-foes dl {
+  margin: 4px 0;
+}
+
+.known-foes dt {
+  font-weight: 600;
+}
+
+.known-foes dd {
+  margin: 0 0 6px;
+  font-size: 0.9em;
 }
 
 .hex.quest polygon {
@@ -189,6 +203,12 @@
   fill: #2b2420;
   stroke: #fffdf8;
   stroke-width: 1;
+}
+
+.hex .grove {
+  fill: #3f6b2a;
+  stroke: #1d2f13;
+  stroke-width: 1.5;
 }
 
 .dungeon-main {
@@ -323,4 +343,28 @@
 
 .intro-text button {
   margin-top: 1rem;
+}
+
+/* The inventory panel (Phase 17). */
+.inventory .gear {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.inventory .gear li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.inventory .gear-name {
+  flex: 1 1 100%;
+}
+
+.inventory input[type='number'] {
+  width: 4rem;
 }
