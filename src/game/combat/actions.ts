@@ -9,7 +9,7 @@ import { say } from './damage.ts';
 import { breathe } from './specials.ts';
 import { castMagic, combatMagic } from './spells.ts';
 import { shakeOff, tormentStrike } from './conditions.ts';
-import { canAct, isUp, targets } from './targeting.ts';
+import { canAct, targets } from './targeting.ts';
 import type { Action, Battle, CasterState, Combatant } from './types.ts';
 
 /** `aid`: +1 when an ally's aiding check succeeded (SRD 2.3.3). */
@@ -40,8 +40,15 @@ function smiteBoost(b: Battle, actor: Combatant, target: Combatant): AttackBoost
 function hostile(b: Battle, action: Action): boolean {
   if (action.kind === 'attack') return true;
   if (action.kind !== 'cast') return false;
-  const target = b.data.content.combatMagic.find((m) => m.id === action.magic)?.target;
-  return target === 'enemy' || target === 'enemy-row' || target === 'enemies';
+  const m = b.data.content.combatMagic.find((x) => x.id === action.magic);
+  const target = m?.target;
+  // Shattering the Glass Chimes strikes everyone about the caster (4.4.0).
+  return (
+    target === 'enemy' ||
+    target === 'enemy-row' ||
+    target === 'enemies' ||
+    m?.effect.kind === 'shatter'
+  );
 }
 
 export function act(b: Battle, actor: Combatant, action: Action): void {
@@ -53,9 +60,7 @@ export function act(b: Battle, actor: Combatant, action: Action): void {
   switch (action.kind) {
     case 'attack': {
       const attack = actor.attacks[action.attack];
-      // The Prismatic Hemicycle's mad turn on their own side (Phase 18a).
-      const mad = actor.berserk && target?.side === actor.side && target !== actor && isUp(target);
-      if (!attack || !target || !(mad || targets(b, actor, attack).includes(target))) return;
+      if (!attack || !target || !targets(b, actor, attack, actor.berserk).includes(target)) return;
       tormentStrike(b, actor);
       if (!canAct(actor)) return;
       // Smite the Wicked (Phase 14c): paid for as the attack is made, once per target a scene.
@@ -72,6 +77,10 @@ export function act(b: Battle, actor: Combatant, action: Action): void {
       return;
     case 'shake-off':
       shakeOff(b, actor);
+      return;
+    case 'end-mist':
+      actor.misted = false;
+      say(b, `${actor.name} takes form again.`);
       return;
     case 'total-defense':
       actor.totalDefense = true;

@@ -146,6 +146,18 @@ function moveChoices(b: Battle, actor: Combatant): Choice[] {
 }
 
 export function commandsFor(b: Battle, actor: Combatant): Command[] {
+  // In Wind Walking's mist there is nothing to do but take form again (4.5.0).
+  if (actor.misted) {
+    const solid = { kind: 'end-mist' as const };
+    return [
+      {
+        key: 'end-mist',
+        group: 'defend',
+        label: 'Take form again',
+        choices: [{ label: 'Take form again', action: solid }],
+      },
+    ];
+  }
   const commands = attackCommands(b, actor);
   const c = actor.caster;
   if (c) {

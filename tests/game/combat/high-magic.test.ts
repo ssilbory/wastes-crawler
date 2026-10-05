@@ -4,7 +4,7 @@ import { resolveAttack } from '../../../src/game/combat/attack.ts';
 import { act } from '../../../src/game/combat/actions.ts';
 import { monsterAction } from '../../../src/game/combat/ai.ts';
 import { commandsFor } from '../../../src/game/combat/commands.ts';
-import { subdue } from '../../../src/game/combat/conditions.ts';
+import { subdue, weakestSwing } from '../../../src/game/combat/conditions.ts';
 import { harm } from '../../../src/game/combat/damage.ts';
 import { endOfRound, takeTurn } from '../../../src/game/combat/round.ts';
 import { canUse, castMagic, combatMagic } from '../../../src/game/combat/spells.ts';
@@ -210,9 +210,45 @@ describe('High Magic on the party', () => {
     b.queue = [grukk.id];
     takeTurn(b, grukk, () => swing);
     expect(log(b).match(/Grukk moves in a blur/g)).toHaveLength(1);
+    // After a turn spent otherwise, the extra action still swings at the weakest foe in reach.
     b.queue = [grukk.id];
     takeTurn(b, grukk, () => ({ kind: 'wait' }));
-    expect(log(b).match(/Grukk moves in a blur/g)).toHaveLength(1);
+    expect(log(b).match(/Grukk moves in a blur/g)).toHaveLength(2);
+    // A swing at a foe already down goes to another; with none in reach, no strain is spent.
+    const second = standardBattle([['thug-or-militia', 'thug-or-militia']]);
+    sturdy(second, 200);
+    const [first, other] = second.combatants.filter((c) => c.side === 'enemy') as [
+      Combatant,
+      Combatant,
+    ];
+    const hero = who(second, 'Snag');
+    hero.echo = { until: 9, strain: 1 };
+    first.status = 'dead';
+    second.rng = createRng('second');
+    const before = (hero.strain as NonNullable<Combatant['strain']>).strain;
+    second.queue = [hero.id];
+    takeTurn(second, hero, () => ({ kind: 'attack', attack: 0, target: first.id }));
+    expect(hero.strain?.strain).toBe(before + 1);
+    expect(log(second)).toContain(`Snag moves in a blur`);
+    expect(log(second)).toMatch(new RegExp(`Snag (hits|misses) ${other.name}`));
+    // The fallback swing goes to the weakest foe in reach.
+    const pair = standardBattle([['thug-or-militia', 'thug-or-militia']]);
+    const [hale, hurt] = sturdy(pair, 30) as [Combatant, Combatant];
+    hurt.hp = 3;
+    expect(weakestSwing(pair, who(pair, 'Snag'))).toEqual({
+      kind: 'attack',
+      attack: 0,
+      target: hurt.id,
+    });
+    hale.hp = 1;
+    expect(weakestSwing(pair, who(pair, 'Snag'))).toMatchObject({ target: hale.id });
+    for (const c of pair.combatants) if (c.side === 'enemy') c.status = 'dead';
+    expect(weakestSwing(pair, who(pair, 'Snag'))).toBeNull();
+    other.status = 'dead';
+    second.outcome = null;
+    second.queue = [hero.id];
+    takeTurn(second, hero, () => ({ kind: 'wait' }));
+    expect(hero.strain?.strain).toBe(before + 1);
   });
 
   it('Extirpate Arcana ends the magic on every creature in the target’s row', () => {
@@ -487,5 +523,85 @@ describe('High Magic cast with no target', () => {
     const f = mage(b, spells, 5);
     for (const id of spells) expect(cast(b, f, id)).toBe(true);
     expect(b.combatants.some((c) => c.mantle || c.torment)).toBe(false);
+  });
+});
+
+describe('the review fixes for High Magic', () => {
+  it('lets the Eidolon’s Shock knock out but never kill', () => {
+    const b = standardBattle([['thug-or-militia']]);
+    const f = mage(b, ['calculation-of-the-phantasmal-eidolon'], 7);
+    cast(b, f, 'calculation-of-the-phantasmal-eidolon');
+    const eidolon = b.combatants.at(-1) as Combatant;
+    const thug = who(b, 'foe-0-0');
+    Object.assign(thug, { hp: 1, ac: 13 });
+    // A natural 1 misses, and its 2 Shock against AC 13 would kill.
+    b.rng = scriptedRng([1]);
+    resolveAttack(b, eidolon, eidolon.attacks[0] as Combatant['attacks'][number], thug);
+    expect(thug.status).toBe('out');
+  });
+
+  it('spares the unliving from Torment and Congelating Cold', () => {
+    const b = standardBattle([['automaton-laborer', 'thug-or-militia']]);
+    const [bot, thug] = sturdy(b) as [Combatant, Combatant];
+    const f = mage(b, ['the-torment-of-tumefaction', 'exhalation-of-congelating-cold'], 4);
+    cast(b, f, 'the-torment-of-tumefaction', { target: bot.id });
+    expect(bot.torment).toBeNull();
+    b.rng = scriptedRng([3, 3, 20]);
+    cast(b, f, 'exhalation-of-congelating-cold', { row: 0 });
+    expect([bot.hp, thug.hp]).toEqual([40, 37]);
+  });
+
+  it('never stands a summon in a fallen ally’s place', () => {
+    const b = standardBattle([['thug-or-militia']]);
+    for (let column = 2; column < 4; column++) {
+      const fallen = createBattle({
+        data,
+        rng: createRng('x'),
+        party: [{ character: starter('snag') }],
+        enemies: [['thug-or-militia']],
+      }).combatants[0] as Combatant;
+      b.combatants.push({ ...fallen, id: `dead-${column}`, row: 0, column, status: 'dead' });
+    }
+    const f = mage(b, ['calculation-of-the-phantasmal-eidolon'], 7);
+    cast(b, f, 'calculation-of-the-phantasmal-eidolon');
+    expect(b.combatants.at(-1)).toMatchObject({ row: 1, column: 2 });
+  });
+
+  it('counts no death in the party when a summoned servant falls', () => {
+    const b = standardBattle([['thug-or-militia']]);
+    const f = mage(b, ['calculation-of-the-phantasmal-eidolon'], 7);
+    cast(b, f, 'calculation-of-the-phantasmal-eidolon');
+    (b.combatants.at(-1) as Combatant).status = 'dead';
+    b.outcome = 'party';
+    expect(concludeBattle(b).deaths).toBe(0);
+  });
+
+  it('has the mad swing as their routine calls for, at those in reach', () => {
+    const b = standardBattle([['thug-or-militia', 'thug-or-militia'], ['thug-or-militia']]);
+    const [front, other, rear] = b.combatants.filter((c) => c.side === 'enemy') as [
+      Combatant,
+      Combatant,
+      Combatant,
+    ];
+    front.berserk = true;
+    b.rng = scriptedRng([1]);
+    expect(monsterAction(b, front)).toEqual({ kind: 'attack', attack: 0, target: other.id });
+    // From the rear row a melee swing reaches no one, mad or not.
+    rear.berserk = true;
+    b.rng = createRng('rear');
+    expect(monsterAction(b, rear)).toEqual({ kind: 'wait' });
+    // A routine's forced swing is the one it makes.
+    front.forcedAttack = 0;
+    b.rng = scriptedRng([1]);
+    expect(monsterAction(b, front)).toEqual({ kind: 'attack', attack: 0, target: other.id });
+  });
+
+  it('breaks Sanctified Ward when the Glass Chimes are shattered', () => {
+    const b = standardBattle([['thug-or-militia']]);
+    const f = mage(b, ['the-glass-chimes-of-the-bamboo-terrace'], 5);
+    f.sanctified = true;
+    b.rng = createRng('chimes');
+    act(b, f, { kind: 'cast', magic: 'the-glass-chimes-of-the-bamboo-terrace' });
+    expect(f.sanctified).toBe(false);
   });
 });

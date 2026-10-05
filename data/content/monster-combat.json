@@ -798,5 +798,10 @@
     "tags": [],
     "mind": "monster",
     "nonLethal": true
+  },
+  {
+    "id": "elemental-guardian",
+    "tags": [],
+    "mind": "monster"
   }
 ]

@@ -166,6 +166,13 @@ export interface Combatant {
   revives: { hp: number; strain: number } | null;
   subdues: boolean;
   summoned: { by: string; monster: string } | null;
+  /**
+   * Phase 18b Elementalist magic: Flame Without End's extra damage on a hit, Like the Stones'
+   * points ignored from each harm, and Wind Walking's mist.
+   */
+  flame: number;
+  stone: number;
+  misted: boolean;
 }
 
 export type Action =
@@ -178,6 +185,8 @@ export type Action =
   | { kind: 'gear'; item: number; location: 'readied' | 'stowed' }
   /** Spend the Main Action trying to throw off the Torment of Tumefaction. */
   | { kind: 'shake-off' }
+  /** Spend the Main Action taking form again out of Wind Walking's mist. */
+  | { kind: 'end-mist' }
   | { kind: 'wait' };
 
 export type Outcome = 'party' | 'enemy' | 'draw';
@@ -214,6 +223,12 @@ export interface Battle {
   dark: boolean;
   /** The fight is underground, where Deluge of Hell can't be cast. */
   indoors: boolean;
+  /**
+   * Elemental Vallation's walls (Phase 18b): each burns, once, every foe of `side` that crosses
+   * it to strike in melee; and Fury of the Elements, wandering the foe's rows.
+   */
+  walls: { side: SideId; damage: Dice; bonus: number; crossed: string[] }[];
+  fury: { side: SideId; row: number; damage: Dice; roundsLeft: number } | null;
   /** God Wills It's bonus to damage and Shock, by side (Phase 14c). */
   damageBonus: Record<SideId, number>;
   log: string[] | null;

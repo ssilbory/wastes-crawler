@@ -137,7 +137,10 @@ export function concludeBattle(b: Battle, decide: RescueDecider = firstRescue): 
   const rounds = Math.min(b.round, MAX_ROUNDS);
   if (outcome === 'party') tendDying(b, decide);
   if (outcome !== 'enemy') reassemble(b);
-  const deaths = b.combatants.filter((c) => c.side === 'party' && c.status === 'dead').length;
+  // A summoned servant's end is no death in the party.
+  const deaths = b.combatants.filter(
+    (c) => c.side === 'party' && c.status === 'dead' && !c.summoned,
+  ).length;
   return { outcome, rounds, deaths, battle: b };
 }
 

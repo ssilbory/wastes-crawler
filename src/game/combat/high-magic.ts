@@ -40,7 +40,10 @@ function burst(
   level: number,
   resists: Resists,
 ): void {
-  const victims = rowOf(b, actor, row).filter((t) => !e.requiresTag || t.tags.has(e.requiresTag));
+  const victims = rowOf(b, actor, row).filter(
+    (t) =>
+      (!e.requiresTag || t.tags.has(e.requiresTag)) && !(e.livingOnly && t.tags.has('unliving')),
+  );
   const total = roll(b.rng, scaled(e.perLevel, level, e.levelsPerDie)).total;
   for (const t of victims) {
     if (t.kind === 'monster' && t.hitDice <= e.slayHitDice) {
@@ -87,6 +90,9 @@ function dispel(b: Battle, target: Combatant): void {
       torment: null,
       berserk: false,
       stunned: false,
+      flame: 0,
+      stone: 0,
+      misted: false,
     });
   }
   say(b, `The magic on ${target.name}'s row is swept away.`);
@@ -130,10 +136,13 @@ function skyward(
 }
 
 function summon(b: Battle, actor: Combatant, e: Effect<'summon'>): void {
+  const mine = (c: Combatant) => c.summoned?.by === actor.id && c.summoned.monster === e.monster;
+  if (e.one && b.combatants.some((c) => mine(c) && isUp(c))) {
+    say(b, `${actor.name} already has a servant of that kind.`);
+    return;
+  }
   const taken = (row: number, column: number) =>
-    b.combatants.some(
-      (c) => c.side === actor.side && c.row === row && c.column === column && c.status !== 'dead',
-    );
+    b.combatants.some((c) => c.side === actor.side && c.row === row && c.column === column);
   const formation = b.layout[actor.side] === 'formation';
   const slots = formation
     ? Array.from({ length: FORMATION_ROWS * ROW_SLOTS }, (_, i) => ({
@@ -151,8 +160,7 @@ function summon(b: Battle, actor: Combatant, e: Effect<'summon'>): void {
     ...slot,
     group: slot.row,
     side: actor.side,
-    hp: e.hp,
-    maxHp: e.hp,
+    ...(e.hp ? { hp: e.hp, maxHp: e.hp } : {}),
     summoned: { by: actor.id, monster: e.monster },
   });
   b.combatants.push(s);
@@ -237,7 +245,8 @@ export function highMagicEffect(
       if (target) skyward(b, actor, e, target, level);
       return true;
     case 'torment':
-      if (target) {
+      // Only a living creature can be tormented (4.4.0).
+      if (target && !target.tags.has('unliving')) {
         target.torment = {
           damage: e.perLevel * level,
           lasting: target.hitDice < level,

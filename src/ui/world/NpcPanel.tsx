@@ -40,7 +40,8 @@ export function NpcPanel(props: { world: World; onChange: () => void }) {
       .filter((m) => !m.dead && m.character.hp.current < m.character.hp.max)
       .map((m) => ({ id: m.id, name: m.character.name })),
     ...w.npcs
-      .filter((n) => n.kind !== 'undead' && n.hp < n.maxHp)
+      // Bandages do nothing for the undead, summoned servants, or trees.
+      .filter((n) => !['undead', 'summon', 'tree'].includes(n.kind) && n.hp < n.maxHp)
       .map((n) => ({ id: n.id, name: n.name })),
   ];
   const [healer, setHealer] = useState('');

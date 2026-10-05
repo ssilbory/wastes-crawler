@@ -117,5 +117,47 @@ describe('groves of walking trees (Sam’s calls)', () => {
     expect(errors({ enemies: [['ent']] })).toEqual([
       'groves/whispering-grove: unknown monster ent',
     ]);
+    // A lake, a road out, and a garrison post are no place for a grove.
+    expect(errors({ col: 5, row: 4 })).toEqual([
+      'groves/whispering-grove: stands on impassable ground',
+    ]);
+    expect(errors({ col: 23, row: 8 })).toContain('groves/whispering-grove: stands on a road out');
+    const posted = {
+      ...data.content,
+      groves: [grove],
+      regions: data.content.regions.map((r) =>
+        r.id === 'borderlands'
+          ? { ...r, garrisons: [{ order: 'x', col: grove.col, row: grove.row, enemies: [['x']] }] }
+          : r,
+      ),
+    };
+    expect(contentReferenceErrors(data.srd, posted)).toContain(
+      'groves/whispering-grove: stands on a garrison post',
+    );
+  });
+});
+
+describe('groves and the roads', () => {
+  it('never cut a hex off from the region’s start', () => {
+    for (const region of data.content.regions) {
+      const w = world();
+      w.region = region.id;
+      const map = regionMap(data, region.id);
+      const start = region.sites.find((x) => x.id === region.start) ?? (region.sites[0] as Hex);
+      const all = new Set<string>();
+      for (let row = 0; row < map.height; row++)
+        for (let col = 0; col < map.width; col++)
+          if (map.costOf({ col, row }) !== null) all.add(hexKey({ col, row }));
+      const avoid = hexesToAvoid(w, data, null);
+      for (const key of all) {
+        if (avoid.has(key)) continue;
+        const [col, row] = key.split(',').map(Number) as [number, number];
+        if (findPath(map, start, { col, row }, all) === null) continue;
+        expect(
+          findPath(map, start, { col, row }, all, avoid),
+          `${region.id} ${key}`,
+        ).not.toBeNull();
+      }
+    }
   });
 });

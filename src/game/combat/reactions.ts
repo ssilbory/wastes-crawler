@@ -40,6 +40,11 @@ export function vitalFurnace(b: Battle, target: Combatant, amount: number): bool
  * Unliving Persistence does it for anyone in the party for the Necromancer's Effort for the day.
  */
 export function keepsDying(b: Battle, target: Combatant): boolean {
+  // Like the Stones: a body of stone stabilizes at zero on its own (4.5.0).
+  if (target.stone > 0) {
+    say(b, `${target.name} falls, still as stone, but lives.`);
+    return true;
+  }
   const c = target.caster;
   if (c?.arts.includes('vital-furnace') && worksNow(target, 'vital-furnace')) {
     say(b, `${target.name} falls, but their life burns on.`);

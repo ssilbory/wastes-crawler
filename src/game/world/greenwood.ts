@@ -7,8 +7,8 @@
 import { characterLevel } from '../../rules/progression.ts';
 import type { GameData } from '../character/context.ts';
 import { cannotCast } from './casting.ts';
-import { note } from './members.ts';
-import { addNpc, freshName, monsterOf, npcRoom } from './npcs.ts';
+import { alive, note } from './members.ts';
+import { addNpc, freshName, monsterOf, npcRoom, removeNpc } from './npcs.ts';
 import type { TownResult } from './services.ts';
 import type { Member, Npc, World } from './types.ts';
 
@@ -64,4 +64,13 @@ export function mendTree(
   n.hp = n.maxHp;
   note(w, `${(m as Member).character.name} mends ${n.name}.`);
   return { ok: true };
+}
+
+/** At nightfall, trees whose caster is dead or gone from the party root where they stand. */
+export function nightForTrees(w: World): void {
+  for (const n of w.npcs.filter((x) => x.kind === 'tree')) {
+    if (alive(w).some((m) => m.id === n.master)) continue;
+    removeNpc(w, n.id);
+    note(w, `With no one to follow, ${n.name} roots where it stands.`);
+  }
 }

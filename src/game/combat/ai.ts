@@ -57,10 +57,14 @@ export function monsterAction(b: Battle, actor: Combatant): Action {
  * would kill it spends its action trying to throw it off, if it still can.
  */
 function cursedAction(b: Battle, actor: Combatant): Action | null {
+  if (actor.misted) return { kind: 'end-mist' };
   if (actor.berserk) {
-    const near = b.combatants.filter((c) => c.side === actor.side && c !== actor && isUp(c));
-    if (near.length > 0 && actor.attacks.length > 0)
-      return { kind: 'attack', attack: 0, target: pickRandom(b, near).id };
+    // The mad strike at their own side with the swing their routine calls for, as reach allows.
+    const indices = actor.forcedAttack !== null ? [actor.forcedAttack] : actor.attacks.keys();
+    for (const index of indices) {
+      const near = targets(b, actor, actor.attacks[index] as Attack, true);
+      if (near.length > 0) return { kind: 'attack', attack: index, target: pickRandom(b, near).id };
+    }
   }
   const t = actor.torment;
   if (t && !t.tried && !t.lasting && t.damage >= actor.hp) return { kind: 'shake-off' };
@@ -158,6 +162,8 @@ function noncombatantAction(b: Battle, actor: Combatant): Action {
 }
 
 export function partyAction(b: Battle, actor: Combatant): Action {
+  // A misted ally stays out of harm's way while badly hurt (Phase 18b).
+  if (actor.misted) return actor.hp * 2 <= actor.maxHp ? { kind: 'wait' } : { kind: 'end-mist' };
   const first = firstDying(b, actor);
   // Healing magic revives the Mortally Wounded, even in melee (Phases 14c and 14d).
   const healing = HEALING.map((id) => combatMagic(b, id)).find(

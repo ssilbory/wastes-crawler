@@ -37,6 +37,11 @@ export function combatReferenceErrors(srd: SrdData, content: ContentData): strin
     // Plants give components instead (Phase 18a).
     if (c.tags.includes('plant') && c.loot)
       errors.push(`monsterCombat/${c.id}: plants give components, not loot`);
+    if (
+      c.tags.includes('plant') &&
+      !content.components.some((x) => x.sources.some((s) => s.monster === c.id))
+    )
+      errors.push(`monsterCombat/${c.id}: a plant needs a component to drop`);
   }
   for (const m of content.combatMagic) {
     const known = m.source === 'spell' ? gameSpells(srd, content) : srd.arts;

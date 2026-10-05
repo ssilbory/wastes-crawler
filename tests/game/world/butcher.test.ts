@@ -69,7 +69,14 @@ describe('beasts give rations (Phase 17)', () => {
           : m,
       ),
     };
-    // Plants give crafting components instead (Phase 18a).
+    // Plants give crafting components instead, so each needs one to drop (Phase 18a).
+    const bare = {
+      ...data.content,
+      components: data.content.components.filter((c) => c.id !== 'spore-essence'),
+    };
+    expect(combatReferenceErrors(data.srd, bare)).toContain(
+      'monsterCombat/mushroom-sporeling: a plant needs a component to drop',
+    );
     expect(combatReferenceErrors(data.srd, content)).toEqual([
       'monsterCombat/cave-bear: beasts give rations, not loot',
       'monsterCombat/mushroom-king: plants give components, not loot',

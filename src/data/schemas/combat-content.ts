@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { AttributeSchema, DiceSchema, IdSchema } from './common.ts';
+import { ElementalistEffects } from './elementalist-content.ts';
 import { HighMagicEffects } from './high-magic-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
@@ -177,8 +178,8 @@ export const CombatEffectSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('repose'), skill: IdSchema }),
   /** Sight that ignores darkness: the user's, or with `party` the whole side's (Phase 15). */
   z.strictObject({ kind: z.literal('dark-sight'), party: z.boolean() }),
-  /** Steps of Air: the target flies for a round per caster level. */
-  z.strictObject({ kind: z.literal('flight') }),
+  /** Steps of Air: the target flies for a round per caster level; Boreal Wings, for the scene. */
+  z.strictObject({ kind: z.literal('flight'), scene: z.literal(true).optional() }),
   /** Petrifying Stare: a failed save lands a flyer and roots it for half the caster level. */
   z.strictObject({ kind: z.literal('petrify'), save: Save }),
   /** Sanctified Ward: +4 AC and saves, no Shock, and foes look elsewhere, until a hostile act. */
@@ -188,6 +189,7 @@ export const CombatEffectSchema = z.discriminatedUnion('kind', [
   /** Make an enemy reroll a successful save and keep the worse (Inexorable Effect). */
   z.strictObject({ kind: z.literal('force-save-reroll') }),
   ...HighMagicEffects,
+  ...ElementalistEffects,
 ]);
 export type CombatEffect = z.infer<typeof CombatEffectSchema>;
 

@@ -74,6 +74,11 @@ describe('summoned servants after the fight (Phase 18a)', () => {
     applyBattle(full.w, data, full.fight, full.result, null);
     expect(full.w.npcs.some((n) => n.kind === 'summon')).toBe(false);
     expect(full.w.log.join('\n')).toContain('Phantasmal Eidolon fades, with no room');
+    // A servant called up on the enemy's side never joins the party.
+    const theirs = summoned();
+    theirs.eidolon.side = 'enemy';
+    applyBattle(theirs.w, data, theirs.fight, theirs.result, null);
+    expect(theirs.w.npcs).toEqual([]);
     const slain = summoned();
     slain.eidolon.status = 'dead';
     applyBattle(slain.w, data, slain.fight, slain.result, null);
@@ -85,5 +90,31 @@ describe('summoned servants after the fight (Phase 18a)', () => {
     applyBattle(w, data, fight, result, null);
     expect(dismiss(w, data, w.npcs[0]?.id ?? '')).toEqual({ ok: true });
     expect(w.log.at(-1)).toContain('Phantasmal Eidolon is dismissed and fades.');
+  });
+});
+
+describe('one guardian to a caster', () => {
+  it('lets a new Elemental Guardian take the old one’s place', () => {
+    const w = world();
+    w.position = { col: 5, row: 9 };
+    const fizz = member(w, 'Fizzwick');
+    const old = addNpc(w, data, 'summon', 'elemental-guardian', 'elemental-guardian', 'Old', true);
+    Object.assign(old ?? {}, { master: fizz.id });
+    w.encounter = encounter([['thug-or-militia']]);
+    const fight = encounterBattle(w, data);
+    const b = fight.battle;
+    const f = b.combatants.find((c) => c.name === 'Fizzwick') as Combatant;
+    Object.assign(f.caster as CasterState, {
+      level: 7,
+      arts: [],
+      prepared: ['elemental-guardian'],
+      spellsLeft: 1,
+    });
+    castMagic(b, f, 'elemental-guardian', undefined, undefined);
+    for (const c of b.combatants) if (c.side === 'enemy') c.status = 'dead';
+    b.outcome = 'party';
+    applyBattle(w, data, fight, { outcome: 'party', rounds: 1, deaths: 0, battle: b }, null);
+    expect(w.npcs.map((n) => n.name)).toEqual(['Elemental Guardian']);
+    expect(w.log.join('\n')).toContain('Old fades as another takes its place.');
   });
 });

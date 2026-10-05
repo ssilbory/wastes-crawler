@@ -9,10 +9,19 @@ export function gameSpells(srd: SrdData, content: ContentData): GameSpell[] {
   return [...srd.spells, ...content.spellRules.added];
 }
 
-/** Problems with the added spells: none may share an SRD spell's id. */
+/** Added spells may not share an SRD spell's id; the excluded and outside lists name real spells. */
 export function spellRuleErrors(srd: SrdData, content: ContentData): string[] {
-  const ids = new Set(srd.spells.map((s) => s.id));
-  return content.spellRules.added
-    .filter((s) => ids.has(s.id))
-    .map((s) => `spellRules/added/${s.id}: clashes with an SRD spell`);
+  const srdIds = new Set(srd.spells.map((s) => s.id));
+  const ids = new Set(gameSpells(srd, content).map((s) => s.id));
+  const rules = content.spellRules;
+  return [
+    ...rules.added
+      .filter((s) => srdIds.has(s.id))
+      .map((s) => `spellRules/added/${s.id}: clashes with an SRD spell`),
+    ...(['excluded', 'outsideCombat'] as const).flatMap((list) =>
+      rules[list]
+        .filter((id) => !ids.has(id))
+        .map((id) => `spellRules/${list}: unknown spell ${id}`),
+    ),
+  ];
 }

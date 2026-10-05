@@ -11,7 +11,8 @@ import { addStrain } from '../../rules/strain.ts';
 import { effectiveAc, harm, save, say } from './damage.ts';
 import { attackSteps, hitModifier, isUp } from './targeting.ts';
 import { artEffect, counterSpell, retainsSpell } from './arts.ts';
-import { highMagicEffect } from './high-magic.ts';
+import { elementalistEffect } from './elementalist.ts';
+import { highMagicEffect, type Resists } from './high-magic.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
 import { gameSpells } from '../../data/spells.ts';
 
@@ -260,10 +261,11 @@ export function castMagic(
       }
       return true;
     default:
-      if (!artEffect(b, actor, e, target))
-        highMagicEffect(b, actor, e, target, row, (t, type, mod) =>
-          enemySave(b, actor, t, type, mod),
-        );
+      if (!artEffect(b, actor, e, target)) {
+        const resists: Resists = (t, type, mod) => enemySave(b, actor, t, type, mod);
+        if (!highMagicEffect(b, actor, e, target, row, resists))
+          elementalistEffect(b, actor, e, target, row, resists);
+      }
       return true;
   }
 }

@@ -22,6 +22,8 @@ export const HighMagicEffects = [
     save: Save,
     slayHitDice: z.int().min(0),
     requiresTag: z.literal('plant').optional(),
+    /** Only living creatures are hurt: not the `unliving`. */
+    livingOnly: z.literal(true).optional(),
     rootOnFail: DiceSchema.optional(),
     outdoorsOnly: z.literal(true).optional(),
     backlash: Save.optional(),
@@ -52,8 +54,16 @@ export const HighMagicEffects = [
   z.strictObject({ kind: z.literal('evert'), perLevel: DiceSchema, save: Save }),
   /** The Sigil's gust: all but large creatures in the row save or lose their next action and take `damage`. */
   z.strictObject({ kind: z.literal('gust'), save: Save, damage: DiceSchema }),
-  /** Calculation of the Phantasmal Eidolon: the monster, with `hp`, fights beside the caster until dawn. */
-  z.strictObject({ kind: z.literal('summon'), monster: IdSchema, hp: z.int().min(1) }),
+  /**
+   * A servant fights beside the caster until dawn: the Phantasmal Eidolon with a fixed `hp`, or the
+   * Elementalist's Guardian with its rolled hit points, `one` to a caster at a time.
+   */
+  z.strictObject({
+    kind: z.literal('summon'),
+    monster: IdSchema,
+    hp: z.int().min(1).optional(),
+    one: z.literal(true).optional(),
+  }),
   /** Banishment: the row saves to return next round; `trappedHitDice` or fewer can't save. */
   z.strictObject({ kind: z.literal('banish'), save: Save, trappedHitDice: z.int().min(0) }),
   /** The Dazzling Prismatic Hemicycle: every foe saves or rolls a d6 for its fate. */

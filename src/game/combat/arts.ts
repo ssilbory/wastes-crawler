@@ -13,6 +13,8 @@ import { artReady, spendDay, worksNow } from './reactions.ts';
 import { canAct } from './targeting.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
 
+/** Rounds that outlast any fight. */
+const SCENE_ROUNDS = 100;
 const used = (c: CasterState, art: string) => c.uses[art] ?? 0;
 const use = (c: CasterState, art: string) => (c.uses[art] = used(c, art) + 1);
 
@@ -30,7 +32,8 @@ export function artEffect(
         x.seesInDark = true;
       return true;
     case 'flight':
-      if (target) target.flyingRounds = c.level;
+      // Boreal Wings lasts the scene (4.5.0).
+      if (target) target.flyingRounds = e.scene ? SCENE_ROUNDS : c.level;
       return true;
     case 'petrify':
       if (target && !save(b, target, e.save).success) {

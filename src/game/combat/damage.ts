@@ -20,6 +20,14 @@ export function harm(b: Battle, target: Combatant, amount: number): void {
     return;
   }
   if (target.status === 'asleep') target.status = 'active';
+  // Like the Stones: the first points of every harm are shrugged off (4.5.0).
+  if (target.stone > 0) {
+    amount -= target.stone;
+    if (amount <= 0) {
+      say(b, `The blow glances off ${target.name}'s stony flesh.`);
+      return;
+    }
+  }
   // Wrath of the Most High falls with the first damage before it lapses (Phase 14c).
   if (target.wrath) {
     if (b.round <= target.wrath.until) amount += target.wrath.bonus;

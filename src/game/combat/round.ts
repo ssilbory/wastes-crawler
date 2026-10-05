@@ -8,7 +8,7 @@ import { act } from './actions.ts';
 import { monsterAction, partyAction } from './ai.ts';
 import { freeActions } from './free-actions.ts';
 import { say } from './damage.ts';
-import { echoes, quickens, roundPasses } from './conditions.ts';
+import { echoes, landing, quickens, roundPasses, weakestSwing } from './conditions.ts';
 import { checkMorale } from './morale.ts';
 import { canAct, isUp, targets } from './targeting.ts';
 import type { Attack, Battle, Combatant, Controller } from './types.ts';
@@ -86,12 +86,16 @@ export function takeTurn(b: Battle, actor: Combatant, controller: Controller): v
   quickened(b, actor, controller);
 }
 
-/** Resounding Temporal Echo's extra Main Action: an attack, never magic (4.4.0). */
+/**
+ * Resounding Temporal Echo's extra Main Action: an attack, never magic (4.4.0). The one the
+ * controller asks for if it can land, else a swing at the weakest foe in reach; strain is paid
+ * only when there is a swing to make.
+ */
 function quickened(b: Battle, actor: Combatant, controller: Controller): void {
   if (!quickens(b, actor)) return;
-  const action = controller(b, actor);
-  if (action.kind !== 'attack' || !echoes(b, actor)) return;
-  act(b, actor, action);
+  const swing = landing(b, actor, controller(b, actor)) ?? weakestSwing(b, actor);
+  if (!swing || !echoes(b, actor)) return;
+  act(b, actor, swing);
   checkMorale(b);
   checkEnd(b);
 }

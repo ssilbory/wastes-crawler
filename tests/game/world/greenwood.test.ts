@@ -52,6 +52,20 @@ describe('the Elementalist tree spells (Sam’s calls)', () => {
     expect(contentReferenceErrors(data.srd, clash)).toContain(
       'spellRules/added/phobic-storm: clashes with an SRD spell',
     );
+    const typos = {
+      ...data.content,
+      spellRules: {
+        ...data.content.spellRules,
+        excluded: ['grinding-gease'],
+        outsideCombat: ['raise-corps'],
+      },
+    };
+    expect(
+      contentReferenceErrors(data.srd, typos).filter((e) => e.startsWith('spellRules')),
+    ).toEqual([
+      'spellRules/excluded: unknown spell grinding-gease',
+      'spellRules/outsideCombat: unknown spell raise-corps',
+    ]);
   });
 
   it('wake saplings to the caster’s level and one elder tree, anywhere', () => {
@@ -148,5 +162,20 @@ describe('the Elementalist tree spells (Sam’s calls)', () => {
     addNpc(w, data, 'hireling', 'guard', 'thug-or-militia', null, true);
     f.dead = true;
     expect(greenwoodView(w, data)).toEqual([]);
+  });
+
+  it('root where they stand at nightfall once their caster is gone', () => {
+    const w = world();
+    const f = druid(w, 7);
+    wakeTree(w, data, f.id, 'rouse-the-sapling');
+    w.rng = createRng('night');
+    endOfDay(w, data);
+    expect(w.npcs).toHaveLength(1);
+    f.dead = true;
+    endOfDay(w, data);
+    expect(w.npcs).toEqual([]);
+    expect(w.log.join('\n')).toContain(
+      'With no one to follow, Walking Sapling roots where it stands.',
+    );
   });
 });

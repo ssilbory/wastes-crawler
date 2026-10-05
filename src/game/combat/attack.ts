@@ -4,7 +4,7 @@
 // (1.5.18), and creature resistances and on-hit effects (specials.ts).
 import { netSteps } from '../../rules/advantage.ts';
 import { attackRoll, hitDamage, shockDamage, type ShockContext } from '../../rules/attacks.ts';
-import { mantleCut, subdue } from './conditions.ts';
+import { crossWall, mantleCut, subdue } from './conditions.ts';
 import { effectiveAc, harm, save, say } from './damage.ts';
 import { afterHit, resisted } from './specials.ts';
 import { negatesUndead } from './reactions.ts';
@@ -41,6 +41,8 @@ function missShock(b: Battle, attacker: Combatant, target: Combatant, attack: At
     return;
   }
   const dealt = resisted(target, attack, amount);
+  // The Phantasmal Eidolon's Shock can't kill either (4.4.0).
+  if (subdue(b, attacker, target, dealt)) return;
   say(b, `${attacker.name} misses ${target.name} but deals ${dealt} Shock.`);
   harm(b, target, dealt);
 }
@@ -59,7 +61,7 @@ export function resolveAttack(
   target: Combatant,
   boost: AttackBoost | null = null,
 ): void {
-  if (!mantleCut(b, actor, target, attack)) return;
+  if (!crossWall(b, actor, attack) || !mantleCut(b, actor, target, attack)) return;
   // Red Harvest's +4 is spent on the next hit roll (Phase 15).
   const harvest = actor.nextHitBonus;
   actor.nextHitBonus = 0;
@@ -87,7 +89,8 @@ export function resolveAttack(
       {
         dice: attack.damage,
         attributeModifier: 0,
-        bonus: attack.damageBonus + blessed,
+        // Flame Without End adds to the hit's damage but not to Shock (4.5.0).
+        bonus: attack.damageBonus + blessed + actor.flame,
         shock: attack.mode === 'melee' ? attack.shock : null,
         shockBonus: blessed,
       },

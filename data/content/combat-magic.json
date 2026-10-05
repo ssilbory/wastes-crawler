@@ -441,7 +441,8 @@
         "count": 1,
         "sides": 4,
         "modifier": 0
-      }
+      },
+      "livingOnly": true
     }
   },
   {
@@ -575,6 +576,97 @@
       "slayHitDice": 4,
       "outdoorsOnly": true,
       "backlash": "mental"
+    }
+  },
+  {
+    "id": "boreal-wings",
+    "source": "spell",
+    "target": "ally",
+    "effect": {
+      "kind": "flight",
+      "scene": true
+    }
+  },
+  {
+    "id": "flame-without-end",
+    "source": "spell",
+    "target": "ally",
+    "effect": {
+      "kind": "flame-weapon",
+      "bonus": 2
+    }
+  },
+  {
+    "id": "elemental-vallation",
+    "source": "spell",
+    "target": "place",
+    "effect": {
+      "kind": "wall",
+      "damage": {
+        "count": 3,
+        "sides": 6,
+        "modifier": 0
+      }
+    }
+  },
+  {
+    "id": "like-the-stones",
+    "source": "spell",
+    "target": "self",
+    "effect": {
+      "kind": "stone-form",
+      "ignore": 3
+    }
+  },
+  {
+    "id": "wind-walking",
+    "source": "spell",
+    "target": "any",
+    "effect": {
+      "kind": "mist"
+    }
+  },
+  {
+    "id": "calcifying-scourge",
+    "source": "spell",
+    "target": "enemy",
+    "effect": {
+      "kind": "calcify",
+      "save": "physical",
+      "slowed": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    }
+  },
+  {
+    "id": "elemental-guardian",
+    "source": "spell",
+    "target": "place",
+    "limit": "scene",
+    "effect": {
+      "kind": "summon",
+      "monster": "elemental-guardian",
+      "one": true
+    }
+  },
+  {
+    "id": "fury-of-the-elements",
+    "source": "spell",
+    "target": "enemy-row",
+    "effect": {
+      "kind": "fury",
+      "damage": {
+        "count": 10,
+        "sides": 6,
+        "modifier": 0
+      },
+      "rounds": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
     }
   }
 ]
