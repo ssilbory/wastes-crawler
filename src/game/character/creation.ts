@@ -192,6 +192,7 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
     skills,
     focusSlots: slots,
     focusSkillsBefore,
+    classReplacing: cls.replacing,
     foci,
     modifierBonuses,
     inventory,

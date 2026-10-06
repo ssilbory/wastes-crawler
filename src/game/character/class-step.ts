@@ -26,6 +26,8 @@ export interface ClassOutcome {
   progression: Progression | undefined;
   option: ClassOption | undefined;
   skills: Skills;
+  /** Each bonus skill, by position, that lands on a skill already at level-1; null where none. */
+  replacing: (string | null)[];
 }
 
 /**
@@ -38,38 +40,37 @@ export function evaluateClass(
   replacements: readonly (string | null)[],
   skills: Skills | null,
 ): ClassOutcome {
-  const none = { progression: undefined, option: undefined, skills: skills ?? {} };
+  const none = { progression: undefined, option: undefined, skills: skills ?? {}, replacing: [] };
   if (classId === null) return { status: INCOMPLETE, ...none };
   const option = classOption(data, classId);
   const progression = option ? findProgression(data, classId) : undefined;
   if (!option || !progression) {
     return { status: fail(`${classId} isn't a starting class in this version`), ...none };
   }
-  if (!skills) return { status: OK, progression, option, skills: {} };
+  if (!skills) return { status: OK, progression, option, skills: {}, replacing: [] };
   let next = skills;
+  let status = OK;
+  const replacing: (string | null)[] = [];
+  // Every bonus skill is tried, so each one needing a replacement is known at once.
   for (const [i, skill] of classBonusSkills(data, option).entries()) {
-    let gained = addCreationSkill(next, skill);
-    if (gained === 'already-level-1') {
-      const replacement = replacements[i] ?? null;
-      if (replacement === null) {
-        return {
-          status: fail(`${skill} is already level-1; choose a replacement`),
-          progression,
-          option,
-          skills: next,
-        };
-      }
-      gained = isSkill(data, replacement) ? addCreationSkill(next, replacement) : 'already-level-1';
-      if (gained === 'already-level-1') {
-        return {
-          status: fail(`can't replace ${skill} with ${replacement}`),
-          progression,
-          option,
-          skills: next,
-        };
-      }
+    const direct = addCreationSkill(next, skill);
+    replacing.push(direct === 'already-level-1' ? skill : null);
+    if (direct !== 'already-level-1') {
+      next = direct;
+      continue;
     }
-    next = gained;
+    const replacement = replacements[i] ?? null;
+    const gained =
+      replacement !== null && isSkill(data, replacement)
+        ? addCreationSkill(next, replacement)
+        : 'already-level-1';
+    if (gained !== 'already-level-1') next = gained;
+    else if (status === OK)
+      status = fail(
+        replacement === null
+          ? `${skill} is already level-1; choose a replacement`
+          : `can't replace ${skill} with ${replacement}`,
+      );
   }
-  return { status: OK, progression, option, skills: next };
+  return { status, progression, option, skills: next, replacing };
 }
