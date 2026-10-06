@@ -13,6 +13,7 @@ import { raidedText } from '../../render/setting-view.ts';
 import { InventoryPanel } from '../world/InventoryPanel.tsx';
 import { PartyPanel } from '../world/PartyPanel.tsx';
 import { PurgePanel } from '../world/PurgePanel.tsx';
+import { FormationPanel } from '../world/FormationPanel.tsx';
 import { QuestsTab } from './QuestsTab.tsx';
 import { ServicesTab } from './ServicesTab.tsx';
 import { ShopTab } from './ShopTab.tsx';
@@ -111,6 +112,7 @@ export function TownScreen(props: {
         </div>
         <div class="world-side">
           <PartyPanel members={w.members} />
+          <FormationPanel world={w} onChange={props.onChange} />
           <NpcPanel world={w} onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />
           <InventoryPanel world={w} onChange={props.onChange} />
