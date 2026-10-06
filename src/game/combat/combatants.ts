@@ -92,6 +92,9 @@ export function base(
     deathlessUntil: 0,
     mergedWith: null,
     doomedUntil: 0,
+    amber: false,
+    fleet: false,
+    finalDeath: false,
   };
 }
 

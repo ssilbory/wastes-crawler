@@ -23,4 +23,6 @@ export const NecromancerEffects = [
   z.strictObject({ kind: z.literal('tomb'), save: Save }),
   /** Everlasting: cast for the player as an ally would fall; no ally drops below 1 HP for `rounds`. */
   z.strictObject({ kind: z.literal('everlasting'), rounds: z.int().min(1) }),
+  /** Final Death: foes in a row, one a level, can't heal or come back, and die at zero hit points. */
+  z.strictObject({ kind: z.literal('final-death') }),
 ] as const;

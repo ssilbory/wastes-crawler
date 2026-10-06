@@ -4,7 +4,7 @@
 // and conditions.ts; Everlasting is cast for the player as an ally would fall (reactions.ts).
 import type { CombatEffect } from '../../data/schemas/index.ts';
 import { addStrain } from '../../rules/strain.ts';
-import { say } from './damage.ts';
+import { save, say } from './damage.ts';
 import type { Resists } from './high-magic.ts';
 import { isUp } from './targeting.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
@@ -68,7 +68,29 @@ export function necromancerEffect(
       return true;
     case 'everlasting':
       return true;
+    case 'final-death': {
+      const foes = b.combatants.filter((c) => c.side !== actor.side && c.row === row && isUp(c));
+      for (const t of foes.slice(0, level)) {
+        t.finalDeath = true;
+        say(b, `${t.name} is marked for the final death.`);
+      }
+      return true;
+    }
     default:
       return false;
   }
+}
+
+/**
+ * Final Death (4.6.0): the cursed can't be healed; each failed healing gives a Physical save to
+ * throw the curse off. True if the healing fails.
+ */
+export function healingFails(b: Battle, target: Combatant): boolean {
+  if (!target.finalDeath) return false;
+  say(b, `The final death holds ${target.name} beyond healing.`);
+  if (save(b, target, 'physical').success) {
+    target.finalDeath = false;
+    say(b, `${target.name} throws off the curse.`);
+  }
+  return true;
 }

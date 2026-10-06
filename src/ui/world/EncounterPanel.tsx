@@ -3,6 +3,8 @@ import { bluff, giveCountersign, presentAuthority } from '../../game/world/order
 import { acceptBeast, beastRefusal, handlers } from '../../game/world/beasts.ts';
 import { acceptOffer, bribePrice, canParley, parley } from '../../game/world/parley.ts';
 import { bestSpeaker, type Speech } from '../../game/world/speech.ts';
+import { VANISH, vanish } from '../../game/world/sorcery.ts';
+import { castersOf } from '../../game/world/waygates.ts';
 import type { TownResult } from '../../game/world/services.ts';
 import type { World } from '../../game/world/types.ts';
 import { beastOfferText, knownFoes } from '../../render/bestiary-view.ts';
@@ -55,6 +57,13 @@ export function EncounterPanel(props: {
             {e.hostile ? 'Slip away' : 'Let them pass'}
           </button>
         )}
+        {e.hostile &&
+          !e.spotted &&
+          castersOf(w, VANISH).map((m) => (
+            <button key={m.id} type="button" onClick={() => run(() => vanish(w, data, m.id))}>
+              {m.character.name}: turn the party invisible and slip away
+            </button>
+          ))}
         {e.offer && (
           <button type="button" onClick={() => run(() => acceptOffer(w, data))}>
             Take them on

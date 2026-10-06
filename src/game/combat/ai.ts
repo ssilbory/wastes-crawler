@@ -152,7 +152,8 @@ function healHurt(b: Battle, actor: Combatant): Action | null {
 /** The ally who fell first and hasn't been tended this round. */
 function firstDying(b: Battle, actor: Combatant): Combatant | undefined {
   const dying = b.combatants.filter(
-    (c) => c.side === actor.side && c.status === 'dying' && !b.stabilizedThisRound.has(c.id),
+    (c) =>
+      c.side === actor.side && c.status === 'dying' && !c.amber && !b.stabilizedThisRound.has(c.id),
   );
   return dying.sort((x, y) => x.fellRound - y.fellRound)[0];
 }

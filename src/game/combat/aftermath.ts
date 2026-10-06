@@ -26,10 +26,11 @@ export type RescueDecider = (options: Rescue[]) => Rescue | null;
 /** The party's dying, those who fell first first. */
 export const dyingOf = (b: Battle): Combatant[] =>
   b.combatants
-    .filter((c) => c.side === 'party' && c.status === 'dying')
+    .filter((c) => c.side === 'party' && c.status === 'dying' && !c.amber)
     .sort((x, y) => x.fellRound - y.fellRound);
 
-const HEALING = new Set(['heal', 'touch-heal']);
+/** Magic that saves the dying: healing, Conjunct the Vital Viscera, and The Long Amber Moment. */
+const HEALING = new Set(['heal', 'touch-heal', 'conjunct', 'amber']);
 
 /** Every healing art or spell a conscious party member could use on a dying ally now. */
 export function rescues(b: Battle): Rescue[] {
@@ -105,7 +106,18 @@ export const firstRescue: RescueDecider = (options) => options[0] ?? null;
 
 /** Whether a won fight should wait for the player to decide on healing magic. */
 export const awaitsRescue = (b: Battle) =>
-  b.outcome === 'party' && dyingOf(b).length > 0 && rescues(b).length > 0;
+  safe(b) && dyingOf(b).length > 0 && rescues(b).length > 0;
+
+/** The party holds the field: it won, or escaped behind the Invincible Citadel. */
+const safe = (b: Battle) => b.outcome === 'party' || b.escaped;
+
+/** The Long Amber Moment ends with the fight; the frozen dying come out of it stable. */
+function thaw(b: Battle): void {
+  for (const c of b.combatants.filter((x) => x.amber)) {
+    c.amber = false;
+    if (c.status === 'dying') Object.assign(c, { status: 'stable', frail: true });
+  }
+}
 
 /**
  * Prudentially Transient Abnegation of Life (4.4.0): with the field held, the seemingly slain come
@@ -135,7 +147,8 @@ export interface BattleResult {
 export function concludeBattle(b: Battle, decide: RescueDecider = firstRescue): BattleResult {
   const outcome: Outcome = b.outcome ?? 'draw';
   const rounds = Math.min(b.round, MAX_ROUNDS);
-  if (outcome === 'party') tendDying(b, decide);
+  if (safe(b)) tendDying(b, decide);
+  thaw(b);
   if (outcome !== 'enemy') reassemble(b);
   // A summoned servant's end is no death in the party.
   const deaths = b.combatants.filter(

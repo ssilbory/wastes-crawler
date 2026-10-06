@@ -42,7 +42,8 @@ export function simulateDifficulty(
     const result = runBattle(battle);
     if (result.outcome === 'party') wins += 1;
     const pcs = battle.combatants.filter((c) => c.id.startsWith('pc-'));
-    if (pcs.some((c) => DOWN.has(c.status))) downs += 1;
+    // An escape behind the Invincible Citadel turned a blow that would have downed a PC.
+    if (pcs.some((c) => DOWN.has(c.status)) || battle.escaped) downs += 1;
   }
   return { downRate: downs / fights, winRate: wins / fights };
 }

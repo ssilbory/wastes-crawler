@@ -102,7 +102,7 @@ export function FightScreen(props: {
     return () => clearTimeout(timer);
   });
   useEffect(() => {
-    if (result) play(result.outcome === 'party' ? 'win' : 'lose');
+    if (result) play(result.outcome === 'party' || result.battle.escaped ? 'win' : 'lose');
   }, [result]);
 
   const commands = actor && !result ? commandsFor(b, actor) : [];

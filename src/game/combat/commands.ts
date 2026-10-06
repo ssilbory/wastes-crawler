@@ -179,7 +179,8 @@ export function commandsFor(b: Battle, actor: Combatant): Command[] {
   });
   commands.push(one('total-defense', 'defend', 'Total Defense', { kind: 'total-defense' }));
   const dying = b.combatants.filter(
-    (d) => d.side === actor.side && d.status === 'dying' && !b.stabilizedThisRound.has(d.id),
+    (d) =>
+      d.side === actor.side && d.status === 'dying' && !d.amber && !b.stabilizedThisRound.has(d.id),
   );
   if (dying.length > 0) {
     commands.push({

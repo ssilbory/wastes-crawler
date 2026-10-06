@@ -6,7 +6,7 @@ import { netSteps } from '../../rules/advantage.ts';
 import { rollSave, type SaveResult, type SaveType } from '../../rules/saves.ts';
 import { covered, isUp } from './targeting.ts';
 import { say } from './log.ts';
-import { abnegate, everlast, keepsDying, redHarvest, vitalFurnace } from './reactions.ts';
+import { abnegate, everlast, keepsDying, redHarvest, shelter, vitalFurnace } from './reactions.ts';
 import type { Battle, Combatant } from './types.ts';
 
 export { say };
@@ -16,7 +16,8 @@ const SCENE = 1000;
 
 /** Applies damage. Sleepers wake; a hit on a dying PC kills them. */
 export function harm(b: Battle, target: Combatant, amount: number): void {
-  if (amount <= 0) return;
+  // The Long Amber Moment: nothing touches the frozen; the Invincible Citadel, the party (4.4.0).
+  if (amount <= 0 || target.amber || (b.escaped && target.side === 'party')) return;
   if (target.status === 'dying') {
     target.status = 'dead';
     say(b, `${target.name} is slain.`);
@@ -48,7 +49,7 @@ export function harm(b: Battle, target: Combatant, amount: number): void {
 /** Merge Souls: two creatures share one pool of hit points, and fall together when it is spent. */
 function pooled(b: Battle, target: Combatant, amount: number): boolean {
   const partner = b.combatants.find((c) => c.id === target.mergedWith);
-  if (!partner || !isUp(partner)) return false;
+  if (!partner || !isUp(partner) || partner.amber) return false;
   if (amount >= target.hp + partner.hp) {
     target.hp = 0;
     partner.hp = 0;
@@ -91,13 +92,14 @@ function wound(b: Battle, target: Combatant, amount: number): void {
 
 /** A creature at zero hit points falls: monsters and the Frail die, PCs lie Mortally Wounded. */
 export function fall(b: Battle, target: Combatant): void {
-  if (target.kind === 'monster') {
+  // Final Death: the cursed die where others would be Mortally Wounded (4.6.0).
+  if (target.kind === 'monster' || target.finalDeath) {
     die(b, target);
     return;
   }
   // The Frail die at once; Abnegation of Life still spares them (Phase 18a).
   if (target.frail) {
-    if (!abnegate(b, target)) die(b, target);
+    if (!abnegate(b, target) && !sheltered(b, target)) die(b, target);
     return;
   }
   if (keepsDying(b, target)) {
@@ -105,10 +107,17 @@ export function fall(b: Battle, target: Combatant): void {
     target.fellRound = b.round;
     return;
   }
-  if (abnegate(b, target)) return;
+  if (abnegate(b, target) || sheltered(b, target)) return;
   target.status = 'dying';
   target.fellRound = b.round;
   say(b, `${target.name} falls, mortally wounded.`);
+}
+
+/** The Invincible Citadel closes over the party as the PC falls, leaving them at 1 HP (4.4.0). */
+function sheltered(b: Battle, target: Combatant): boolean {
+  if (!shelter(b, target)) return false;
+  target.hp = Math.max(target.hp, 1);
+  return true;
 }
 
 function die(b: Battle, target: Combatant): void {

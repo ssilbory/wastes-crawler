@@ -32,6 +32,8 @@ export function beginRound(b: Battle): void {
 }
 
 function checkEnd(b: Battle): void {
+  // The Invincible Citadel ends the fight as a break-off, whoever is left standing.
+  if (b.escaped) return;
   // The banished who will find their way back keep the fight going (Phase 18a).
   const left = (c: Combatant) => canAct(c) || c.returnsRound > 0;
   if (!b.combatants.some((c) => c.side === 'enemy' && left(c))) b.outcome = 'party';
@@ -146,7 +148,8 @@ function shiftFormation(b: Battle): void {
 
 export function endOfRound(b: Battle): void {
   for (const c of b.combatants) {
-    if (c.status === 'dying' && b.round - c.fellRound >= MORTAL_ROUNDS) {
+    // Time stands still for the frozen in amber (4.4.0).
+    if (c.status === 'dying' && !c.amber && b.round - c.fellRound >= MORTAL_ROUNDS) {
       c.status = 'dead';
       say(b, `${c.name} dies of their wounds.`);
     }

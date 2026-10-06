@@ -7,7 +7,7 @@ import { roll } from '../../rules/dice.ts';
 import { addStrain } from '../../rules/strain.ts';
 import { fall, harm, save, say } from './damage.ts';
 import { smite } from './elementalist.ts';
-import { canAct, isUp, targets } from './targeting.ts';
+import { canAct, flying, isUp, targets } from './targeting.ts';
 import type { Action, Attack, Battle, Combatant } from './types.ts';
 
 /** Monster sides stand in up to three rows. */
@@ -92,6 +92,29 @@ export function echoes(b: Battle, actor: Combatant): boolean {
 }
 
 /**
+ * The Verdant Vallation (4.4.0): a foe's melee blow at the walled side cuts at the vines instead,
+ * until they part; flyers go over. False if the blow was spent on the vines.
+ */
+export function cutVines(
+  b: Battle,
+  attacker: Combatant,
+  attack: Attack,
+  target: Combatant,
+): boolean {
+  const v = b.vines;
+  if (!v || attack.mode !== 'melee' || v.side !== attacker.side || flying(attacker)) return true;
+  // The mad and the compelled striking their own side never cross the vines.
+  if (target.side === attacker.side) return true;
+  v.hp -= Math.max(1, roll(b.rng, attack.damage).total + attack.damageBonus);
+  if (v.hp > 0) say(b, `${attacker.name} hacks at the wall of vines.`);
+  else {
+    b.vines = null;
+    say(b, `${attacker.name} cuts through the wall of vines.`);
+  }
+  return false;
+}
+
+/**
  * Elemental Vallation (4.5.0): a foe stepping up to strike the walled side in melee crosses the
  * fire once and burns; false if it falls before the blow.
  */
@@ -169,6 +192,7 @@ export function dispel(b: Battle, target: Combatant): void {
   for (const x of affected) {
     if (x.status === 'asleep') x.status = 'active';
     if (x.status === 'out' && x.spellbound) x.status = 'active';
+    if (x.amber && x.status === 'dying') Object.assign(x, { status: 'stable', frail: true });
     Object.assign(x, {
       spellbound: false,
       blindRounds: 0,
@@ -191,6 +215,9 @@ export function dispel(b: Battle, target: Combatant): void {
       enfeebledUntil: 0,
       compelled: 0,
       doomedUntil: 0,
+      amber: false,
+      fleet: false,
+      finalDeath: false,
     });
   }
   say(b, `The magic on ${target.name}'s row is swept away.`);

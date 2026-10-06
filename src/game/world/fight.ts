@@ -260,7 +260,13 @@ export function applyBattle(
     wipe(w, data);
     return;
   }
-  if (result.outcome === 'draw') note(w, 'The fight breaks off.');
+  if (result.outcome === 'draw')
+    note(
+      w,
+      fight.battle.escaped
+        ? 'The party shelters in the Invincible Citadel until its foes give up.'
+        : 'The fight breaks off.',
+    );
   else {
     note(w, `The party wins after ${result.rounds} round${result.rounds === 1 ? '' : 's'}.`);
     winnings(w, data, fight.enemies);

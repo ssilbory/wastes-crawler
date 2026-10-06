@@ -14,7 +14,7 @@ import type { Action, Battle, CasterState, Combatant } from './types.ts';
 
 /** `aid`: +1 when an ally's aiding check succeeded (SRD 2.3.3). */
 export function stabilize(b: Battle, actor: Combatant, target: Combatant, aid = 0): void {
-  if (target.status !== 'dying' || b.stabilizedThisRound.has(target.id)) return;
+  if (target.status !== 'dying' || target.amber || b.stabilizedThisRound.has(target.id)) return;
   b.stabilizedThisRound.add(target.id);
   const check = skillCheck(b.rng, {
     skill: actor.skills.heal ?? null,
