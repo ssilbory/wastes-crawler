@@ -177,7 +177,8 @@ export function exchangeLoot(
   const town = townHere(w, data);
   const held = (sides: number) => w.loot.find((d) => d.sides === sides)?.count ?? 0;
   const sold = selling
-    .map((d) => ({ sides: d.sides, count: Math.min(d.count, held(d.sides)) }))
+    // Only whole dice are sold, never more than are carried.
+    .map((d) => ({ sides: d.sides, count: Math.min(Math.floor(d.count), held(d.sides)) }))
     .filter((d) => d.count > 0);
   if (sold.length === 0) return { rolled: 0, paid: 0 };
   const rules = data.content.townRules;

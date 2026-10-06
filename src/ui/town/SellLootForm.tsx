@@ -27,11 +27,12 @@ function Picker(props: { world: World; act: Act }) {
             type="number"
             min={0}
             max={d.count}
+            step={1}
             value={counts[i] ?? d.count}
             onInput={(e) => {
               const n = Math.max(
                 0,
-                Math.min(d.count, Number((e.target as HTMLInputElement).value)),
+                Math.min(d.count, Math.floor(Number((e.target as HTMLInputElement).value) || 0)),
               );
               setCounts(w.loot.map((x, j) => (j === i ? n : (counts[j] ?? x.count))));
             }}
