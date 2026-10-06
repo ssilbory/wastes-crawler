@@ -10,7 +10,15 @@ import type { Rng } from '../../rules/rng.ts';
 import type { GameData } from '../character/context.ts';
 import { difficultyTier, type Difficulty } from './difficulty.ts';
 import { alive, note, setHp } from './members.ts';
-import { accrueShares, fights, moraleAfterFight, npcMonster, removeNpc, typeOf } from './npcs.ts';
+import {
+  accrueShares,
+  fights,
+  isServant,
+  moraleAfterFight,
+  npcMonster,
+  removeNpc,
+  typeOf,
+} from './npcs.ts';
 import { emit } from './bus.ts';
 import { faithLit, inDark } from '../dungeon/light.ts';
 import { FAITH_LIGHT, userOf, vigor } from './arts.ts';
@@ -54,6 +62,7 @@ function npcSetup(data: GameData, n: Npc): NpcSetup {
     hp: n.hp,
     maxHp: n.maxHp,
     noncombatant: !fights(data, n),
+    servant: isServant(n),
     ...(physician ? { healer: data.content.npcRules.skillBonus } : {}),
   };
 }

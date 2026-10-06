@@ -167,6 +167,8 @@ export interface Combatant {
   revives: { hp: number; strain: number } | null;
   subdues: boolean;
   summoned: { by: string; monster: string } | null;
+  /** A fighting servant from the world: raised undead, a beast, a woken tree, or a kept summons. */
+  servant: boolean;
   /**
    * Phase 18b Elementalist magic: Flame Without End's extra damage on a hit, Like the Stones'
    * points ignored from each harm, and Wind Walking's mist.

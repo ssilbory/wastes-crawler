@@ -82,6 +82,7 @@ export function base(
     revives: null,
     subdues: false,
     summoned: null,
+    servant: false,
     flame: 0,
     stone: 0,
     misted: false,

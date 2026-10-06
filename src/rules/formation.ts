@@ -70,3 +70,43 @@ export function frontDrops(
   }
   return moves;
 }
+
+/** An occupied slot as servant placement sees it. */
+export interface Occupant {
+  row: number;
+  column: number;
+  hp: number;
+  /** Can step back for a servant: anyone but another fighting servant. */
+  yields: boolean;
+}
+
+export interface ServantPlace {
+  row: Row;
+  column: number;
+  /** The occupant (by index) who steps back for the servant, and the rear slot they take. */
+  bump: { index: number; column: number } | null;
+}
+
+/**
+ * Where a fighting servant joins the formation (docs/rules-adaptation.md, Formation rules:
+ * Servants): a free front slot; else the front slot of the yielding ally with the fewest HP (the
+ * leftmost on a tie), who drops to the rear slot behind them or the first free one; else a free
+ * rear slot. Null with no free slot.
+ */
+export function servantPlace(occupants: readonly Occupant[]): ServantPlace | null {
+  const free = (row: number) =>
+    Array.from({ length: ROW_SLOTS }, (_, c) => c).filter(
+      (c) => !occupants.some((o) => o.row === row && o.column === c),
+    );
+  const [front, rear] = [free(0), free(1)];
+  if (front[0] !== undefined) return { row: 0, column: front[0], bump: null };
+  if (rear[0] === undefined) return null;
+  const yielding = occupants
+    .map((o, index) => ({ ...o, index }))
+    .filter((o) => o.row === 0 && o.yields)
+    .sort((a, b) => a.hp - b.hp || a.column - b.column);
+  const weakest = yielding[0];
+  if (!weakest) return { row: 1, column: rear[0], bump: null };
+  const behind = rear.includes(weakest.column) ? weakest.column : rear[0];
+  return { row: 0, column: weakest.column, bump: { index: weakest.index, column: behind } };
+}

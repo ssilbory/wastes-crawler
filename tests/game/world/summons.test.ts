@@ -69,6 +69,18 @@ describe('summoned servants after the fight (Phase 18a)', () => {
     expect(w.log.join('\n')).toContain('Phantasmal Eidolon fades with the dawn.');
   });
 
+  it('step the weakest conscious member back when the front row is full', () => {
+    const { w, fight, result } = summoned();
+    Object.assign(member(w, 'Lirael'), { row: 0, column: 2 });
+    Object.assign(member(w, 'Fizzwick'), { row: 0, column: 3 });
+    applyBattle(w, data, fight, result, null);
+    const npc = w.npcs[0];
+    expect(npc && [npc.row, npc.column]).toEqual([0, 2]);
+    const lirael = member(w, 'Lirael');
+    expect([lirael.row, lirael.column]).toEqual([1, 2]);
+    expect(w.log.join('\n')).toContain('Lirael steps back for Phantasmal Eidolon.');
+  });
+
   it('fade at once with no slot free, and stay gone if slain', () => {
     const full = summoned(2);
     applyBattle(full.w, data, full.fight, full.result, null);

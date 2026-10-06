@@ -463,7 +463,8 @@ describe('summoning and the seemingly slain', () => {
       spellsLeft: 1,
     });
     castMagic(rows, petty, 'calculation-of-the-phantasmal-eidolon', undefined, undefined);
-    expect(rows.combatants.at(-1)).toMatchObject({ side: 'party', row: 0 });
+    expect(rows.combatants.at(-1)).toMatchObject({ side: 'party', row: 0, column: 2, group: 0 });
+    expect(petty).toMatchObject({ row: 0, column: 0 });
   });
 
   it('Prudentially Transient Abnegation of Life spares a falling PC, who rises after a win', () => {
@@ -551,7 +552,7 @@ describe('the review fixes for High Magic', () => {
     expect([bot.hp, thug.hp]).toEqual([40, 37]);
   });
 
-  it('never stands a summon in a fallen ally’s place', () => {
+  it('never moves a fallen ally for a summon: the weakest one standing steps back', () => {
     const b = standardBattle([['thug-or-militia']]);
     for (let column = 2; column < 4; column++) {
       const fallen = createBattle({
@@ -562,9 +563,47 @@ describe('the review fixes for High Magic', () => {
       }).combatants[0] as Combatant;
       b.combatants.push({ ...fallen, id: `dead-${column}`, row: 0, column, status: 'dead' });
     }
+    who(b, 'Grukk').hp = 3;
     const f = mage(b, ['calculation-of-the-phantasmal-eidolon'], 7);
     cast(b, f, 'calculation-of-the-phantasmal-eidolon');
-    expect(b.combatants.at(-1)).toMatchObject({ row: 1, column: 2 });
+    expect(b.combatants.at(-1)).toMatchObject({ row: 0, column: 1 });
+    expect(who(b, 'Grukk')).toMatchObject({ row: 1, column: 2 });
+    expect(b.combatants.filter((c) => c.status === 'dead').map((c) => c.column)).toEqual([2, 3]);
+    expect(log(b)).toContain('Grukk steps back for Phantasmal Eidolon.');
+  });
+
+  it('never moves another servant for a summon, however hurt', () => {
+    const servant = (column: number) => ({
+      monster: 'thug-or-militia',
+      name: `Servant ${column}`,
+      row: 0,
+      column,
+      hp: 1,
+      maxHp: 6,
+      noncombatant: false,
+      servant: true,
+    });
+    const b = createBattle({
+      data,
+      rng: createRng('servants'),
+      party: (['snag', 'grukk', 'fizzwick'] as const).map((n, i) => ({
+        character: starter(n),
+        row: i < 2 ? 0 : 1,
+        column: i % 2,
+      })),
+      npcs: [servant(2), servant(3)],
+      enemies: [['thug-or-militia']],
+    });
+    who(b, 'Snag').hp = 4;
+    who(b, 'Grukk').hp = 9;
+    cast(
+      b,
+      mage(b, ['calculation-of-the-phantasmal-eidolon'], 7),
+      'calculation-of-the-phantasmal-eidolon',
+    );
+    expect(b.combatants.at(-1)).toMatchObject({ row: 0, column: 0 });
+    expect(who(b, 'Snag')).toMatchObject({ row: 1, column: 1 });
+    expect(who(b, 'Servant 2')).toMatchObject({ row: 0, column: 2, servant: true });
   });
 
   it('counts no death in the party when a summoned servant falls', () => {
