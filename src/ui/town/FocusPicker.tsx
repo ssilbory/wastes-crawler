@@ -40,7 +40,7 @@ export function FocusPicker(props: {
         >
           <option value="">Choose…</option>
           {pickable.map((p) => (
-            <option key={p.id} value={p.id} title={focusHint(data, p.id)}>
+            <option key={p.id} value={p.id}>
               {p.name}
             </option>
           ))}
