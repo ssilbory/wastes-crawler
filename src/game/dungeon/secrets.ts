@@ -24,13 +24,15 @@ export function edgeKey(c: Cell, side: Facing): string {
   return `${c.x},${c.y},${side}`;
 }
 
-/** The level's edges as the party knows them: a found secret door is a door. */
+/** The level's edges as the party knows them: a found secret door is a door, a dug wall open. */
 export function knownEdges(w: World, data: GameData): (c: Cell, side: Facing) => EdgeKind {
   const s = state(w);
   const { map } = levelOf(data, s.dungeon, s.level);
   const found = new Set(s.found[s.level] ?? []);
+  const dug = new Set(s.dug[s.level] ?? []);
   return (c, side) => {
     const e = map.edge(c, side);
+    if (dug.has(edgeKey(c, side))) return 'open';
     return e === 'secret' && found.has(edgeKey(c, side)) ? 'door' : e;
   };
 }
@@ -44,7 +46,8 @@ interface Hidden {
 function hidden(w: World, data: GameData, cells: Cell[]): Hidden[] {
   const s = state(w);
   const { level, map } = levelOf(data, s.dungeon, s.level);
-  const found = new Set(s.found[s.level] ?? []);
+  // A wall dug through hides nothing.
+  const found = new Set([...(s.found[s.level] ?? []), ...(s.dug[s.level] ?? [])]);
   const out = new Map<string, Hidden>();
   for (const c of cells.filter((x) => map.inBounds(x)))
     for (const side of FACINGS) {

@@ -579,6 +579,32 @@
     }
   },
   {
+    "id": "hail-of-stones",
+    "source": "spell",
+    "target": "enemy-row",
+    "effect": {
+      "kind": "burst",
+      "perLevel": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      },
+      "levelsPerDie": 2,
+      "save": "evasion",
+      "slayHitDice": 0
+    }
+  },
+  {
+    "id": "ward-of-the-turning-wind",
+    "source": "spell",
+    "target": "ally",
+    "effect": {
+      "kind": "ac-bonus",
+      "amount": 4,
+      "maxAc": 18
+    }
+  },
+  {
     "id": "boreal-wings",
     "source": "spell",
     "target": "ally",

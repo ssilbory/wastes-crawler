@@ -25,6 +25,7 @@ import { EncounterPanel } from './EncounterPanel.tsx';
 import { blind } from '../../game/dungeon/light.ts';
 import { onSafeSquare } from '../../game/dungeon/time.ts';
 import { search } from '../../game/dungeon/secrets.ts';
+import { burrow, burrowers } from '../../game/dungeon/burrow.ts';
 import { disarm, knownTrapAhead } from '../../game/dungeon/traps.ts';
 import type { TownResult } from '../../game/world/services.ts';
 import { lightText, turnText } from '../../render/light-view.ts';
@@ -169,6 +170,11 @@ export function DungeonScreen(props: {
               <button type="button" onClick={() => act(() => search(w, data))}>
                 Search (1 turn)
               </button>
+              {burrowers(w).map((m) => (
+                <button key={m.id} type="button" onClick={() => act(() => burrow(w, data, m.id))}>
+                  {m.character.name}: dig through the wall ahead (1 turn)
+                </button>
+              ))}
               {trap && (
                 <>
                   <button type="button" onClick={() => act(() => disarm(w, data))}>

@@ -6,7 +6,7 @@ import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { FactionStateSchema } from './faction-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 25;
+export const WORLD_SCHEMA_VERSION = 26;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -187,6 +187,8 @@ export const DungeonStateSchema = z.strictObject({
   steps: z.int().min(0),
   /** Secret door edges ("x,y,n" or "x,y,w") found, by level. */
   found: z.record(IdSchema, z.array(z.string())),
+  /** Walls dug through with The Burrower Below, by level, keyed as `found` is. */
+  dug: z.record(IdSchema, z.array(z.string())),
   /** Secret door edges the party has had its free look at, by level. */
   glimpsed: z.record(IdSchema, z.array(z.string())),
   /** Traps the party knows of or has disarmed, by level and cell. */

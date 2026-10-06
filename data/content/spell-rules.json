@@ -3,16 +3,35 @@
     "cognitive-supersession-of-the-inferior-orders",
     "imperceptible-cerebral-divulgence",
     "the-grinding-geas",
-    "contingent-excision-of-arcana"
+    "contingent-excision-of-arcana",
+    "aqueous-harmony",
+    "flame-scrying",
+    "elemental-favor",
+    "elemental-spy"
   ],
   "outsideCombat": [
     "command-the-dead",
     "raise-corpse",
     "raise-grave-knight",
     "rouse-the-sapling",
-    "call-the-elder-tree"
+    "call-the-elder-tree",
+    "the-burrower-below"
   ],
   "added": [
+    {
+      "id": "hail-of-stones",
+      "name": "Hail of Stones",
+      "tradition": "elementalist",
+      "level": 1,
+      "text": "The Elementalist tears stones from the earth and flings them in a battering storm over a cluster of foes no more than 30 feet across, within 200 feet. Every creature caught takes 1d6 damage per two character levels of the caster, rounded down, but never less than 1d6; an Evasion save halves it."
+    },
+    {
+      "id": "ward-of-the-turning-wind",
+      "name": "Ward of the Turning Wind",
+      "tradition": "elementalist",
+      "level": 1,
+      "text": "The Elementalist wraps a willing creature within sight, themself included, in a tight, howling wind that turns aside blades and arrows alike. For the rest of the scene the target gains a +4 bonus to its Armor Class, but the ward can never raise it above 18. It does not combine with Pavis of Elements."
+    },
     {
       "id": "rouse-the-sapling",
       "name": "Rouse the Sapling",

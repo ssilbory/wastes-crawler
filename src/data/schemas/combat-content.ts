@@ -118,7 +118,10 @@ export const CombatEffectSchema = z.discriminatedUnion('kind', [
     attributes: z.array(AttributeSchema).min(1),
     damage: DiceSchema,
   }),
-  /** +AC while the Effort stays committed, never above `maxAc`. */
+  /**
+   * +AC never above `maxAc`: Pavis of Elements while the Effort stays committed, Ward of the Turning
+   * Wind on an ally for the fight. The two don't combine.
+   */
   z.strictObject({ kind: z.literal('ac-bonus'), amount: z.int().min(1), maxAc: z.int() }),
   /** The target loses its next Main Action, or only its Move action on a save. */
   z.strictObject({ kind: z.literal('stun'), save: Save, requiresTag: z.literal('metal') }),

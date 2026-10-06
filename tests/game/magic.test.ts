@@ -137,8 +137,12 @@ describe('arts and spells', () => {
     const hm = learnableSpells(data, mage('full-high-mage'), 1);
     const elem = learnableSpells(data, mage('full-elementalist'), 1);
     expect(hm.every((s) => s.tradition === 'high-magic' && s.level === 1)).toBe(true);
-    // The Elementalist's own spells wait to be built (docs/rules-adaptation.md, High Magic).
-    expect(elem).toEqual(hm);
+    // Of the Elementalist's own, only the two the game adds (docs/rules-adaptation.md).
+    expect(elem.filter((s) => s.tradition === 'high-magic')).toEqual(hm);
+    expect(elem.filter((s) => s.tradition === 'elementalist').map((s) => s.id)).toEqual([
+      'hail-of-stones',
+      'ward-of-the-turning-wind',
+    ]);
   });
 
   const hm = mage('full-high-mage');
