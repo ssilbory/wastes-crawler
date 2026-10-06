@@ -11,7 +11,8 @@
   },
   {
     "id": "partial-expert-partial-warrior",
-    "name": "Adventurer: Partial Expert/Partial Warrior",
+    "name": "Swashbuckler",
+    "halves": "Expert/Warrior",
     "abilities": ["quick-learner"]
   },
   {
@@ -50,7 +51,8 @@
   },
   {
     "id": "high-mage-partial-expert",
-    "name": "Adventurer: Partial High Mage/Partial Expert",
+    "name": "Spellthief",
+    "halves": "High Mage/Expert",
     "mage": {
       "traditions": [
         {
@@ -68,7 +70,8 @@
   },
   {
     "id": "high-mage-partial-warrior",
-    "name": "Adventurer: Partial High Mage/Partial Warrior",
+    "name": "Spellblade",
+    "halves": "High Mage/Warrior",
     "mage": {
       "traditions": [
         {
@@ -85,7 +88,8 @@
   },
   {
     "id": "elementalist-partial-expert",
-    "name": "Adventurer: Partial Elementalist/Partial Expert",
+    "name": "Wayfinder",
+    "halves": "Elementalist/Expert",
     "mage": {
       "traditions": [
         {
@@ -103,7 +107,8 @@
   },
   {
     "id": "elementalist-partial-warrior",
-    "name": "Adventurer: Partial Elementalist/Partial Warrior",
+    "name": "Stormblade",
+    "halves": "Elementalist/Warrior",
     "mage": {
       "traditions": [
         {
@@ -120,7 +125,8 @@
   },
   {
     "id": "high-mage-partial-other-mage",
-    "name": "Adventurer: Partial High Mage/Partial Elementalist",
+    "name": "Thaumaturge",
+    "halves": "High Mage/Elementalist",
     "mage": {
       "traditions": [
         {
@@ -159,7 +165,8 @@
   },
   {
     "id": "necromancer-partial-expert",
-    "name": "Adventurer: Partial Necromancer/Partial Expert",
+    "name": "Grave Robber",
+    "halves": "Necromancer/Expert",
     "mage": {
       "traditions": [
         {
@@ -177,7 +184,8 @@
   },
   {
     "id": "necromancer-partial-warrior",
-    "name": "Adventurer: Partial Necromancer/Partial Warrior",
+    "name": "Death Knight",
+    "halves": "Necromancer/Warrior",
     "mage": {
       "traditions": [
         {
@@ -194,7 +202,8 @@
   },
   {
     "id": "necromancer-partial-other-mage",
-    "name": "Adventurer: Partial Necromancer/Partial High Mage",
+    "name": "Dread Magus",
+    "halves": "Necromancer/High Mage",
     "mage": {
       "traditions": [
         {
@@ -216,7 +225,8 @@
   },
   {
     "id": "elementalist-partial-other-mage",
-    "name": "Adventurer: Partial Necromancer/Partial Elementalist",
+    "name": "Ashcaller",
+    "halves": "Necromancer/Elementalist",
     "mage": {
       "traditions": [
         {
@@ -238,7 +248,8 @@
   },
   {
     "id": "blood-priest-partial-warrior",
-    "name": "Adventurer: Partial Blood Priest/Partial Warrior",
+    "name": "Blood Knight",
+    "halves": "Blood Priest/Warrior",
     "mage": {
       "traditions": [
         {
@@ -255,7 +266,8 @@
   },
   {
     "id": "healer-partial-mage",
-    "name": "Adventurer: Priest of Death (Partial Necromancer/Partial Healer)",
+    "name": "Priest of Death",
+    "halves": "Necromancer/Healer",
     "mage": {
       "traditions": [
         {
@@ -278,7 +290,8 @@
   },
   {
     "id": "blood-priest-partial-mage",
-    "name": "Adventurer: Partial Blood Priest/Partial Healer",
+    "name": "Blood Saint",
+    "halves": "Blood Priest/Healer",
     "mage": {
       "traditions": [
         {

@@ -22,7 +22,12 @@ export function skillName(id: string): string {
   return skills.find((s) => s.id === id)?.name ?? id;
 }
 
-export const classes = data.content.classOptions.map((c) => ({ id: c.id, name: c.name }));
+/** Each class, labeled for pickers with a partial class's halves beside its name. */
+export const classes = data.content.classOptions.map((c) => ({
+  id: c.id,
+  name: c.name,
+  label: c.halves ? `${c.name} (${c.halves})` : c.name,
+}));
 
 export function className(id: string): string {
   return (

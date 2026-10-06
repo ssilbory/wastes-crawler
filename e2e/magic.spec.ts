@@ -77,12 +77,14 @@ test('a Gnome High Mage has Effort 1 + Magic-0 + Int 16 (+1) = 2', async ({ page
   await expect(sheet).toContainText('Magic-0');
 });
 
-test('a dual partial caster has Magic-1 and Effort 1 + 1 + 1 - 1 = 2', async ({ page }) => {
+test('a Thaumaturge, a dual partial caster, has Magic-1 and Effort 1 + 1 + 1 - 1 = 2', async ({
+  page,
+}) => {
   const sheet = await caster(page, {
     people: 'Elf',
     bg: 'Raider',
     picks: ['Sneak', 'Exert'],
-    className: 'Adventurer: Partial High Mage/Partial Elementalist',
+    className: 'Thaumaturge (High Mage/Elementalist)',
     foci: [
       ['Racial focus 1', 'Cultured'],
       ['Racial focus 2', 'Lucky'],
@@ -103,12 +105,12 @@ test('a dual partial caster has Magic-1 and Effort 1 + 1 + 1 - 1 = 2', async ({ 
   await expect(sheet).toContainText('Arts: Elemental Resilience, Sense Magic, Flamesight.');
 });
 
-test('a partial Elementalist warrior has Effort one lower, 1', async ({ page }) => {
+test('a Stormblade, a partial Elementalist warrior, has Effort one lower, 1', async ({ page }) => {
   const sheet = await caster(page, {
     people: 'Orc',
     bg: 'Raider',
     picks: ['Sneak', 'Exert'],
-    className: 'Adventurer: Partial Elementalist/Partial Warrior',
+    className: 'Stormblade (Elementalist/Warrior)',
     foci: [
       ['Bonus skill for War-bred', 'Stab'],
       ['Racial focus', 'Die Hard'],
@@ -153,14 +155,12 @@ test('a Gnome Necromancer picks a necromancer art and spells from both lists (Ph
   await expect(sheet).toContainText('Command the Dead (prepared)');
 });
 
-test('a Partial Warrior/Blood Priest works miracles in armor, with no spells (Phase 14c)', async ({
-  page,
-}) => {
+test('a Blood Knight works miracles in armor, with no spells (Phase 14c)', async ({ page }) => {
   const sheet = await caster(page, {
     people: 'Gnome',
     bg: 'Scavenger',
     picks: ['Sneak', 'Trade'],
-    className: 'Adventurer: Partial Blood Priest/Partial Warrior',
+    className: 'Blood Knight (Blood Priest/Warrior)',
     foci: [
       ['Racial focus 1', 'Artisan'],
       ['Racial focus 2', 'Polymath'],
@@ -183,7 +183,7 @@ test('a Priest of Death heals and binds the dead, but learns no raising (Phase 1
   await page.goto('/');
   await page
     .getByRole('combobox', { name: 'Class', exact: true })
-    .selectOption({ label: 'Adventurer: Priest of Death (Partial Necromancer/Partial Healer)' });
+    .selectOption({ label: 'Priest of Death (Necromancer/Healer)' });
   const magic = page.locator('section.step', { hasText: '6. Magic' });
   await expect(magic).toContainText('Healer arts: pick 1, plus Healing Touch');
   // Revive the Fallen waits for 8th level; Limb Restoration is left out of the game.
@@ -193,7 +193,7 @@ test('a Priest of Death heals and binds the dead, but learns no raising (Phase 1
     people: 'Gnome',
     bg: 'Scavenger',
     picks: ['Sneak', 'Trade'],
-    className: 'Adventurer: Priest of Death (Partial Necromancer/Partial Healer)',
+    className: 'Priest of Death (Necromancer/Healer)',
     foci: [
       ['Racial focus 1', 'Artisan'],
       ['Racial focus 2', 'Polymath'],
@@ -209,14 +209,12 @@ test('a Priest of Death heals and binds the dead, but learns no raising (Phase 1
   await expect(sheet).toContainText('Heal-1');
 });
 
-test('a Partial Blood Priest/Partial Healer works miracles and heals (Phase 14d)', async ({
-  page,
-}) => {
+test('a Blood Saint works miracles and heals (Phase 14d)', async ({ page }) => {
   const sheet = await caster(page, {
     people: 'Gnome',
     bg: 'Scavenger',
     picks: ['Sneak', 'Trade'],
-    className: 'Adventurer: Partial Blood Priest/Partial Healer',
+    className: 'Blood Saint (Blood Priest/Healer)',
     foci: [
       ['Racial focus 1', 'Artisan'],
       ['Racial focus 2', 'Polymath'],
