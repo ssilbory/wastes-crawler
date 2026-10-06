@@ -63,6 +63,9 @@ describe('Elementalist spells in combat (Phase 18b, 4.5.0)', () => {
     expect([snag.acBonus, effectiveAc(snag)]).toEqual([4, 17]);
     snag.ac = 16;
     expect(effectiveAc(snag)).toBe(18);
+    // With no one named, the ward wraps the caster.
+    cast(b, f, 'ward-of-the-turning-wind');
+    expect(f.acBonus).toBe(4);
     // A greater bonus already held stays as it is.
     f.acBonus = 6;
     cast(b, f, 'ward-of-the-turning-wind', { target: f.id });

@@ -46,7 +46,8 @@ interface Hidden {
 function hidden(w: World, data: GameData, cells: Cell[]): Hidden[] {
   const s = state(w);
   const { level, map } = levelOf(data, s.dungeon, s.level);
-  const found = new Set(s.found[s.level] ?? []);
+  // A wall dug through hides nothing.
+  const found = new Set([...(s.found[s.level] ?? []), ...(s.dug[s.level] ?? [])]);
   const out = new Map<string, Hidden>();
   for (const c of cells.filter((x) => map.inBounds(x)))
     for (const side of FACINGS) {

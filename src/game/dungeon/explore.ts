@@ -50,7 +50,7 @@ export function dungeonHere(w: World, data: GameData): Dungeon | undefined {
 }
 
 /** Marks the party's cell and the cells it can see straight ahead (up to 3) as seen. */
-function look(w: World, data: GameData, s: DungeonState): void {
+export function look(w: World, data: GameData, s: DungeonState): void {
   // In the dark, or on an anti-map square, the party maps nothing (docs/rules-adaptation.md,
   // Dungeon exploration).
   if (blind(w, data) || onSpecial(w, data, 'anti-map')) return;

@@ -8,7 +8,7 @@ import { cannotCast } from '../world/casting.ts';
 import { alive, note } from '../world/members.ts';
 import type { TownResult } from '../world/services.ts';
 import type { Member, World } from '../world/types.ts';
-import { levelOf } from './explore.ts';
+import { levelOf, look } from './explore.ts';
 import { edgeKey, knownEdges } from './secrets.ts';
 import { passTurn } from './time.ts';
 
@@ -36,6 +36,7 @@ export function burrow(w: World, data: GameData, memberId: string): TownResult {
   (m as Member).spellsCast += 1;
   s.dug[s.level] = [...(s.dug[s.level] ?? []), edgeKey(s.at, s.facing)];
   note(w, `${(m as Member).character.name} parts the stone, and a passage opens ahead.`);
+  look(w, data, s);
   passTurn(w, data);
   return { ok: true };
 }

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { burrow, burrowers, BURROWER } from '../../../src/game/dungeon/burrow.ts';
-import { step, turnParty } from '../../../src/game/dungeon/explore.ts';
-import { knownEdges } from '../../../src/game/dungeon/secrets.ts';
+import { step } from '../../../src/game/dungeon/explore.ts';
+import { glimpse, knownEdges, search } from '../../../src/game/dungeon/secrets.ts';
 import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
 import { createRng } from '../../../src/rules/rng.ts';
@@ -32,8 +32,6 @@ describe('The Burrower Below in a dungeon (Sam’s call)', () => {
     expect(w.log).toContainEqual(expect.stringContaining('Fizzwick parts the stone'));
     // The passage is open from either side.
     expect(knownEdges(w, data)({ x: 6, y: 1 }, 'w')).toBe('open');
-    turnParty(w, data, 'around');
-    turnParty(w, data, 'around');
     expect(state(w).seen['barrow-upper']).toContain('6,1');
     w.encounter = null;
     expect(step(w, data, 'forward')).toEqual({ ok: true });
@@ -46,6 +44,13 @@ describe('The Burrower Below in a dungeon (Sam’s call)', () => {
     const f = burrower(w);
     expect(burrow(w, data, f.id)).toEqual({ ok: true });
     expect(knownEdges(w, data)({ x: 3, y: 1 }, 'e')).toBe('open');
+    // A dug secret door is never found or glimpsed afterwards.
+    w.encounter = null;
+    w.rng = createRng('look');
+    glimpse(w, data);
+    expect(state(w).glimpsed['barrow-upper']).toBeUndefined();
+    search(w, data);
+    expect(state(w).found['barrow-upper']).toBeUndefined();
     w.encounter = null;
     place(w, 'barrow-upper', 1, 1, 'e');
     expect(burrow(w, data, f.id)).toEqual({
