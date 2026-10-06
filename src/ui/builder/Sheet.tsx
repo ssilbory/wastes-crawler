@@ -4,6 +4,7 @@ import { characterSheet, type Preview } from '../../game/character/derived.ts';
 import type { AttackLine, EquipmentSummary } from '../../game/character/equipment.ts';
 import { focusInfo } from '../../game/character/foci.ts';
 import { crowns, entryName } from './GearStep.tsx';
+import { artHint, focusHint, spellHint } from '../../render/describe-view.ts';
 import { spellName } from './MagicStep.tsx';
 import type { Skills } from '../../game/character/skills.ts';
 import type { AttributeScores } from '../../rules/attributes.ts';
@@ -179,12 +180,22 @@ export function CharacterSheet(props: { character: Character }) {
           </p>
           <p>
             Arts:{' '}
-            {c.arts.map((id) => data.srd.arts.find((a) => a.id === id)?.name ?? id).join(', ')}.
+            {c.arts.map((id, i) => (
+              <span key={id}>
+                {i > 0 ? ', ' : ''}
+                <span class="has-hint" title={artHint(data, id)}>
+                  {data.srd.arts.find((a) => a.id === id)?.name ?? id}
+                </span>
+              </span>
+            ))}
+            .
           </p>
           <ul class="skills">
             {c.spells.known.map((id) => (
               <li key={id}>
-                {spellName(id)}
+                <span class="has-hint" title={spellHint(data, id)}>
+                  {spellName(id)}
+                </span>
                 {c.spells.prepared.includes(id) ? ' (prepared)' : ''}
               </li>
             ))}
@@ -195,7 +206,9 @@ export function CharacterSheet(props: { character: Character }) {
       <ul class="skills">
         {c.foci.map((f) => (
           <li key={`${f.id}-${f.attribute ?? ''}`}>
-            {focusInfo(data, f.id)?.name ?? f.id}-{f.level}
+            <span class="has-hint" title={focusHint(data, f.id, f.level)}>
+              {focusInfo(data, f.id)?.name ?? f.id}-{f.level}
+            </span>
             {f.attribute ? ` (${ATTRIBUTE_NAMES[f.attribute]})` : ''}
           </li>
         ))}

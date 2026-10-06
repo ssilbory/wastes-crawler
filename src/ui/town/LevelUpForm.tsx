@@ -1,3 +1,4 @@
+import { spellHint } from '../../render/describe-view.ts';
 import { useState } from 'preact/hooks';
 import type { Character } from '../../data/schemas/index.ts';
 import { advance, type LevelChoices, type LevelPlan } from '../../game/character/advance.ts';
@@ -81,7 +82,9 @@ export function LevelUpForm(props: {
                     )
                   }
                 />{' '}
-                {a.name}
+                <span class="has-hint" title={a.text}>
+                  {a.name}
+                </span>
               </label>
             ))}
           </fieldset>
@@ -96,7 +99,9 @@ export function LevelUpForm(props: {
                 checked={spells.includes(s.id)}
                 onChange={() => setSpells(toggle(spells, s.id, plan.spells))}
               />{' '}
-              {s.name} (level {s.level})
+              <span class="has-hint" title={spellHint(data, s.id)}>
+                {s.name} (level {s.level})
+              </span>
             </label>
           ))}
         </fieldset>
