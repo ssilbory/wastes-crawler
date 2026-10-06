@@ -2,6 +2,7 @@
 // four slots, rear slots shielded by the slot ahead, rear cover, and the front drop.
 
 export const ROW_SLOTS = 4;
+export const FORMATION_ROWS = 2;
 
 export type Row = 0 | 1;
 

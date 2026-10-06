@@ -70,3 +70,52 @@ describe('rearranging the formation', () => {
     expect(w.members.map(at)).toEqual(before);
   });
 });
+
+describe('rearranging the formation, edge cases', () => {
+  /** True when no two of the party's PCs and NPCs share a slot. */
+  const noSharing = (w: ReturnType<typeof world>) =>
+    new Set([...w.members, ...w.npcs].map((x) => `${x.row}-${x.column}`)).size ===
+    w.members.length + w.npcs.length;
+
+  it('moves an NPC to an empty slot, and swaps with a dead occupant', () => {
+    const w = world();
+    const npc = addNpc(w, data, 'hireling', 'guard', 'thug-or-militia', 'Hob', true);
+    if (!npc) throw new Error('no room for the NPC');
+    expect(moveToSlot(w, npc.id, 1, 3)).toBe(true);
+    expect(at(npc)).toEqual([1, 3]);
+    const grukk = member(w, 'Grukk');
+    grukk.dead = true;
+    expect(moveToSlot(w, npc.id, 0, 1)).toBe(true);
+    expect(at(npc)).toEqual([0, 1]);
+    expect(at(grukk)).toEqual([1, 3]);
+    expect(noSharing(w)).toBe(true);
+  });
+
+  it('refuses a benched member and slots that are not whole numbers', () => {
+    const w = world();
+    const snag = member(w, 'Snag');
+    w.benched = [snag];
+    w.members = w.members.filter((m) => m !== snag);
+    expect(moveToSlot(w, snag.id, 1, 3)).toBe(false);
+    const lirael = member(w, 'Lirael');
+    for (const [row, column] of [
+      [Number.NaN, 0],
+      [0, Number.NaN],
+      [Number.POSITIVE_INFINITY, 0],
+      [0, Number.NEGATIVE_INFINITY],
+    ] as const)
+      expect(moveToSlot(w, lirael.id, row, column)).toBe(false);
+    expect(at(lirael)).toEqual([1, 0]);
+  });
+
+  it('leaves the servant rule working from the new line-up', () => {
+    const w = world();
+    // Fill the front row by moving the rear pair up; Lirael has the fewest HP.
+    moveToSlot(w, member(w, 'Lirael').id, 0, 2);
+    moveToSlot(w, member(w, 'Fizzwick').id, 0, 3);
+    const ox = addNpc(w, data, 'beast', 'herd-beast', 'herd-beast', 'Ox', true);
+    expect(ox && at(ox)).toEqual([0, 2]);
+    expect(at(member(w, 'Lirael'))).toEqual([1, 2]);
+    expect(noSharing(w)).toBe(true);
+  });
+});
