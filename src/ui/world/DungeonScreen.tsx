@@ -16,6 +16,7 @@ import { data } from '../builder/data.ts';
 import { PartyPanel } from './PartyPanel.tsx';
 import { HealerPanel } from './HealerPanel.tsx';
 import { InventoryPanel } from './InventoryPanel.tsx';
+import { StashPanel } from './StashPanel.tsx';
 import { GreenwoodPanel } from './GreenwoodPanel.tsx';
 import { ConjunctPanel } from './ConjunctPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
@@ -247,6 +248,7 @@ export function DungeonScreen(props: {
           <GreenwoodPanel world={w} onChange={props.onChange} />
           <ConjunctPanel world={w} onChange={props.onChange} />
           <HealerPanel world={w} onChange={props.onChange} />
+          <StashPanel world={w} />
           <InventoryPanel world={w} onChange={props.onChange} />
           <QuestLog world={w} onChange={props.onChange} />
           <section class="panel log" aria-label="Journey log">
