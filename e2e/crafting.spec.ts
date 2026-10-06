@@ -147,7 +147,7 @@ test('builds a mod, keeps it up in camp, and commissions a magic sword', async (
     await page.getByRole('button', { name: 'Work a day and sleep at the inn' }).click();
   await expect(log).toContainText('Fizzwick finishes Razor Edge on the Spear, Light.');
 
-  // A night in a made camp out in the plains keeps it working.
+  // A night out in the plains keeps it working.
   await edit(page, `save.position = { col: 4, row: 8 }; save.visited.push('4,8');`);
   await page.locator('[data-hex="4,7"]').click();
   await page

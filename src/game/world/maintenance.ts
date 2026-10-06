@@ -1,6 +1,6 @@
 // Maintaining mods (docs/rules-adaptation.md, Crafting and modifying gear; vendor/wwn-srd/2.0 The
-// Rules of the Game/2.8.0 Crafting and Modifying Gear.md, 2.8.3). Each night in town or in a made
-// camp, the party's artisans maintain what they can: each one's capacity is their Int and Con
+// Rules of the Game/2.8.0 Crafting and Modifying Gear.md, 2.8.3). Each night, wherever the party
+// is, its artisans maintain what they can: each one's capacity is their Int and Con
 // modifiers plus three times their Craft level, and they only maintain mods they could build.
 // Jury-rigged gear counts as a Craft-0 mod (2.8.1). Anything left over goes another day without.
 import type { GameData } from '../character/context.ts';
@@ -10,7 +10,6 @@ import { brokenEntry } from '../character/upgrades.ts';
 import type { WorldEvent } from './bus.ts';
 import { note } from './members.ts';
 import { canMod, craftLevel, modOf } from './mods.ts';
-import { regionMap } from './region.ts';
 import type { Member, World } from './types.ts';
 
 /** How many mods a member can keep up; zero without Craft. */
@@ -38,9 +37,8 @@ const able = (m: Member, level: number) =>
 
 /** One day of maintenance for the party's gear. */
 export function maintain(w: World, data: GameData): void {
-  const sheltered = w.camp === 'made' || regionMap(data, w.region).siteAt(w.position) !== undefined;
   const budget = new Map(
-    w.members.flatMap((m) => (sheltered && capacity(data, m) > 0 ? [[m, capacity(data, m)]] : [])),
+    w.members.flatMap((m) => (capacity(data, m) > 0 ? [[m, capacity(data, m)]] : [])),
   );
   for (const owner of w.members) {
     const inventory = owner.character.inventory.map((entry) => {
