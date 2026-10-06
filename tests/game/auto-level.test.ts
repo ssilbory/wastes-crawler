@@ -69,10 +69,8 @@ describe('level-gated arts in auto-levelling (Phase 14d)', () => {
       arts: open,
       spells: { known: [], prepared: [] },
     });
-    // Every open Healer art is held: at 4th level there is nothing to pick.
-    expect(() => autoLevel(data, priest(3), 4, createRng('p'))).toThrow(
-      "Fizzwick can't level up automatically",
-    );
+    // Every open Healer art is held: at 4th level there is nothing to pick, and the level is taken.
+    expect(autoLevel(data, priest(3), 4, createRng('p')).arts).toEqual(open);
     const eighth = autoLevel(data, priest(7), 8, createRng('p')).arts;
     expect(eighth).toContain('revive-the-fallen');
     expect(eighth).not.toContain('limb-restoration');

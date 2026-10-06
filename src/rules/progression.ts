@@ -124,7 +124,10 @@ export type SwitchResult =
   | { ok: true; classes: ClassLevels }
   | { ok: false; reason: 'not-in-town' | 'current-below-4' | 'same-class' | 'unknown-class' };
 
-/** Only in town, and only once the current class has reached 4th level; earlier classes keep their levels. */
+/**
+ * Only in town, and only once the current class has reached 4th level, or before any level is taken
+ * in it, which undoes the switch into it; earlier classes keep their levels.
+ */
 export function switchClass(
   c: ClassLevels,
   target: string,
@@ -134,12 +137,15 @@ export function switchClass(
   if (!isKnown(target)) return { ok: false, reason: 'unknown-class' };
   if (target === c.current) return { ok: false, reason: 'same-class' };
   if (!inTown) return { ok: false, reason: 'not-in-town' };
-  if (levelIn(c, c.current) < SWITCH_MIN_CLASS_LEVEL) {
-    return { ok: false, reason: 'current-below-4' };
-  }
+  const held = levelIn(c, c.current);
+  // A switch with no level taken in the new class yet can be taken back (Sam's call).
+  if (held > 0 && held < SWITCH_MIN_CLASS_LEVEL) return { ok: false, reason: 'current-below-4' };
+  const levels = Object.fromEntries(
+    Object.entries(c.levels).filter(([id, level]) => id !== c.current || level > 0),
+  );
   return {
     ok: true,
-    classes: { current: target, levels: { ...c.levels, [target]: levelIn(c, target) } },
+    classes: { current: target, levels: { ...levels, [target]: levelIn(c, target) } },
   };
 }
 

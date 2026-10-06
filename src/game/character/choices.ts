@@ -46,6 +46,8 @@ export interface Evaluation {
   focusSlots: FocusSlot[];
   /** Skills before each focus slot that was evaluated. */
   focusSkillsBefore: Skills[];
+  /** The class bonus skills, by position, that need a replacement skill; null where none. */
+  classReplacing: (string | null)[];
   foci: HeldFocus[];
   modifierBonuses: ModifierBonuses;
   inventory: InventoryEntry[];

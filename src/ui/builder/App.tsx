@@ -10,7 +10,7 @@ import {
 } from '../../game/character/creation.ts';
 import { previewSheet } from '../../game/character/derived.ts';
 import { exportCharacter, importCharacter } from '../../game/character/io.ts';
-import { classBonusSkills, classOption } from '../../game/character/class-step.ts';
+import { classOption } from '../../game/character/class-step.ts';
 import { rollStartingCrowns } from '../../game/character/gear.ts';
 import { addToRoster } from '../../game/character/roster.ts';
 import { backgroundOpenTo, findPeople } from '../../game/character/people.ts';
@@ -169,14 +169,14 @@ export function App() {
             <ClassStep
               value={choices.classId}
               status={ev.steps.class}
-              replacing={
-                option && (ev.steps.class.state === 'error' || choices.classSkills[0])
-                  ? (classBonusSkills(data, option)[0] ?? null)
-                  : null
-              }
-              replacement={choices.classSkills[0] ?? null}
+              replacing={ev.classReplacing}
+              replacements={choices.classSkills}
               onChange={(classId) => update({ classId, classSkills: [], foci: [], magic: null })}
-              onReplace={(skill) => update({ classSkills: [skill] })}
+              onReplace={(i, skill) => {
+                const classSkills = [...choices.classSkills];
+                classSkills[i] = skill;
+                update({ classSkills: Array.from(classSkills, (s) => s ?? null) });
+              }}
             />
             <FociStep
               slots={ev.focusSlots}

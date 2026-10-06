@@ -62,8 +62,8 @@ export function raiseSkill(data: GameData, c: Character, skill: string): TrainRe
 
 /**
  * A focus's bonus skill gained by advancement: three points toward the skill, buying levels even
- * past the character-level minimum; what's left stays as credit. A skill already at level-4 turns
- * the points into ordinary skill points.
+ * past the character-level minimum; what's left stays as credit. Points a skill at level-4 can't use,
+ * already there or reached now, become ordinary skill points.
  */
 export function creditSkill(c: Character, skill: string, points: number): Character {
   let current = Object.hasOwn(c.skills, skill) ? (c.skills[skill] as number) : null;
@@ -81,12 +81,14 @@ export function creditSkill(c: Character, skill: string, points: number): Charac
     current = current === null ? 0 : current + 1;
   }
   const others = without(c.advancement.skillCredit, skill);
+  const maxed = current === MAX_SKILL_LEVEL;
   return {
     ...c,
     skills: current === null ? c.skills : { ...c.skills, [skill]: current },
     advancement: {
       ...c.advancement,
-      skillCredit: credit > 0 ? { ...others, [skill]: credit } : others,
+      skillPoints: c.advancement.skillPoints + (maxed ? credit : 0),
+      skillCredit: credit > 0 && !maxed ? { ...others, [skill]: credit } : others,
     },
   };
 }

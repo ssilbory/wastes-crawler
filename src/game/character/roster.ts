@@ -17,7 +17,7 @@ export interface RosterEntry {
 
 export interface LoadedRoster {
   entries: RosterEntry[];
-  /** Entries that no longer load, such as after a content change; they are dropped. */
+  /** Entries that no longer load, such as after a content change; saving keeps them as they were. */
   errors: string[];
 }
 
@@ -44,6 +44,39 @@ export function parseRoster(text: string | null, data: GameData): LoadedRoster {
     else errors.push(`${e.id}: ${result.errors.join('; ')}`);
   }
   return { entries, errors };
+}
+
+export interface RosterSave {
+  text: string;
+  /** A stored roster that couldn't be read at all, to keep aside rather than lose. */
+  backup: string | null;
+}
+
+/**
+ * What to store for these entries over the stored roster: entries that no longer load stay as they
+ * were (under a fresh id if a loaded one took theirs), so a content change never erases a character.
+ */
+export function rosterToSave(
+  stored: string | null,
+  entries: readonly RosterEntry[],
+  data: GameData,
+): RosterSave {
+  let raw: unknown = null;
+  try {
+    raw = stored === null ? null : JSON.parse(stored);
+  } catch {
+    // Unreadable text is kept aside below.
+  }
+  const parsed = RosterSchema.safeParse(raw);
+  if (!parsed.success) return { text: serializeRoster(entries), backup: stored };
+  const ids = new Set(entries.map((e) => e.id));
+  const kept = parsed.data.entries
+    .filter((e) => !importCharacter(JSON.stringify(e.character), data).ok)
+    .map((e) => (ids.has(e.id) ? { ...e, id: `${e.id}-unreadable` } : e));
+  return {
+    text: JSON.stringify({ version: ROSTER_SCHEMA_VERSION, entries: [...entries, ...kept] }),
+    backup: null,
+  };
 }
 
 /** Adds a character under a fresh id, the name plus a counter when the name is taken. */

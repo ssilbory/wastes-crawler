@@ -176,12 +176,23 @@ describe('class switching', () => {
     expect(totalAttackBonus(fresh.classes, lookup)).toBe(2);
     expect(levelUp({ current: 'x', levels: {} }).classLevel).toBe(1);
     expect(sw(expert4, 'not-a-class', true)).toEqual({ ok: false, reason: 'unknown-class' });
-    expect(sw({ current: 'constructor', levels: {} }, 'full-warrior', true)).toMatchObject({
-      reason: 'current-below-4',
-    });
-    expect(sw({ current: 'x', levels: {} }, 'full-warrior', true)).toEqual({
+    expect(sw({ current: 'x', levels: { x: 2 } }, 'full-warrior', true)).toEqual({
       ok: false,
       reason: 'current-below-4',
+    });
+  });
+
+  it('takes back a switch before any level in the new class', () => {
+    const fresh = sw(expert4, 'full-warrior', true);
+    if (!fresh.ok) throw new Error('switch refused');
+    expect(sw(fresh.classes, 'full-expert', true)).toEqual({
+      ok: true,
+      classes: { current: 'full-expert', levels: { 'full-expert': 4 } },
+    });
+    // A class id read from the prototype never counts as held.
+    expect(sw({ current: 'constructor', levels: {} }, 'full-warrior', true)).toEqual({
+      ok: true,
+      classes: { current: 'full-warrior', levels: { 'full-warrior': 0 } },
     });
   });
 });
