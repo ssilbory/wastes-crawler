@@ -61,7 +61,7 @@ export function resolveAttack(
   target: Combatant,
   boost: AttackBoost | null = null,
 ): void {
-  if (!crossWall(b, actor, attack) || !cutVines(b, actor, attack, target)) return;
+  if (!crossWall(b, actor, attack, target) || !cutVines(b, actor, attack, target)) return;
   if (!mantleCut(b, actor, target, attack)) return;
   // Red Harvest's +4 is spent on the next hit roll (Phase 15).
   const harvest = actor.nextHitBonus;

@@ -74,8 +74,7 @@
     "effort": "committed",
     "effect": {
       "kind": "ac-bonus",
-      "amount": 4,
-      "maxAc": 18
+      "amount": 4
     }
   },
   {
@@ -486,8 +485,7 @@
     "target": "enemy",
     "effect": {
       "kind": "torment",
-      "perLevel": 2,
-      "save": "physical"
+      "perLevel": 2
     }
   },
   {
@@ -600,8 +598,7 @@
     "target": "ally",
     "effect": {
       "kind": "ac-bonus",
-      "amount": 4,
-      "maxAc": 18
+      "amount": 4
     }
   },
   {
@@ -761,8 +758,7 @@
     "source": "spell",
     "target": "enemy",
     "effect": {
-      "kind": "compel",
-      "save": "physical"
+      "kind": "compel"
     }
   },
   {

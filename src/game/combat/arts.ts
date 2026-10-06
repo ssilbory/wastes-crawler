@@ -6,9 +6,9 @@
 import type { CombatEffect } from '../../data/schemas/index.ts';
 import { roll2d6WithEdge } from '../../rules/advantage.ts';
 import { pcWinsOpposed } from '../../rules/checks.ts';
-import { addStrain } from '../../rules/strain.ts';
 import { save } from './damage.ts';
 import { say } from './log.ts';
+import { bearsHealing, takeHealingStrain } from './healing-strain.ts';
 import { artReady, spendDay, worksNow } from './reactions.ts';
 import { canAct } from './targeting.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
@@ -117,14 +117,17 @@ export function turnArts(b: Battle, actor: Combatant): void {
       actor.strain = { ...actor.strain, strain: Math.max(0, actor.strain.strain - 1) };
     say(b, `${actor.name} burns a spell into vigor.`);
   }
-  const dying = b.combatants.filter((x) => x.side === actor.side && x.status === 'dying');
-  // Keeper of the Gate: Effort for the day stabilizes every ally in reach, each taking 1 strain.
-  if (dying.length > 0 && artReady(actor, 'keeper-of-the-gate')) {
+  // The frozen in amber aren't dying while it lasts (Phase 18d).
+  const dying = b.combatants.filter(
+    (x) => x.side === actor.side && x.status === 'dying' && !x.amber,
+  );
+  // Keeper of the Gate: Effort for the day stabilizes every ally in reach who can bear its 1 strain;
+  // the stabilized are Frail, as any are.
+  const kept = dying.filter((x) => bearsHealing(x, 1));
+  if (kept.length > 0 && artReady(actor, 'keeper-of-the-gate')) {
     spendDay(c);
-    for (const x of dying) {
-      x.status = 'stable';
-      if (x.strain) x.strain = addStrain(x.strain, 1, 'healing').state;
-    }
+    for (const x of kept)
+      if (takeHealingStrain(b, x, 1)) Object.assign(x, { status: 'stable', frail: true });
     say(b, `${actor.name} holds the gate shut for the fallen.`);
     return;
   }
@@ -133,7 +136,7 @@ export function turnArts(b: Battle, actor: Combatant): void {
   const first = dying[0];
   if (first && artReady(actor, 'unliving-persistence')) {
     spendDay(c);
-    first.status = 'stable';
+    Object.assign(first, { status: 'stable', frail: true });
     say(b, `${actor.name} will not let ${first.name} die.`);
   }
 }

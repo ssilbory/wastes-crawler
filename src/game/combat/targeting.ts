@@ -3,11 +3,18 @@
 // plus SRD 2.4.4 on ranged attacks with a foe in melee.
 import type { AttackMode } from '../../data/schemas/index.ts';
 import { coverSteps } from '../../rules/formation.ts';
-import type { Attack, Battle, Combatant } from './types.ts';
+import type { Attack, Battle, Combatant, SideId } from './types.ts';
 
 export const isUp = (c: Combatant) => c.status === 'active' || c.status === 'asleep';
 /** Up, awake, not held by paralysis, and not frozen in amber. */
 export const canAct = (c: Combatant) => c.status === 'active' && c.heldRounds === 0 && !c.amber;
+
+/** The other side. */
+export const foeSide = (c: Combatant): SideId => (c.side === 'party' ? 'enemy' : 'party');
+
+/** Combatants first by row and column, so the front line is served first. */
+export const inLine = (list: Combatant[]) =>
+  [...list].sort((x, y) => x.row - y.row || x.column - y.column);
 
 /** A flyer, or held aloft by Steps of Air (Phase 15). */
 export const flying = (c: Combatant) => c.tags.has('flying') || c.flyingRounds > 0;
@@ -59,10 +66,11 @@ export function usable(b: Battle, actor: Combatant, attack: Attack): boolean {
     return actor.row === 1 && attack.reach;
   }
   if (actor.row >= 2 && !flying(actor)) return false;
+  if (actor.blindRounds > 0) return false;
   if (attack.mode === 'ranged' && attack.twoHanded && inMelee(b, actor)) {
     return actor.rangedInMelee !== null;
   }
-  return actor.blindRounds === 0;
+  return true;
 }
 
 /** Valid targets for an attack; the dying only when nobody else can be reached. */

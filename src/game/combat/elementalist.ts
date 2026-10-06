@@ -6,10 +6,8 @@ import type { CombatEffect } from '../../data/schemas/index.ts';
 import { roll } from '../../rules/dice.ts';
 import { harm, say } from './damage.ts';
 import type { Resists } from './high-magic.ts';
-import { isUp } from './targeting.ts';
+import { foeSide, isUp } from './targeting.ts';
 import type { Battle, CasterState, Combatant, SideId } from './types.ts';
-
-const foeSide = (actor: Combatant): SideId => (actor.side === 'party' ? 'enemy' : 'party');
 
 /** Strikes every creature standing in one of a side's rows. */
 export function smite(b: Battle, side: SideId, row: number, total: number): void {

@@ -9,7 +9,7 @@ import type { SaveType } from '../../rules/saves.ts';
 import { harm, save, say } from './damage.ts';
 import { monsterCombatant } from './monster-combatant.ts';
 import { dispel } from './conditions.ts';
-import { flying, isUp } from './targeting.ts';
+import { flying, inLine, isUp } from './targeting.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
 
 /** A foe's save against the caster's magic, with the caster's arts that sharpen it. */
@@ -64,10 +64,6 @@ function burst(
     harm(b, actor, Math.ceil(total / 4));
   }
 }
-
-/** Allies first by row and column, so the front line is served first. */
-const inLine = (list: Combatant[]) =>
-  [...list].sort((x, y) => x.row - y.row || x.column - y.column);
 
 function fear(b: Battle, actor: Combatant, e: Effect<'fear'>, level: number): void {
   for (const t of foesOf(b, actor).filter((x) => x.status === 'active' && x.morale < 12)) {

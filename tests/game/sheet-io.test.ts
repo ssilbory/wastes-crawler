@@ -50,6 +50,11 @@ describe('characterSheet', () => {
       // damage and melee Shock, but not to unarmed attacks.
       equipment: {
         armorClass: 18,
+        armorClassInput: {
+          armorAc: 15,
+          shield: expect.objectContaining({ baseAc: 15, bonus: 2 }),
+          dexModifier: 1,
+        },
         attacks: [
           {
             id: 'spear-light',

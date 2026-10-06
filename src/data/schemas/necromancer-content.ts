@@ -14,7 +14,7 @@ export const NecromancerEffects = [
   /** Enfeebling Wave: living foes in a row save or attack at a disadvantage and roll damage twice. */
   z.strictObject({ kind: z.literal('enfeeble'), save: Save }),
   /** Compel Flesh: the foe is held and turned on its own side until a save throws it off. */
-  z.strictObject({ kind: z.literal('compel'), save: Save }),
+  z.strictObject({ kind: z.literal('compel') }),
   /** Forgetting the Grave: an ally can't die for a round per level. */
   z.strictObject({ kind: z.literal('deathless') }),
   /** Merge Souls: the caster and an ally pool their hit points for the fight. */

@@ -3,6 +3,7 @@
 // NPCs die), and the rear-cover save advantage in docs/rules-adaptation.md; from Phase 18c the
 // Necromancer's pooled, deathless, and everlasting lives (4.6.0).
 import { netSteps } from '../../rules/advantage.ts';
+import { armorClass } from '../../rules/armor-class.ts';
 import { rollSave, type SaveResult, type SaveType } from '../../rules/saves.ts';
 import { covered, isUp } from './targeting.ts';
 import { say } from './log.ts';
@@ -51,10 +52,11 @@ function pooled(b: Battle, target: Combatant, amount: number): boolean {
   const partner = b.combatants.find((c) => c.id === target.mergedWith);
   if (!partner || !isUp(partner) || partner.amber) return false;
   if (amount >= target.hp + partner.hp) {
-    target.hp = 0;
-    partner.hp = 0;
-    fall(b, target);
-    fall(b, partner);
+    for (const x of [target, partner]) {
+      const before = x.hp;
+      x.hp = 0;
+      downed(b, x, before);
+    }
     return true;
   }
   const own = Math.min(amount, target.hp);
@@ -77,6 +79,11 @@ function wound(b: Battle, target: Combatant, amount: number): void {
     }
     return;
   }
+  downed(b, target, before);
+}
+
+/** A creature brought to zero: magic may hold it up, else it falls. */
+function downed(b: Battle, target: Combatant, before: number): void {
   // Forgetting the Grave: no dying yet; struck again at zero, a failed save leaves them unable to move.
   if (target.deathlessUntil >= b.round) {
     if (before === 0 && !save(b, target, 'physical').success) target.rootedRounds = SCENE;
@@ -104,6 +111,7 @@ export function fall(b: Battle, target: Combatant): void {
   }
   if (keepsDying(b, target)) {
     target.status = 'stable';
+    target.frail = true;
     target.fellRound = b.round;
     return;
   }
@@ -141,11 +149,22 @@ export function save(b: Battle, target: Combatant, type: SaveType, modifier = 0)
 }
 
 /**
+ * The AC with a natural AC under the armor (Armor of God, Cold Flesh): for a PC it stands in for
+ * worn armor when better, with Dex and a shield still counting (vendor/wwn-srd/1.0 Character
+ * Creation/1.5.0 Class List/1.5.5 The Blood Priest.md); a monster just takes the better.
+ */
+export function acWith(c: Combatant, floor: number): number {
+  if (floor === 0 || !c.acInput) return Math.max(c.ac, floor);
+  const innateAc = Math.max(c.acInput.innateAc ?? 0, floor);
+  return Math.max(c.ac, armorClass({ ...c.acInput, innateAc }));
+}
+
+/**
  * AC with a natural AC if better (Armor of God, Cold Flesh), Total Defense (+2), Sanctified Ward
  * (+4), and Pavis of Elements or Ward of the Turning Wind (+4, never above 18).
  */
 export function effectiveAc(c: Combatant): number {
-  const ac = Math.max(c.ac, c.acFloor);
+  const ac = acWith(c, c.acFloor);
   const pavis = c.acBonus > 0 ? Math.max(ac, Math.min(ac + c.acBonus, 18)) : ac;
   return pavis + (c.totalDefense ? 2 : 0) + (c.sanctified ? 4 : 0);
 }
