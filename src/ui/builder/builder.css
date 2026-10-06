@@ -288,3 +288,14 @@ fieldset.picks legend {
   margin: 0 0 0.5rem;
   font-weight: 600;
 }
+
+/* Names with a description on hover. */
+.has-hint {
+  cursor: help;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+
+.focus-hint {
+  white-space: pre-line;
+}

@@ -16,6 +16,8 @@ const Tier = z.strictObject({
 
 /** Crafting numbers (docs/rules-adaptation.md, Crafting and modifying gear). */
 export const CraftingRulesSchema = z.strictObject({
+  /** XP a crafter earns for each day of work on a project, so they keep pace (Sam's call). */
+  xpPerDay: z.number().min(0),
   /** Days to build a normal item of each kind (SRD 2.8.1: a week for a weapon or armor). */
   buildDays: z.strictObject({
     weapon: z.int().min(1),
