@@ -26,6 +26,7 @@ import { blind } from '../../game/dungeon/light.ts';
 import { onSafeSquare } from '../../game/dungeon/time.ts';
 import { search } from '../../game/dungeon/secrets.ts';
 import { burrow, burrowers } from '../../game/dungeon/burrow.ts';
+import { castersOf, SIGIL, sigilEscape } from '../../game/world/waygates.ts';
 import { disarm, knownTrapAhead } from '../../game/dungeon/traps.ts';
 import type { TownResult } from '../../game/world/services.ts';
 import { lightText, turnText } from '../../render/light-view.ts';
@@ -173,6 +174,15 @@ export function DungeonScreen(props: {
               {burrowers(w).map((m) => (
                 <button key={m.id} type="button" onClick={() => act(() => burrow(w, data, m.id))}>
                   {m.character.name}: dig through the wall ahead (1 turn)
+                </button>
+              ))}
+              {castersOf(w, SIGIL).map((m) => (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => act(() => sigilEscape(w, data, m.id))}
+                >
+                  {m.character.name}: escape to the surface with the Ochre Sigil
                 </button>
               ))}
               {trap && (

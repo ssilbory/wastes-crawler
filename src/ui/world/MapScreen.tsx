@@ -15,6 +15,7 @@ import { SettingPanel } from './SettingPanel.tsx';
 import { HealerPanel } from './HealerPanel.tsx';
 import { InventoryPanel } from './InventoryPanel.tsx';
 import { GreenwoodPanel } from './GreenwoodPanel.tsx';
+import { HighRoadPanel } from './HighRoadPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { QuestLog } from './QuestLog.tsx';
@@ -138,6 +139,7 @@ export function MapScreen(props: {
           <NpcPanel world={w} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />
           <GreenwoodPanel world={w} onChange={props.onChange} />
+          <HighRoadPanel world={w} onChange={props.onChange} />
           <HealerPanel world={w} onChange={props.onChange} />
           <InventoryPanel world={w} onChange={props.onChange} />
           <QuestLog world={w} onChange={props.onChange} />

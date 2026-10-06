@@ -7,7 +7,16 @@
     "aqueous-harmony",
     "flame-scrying",
     "elemental-favor",
-    "elemental-spy"
+    "elemental-spy",
+    "disjunctive-temporal-reversion",
+    "abdication-of-temporal-presence",
+    "vallation-of-specified-exclusion",
+    "touch-of-elucidating-intangibility",
+    "casting-forth-the-inner-eye",
+    "foresightful-apprehension",
+    "calculation-of-the-evoked-servitor",
+    "visitation-of-the-clement-clime",
+    "the-earth-as-clay"
   ],
   "outsideCombat": [
     "command-the-dead",
@@ -15,7 +24,9 @@
     "raise-grave-knight",
     "rouse-the-sapling",
     "call-the-elder-tree",
-    "the-burrower-below"
+    "the-burrower-below",
+    "the-ochre-sigil-of-juxtaposition",
+    "open-the-high-road"
   ],
   "added": [
     {
