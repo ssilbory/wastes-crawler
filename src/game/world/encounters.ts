@@ -215,7 +215,10 @@ export function meetGroup(
   lead: string,
   where = hexKey(w.position),
 ): PendingEncounter {
-  const { reaction } = reactionRoll(w.rng, partyCha(w, data) + reactionBonus(w, data));
+  // A quest's guardians and quarry are spoiling for the fight it needs; an ambush's mood is rolled.
+  const reaction: Reaction = quest
+    ? 'unfriendly'
+    : reactionRoll(w.rng, partyCha(w, data) + reactionBonus(w, data)).reaction;
   return setEncounter(w, data, rows, nature, reaction, captive, quest, true, false, lead, where);
 }
 
