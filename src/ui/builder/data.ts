@@ -4,6 +4,7 @@ import type { Attribute, GrowthEntry, LearningEntry } from '../../data/schemas/i
 import type { GameData } from '../../game/character/context.ts';
 import { createRng, type Rng } from '../../rules/rng.ts';
 import { gameSkills } from '../../data/skills.ts';
+import { classChoices } from '../../render/class-view.ts';
 
 export const data: GameData = { srd: loadSrd(), content: loadContent() };
 
@@ -22,18 +23,7 @@ export function skillName(id: string): string {
   return skills.find((s) => s.id === id)?.name ?? id;
 }
 
-/**
- * Each class, labeled for pickers with a partial class's halves beside its name: the single
- * classes first, then the partial ones, each in content order.
- */
-export const classes = [
-  ...data.content.classOptions.filter((c) => !c.halves),
-  ...data.content.classOptions.filter((c) => c.halves),
-].map((c) => ({
-  id: c.id,
-  name: c.name,
-  label: c.halves ? `${c.name} (${c.halves})` : c.name,
-}));
+export const classes = classChoices(data.content.classOptions);
 
 export function className(id: string): string {
   return (
