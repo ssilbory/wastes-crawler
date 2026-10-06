@@ -177,7 +177,7 @@ test('builds a mod, keeps it up in camp, and commissions a magic sword', async (
   await page.getByRole('button', { name: 'Call on Hagen the Smith' }).click();
   const jobs = page.getByRole('region', { name: 'Commissions' });
   await jobs.getByRole('combobox', { name: 'Weapon' }).selectOption({ label: 'Sword, Long' });
-  await jobs.getByRole('button', { name: /^Commission \(250 crowns, 30 days/ }).click();
+  await jobs.getByRole('button', { name: /^Commission \(200 crowns, 30 days/ }).click();
   await expect(log).toContainText('Hagen the Smith takes on a +1 Sword, Long: ready in 30 days.');
   await expect(jobs).toContainText('Sword, Long +1: ready in 30 days');
   await edit(page, `save.day += 30;`);

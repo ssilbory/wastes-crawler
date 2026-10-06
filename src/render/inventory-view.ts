@@ -6,6 +6,7 @@ import { characterSheet } from '../game/character/derived.ts';
 import { entryEncumbrance, findItem, lineLabel } from '../game/character/items.ts';
 import type { World } from '../game/world/types.ts';
 import type { Load } from '../rules/encumbrance.ts';
+import { defenseStats } from './gear-view.ts';
 
 export interface GearLine {
   index: number;
@@ -14,6 +15,8 @@ export interface GearLine {
   location: ItemLocation;
   /** Encumbrance of the whole line. */
   encumbrance: number;
+  /** Armor's and a shield's AC; null for other gear. */
+  stats: string | null;
 }
 
 export interface InventoryView {
@@ -43,6 +46,7 @@ export function inventoryView(w: World, data: GameData, memberId: string): Inven
         quantity: e.quantity,
         location: e.location,
         encumbrance: item ? entryEncumbrance(data, item, e) : 0,
+        stats: defenseStats(data, item, e.bonus ?? 0),
       };
     }),
     others: w.members

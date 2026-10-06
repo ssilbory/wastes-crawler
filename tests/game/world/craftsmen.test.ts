@@ -138,11 +138,12 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
     });
   });
 
-  it('sell ready-made magic weapons at the SRD price', () => {
+  it('sell ready-made magic weapons at their own, higher price', () => {
     const w = atHagen();
     expect(() => buyMagic(w, data, 5, 'm-0')).toThrow('no stock line 5');
-    expect(buyMagic(w, data, 0, 'm-0')).toEqual({ ok: false, reason: 'That costs 12500 crowns.' });
-    w.purse = 13000;
+    w.purse = 700;
+    expect(buyMagic(w, data, 0, 'm-0')).toEqual({ ok: false, reason: 'That costs 750 crowns.' });
+    w.purse = 800;
     expect(buyMagic(w, data, 0, 'm-0')).toEqual({ ok: true });
     expect(member(w, 'Snag').character.inventory.at(-1)).toEqual({
       id: 'spear-light',
@@ -167,12 +168,12 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
     w.purse = 100;
     expect(commission(w, data, 'sword-long', 1)).toEqual({
       ok: false,
-      reason: 'Hagen the Smith asks 250 crowns.',
+      reason: 'Hagen the Smith asks 200 crowns.',
     });
     w.purse = 1000;
     expect(commission(w, data, 'sword-long', 1)).toEqual({ ok: true });
     expect(w.components).toEqual({});
-    expect(w.purse).toBe(750);
+    expect(w.purse).toBe(800);
     expect(w.commissions).toEqual([
       { craftsman: 'smith-westhold', weapon: 'sword-long', bonus: 1, readyDay: 30 },
     ]);
@@ -210,7 +211,7 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
     expect(after?.shock?.damage).toBe((before?.shock?.damage as number) + 2);
     const line = { id: 'axe-war', quantity: 1, location: 'readied' as const, bonus: 2 };
     expect(entryText(data, line)).toBe('Axe, War +2 (readied)');
-    expect(entryPrice(data, findItem(data, 'axe-war') as CatalogItem, line)).toBe(10500);
+    expect(entryPrice(data, findItem(data, 'axe-war') as CatalogItem, line)).toBe(8500);
   });
 
   it('are checked against towns and weapons', () => {

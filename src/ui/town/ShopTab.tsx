@@ -5,6 +5,7 @@ import { stowWithPorter, takeFromPorter } from '../../game/world/hire.ts';
 import { typeOf } from '../../game/world/npcs.ts';
 import { buy, giveItem, sell, sellPrice, setLocation, shopPrice } from '../../game/world/shop.ts';
 import type { World } from '../../game/world/types.ts';
+import { itemStats } from '../../render/gear-view.ts';
 import { crowns, entryText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { cue } from '../sound.ts';
@@ -58,7 +59,9 @@ export function ShopTab(props: { world: World; act: Act }) {
                   .filter((i) => i.kind === kind)
                   .map((i) => (
                     <option key={i.id} value={i.id}>
-                      {i.name} ({crowns(shopPrice(w, data, i.id))})
+                      {i.name}
+                      {itemStats(data, i) ? ` · ${itemStats(data, i)}` : ''} (
+                      {crowns(shopPrice(w, data, i.id))})
                     </option>
                   ))}
               </optgroup>

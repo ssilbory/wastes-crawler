@@ -6,6 +6,7 @@ import type { GameData } from '../game/character/context.ts';
 import { characterSheet } from '../game/character/derived.ts';
 import { findItem, type InventoryEntry } from '../game/character/items.ts';
 import { haggler } from '../game/world/trade.ts';
+import { defenseStats } from './gear-view.ts';
 import type { World } from '../game/world/types.ts';
 import { xpForLevel } from '../rules/advancement.ts';
 
@@ -28,7 +29,9 @@ export function levelLine(data: GameData, c: Character): string {
 
 /** "Crowbar ×2 (stowed)", with quality, mods, upkeep, size, and barding notes. */
 export function entryText(data: GameData, entry: InventoryEntry): string {
-  const name = `${findItem(data, entry.id)?.name ?? entry.id}${entry.bonus ? ` +${entry.bonus}` : ''}`;
+  const item = findItem(data, entry.id);
+  const stats = defenseStats(data, item, entry.bonus ?? 0);
+  const name = `${item?.name ?? entry.id}${entry.bonus ? ` +${entry.bonus}` : ''}${stats ? ` · ${stats}` : ''}`;
   const mods = (entry.mods ?? []).map((m) => data.content.mods.find((x) => x.id === m.id)?.name);
   const notes = [
     entry.quality,

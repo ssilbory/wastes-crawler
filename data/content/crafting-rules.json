@@ -31,9 +31,9 @@
     "tiers": [
       {
         "bonus": 1,
-        "commission": 250,
+        "commission": 200,
         "days": 30,
-        "stockPrice": 12500,
+        "stockPrice": 750,
         "weight": 7,
         "components": [
           {
@@ -48,9 +48,9 @@
       },
       {
         "bonus": 2,
-        "commission": 1000,
+        "commission": 800,
         "days": 90,
-        "stockPrice": 50000,
+        "stockPrice": 3000,
         "weight": 2,
         "components": [
           {
@@ -69,9 +69,9 @@
       },
       {
         "bonus": 3,
-        "commission": 5000,
+        "commission": 4000,
         "days": 180,
-        "stockPrice": 250000,
+        "stockPrice": 15000,
         "weight": 1,
         "components": [
           {
