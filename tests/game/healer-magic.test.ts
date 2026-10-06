@@ -39,6 +39,9 @@ describe('the Priest of Death and the Blood Priest/Healer (Phase 14d)', () => {
     expect(early).not.toContain('revive-the-fallen');
     expect(early).not.toContain('limb-restoration');
     expect(early).toContain('vital-furnace');
+    // Purge Ailment lifts Frailty in this game, so it's offered from 1st level.
+    expect(early).toContain('purge-ailment');
+    expect(artBar(data, 'healer', 'purge-ailment', 1)).toBeNull();
     const late = artChoices(data, healerPick, [], 8).map((a) => a.id);
     expect(late).toContain('revive-the-fallen');
     // No one in the game loses a limb, so Limb Restoration is left out at every level.

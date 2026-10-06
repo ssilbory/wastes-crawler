@@ -17,7 +17,8 @@ async function edit(page: Page, change: string) {
   await page.getByRole('button', { name: 'Continue journey' }).click();
 }
 
-test('revives the fallen right after the fight', async ({ page }, testInfo) => {
+/** Snag in front and Fizzwick behind, in a new world on its first day. */
+async function begin(page: Page) {
   await page.goto('/#/arena');
   await page.getByLabel('Import character files').setInputFiles(starters);
   await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(
@@ -33,6 +34,10 @@ test('revives the fallen right after the fight', async ({ page }, testInfo) => {
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('healer-e2e');
   await page.getByRole('button', { name: 'Start a new world' }).click();
   await page.getByRole('button', { name: 'Begin the journey' }).click();
+}
+
+test('revives the fallen right after the fight', async ({ page }, testInfo) => {
+  await begin(page);
   await expect(page.getByRole('region', { name: 'Revive the Fallen' })).toHaveCount(0);
   await edit(
     page,
@@ -55,4 +60,32 @@ test('revives the fallen right after the fight', async ({ page }, testInfo) => {
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
     'Fizzwick revives Snag, who lies unconscious.',
   );
+});
+
+test('purges an ally of Frailty, spending Effort win or lose', async ({ page }) => {
+  await begin(page);
+  await expect(page.getByRole('region', { name: 'Purge Ailment' })).toHaveCount(0);
+  await edit(
+    page,
+    `const fizz = save.members.find((m) => m.character.name === 'Fizzwick').character;
+     fizz.classes = { current: 'healer-partial-mage', levels: { 'healer-partial-mage': 8 } };
+     fizz.skills.heal = 1;
+     fizz.spells = { known: [], prepared: [] };
+     fizz.arts = ['healing-touch', 'purge-ailment'];
+     save.members.find((m) => m.character.name === 'Snag').frail = true;`,
+  );
+  const panel = page.getByRole('region', { name: 'Purge Ailment' });
+  await expect(panel).toContainText('Fizzwick: 2 Effort left today');
+  await panel.getByRole('button', { name: 'Purge Snag' }).click();
+  const log = page.getByRole('region', { name: 'Journey log' });
+  await expect(log).toContainText(
+    /Fizzwick (purges Snag's Frailty|tends Snag, but the Frailty holds)\./,
+  );
+  if ((await log.innerText()).includes("purges Snag's Frailty")) {
+    await expect(panel).toHaveCount(0);
+    await expect(page.getByRole('region', { name: 'Party' })).not.toContainText('Frail');
+  } else {
+    await expect(panel).toContainText('Fizzwick: 1 Effort left today');
+    await expect(page.getByRole('region', { name: 'Party' })).toContainText('Frail');
+  }
 });

@@ -84,6 +84,26 @@ describe('Purge Ailment lifting Frailty', () => {
     expect(snag.frail).toBe(true);
   });
 
+  it('rolls with the better of Wis and Int', () => {
+    // 2 + 3 + Heal-1 is 6: Int 18 (+2) makes 8, Wis 3 (-2) would make 4.
+    const { w, h, snag } = frailSnag([2, 3]);
+    const base = { ...h.character.attributes.base, wis: 3, int: 18 };
+    h.character = {
+      ...h.character,
+      attributes: { base, people: {}, background: {}, advancement: {} },
+    };
+    expect(purgeFrailty(w, data, h.id, snag.id)).toEqual({ ok: true });
+    expect(snag.frail).toBe(false);
+    // The same roll with Int 3 as well fails.
+    const low = frailSnag([2, 3]);
+    low.h.character = {
+      ...low.h.character,
+      attributes: { base: { ...base, int: 3 }, people: {}, background: {}, advancement: {} },
+    };
+    purgeFrailty(low.w, data, low.h.id, low.snag.id);
+    expect(low.snag.frail).toBe(true);
+  });
+
   it('tends an ally lying unconscious after a revive', () => {
     const { w, h, snag } = frailSnag([6, 6]);
     snag.reviving = true;
