@@ -11,7 +11,7 @@ import { toTenths } from '../../rules/economy.ts';
 import type { LootDice } from '../../data/schemas/index.ts';
 import { findMonster, type GameData } from '../character/context.ts';
 import { activeEffects } from '../character/equipment.ts';
-import { alive, note } from './members.ts';
+import { alive, awake, note } from './members.ts';
 import type { Member, Npc, World } from './types.ts';
 
 export const MAX_NPCS = 2;
@@ -117,7 +117,7 @@ export const isServant = (n: Pick<Npc, 'kind'>) =>
 
 /**
  * A servant's slot (docs/rules-adaptation.md, Formation rules: Servants): in front where it can,
- * the ally with the fewest HP stepping back for it when the front row is full.
+ * the conscious ally with the fewest HP stepping back for it when the front row is full.
  */
 function servantSlot(w: World, name: string): { row: number; column: number } | null {
   if (w.npcs.length >= MAX_NPCS) return null;
@@ -125,8 +125,8 @@ function servantSlot(w: World, name: string): { row: number; column: number } | 
   const place = servantPlace(
     people.map((x) =>
       'character' in x
-        ? { row: x.row, column: x.column, hp: x.character.hp.current, yields: true }
-        : { row: x.row, column: x.column, hp: x.hp, yields: !isServant(x) },
+        ? { row: x.row, column: x.column, hp: x.character.hp.current, yields: awake(x) }
+        : { row: x.row, column: x.column, hp: x.hp, yields: x.hp > 0 && !isServant(x) },
     ),
   );
   if (!place) return null;

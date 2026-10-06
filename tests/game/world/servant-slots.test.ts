@@ -65,6 +65,23 @@ describe('servants joining the party take the front where they can', () => {
     expect(guard.members.filter((m) => m.row === 0)).toHaveLength(4);
   });
 
+  it('never move the dead or the unconscious, only the weakest one awake', () => {
+    const w = fullFront();
+    setHp(w, 'Snag', 0);
+    member(w, 'Snag').dead = true;
+    setHp(w, 'Grukk', 0);
+    member(w, 'Grukk').reviving = true;
+    setHp(w, 'Lirael', 4);
+    setHp(w, 'Fizzwick', 6);
+    const ox = addNpc(w, data, 'beast', 'herd-beast', 'herd-beast', 'Ox', true);
+    expect(ox && at(ox)).toEqual([0, 2]);
+    expect([member(w, 'Snag'), member(w, 'Grukk'), member(w, 'Lirael')].map(at)).toEqual([
+      [0, 0],
+      [0, 1],
+      [1, 2],
+    ]);
+  });
+
   it('find no slot once the NPC slots are full', () => {
     const w = fullFront();
     addNpc(w, data, 'hireling', 'guard', 'thug-or-militia', 'A', true);
