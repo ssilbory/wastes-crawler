@@ -47,7 +47,7 @@ export const HighMagicEffects = [
   /** Scorn the Fetters of Earth: allies fly for the scene, or flying foes save or are grounded. */
   z.strictObject({ kind: z.literal('skyward'), save: Save, penaltySkill: IdSchema }),
   /** The Torment of Tumefaction: `perLevel` per caster level each round the target attacks. */
-  z.strictObject({ kind: z.literal('torment'), perLevel: z.int().min(1), save: Save }),
+  z.strictObject({ kind: z.literal('torment'), perLevel: z.int().min(1) }),
   /** The Glass Chimes shattered: `damage` to everyone but the caster. */
   z.strictObject({ kind: z.literal('shatter'), damage: DiceSchema }),
   /** Evert the Inwardness: no more hit dice than the level saves or dies; all take damage, save half. */

@@ -9,7 +9,7 @@ import type {
   People,
   Weapon,
 } from '../../data/schemas/index.ts';
-import { armorClass, innateArmorClass } from '../../rules/armor-class.ts';
+import { armorClass, innateArmorClass, type ArmorClassInput } from '../../rules/armor-class.ts';
 import { UNTRAINED_ATTACK_PENALTY, type ShockRating } from '../../rules/attacks.ts';
 import {
   boostedModifier,
@@ -95,6 +95,11 @@ export interface Loadout {
 }
 
 export function loadoutArmorClass(data: GameData, l: Loadout): number {
+  return armorClass(loadoutArmorClassInput(data, l));
+}
+
+/** What the loadout's AC is made of, so a fight can lay a natural AC under it (Armor of God). */
+export function loadoutArmorClassInput(data: GameData, l: Loadout): ArmorClassInput {
   const worn = resolve(data, l.entries).filter((r) => r.entry.location === 'worn');
   const armor = worn.find((r) => r.item.kind === 'armor' && !r.entry.barding);
   const barding = worn.find((r) => r.item.kind === 'armor' && r.entry.barding);
@@ -107,13 +112,13 @@ export function loadoutArmorClass(data: GameData, l: Loadout): number {
   const innate = activeEffects(data, l.foci).flatMap((e) =>
     e.kind === 'innate-ac' ? [innateArmorClass(e.base, l.level)] : [],
   );
-  return armorClass({
+  return {
     armorAc: acOf(armor),
     ...(l.people.barding ? { barding: { ac: acOf(barding) } } : {}),
     ...(innate.length > 0 ? { innateAc: Math.max(...innate) } : {}),
     ...(shield?.item.kind === 'shield' ? { shield: shield.item.shield } : {}),
     dexModifier: boostedModifier(l.scores.dex, l.bonuses.dex),
-  });
+  };
 }
 
 export function loadoutLoad(data: GameData, l: Loadout): Load {
@@ -247,6 +252,7 @@ function naturalSource(w: NaturalWeapon): Source {
 
 export interface EquipmentSummary {
   armorClass: number;
+  armorClassInput: ArmorClassInput;
   attacks: AttackLine[];
   load: Load;
 }
@@ -254,6 +260,7 @@ export interface EquipmentSummary {
 export function loadoutSummary(data: GameData, l: Loadout): EquipmentSummary {
   return {
     armorClass: loadoutArmorClass(data, l),
+    armorClassInput: loadoutArmorClassInput(data, l),
     attacks: loadoutAttacks(data, l),
     load: loadoutLoad(data, l),
   };

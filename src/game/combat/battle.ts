@@ -143,7 +143,7 @@ export function createBattle(s: BattleSetup): Battle {
   const active = party.filter(canAct);
   const partyRoll = sideInitiative(
     s.rng,
-    Math.max(0, ...active.map((p) => p.modifiers.dex)),
+    active.length > 0 ? Math.max(...active.map((p) => p.modifiers.dex)) : 0,
     Math.max(0, ...active.map((p) => p.initiativeBonus)),
   );
   b.partyFirst = partyActsFirst(partyRoll, sideInitiative(s.rng, 0));

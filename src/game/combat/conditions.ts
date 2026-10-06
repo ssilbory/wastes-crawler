@@ -118,8 +118,14 @@ export function cutVines(
  * Elemental Vallation (4.5.0): a foe stepping up to strike the walled side in melee crosses the
  * fire once and burns; false if it falls before the blow.
  */
-export function crossWall(b: Battle, attacker: Combatant, attack: Attack): boolean {
-  if (attack.mode !== 'melee') return true;
+export function crossWall(
+  b: Battle,
+  attacker: Combatant,
+  attack: Attack,
+  target: Combatant,
+): boolean {
+  // The mad and the compelled striking their own side never cross the wall.
+  if (attack.mode !== 'melee' || target.side === attacker.side) return true;
   for (const wall of b.walls) {
     if (wall.side !== attacker.side || wall.crossed.includes(attacker.id)) continue;
     wall.crossed.push(attacker.id);

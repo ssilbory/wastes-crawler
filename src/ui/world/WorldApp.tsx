@@ -104,7 +104,8 @@ export function WorldApp() {
       battle,
       settle: (result) => verdict.then((d) => settleByFighting(w, data, battle, result, d)),
       back: 'map',
-      xp: verdict.then((d) => xpText(data, d)),
+      // Only a win shows it; a failed simulation just leaves it off.
+      xp: verdict.then((d) => xpText(data, d)).catch(() => ''),
     });
     changed();
   };

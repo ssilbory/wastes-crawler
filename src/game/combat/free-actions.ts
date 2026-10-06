@@ -1,8 +1,10 @@
-// On Turn and Instant magic taken before the main action, whoever commands the turn: Pavis of
+// On Turn and Instant magic taken before the main action (vendor/wwn-srd/4.0 Magic and Spellcasting/
+// 4.1.0 Spells and Arts.md, On Turn actions), whoever commands the turn: Pavis of
 // Elements, Armor of God when it beats the armor worn, God Wills It in a hard fight (Phase 14c),
 // Swift Healer (Phase 14d), and from Phase 15 the sight arts in a dark fight, Steps of Air for an
 // ally who can't reach a foe, Sanctified Ward when hurt, Swift Casting, and the arts in arts.ts.
 import { enemiesOf, magicAction } from './ai.ts';
+import { acWith } from './damage.ts';
 import { turnArts } from './arts.ts';
 import { artReady, spendDay } from './reactions.ts';
 import { canUse, castMagic, combatMagic } from './spells.ts';
@@ -30,7 +32,10 @@ export function freeActions(b: Battle, actor: Combatant): void {
   if (b.dark && !actor.seesInDark) SIGHT.some((id) => cast(id, actor.id));
   if (actor.acBonus === 0) cast('pavis-of-elements', actor.id);
   const armor = combatMagic(b, 'armor-of-god');
-  if (armor?.effect.kind === 'ac-floor' && armor.effect.base + Math.floor(c.level / 2) > actor.ac)
+  if (
+    armor?.effect.kind === 'ac-floor' &&
+    acWith(actor, armor.effect.base + Math.floor(c.level / 2)) > actor.ac
+  )
     if (actor.acFloor < armor.effect.base) cast(armor.id, actor.id);
   const hitDice = enemiesOf(b, actor).reduce((sum, f) => sum + f.hitDice, 0);
   const allies = b.combatants.filter((x) => x.side === actor.side && canAct(x));

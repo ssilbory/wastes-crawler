@@ -34,7 +34,7 @@ const STATUS_TAGS: Partial<Record<Combatant['status'], string>> = {
   stable: 'stable',
   dead: 'dead',
   fled: 'fled',
-  out: 'enthralled',
+  out: 'out of the fight',
 };
 
 export function conditions(c: Combatant): string[] {
@@ -48,6 +48,13 @@ export function conditions(c: Combatant): string[] {
   if (c.totalDefense) tags.push('defending');
   if (c.instinctive) tags.push('on instinct');
   if (c.acBonus > 0) tags.push(`AC +${c.acBonus}`);
+  if (c.heldRounds > 0) tags.push('paralyzed');
+  if (c.rootedRounds > 0) tags.push('rooted');
+  if (c.misted) tags.push('mist');
+  if (c.sanctified) tags.push('sanctified');
+  if (c.berserk) tags.push('mad');
+  if (c.compelled > 0) tags.push('compelled');
+  if (c.mergedWith) tags.push('merged');
   if (c.amber) tags.push('frozen in amber');
   if (c.fleet) tags.push('fleet');
   if (c.finalDeath) tags.push('final death');
@@ -94,6 +101,7 @@ const capitalize = (s: string) => `${s.charAt(0).toUpperCase()}${s.slice(1)}`;
 
 /** A headline for a finished battle. */
 export function outcomeText(b: Battle, outcome: Outcome): string {
+  if (b.escaped) return `${capitalize(b.sideNames.party)} escapes behind the Invincible Citadel.`;
   return outcome === 'draw' ? 'The fight is a draw.' : `${capitalize(b.sideNames[outcome])} wins.`;
 }
 

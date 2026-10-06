@@ -101,7 +101,6 @@ export function monsterCombatant(
     attacksPerRound: m.attacks,
     saves: { physical: m.save, evasion: m.save, mental: m.save, luck: m.save },
     hitDice: m.hitDice,
-    skillBonus: m.skill,
     tags,
     sapient: combat?.mind === 'sapient',
     morale: m.morale,

@@ -82,7 +82,10 @@ export const enemiesOf = (b: Battle, actor: Combatant) =>
 /** The spell or art a caster would use now, if any. */
 export function magicAction(b: Battle, actor: Combatant): Action | null {
   if (!actor.caster) return null;
-  const foes = enemiesOf(b, actor).filter((f) => f.status === 'active');
+  // Spells, like blows, spare noncombatants while anyone else stands, and pass over the frozen.
+  const up = enemiesOf(b, actor).filter((f) => f.status === 'active' && !f.amber);
+  const fighting = up.filter((f) => !f.noncombatant);
+  const foes = fighting.length > 0 ? fighting : up;
   if (foes.length === 0) return null;
   const ready = (id: string, strain = false, target?: string) => {
     const m = combatMagic(b, id);

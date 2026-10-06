@@ -13,6 +13,7 @@ import { attackSteps, hitModifier, isUp } from './targeting.ts';
 import { artEffect, counterSpell, retainsSpell } from './arts.ts';
 import { elementalistEffect } from './elementalist.ts';
 import { healingFails, necromancerEffect } from './necromancer.ts';
+import { bearsHealing, takeHealingStrain } from './healing-strain.ts';
 import { donorFor, sanctuaryEffect } from './sanctuary.ts';
 import { highMagicEffect, type Resists } from './high-magic.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
@@ -41,6 +42,9 @@ function fitsTarget(b: Battle, actor: Combatant, m: CombatMagic, id?: string): b
   const t = b.combatants.find((x) => x.id === id);
   if (!t) return true;
   if (m.effect.kind === 'amber') return t !== actor;
+  // Healing the target couldn't bear is never offered (SRD 2.5.2).
+  if (m.effect.kind === 'heal' || m.effect.kind === 'touch-heal')
+    return bearsHealing(t, m.effect.strain);
   return m.effect.kind !== 'conjunct' || donorFor(b, t) !== null;
 }
 
@@ -107,16 +111,14 @@ function pay(b: Battle, actor: Combatant, m: CombatMagic, strain: boolean): void
   } else if (!retainsSpell(b, actor)) c.spellsLeft -= 1;
 }
 
-/** Healing that revives the Mortally Wounded and adds System Strain. */
+/** Healing that revives the Mortally Wounded and adds System Strain, unless it is refused. */
 function restore(b: Battle, target: Combatant, amount: number, strain: number): void {
-  if (healingFails(b, target)) return;
+  if (healingFails(b, target) || !takeHealingStrain(b, target, strain)) return;
   const healed = Math.max(0, amount);
   if (target.status === 'dying' || target.status === 'stable') {
     target.status = 'active';
     target.hp = Math.min(target.maxHp, healed);
   } else target.hp = Math.min(target.maxHp, target.hp + healed);
-  if (target.strain && strain > 0)
-    target.strain = addStrain(target.strain, strain, 'healing').state;
   say(b, `${target.name} is healed for ${healed}.`);
 }
 

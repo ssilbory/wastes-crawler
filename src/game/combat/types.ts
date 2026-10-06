@@ -1,5 +1,6 @@
 // Battle state for the combat engine. The engine mutates a Battle it owns; callers get it back
 // from runBattle or step through it round by round.
+import type { ArmorClassInput } from '../../rules/armor-class.ts';
 import type {
   Attribute,
   AttackMode,
@@ -85,7 +86,6 @@ export interface Combatant {
   modifiers: Record<Attribute, number>;
   skills: Record<string, number>;
   /** Monster skill bonus, used for opposed checks. */
-  skillBonus: number;
   healModifier: number;
   hasHealKit: boolean;
   tags: Set<MonsterTag>;
@@ -98,7 +98,6 @@ export interface Combatant {
   rangedInMelee: number | null;
   initiativeBonus: number;
   actsFirst: boolean;
-  killingBlow: boolean;
   veteransLuck: boolean;
   caster: CasterState | null;
   strain: StrainState | null;
@@ -131,6 +130,8 @@ export interface Combatant {
   actsLast: boolean;
   /** Phase 14c: Armor of God's natural AC (0 if none), and Wrath's pending extra damage. */
   acFloor: number;
+  /** A PC's armor, shield, and Dex, so a natural AC still takes Dex and a shield; null for monsters. */
+  acInput: ArmorClassInput | null;
   wrath: { until: number; bonus: number } | null;
   /** A PC's character, whose gear can be readied or stowed mid-fight (Phase 17); null otherwise. */
   character: Character | null;

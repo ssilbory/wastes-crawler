@@ -56,7 +56,7 @@ describe('arena view', () => {
     for (const [status, tag] of [
       ['asleep', 'asleep'],
       ['stable', 'stable'],
-      ['out', 'enthralled'],
+      ['out', 'out of the fight'],
       ['fled', 'fled'],
     ] as const) {
       const thug = { ...who(b, 'foe-0-0'), status };

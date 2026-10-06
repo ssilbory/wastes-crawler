@@ -23,7 +23,6 @@ describe('pcCombatant', () => {
       side: 'party',
       kind: 'pc',
       ac: 18,
-      killingBlow: true,
       veteransLuck: true,
       shield: true,
       initiativeBonus: 1,
@@ -45,7 +44,7 @@ describe('pcCombatant', () => {
       reach: false,
     });
     const lirael = pcCombatant(data, starter('lirael'));
-    expect(lirael).toMatchObject({ rangedInMelee: -4, caster: null, killingBlow: false });
+    expect(lirael).toMatchObject({ rangedInMelee: -4, caster: null });
     expect(pcCombatant(data, starter('fizzwick')).caster).toMatchObject({
       level: 1,
       effortMax: 2,
@@ -211,6 +210,9 @@ describe('targeting (docs/rules-adaptation.md, Formation rules)', () => {
     expect(rangedModifier(battle, snag, bow)).toBe(0);
     snag.blindRounds = 1;
     expect(usable(battle, snag, melee({ mode: 'thrown' }))).toBe(false);
+    // Blind, even a Deadeye can't shoot in melee.
+    snag.rangedInMelee = -4;
+    expect(usable(battle, snag, bow)).toBe(false);
   });
 
   it('counts cover, blindness, tower shields, and Broken as disadvantage', () => {

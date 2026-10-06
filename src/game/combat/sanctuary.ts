@@ -8,14 +8,8 @@ import type { CombatEffect } from '../../data/schemas/index.ts';
 import { addStrain } from '../../rules/strain.ts';
 import { say } from './log.ts';
 import { healingFails } from './necromancer.ts';
-import { canAct, isUp } from './targeting.ts';
-import type { Battle, CasterState, Combatant, SideId } from './types.ts';
-
-const foeSide = (actor: Combatant): SideId => (actor.side === 'party' ? 'enemy' : 'party');
-
-/** Allies first by row and column, so the front line is served first. */
-const inLine = (list: Combatant[]) =>
-  [...list].sort((x, y) => x.row - y.row || x.column - y.column);
+import { canAct, foeSide, inLine, isUp } from './targeting.ts';
+import type { Battle, CasterState, Combatant } from './types.ts';
 
 /** A sheltering spell's effect; false for any other effect. */
 export function sanctuaryEffect(

@@ -66,7 +66,8 @@ function beginTurn(b: Battle, actor: Combatant): void {
   if (b.turnBegun === actor.id) return;
   b.turnBegun = actor.id;
   actor.totalDefense = false;
-  freeActions(b, actor);
+  // Wind Walking's mist can't cast (4.5.0).
+  if (!actor.misted) freeActions(b, actor);
 }
 
 /** Plays the current actor's turn: free actions, then one action (monsters: one per attack). */
@@ -75,6 +76,8 @@ export function takeTurn(b: Battle, actor: Combatant, controller: Controller): v
   b.queue.shift();
   b.turnBegun = null;
   struggle(b, actor);
+  // Compel Flesh's struggle can kill the last of a side.
+  checkEnd(b);
   const plan = swingPlan(b, actor);
   for (let i = 0; i < plan.length && canAct(actor) && !b.outcome; i++) {
     actor.forcedAttack = plan[i] as number | null;
@@ -124,7 +127,9 @@ function formation(b: Battle): Formation {
     if (c.side !== 'party') continue;
     // Non-combatants hold their slot but are never promoted to the front.
     const standing = canAct(c) && !c.noncombatant;
-    (grid[c.row] as FormationRow)[c.column] = { standing, down: !canAct(c) };
+    // Only the downed drop back: the held, the asleep, and the frozen keep their place.
+    const down = c.status === 'dying' || c.status === 'stable' || c.status === 'dead';
+    (grid[c.row] as FormationRow)[c.column] = { standing, down };
   }
   return grid;
 }
@@ -174,6 +179,8 @@ export function endOfRound(b: Battle): void {
   b.stabilizedThisRound.clear();
   b.round += 1;
   roundPasses(b);
+  // The Fury, a lapsing Forgetting the Grave, and the like can settle the fight between rounds.
+  if (!b.outcome) checkEnd(b);
   // SRD 5.4.2: the second round of a fight tests the nerve of mobs and undisciplined fighters.
   if (b.round === 2) {
     for (const m of monsters)

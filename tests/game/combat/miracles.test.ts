@@ -64,16 +64,27 @@ describe('the Blood Priest (1.5.5)', () => {
   it('Armor of God: AC 15 plus half the level when it beats the armor worn', () => {
     const b = battle(priest(4, ['armor-of-god']), [['thug-or-militia']]);
     const snag = who(b, 'Snag');
-    snag.ac = 12;
+    Object.assign(snag, { ac: 12, acInput: { armorAc: 12, dexModifier: 0 } });
     freeActions(b, snag);
     expect(snag.acFloor).toBe(17);
     expect(effectiveAc(snag)).toBe(17);
     snag.totalDefense = true;
     expect(effectiveAc(snag)).toBe(19);
+    // Dex and a shield still count on top of it (SRD 1.5.5).
+    Object.assign(snag, {
+      totalDefense: false,
+      ac: 14,
+      acInput: { armorAc: 12, shield: { baseAc: 13, bonus: 1 }, dexModifier: 1 },
+    });
+    expect(effectiveAc(snag)).toBe(19);
+    // A monster with a natural AC just takes the better.
+    const thug = who(b, 'Thug or Militia');
+    thug.acFloor = 16;
+    expect(effectiveAc(thug)).toBe(Math.max(thug.ac, 16));
     // No use when worn armor is better already.
     const c = battle(priest(1, ['armor-of-god']), [['thug-or-militia']]);
     const s2 = who(c, 'Snag');
-    s2.ac = 18;
+    Object.assign(s2, { ac: 18, acInput: { armorAc: 18, dexModifier: 0 } });
     freeActions(c, s2);
     expect(s2.acFloor).toBe(0);
   });
