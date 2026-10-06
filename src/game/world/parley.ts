@@ -26,7 +26,8 @@ const no = (reason: string): TownResult => ({ ok: false, reason });
 /** Whether the party can still parley with the pending encounter. */
 export function canParley(w: World, data: GameData): boolean {
   const e = w.encounter;
-  if (!e || e.parleyed) return false;
+  // A quest's fixed encounter must be fought: talking it down would leave the quest stuck.
+  if (!e || e.parleyed || e.quest) return false;
   const reach = parleyReach(w, data);
   if (e.reaction === 'aggressive' && !reach.evenAggressive) return false;
   return e.enemies.flat().every((id) => reach.minds.has(mindOf(data, id)));
