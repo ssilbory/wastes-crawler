@@ -1,4 +1,4 @@
-import { spellHint } from '../../render/describe-view.ts';
+import { artHint, spellHint } from '../../render/describe-view.ts';
 import { useState } from 'preact/hooks';
 import type { Character } from '../../data/schemas/index.ts';
 import { advance, type LevelChoices, type LevelPlan } from '../../game/character/advance.ts';
@@ -83,7 +83,7 @@ export function LevelUpForm(props: {
                     )
                   }
                 />{' '}
-                <span class="has-hint" title={a.text}>
+                <span class="has-hint" title={artHint(data, a.id)}>
                   {a.name}
                 </span>
               </label>

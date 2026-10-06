@@ -15,6 +15,7 @@ import { dungeonView, VIEW_HEIGHT, VIEW_WIDTH } from '../../render/dungeon-view.
 import { data } from '../builder/data.ts';
 import { PartyPanel } from './PartyPanel.tsx';
 import { HealerPanel } from './HealerPanel.tsx';
+import { PurgePanel } from './PurgePanel.tsx';
 import { InventoryPanel } from './InventoryPanel.tsx';
 import { StashPanel } from './StashPanel.tsx';
 import { GreenwoodPanel } from './GreenwoodPanel.tsx';
@@ -248,6 +249,7 @@ export function DungeonScreen(props: {
           <GreenwoodPanel world={w} onChange={props.onChange} />
           <ConjunctPanel world={w} onChange={props.onChange} />
           <HealerPanel world={w} onChange={props.onChange} />
+          <PurgePanel world={w} onChange={props.onChange} />
           <StashPanel world={w} />
           <InventoryPanel world={w} onChange={props.onChange} />
           <QuestLog world={w} onChange={props.onChange} />

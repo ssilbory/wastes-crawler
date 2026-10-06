@@ -29,16 +29,22 @@ export function fallenHere(w: World): Member[] {
   return w.members.filter((m) => m.dead && f.members.includes(m.id));
 }
 
-/** Why the member can't use Revive the Fallen now, or null if they can. */
-function cannotRevive(w: World, data: GameData, healer: Member | undefined): string | null {
-  if (!healer || healer.dead || healer.character.hp.current <= 0)
-    return 'No one is able to revive the fallen.';
+/**
+ * Why the member can't use a Healer art for day Effort now, or null if they can. `unable` is the
+ * refusal when no conscious member was chosen.
+ */
+export function cannotUseArt(
+  data: GameData,
+  healer: Member | undefined,
+  art: { id: string; name: string; unable: string },
+): string | null {
+  if (!healer || healer.dead || healer.character.hp.current <= 0) return art.unable;
   const c = healer.character;
-  if (!c.arts.includes(REVIVE)) return `${c.name} doesn't know Revive the Fallen.`;
+  if (!c.arts.includes(art.id)) return `${c.name} doesn't know ${art.name}.`;
   const magic = characterSheet(c, data).magic;
   // Healer arts work in armor (1.5.9); a sheet with arts always has magic.
   const sheet = magic as NonNullable<typeof magic>;
-  if (!sheet.canCast && !armorFreeArts(data, c.classes, c.arts).includes(REVIVE))
+  if (!sheet.canCast && !armorFreeArts(data, c.classes, c.arts).includes(art.id))
     return `${c.name} can't use that art in armor.`;
   if (healer.effortDay >= sheet.effort) return `${c.name} has no Effort left today.`;
   return null;
@@ -52,7 +58,11 @@ export function reviveFallen(
   targetId: string,
 ): TownResult {
   const healer = w.members.find((m) => m.id === healerId);
-  const why = cannotRevive(w, data, healer);
+  const why = cannotUseArt(data, healer, {
+    id: REVIVE,
+    name: 'Revive the Fallen',
+    unable: 'No one is able to revive the fallen.',
+  });
   if (why) return no(why);
   const target = fallenHere(w).find((m) => m.id === targetId);
   if (!target) return no('Only those slain in the fight just won can be revived, where they fell.');
