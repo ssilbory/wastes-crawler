@@ -124,6 +124,8 @@ test('fights a wanderer, camps on a safe square, and goes dark', async ({ page }
   await page.screenshot({ path: testInfo.outputPath('dungeon-encounter.png'), fullPage: true });
   await encounter.getByRole('button', { name: 'Fight' }).click();
   await page.getByRole('button', { name: 'Auto-resolve' }).click();
+  // A won fight's log ends with the XP it earns.
+  await expect(page.locator('.fight')).toContainText(/fight: \d+ XP each\./);
   await page.getByRole('button', { name: 'Back to the dungeon' }).click();
   // The fight and the first aid after it take a turn each.
   await expect(bar).toContainText('Turn 6, step 2 of 12');

@@ -48,6 +48,8 @@ export function FightScreen(props: {
   doneLabel: string;
   /** Monsters the party has named with Know, shown with their statistics. */
   known?: KnownFoe[];
+  /** The XP a win earns, added to the end of the log once the party wins. */
+  xp?: Promise<string> | undefined;
   onDone: (result: BattleResult | null) => void;
 }) {
   const [session, setSession] = useState<Session>(() => begin(props.createBattle()));
@@ -86,6 +88,7 @@ export function FightScreen(props: {
     });
   // Auto-resolve plays out at the speed in the settings: all at once, or a round at a time.
   const [autoPlaying, setAutoPlaying] = useState(false);
+  const [xpLine, setXpLine] = useState<string | null>(null);
   const auto = () => {
     if (roundDelay(data, getSettings()) > 0) {
       setAutoPlaying(true);
@@ -103,6 +106,7 @@ export function FightScreen(props: {
   });
   useEffect(() => {
     if (result) play(result.outcome === 'party' || result.battle.escaped ? 'win' : 'lose');
+    if (result?.outcome === 'party') void props.xp?.then(setXpLine);
   }, [result]);
 
   const commands = actor && !result ? commandsFor(b, actor) : [];
@@ -172,7 +176,10 @@ export function FightScreen(props: {
           )}
           {b.outcome && !result && <RescuePanel battle={b} onTend={tend} />}
           <KnownFoes foes={props.known ?? []} />
-          <BattleLog lines={b.log ?? []} from={changes.logFrom} />
+          <BattleLog
+            lines={[...(b.log ?? []), ...(xpLine ? [xpLine] : [])]}
+            from={changes.logFrom}
+          />
         </div>
       </div>
     </div>
