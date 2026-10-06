@@ -139,7 +139,8 @@ export function switchClass(
   if (!inTown) return { ok: false, reason: 'not-in-town' };
   const held = levelIn(c, c.current);
   // A switch with no level taken in the new class yet can be taken back (Sam's call).
-  if (held > 0 && held < SWITCH_MIN_CLASS_LEVEL) return { ok: false, reason: 'current-below-4' };
+  const undo = held === 0 && Object.entries(c.levels).some(([id, l]) => id !== c.current && l > 0);
+  if (held < SWITCH_MIN_CLASS_LEVEL && !undo) return { ok: false, reason: 'current-below-4' };
   const levels = Object.fromEntries(
     Object.entries(c.levels).filter(([id, level]) => id !== c.current || level > 0),
   );

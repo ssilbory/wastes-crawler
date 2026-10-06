@@ -43,7 +43,13 @@ export function TrainingTab(props: { world: World; act: Act }) {
         <h2>Training</h2>
         <label>
           Who{' '}
-          <select value={m.id} onChange={(e) => setWho((e.target as HTMLSelectElement).value)}>
+          <select
+            value={m.id}
+            onChange={(e) => {
+              setWho((e.target as HTMLSelectElement).value);
+              setConfirming(false);
+            }}
+          >
             {living.map((x) => (
               <option key={x.id} value={x.id}>
                 {x.character.name}
@@ -152,7 +158,13 @@ export function TrainingTab(props: { world: World; act: Act }) {
         </p>
         <label>
           Switch to{' '}
-          <select value={target} onChange={(e) => setTarget((e.target as HTMLSelectElement).value)}>
+          <select
+            value={target}
+            onChange={(e) => {
+              setTarget((e.target as HTMLSelectElement).value);
+              setConfirming(false);
+            }}
+          >
             {classes.map((k) => (
               <option key={k.id} value={k.id}>
                 {k.label}

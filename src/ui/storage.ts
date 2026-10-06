@@ -28,7 +28,10 @@ export function loadRoster(): LoadedRoster {
 export function saveRoster(entries: readonly RosterEntry[]): boolean {
   try {
     const { text, backup } = rosterToSave(localStorage.getItem(KEY), entries, data);
-    if (backup !== null) localStorage.setItem(`${KEY}.unreadable`, backup);
+    // Each unreadable roster gets a key of its own, so an earlier one is never overwritten.
+    let n = 1;
+    while (backup !== null && localStorage.getItem(`${KEY}.unreadable.${n}`) !== null) n += 1;
+    if (backup !== null) localStorage.setItem(`${KEY}.unreadable.${n}`, backup);
     localStorage.setItem(KEY, text);
     return true;
   } catch {

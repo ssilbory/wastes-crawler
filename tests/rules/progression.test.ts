@@ -189,10 +189,12 @@ describe('class switching', () => {
       ok: true,
       classes: { current: 'full-expert', levels: { 'full-expert': 4 } },
     });
-    // A class id read from the prototype never counts as held.
-    expect(sw({ current: 'constructor', levels: {} }, 'full-warrior', true)).toEqual({
-      ok: true,
-      classes: { current: 'full-warrior', levels: { 'full-warrior': 0 } },
+    // Only a switch away from a class with levels can be taken back.
+    expect(sw({ current: 'constructor', levels: {} }, 'full-warrior', true)).toMatchObject({
+      reason: 'current-below-4',
+    });
+    expect(sw({ current: 'x', levels: { x: 0 } }, 'full-warrior', true)).toMatchObject({
+      reason: 'current-below-4',
     });
   });
 });

@@ -54,7 +54,8 @@ export interface RosterSave {
 
 /**
  * What to store for these entries over the stored roster: entries that no longer load stay as they
- * were (under a fresh id if a loaded one took theirs), so a content change never erases a character.
+ * were (under a fresh id if another took theirs), so a content change never erases a character. A
+ * roster of another shape keeps every stored entry too, and its text is set aside as well.
  */
 export function rosterToSave(
   stored: string | null,
@@ -68,14 +69,22 @@ export function rosterToSave(
     // Unreadable text is kept aside below.
   }
   const parsed = RosterSchema.safeParse(raw);
-  if (!parsed.success) return { text: serializeRoster(entries), backup: stored };
+  const stray = (raw as { entries?: unknown } | null)?.entries;
+  const old: { id?: unknown; character?: unknown }[] = parsed.success
+    ? parsed.data.entries.filter((e) => !importCharacter(JSON.stringify(e.character), data).ok)
+    : Array.isArray(stray)
+      ? (stray as { id?: unknown }[])
+      : [];
   const ids = new Set(entries.map((e) => e.id));
-  const kept = parsed.data.entries
-    .filter((e) => !importCharacter(JSON.stringify(e.character), data).ok)
-    .map((e) => (ids.has(e.id) ? { ...e, id: `${e.id}-unreadable` } : e));
+  const kept = old.map((e) => {
+    let id = typeof e.id === 'string' ? e.id : 'unreadable';
+    while (ids.has(id)) id = `${id}-unreadable`;
+    ids.add(id);
+    return { ...e, id };
+  });
   return {
     text: JSON.stringify({ version: ROSTER_SCHEMA_VERSION, entries: [...entries, ...kept] }),
-    backup: null,
+    backup: parsed.success ? null : stored,
   };
 }
 

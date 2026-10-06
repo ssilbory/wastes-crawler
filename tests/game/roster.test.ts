@@ -32,6 +32,14 @@ describe('the character roster', () => {
     const ids = (JSON.parse(saved.text) as { entries: { id: string }[] }).entries.map((e) => e.id);
     expect(ids).toEqual(['snag', 'snag-unreadable', 'grukk']);
     expect(parseRoster(saved.text, data).entries.map((e) => e.id)).toEqual(['snag']);
+    // A roster of another shape keeps every entry it held, and is set aside as well.
+    const newer = JSON.stringify({ version: 99, entries: [{ id: 'snag' }, { name: 'x' }] });
+    const kept = rosterToSave(newer, entries, data);
+    expect(kept.backup).toBe(newer);
+    expect(
+      (JSON.parse(kept.text) as { entries: { id: string }[] }).entries.map((e) => e.id),
+    ).toEqual(['snag', 'snag-unreadable', 'unreadable']);
+    expect(rosterToSave('{"version":99}', entries, data).text).toBe(serializeRoster(entries));
     expect(rosterToSave('{', entries, data)).toEqual({
       text: serializeRoster(entries),
       backup: '{',
