@@ -27,6 +27,8 @@ export const TraditionSchema = z.strictObject({
   artLevels: z.record(IdSchema, z.int().min(2).max(10)),
   /** Arts the game leaves out: nothing in it calls for them (the Healer's Limb Restoration). */
   excludedArts: z.array(IdSchema),
+  /** The game's own text for an art it reworks, shown in place of the SRD's (Purge Ailment). */
+  artText: z.record(IdSchema, z.string().min(1)),
 });
 export type Tradition = z.infer<typeof TraditionSchema>;
 

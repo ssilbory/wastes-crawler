@@ -17,6 +17,12 @@ describe('hover descriptions', () => {
     expect(artHint(data, 'nope')).toBe('');
   });
 
+  it('give a reworked art the game text in place of the SRD text', () => {
+    const text = data.content.traditions.find((t) => t.id === 'healer')?.artText['purge-ailment'];
+    expect(text).toMatch(/Frailty/);
+    expect(artHint(data, 'purge-ailment')).toBe(text);
+  });
+
   it('give a focus its description and its levels, up to the one held', () => {
     const all = focusHint(data, 'alert');
     expect(all.split('\n')).toHaveLength(3);

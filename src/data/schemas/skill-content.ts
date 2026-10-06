@@ -37,6 +37,11 @@ export const SkillRulesSchema = z.strictObject({
     /** The places of the dead where a prayer is heard: temples and mortuaries, not crypts. */
     places: z.array(RaiserKindSchema).min(1),
   }),
+  /** The Healer's Purge Ailment lifting Frailty: the better attribute with Heal. */
+  purgeAilment: z.strictObject({
+    attributes: z.array(AttributeSchema).min(1),
+    difficulty: Difficulty,
+  }),
   /** Naming a monster: base difficulty plus one per `hitDicePerStep` of its hit dice. */
   know: z.strictObject({
     attributes: z.array(AttributeSchema).min(1),

@@ -4,7 +4,7 @@ import { gameSpells } from './spells.ts';
 
 /**
  * Class options and traditions reference real progressions, casting tables, skills, arts, and
- * spells; a tradition's level-gated arts are its own.
+ * spells; a tradition's level-gated, excluded, and reworded arts are its own.
  */
 export function magicReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const errors: string[] = [];
@@ -17,7 +17,7 @@ export function magicReferenceErrors(srd: SrdData, content: ContentData): string
       if (!skills.has(s)) errors.push(`traditions/${t.id}: unknown skill ${s}`);
     }
     if (!srd.arts.some((a) => a.tradition === t.id)) errors.push(`traditions/${t.id}: has no arts`);
-    for (const art of [...Object.keys(t.artLevels), ...t.excludedArts]) {
+    for (const art of [...Object.keys(t.artLevels), ...t.excludedArts, ...Object.keys(t.artText)]) {
       if (!srd.arts.some((a) => a.id === art && a.tradition === t.id))
         errors.push(`traditions/${t.id}: ${art} isn't one of its arts`);
     }

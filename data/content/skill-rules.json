@@ -54,6 +54,10 @@
     "difficulty": 8,
     "places": ["temple", "mortuary"]
   },
+  "purgeAilment": {
+    "attributes": ["wis", "int"],
+    "difficulty": 8
+  },
   "know": {
     "attributes": ["int"],
     "difficulty": 6,

@@ -2,6 +2,7 @@
 // call), from their SRD and content text.
 import { gameSpells } from '../data/spells.ts';
 import type { GameData } from '../game/character/context.ts';
+import { findTradition } from '../game/character/class-step.ts';
 import { focusInfo } from '../game/character/foci.ts';
 
 const TRADITIONS = {
@@ -16,8 +17,11 @@ export function spellHint(data: GameData, id: string): string {
   return s ? `Level ${s.level} ${TRADITIONS[s.tradition]}. ${s.text}` : '';
 }
 
+/** The game's own text for an art it reworks, else the SRD's; empty for an unknown art. */
 export function artHint(data: GameData, id: string): string {
-  return data.srd.arts.find((a) => a.id === id)?.text ?? '';
+  const art = data.srd.arts.find((a) => a.id === id);
+  if (!art) return '';
+  return findTradition(data, art.tradition)?.artText[id] ?? art.text;
 }
 
 /** The focus's description and each level's text, up to `upTo` levels when given. */
