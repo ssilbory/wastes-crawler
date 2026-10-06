@@ -9,7 +9,7 @@ import {
 } from '../../src/game/character/advance.ts';
 import { classOption } from '../../src/game/character/class-step.ts';
 import { characterSheet } from '../../src/game/character/derived.ts';
-import { artChoices, learnableSpells } from '../../src/game/character/magic.ts';
+import { artChoices, learnableSpells, levelArtPicks } from '../../src/game/character/magic.ts';
 import { xpForLevel } from '../../src/rules/advancement.ts';
 import { changeClass } from '../../src/game/character/training.ts';
 import { createRng } from '../../src/rules/rng.ts';
@@ -33,6 +33,24 @@ function switched(target: string): Character {
   if (!r.ok) throw new Error(r.reason);
   return r.character;
 }
+
+describe('art picks for a level', () => {
+  it('turns an automatic art already held into a free pick, and asks no more than are left', () => {
+    const mage = (classOption(data, 'blood-priest-partial-mage') as ClassOption).mage;
+    if (!mage) throw new Error('no magic');
+    expect(levelArtPicks(data, mage, 1, [])[1]).toMatchObject({
+      tradition: 'healer',
+      automatic: ['healing-touch'],
+      picks: 1,
+    });
+    expect(levelArtPicks(data, mage, 1, ['healing-touch'])[1]).toMatchObject({
+      automatic: [],
+      picks: 2,
+    });
+    const healer = data.srd.arts.filter((a) => a.tradition === 'healer').map((a) => a.id);
+    expect(levelArtPicks(data, mage, 1, healer)[1]).toMatchObject({ automatic: [], picks: 0 });
+  });
+});
 
 describe('the next level (SRD 2.7.1)', () => {
   it('needs the XP for the next level', () => {

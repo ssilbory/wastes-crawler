@@ -106,7 +106,17 @@ export function FightScreen(props: {
   });
   useEffect(() => {
     if (result) play(result.outcome === 'party' || result.battle.escaped ? 'win' : 'lose');
-    if (result?.outcome === 'party') void props.xp?.then(setXpLine);
+    if (result?.outcome !== 'party' || !props.xp) return;
+    // The line lands only while this fight is on screen; a failed simulation just leaves it off.
+    let live = true;
+    props.xp
+      .then((line) => {
+        if (live) setXpLine(line);
+      })
+      .catch(() => undefined);
+    return () => {
+      live = false;
+    };
   }, [result]);
 
   const commands = actor && !result ? commandsFor(b, actor) : [];

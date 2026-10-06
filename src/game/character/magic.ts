@@ -120,6 +120,23 @@ export function artChoices(
   );
 }
 
+/**
+ * A level's art picks for a character already holding `held`: an automatic art they hold becomes
+ * a free pick instead (Sam's call), and picks never outnumber the arts left to choose.
+ */
+export function levelArtPicks(
+  data: GameData,
+  mage: Mage,
+  level: number,
+  held: readonly string[],
+): ArtPick[] {
+  return artPicks(data, mage, level).map((p) => {
+    const fresh = { ...p, automatic: p.automatic.filter((a) => !held.includes(a)) };
+    const owed = p.picks + p.automatic.length - fresh.automatic.length;
+    return { ...fresh, picks: Math.min(owed, artChoices(data, fresh, held, level).length) };
+  });
+}
+
 export interface MagicChoice {
   arts: string[];
   known: string[];

@@ -102,6 +102,18 @@ describe('class bonus skills', () => {
       magic: 1,
     });
     expect(evaluateClass(data, null, [], {}).status).toEqual({ state: 'incomplete' });
+    // A dual caster whose background left Magic at level-1 replaces both bonus skills.
+    const dual = (r: (string | null)[], skills = { magic: 1 }) =>
+      evaluateClass(data, 'high-mage-partial-other-mage', r, skills);
+    expect(dual([]).replacing).toEqual(['magic', 'magic']);
+    expect(dual(['know']).status).toMatchObject({
+      message: 'magic is already level-1; choose a replacement',
+    });
+    expect(dual(['know', 'sneak'])).toMatchObject({
+      status: { state: 'ok' },
+      skills: { magic: 1, know: 0, sneak: 0 },
+    });
+    expect(dual([], { magic: 0 } as never).replacing).toEqual([null, 'magic']);
     expect(evaluateClass(data, 'full-high-mage', [], null)).toMatchObject({
       status: { state: 'ok' },
       skills: {},

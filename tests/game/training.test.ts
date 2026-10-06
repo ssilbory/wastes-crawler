@@ -79,8 +79,10 @@ describe('a focus’s bonus skill as points (SRD 2.7.1.6)', () => {
     expect(more.skills.stab).toBe(2);
     expect(more.advancement.skillCredit).toEqual({ stab: 2 });
     const top = creditSkill({ ...more, skills: { ...more.skills, stab: 3 } }, 'stab', 4);
+    // What reaching level-4 leaves over becomes ordinary skill points, never stranded credit.
     expect(top.skills.stab).toBe(4);
-    expect(top.advancement.skillCredit).toEqual({ stab: 1 });
+    expect(top.advancement.skillCredit).toEqual({});
+    expect(top.advancement.skillPoints).toBe(more.advancement.skillPoints + 1);
     expect(creditSkill(starter('snag'), 'ride', 3).skills.ride).toBe(1);
   });
 

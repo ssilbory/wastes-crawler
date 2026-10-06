@@ -17,7 +17,7 @@ export interface RosterEntry {
 
 export interface LoadedRoster {
   entries: RosterEntry[];
-  /** Entries that no longer load, such as after a content change; they are dropped. */
+  /** Entries that no longer load, such as after a content change; saving keeps them as they were. */
   errors: string[];
 }
 
@@ -44,6 +44,48 @@ export function parseRoster(text: string | null, data: GameData): LoadedRoster {
     else errors.push(`${e.id}: ${result.errors.join('; ')}`);
   }
   return { entries, errors };
+}
+
+export interface RosterSave {
+  text: string;
+  /** A stored roster that couldn't be read at all, to keep aside rather than lose. */
+  backup: string | null;
+}
+
+/**
+ * What to store for these entries over the stored roster: entries that no longer load stay as they
+ * were (under a fresh id if another took theirs), so a content change never erases a character. A
+ * roster of another shape keeps every stored entry too, and its text is set aside as well.
+ */
+export function rosterToSave(
+  stored: string | null,
+  entries: readonly RosterEntry[],
+  data: GameData,
+): RosterSave {
+  let raw: unknown = null;
+  try {
+    raw = stored === null ? null : JSON.parse(stored);
+  } catch {
+    // Unreadable text is kept aside below.
+  }
+  const parsed = RosterSchema.safeParse(raw);
+  const stray = (raw as { entries?: unknown } | null)?.entries;
+  const old: { id?: unknown; character?: unknown }[] = parsed.success
+    ? parsed.data.entries.filter((e) => !importCharacter(JSON.stringify(e.character), data).ok)
+    : Array.isArray(stray)
+      ? (stray as { id?: unknown }[])
+      : [];
+  const ids = new Set(entries.map((e) => e.id));
+  const kept = old.map((e) => {
+    let id = typeof e.id === 'string' ? e.id : 'unreadable';
+    while (ids.has(id)) id = `${id}-unreadable`;
+    ids.add(id);
+    return { ...e, id };
+  });
+  return {
+    text: JSON.stringify({ version: ROSTER_SCHEMA_VERSION, entries: [...entries, ...kept] }),
+    backup: parsed.success ? null : stored,
+  };
 }
 
 /** Adds a character under a fresh id, the name plus a counter when the name is taken. */
