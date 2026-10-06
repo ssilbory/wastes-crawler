@@ -167,16 +167,23 @@ describe('loot', () => {
       { count: 1, sides: 6 },
       { count: 2, sides: 8 },
     ]);
+    // A fraction of a die sells only the whole dice in it.
+    w.rng = scriptedRng([5]);
+    expect(exchangeLoot(w, data, [{ count: 1.5, sides: 8 }])).toEqual({ rolled: 5, paid: 5 });
+    expect(w.loot).toEqual([
+      { count: 1, sides: 6 },
+      { count: 1, sides: 8 },
+    ]);
     // Asking for more than is carried sells what there is.
-    w.rng = scriptedRng([1, 2, 3]);
+    w.rng = scriptedRng([1, 2]);
     expect(
       exchangeLoot(w, data, [
         { count: 9, sides: 8 },
         { count: 1, sides: 6 },
       ]),
     ).toEqual({
-      rolled: 6,
-      paid: 6,
+      rolled: 3,
+      paid: 3,
     });
     expect(w.loot).toEqual([]);
   });
