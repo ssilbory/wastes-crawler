@@ -218,8 +218,11 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
     startProject(w, data, 'm-3', 'spear-light', 'normal');
     const day = w.day;
     const purse = w.purse;
+    const xp = fizz(w).character.xp;
     expect(workDay(w, data)).toEqual({ ok: true });
     expect(w.day).toBe(day + 1);
+    // A day at the bench is worth half an XP to the crafter (Sam's call).
+    expect(fizz(w).character.xp).toBe(xp + 0.5);
     // 5 crowns' rent and 12 for four at the inn.
     expect(w.purse).toBe(purse - 17);
     expect(w.projects[0]?.daysLeft).toBe(6);

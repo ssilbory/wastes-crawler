@@ -115,8 +115,14 @@ export function startProject(
   return { ok: true };
 }
 
-/** A day of work on a project; the finished item goes to the crafter's pack. */
+/**
+ * A day of work on a project, worth XP to the crafter so they keep pace with those out fighting;
+ * the finished item goes to the crafter's pack.
+ */
 export function workOn(w: World, data: GameData, p: Project): void {
+  const crafter = anyone(w, p.crafter);
+  const xp = crafter.character.xp + data.content.craftingRules.xpPerDay;
+  crafter.character = { ...crafter.character, xp };
   p.daysLeft -= 1;
   if (p.daysLeft > 0) return;
   w.projects = w.projects.filter((x) => x !== p);

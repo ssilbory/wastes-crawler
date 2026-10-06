@@ -1,4 +1,5 @@
 {
+  "xpPerDay": 0.5,
   "buildDays": {
     "weapon": 7,
     "armor": 7,
