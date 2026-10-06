@@ -36,7 +36,10 @@ export interface Sheet {
 
 export interface SheetMagic {
   effort: number;
-  /** Spell slots of the first casting class held, at that class's level. */
+  /**
+   * Spell slots of every casting class held, each at its own level, combined (Sam's call): the
+   * highest spell level any reaches, and their spells cast and prepared added together.
+   */
   slots: CastingLevelRow;
   /** False while worn armor or a shield blocks casting. */
   canCast: boolean;
@@ -49,14 +52,23 @@ function sheetMagic(
   bonuses: ModifierBonuses,
 ): SheetMagic | null {
   const effort = effortFor(data, c.classes, c.skills, scores, bonuses);
-  const caster = Object.entries(c.classes.levels).find(
-    ([id, level]) => level >= 1 && classOption(data, id)?.mage,
-  );
-  const mage = caster ? classOption(data, caster[0])?.mage : undefined;
-  if (effort === null || !caster || !mage) return null;
+  const rows = Object.entries(c.classes.levels).flatMap(([id, level]) => {
+    const mage = level >= 1 ? classOption(data, id)?.mage : undefined;
+    return mage ? [spellSlots(data, mage, level)] : [];
+  });
+  const [first, ...more] = rows;
+  if (effort === null || !first) return null;
   return {
     effort,
-    slots: spellSlots(data, mage, caster[1]),
+    slots: more.reduce(
+      (all, r) => ({
+        ...all,
+        maxSpellLevel: Math.max(all.maxSpellLevel, r.maxSpellLevel),
+        spellsCast: all.spellsCast + r.spellsCast,
+        spellsPrepared: all.spellsPrepared + r.spellsPrepared,
+      }),
+      first,
+    ),
     // Blood Priest miracles ignore armor (1.5.5.1); so does a caster with no other tradition.
     canCast: armoredArts(data, c.classes) || castingAllowed(data, c.inventory, c.foci),
   };

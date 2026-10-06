@@ -301,6 +301,24 @@ describe('a finished caster', () => {
     });
   });
 
+  it('combines the spell slots of two casting classes (Sam’s call)', () => {
+    const r = finishCharacter(highMage(), data, scriptedRng([6, 6, 6, 6]));
+    if (!r.ok) throw new Error(r.errors.join('; '));
+    const both = {
+      ...r.character,
+      classes: {
+        current: 'full-elementalist',
+        levels: { 'full-high-mage': 4, 'full-elementalist': 1 },
+      },
+    };
+    // High Mage 4 (2nd-level spells, 2 cast, 5 prepared) plus Elementalist 1 (1, 1, 3).
+    expect(characterSheet(both, data).magic?.slots).toMatchObject({
+      maxSpellLevel: 2,
+      spellsCast: 3,
+      spellsPrepared: 8,
+    });
+  });
+
   it('holds the magic step until the class is valid', () => {
     const r = finishCharacter(highMage({ magic: null }), data, scriptedRng([]));
     expect(r).toEqual({ ok: false, errors: ['magic: incomplete'] });
