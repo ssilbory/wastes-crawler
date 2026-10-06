@@ -103,10 +103,11 @@ test('levels up a character with XP to spend', async ({ page }, testInfo) => {
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
     /Snag reaches level 2/,
   );
-  await expect(page.getByRole('region', { name: 'Training' })).toContainText('3 skill points');
+  const assign = page.getByRole('region', { name: 'Assign skill points' });
+  await expect(assign).toContainText('Available: 3 skill points');
   await page.getByRole('combobox', { name: 'Skill' }).selectOption('lead');
   await page.getByRole('button', { name: 'Raise Lead' }).click();
-  await expect(page.getByRole('region', { name: 'Training' })).toContainText('2 skill points');
+  await expect(assign).toContainText('Available: 2 skill points');
 });
 
 test('plays the common room for the party’s lodging', async ({ page }) => {

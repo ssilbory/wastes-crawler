@@ -1,4 +1,4 @@
-import { spellHint } from '../../render/describe-view.ts';
+import { artHint, spellHint } from '../../render/describe-view.ts';
 import { useState } from 'preact/hooks';
 import type { Character } from '../../data/schemas/index.ts';
 import { advance, type LevelChoices, type LevelPlan } from '../../game/character/advance.ts';
@@ -50,7 +50,8 @@ export function LevelUpForm(props: {
       <h3>Level up</h3>
       <p class="hint">
         Level {plan.classLevel} as {classOption(data, plan.classId)?.name}: +{plan.skillPoints}{' '}
-        skill points{plan.quickPoints > 0 && ` and ${plan.quickPoints} Quick Learner point`}.
+        skill points{plan.quickPoints > 0 && ` and ${plan.quickPoints} Quick Learner point`}, to
+        spend under Assign skill points.
       </p>
       {plan.focusPicks.map((slot, i) => (
         <FocusPicker
@@ -82,7 +83,7 @@ export function LevelUpForm(props: {
                     )
                   }
                 />{' '}
-                <span class="has-hint" title={a.text}>
+                <span class="has-hint" title={artHint(data, a.id)}>
                   {a.name}
                 </span>
               </label>

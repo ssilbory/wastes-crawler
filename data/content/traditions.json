@@ -21,7 +21,8 @@
       "restrained-casting",
       "suppress-magic",
       "ward-allies"
-    ]
+    ],
+    "artText": {}
   },
   {
     "id": "elementalist",
@@ -37,7 +38,13 @@
     },
     "armoredArts": false,
     "artLevels": {},
-    "excludedArts": ["beckoned-deluge", "elemental-sparks", "rune-of-destruction", "thermal-shield"]
+    "excludedArts": [
+      "beckoned-deluge",
+      "elemental-sparks",
+      "rune-of-destruction",
+      "thermal-shield"
+    ],
+    "artText": {}
   },
   {
     "id": "necromancer",
@@ -53,7 +60,8 @@
     },
     "armoredArts": false,
     "artLevels": {},
-    "excludedArts": ["false-death", "life-bridge", "uncanny-ichor"]
+    "excludedArts": ["false-death", "life-bridge", "uncanny-ichor"],
+    "artText": {}
   },
   {
     "id": "blood-priest",
@@ -69,7 +77,8 @@
     },
     "armoredArts": true,
     "artLevels": {},
-    "excludedArts": ["a-thousand-tongues", "divine-guidance", "fear-no-flame"]
+    "excludedArts": ["a-thousand-tongues", "divine-guidance", "fear-no-flame"],
+    "artText": {}
   },
   {
     "id": "healer",
@@ -87,6 +96,9 @@
     "artLevels": {
       "revive-the-fallen": 8
     },
-    "excludedArts": ["far-healer", "limb-restoration", "purge-ailment", "the-healers-knife"]
+    "excludedArts": ["far-healer", "limb-restoration", "the-healers-knife"],
+    "artText": {
+      "purge-ailment": "Commit Effort for the day as a Main Action, out of combat, and roll Wis/Heal or Int/Heal against 8. On a success an ally you are touching loses their Frailty. The Effort is spent either way."
+    }
   }
 ]
