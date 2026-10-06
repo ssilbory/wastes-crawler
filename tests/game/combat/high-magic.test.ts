@@ -463,7 +463,8 @@ describe('summoning and the seemingly slain', () => {
       spellsLeft: 1,
     });
     castMagic(rows, petty, 'calculation-of-the-phantasmal-eidolon', undefined, undefined);
-    expect(rows.combatants.at(-1)).toMatchObject({ side: 'party', row: 0 });
+    expect(rows.combatants.at(-1)).toMatchObject({ side: 'party', row: 0, column: 2, group: 0 });
+    expect(petty).toMatchObject({ row: 0, column: 0 });
   });
 
   it('Prudentially Transient Abnegation of Life spares a falling PC, who rises after a win', () => {
