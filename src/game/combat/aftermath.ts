@@ -33,9 +33,22 @@ export const dyingOf = (b: Battle): Combatant[] =>
 const HEALING = new Set(['heal', 'touch-heal', 'conjunct', 'amber']);
 
 /** Every healing art or spell a conscious party member could use on a dying ally now. */
-export function rescues(b: Battle): Rescue[] {
-  const victims = dyingOf(b);
-  const healing = b.data.content.combatMagic.filter((m) => HEALING.has(m.effect.kind));
+export const rescues = (b: Battle): Rescue[] => offers(b, dyingOf(b), HEALING);
+
+/** Magic that mends the wounded after a fight: healing and Conjunct the Vital Viscera. */
+const MENDING = new Set(['heal', 'touch-heal', 'conjunct']);
+
+/** The party's wounded who still stand, not frozen in amber. */
+export const woundedOf = (b: Battle): Combatant[] =>
+  b.combatants.filter(
+    (c) => c.side === 'party' && c.status === 'active' && !c.amber && c.hp < c.maxHp,
+  );
+
+/** Every healing a conscious party member could use on a wounded ally after the fight. */
+export const mendings = (b: Battle): Rescue[] => offers(b, woundedOf(b), MENDING);
+
+function offers(b: Battle, victims: Combatant[], kinds: ReadonlySet<string>): Rescue[] {
+  const healing = b.data.content.combatMagic.filter((m) => kinds.has(m.effect.kind));
   return b.combatants
     .filter((c) => c.side === 'party' && canAct(c) && c.caster)
     .flatMap((caster) =>
@@ -107,6 +120,13 @@ export const firstRescue: RescueDecider = (options) => options[0] ?? null;
 /** Whether a won fight should wait for the player to decide on healing magic. */
 export const awaitsRescue = (b: Battle) =>
   safe(b) && dyingOf(b).length > 0 && rescues(b).length > 0;
+
+/**
+ * Whether a won fight should wait for the player to heal the wounded (Sam's call): only while no
+ * one is dying, someone is hurt, healing could reach them, and the player hasn't said they're done.
+ */
+export const awaitsMending = (b: Battle) =>
+  safe(b) && !b.mended && dyingOf(b).length === 0 && mendings(b).length > 0;
 
 /** The party holds the field: it won, or escaped behind the Invincible Citadel. */
 const safe = (b: Battle) => b.outcome === 'party' || b.escaped;

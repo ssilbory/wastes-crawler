@@ -4,6 +4,7 @@ import type { DefaultPreset } from '../../data/schemas/index.ts';
 import type { RosterEntry } from '../../game/character/roster.ts';
 import {
   advance,
+  awaitsMending,
   awaitsRescue,
   concludeBattle,
   createBattle,
@@ -72,8 +73,9 @@ export function batch(
   run();
   const after = snapshot(b);
   const ids = new Set([...after].filter(([id, v]) => before.get(id) !== v).map(([id]) => id));
-  // A win waits while healing magic could still save someone, so the player can choose.
-  const done = b.outcome !== null && !awaitsRescue(b);
+  // A win waits while healing magic could still save someone, or mend the wounded, so the
+  // player can choose.
+  const done = b.outcome !== null && !awaitsRescue(b) && !awaitsMending(b);
   return { changes: { logFrom, ids }, result: done ? concludeBattle(b) : null };
 }
 
