@@ -1,3 +1,4 @@
+import { focusHint } from '../../render/describe-view.ts';
 import { useState } from 'preact/hooks';
 import type { Attribute, Character } from '../../data/schemas/index.ts';
 import { allowedSkills, focusInfo, type FocusChoice } from '../../game/character/foci.ts';
@@ -39,12 +40,13 @@ export function FocusPicker(props: {
         >
           <option value="">Choose…</option>
           {pickable.map((p) => (
-            <option key={p.id} value={p.id}>
+            <option key={p.id} value={p.id} title={focusHint(data, p.id)}>
               {p.name}
             </option>
           ))}
         </select>
       </label>
+      {f && <p class="hint focus-hint">{focusHint(data, f.id)}</p>}
       {skills.length > 1 && (
         <label>
           {' '}
