@@ -2,6 +2,7 @@
 import type { Dungeon, Quest } from '../data/schemas/index.ts';
 import type { GameData } from '../game/character/context.ts';
 import { currentStep, questOf } from '../game/world/quests.ts';
+import { regionMap } from '../game/world/region.ts';
 import type { World } from '../game/world/types.ts';
 import type { Hex } from '../rules/hex.ts';
 
@@ -12,6 +13,10 @@ export function questTargets(w: World, data: GameData): Hex[] {
     const o = currentStep(w, data, id);
     if (!o) return [];
     if (o.kind === 'slay' || o.kind === 'scout') return o.region === w.region ? [o.hex] : [];
+    if (o.kind === 'escort' || o.kind === 'deliver') {
+      const town = regionMap(data, w.region).sites.find((s) => s.id === o.to);
+      return town ? [{ col: town.col, row: town.row }] : [];
+    }
     if (!('dungeon' in o)) return [];
     // A delve step marks its dungeon's entrance; content checks guarantee the dungeon.
     const d = data.content.dungeons.find((x) => x.id === o.dungeon) as Dungeon;
