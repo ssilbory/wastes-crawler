@@ -165,12 +165,24 @@ export function addLoot(w: World, dice: readonly LootDice[]): void {
   w.loot.sort((a, b) => a.sides - b.sides);
 }
 
-/** Rolls every loot die carried and pays out against the town's loot threshold. */
-export function exchangeLoot(w: World, data: GameData): { rolled: number; paid: number } {
+/**
+ * Rolls the loot dice sold, all carried unless the party picks fewer of each size (Sam's call), and
+ * pays out against the town's loot threshold.
+ */
+export function exchangeLoot(
+  w: World,
+  data: GameData,
+  selling: readonly LootDice[] = w.loot,
+): { rolled: number; paid: number } {
   const town = townHere(w, data);
-  if (w.loot.length === 0) return { rolled: 0, paid: 0 };
+  const held = (sides: number) => w.loot.find((d) => d.sides === sides)?.count ?? 0;
+  const sold = selling
+    // Only whole dice are sold, never more than are carried.
+    .map((d) => ({ sides: d.sides, count: Math.min(Math.floor(d.count), held(d.sides)) }))
+    .filter((d) => d.count > 0);
+  if (sold.length === 0) return { rolled: 0, paid: 0 };
   const rules = data.content.townRules;
-  const rolled = w.loot.reduce(
+  const rolled = sold.reduce(
     (sum, d) => sum + roll(w.rng, { count: d.count, sides: d.sides, modifier: 0 }).total,
     0,
   );
@@ -183,7 +195,8 @@ export function exchangeLoot(w: World, data: GameData): { rolled: number; paid: 
   );
   ledger(w, data, town).looted += rolled;
   w.purse = toTenths(w.purse + paid);
-  w.loot = [];
+  const left = (d: LootDice) => d.count - (sold.find((s) => s.sides === d.sides)?.count ?? 0);
+  w.loot = w.loot.map((d) => ({ ...d, count: left(d) })).filter((d) => d.count > 0);
   note(w, `The loot is worth ${rolled} crowns; ${town.name}'s traders pay ${paid}.`);
   return { rolled, paid };
 }

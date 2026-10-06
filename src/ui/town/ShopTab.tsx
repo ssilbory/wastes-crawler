@@ -8,6 +8,7 @@ import type { World } from '../../game/world/types.ts';
 import { crowns, entryText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { cue } from '../sound.ts';
+import { SellLootForm } from './SellLootForm.tsx';
 import type { Act } from './TownScreen.tsx';
 
 const KINDS: Record<CatalogItem['kind'], string> = {
@@ -32,6 +33,10 @@ export function ShopTab(props: { world: World; act: Act }) {
   const porters = w.npcs.filter((n) => typeOf(data, n)?.role === 'porter');
   return (
     <>
+      <section class="panel" aria-label="Sell loot">
+        <h2>Sell loot</h2>
+        <SellLootForm world={w} act={props.act} />
+      </section>
       <section class="panel" aria-label="Buy">
         <h2>Buy</h2>
         <label>

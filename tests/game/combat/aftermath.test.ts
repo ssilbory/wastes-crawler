@@ -1,14 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import type { Character } from '../../../src/data/schemas/index.ts';
 import {
+  awaitsMending,
   awaitsRescue,
   castRescue,
   concludeBattle,
   dyingOf,
   firstRescue,
+  mendings,
   rescues,
   tendDying,
   tendRound,
+  woundedOf,
   type Rescue,
 } from '../../../src/game/combat/aftermath.ts';
 import { createBattle } from '../../../src/game/combat/battle.ts';
@@ -108,6 +111,28 @@ function priestBattle(): Battle {
     }),
   );
 }
+
+describe('healing the wounded after a fight (Sam’s call)', () => {
+  it('waits only while someone is hurt, no one is dying, and healing can reach them', () => {
+    const b = priestBattle();
+    expect([woundedOf(b), mendings(b), awaitsMending(b)]).toEqual([[], [], false]);
+    const grukk = who(b, 'Grukk');
+    grukk.hp = grukk.maxHp - 3;
+    expect(woundedOf(b)).toEqual([grukk]);
+    expect(mendings(b).map((r) => r.label)).toEqual(['Snag: Healing Touch on Grukk']);
+    expect(awaitsMending(b)).toBe(true);
+    // The dying come first.
+    const snag = fall(who(b, 'Snag'), b.round);
+    expect(awaitsMending(b)).toBe(false);
+    Object.assign(snag, { status: 'active', hp: 5 });
+    castRescue(b, mendings(b).find((r) => r.target === grukk.id) as Rescue);
+    expect(grukk.hp).toBeGreaterThan(grukk.maxHp - 3);
+    // Done healing, the fight can end.
+    grukk.hp = 1;
+    b.mended = true;
+    expect(awaitsMending(b)).toBe(false);
+  });
+});
 
 describe('healing magic for the dying', () => {
   it('offers Healing Touch, and waits for the player while it can save someone', () => {

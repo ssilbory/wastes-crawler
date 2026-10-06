@@ -1,4 +1,11 @@
-import { castRescue, dyingOf, rescues, tendRound } from '../../game/combat/aftermath.ts';
+import {
+  castRescue,
+  dyingOf,
+  mendings,
+  rescues,
+  tendRound,
+  woundedOf,
+} from '../../game/combat/aftermath.ts';
 import type { Battle } from '../../game/combat/types.ts';
 import { MORTAL_ROUNDS } from '../../rules/combat.ts';
 
@@ -8,6 +15,7 @@ import { MORTAL_ROUNDS } from '../../rules/combat.ts';
  */
 export function RescuePanel(props: { battle: Battle; onTend: (step: () => void) => void }) {
   const b = props.battle;
+  if (dyingOf(b).length === 0) return <MendPanel battle={b} onTend={props.onTend} />;
   const left = (fellRound: number) => MORTAL_ROUNDS - (b.round - fellRound);
   return (
     <section class="panel rescue" aria-label="Tend the dying">
@@ -32,6 +40,44 @@ export function RescuePanel(props: { battle: Battle; onTend: (step: () => void) 
         ))}
         <button type="button" onClick={() => props.onTend(() => tendRound(b))}>
           Keep trying Heal checks
+        </button>
+      </div>
+    </section>
+  );
+}
+
+/** With no one dying, healing magic for the wounded, until the player is done (Sam's call). */
+function MendPanel(props: { battle: Battle; onTend: (step: () => void) => void }) {
+  const b = props.battle;
+  return (
+    <section class="panel rescue" aria-label="Heal the wounded">
+      <h3>Heal the wounded</h3>
+      <ul>
+        {woundedOf(b).map((c) => (
+          <li key={c.id}>
+            {c.name}: {c.hp} of {c.maxHp} HP
+          </li>
+        ))}
+      </ul>
+      <div class="actions">
+        {mendings(b).map((r) => (
+          <button
+            key={`${r.caster}-${r.magic}-${r.target}`}
+            type="button"
+            onClick={() => props.onTend(() => castRescue(b, r))}
+          >
+            {r.label}
+          </button>
+        ))}
+        <button
+          type="button"
+          onClick={() =>
+            props.onTend(() => {
+              b.mended = true;
+            })
+          }
+        >
+          Done healing
         </button>
       </div>
     </section>

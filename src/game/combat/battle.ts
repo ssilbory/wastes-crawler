@@ -15,6 +15,7 @@ import type { Battle, Combatant, SideId } from './types.ts';
 export { act } from './actions.ts';
 export { advance, beginRound, currentActor, MAX_ROUNDS, runRound, takeTurn } from './round.ts';
 export {
+  awaitsMending,
   awaitsRescue,
   concludeBattle,
   runBattle,
@@ -134,6 +135,7 @@ export function createBattle(s: BattleSetup): Battle {
     everlasting: null,
     vines: null,
     escaped: false,
+    mended: false,
     damageBonus: { party: 0, enemy: 0 },
     log: s.log ? [] : null,
     outcome: null,

@@ -254,6 +254,8 @@ export interface Battle {
   vines: { side: SideId; hp: number } | null;
   /** The party escaped behind the Invincible Citadel (Phase 18d): the fight broke off. */
   escaped: boolean;
+  /** The player is done healing the wounded after the fight (Sam's call). */
+  mended: boolean;
   /** God Wills It's bonus to damage and Shock, by side (Phase 14c). */
   damageBonus: Record<SideId, number>;
   log: string[] | null;

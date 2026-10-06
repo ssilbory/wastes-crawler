@@ -8,12 +8,12 @@ import {
   raiserHere,
   stayAtInn,
 } from '../../game/world/services.ts';
-import { exchangeLoot } from '../../game/world/shop.ts';
 import { priceHere } from '../../game/world/town.ts';
 import { shrineHere } from '../../game/world/prayer.ts';
 import type { World } from '../../game/world/types.ts';
-import { crowns, lootText } from '../../render/town-view.ts';
+import { crowns } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
+import { SellLootForm } from './SellLootForm.tsx';
 import { PerformForm, PrayerForm } from './SkillServices.tsx';
 import type { Act } from './TownScreen.tsx';
 
@@ -41,19 +41,7 @@ export function ServicesTab(props: { world: World; act: Act }) {
       </section>
       <section class="panel" aria-label="Traders">
         <h2>Traders</h2>
-        <p>Loot carried: {lootText(w.loot)}</p>
-        <button
-          type="button"
-          disabled={w.loot.length === 0}
-          onClick={() =>
-            props.act(() => {
-              const { rolled, paid } = exchangeLoot(w, data);
-              return `The loot is worth ${crowns(rolled)}; the traders pay ${crowns(paid)}.`;
-            })
-          }
-        >
-          Sell the loot
-        </button>
+        <SellLootForm world={w} act={props.act} />
       </section>
       <section class="panel" aria-label="Healer">
         <h2>Healer</h2>
