@@ -77,6 +77,35 @@ export function maze(rng: Rng, w: number, h: number): Edges {
   return edges;
 }
 
+/** Whether the edge between two cells is a wall; past the level's border always is. */
+function walled(edges: Edges, w: number, h: number, a: Cell, b: Cell): boolean {
+  const inside = (c: Cell) => c.x >= 0 && c.y >= 0 && c.x < w && c.y < h;
+  return !inside(a) || !inside(b) || !edges.has(pair(a, b));
+}
+
+/**
+ * Whether a door between two cells would stand in a wall at both ends: at each corner of the edge,
+ * some other wall meets it, so the door never hangs free in an open space.
+ */
+export function framed(edges: Edges, w: number, h: number, a: Cell, b: Cell): boolean {
+  const wall = (p: Cell, q: Cell) => walled(edges, w, h, p, q);
+  const at = (dx: number, dy: number) => ({ x: a.x + dx, y: a.y + dy });
+  // b is east or south of a; each end is checked by the three other edges meeting its corner.
+  const ends: [Cell, Cell][][] =
+    b.x > a.x
+      ? [-1, 1].map((d) => [
+          [at(0, d), at(1, d)],
+          [a, at(0, d)],
+          [b, at(1, d)],
+        ])
+      : [-1, 1].map((d) => [
+          [at(d, 0), at(d, 1)],
+          [a, at(d, 0)],
+          [b, at(d, 1)],
+        ]);
+  return ends.every((others) => others.some(([p, q]) => wall(p, q)));
+}
+
 /** Opens a few rooms and loops, turns some passages into doors, and hides one secret door. */
 export function decorate(rng: Rng, edges: Edges, w: number, h: number): void {
   for (let r = rng.int(1, 3); r > 0; r--) {
@@ -96,11 +125,18 @@ export function decorate(rng: Rng, edges: Edges, w: number, h: number): void {
       for (const [f, n] of neighbors({ x, y }, w, h))
         if ((f === 'e' || f === 's') && !edges.has(pair({ x, y }, n))) walls.push([{ x, y }, n]);
   // At 8 x 8 cells or more, a maze leaves far more walls than loops or the secret door need.
-  for (let loops = Math.floor((w * h) / 12); loops > 0; loops--) {
+  const doors: [Cell, Cell][] = [];
+  for (let loops = Math.floor((w * h) / 12); loops > 0 && walls.length > 0; loops--) {
     const [a, b] = walls.splice(rng.int(0, walls.length - 1), 1)[0] as [Cell, Cell];
-    edges.set(pair(a, b), rng.int(1, 4) === 1 ? 'd' : ' ');
+    const door = rng.int(1, 4) === 1;
+    edges.set(pair(a, b), ' ');
+    if (door) doors.push([a, b]);
   }
-  const [a, b] = walls[rng.int(0, walls.length - 1)] as [Cell, Cell];
+  // Doors go in once every loop is open, and only where walls frame them.
+  for (const [a, b] of doors) if (framed(edges, w, h, a, b)) edges.set(pair(a, b), 'd');
+  const hideable = walls.filter(([a, b]) => framed(edges, w, h, a, b));
+  if (hideable.length === 0) return;
+  const [a, b] = hideable[rng.int(0, hideable.length - 1)] as [Cell, Cell];
   edges.set(pair(a, b), 's');
 }
 
