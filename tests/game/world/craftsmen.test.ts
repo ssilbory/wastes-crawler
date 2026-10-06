@@ -138,7 +138,7 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
     });
   });
 
-  it('sell ready-made magic weapons at three times a commission', () => {
+  it('sell ready-made magic weapons at their own, higher price', () => {
     const w = atHagen();
     expect(() => buyMagic(w, data, 5, 'm-0')).toThrow('no stock line 5');
     w.purse = 700;
