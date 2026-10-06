@@ -34,6 +34,7 @@ function rich(): World {
 }
 const fizz = (w: World) => member(w, 'Fizzwick');
 const pass = (w: World) => emit(w, data, { kind: 'day-passed' });
+const XP_PER_DAY = data.content.craftingRules.xpPerDay;
 
 describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)', () => {
   it('needs the Craft skill or the Artisan focus', () => {
@@ -141,6 +142,7 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
     const w = rich();
     startProject(w, data, 'm-3', 'crowbar', 'normal');
     startProject(w, data, 'm-3', 'crowbar', 'normal');
+    const xp = fizz(w).character.xp;
     w.camp = 'made';
     pass(w);
     expect(w.projects).toHaveLength(1);
@@ -156,6 +158,8 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
     pass(w);
     expect(w.projects).toEqual([]);
     expect(w.log.at(-1)).toContain('Fizzwick finishes the Crowbar.');
+    // The one day of work, which finished the crowbar, paid; the dead crafter's day didn't.
+    expect(fizz(w).character.xp).toBe(xp + XP_PER_DAY);
     expect(fizz(w).character.inventory.at(-1)).toEqual({
       id: 'crowbar',
       quantity: 1,
@@ -221,8 +225,8 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
     const xp = fizz(w).character.xp;
     expect(workDay(w, data)).toEqual({ ok: true });
     expect(w.day).toBe(day + 1);
-    // A day at the bench is worth half an XP to the crafter (Sam's call).
-    expect(fizz(w).character.xp).toBe(xp + 0.5);
+    // A day at the bench is worth XP to the crafter.
+    expect(fizz(w).character.xp).toBe(xp + XP_PER_DAY);
     // 5 crowns' rent and 12 for four at the inn.
     expect(w.purse).toBe(purse - 17);
     expect(w.projects[0]?.daysLeft).toBe(6);
@@ -288,8 +292,10 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
       reason: 'Fizzwick is still at work in the workshop (7 days left).',
     });
     w.position = { col: 4, row: 8 };
+    const xp = w.benched[0]?.character.xp as number;
     for (let i = 0; i < 7; i++) pass(w);
     expect(w.projects).toEqual([]);
+    expect(w.benched[0]?.character.xp).toBe(xp + 7 * XP_PER_DAY);
     expect(w.benched[0]?.character.inventory.at(-1)?.id).toBe('spear-light');
     w.position = { col: 3, row: 8 };
     expect(rejoin(w, data, 'm-3')).toEqual({ ok: true });

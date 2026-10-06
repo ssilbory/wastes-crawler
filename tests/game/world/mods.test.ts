@@ -171,8 +171,10 @@ describe('building mods (SRD 2.8.2)', () => {
     emit(w, data, { kind: 'day-passed' });
     expect(w.projects[0]?.daysLeft).toBe(11);
     w.position = { col: 3, row: 8 };
+    const xp = fizz(w).character.xp;
     for (let i = 0; i < 11; i++) workDay(w, data);
     expect(w.projects).toEqual([]);
+    expect(fizz(w).character.xp).toBe(xp + 11 * data.content.craftingRules.xpPerDay);
     expect(spear(w).mods).toEqual([
       { id: 'thirsting-blade', components: ['ooze-essence', 'grave-garnet'] },
     ]);
