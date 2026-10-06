@@ -149,6 +149,37 @@ describe('loot', () => {
     expect(exchangeLoot(w, data)).toEqual({ rolled: 75, paid: 67.5 });
     expect(w.towns.westhold?.looted).toBe(825);
   });
+
+  it('sells fewer than all the loot dice when picked, keeping the rest', () => {
+    const w = world();
+    addLoot(w, [
+      { count: 3, sides: 6 },
+      { count: 2, sides: 8 },
+    ]);
+    w.rng = scriptedRng([4, 4]);
+    expect(
+      exchangeLoot(w, data, [
+        { count: 2, sides: 6 },
+        { count: 5, sides: 12 },
+      ]),
+    ).toEqual({ rolled: 8, paid: 8 });
+    expect(w.loot).toEqual([
+      { count: 1, sides: 6 },
+      { count: 2, sides: 8 },
+    ]);
+    // Asking for more than is carried sells what there is.
+    w.rng = scriptedRng([1, 2, 3]);
+    expect(
+      exchangeLoot(w, data, [
+        { count: 9, sides: 8 },
+        { count: 1, sides: 6 },
+      ]),
+    ).toEqual({
+      rolled: 6,
+      paid: 6,
+    });
+    expect(w.loot).toEqual([]);
+  });
 });
 
 describe('the tavern', () => {
