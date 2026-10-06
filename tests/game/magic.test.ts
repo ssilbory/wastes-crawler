@@ -52,20 +52,20 @@ describe('Effort fixtures (SRD 1.5.10.1, 1.5.7.1, and the one-pool house rule)',
   });
 
   it('is one lower, but at least 1, for partial casters', () => {
-    // Partial High Mage/Partial Warrior, Int 14: 1 + 0 + 1 - 1 = 1.
-    expect(effort({ 'high-mage-partial-warrior': 1 }, { int: 14 })).toBe(1);
-    expect(effort({ 'elementalist-partial-expert': 1 }, { int: 7, cha: 7 })).toBe(1);
-    // Dual partial, Magic-1 from two bonus picks, Cha 14: 1 + 1 + 1 - 1 = 2.
-    expect(effort({ 'high-mage-partial-other-mage': 1 }, { cha: 14 }, 1)).toBe(2);
+    // Partial Necromancer/Partial Warrior, Int 14: 1 + 0 + 1 - 1 = 1.
+    expect(effort({ 'necromancer-partial-warrior': 1 }, { int: 14 })).toBe(1);
+    expect(effort({ 'necromancer-partial-expert': 1 }, { int: 7, cha: 7 })).toBe(1);
+    // Partial Necromancer/Partial Healer, Magic-1, Cha 14: 1 + 1 + 1 - 1 = 2.
+    expect(effort({ 'healer-partial-mage': 1 }, { cha: 14 }, 1)).toBe(2);
   });
 
   it('pools across switched classes, with no partial penalty if any class is full', () => {
-    // Warrior 4 switched to Partial High Mage: still partial only. Int 16 (+1): 1 + 0 + 1 - 1 = 1.
-    expect(effort({ 'full-warrior': 4, 'high-mage-partial-warrior': 1 }, { int: 16 })).toBe(1);
-    // A full Elementalist level plus a partial High Mage: no penalty: 1 + 1 + 1 = 3.
-    expect(effort({ 'full-elementalist': 2, 'high-mage-partial-expert': 1 }, { int: 14 }, 1)).toBe(
-      3,
-    );
+    // Warrior 4 switched to Partial Necromancer: still partial only. Int 16 (+1): 1 + 0 + 1 - 1 = 1.
+    expect(effort({ 'full-warrior': 4, 'necromancer-partial-warrior': 1 }, { int: 16 })).toBe(1);
+    // A full Elementalist level plus a partial Necromancer: no penalty: 1 + 1 + 1 = 3.
+    expect(
+      effort({ 'full-elementalist': 2, 'necromancer-partial-expert': 1 }, { int: 14 }, 1),
+    ).toBe(3);
     // A class at level 0 doesn't count.
     expect(effort({ 'full-warrior': 4, 'full-high-mage': 0 }, { int: 14 })).toBeNull();
   });
@@ -79,13 +79,13 @@ describe('Effort fixtures (SRD 1.5.10.1, 1.5.7.1, and the one-pool house rule)',
 });
 
 describe('class bonus skills', () => {
-  it('grants Magic per tradition, twice for a dual caster', () => {
+  it('grants each tradition’s bonus skill, both for a dual caster', () => {
     expect(classBonusSkills(data, classOption(data, 'full-high-mage') as ClassOption)).toEqual([
       'magic',
     ]);
-    expect(
-      classBonusSkills(data, classOption(data, 'high-mage-partial-other-mage') as ClassOption),
-    ).toEqual(['magic', 'magic']);
+    expect(classBonusSkills(data, classOption(data, 'healer-partial-mage') as ClassOption)).toEqual(
+      ['magic', 'heal'],
+    );
     expect(classBonusSkills(data, classOption(data, 'full-warrior') as ClassOption)).toEqual([]);
   });
 
@@ -98,22 +98,20 @@ describe('class bonus skills', () => {
     expect(run(['know'])).toMatchObject({ status: { state: 'ok' }, skills: { magic: 1, know: 0 } });
     expect(run(['juggle']).status).toMatchObject({ message: "can't replace magic with juggle" });
     expect(run(['know'], { magic: 1, know: 1 } as never).status).toMatchObject({ state: 'error' });
-    expect(evaluateClass(data, 'high-mage-partial-other-mage', [], {}).skills).toEqual({
-      magic: 1,
+    expect(evaluateClass(data, 'healer-partial-mage', [], {}).skills).toEqual({
+      magic: 0,
+      heal: 0,
     });
     expect(evaluateClass(data, null, [], {}).status).toEqual({ state: 'incomplete' });
-    // A dual caster whose background left Magic at level-1 replaces both bonus skills.
+    // A dual caster replaces only the bonus skill its background left at level-1.
     const dual = (r: (string | null)[], skills = { magic: 1 }) =>
-      evaluateClass(data, 'high-mage-partial-other-mage', r, skills);
-    expect(dual([]).replacing).toEqual(['magic', 'magic']);
-    expect(dual(['know']).status).toMatchObject({
-      message: 'magic is already level-1; choose a replacement',
-    });
-    expect(dual(['know', 'sneak'])).toMatchObject({
+      evaluateClass(data, 'healer-partial-mage', r, skills);
+    expect(dual([]).replacing).toEqual(['magic', null]);
+    expect(dual(['know'])).toMatchObject({
       status: { state: 'ok' },
-      skills: { magic: 1, know: 0, sneak: 0 },
+      skills: { magic: 1, know: 0, heal: 0 },
     });
-    expect(dual([], { magic: 0 } as never).replacing).toEqual([null, 'magic']);
+    expect(dual([], { magic: 0, heal: 1 } as never).replacing).toEqual([null, 'heal']);
     expect(evaluateClass(data, 'full-high-mage', [], null)).toMatchObject({
       status: { state: 'ok' },
       skills: {},
@@ -126,21 +124,18 @@ describe('arts and spells', () => {
     expect(artPicks(data, mage('full-high-mage'))).toEqual([
       { tradition: 'high-mage', automatic: [], picks: 2 },
     ]);
-    expect(artPicks(data, mage('high-mage-partial-other-mage'))).toEqual([
-      { tradition: 'high-mage', automatic: [], picks: 1 },
-      {
-        tradition: 'elementalist',
-        automatic: ['elemental-resilience'],
-        picks: 1,
-      },
+    expect(artPicks(data, mage('healer-partial-mage'))).toEqual([
+      { tradition: 'necromancer', automatic: [], picks: 1 },
+      { tradition: 'healer', automatic: ['healing-touch'], picks: 1 },
     ]);
     expect(spellSlots(data, mage('full-high-mage'))).toMatchObject({
       maxSpellLevel: 1,
       spellsCast: 1,
       spellsPrepared: 3,
     });
-    expect(spellSlots(data, mage('high-mage-partial-other-mage'))).toMatchObject({
-      spellsPrepared: 3,
+    expect(spellSlots(data, mage('healer-partial-mage'))).toMatchObject({
+      spellsCast: 1,
+      spellsPrepared: 2,
     });
     expect(() => spellSlots(data, { ...mage('full-high-mage'), slots: 'nope' })).toThrow();
   });

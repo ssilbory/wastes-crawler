@@ -77,50 +77,21 @@ test('a Gnome High Mage has Effort 1 + Magic-0 + Int 16 (+1) = 2', async ({ page
   await expect(sheet).toContainText('Magic-0');
 });
 
-test('a Thaumaturge, a dual partial caster, has Magic-1 and Effort 1 + 1 + 1 - 1 = 2', async ({
-  page,
-}) => {
-  const sheet = await caster(page, {
-    people: 'Elf',
-    bg: 'Raider',
-    picks: ['Sneak', 'Exert'],
-    className: 'Thaumaturge (High Mage/Elementalist)',
-    foci: [
-      ['Racial focus 1', 'Cultured'],
-      ['Racial focus 2', 'Lucky'],
-      ['Any focus', 'Well Met'],
-    ],
-    arts: ['Sense Magic', 'Flamesight'],
-    spells: [
-      'The Coruscating Coffin',
-      'Damnation of the Sense',
-      'The Wind of the Final Repose',
-      'Wardpact Invocation',
-    ],
-    prepare: ['Damnation of the Sense'],
-  });
-  // Elf: Int 14, Cha 9 + 1 = 10, so Int (+1) is best; two Magic bonus picks make Magic-1.
-  await expect(sheet).toContainText('Effort 2.');
-  await expect(sheet).toContainText('Magic-1');
-  await expect(sheet).toContainText('Arts: Elemental Resilience, Sense Magic, Flamesight.');
-});
-
-test('a Stormblade, a partial Elementalist warrior, has Effort one lower, 1', async ({ page }) => {
+test('a Death Knight, a partial Necromancer warrior, has Effort one lower, 1', async ({ page }) => {
   const sheet = await caster(page, {
     people: 'Orc',
     bg: 'Raider',
     picks: ['Sneak', 'Exert'],
-    className: 'Stormblade (Elementalist/Warrior)',
+    className: 'Death Knight (Necromancer/Warrior)',
     foci: [
       ['Bonus skill for War-bred', 'Stab'],
       ['Racial focus', 'Die Hard'],
       ['Combat focus', 'Impervious Defense'],
       ['Any focus', 'Lucky'],
     ],
-    arts: ['Earthsight'],
-    // The Elementalist's own spells wait to be built; High Magic serves meanwhile.
-    spells: ['Damnation of the Sense', 'The Wind of the Final Repose'],
-    prepare: ['Damnation of the Sense', 'The Wind of the Final Repose'],
+    arts: ['Bonetalker'],
+    spells: ['Command the Dead', 'Damnation of the Sense'],
+    prepare: ['Command the Dead', 'Damnation of the Sense'],
   });
   // Orc: Int 14 (+1), Cha 9 - 2 = 7: 1 + 0 + 1 - 1 = 1.
   await expect(sheet).toContainText('Effort 1.');
