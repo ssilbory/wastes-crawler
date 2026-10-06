@@ -10,6 +10,7 @@ import {
 } from '../../game/character/training.ts';
 import { levelUpMember, trainMember } from '../../game/world/training.ts';
 import type { World } from '../../game/world/types.ts';
+import { levelSummary } from '../../render/level-view.ts';
 import { levelLine, pointsText } from '../../render/town-view.ts';
 import { ATTRIBUTE_NAMES, className, classes, data, skillName, skills } from '../builder/data.ts';
 import { FreeFocusForm } from './FocusPicker.tsx';
@@ -26,6 +27,9 @@ export function TrainingTab(props: { world: World; act: Act }) {
   const [skill, setSkill] = useState(skills[0]?.id ?? '');
   const [attribute, setAttribute] = useState<Attribute>('str');
   const [target, setTarget] = useState(classes[0]?.id ?? '');
+  const [confirming, setConfirming] = useState(false);
+  /** What the last level brought, for the member who took it. */
+  const [summary, setSummary] = useState<{ who: string; lines: string[] } | null>(null);
   const m = living.find((x) => x.id === who) ?? living[0];
   if (!m) return <p class="hint">No one living can train.</p>;
   const c = m.character;
@@ -39,7 +43,13 @@ export function TrainingTab(props: { world: World; act: Act }) {
         <h2>Training</h2>
         <label>
           Who{' '}
-          <select value={m.id} onChange={(e) => setWho((e.target as HTMLSelectElement).value)}>
+          <select
+            value={m.id}
+            onChange={(e) => {
+              setWho((e.target as HTMLSelectElement).value);
+              setConfirming(false);
+            }}
+          >
             {living.map((x) => (
               <option key={x.id} value={x.id}>
                 {x.character.name}
@@ -51,6 +61,19 @@ export function TrainingTab(props: { world: World; act: Act }) {
           {className(c.classes.current)} · {levelLine(data, c)} · {pointsText(c)}
         </p>
       </section>
+      {summary?.who === m.id && (
+        <section class="panel" aria-label="Level up summary">
+          <h3>Level up</h3>
+          <ul>
+            {summary.lines.map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+          <button type="button" onClick={() => setSummary(null)}>
+            Done
+          </button>
+        </section>
+      )}
       {c.advancement.freeFoci && (
         <FreeFocusForm
           key={m.id}
@@ -96,9 +119,14 @@ export function TrainingTab(props: { world: World; act: Act }) {
           key={`${m.id}-${c.xp}-${plan.classLevel}-${plan.classId}`}
           character={c}
           plan={plan}
-          onConfirm={(choices) =>
-            props.act(() => cue(levelUpMember(w, data, m.id, choices), 'level'))
-          }
+          onConfirm={(choices) => {
+            const before = c;
+            props.act(() => {
+              const r = cue(levelUpMember(w, data, m.id, choices), 'level');
+              if (r.ok) setSummary({ who: m.id, lines: levelSummary(data, before, m.character) });
+              return r;
+            });
+          }}
         />
       )}
       {magic && (
@@ -126,11 +154,17 @@ export function TrainingTab(props: { world: World; act: Act }) {
         <h3>Class</h3>
         <p class="hint">
           New levels go into the current class. Switching needs 4th level in it, and earlier classes
-          keep their levels.
+          keep their levels. A switch can be taken back until a level is taken in the new class.
         </p>
         <label>
           Switch to{' '}
-          <select value={target} onChange={(e) => setTarget((e.target as HTMLSelectElement).value)}>
+          <select
+            value={target}
+            onChange={(e) => {
+              setTarget((e.target as HTMLSelectElement).value);
+              setConfirming(false);
+            }}
+          >
             {classes.map((k) => (
               <option key={k.id} value={k.id}>
                 {k.label}
@@ -138,9 +172,30 @@ export function TrainingTab(props: { world: World; act: Act }) {
             ))}
           </select>
         </label>{' '}
-        <button type="button" onClick={() => train((x) => changeClass(data, x, target))}>
-          Switch class
-        </button>
+        {!confirming ? (
+          <button type="button" onClick={() => setConfirming(true)}>
+            Switch class
+          </button>
+        ) : (
+          <div role="group" aria-label="Confirm class switch">
+            <p>
+              Switch {c.name} from {className(c.classes.current)} to {className(target)}? New levels
+              will go into {className(target)}.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setConfirming(false);
+                train((x) => changeClass(data, x, target));
+              }}
+            >
+              Confirm switch
+            </button>{' '}
+            <button type="button" class="secondary" onClick={() => setConfirming(false)}>
+              Cancel
+            </button>
+          </div>
+        )}
       </section>
     </>
   );

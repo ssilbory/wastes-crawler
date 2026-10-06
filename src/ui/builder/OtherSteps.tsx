@@ -6,11 +6,11 @@ import { Select, Step } from './Field.tsx';
 export function ClassStep(props: {
   value: string | null;
   status: StepStatus;
-  /** The class bonus skill to replace, when it's already level-1. */
-  replacing: string | null;
-  replacement: string | null;
+  /** Each class bonus skill, by position, to replace when it's already level-1; null where not. */
+  replacing: readonly (string | null)[];
+  replacements: readonly (string | null)[];
   onChange: (id: string | null) => void;
-  onReplace: (skill: string | null) => void;
+  onReplace: (index: number, skill: string | null) => void;
 }) {
   return (
     <Step title="4. Class" status={props.status}>
@@ -20,13 +20,17 @@ export function ClassStep(props: {
         options={classes.map((c) => ({ value: c.id, label: c.label }))}
         onChange={(v) => props.onChange(v === '' ? null : v)}
       />
-      {props.replacing && (
-        <Select
-          label={`Replacement for ${skillName(props.replacing)}`}
-          value={props.replacement ?? ''}
-          options={skills.map((s) => ({ value: s.id, label: s.name }))}
-          onChange={(v) => props.onReplace(v === '' ? null : v)}
-        />
+      {props.replacing.map(
+        (skill, i) =>
+          skill && (
+            <Select
+              key={i}
+              label={`Replacement for ${skillName(skill)}${props.replacing.length > 1 ? ` (${i + 1})` : ''}`}
+              value={props.replacements[i] ?? ''}
+              options={skills.map((s) => ({ value: s.id, label: s.name }))}
+              onChange={(v) => props.onReplace(i, v === '' ? null : v)}
+            />
+          ),
       )}
     </Step>
   );
