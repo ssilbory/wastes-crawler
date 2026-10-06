@@ -4,7 +4,9 @@ import {
   addToRoster,
   parseRoster,
   removeFromRoster,
+  rosterToSave,
   serializeRoster,
+  type RosterEntry,
   setDefaultAction,
 } from '../../src/game/character/roster.ts';
 import { data, starter } from './combat/helpers.ts';
@@ -18,6 +20,34 @@ describe('the character roster', () => {
       ['snag', 'Snag', 'auto'],
       ['grukk', 'Grukk', 'auto'],
     ]);
+  });
+
+  it('keeps stored characters that no longer load, and sets aside an unreadable roster', () => {
+    const entries = addToRoster([], starter('snag'));
+    const broken = { ...entries[0], character: { ...starter('grukk'), people: 'gone' } };
+    const older = { ...broken, id: 'grukk' };
+    const stored = serializeRoster([broken, older] as RosterEntry[]);
+    const saved = rosterToSave(stored, entries, data);
+    expect(saved.backup).toBeNull();
+    const ids = (JSON.parse(saved.text) as { entries: { id: string }[] }).entries.map((e) => e.id);
+    expect(ids).toEqual(['snag', 'snag-unreadable', 'grukk']);
+    expect(parseRoster(saved.text, data).entries.map((e) => e.id)).toEqual(['snag']);
+    // A roster of another shape keeps every entry it held, and is set aside as well.
+    const newer = JSON.stringify({ version: 99, entries: [{ id: 'snag' }, { name: 'x' }] });
+    const kept = rosterToSave(newer, entries, data);
+    expect(kept.backup).toBe(newer);
+    expect(
+      (JSON.parse(kept.text) as { entries: { id: string }[] }).entries.map((e) => e.id),
+    ).toEqual(['snag', 'snag-unreadable', 'unreadable']);
+    expect(rosterToSave('{"version":99}', entries, data).text).toBe(serializeRoster(entries));
+    expect(rosterToSave('{', entries, data)).toEqual({
+      text: serializeRoster(entries),
+      backup: '{',
+    });
+    expect(rosterToSave(null, entries, data)).toEqual({
+      text: serializeRoster(entries),
+      backup: null,
+    });
   });
 
   it('treats a missing roster as empty, and reports unreadable ones', () => {

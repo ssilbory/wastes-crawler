@@ -2,7 +2,7 @@
 // cleared site data), so every access is guarded and the game keeps working without it.
 import {
   parseRoster,
-  serializeRoster,
+  rosterToSave,
   type LoadedRoster,
   type RosterEntry,
 } from '../game/character/roster.ts';
@@ -21,10 +21,18 @@ export function loadRoster(): LoadedRoster {
   }
 }
 
-/** Saves the roster; false when storage is unavailable. */
+/**
+ * Saves the roster, keeping stored characters that no longer load, and a roster that can't be read
+ * at all aside under its own key; false when storage is unavailable.
+ */
 export function saveRoster(entries: readonly RosterEntry[]): boolean {
   try {
-    localStorage.setItem(KEY, serializeRoster(entries));
+    const { text, backup } = rosterToSave(localStorage.getItem(KEY), entries, data);
+    // Each unreadable roster gets a key of its own, so an earlier one is never overwritten.
+    let n = 1;
+    while (backup !== null && localStorage.getItem(`${KEY}.unreadable.${n}`) !== null) n += 1;
+    if (backup !== null) localStorage.setItem(`${KEY}.unreadable.${n}`, backup);
+    localStorage.setItem(KEY, text);
     return true;
   } catch {
     return false;

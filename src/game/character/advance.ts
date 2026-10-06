@@ -13,8 +13,8 @@ import { characterSheet, finalScores } from './derived.ts';
 import { allowedSkills, focusInfo, hasDieHard, modifierBonuses, type FocusChoice } from './foci.ts';
 import {
   artBar,
-  artPicks,
   learnableSpells,
+  levelArtPicks,
   spellPicks,
   spellSlots,
   type ArtPick,
@@ -61,7 +61,7 @@ export function levelPlan(data: GameData, c: Character): LevelPlan | null {
     focusPicks: progressionRow(progression, classLevel).focusPicks.flatMap((p) =>
       Array<FocusPick['category']>(p.count).fill(p.category),
     ),
-    arts: mage ? artPicks(data, mage, classLevel) : [],
+    arts: mage ? levelArtPicks(data, mage, classLevel, c.arts) : [],
     spells: !mage
       ? 0
       : spellPicks(
