@@ -17,6 +17,7 @@ function at(x: number, y: number, facing: DungeonState['facing'], seen: string[]
     turn: 0,
     steps: 0,
     found: {},
+    dug: {},
     glimpsed: {},
     traps: {},
     read: {},

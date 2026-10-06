@@ -54,11 +54,11 @@ function look(w: World, data: GameData, s: DungeonState): void {
   // In the dark, or on an anti-map square, the party maps nothing (docs/rules-adaptation.md,
   // Dungeon exploration).
   if (blind(w, data) || onSpecial(w, data, 'anti-map')) return;
-  const { map } = levelOf(data, s.dungeon, s.level);
+  const edge = knownEdges(w, data);
   const seen = new Set(s.seen[s.level] ?? []);
   let c: Cell = s.at;
   seen.add(cellKey(c));
-  for (let i = 0; i < 3 && map.edge(c, s.facing) === 'open'; i++) {
+  for (let i = 0; i < 3 && edge(c, s.facing) === 'open'; i++) {
     c = ahead(c, s.facing);
     seen.add(cellKey(c));
   }
@@ -113,6 +113,7 @@ export function enterDungeon(w: World, data: GameData): TownResult {
     turn: 0,
     steps: 0,
     found: {},
+    dug: {},
     glimpsed: {},
     traps: {},
     read: {},

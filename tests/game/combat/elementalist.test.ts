@@ -4,7 +4,7 @@ import { monsterAction, partyAction } from '../../../src/game/combat/ai.ts';
 import { resolveAttack } from '../../../src/game/combat/attack.ts';
 import { commandsFor } from '../../../src/game/combat/commands.ts';
 import { roundPasses } from '../../../src/game/combat/conditions.ts';
-import { harm } from '../../../src/game/combat/damage.ts';
+import { effectiveAc, harm } from '../../../src/game/combat/damage.ts';
 import { castMagic } from '../../../src/game/combat/spells.ts';
 import { targets } from '../../../src/game/combat/targeting.ts';
 import type { Attack, Battle, CasterState, Combatant } from '../../../src/game/combat/types.ts';
@@ -40,6 +40,35 @@ const log = (b: Battle) => (b.log ?? []).join('\n');
 const swing = (c: Combatant) => c.attacks[0] as Attack;
 
 describe('Elementalist spells in combat (Phase 18b, 4.5.0)', () => {
+  it('Hail of Stones: 1d6 per two levels on a row, an Evasion save halves it', () => {
+    const b = standardBattle([['thug-or-militia', 'thug-or-militia'], ['thug-or-militia']]);
+    const [a, c, rear] = sturdy(b) as [Combatant, Combatant, Combatant];
+    const f = elementalist(b, ['hail-of-stones'], 5);
+    b.rng = scriptedRng([4, 5, 1, 20]);
+    cast(b, f, 'hail-of-stones', { row: 0 });
+    expect([a.hp, c.hp, rear.hp]).toEqual([31, 36, 40]);
+    // At first level it still throws 1d6.
+    (f.caster as CasterState).level = 1;
+    b.rng = scriptedRng([6, 1, 1]);
+    cast(b, f, 'hail-of-stones', { row: 0 });
+    expect([a.hp, c.hp]).toEqual([25, 30]);
+  });
+
+  it('Ward of the Turning Wind: +4 AC on an ally, never above 18, not on top of Pavis', () => {
+    const b = standardBattle([['thug-or-militia']]);
+    const f = elementalist(b, ['ward-of-the-turning-wind'], 1);
+    const snag = who(b, 'Snag');
+    snag.ac = 13;
+    cast(b, f, 'ward-of-the-turning-wind', { target: snag.id });
+    expect([snag.acBonus, effectiveAc(snag)]).toEqual([4, 17]);
+    snag.ac = 16;
+    expect(effectiveAc(snag)).toBe(18);
+    // A greater bonus already held stays as it is.
+    f.acBonus = 6;
+    cast(b, f, 'ward-of-the-turning-wind', { target: f.id });
+    expect(f.acBonus).toBe(6);
+  });
+
   it('Boreal Wings: an ally flies for the scene', () => {
     const b = standardBattle([['thug-or-militia']]);
     const f = elementalist(b, ['boreal-wings'], 3);

@@ -46,6 +46,7 @@ describe('dungeon entrances (docs/rules-adaptation.md, Dungeons in Phase 7)', ()
       turn: 0,
       steps: 0,
       found: {},
+      dug: {},
       glimpsed: {},
       traps: {},
       read: {},

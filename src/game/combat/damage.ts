@@ -133,7 +133,7 @@ export function save(b: Battle, target: Combatant, type: SaveType, modifier = 0)
 
 /**
  * AC with a natural AC if better (Armor of God, Cold Flesh), Total Defense (+2), Sanctified Ward
- * (+4), and Pavis of Elements (+4, never above 18).
+ * (+4), and Pavis of Elements or Ward of the Turning Wind (+4, never above 18).
  */
 export function effectiveAc(c: Combatant): number {
   const ac = Math.max(c.ac, c.acFloor);

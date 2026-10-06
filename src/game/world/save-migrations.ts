@@ -148,4 +148,9 @@ export const WORLD_MIGRATIONS: Migrations = {
       bestiary: [],
     };
   },
+  // Version 26 adds The Burrower Below: no walls dug yet.
+  25: (raw) => {
+    const d = raw.dungeon as Raw | null | undefined;
+    return { ...raw, schemaVersion: 26, dungeon: d && { ...d, dug: {} } };
+  },
 };

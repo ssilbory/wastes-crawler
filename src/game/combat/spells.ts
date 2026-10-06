@@ -191,9 +191,12 @@ export function castMagic(
       if (hit) harm(b, target, roll(b.rng, e.damage).total + c.level + attr);
       return true;
     }
-    case 'ac-bonus':
-      actor.acBonus = e.amount;
+    case 'ac-bonus': {
+      // Pavis of Elements on the caster, Ward of the Turning Wind on any ally; they don't combine.
+      const warded = target ?? actor;
+      warded.acBonus = Math.max(warded.acBonus, e.amount);
       return true;
+    }
     case 'smite': {
       const dice = { ...e.perLevel, count: e.perLevel.count * c.level };
       for (const t of b.combatants.filter(
