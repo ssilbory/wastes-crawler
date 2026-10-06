@@ -4,7 +4,7 @@ import type { BattleResult } from '../../game/combat/battle.ts';
 import { settleBout } from '../../game/world/arena.ts';
 import { coachQuarter } from '../../game/world/coach.ts';
 import { difficultySeed } from '../../game/world/difficulty.ts';
-import { encounterBattle, type WorldBattle } from '../../game/world/fight.ts';
+import { encounterBattle, xpText, type WorldBattle } from '../../game/world/fight.ts';
 import { passQuarter, settleByFighting, settleByLeaving } from '../../game/world/quarter.ts';
 import { addStarterParty, removeFromRoster } from '../../game/character/roster.ts';
 import { mergeRoster, parseSave, serializeBundle } from '../../game/world/bundle.ts';
@@ -55,6 +55,8 @@ export function WorldApp() {
     battle: WorldBattle;
     settle: (result: BattleResult) => void | Promise<void>;
     back: 'map' | 'town';
+    /** The XP a win earns, once the simulation has judged the fight; none in the arena. */
+    xp?: Promise<string>;
   } | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
   const [, setSaves] = useState(0);
@@ -102,6 +104,7 @@ export function WorldApp() {
       battle,
       settle: (result) => verdict.then((d) => settleByFighting(w, data, battle, result, d)),
       back: 'map',
+      xp: verdict.then((d) => xpText(data, d)),
     });
     changed();
   };
@@ -163,6 +166,7 @@ export function WorldApp() {
             if (m) m.defaultAction = preset;
           }}
           canLeave={false}
+          xp={fight.xp}
           known={knownFoes(w, data, fight.battle.enemies)}
           doneLabel={
             fight.back === 'town'

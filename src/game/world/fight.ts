@@ -218,10 +218,16 @@ function winnings(w: World, data: GameData, enemies: readonly (readonly string[]
   note(w, `The party takes ${text} of loot.`);
 }
 
+/** What a won fight of this difficulty is worth, as the journal and the fight log tell it. */
+export function xpText(data: GameData, difficulty: Difficulty): string {
+  const tier = difficultyTier(data, difficulty);
+  return `A ${tier.name} fight: ${tier.xp} XP each.`;
+}
+
 /** Every PC who fought gets the award; the dead receive it when raised (docs/rules-adaptation.md). */
 function award(w: World, data: GameData, fight: WorldBattle, difficulty: Difficulty): void {
   const tier = difficultyTier(data, difficulty);
-  note(w, `A ${tier.name} fight: ${tier.xp} XP each.`);
+  note(w, xpText(data, difficulty));
   if (tier.xp === 0) return;
   for (const id of fight.memberIds) {
     const m = w.members.find((x) => x.id === id) as Member;

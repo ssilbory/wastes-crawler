@@ -22,8 +22,14 @@ export function skillName(id: string): string {
   return skills.find((s) => s.id === id)?.name ?? id;
 }
 
-/** Each class, labeled for pickers with a partial class's halves beside its name. */
-export const classes = data.content.classOptions.map((c) => ({
+/**
+ * Each class, labeled for pickers with a partial class's halves beside its name: the single
+ * classes first, then the partial ones, each in content order.
+ */
+export const classes = [
+  ...data.content.classOptions.filter((c) => !c.halves),
+  ...data.content.classOptions.filter((c) => c.halves),
+].map((c) => ({
   id: c.id,
   name: c.name,
   label: c.halves ? `${c.name} (${c.halves})` : c.name,
