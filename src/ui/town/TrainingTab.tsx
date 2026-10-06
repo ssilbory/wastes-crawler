@@ -133,7 +133,7 @@ export function TrainingTab(props: { world: World; act: Act }) {
           <select value={target} onChange={(e) => setTarget((e.target as HTMLSelectElement).value)}>
             {classes.map((k) => (
               <option key={k.id} value={k.id}>
-                {k.name}
+                {k.label}
               </option>
             ))}
           </select>

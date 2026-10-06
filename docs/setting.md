@@ -148,7 +148,7 @@ The Dark Lord allowed only two faiths, and they are still the only two in the Da
 
 | Faith         | Priests                                                                                                  | In play                                                                                                              |
 | ------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| The Blood God | Blood priests and priestesses, who work miracles in armor                                                | Partial Blood Priest/Partial Warrior or Partial Healer PCs; Mother Skrell's temple in Gutterwick raises the dead     |
+| The Blood God | Blood priests and priestesses, who work miracles in armor                                                | Blood Knight or Blood Saint PCs; Mother Skrell's temple in Gutterwick raises the dead                                |
 | The Lady      | Death. The Priests of Death are partial necromancers and healers who raise no undead and serve no master | Priest of Death PCs; Brother Aldo's mortuary in Scrapmarch raises the dead. Necromancers like Ysolde keep her crypts |
 
 ### Why only two

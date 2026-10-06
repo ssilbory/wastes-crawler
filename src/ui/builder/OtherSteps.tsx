@@ -2,7 +2,7 @@ import { MAX_GOAL, MAX_NAME, type StepStatus } from '../../game/character/creati
 import { classes, skillName, skills } from './data.ts';
 import { Select, Step } from './Field.tsx';
 
-/** Warrior, Expert, Mage, or Adventurer combinations (SRD 1.4.0), from data/content. */
+/** Warrior, Expert, Mage, or the named partial classes (SRD 1.4.0), from data/content. */
 export function ClassStep(props: {
   value: string | null;
   status: StepStatus;
@@ -17,7 +17,7 @@ export function ClassStep(props: {
       <Select
         label="Class"
         value={props.value ?? ''}
-        options={classes.map((c) => ({ value: c.id, label: c.name }))}
+        options={classes.map((c) => ({ value: c.id, label: c.label }))}
         onChange={(v) => props.onChange(v === '' ? null : v)}
       />
       {props.replacing && (
