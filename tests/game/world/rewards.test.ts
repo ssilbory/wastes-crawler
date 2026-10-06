@@ -5,7 +5,7 @@ import {
   partyLevel,
   simulateDifficulty,
 } from '../../../src/game/world/difficulty.ts';
-import { applyBattle, encounterBattle, partySetup } from '../../../src/game/world/fight.ts';
+import { applyBattle, encounterBattle, partySetup, xpText } from '../../../src/game/world/fight.ts';
 import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
 import { createRng } from '../../../src/rules/rng.ts';
 import { data, member, world, encounter } from './helpers.ts';
@@ -57,6 +57,9 @@ describe('the XP difficulty simulation (docs/rules-adaptation.md, XP)', () => {
     const deadly = simulateDifficulty(data, titan, 't', 5);
     expect(deadly.winRate).toBeLessThan(0.5);
     expect(difficultyTier(data, deadly)).toMatchObject({ name: 'deadly', xp: 3 });
+    // The fight log and the journal tell it the same way.
+    expect(xpText(data, deadly)).toBe('A deadly fight: 3 XP each.');
+    expect(xpText(data, easy)).toBe('A trivial fight: 0 XP each.');
   });
 
   it('counts only PCs going down, not NPCs', () => {
