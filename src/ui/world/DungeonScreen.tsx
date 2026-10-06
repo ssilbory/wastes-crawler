@@ -14,6 +14,7 @@ import { automap, FACING_NAMES, MAP_CELL } from '../../render/automap-view.ts';
 import { dungeonView, VIEW_HEIGHT, VIEW_WIDTH } from '../../render/dungeon-view.ts';
 import { data } from '../builder/data.ts';
 import { PartyPanel } from './PartyPanel.tsx';
+import { FormationPanel } from './FormationPanel.tsx';
 import { HealerPanel } from './HealerPanel.tsx';
 import { PurgePanel } from './PurgePanel.tsx';
 import { InventoryPanel } from './InventoryPanel.tsx';
@@ -244,6 +245,7 @@ export function DungeonScreen(props: {
             <CampPanel world={w} onChange={props.onChange} />
           )}
           <PartyPanel members={w.members} />
+          <FormationPanel world={w} onChange={props.onChange} />
           <NpcPanel world={w} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />
           <GreenwoodPanel world={w} onChange={props.onChange} />

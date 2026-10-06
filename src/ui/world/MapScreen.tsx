@@ -9,6 +9,7 @@ import { crowns, lootText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { HEX_SIZE, HexMap } from './HexMap.tsx';
 import { PartyPanel } from './PartyPanel.tsx';
+import { FormationPanel } from './FormationPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
 import { FactionsPanel } from './FactionsPanel.tsx';
 import { SettingPanel } from './SettingPanel.tsx';
@@ -139,6 +140,7 @@ export function MapScreen(props: {
             />
           )}
           <PartyPanel members={w.members} />
+          <FormationPanel world={w} onChange={props.onChange} />
           <NpcPanel world={w} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />
           <GreenwoodPanel world={w} onChange={props.onChange} />
