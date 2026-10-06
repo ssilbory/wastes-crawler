@@ -26,7 +26,7 @@ describe('town text', () => {
       'Crowbar ×2 (stowed)',
     );
     expect(entryText(data, { id: 'mail-shirt', quantity: 1, location: 'worn', small: true })).toBe(
-      'Mail Shirt (small, worn)',
+      'Mail Shirt · AC 14, medium (small, worn)',
     );
     expect(entryText(data, { id: 'mystery', quantity: 1, location: 'worn', barding: true })).toBe(
       'mystery (barding, worn)',

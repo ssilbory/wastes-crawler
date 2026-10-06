@@ -90,3 +90,13 @@ label.check {
   gap: 2px;
   justify-items: start;
 }
+
+/* Long option text, such as a weapon's stats, never pushes a select or its column past the grid. */
+.town-main {
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.panel select {
+  max-width: 100%;
+}

@@ -82,7 +82,8 @@ function GearRow(props: {
     <li role="group" aria-label={line.name}>
       <span class="gear-name">
         {line.name}
-        {line.quantity > 1 ? ` × ${line.quantity}` : ''} (enc {line.encumbrance})
+        {line.quantity > 1 ? ` × ${line.quantity}` : ''}
+        {line.stats ? ` · ${line.stats}` : ''} (enc {line.encumbrance})
       </span>
       {line.quantity > 1 && (
         <input
