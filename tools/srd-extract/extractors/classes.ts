@@ -20,8 +20,8 @@ import type { SrdReader } from '../reader.ts';
 const CLASS_DIR = '1.0 Character Creation/1.5.0 Class List';
 
 /**
- * The base classes, the Mage umbrella, and five Mage traditions (the Necromancer in Phase 14b, the
- * Blood Priest in 14c, the Healer in 14d).
+ * The base classes, the Mage umbrella, and six Mage traditions (the Necromancer in Phase 14b, the
+ * Blood Priest in 14c, the Healer in 14d, the Invoker after).
  */
 export const CLASS_FILES = [
   '1.5.1 The Adventurer.md',
@@ -33,6 +33,7 @@ export const CLASS_FILES = [
   '1.5.14 The Necromancer.md',
   '1.5.5 The Blood Priest.md',
   '1.5.9 The Healer.md',
+  '1.5.11 The Invoker.md',
 ].map((f) => `${CLASS_DIR}/${f}`);
 
 export interface ClassExtract {
@@ -123,6 +124,32 @@ function castingLevels(table: Table, where: string, hasArts = true): CastingProg
   }));
 }
 
+/** "2 + Int modifier" to 2: the Invoker's tables add the Int modifier to every cell. */
+function plusIntBase(cell: string, where: string): number {
+  const m = /^(\d+) \+ Int modifier$/.exec(cell.trim());
+  if (!m?.[1]) throw new Error(`${where}: bad spell point cell "${cell}"`);
+  return Number(m[1]);
+}
+
+/** SRD 1.5.11: the Invoker's spell points and spells prepared, each plus the Int modifier. */
+function pointLevels(table: Table, where: string): CastingProgression['levels'] {
+  const [lv, max, points, prep] = [
+    /^Level$/,
+    /^Max Spell Level$/,
+    /^Spell Points$/,
+    /^Spells Prepared$/,
+  ].map((r) => col(table, r, where)) as [number, number, number, number];
+  return table.rows.map((r) => ({
+    level: parseInt10(r[lv] ?? ''),
+    maxSpellLevel: parseInt10(r[max] ?? ''),
+    spellsCast: 0,
+    spellPoints: plusIntBase(r[points] ?? '', `${where} level ${r[lv]}`),
+    spellsPrepared: plusIntBase(r[prep] ?? '', `${where} level ${r[lv]}`),
+    arts: [],
+    anyArts: 0,
+  }));
+}
+
 const DUAL = '4.0 Magic and Spellcasting/4.3.0 Dual Partial Spellcasters.md';
 
 /** SRD 4.3.0: spells cast and prepared for an Adventurer with two partial spellcasting classes. */
@@ -180,6 +207,14 @@ function classFromDoc(doc: MdDoc, out: ClassExtract, seen: Map<string, string>):
           spellsPrepared: 0,
           ...parseArtsGained(r[1] ?? ''),
         })),
+      });
+    } else if (table && table.header.some((c) => /^Spell Points$/.test(c))) {
+      addOnce(out.casting, seen, {
+        id: slug(h.text),
+        name: h.text,
+        sources: [source],
+        plusInt: true,
+        levels: pointLevels(table, where),
       });
     } else if (table && table.header.some((c) => /^Spells Cast$/.test(c))) {
       addOnce(out.casting, seen, {

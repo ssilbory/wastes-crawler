@@ -38,6 +38,8 @@ export const CastingProgressionSchema = z.strictObject({
   id: IdSchema,
   name: z.string().min(1),
   sources: z.array(SourceSchema).min(1),
+  /** Spell points and spells prepared both add the Int modifier (the Invoker, 1.5.11). */
+  plusInt: z.literal(true).optional(),
   levels: z
     .array(
       z.strictObject({
@@ -45,6 +47,8 @@ export const CastingProgressionSchema = z.strictObject({
         /** All 0 for a tradition of arts alone (the Blood Priest, 1.5.5). */
         maxSpellLevel: z.int().min(0).max(5),
         spellsCast: z.int().min(0),
+        /** A daily pool spent by spell level in place of spells cast (the Invoker, 1.5.11). */
+        spellPoints: z.int().min(0).optional(),
         spellsPrepared: z.int().min(0),
         /** Named art ids gained at this level. */
         arts: z.array(IdSchema),

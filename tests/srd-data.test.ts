@@ -13,9 +13,9 @@ describe('data/srd', () => {
     expect(Object.fromEntries(Object.entries(srd).map(([k, v]) => [k, v.length]))).toEqual({
       skills: 21,
       foci: 35,
-      classes: 9,
-      progressions: 23,
-      'casting-progressions': 9,
+      classes: 10,
+      progressions: 24,
+      'casting-progressions': 11,
       'weapon-traits': 12,
       weapons: 29,
       armor: 15,
@@ -97,6 +97,37 @@ describe('data/srd', () => {
     expect(gear('torch')).toMatchObject({ encumbrance: 1, bundlesOfThree: true });
     expect(srd.foci.find((f) => f.id === 'cultured')?.description).toMatch(/^Through wide travel/);
     expect(srd.foci.find((f) => f.id === 'assassin')?.description).toMatch(/^You are practiced at/);
+  });
+
+  it('reads the Invoker’s spell point tables, with the PDF’s level 1 values (page 22)', () => {
+    const table = (id: string) => srd['casting-progressions'].find((p) => p.id === id);
+    expect(table('full-invoker-spells')).toMatchObject({ plusInt: true });
+    expect(table('full-invoker-spells')?.levels[0]).toEqual({
+      level: 1,
+      maxSpellLevel: 1,
+      spellsCast: 0,
+      spellPoints: 1,
+      spellsPrepared: 2,
+      arts: [],
+      anyArts: 0,
+    });
+    expect(table('full-invoker-spells')?.levels[9]).toMatchObject({
+      spellPoints: 11,
+      spellsPrepared: 9,
+    });
+    expect(table('partial-invoker-spells')?.levels[0]).toMatchObject({
+      spellPoints: 1,
+      spellsPrepared: 1,
+    });
+    expect(table('partial-invoker-spells')?.levels[9]).toMatchObject({
+      maxSpellLevel: 3,
+      spellPoints: 6,
+      spellsPrepared: 7,
+    });
+    expect(srd.progressions.find((p) => p.id === 'full-invoker')?.levels[9]).toMatchObject({
+      hitDice: { count: 10, sides: 6, modifier: -10 },
+      attackBonus: 2,
+    });
   });
 
   it('records every copy of a shared progression table', () => {

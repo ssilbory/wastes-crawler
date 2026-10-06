@@ -229,5 +229,19 @@
     "replace": "with a normal attack,",
     "pdfPage": 46,
     "note": "\"at tack\" is \"attack\" in the PDF; the mirror split the word in two (foci/whirlwind-assault)."
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.11 The Invoker.md",
+    "find": "|     1 |               1 |  2 + Int modifier | 2 + Int modifier |",
+    "replace": "|     1 |               1 |  1 + Int modifier | 2 + Int modifier |",
+    "pdfPage": 26,
+    "note": "Full Invoker level 1 spell points: the PDF (printed page 22) has \"1 + Int Mod\"."
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.11 The Invoker.md",
+    "find": "|     1 |               1 | 1 + Int modifier | 2 + Int modifier |",
+    "replace": "|     1 |               1 | 1 + Int modifier | 1 + Int modifier |",
+    "pdfPage": 26,
+    "note": "Partial Invoker level 1 spells prepared: the PDF (printed page 22) has \"1 + Int Mod\"."
   }
 ]
