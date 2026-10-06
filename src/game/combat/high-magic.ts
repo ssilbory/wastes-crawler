@@ -4,6 +4,7 @@
 // (docs/rules-adaptation.md, High Magic in combat). Lasting conditions play out in conditions.ts.
 import type { CombatEffect, Dice } from '../../data/schemas/index.ts';
 import { moraleHolds } from '../../rules/combat.ts';
+import { servantPlace } from '../../rules/formation.ts';
 import { roll, rollDie } from '../../rules/dice.ts';
 import type { SaveType } from '../../rules/saves.ts';
 import { harm, save, say } from './damage.ts';
@@ -17,8 +18,6 @@ export type Resists = (target: Combatant, type: SaveType, modifier?: number) => 
 
 /** Rounds that last the whole scene. */
 const SCENE = 100;
-const FORMATION_ROWS = 2;
-const ROW_SLOTS = 4;
 
 /** The caster's foes standing in one row. */
 const rowOf = (b: Battle, actor: Combatant, row: number | undefined) =>
@@ -108,24 +107,26 @@ function summon(b: Battle, actor: Combatant, e: Effect<'summon'>): void {
     say(b, `${actor.name} already has a servant of that kind.`);
     return;
   }
-  const taken = (row: number, column: number) =>
-    b.combatants.some((c) => c.side === actor.side && c.row === row && c.column === column);
+  const side = b.combatants.filter((c) => c.side === actor.side);
   const formation = b.layout[actor.side] === 'formation';
-  const slots = formation
-    ? Array.from({ length: FORMATION_ROWS * ROW_SLOTS }, (_, i) => ({
-        row: Math.floor(i / ROW_SLOTS),
-        column: i % ROW_SLOTS,
-      })).filter((s) => !taken(s.row, s.column))
-    : [{ row: 0, column: b.combatants.length }];
-  const slot = slots[0];
-  if (!slot) {
+  const place = formation
+    ? servantPlace(side.map((c) => ({ ...c, yields: isUp(c) && !c.summoned && !c.servant })))
+    : { row: 0, column: b.combatants.length, bump: null };
+  if (!place) {
     say(b, `There is no room for ${actor.name}'s servant.`);
     return;
   }
   const s = monsterCombatant(b.data, e.monster, `summon-${b.combatants.length}`, b.rng);
+  const { bump } = place;
+  const bumped = bump ? side[bump.index] : undefined;
+  if (bump && bumped) {
+    Object.assign(bumped, { row: 1, column: bump.column });
+    say(b, `${bumped.name} steps back for ${s.name}.`);
+  }
   Object.assign(s, {
-    ...slot,
-    group: slot.row,
+    row: place.row,
+    column: place.column,
+    group: place.row,
     side: actor.side,
     ...(e.hp ? { hp: e.hp, maxHp: e.hp } : {}),
     summoned: { by: actor.id, monster: e.monster },

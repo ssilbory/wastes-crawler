@@ -5,13 +5,14 @@
 // hit dice each night (2.0 The Rules of the Game/2.5.0, 2.5.3).
 import type { Captive, HirelingType, Monster } from '../../data/schemas/index.ts';
 import { moraleHolds } from '../../rules/combat.ts';
+import { servantPlace } from '../../rules/formation.ts';
 import { rollDie } from '../../rules/dice.ts';
 import { toTenths } from '../../rules/economy.ts';
 import type { LootDice } from '../../data/schemas/index.ts';
 import { findMonster, type GameData } from '../character/context.ts';
 import { activeEffects } from '../character/equipment.ts';
 import { alive, note } from './members.ts';
-import type { Npc, World } from './types.ts';
+import type { Member, Npc, World } from './types.ts';
 
 export const MAX_NPCS = 2;
 const COLUMNS = 4;
@@ -110,7 +111,38 @@ function nextName(w: World, data: GameData): string {
   return names.find((name) => !w.npcs.some((x) => x.name === name)) ?? (names[0] as string);
 }
 
-/** A new NPC with rolled hit points, placed in a free slot; null without room. */
+/** Fighting servants: raised undead, beasts, woken trees, and kept summons. */
+export const isServant = (n: Pick<Npc, 'kind'>) =>
+  n.kind === 'undead' || n.kind === 'beast' || n.kind === 'summon' || n.kind === 'tree';
+
+/**
+ * A servant's slot (docs/rules-adaptation.md, Formation rules: Servants): in front where it can,
+ * the ally with the fewest HP stepping back for it when the front row is full.
+ */
+function servantSlot(w: World, name: string): { row: number; column: number } | null {
+  if (w.npcs.length >= MAX_NPCS) return null;
+  const people: (Member | Npc)[] = [...w.members, ...w.npcs];
+  const place = servantPlace(
+    people.map((x) =>
+      'character' in x
+        ? { row: x.row, column: x.column, hp: x.character.hp.current, yields: true }
+        : { row: x.row, column: x.column, hp: x.hp, yields: !isServant(x) },
+    ),
+  );
+  if (!place) return null;
+  const bumped = place.bump && people[place.bump.index];
+  if (place.bump && bumped) {
+    Object.assign(bumped, { row: 1, column: place.bump.column });
+    const who = 'character' in bumped ? bumped.character.name : bumped.name;
+    note(w, `${who} steps back for ${name}.`);
+  }
+  return { row: place.row, column: place.column };
+}
+
+/**
+ * A new NPC with rolled hit points, placed in a free slot (a servant by the servant rule, others in
+ * front first when `front`); null without room.
+ */
 export function addNpc(
   w: World,
   data: GameData,
@@ -120,7 +152,8 @@ export function addNpc(
   name: string | null,
   front: boolean,
 ): Npc | null {
-  const slot = npcRoom(w, front);
+  const called = name ?? nextName(w, data);
+  const slot = isServant({ kind }) ? servantSlot(w, called) : npcRoom(w, front);
   if (!slot) return null;
   const m = monsterOf(data, monster);
   let hp = 0;
@@ -129,7 +162,7 @@ export function addNpc(
     id: nextId(w),
     kind,
     type,
-    name: name ?? nextName(w, data),
+    name: called,
     hp,
     maxHp: hp,
     ...slot,

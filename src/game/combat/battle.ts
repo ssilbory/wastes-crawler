@@ -35,6 +35,8 @@ export interface NpcSetup {
   noncombatant: boolean;
   /** Tends the dying with this total Heal bonus and a healer's kit (SRD 3.3.0 common hirelings). */
   healer?: number;
+  /** A fighting servant (raised undead, a beast, a woken tree, or a kept summons). */
+  servant?: boolean;
 }
 
 export { DARK_HIT_MODIFIER } from './targeting.ts';
@@ -106,6 +108,7 @@ export function createBattle(s: BattleSetup): Battle {
       noncombatant: n.noncombatant,
       healModifier: n.healer ?? 0,
       hasHealKit: n.healer !== undefined,
+      servant: n.servant ?? false,
     })),
     ...monsterRows(s, allies, 'party', 'ally'),
   ];
