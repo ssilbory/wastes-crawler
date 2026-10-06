@@ -11,11 +11,25 @@ describe('quest view', () => {
     w.quests['bandit-camp'] = { status: 'active', step: 0, acceptedDay: 0 };
     w.quests.letters = { status: 'active', step: 0, acceptedDay: 0 };
     w.quests.watchtower = { status: 'ready', step: 2, acceptedDay: 0 };
-    expect(questTargets(w, data)).toEqual([{ col: 6, row: 12 }]);
+    expect(questTargets(w, data)).toEqual([
+      { col: 6, row: 12 },
+      { col: 17, row: 4 },
+    ]);
     const cells = hexCells(regionMap(data, w.region), w, [], 10, questTargets(w, data));
     expect(cells.find((c) => c.key === '6,12')).toMatchObject({ quest: true, terrain: null });
-    expect(cells.filter((c) => c.quest)).toHaveLength(1);
+    expect(cells.filter((c) => c.quest)).toHaveLength(2);
     w.quests['bandit-camp'] = { status: 'active', step: 1, acceptedDay: 0 };
+    expect(questTargets(w, data)).toEqual([{ col: 17, row: 4 }]);
+  });
+
+  it('marks an escort or delivery destination only while the step is under way in its region', () => {
+    const w = world();
+    w.quests.surveyor = { status: 'active', step: 0, acceptedDay: 0 };
+    expect(questTargets(w, data)).toEqual([{ col: 20, row: 8 }]);
+    w.region = 'dark-lands';
+    expect(questTargets(w, data)).toEqual([]);
+    w.region = 'borderlands';
+    w.quests.surveyor = { status: 'ready', step: 1, acceptedDay: 0 };
     expect(questTargets(w, data)).toEqual([]);
   });
 
