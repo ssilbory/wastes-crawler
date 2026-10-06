@@ -27,6 +27,7 @@ export function PurgePanel(props: { world: World; onChange: () => void }) {
             <button
               key={f.id}
               type="button"
+              disabled={h.effortLeft === 0}
               onClick={() => {
                 const r = purgeFrailty(w, data, h.id, f.id);
                 setMessage(r.ok ? null : r.reason);

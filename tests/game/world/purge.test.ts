@@ -84,6 +84,40 @@ describe('Purge Ailment lifting Frailty', () => {
     expect(snag.frail).toBe(true);
   });
 
+  it('tends an ally lying unconscious after a revive', () => {
+    const { w, h, snag } = frailSnag([6, 6]);
+    snag.reviving = true;
+    expect(frailAllies(w, h.id)).toEqual([snag]);
+    expect(purgeFrailty(w, data, h.id, snag.id)).toEqual({ ok: true });
+    expect(snag.frail).toBe(false);
+  });
+
+  it('works in armor, but not for a tradition without armored arts', () => {
+    const { w, snag } = frailSnag([6, 6]);
+    const grukk = member(w, 'Grukk');
+    // Grukk wears armor; as a Priest of Death his Healer arts still work.
+    grukk.character = {
+      ...grukk.character,
+      classes: { current: 'healer-partial-mage', levels: { 'healer-partial-mage': 8 } },
+      skills: { ...grukk.character.skills, heal: 1 },
+      arts: ['healing-touch', 'purge-ailment'],
+      spells: { known: [], prepared: [] },
+    };
+    expect(characterSheet(grukk.character, data).magic?.canCast).toBe(false);
+    const plain = {
+      ...data,
+      content: {
+        ...data.content,
+        traditions: data.content.traditions.map((t) => ({ ...t, armoredArts: false })),
+      },
+    };
+    expect(purgeFrailty(w, plain, grukk.id, snag.id)).toEqual(
+      fail("Grukk can't use that art in armor."),
+    );
+    expect(purgeFrailty(w, data, grukk.id, snag.id)).toEqual({ ok: true });
+    expect(snag.frail).toBe(false);
+  });
+
   it('waits until an encounter is settled', () => {
     const { w, h, snag } = frailSnag([]);
     w.encounter = {} as PendingEncounter;

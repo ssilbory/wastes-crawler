@@ -1,7 +1,7 @@
 // The Healer's Purge Ailment, reworked to lift Frailty (vendor/wwn-srd/1.0 Character Creation/
 // 1.5.0 Class List/1.5.9 The Healer.md; Sam's call in docs/rules-adaptation.md, Purge Ailment):
-// out of combat, Effort for the day and a Heal check lift one ally's Frailty. The game has no
-// lasting poisons or diseases for the SRD's version to cure.
+// out of combat, Effort for the day and a Wis/Heal or Int/Heal check (Int for the SRD's Cha) lift
+// one ally's Frailty. The game has no lasting poisons or diseases for the SRD's version to cure.
 import type { GameData } from '../character/context.ts';
 import { cannotUseArt } from './healer.ts';
 import { alive, memberCheck, note } from './members.ts';
