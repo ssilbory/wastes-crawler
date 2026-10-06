@@ -605,6 +605,48 @@
     }
   },
   {
+    "id": "the-long-amber-moment",
+    "source": "spell",
+    "target": "wounded-ally",
+    "effect": {
+      "kind": "amber"
+    }
+  },
+  {
+    "id": "velocitous-imbuement",
+    "source": "spell",
+    "target": "allies",
+    "effect": {
+      "kind": "fleet",
+      "strain": 1
+    }
+  },
+  {
+    "id": "the-verdant-vallation",
+    "source": "spell",
+    "target": "place",
+    "effect": {
+      "kind": "vines",
+      "hpPerLevel": 5
+    }
+  },
+  {
+    "id": "conjunct-the-vital-viscera",
+    "source": "spell",
+    "target": "wounded-ally",
+    "effect": {
+      "kind": "conjunct"
+    }
+  },
+  {
+    "id": "invocation-of-the-invincible-citadel",
+    "source": "spell",
+    "target": "none",
+    "effect": {
+      "kind": "citadel"
+    }
+  },
+  {
     "id": "boreal-wings",
     "source": "spell",
     "target": "ally",
@@ -755,6 +797,14 @@
     "effect": {
       "kind": "everlasting",
       "rounds": 5
+    }
+  },
+  {
+    "id": "final-death",
+    "source": "spell",
+    "target": "enemy-row",
+    "effect": {
+      "kind": "final-death"
     }
   }
 ]

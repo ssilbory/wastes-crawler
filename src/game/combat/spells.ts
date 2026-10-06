@@ -12,7 +12,8 @@ import { effectiveAc, harm, save, say } from './damage.ts';
 import { attackSteps, hitModifier, isUp } from './targeting.ts';
 import { artEffect, counterSpell, retainsSpell } from './arts.ts';
 import { elementalistEffect } from './elementalist.ts';
-import { necromancerEffect } from './necromancer.ts';
+import { healingFails, necromancerEffect } from './necromancer.ts';
+import { donorFor, sanctuaryEffect } from './sanctuary.ts';
 import { highMagicEffect, type Resists } from './high-magic.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
 import { gameSpells } from '../../data/spells.ts';
@@ -35,6 +36,14 @@ function hasEffort(c: CasterState, art: string): boolean {
 const freeUse = (c: CasterState, m: CombatMagic) =>
   m.effort === 'activate' && (c.usedThisScene.has(m.id) || c.arts.includes('facile-healer'));
 
+/** The Long Amber Moment never freezes its caster; Conjunct the Vital Viscera needs a giver. */
+function fitsTarget(b: Battle, actor: Combatant, m: CombatMagic, id?: string): boolean {
+  const t = b.combatants.find((x) => x.id === id);
+  if (!t) return true;
+  if (m.effect.kind === 'amber') return t !== actor;
+  return m.effect.kind !== 'conjunct' || donorFor(b, t) !== null;
+}
+
 /** Whether the caster can use this spell or art now, on this target. */
 export function canUse(
   b: Battle,
@@ -51,6 +60,7 @@ export function canUse(
   if (m.effect.kind === 'burst' && m.effect.outdoorsOnly && b.indoors) return false;
   if (m.limit === 'scene' && c.usedThisScene.has(m.id)) return false;
   if (m.limit === 'target-scene' && c.usedThisScene.has(`${m.id}:${target ?? ''}`)) return false;
+  if (!fitsTarget(b, actor, m, target)) return false;
   if (m.source === 'art')
     return (freeUse(c, m) ? c.arts.includes(m.id) : hasEffort(c, m.id)) && m.target !== 'none';
   if (strain) {
@@ -99,6 +109,7 @@ function pay(b: Battle, actor: Combatant, m: CombatMagic, strain: boolean): void
 
 /** Healing that revives the Mortally Wounded and adds System Strain. */
 function restore(b: Battle, target: Combatant, amount: number, strain: number): void {
+  if (healingFails(b, target)) return;
   const healed = Math.max(0, amount);
   if (target.status === 'dying' || target.status === 'stable') {
     target.status = 'active';
@@ -269,7 +280,8 @@ export function castMagic(
         const resists: Resists = (t, type, mod) => enemySave(b, actor, t, type, mod);
         if (!highMagicEffect(b, actor, e, target, row, resists))
           if (!elementalistEffect(b, actor, e, target, row, resists))
-            necromancerEffect(b, actor, e, target, row, resists);
+            if (!sanctuaryEffect(b, actor, e, target))
+              necromancerEffect(b, actor, e, target, row, resists);
       }
       return true;
   }

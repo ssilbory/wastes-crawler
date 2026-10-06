@@ -68,6 +68,8 @@ export function settleBout(
   if (result.outcome === 'party') {
     w.purse = toTenths(w.purse + bout.prize);
     note(w, `The party wins ${bout.name} and takes ${bout.prize} crowns.`);
-  } else if (bout.toTheDeath) note(w, `The party is dragged from the arena, beaten.`);
+  } else if (result.battle.escaped)
+    note(w, 'The party shelters in the Invincible Citadel until the bout is called off.');
+  else if (bout.toTheDeath) note(w, `The party is dragged from the arena, beaten.`);
   else note(w, 'The party yields.');
 }

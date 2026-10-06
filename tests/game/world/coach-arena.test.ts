@@ -237,6 +237,9 @@ describe('town arenas', () => {
     );
     settleBout(w, data, start.fight, start.bout, { ...result, outcome: 'enemy' });
     expect(w.log.at(-1)).toContain('The party yields.');
+    start.fight.battle.escaped = true;
+    settleBout(w, data, start.fight, start.bout, { ...result, outcome: 'draw' });
+    expect(w.log.at(-1)).toContain('shelters in the Invincible Citadel');
   });
 
   it('lets monsters kill in a bout to the death, dragging out the living', () => {

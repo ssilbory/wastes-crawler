@@ -1,9 +1,11 @@
 // Arts that answer a blow or a death without a command. Vital Furnace (Phase 14d; vendor/wwn-srd/1.0
 // Character Creation/1.5.0 Class List/1.5.9 The Healer.md), and from Phase 15 the Necromancer's
 // Unliving Persistence, Master of Bones, and Red Harvest (1.5.14 The Necromancer.md), and in
-// Phase 18a the High Magic spell Prudentially Transient Abnegation of Life.
+// Phase 18a the High Magic spell Prudentially Transient Abnegation of Life, and in Phase 18d the
+// Invincible Citadel.
 import { roll } from '../../rules/dice.ts';
 import { say } from './log.ts';
+import { canAct } from './targeting.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
 
 /** Whether an art works now: armor blocks it unless it is one that works in armor. */
@@ -147,6 +149,30 @@ export function everlast(b: Battle, target: Combatant): boolean {
     c.usedThisScene.add(m.id);
     b.everlasting = { side: x.side, caster: x.id, until: b.round + m.effect.rounds - 1 };
     say(b, `${x.name} pours unquenchable life into ${b.sideNames[x.side]}.`);
+    return true;
+  }
+  return false;
+}
+
+/**
+ * The Invincible Citadel: as a PC of the party would fall, the first ally with it prepared and a
+ * spell left raises the bubble, and the party escapes the fight. Once raised, it holds. Only the
+ * party's PCs fall Mortally Wounded, so only they call on it.
+ */
+export function shelter(b: Battle, target: Combatant): boolean {
+  if (b.escaped) return true;
+  for (const x of b.combatants) {
+    const c = x.caster;
+    if (x.side !== 'party' || !(x === target || canAct(x))) continue;
+    if (!c?.canCast || c.spellsLeft === 0) continue;
+    const m = b.data.content.combatMagic.find(
+      (y) => y.effect.kind === 'citadel' && c.prepared.includes(y.id),
+    );
+    if (!m) continue;
+    c.spellsLeft -= 1;
+    b.escaped = true;
+    b.outcome = 'draw';
+    say(b, `${x.name} raises the Invincible Citadel; the foes can't reach the party and give up.`);
     return true;
   }
   return false;

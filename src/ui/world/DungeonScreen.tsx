@@ -17,6 +17,7 @@ import { PartyPanel } from './PartyPanel.tsx';
 import { HealerPanel } from './HealerPanel.tsx';
 import { InventoryPanel } from './InventoryPanel.tsx';
 import { GreenwoodPanel } from './GreenwoodPanel.tsx';
+import { ConjunctPanel } from './ConjunctPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { QuestLog } from './QuestLog.tsx';
@@ -244,6 +245,7 @@ export function DungeonScreen(props: {
           <NpcPanel world={w} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />
           <GreenwoodPanel world={w} onChange={props.onChange} />
+          <ConjunctPanel world={w} onChange={props.onChange} />
           <HealerPanel world={w} onChange={props.onChange} />
           <InventoryPanel world={w} onChange={props.onChange} />
           <QuestLog world={w} onChange={props.onChange} />

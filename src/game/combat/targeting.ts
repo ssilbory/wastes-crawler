@@ -6,8 +6,8 @@ import { coverSteps } from '../../rules/formation.ts';
 import type { Attack, Battle, Combatant } from './types.ts';
 
 export const isUp = (c: Combatant) => c.status === 'active' || c.status === 'asleep';
-/** Up, awake, and not held by paralysis. */
-export const canAct = (c: Combatant) => c.status === 'active' && c.heldRounds === 0;
+/** Up, awake, not held by paralysis, and not frozen in amber. */
+export const canAct = (c: Combatant) => c.status === 'active' && c.heldRounds === 0 && !c.amber;
 
 /** A flyer, or held aloft by Steps of Air (Phase 15). */
 export const flying = (c: Combatant) => c.tags.has('flying') || c.flyingRounds > 0;
@@ -53,7 +53,8 @@ export function inMelee(b: Battle, c: Combatant): boolean {
 /** Whether the attack can be used at all from where the attacker stands. */
 export function usable(b: Battle, actor: Combatant, attack: Attack): boolean {
   if (attack.mode === 'melee') {
-    if (flying(actor)) return true;
+    // Velocitous Imbuement runs up walls and around foes to any row (4.4.0).
+    if (flying(actor) || actor.fleet) return true;
     if (actor.row === 0) return true;
     return actor.row === 1 && attack.reach;
   }
@@ -66,14 +67,15 @@ export function usable(b: Battle, actor: Combatant, attack: Attack): boolean {
 
 /** Valid targets for an attack; the dying only when nobody else can be reached. */
 export function targets(b: Battle, actor: Combatant, attack: Attack, mad = false): Combatant[] {
-  // Wind Walking's mist can't strike, nor be struck by weapons (4.5.0).
+  // Wind Walking's mist can't strike, nor be struck by weapons (4.5.0), nor can the frozen in amber.
   if (actor.misted || !usable(b, actor, attack)) return [];
   // The Prismatic Hemicycle's mad turn on their own side (4.4.0).
   const foes = b.combatants.filter(
-    (c) => (mad ? c.side === actor.side && c !== actor : c.side !== actor.side) && !c.misted,
+    (c) =>
+      (mad ? c.side === actor.side && c !== actor : c.side !== actor.side) && !c.misted && !c.amber,
   );
   const reachable = (t: Combatant) => {
-    if (attack.mode !== 'melee' || flying(actor) || flying(t)) return true;
+    if (attack.mode !== 'melee' || flying(actor) || actor.fleet || flying(t)) return true;
     return t.row === 0 || exposed(b, t);
   };
   // Sanctified Ward: foes look elsewhere unless acting on Instinct or out of other targets.

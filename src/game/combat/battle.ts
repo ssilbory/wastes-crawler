@@ -132,6 +132,8 @@ export function createBattle(s: BattleSetup): Battle {
     walls: [],
     fury: null,
     everlasting: null,
+    vines: null,
+    escaped: false,
     damageBonus: { party: 0, enemy: 0 },
     log: s.log ? [] : null,
     outcome: null,

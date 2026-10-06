@@ -33,6 +33,9 @@ describe('arena view', () => {
       totalDefense: true,
       instinctive: true,
       acBonus: 4,
+      amber: true,
+      fleet: true,
+      finalDeath: true,
       strain: { strain: 0, max: 10, broken: true },
     });
     expect(slotView(snag).hpPercent).toBe(0);
@@ -45,6 +48,9 @@ describe('arena view', () => {
       'defending',
       'on instinct',
       'AC +4',
+      'frozen in amber',
+      'fleet',
+      'final death',
       'broken',
     ]);
     for (const [status, tag] of [

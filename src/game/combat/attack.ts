@@ -4,7 +4,7 @@
 // (1.5.18), and creature resistances and on-hit effects (specials.ts).
 import { netSteps } from '../../rules/advantage.ts';
 import { attackRoll, hitDamage, shockDamage, type ShockContext } from '../../rules/attacks.ts';
-import { crossWall, mantleCut, subdue } from './conditions.ts';
+import { crossWall, cutVines, mantleCut, subdue } from './conditions.ts';
 import { effectiveAc, harm, save, say } from './damage.ts';
 import { afterHit, resisted } from './specials.ts';
 import { negatesUndead } from './reactions.ts';
@@ -61,7 +61,8 @@ export function resolveAttack(
   target: Combatant,
   boost: AttackBoost | null = null,
 ): void {
-  if (!crossWall(b, actor, attack) || !mantleCut(b, actor, target, attack)) return;
+  if (!crossWall(b, actor, attack) || !cutVines(b, actor, attack, target)) return;
+  if (!mantleCut(b, actor, target, attack)) return;
   // Red Harvest's +4 is spent on the next hit roll (Phase 15).
   const harvest = actor.nextHitBonus;
   actor.nextHitBonus = 0;

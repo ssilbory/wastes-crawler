@@ -185,6 +185,13 @@ export interface Combatant {
   deathlessUntil: number;
   mergedWith: string | null;
   doomedUntil: number;
+  /**
+   * Phase 18d magic: frozen by The Long Amber Moment, fleet with Velocitous Imbuement, and cursed by
+   * Final Death.
+   */
+  amber: boolean;
+  fleet: boolean;
+  finalDeath: boolean;
 }
 
 export type Action =
@@ -243,6 +250,10 @@ export interface Battle {
   fury: { side: SideId; row: number; damage: Dice; roundsLeft: number } | null;
   /** Everlasting (Phase 18c): no one on `side` drops below 1 HP through `until`; then the caster. */
   everlasting: { side: SideId; caster: string; until: number } | null;
+  /** The Verdant Vallation (Phase 18d): vines `side` must cut through, `hp` left, to strike in melee. */
+  vines: { side: SideId; hp: number } | null;
+  /** The party escaped behind the Invincible Citadel (Phase 18d): the fight broke off. */
+  escaped: boolean;
   /** God Wills It's bonus to damage and Shock, by side (Phase 14c). */
   damageBonus: Record<SideId, number>;
   log: string[] | null;

@@ -68,4 +68,14 @@ export const HighMagicEffects = [
   z.strictObject({ kind: z.literal('banish'), save: Save, trappedHitDice: z.int().min(0) }),
   /** The Dazzling Prismatic Hemicycle: every foe saves or rolls a d6 for its fate. */
   z.strictObject({ kind: z.literal('prismatic'), save: Save }),
+  /** The Long Amber Moment: an ally is frozen in time, unharmed and out of the fight, its dying stopped. */
+  z.strictObject({ kind: z.literal('amber') }),
+  /** Velocitous Imbuement: the first allies, one a level, strike any row in melee for `strain`. */
+  z.strictObject({ kind: z.literal('fleet'), strain: z.int().min(0) }),
+  /** The Verdant Vallation: vines before the caster's side take `hpPerLevel` a level to cut through. */
+  z.strictObject({ kind: z.literal('vines'), hpPerLevel: z.int().min(1) }),
+  /** Conjunct the Vital Viscera: hit points flow to a hurt ally from the ally with most to spare. */
+  z.strictObject({ kind: z.literal('conjunct') }),
+  /** Invocation of the Invincible Citadel: cast for the player as an ally would fall; the party escapes. */
+  z.strictObject({ kind: z.literal('citadel') }),
 ] as const;

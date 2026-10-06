@@ -48,6 +48,9 @@ export function conditions(c: Combatant): string[] {
   if (c.totalDefense) tags.push('defending');
   if (c.instinctive) tags.push('on instinct');
   if (c.acBonus > 0) tags.push(`AC +${c.acBonus}`);
+  if (c.amber) tags.push('frozen in amber');
+  if (c.fleet) tags.push('fleet');
+  if (c.finalDeath) tags.push('final death');
   if (c.strain?.broken) tags.push('broken');
   return tags;
 }
