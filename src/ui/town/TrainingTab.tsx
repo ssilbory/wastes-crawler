@@ -81,8 +81,9 @@ export function TrainingTab(props: { world: World; act: Act }) {
           onTake={(choice) => train((x) => takeFreeFocus(data, x, choice))}
         />
       )}
-      <section class="panel" aria-label="Skill points">
-        <h3>Skill points</h3>
+      <section class="panel" aria-label="Assign skill points">
+        <h3>Assign skill points</h3>
+        <p>Available: {pointsText(c)}</p>
         <label>
           Skill{' '}
           <select value={skill} onChange={(e) => setSkill((e.target as HTMLSelectElement).value)}>

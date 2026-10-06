@@ -50,7 +50,8 @@ export function LevelUpForm(props: {
       <h3>Level up</h3>
       <p class="hint">
         Level {plan.classLevel} as {classOption(data, plan.classId)?.name}: +{plan.skillPoints}{' '}
-        skill points{plan.quickPoints > 0 && ` and ${plan.quickPoints} Quick Learner point`}.
+        skill points{plan.quickPoints > 0 && ` and ${plan.quickPoints} Quick Learner point`}, to
+        spend under Assign skill points.
       </p>
       {plan.focusPicks.map((slot, i) => (
         <FocusPicker
