@@ -27,6 +27,7 @@ test('climbs out of Grisk’s Hold, turns the warlord in, and keeps the seal', a
   await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(
     starters.length,
   );
+  await page.getByRole('button', { name: 'Menu' }).click();
   await page.getByRole('link', { name: 'Overland' }).click();
   // The arena has a formation of its own: wait for the Overland page before picking slots.
   await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();

@@ -9,6 +9,7 @@ test('rearranges the party on the map, and the change is saved', async ({ page }
   await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(
     starters.length,
   );
+  await page.getByRole('button', { name: 'Menu' }).click();
   await page.getByRole('link', { name: 'Overland' }).click();
   await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();
   await page.getByRole('combobox', { name: 'Front row, slot 1' }).selectOption({ label: 'Snag' });
@@ -18,6 +19,7 @@ test('rearranges the party on the map, and the change is saved', async ({ page }
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('formation-e2e');
   await page.getByRole('button', { name: 'Start a new world' }).click();
   await page.getByRole('button', { name: 'Begin the journey' }).click();
+  await page.getByRole('button', { name: 'Formation' }).click();
 
   const panel = page.getByRole('region', { name: 'Formation' });
   const slot = (name: string) => panel.getByRole('combobox', { name });
@@ -31,6 +33,9 @@ test('rearranges the party on the map, and the change is saved', async ({ page }
 
   await page.reload();
   await page.getByRole('button', { name: 'Continue journey' }).click();
+  await page.getByRole('button', { name: 'Formation' }).click();
   await expect(slot('Front row, slot 1').locator('option:checked')).toHaveText('Fizzwick');
   await expect(slot('Front row, slot 3').locator('option:checked')).toHaveText('Snag');
+  await page.getByRole('button', { name: 'Back to the map' }).click();
+  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
 });

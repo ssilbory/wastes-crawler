@@ -9,6 +9,7 @@ async function startInRubblegate(page: Page) {
   await page.goto('/#/arena');
   await page.getByLabel('Import character files').setInputFiles(starters);
   await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(3);
+  await page.getByRole('button', { name: 'Menu' }).click();
   await page.getByRole('link', { name: 'Overland' }).click();
   // The arena has a formation of its own: wait for the Overland page before picking slots.
   await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();
@@ -119,4 +120,20 @@ test('plays the common room for the party’s lodging', async ({ page }) => {
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
     /Grukk plays (to a cold room|the common room)/,
   );
+});
+
+test('buys a round for a rumor, and the map marks the way down', async ({ page }, testInfo) => {
+  await startInRubblegate(page);
+  const start = await purse(page);
+  await page.getByRole('tab', { name: 'Tavern' }).click();
+  const rumors = page.getByRole('region', { name: 'Rumors' });
+  await rumors.getByRole('button', { name: /^Buy a round for a rumor \(10 crowns\)$/ }).click();
+  expect(await purse(page)).toBe(start - 10);
+  const log = page.getByRole('region', { name: 'Journey log' });
+  await expect(log).toContainText('a regular tells of');
+  const heard = (await log.innerText()).match(/a regular tells of (.+?), at /)?.[1] as string;
+  await page.getByRole('button', { name: 'Back to the map' }).click();
+  const map = page.getByRole('img', { name: 'Overland map' });
+  await expect(map.locator('.dungeon title', { hasText: heard })).toHaveCount(1);
+  await page.screenshot({ path: testInfo.outputPath('town-rumor.png'), fullPage: true });
 });

@@ -11,6 +11,7 @@ async function start(page: Page) {
   await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(
     starters.length,
   );
+  await page.getByRole('button', { name: 'Menu' }).click();
   await page.getByRole('link', { name: 'Overland' }).click();
   // The arena has a formation of its own: wait for the Overland page before picking slots.
   await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();
@@ -162,7 +163,7 @@ test('builds a mod, keeps it up in camp, and commissions a magic sword', async (
       await page.getByRole('button', { name: 'Auto-resolve' }).click();
       await page.getByRole('button', { name: 'Back to the map' }).click();
     }
-    await page.getByRole('button', { name: 'Pass the quarter' }).click();
+    await page.getByRole('button', { name: /^(Hike|Camp)$/ }).click();
   }
   await expect(log).not.toContainText('stop working');
   await edit(page, `save.position = { col: 3, row: 8 };`);

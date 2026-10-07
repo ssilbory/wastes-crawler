@@ -15,11 +15,8 @@ import { automap, FACING_NAMES, MAP_CELL } from '../../render/automap-view.ts';
 import { dungeonView, VIEW_HEIGHT, VIEW_WIDTH } from '../../render/dungeon-view.ts';
 import { data } from '../builder/data.ts';
 import { PartyPanel } from './PartyPanel.tsx';
-import { FormationPanel } from './FormationPanel.tsx';
 import { HealerPanel } from './HealerPanel.tsx';
 import { PurgePanel } from './PurgePanel.tsx';
-import { InventoryPanel } from './InventoryPanel.tsx';
-import { StashPanel } from './StashPanel.tsx';
 import { GreenwoodPanel } from './GreenwoodPanel.tsx';
 import { ConjunctPanel } from './ConjunctPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
@@ -27,6 +24,8 @@ import { PactPanel } from './PactPanel.tsx';
 import { SorceryPanel } from './SorceryPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { QuestLog } from './QuestLog.tsx';
+import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
+import { JournalPanel } from './JournalPanel.tsx';
 import { QuestItemNotice } from './QuestItemNotice.tsx';
 import { CampPanel } from './CampPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
@@ -63,7 +62,7 @@ export function DungeonScreen(props: {
   onChange: () => void;
   onFight: () => void;
   onLeave: () => void;
-  onCharacters: () => void;
+  onOpen: (screen: PartyScreen) => void;
 }) {
   const w = props.world;
   const s = w.dungeon as NonNullable<World['dungeon']>;
@@ -122,109 +121,111 @@ export function DungeonScreen(props: {
         </span>
         <span class="turn">{turnText(w)}</span>
         <span class="light">{lightText(w)}</span>
-        <button type="button" onClick={props.onCharacters}>
-          Characters
-        </button>
+        <PartyButtons onOpen={props.onOpen} />
       </div>
       <div class="world-main">
-        <div class="dungeon-main">
-          <svg
-            class={blind(w, data) ? 'dungeon-view dark' : 'dungeon-view'}
-            viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}
-            role="img"
-            aria-label="Dungeon view"
-          >
-            <rect class="ceiling" width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
-            <rect class="floor" y={VIEW_HEIGHT / 2} width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
-            {dungeonView(w, data).map((p) => (
-              <g key={p.key} class={`panel-${p.kind}`}>
-                <polygon points={p.points} fill={p.fill} />
-                {p.frame && <polygon class="door-frame" points={p.frame} />}
-              </g>
-            ))}
-            {blind(w, data) && (
-              <text class="pitch-dark" x={VIEW_WIDTH / 2} y={VIEW_HEIGHT / 2}>
-                Pitch dark
-              </text>
-            )}
-          </svg>
-          <QuestItemNotice found={found} onDismiss={() => setFound([])} />
-          <EncounterPanel
-            world={w}
-            onFight={props.onFight}
-            onLeave={props.onLeave}
-            onChange={props.onChange}
-          />
-          <p class="bump" aria-live="polite">
-            {bump ?? ' '}
-          </p>
-          <div class="moves" role="group" aria-label="Move">
-            <button type="button" onClick={() => move({ step: 'left' })}>
-              Step left
-            </button>
-            <button type="button" onClick={() => move({ step: 'forward' })}>
-              Forward
-            </button>
-            <button type="button" onClick={() => move({ step: 'right' })}>
-              Step right
-            </button>
-            <button type="button" onClick={() => move({ turn: 'left' })}>
-              Turn left
-            </button>
-            <button type="button" onClick={() => move({ step: 'back' })}>
-              Back
-            </button>
-            <button type="button" onClick={() => move({ turn: 'right' })}>
-              Turn right
-            </button>
-          </div>
-          {!w.encounter && (
-            <div class="actions" role="group" aria-label="Explore">
-              <button type="button" onClick={() => act(() => search(w, data))}>
-                Search (1 turn)
-              </button>
-              {burrowers(w).map((m) => (
-                <button key={m.id} type="button" onClick={() => act(() => burrow(w, data, m.id))}>
-                  {m.character.name}: dig through the wall ahead (1 turn)
-                </button>
-              ))}
-              {castersOf(w, SIGIL).map((m) => (
-                <button
-                  key={m.id}
-                  type="button"
-                  onClick={() => act(() => sigilEscape(w, data, m.id))}
-                >
-                  {m.character.name}: escape to the surface with the Ochre Sigil
-                </button>
-              ))}
-              {trap && (
-                <>
-                  <button type="button" onClick={() => act(() => disarm(w, data))}>
-                    Disarm the {trap.name} (1 turn)
-                  </button>
-                  <button type="button" onClick={() => act(() => step(w, data, 'forward', true))}>
-                    Step onto the {trap.name}
-                  </button>
-                </>
-              )}
-            </div>
-          )}
-          {stairsLabel && !w.encounter && (
-            <button
-              type="button"
-              onClick={() => {
-                const before = questSteps(w);
-                takeStairs(w, data);
-                setBump(null);
-                setFound(itemsTaken(w, data, before));
-                props.onChange();
-              }}
+        <div class="world-left">
+          <div class="dungeon-main">
+            <svg
+              class={blind(w, data) ? 'dungeon-view dark' : 'dungeon-view'}
+              viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}
+              role="img"
+              aria-label="Dungeon view"
             >
-              {stairsLabel}
-            </button>
-          )}
+              <rect class="ceiling" width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
+              <rect class="floor" y={VIEW_HEIGHT / 2} width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
+              {dungeonView(w, data).map((p) => (
+                <g key={p.key} class={`panel-${p.kind}`}>
+                  <polygon points={p.points} fill={p.fill} />
+                  {p.frame && <polygon class="door-frame" points={p.frame} />}
+                </g>
+              ))}
+              {blind(w, data) && (
+                <text class="pitch-dark" x={VIEW_WIDTH / 2} y={VIEW_HEIGHT / 2}>
+                  Pitch dark
+                </text>
+              )}
+            </svg>
+            <QuestItemNotice found={found} onDismiss={() => setFound([])} />
+            <EncounterPanel
+              world={w}
+              onFight={props.onFight}
+              onLeave={props.onLeave}
+              onChange={props.onChange}
+            />
+            <p class="bump" aria-live="polite">
+              {bump ?? ' '}
+            </p>
+            <div class="moves" role="group" aria-label="Move">
+              <button type="button" onClick={() => move({ step: 'left' })}>
+                Step left
+              </button>
+              <button type="button" onClick={() => move({ step: 'forward' })}>
+                Forward
+              </button>
+              <button type="button" onClick={() => move({ step: 'right' })}>
+                Step right
+              </button>
+              <button type="button" onClick={() => move({ turn: 'left' })}>
+                Turn left
+              </button>
+              <button type="button" onClick={() => move({ step: 'back' })}>
+                Back
+              </button>
+              <button type="button" onClick={() => move({ turn: 'right' })}>
+                Turn right
+              </button>
+            </div>
+            {!w.encounter && (
+              <div class="actions" role="group" aria-label="Explore">
+                <button type="button" onClick={() => act(() => search(w, data))}>
+                  Search (1 turn)
+                </button>
+                {burrowers(w).map((m) => (
+                  <button key={m.id} type="button" onClick={() => act(() => burrow(w, data, m.id))}>
+                    {m.character.name}: dig through the wall ahead (1 turn)
+                  </button>
+                ))}
+                {castersOf(w, SIGIL).map((m) => (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => act(() => sigilEscape(w, data, m.id))}
+                  >
+                    {m.character.name}: escape to the surface with the Ochre Sigil
+                  </button>
+                ))}
+                {trap && (
+                  <>
+                    <button type="button" onClick={() => act(() => disarm(w, data))}>
+                      Disarm the {trap.name} (1 turn)
+                    </button>
+                    <button type="button" onClick={() => act(() => step(w, data, 'forward', true))}>
+                      Step onto the {trap.name}
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+            {stairsLabel && !w.encounter && (
+              <button
+                type="button"
+                onClick={() => {
+                  const before = questSteps(w);
+                  takeStairs(w, data);
+                  setBump(null);
+                  setFound(itemsTaken(w, data, before));
+                  props.onChange();
+                }}
+              >
+                {stairsLabel}
+              </button>
+            )}
+          </div>
+          <QuestLog world={w} onChange={props.onChange} />
+          <JournalPanel world={w} />
         </div>
-        <div class="world-side">
+        <div class="world-side flow">
           {map && (
             <section class="panel" aria-label="Automap">
               <h3>Map</h3>
@@ -266,7 +267,6 @@ export function DungeonScreen(props: {
             <CampPanel world={w} onChange={props.onChange} />
           )}
           <PartyPanel members={w.members} />
-          <FormationPanel world={w} onChange={props.onChange} />
           <NpcPanel world={w} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />
           <GreenwoodPanel world={w} onChange={props.onChange} />
@@ -275,17 +275,6 @@ export function DungeonScreen(props: {
           <PactPanel world={w} onChange={props.onChange} />
           <HealerPanel world={w} onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />
-          <StashPanel world={w} />
-          <InventoryPanel world={w} onChange={props.onChange} />
-          <QuestLog world={w} onChange={props.onChange} />
-          <section class="panel log" aria-label="Journey log">
-            <h3>Journal</h3>
-            <ol>
-              {w.log.slice(-60).map((line, i) => (
-                <li key={`${i}-${line}`}>{line}</li>
-              ))}
-            </ol>
-          </section>
         </div>
       </div>
     </div>

@@ -32,6 +32,8 @@ export const TownRulesSchema = z.strictObject({
     perHp: Crowns,
     cureFrail: Crowns,
   }),
+  /** A round in the tavern for a rumor of a way down nearby (Sam's call). */
+  rumor: Crowns,
   /** Raising the dead at a crypt or mortuary costs this times the character's level. */
   raisePerLevel: Crowns,
   /** Gear sells for this fraction of its listed price. */

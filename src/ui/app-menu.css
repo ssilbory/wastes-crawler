@@ -1,0 +1,87 @@
+/* The ☰ mode menu, pinned to the top-left corner of every page. */
+.app-menu {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 20;
+}
+
+.app-menu-button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  font-size: 1.2rem;
+  line-height: 1;
+  background: var(--panel);
+}
+
+.app-menu-list {
+  position: absolute;
+  top: 42px;
+  left: 0;
+  display: grid;
+  min-width: 12rem;
+  padding: 4px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px #0003;
+}
+
+.app-menu-list a {
+  padding: 6px 10px;
+  border-radius: 4px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.app-menu-list a:hover {
+  background: var(--bg);
+}
+
+.app-menu-list a[aria-current='page'] {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Keep each page's first row (its title or status bar) clear of the button, but only once the
+   page is narrow enough to reach the left edge; centered pages already clear it. The rest of the
+   layout stays where it was. Narrow screens push the whole page down instead. */
+.editor > :first-child {
+  padding-left: 46px;
+}
+
+@media (max-width: 1700px) {
+  .world > :first-child {
+    padding-left: 46px;
+  }
+}
+
+@media (max-width: 1240px) {
+  .builder > :first-child,
+  .arena:not(.intro) > :first-child:not(.fight),
+  .arena .fight > .fight-bar {
+    padding-left: 46px;
+  }
+}
+
+@media (max-width: 880px) {
+  .settings > :first-child {
+    padding-left: 46px;
+  }
+}
+
+@media (max-width: 760px) {
+  #app {
+    padding-top: 44px;
+  }
+
+  #app .editor > :first-child,
+  #app .world > :first-child,
+  #app .builder > :first-child,
+  #app .arena > :first-child,
+  #app .arena .fight > .fight-bar,
+  #app .settings > :first-child {
+    padding-left: 0;
+  }
+}

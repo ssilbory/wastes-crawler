@@ -114,10 +114,10 @@
       "FFFFFFffffprsssssssssppppppppLLL"
     ],
     "overlay": [
-      "............!!!!!!!!!!!!!!!!....",
-      "............!!!!!!!!!!!!!!!!....",
-      "............!!!!!!!!!!!!!!!!....",
-      "................................",
+      "..........=.!!!!!!!!!!!!!!!!....",
+      "..........=.!!!!!!!!!!!!!!!!....",
+      "..........=.!!!!!!!!!!!!!!!!....",
+      "..........=.....................",
       "..........=.....................",
       "..........=.......!!!!!!!!!!....",
       "..........=.......!!!!!!!!!!....",
@@ -184,6 +184,16 @@
           "col": 23,
           "row": 8
         }
+      },
+      {
+        "name": "the Throne Road north to the Pale Reach",
+        "col": 10,
+        "row": 0,
+        "to": {
+          "region": "pale-reach",
+          "col": 10,
+          "row": 17
+        }
       }
     ],
     "encounters": {
@@ -202,6 +212,116 @@
         "col": 18,
         "row": 12,
         "enemies": [["bound-orc-guard", "bound-orc-guard"], ["bound-orc-captain"]]
+      },
+      {
+        "order": "throne-road",
+        "col": 10,
+        "row": 2,
+        "enemies": [
+          ["bound-orc-guard", "bound-orc-guard", "bound-orc-guard"],
+          ["bound-orc-captain"]
+        ]
+      }
+    ]
+  },
+  {
+    "id": "pale-reach",
+    "name": "The Pale Reach",
+    "terrain": [
+      "mmmmmmmmbbbbbbmmmmmmmmmm",
+      "mmmmmmmmbbbbbbmmmmmmmmmm",
+      "fFFFFFFhhbbbbbbbbbLLLLLL",
+      "fFFFFFFhhpppbbbbbbLLLLLL",
+      "fFFFFFFhhpppbbbbbbLLLLLL",
+      "fFFFFFFffpppbbbbbbLLLLLL",
+      "fFFFFFFffpppbbbbbbLLLLLL",
+      "fFFFFFFffpppbbbbbbLLLLLL",
+      "fFFFFFFffppppppppbbLLLLL",
+      "fFFFFFFffppppppppbbbLLLL",
+      "ffffffffpppppppppbbsssss",
+      "ffffffffpppppppppppsssss",
+      "hhhhhhhhpppppppphhhhssss",
+      "hhhhhhhhpppppppphhhhssss",
+      "hhhhhhhhhhphhhhhhhhhhhhh",
+      "mmmmmmmmmhhhmmmmmmmmmmmm",
+      "mmmmmmmmmhhhmmmmmmmmmmmm",
+      "mmmmmmmmmhhhmmmmmmmmmmmm"
+    ],
+    "overlay": [
+      "!!!!!!!!!!!!!!!!!!!!!!!!",
+      "!!!!!!!!!!!!!!!!!!!!!!!!",
+      ".!!!!!!..!!!!!!!!!!!!!!!",
+      ".!!!!!!...=.!!!!!!!!!!!!",
+      ".!!!!!!...=.!!!!!!!!!!!!",
+      ".!!!!!!...=.!!!!!!!!!!!!",
+      ".!!!!!!...=.!!!!!!!!!!!!",
+      ".!!!!!!...=.!!!!!!!!!!!!",
+      ".!!!!!!...=......!!!!!!!",
+      ".!!!!!!...=......!!!!!!!",
+      "..........=......!!!!!!!",
+      "..........=........!!!!!",
+      "..........=========.!!!!",
+      "..........=.........!!!!",
+      "..........=.............",
+      "!!!!!!!!!.=.!!!!!!!!!!!!",
+      "!!!!!!!!!.=.!!!!!!!!!!!!",
+      "!!!!!!!!!.=.!!!!!!!!!!!!"
+    ],
+    "sites": [
+      {
+        "id": "saltwick",
+        "name": "Saltwick",
+        "kind": "town",
+        "size": "town",
+        "col": 10,
+        "row": 12
+      },
+      {
+        "id": "thornwatch",
+        "name": "Thornwatch",
+        "kind": "town",
+        "size": "village",
+        "col": 18,
+        "row": 12
+      }
+    ],
+    "start": "saltwick",
+    "exits": [
+      {
+        "name": "the Throne Road south to the Dark Lands",
+        "col": 10,
+        "row": 17,
+        "to": {
+          "region": "dark-lands",
+          "col": 10,
+          "row": 0
+        }
+      }
+    ],
+    "encounters": {
+      "plains": "pr-plains",
+      "ford": "pr-plains",
+      "forest": "pr-forest",
+      "deep-forest": "pr-forest",
+      "hills": "pr-hills",
+      "mountains": "pr-mountains",
+      "swamp": "pr-swamp",
+      "badlands": "pr-badlands"
+    },
+    "garrisons": [
+      {
+        "order": "saltgate-hold",
+        "col": 10,
+        "row": 6,
+        "enemies": [
+          [
+            "bound-goblin-sentry",
+            "bound-goblin-sentry",
+            "bound-goblin-sentry",
+            "bound-goblin-sentry"
+          ],
+          ["bound-orc-captain"]
+        ]
       }
     ]
   }

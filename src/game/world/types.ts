@@ -89,6 +89,8 @@ export interface World {
   /** Generated ruins and taken loot caches (Phase 12e). */
   ruins: Record<string, { seed: number; emptied: number | null }>;
   caches: string[];
+  /** Ways down a tavern rumor has told the party of, by dungeon or ruin id. */
+  rumors: string[];
   ordersEnded: string[];
   authority: string[];
   raid: WorldSave['raid'];

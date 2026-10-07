@@ -137,7 +137,7 @@ describe('Query the Skull', () => {
   });
 });
 
-describe('world save version 26', () => {
+describe('world save version 27', () => {
   it('loads corpses as fallen today and not yet questioned', () => {
     const w = world();
     w.day = 4;
@@ -145,7 +145,7 @@ describe('world save version 26', () => {
     const save = JSON.parse(serializeWorld(w));
     const old = { at: save.corpses.at, hitDice: save.corpses.hitDice };
     for (const corpses of [old, null]) {
-      const loaded = parseWorld(JSON.stringify({ ...save, schemaVersion: 26, corpses }), data);
+      const loaded = parseWorld(JSON.stringify({ ...save, schemaVersion: 27, corpses }), data);
       if (!loaded.ok) throw new Error(loaded.errors.join('; '));
       expect(loaded.world.corpses).toEqual(corpses && { ...old, day: 4, queried: false });
       expect(loaded.world).toMatchObject({ disguise: null, palanquin: null });
@@ -156,12 +156,12 @@ describe('world save version 26', () => {
     const save = JSON.parse(serializeWorld(below()));
     const without = (o: Record<string, unknown>, keys: string[]) =>
       Object.fromEntries(Object.entries(o).filter(([k]) => !keys.includes(k)));
-    const v26 = {
+    const v27 = {
       ...without(save, ['disguise', 'palanquin']),
-      schemaVersion: 26,
+      schemaVersion: 27,
       dungeon: without(save.dungeon, ['sight', 'sensed']),
     };
-    const loaded = parseWorld(JSON.stringify(v26), data);
+    const loaded = parseWorld(JSON.stringify(v27), data);
     if (!loaded.ok) throw new Error(loaded.errors.join('; '));
     expect(loaded.world.dungeon).toMatchObject({ sight: null, sensed: {} });
   });

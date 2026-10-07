@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 // Phase 17: the starter party, the character screen, and managing gear in play.
-test('sets out with the starter party and sorts gear on the character screen', async ({
+test('sets out with the starter party and sorts gear on the inventory screen', async ({
   page,
 }, testInfo) => {
   await page.goto('/#/world');
@@ -15,6 +15,9 @@ test('sets out with the starter party and sorts gear on the character screen', a
   await page.getByRole('button', { name: 'Characters' }).click();
   await page.getByRole('tab', { name: 'Grukk' }).click();
   await expect(page.getByTestId('character-sheet')).toContainText('Grukk');
+  // Gear has a screen of its own, opened on the member whose sheet was showing.
+  await page.getByRole('button', { name: 'Inventory' }).click();
+  await expect(page.getByRole('tab', { name: 'Grukk' })).toHaveAttribute('aria-selected', 'true');
   const gear = page.getByRole('region', { name: 'Inventory' });
   await expect(gear).toContainText(/Readied \d+\/\d+, Stowed \d+\/\d+/);
   const dagger = gear.getByRole('group', { name: 'Dagger' });

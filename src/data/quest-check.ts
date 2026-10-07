@@ -38,6 +38,11 @@ export function questReferenceErrors(srd: SrdData, content: ContentData): string
     if (!givers.has(q.giver)) errors.push(`${where}: unknown giver ${q.giver}`);
     else if (q.reward.raise && !raising.has(q.giver))
       errors.push(`${where}: ${q.giver} can't raise the dead`);
+    if (q.payer !== undefined) {
+      if (!givers.has(q.payer)) errors.push(`${where}: unknown payer ${q.payer}`);
+      if (q.payer === q.giver) errors.push(`${where}: the giver already pays`);
+      if (q.reward.raise) errors.push(`${where}: a raising quest is paid by its giver`);
+    }
     for (const p of q.prerequisites.quests)
       if (!quests.has(p)) errors.push(`${where}: unknown prerequisite ${p}`);
     q.objectives.forEach((o, i) => {

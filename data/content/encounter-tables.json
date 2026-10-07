@@ -1792,5 +1792,539 @@
         ]
       }
     ]
+  },
+  {
+    "id": "pr-plains",
+    "entries": [
+      {
+        "weight": 3,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "faithful-acolyte",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 1
+            },
+            "row": 0
+          },
+          {
+            "monster": "faithful-zealot",
+            "count": 1,
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "zombie",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "bound-goblin-sentry",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ],
+        "order": "saltgate-hold"
+      },
+      {
+        "weight": 1,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "deserter-beastman",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "manticore",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "pr-badlands",
+    "entries": [
+      {
+        "weight": 3,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "giant-scorpion",
+            "count": {
+              "count": 1,
+              "sides": 2,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "gnawing-dead",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "faithful-acolyte",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 1
+            },
+            "row": 0
+          },
+          {
+            "monster": "faithful-zealot",
+            "count": 1,
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "manticore",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "pr-hills",
+    "entries": [
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "cave-bear",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "faithful-acolyte",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 1
+            },
+            "row": 0
+          },
+          {
+            "monster": "faithful-zealot",
+            "count": 1,
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "bound-orc-guard",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "hill-giant",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "pr-mountains",
+    "entries": [
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "cave-bear",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "stone-golem",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "apex-predator",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "hill-giant",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "pr-forest",
+    "entries": [
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "giant-black-widow",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "zombie",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "giant-ant",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "wary",
+        "groups": [
+          {
+            "monster": "walking-tree",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "pr-swamp",
+    "entries": [
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "swamp-thing",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "gnawing-dead",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "giant-rattlesnake",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "shrine",
+    "entries": [
+      {
+        "weight": 3,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "faithful-acolyte",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "raised-skeleton",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "zombie",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "archive",
+    "entries": [
+      {
+        "weight": 3,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "clockwork-servitor",
+            "count": {
+              "count": 1,
+              "sides": 2,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ],
+        "order": "archive-keep"
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "gnawing-dead",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "faithful-zealot",
+            "count": {
+              "count": 1,
+              "sides": 2,
+              "modifier": 0
+            },
+            "row": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "citadel",
+    "entries": [
+      {
+        "weight": 3,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "bound-orc-guard",
+            "count": 2,
+            "row": 0
+          }
+        ],
+        "order": "citadel-watch"
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "faithful-zealot",
+            "count": {
+              "count": 1,
+              "sides": 2,
+              "modifier": 0
+            },
+            "row": 0
+          },
+          {
+            "monster": "faithful-acolyte",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 0
+            },
+            "row": 1
+          }
+        ]
+      },
+      {
+        "weight": 2,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "zombie",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "grave-knight",
+            "count": 1,
+            "row": 0
+          }
+        ]
+      }
+    ]
   }
 ]

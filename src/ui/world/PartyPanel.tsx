@@ -26,12 +26,14 @@ export function PartyPanel(props: { members: Member[] }) {
           const max = characterSheet(c, data).strainMax;
           return (
             <li key={m.id} class={m.dead ? 'gone' : undefined}>
-              <strong>{c.name}</strong>
+              <span class="member-head">
+                <strong>{c.name}</strong>
+                <span class="slot-stats">
+                  HP {c.hp.current}/{c.hp.max} · Strain {c.strain.value}/{max}
+                </span>
+              </span>
               <span class="hp-bar" aria-hidden="true">
                 <span style={{ width: `${Math.round((c.hp.current / c.hp.max) * 100)}%` }} />
-              </span>
-              <span class="slot-stats">
-                HP {c.hp.current}/{c.hp.max} · Strain {c.strain.value}/{max}
               </span>
               <span class="slot-stats">{levelLine(data, c)}</span>
               {tags(m).length > 0 && (

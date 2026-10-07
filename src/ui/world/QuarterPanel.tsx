@@ -54,7 +54,14 @@ export function QuarterPanel(props: {
   const people = props.members.map((m) => ({ id: m.id, name: m.character.name }));
   return (
     <section class="panel quarter-panel" aria-label="Quarter plan">
-      <h2>This quarter</h2>
+      <div class="quarter-head">
+        <h2>This quarter</h2>
+        {/* Up top so it never moves as the plan below grows or shrinks. */}
+        <button type="button" class="create" onClick={props.onPass}>
+          {plan.kind === 'hike' ? 'Hike' : 'Camp'}
+          <span aria-hidden="true"> ▸</span>
+        </button>
+      </div>
       <div class="tabs" role="radiogroup" aria-label="Plan">
         <button
           type="button"
@@ -117,9 +124,6 @@ export function QuarterPanel(props: {
           ))}
         </div>
       )}
-      <button type="button" class="create" onClick={props.onPass}>
-        Pass the quarter
-      </button>
     </section>
   );
 }

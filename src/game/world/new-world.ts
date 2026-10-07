@@ -61,6 +61,7 @@ export function newWorld(data: GameData, rng: Rng, party: Recruit[], regionId?: 
     hireBans: {},
     ruins: {},
     caches: [],
+    rumors: [],
     ordersEnded: [],
     authority: [],
     raid: null,

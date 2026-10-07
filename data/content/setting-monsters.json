@@ -160,5 +160,29 @@
       "spells": ["the-coruscating-coffin"],
       "arts": ["elemental-blast", "stunning-shock"]
     }
+  },
+  {
+    "id": "faithful-acolyte",
+    "name": "Faithful Acolyte",
+    "base": "thug-or-militia",
+    "description": "A loyalist in ember-red who sings the old hymns to the Dark Lord and waits for his return. Most were born after he vanished."
+  },
+  {
+    "id": "faithful-zealot",
+    "name": "Faithful Zealot",
+    "base": "elites-or-special-guards",
+    "description": "A veteran of the old armies who kept his armor and his faith. The Faithful send their zealots to guard the dead they take."
+  },
+  {
+    "id": "faithful-keeper",
+    "name": "Faithful Keeper",
+    "base": "warrior-baron",
+    "description": "A keeper of one of the Faithful's shrines, armored like an officer of the empire and as dangerous as one."
+  },
+  {
+    "id": "hierophant",
+    "name": "The Hierophant",
+    "base": "mighty-general",
+    "description": "The Hierophant of the Faithful, a human agent the Dark Lord bound before the alliance landed. Bound or believer, no one can tell, and the Hierophant has never said."
   }
 ]

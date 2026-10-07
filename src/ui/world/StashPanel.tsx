@@ -6,11 +6,22 @@ import { data } from '../builder/data.ts';
 export function StashPanel(props: { world: World }) {
   const view = stashView(props.world, data);
   return (
-    <section class="panel" aria-label="Stash">
+    <section class="panel stash" aria-label="Stash">
       <h3>Party stash</h3>
-      <p>Purse: {view.purse}</p>
-      <p>Loot dice: {view.loot}</p>
-      <p>Components: {view.components.length === 0 ? 'none' : view.components.join(', ')}</p>
+      <dl class="stash-list">
+        <div>
+          <dt>Purse</dt>
+          <dd>{view.purse}</dd>
+        </div>
+        <div>
+          <dt>Loot dice</dt>
+          <dd>{view.loot}</dd>
+        </div>
+        <div>
+          <dt>Components</dt>
+          <dd>{view.components.length === 0 ? 'none' : view.components.join(', ')}</dd>
+        </div>
+      </dl>
     </section>
   );
 }

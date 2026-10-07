@@ -58,6 +58,7 @@ describe('the quest board (docs/rules-adaptation.md, Quests)', () => {
       'bandit-camp',
       'surveyor',
       'barrow-torc',
+      'east-road',
     ]);
     expect(() => questOf(data, 'grail')).toThrow('unknown quest grail');
   });

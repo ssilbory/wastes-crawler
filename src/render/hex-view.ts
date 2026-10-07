@@ -23,7 +23,7 @@ export interface HexCell {
   route: boolean;
   /** A quest step waits here; shown even under fog, since the giver said where. */
   quest: boolean;
-  /** A dungeon entrance's name, once the hex is known. */
+  /** A dungeon entrance's name, once the hex is known or a rumor has told of it. */
   dungeon: string | null;
   /** A road off the map, once the hex is known (Phase 12). */
   exit: string | null;
@@ -61,11 +61,11 @@ export function hexCells(
   routeHexes: Hex[],
   size: number,
   questHexes: readonly Hex[] = [],
-  entrances: readonly (Hex & { name: string })[] = [],
+  entrances: readonly (Hex & { name: string; heard?: boolean })[] = [],
   groves: readonly (Hex & { name: string })[] = [],
 ): HexCell[] {
   const quests = new Set(questHexes.map(hexKey));
-  const ways = new Map(entrances.map((e) => [hexKey(e), e.name]));
+  const ways = new Map(entrances.map((e) => [hexKey(e), e]));
   const woods = new Map(groves.map((g) => [hexKey(g), g.name]));
   const seen = seenHexes(map, w.visited);
   const onRoute = new Set(routeHexes.map(hexKey));
@@ -94,7 +94,7 @@ export function hexCells(
         destination: w.destination !== null && key === hexKey(w.destination),
         route: onRoute.has(key),
         quest: quests.has(key),
-        dungeon: known ? (ways.get(key) ?? null) : null,
+        dungeon: known || ways.get(key)?.heard ? (ways.get(key)?.name ?? null) : null,
         exit: known ? (map.exitAt(h)?.name ?? null) : null,
         grove: known ? (woods.get(key) ?? null) : null,
       });
