@@ -10,6 +10,7 @@ import type { GameData } from '../character/context.ts';
 import { levelOf } from '../dungeon/explore.ts';
 import type { WorldEvent } from './bus.ts';
 import { meetGroup } from './encounters.ts';
+import { passInDisguise } from './guises.ts';
 import { awake, memberCheck, note } from './members.ts';
 import { hirelingType } from './npcs.ts';
 import type { TownResult } from './services.ts';
@@ -148,6 +149,7 @@ function springGarrison(w: World, data: GameData): void {
   e.garrison = key;
   // The bound challenge first: the party can still turn back.
   e.spotted = true;
+  passInDisguise(w, e);
 }
 
 /** The standing orders' bus listener: posts spring where the party arrives; a won fight clears one. */

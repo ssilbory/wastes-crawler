@@ -195,6 +195,10 @@ export const DungeonStateSchema = z.strictObject({
   traps: z.record(IdSchema, z.record(z.string(), z.enum(['noticed', 'disarmed']))),
   /** Message squares already read, by level. */
   read: z.record(IdSchema, z.array(z.string())),
+  /** Apprehending the Arcane Form: whose sight it is, and the turn it fades. */
+  sight: z.strictObject({ member: z.string().min(1), until: z.int().min(0) }).nullable(),
+  /** Magical squares the party has sensed with it, by level, as "x,y". */
+  sensed: z.record(IdSchema, z.array(z.string())),
 });
 export type DungeonState = z.infer<typeof DungeonStateSchema>;
 
@@ -335,6 +339,10 @@ export const WorldSaveSchema = z.strictObject({
   bestiary: z.array(IdSchema),
   /** Each faction's state, by id, once it has started (Phase 13). */
   factions: z.record(IdSchema, FactionStateSchema),
+  /** Adopt the Simulacular Visage: the day it was cast, and who wears the seeming. */
+  disguise: z.strictObject({ day: z.int().min(0), ids: z.array(z.string()) }).nullable(),
+  /** The Jade Palanquin: the quarter, counted from the world's start, at which it fades. */
+  palanquin: z.int().min(0).nullable(),
   log: z.array(z.string()),
 });
 export type WorldSave = z.infer<typeof WorldSaveSchema>;

@@ -136,6 +136,21 @@ describe('world save version 26', () => {
       const loaded = parseWorld(JSON.stringify({ ...save, schemaVersion: 26, corpses }), data);
       if (!loaded.ok) throw new Error(loaded.errors.join('; '));
       expect(loaded.world.corpses).toEqual(corpses && { ...old, day: 4, queried: false });
+      expect(loaded.world).toMatchObject({ disguise: null, palanquin: null });
     }
+  });
+
+  it('loads a dungeon with no arcane sight and nothing sensed', () => {
+    const save = JSON.parse(serializeWorld(below()));
+    const without = (o: Record<string, unknown>, keys: string[]) =>
+      Object.fromEntries(Object.entries(o).filter(([k]) => !keys.includes(k)));
+    const v26 = {
+      ...without(save, ['disguise', 'palanquin']),
+      schemaVersion: 26,
+      dungeon: without(save.dungeon, ['sight', 'sensed']),
+    };
+    const loaded = parseWorld(JSON.stringify(v26), data);
+    if (!loaded.ok) throw new Error(loaded.errors.join('; '));
+    expect(loaded.world.dungeon).toMatchObject({ sight: null, sensed: {} });
   });
 });

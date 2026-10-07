@@ -66,6 +66,8 @@ export function serializeWorld(w: World): string {
     performedDay: w.performedDay,
     bestiary: [...w.bestiary],
     factions: w.factions,
+    disguise: w.disguise,
+    palanquin: w.palanquin,
     log: w.log.slice(-SAVED_LOG_LINES),
   };
   return `${JSON.stringify(save)}\n`;
@@ -168,6 +170,8 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       performedDay: s.performedDay,
       bestiary: [...s.bestiary],
       factions: s.factions,
+      disguise: s.disguise,
+      palanquin: s.palanquin,
       log: s.log,
       rng: rngFromState(s.rng),
       visited: new Set(s.visited),

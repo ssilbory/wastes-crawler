@@ -18,6 +18,8 @@ function at(x: number, y: number, facing: DungeonState['facing'], seen: string[]
     steps: 0,
     found: {},
     dug: {},
+    sight: null,
+    sensed: {},
     glimpsed: {},
     traps: {},
     read: {},

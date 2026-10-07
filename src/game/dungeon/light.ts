@@ -6,7 +6,7 @@
 // Gear.md).
 import { useResource, type ResourceDie } from '../../rules/resource-die.ts';
 import { FAITH_LIGHT, seer, userOf } from '../world/arts.ts';
-import { alive, note } from '../world/members.ts';
+import { alive, awake, note } from '../world/members.ts';
 import type { Member, World } from '../world/types.ts';
 import type { GameData } from '../character/context.ts';
 import { onSpecial } from './specials.ts';
@@ -112,8 +112,20 @@ export const inDark = (w: World, data: GameData) =>
   w.dungeon !== null &&
   ((w.light.lit === null && !faithLit(w, data)) || onSpecial(w, data, 'darkness'));
 
-/** In the dark with no one whose arts see without light (Phase 15). */
-export const blind = (w: World, data: GameData) => inDark(w, data) && !seer(w, data);
+/**
+ * Apprehending the Arcane Form still lets its caster see: they are awake and the sight hasn't faded
+ * (arcane-sight.ts).
+ */
+export function arcaneSeer(w: World): boolean {
+  const sight = w.dungeon?.sight;
+  if (!sight || (w.dungeon?.turn ?? 0) >= sight.until) return false;
+  const m = w.members.find((x) => x.id === sight.member);
+  return m !== undefined && awake(m);
+}
+
+/** In the dark with no one whose arts or spells see without light (Phase 15). */
+export const blind = (w: World, data: GameData) =>
+  inDark(w, data) && !seer(w, data) && !arcaneSeer(w);
 
 /** Lights go out on reaching the surface; what is left of them keeps. */
 export function douse(w: World): void {

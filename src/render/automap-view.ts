@@ -31,6 +31,8 @@ export interface Automap {
   height: number;
   cells: AutomapCell[];
   lines: AutomapLine[];
+  /** Magical squares sensed with Apprehending the Arcane Form. */
+  sensed: { key: string; x: number; y: number }[];
   /** The party's arrow as SVG polygon points. */
   party: string;
 }
@@ -101,6 +103,10 @@ export function automap(w: World, data: GameData, size = MAP_CELL): Automap | nu
     height: map.height * size,
     cells,
     lines: [...lines.values()],
+    sensed: (s.sensed[s.level] ?? []).map((key) => {
+      const [x, y] = key.split(',').map(Number) as [number, number];
+      return { key, x, y };
+    }),
     party: arrow(s.at.x, s.at.y, s.facing, size),
   };
 }

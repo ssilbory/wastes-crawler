@@ -286,6 +286,11 @@
   stroke-width: 3;
 }
 
+.automap .sensed {
+  fill: #8f6fd6;
+  opacity: 0.85;
+}
+
 .automap .party {
   fill: var(--error);
 }

@@ -72,8 +72,8 @@ test('a Gnome High Mage has Effort 1 + Magic-0 + Int 16 (+1) = 2', async ({ page
   await expect(sheet).toContainText('Arts: Counter Magic, Sense Magic.');
   await expect(sheet).toContainText('Wardpact Invocation');
   await expect(sheet).toContainText('Ineluctable Shackles of Volition (prepared)');
-  // Spells not yet built aren't offered (docs/rules-adaptation.md, High Magic in combat).
-  await expect(page.getByText('Phantasmal Mimesis')).toHaveCount(0);
+  // Spells left out of the game aren't offered (docs/rules-adaptation.md, High Magic in combat).
+  await expect(page.getByText('Cognitive Supersession of the Inferior Orders')).toHaveCount(0);
   await expect(sheet).toContainText('Magic-0');
 });
 
