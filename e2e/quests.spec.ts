@@ -20,7 +20,7 @@ async function walk(page: Page, hex: string, done: () => Promise<boolean>) {
   for (let i = 0; i < 40 && !(await done()); i++) {
     if (await fightIfMet(page)) continue;
     await page.locator(`[data-hex="${hex}"]`).click();
-    await page.getByRole('button', { name: 'Pass the quarter' }).click();
+    await page.getByRole('button', { name: /^(Hike|Camp)$/ }).click();
   }
 }
 
@@ -32,6 +32,7 @@ test('takes a quest in town, finishes it on the map, and collects the reward', a
   await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(
     starters.length,
   );
+  await page.getByRole('button', { name: 'Menu' }).click();
   await page.getByRole('link', { name: 'Overland' }).click();
   // The arena has a formation of its own: wait for the Overland page before picking slots.
   await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();

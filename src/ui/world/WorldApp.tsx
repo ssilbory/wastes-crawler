@@ -24,13 +24,14 @@ import {
   setActiveSlot,
   type Slot,
 } from '../storage.ts';
-import { TownScreen } from '../town/TownScreen.tsx';
+import { TownScreen, type Tab } from '../town/TownScreen.tsx';
 import { assess } from './assess.ts';
 import { MapScreen } from './MapScreen.tsx';
 import { DungeonScreen } from './DungeonScreen.tsx';
 import { enterDungeon } from '../../game/dungeon/explore.ts';
 import { IntroScreen } from './IntroScreen.tsx';
-import { CharacterScreen } from './CharacterScreen.tsx';
+import type { PartyScreen } from './PartyButtons.tsx';
+import { PartyScreens } from './PartyScreens.tsx';
 import { StartScreen } from './StartScreen.tsx';
 import { crossOver } from '../../game/world/crossing.ts';
 import { knownFoes } from '../../render/bestiary-view.ts';
@@ -49,7 +50,16 @@ export function WorldApp() {
   const [slot, setSlot] = useState<Slot>(activeSlot);
   const world = useRef<World | null>(null);
   const [version, setVersion] = useState(0);
-  const [screen, setScreen] = useState<'start' | 'intro' | 'map' | 'town' | 'character'>('start');
+  const [screen, setScreen] = useState<'start' | 'intro' | 'map' | 'town' | PartyScreen>('start');
+  /** Where a party screen returns to, and the member the inventory opens on. */
+  const [from, setFrom] = useState<'map' | 'town'>('map');
+  const [member, setMember] = useState<string | undefined>(undefined);
+  const [townTab, setTownTab] = useState<Tab>('quests');
+  const openFrom = (back: 'map' | 'town') => (next: PartyScreen) => {
+    setFrom(back);
+    setMember(undefined);
+    setScreen(next);
+  };
   /** The fight on screen, what settles it, and where the party goes after. */
   const [fight, setFight] = useState<{
     battle: WorldBattle;
@@ -184,8 +194,18 @@ export function WorldApp() {
       </div>
     );
   }
-  if (screen === 'character')
-    return <CharacterScreen world={w} onChange={changed} onBack={() => setScreen('map')} />;
+  if (screen === 'character' || screen === 'formation' || screen === 'inventory')
+    return (
+      <PartyScreens
+        world={w}
+        screen={screen}
+        from={from}
+        member={member}
+        onChange={changed}
+        onScreen={setScreen}
+        onMember={setMember}
+      />
+    );
   if (w.dungeon)
     return (
       <DungeonScreen
@@ -194,7 +214,7 @@ export function WorldApp() {
         onChange={changed}
         onFight={startFight}
         onLeave={leave}
-        onCharacters={() => setScreen('character')}
+        onOpen={openFrom('map')}
       />
     );
   if (screen === 'town')
@@ -205,6 +225,9 @@ export function WorldApp() {
         version={version}
         onChange={changed}
         onLeave={() => setScreen('map')}
+        onOpen={openFrom('town')}
+        tab={townTab}
+        onTab={setTownTab}
         onBout={(start) =>
           setFight({
             battle: start.fight,
@@ -237,7 +260,7 @@ export function WorldApp() {
         changed();
       }}
       onTown={() => setScreen('town')}
-      onCharacters={() => setScreen('character')}
+      onOpen={openFrom('map')}
       onLeave={leave}
       onExport={() => download(serializeBundle(w, roster))}
       onAbandon={() => {

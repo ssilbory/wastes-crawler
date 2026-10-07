@@ -9,20 +9,19 @@ import { crowns, lootText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { HEX_SIZE, HexMap } from './HexMap.tsx';
 import { PartyPanel } from './PartyPanel.tsx';
-import { FormationPanel } from './FormationPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
 import { FactionsPanel } from './FactionsPanel.tsx';
 import { SettingPanel } from './SettingPanel.tsx';
 import { HealerPanel } from './HealerPanel.tsx';
 import { PurgePanel } from './PurgePanel.tsx';
-import { InventoryPanel } from './InventoryPanel.tsx';
-import { StashPanel } from './StashPanel.tsx';
 import { GreenwoodPanel } from './GreenwoodPanel.tsx';
 import { ConjunctPanel } from './ConjunctPanel.tsx';
 import { HighRoadPanel } from './HighRoadPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { QuestLog } from './QuestLog.tsx';
+import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
+import { JournalPanel } from './JournalPanel.tsx';
 import { questTargets } from '../../render/quest-view.ts';
 import { CoachPanel } from './CoachPanel.tsx';
 import { QuarterPanel } from './QuarterPanel.tsx';
@@ -39,7 +38,7 @@ export function MapScreen(props: {
   onFight: () => void;
   onLeave: () => void;
   onTown: () => void;
-  onCharacters: () => void;
+  onOpen: (screen: PartyScreen) => void;
   onRide: () => void;
   onEnter: () => void;
   onCross: () => void;
@@ -69,53 +68,59 @@ export function MapScreen(props: {
         <span>Rations: {w.rations === 0 ? 'none' : `d${w.rations}`}</span>
         <span>Purse: {crowns(w.purse)}</span>
         <span>Loot: {lootText(w.loot)}</span>
-        {town && !w.encounter && !w.coach && (
-          <button type="button" onClick={props.onTown}>
-            Visit {town.name}
+        <span class="bar-actions">
+          {town && !w.encounter && !w.coach && (
+            <button type="button" onClick={props.onTown}>
+              Visit {town.name}
+            </button>
+          )}
+          {way && !w.encounter && !w.coach && (
+            <button type="button" onClick={props.onEnter}>
+              Enter {way.name}
+              {way.level !== null && ` (for level ${way.level})`}
+            </button>
+          )}
+          {road && !w.encounter && !w.coach && (
+            <button type="button" onClick={props.onCross}>
+              Take {road.name}
+            </button>
+          )}
+          <PartyButtons onOpen={props.onOpen} />
+          <button type="button" class="secondary" onClick={props.onExport}>
+            Export save
           </button>
-        )}
-        {way && !w.encounter && !w.coach && (
-          <button type="button" onClick={props.onEnter}>
-            Enter {way.name}
-            {way.level !== null && ` (for level ${way.level})`}
+          <button type="button" class="secondary" onClick={props.onAbandon}>
+            Abandon world
           </button>
-        )}
-        {road && !w.encounter && !w.coach && (
-          <button type="button" onClick={props.onCross}>
-            Take {road.name}
-          </button>
-        )}
-        <button type="button" onClick={props.onCharacters}>
-          Characters
-        </button>
-        <button type="button" class="secondary" onClick={props.onExport}>
-          Export save
-        </button>
-        <button type="button" class="secondary" onClick={props.onAbandon}>
-          Abandon world
-        </button>
+        </span>
       </div>
       <div class="world-main">
-        <div class="map-wrap">
-          <HexMap
-            cells={hexCells(
-              map,
-              w,
-              route(w, data),
-              HEX_SIZE,
-              questTargets(w, data),
-              entrances,
-              grovesHere(w, data),
-            )}
-            width={width}
-            height={height}
-            onPick={(col, row) => {
-              if (!w.encounter && !w.coach && setDestination(w, data, { col, row }))
-                props.onChange();
-            }}
-          />
+        <div class="world-left">
+          <div class="map-wrap">
+            <HexMap
+              cells={hexCells(
+                map,
+                w,
+                route(w, data),
+                HEX_SIZE,
+                questTargets(w, data),
+                entrances,
+                grovesHere(w, data),
+              )}
+              width={width}
+              height={height}
+              onPick={(col, row) => {
+                if (!w.encounter && !w.coach && setDestination(w, data, { col, row }))
+                  props.onChange();
+              }}
+            />
+          </div>
+          <QuestLog world={w} onChange={props.onChange} />
+          <SettingPanel world={w} inTown={town !== undefined} onChange={props.onChange} />
+          <FactionsPanel world={w} />
+          <JournalPanel world={w} />
         </div>
-        <div class="world-side">
+        <div class="world-side flow">
           {w.encounter ? (
             <EncounterPanel
               world={w}
@@ -140,7 +145,6 @@ export function MapScreen(props: {
             />
           )}
           <PartyPanel members={w.members} />
-          <FormationPanel world={w} onChange={props.onChange} />
           <NpcPanel world={w} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />
           <GreenwoodPanel world={w} onChange={props.onChange} />
@@ -148,19 +152,6 @@ export function MapScreen(props: {
           <HighRoadPanel world={w} onChange={props.onChange} />
           <HealerPanel world={w} onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />
-          <StashPanel world={w} />
-          <InventoryPanel world={w} onChange={props.onChange} />
-          <QuestLog world={w} onChange={props.onChange} />
-          <SettingPanel world={w} inTown={town !== undefined} onChange={props.onChange} />
-          <FactionsPanel world={w} />
-          <section class="panel log" aria-label="Journey log">
-            <h3>Journal</h3>
-            <ol>
-              {w.log.slice(-60).map((line, i) => (
-                <li key={`${i}-${line}`}>{line}</li>
-              ))}
-            </ol>
-          </section>
         </div>
       </div>
     </div>

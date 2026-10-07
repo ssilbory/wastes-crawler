@@ -18,6 +18,7 @@ async function begin(page: Page, seed: string) {
   await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(
     starters.length,
   );
+  await page.getByRole('button', { name: 'Menu' }).click();
   await page.getByRole('link', { name: 'Overland' }).click();
   // The arena has a formation of its own: wait for the Overland page before picking slots.
   await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();
@@ -42,7 +43,7 @@ test('keeps worlds in three slots', async ({ page }) => {
   await page.getByRole('button', { name: 'Start a new world', exact: true }).click();
   await page.getByRole('button', { name: 'Begin the journey' }).click();
   await page.locator('[data-hex="4,8"]').click();
-  await page.getByRole('button', { name: 'Pass the quarter' }).click();
+  await page.getByRole('button', { name: /^(Hike|Camp)$/ }).click();
   await page.reload();
   await expect(slots).toContainText('Slot 1: Morning, 1 Seedtime');
   await expect(slots).toContainText('Slot 2: Day, 1 Seedtime');

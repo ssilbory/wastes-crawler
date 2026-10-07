@@ -12,6 +12,7 @@ async function start(page: Page) {
   await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(
     starters.length,
   );
+  await page.getByRole('button', { name: 'Menu' }).click();
   await page.getByRole('link', { name: 'Overland' }).click();
   // The arena has a formation of its own: wait for the Overland page before picking slots.
   await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();
@@ -63,7 +64,7 @@ test('a month later, coming back to town moves the purse with the climate', asyn
   );
   const before = await purse(page);
   await page.locator('[data-hex="3,8"]').click();
-  await page.getByRole('button', { name: 'Pass the quarter' }).click();
+  await page.getByRole('button', { name: /^(Hike|Camp)$/ }).click();
   const log = page.getByRole('region', { name: 'Journey log' });
   await expect(log).toContainText('The economic climate moves the purse');
   expect(await purse(page)).not.toBe(before);

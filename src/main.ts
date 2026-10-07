@@ -1,8 +1,10 @@
 import { h, render } from 'preact';
 import { Shell } from './ui/Shell.tsx';
 import './ui/builder/builder.css';
+import './ui/app-menu.css';
 import './ui/arena/setup.css';
 import './ui/arena/fight.css';
+import './ui/world/layout.css';
 import './ui/world/world.css';
 import './ui/town/town.css';
 
