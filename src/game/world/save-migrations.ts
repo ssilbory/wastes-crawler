@@ -153,4 +153,6 @@ export const WORLD_MIGRATIONS: Migrations = {
     const d = raw.dungeon as Raw | null | undefined;
     return { ...raw, schemaVersion: 26, dungeon: d && { ...d, dug: {} } };
   },
+  // Version 27 adds tavern rumors: no ways down heard of yet.
+  26: (raw) => ({ ...raw, schemaVersion: 27, rumors: [] }),
 };

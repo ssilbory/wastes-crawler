@@ -6,7 +6,7 @@ import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { FactionStateSchema } from './faction-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 26;
+export const WORLD_SCHEMA_VERSION = 27;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -291,6 +291,8 @@ export const WorldSaveSchema = z.strictObject({
   ),
   /** Loot caches taken, by dungeon, level, and cell. */
   caches: z.array(z.string()),
+  /** Dungeons and ruins whose way down a tavern rumor has told the party of, by id. */
+  rumors: z.array(IdSchema),
   /** What the party did with the Seal of Command, once decided. */
   ending: z.enum(['destroy', 'give', 'keep']).nullable(),
   /** Tokens of command authority the party carries. */

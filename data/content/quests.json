@@ -846,5 +846,53 @@
         }
       ]
     }
+  },
+  {
+    "id": "east-road",
+    "name": "The East Road",
+    "giver": "reeve-halda",
+    "payer": "elder-gorvash",
+    "summary": "Rubblegate has no harder work to give. Halda writes the party a letter for Elder Gorvash in Cinderhold, down the east road into the Dark Lands, where the work is harder and pays better.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 3
+    },
+    "objectives": [
+      {
+        "kind": "deliver",
+        "item": "Reeve Halda's letter to Elder Gorvash",
+        "to": "cinderhold",
+        "text": "Take the east road into the Dark Lands and bring the letter to Cinderhold."
+      }
+    ],
+    "reward": {
+      "crowns": 50,
+      "xp": 1,
+      "loot": []
+    }
+  },
+  {
+    "id": "throne-road",
+    "name": "The Throne Road",
+    "giver": "foreman-tikka",
+    "payer": "archivist-sefa",
+    "summary": "The Dark Lands have little left that would trouble the party. Tikka has a letter for Archivist Sefa in Saltwick, up the Throne Road past Lanternfall, where bound orcs still hold the pass.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 5
+    },
+    "objectives": [
+      {
+        "kind": "deliver",
+        "item": "Foreman Tikka's letter to Archivist Sefa",
+        "to": "saltwick",
+        "text": "Take the Throne Road north into the Pale Reach and bring the letter to Saltwick."
+      }
+    ],
+    "reward": {
+      "crowns": 80,
+      "xp": 1,
+      "loot": []
+    }
   }
 ]

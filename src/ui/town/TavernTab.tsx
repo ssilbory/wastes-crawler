@@ -4,7 +4,9 @@ import { hire } from '../../game/world/hire.ts';
 import { MAX_NPCS } from '../../game/world/npcs.ts';
 import { hireBlocked, payDeadShare, refuseDeadShare } from '../../game/world/shares.ts';
 import { shareText } from '../../game/world/wording.ts';
+import { buyRumor, rumorListed, rumorsLeft } from '../../game/world/rumors.ts';
 import { bench, catchUpXp, inWorld, recruit, rejoin } from '../../game/world/tavern.ts';
+import { priceHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
 import { levelLine } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
@@ -15,6 +17,7 @@ export function TavernTab(props: { world: World; roster: RosterEntry[]; act: Act
   const w = props.world;
   const blocked = hireBlocked(w, data);
   const newcomers = props.roster.filter((e) => !inWorld(w, e.character.id));
+  const rumors = rumorsLeft(w, data).length;
   return (
     <>
       <section class="panel" aria-label="In the party">
@@ -90,6 +93,20 @@ export function TavernTab(props: { world: World; roster: RosterEntry[]; act: Act
             </li>
           ))}
         </ul>
+      </section>
+      <section class="panel" aria-label="Rumors">
+        <h2>Rumors</h2>
+        <p class="hint">
+          Buy the common room a round, and someone will tell of a way down nearby that no one is
+          paying to have cleared. The map shows it from then on.
+        </p>
+        {rumors === 0 ? (
+          <p class="hint">The regulars know of no other ways down around here.</p>
+        ) : (
+          <button type="button" onClick={() => props.act(() => buyRumor(w, data))}>
+            Buy a round for a rumor ({priceHere(w, data, rumorListed(data))} crowns)
+          </button>
+        )}
       </section>
       <section class="panel" aria-label="New faces">
         <h2>New faces</h2>

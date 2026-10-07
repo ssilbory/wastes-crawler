@@ -57,7 +57,7 @@ export function MapScreen(props: {
   const here = town?.name ?? map.terrainAt(w.position).name;
   const way = wayDownHere(w, data);
   const road = map.exitAt(w.position);
-  const entrances = entrancesIn(data, w.region);
+  const entrances = entrancesIn(data, w.region, w.rumors);
   return (
     <div class="world">
       <div class="world-bar">
