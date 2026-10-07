@@ -50,103 +50,6 @@
     }
   },
   {
-    "id": "high-mage-partial-expert",
-    "name": "Spellthief",
-    "halves": "High Mage/Expert",
-    "mage": {
-      "traditions": [
-        {
-          "tradition": "high-mage",
-          "partial": true,
-          "arts": "partial-high-mage-arts-and-spells"
-        }
-      ],
-      "slots": "partial-high-mage-arts-and-spells",
-      "startingSpells": 2,
-      "spellsPerLevel": 2,
-      "excludedSpells": []
-    },
-    "abilities": ["quick-learner"]
-  },
-  {
-    "id": "high-mage-partial-warrior",
-    "name": "Spellblade",
-    "halves": "High Mage/Warrior",
-    "mage": {
-      "traditions": [
-        {
-          "tradition": "high-mage",
-          "partial": true,
-          "arts": "partial-high-mage-arts-and-spells"
-        }
-      ],
-      "slots": "partial-high-mage-arts-and-spells",
-      "startingSpells": 2,
-      "spellsPerLevel": 2,
-      "excludedSpells": []
-    }
-  },
-  {
-    "id": "elementalist-partial-expert",
-    "name": "Wayfinder",
-    "halves": "Elementalist/Expert",
-    "mage": {
-      "traditions": [
-        {
-          "tradition": "elementalist",
-          "partial": true,
-          "arts": "partial-elementalist-arts-and-spells"
-        }
-      ],
-      "slots": "partial-elementalist-arts-and-spells",
-      "startingSpells": 2,
-      "spellsPerLevel": 1,
-      "excludedSpells": []
-    },
-    "abilities": ["quick-learner"]
-  },
-  {
-    "id": "elementalist-partial-warrior",
-    "name": "Stormblade",
-    "halves": "Elementalist/Warrior",
-    "mage": {
-      "traditions": [
-        {
-          "tradition": "elementalist",
-          "partial": true,
-          "arts": "partial-elementalist-arts-and-spells"
-        }
-      ],
-      "slots": "partial-elementalist-arts-and-spells",
-      "startingSpells": 2,
-      "spellsPerLevel": 1,
-      "excludedSpells": []
-    }
-  },
-  {
-    "id": "high-mage-partial-other-mage",
-    "name": "Thaumaturge",
-    "halves": "High Mage/Elementalist",
-    "mage": {
-      "traditions": [
-        {
-          "tradition": "high-mage",
-          "partial": true,
-          "arts": "partial-high-mage-arts-and-spells"
-        },
-        {
-          "tradition": "elementalist",
-          "partial": true,
-          "arts": "partial-elementalist-arts-and-spells"
-        }
-      ],
-      "slots": "dual-partial-spellcasters",
-      "startingSpells": 4,
-      "spellsPerLevel": 2,
-      "excludedSpells": []
-    }
-  },
-  {
     "id": "full-necromancer",
     "name": "Necromancer",
     "mage": {
@@ -160,6 +63,23 @@
       "slots": "full-necromancer-arts-and-spells",
       "startingSpells": 4,
       "spellsPerLevel": 1,
+      "excludedSpells": []
+    }
+  },
+  {
+    "id": "full-invoker",
+    "name": "Invoker",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "high-mage",
+          "partial": false,
+          "arts": "full-invoker-spells"
+        }
+      ],
+      "slots": "full-invoker-spells",
+      "startingSpells": 4,
+      "spellsPerLevel": 2,
       "excludedSpells": []
     }
   },
@@ -201,52 +121,6 @@
     }
   },
   {
-    "id": "necromancer-partial-other-mage",
-    "name": "Dread Magus",
-    "halves": "Necromancer/High Mage",
-    "mage": {
-      "traditions": [
-        {
-          "tradition": "necromancer",
-          "partial": true,
-          "arts": "partial-necromancer-arts-and-spells"
-        },
-        {
-          "tradition": "high-mage",
-          "partial": true,
-          "arts": "partial-high-mage-arts-and-spells"
-        }
-      ],
-      "slots": "dual-partial-spellcasters",
-      "startingSpells": 4,
-      "spellsPerLevel": 2,
-      "excludedSpells": []
-    }
-  },
-  {
-    "id": "elementalist-partial-other-mage",
-    "name": "Ashcaller",
-    "halves": "Necromancer/Elementalist",
-    "mage": {
-      "traditions": [
-        {
-          "tradition": "necromancer",
-          "partial": true,
-          "arts": "partial-necromancer-arts-and-spells"
-        },
-        {
-          "tradition": "elementalist",
-          "partial": true,
-          "arts": "partial-elementalist-arts-and-spells"
-        }
-      ],
-      "slots": "dual-partial-spellcasters",
-      "startingSpells": 4,
-      "spellsPerLevel": 2,
-      "excludedSpells": []
-    }
-  },
-  {
     "id": "blood-priest-partial-warrior",
     "name": "Blood Knight",
     "halves": "Blood Priest/Warrior",
@@ -263,6 +137,45 @@
       "spellsPerLevel": 0,
       "excludedSpells": []
     }
+  },
+  {
+    "id": "invoker-partial-warrior",
+    "name": "Warlock",
+    "halves": "Invoker/Warrior",
+    "progression": "high-mage-partial-warrior",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "high-mage",
+          "partial": true,
+          "arts": "partial-invoker-spells"
+        }
+      ],
+      "slots": "partial-invoker-spells",
+      "startingSpells": 2,
+      "spellsPerLevel": 1,
+      "excludedSpells": []
+    }
+  },
+  {
+    "id": "invoker-partial-expert",
+    "name": "Hedge Wizard",
+    "halves": "Invoker/Expert",
+    "progression": "high-mage-partial-expert",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "high-mage",
+          "partial": true,
+          "arts": "partial-invoker-spells"
+        }
+      ],
+      "slots": "partial-invoker-spells",
+      "startingSpells": 2,
+      "spellsPerLevel": 1,
+      "excludedSpells": []
+    },
+    "abilities": ["quick-learner"]
   },
   {
     "id": "healer-partial-mage",

@@ -195,6 +195,7 @@ export function App() {
               option={ev.steps.class.state === 'ok' ? option : undefined}
               choice={choices.magic}
               status={ev.steps.magic}
+              intModifier={ev.intModifier}
               onChange={(magic) => update({ magic })}
             />
             <FreeSkillStep

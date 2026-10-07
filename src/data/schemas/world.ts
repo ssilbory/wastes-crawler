@@ -6,7 +6,7 @@ import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { FactionStateSchema } from './faction-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 28;
+export const WORLD_SCHEMA_VERSION = 29;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -26,6 +26,8 @@ export const MemberSaveSchema = z.strictObject({
   slept: z.boolean(),
   /** Spells cast and day Effort spent since the last night's recovery. */
   spellsCast: z.int().min(0),
+  /** Spell points spent since the last night's recovery: the Invoker's (1.5.11). */
+  pointsSpent: z.int().min(0),
   effortDay: z.int().min(0),
   /** XP won while dead, granted when raised. */
   pendingXp: z.number().min(0).multipleOf(0.5),

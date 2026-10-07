@@ -169,5 +169,28 @@
         "text": "Healer Effort is calculated with Heal rather than Magic, with each PC’s maximum being equal to their Heal skill level plus the better of their Intelligence or Charisma modifiers, to a minimum of one point.\n\nAll Healers are trained in the Healing Touch art, but may develop other techniques with time."
       }
     ]
+  },
+  {
+    "id": "invoker",
+    "name": "Invoker",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.11 The Invoker.md",
+      "heading": "1.5.11 The Invoker"
+    },
+    "description": "The Invoker is an optional spellcasting Mage class that allows a caster to gain flexibility in casting weaker spells. In exchange, an Invoker sacrifices arts and finds more powerful spells to be more draining to cast.",
+    "abilities": [
+      {
+        "name": "Invoker Benefits",
+        "text": "All Invokers gain Magic as a bonus skill, acquiring it at level-0, or level-1 if was already level-0. Their arcane versatility requires a thorough grounding in theory.\n\nInvokers can learn and prepare spells of the High Magic tradition, and have the same limits on casting in armor as they do. Each Invoker can prepare a number of known spells as indicated by the table each day, plus their Intelligence modifier.\n\nEach Invoker has a number of spell points based on their level, to which is added their Intelligence modifier. When they cast the spell, they subtract its level from their available spell points for the day. So long as they have sufficient spell points left, they can cast the same spell repeatedly. Spell points refresh each morning.\n\nInvokers do not normally gain arts; their versatility requires complete focus, barring those who take the Invoker-specific Traditional Education Focus. While it’s possible to be a Partial Invoker, this partial class may not be mixed with another partial spellcasting class.\n\nInvokers begin play knowing four first level High Magic spells, or two if a partial class. When they advance a level, they learn two more of any level or tradition from which they can cast, or one if a partial Invoker."
+      },
+      {
+        "name": "Focus: Traditional Education",
+        "text": "Your Invoker has received a great deal of education in a specialist arcane spellcasting tradition such as High Magic arts, Elementalism or Necromancy. Only Invokers can take this Focus, and it can only be taken once.\n\nLevel 1: You may learn and prepare spells of your chosen tradition as well as those of High Magic. You gain arts as if a first level practitioner of that tradition, full or partial based on whether you’re a full or partial Invoker, and your maximum Effort score is equal to your Magic skill, to a minimum of 1. You cannot gain further arts from this tradition."
+      },
+      {
+        "name": "Partial Invoker Hit Dice And Attack Bonuses",
+        "text": "Partial Invokers use the High Mage partial-class tables for hit dice and attack bonuses when blending with other classes."
+      }
+    ]
   }
 ]

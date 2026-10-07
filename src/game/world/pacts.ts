@@ -5,7 +5,7 @@
 // out of the dungeon, or until the day ends. It wards off traps and breath of that element.
 import type { Element } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
-import { cannotCast } from './casting.ts';
+import { cannotCast, spendCast } from './casting.ts';
 import { note } from './members.ts';
 import type { TownResult } from './services.ts';
 import type { Member, World } from './types.ts';
@@ -39,7 +39,7 @@ export function makePact(
   const target = w.members.find((x) => x.id === targetId);
   if (!target || target.dead) return no('Only a living member can be pacted.');
   if (!ELEMENTS.includes(element)) return no('Choose earth, water, fire, or wind.');
-  (m as Member).spellsCast += 1;
+  spendCast(data, m as Member, PACT);
   w.pacts = { at: scene(w), day: w.day, by: { ...current(w)?.by, [targetId]: element } };
   note(
     w,

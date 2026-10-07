@@ -16,6 +16,7 @@ export function monsterCaster(data: GameData, m: Monster, caster: MonsterCaster)
     effortUsed: 0,
     effortDay: 0,
     spellsLeft: castingRow(table, m.hitDice).spellsCast,
+    pointsLeft: 0,
     prepared: [...caster.spells],
     known: [...caster.spells],
     arts: [...caster.arts],

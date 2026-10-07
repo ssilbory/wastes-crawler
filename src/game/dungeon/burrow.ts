@@ -4,7 +4,7 @@
 // spells, and the passage stays open for the rest of the visit.
 import { ahead } from '../../rules/grid.ts';
 import type { GameData } from '../character/context.ts';
-import { cannotCast } from '../world/casting.ts';
+import { cannotCast, spendCast } from '../world/casting.ts';
 import { alive, note } from '../world/members.ts';
 import type { TownResult } from '../world/services.ts';
 import type { Member, World } from '../world/types.ts';
@@ -33,7 +33,7 @@ export function burrow(w: World, data: GameData, memberId: string): TownResult {
   // The outer wall of a level has nothing beyond it to dig into.
   if (!levelOf(data, s.dungeon, s.level).map.inBounds(ahead(s.at, s.facing)))
     return no('Only solid rock lies beyond.');
-  (m as Member).spellsCast += 1;
+  spendCast(data, m as Member, BURROWER);
   s.dug[s.level] = [...(s.dug[s.level] ?? []), edgeKey(s.at, s.facing)];
   note(w, `${(m as Member).character.name} parts the stone, and a passage opens ahead.`);
   look(w, data, s);

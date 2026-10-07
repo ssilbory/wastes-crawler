@@ -2,6 +2,7 @@
 import type { GameData } from '../game/character/context.ts';
 import { characterSheet } from '../game/character/derived.ts';
 import { BONESHAPER } from '../game/world/boneshaper.ts';
+import { poolOf } from '../game/world/casting.ts';
 import { corpsesHere, RAISED } from '../game/world/necromancy.ts';
 import {
   cannotQuery,
@@ -11,11 +12,13 @@ import {
 } from '../game/world/skull.ts';
 import type { World } from '../game/world/types.ts';
 import { characterLevel } from '../rules/progression.ts';
+import { castsLeftText } from './casting-view.ts';
 
 export interface CasterView {
   id: string;
   name: string;
-  spellsLeft: number;
+  /** "3 spells left today", or with spell points. */
+  left: string;
   raise: boolean;
   knight: boolean;
   command: boolean;
@@ -65,7 +68,7 @@ export function necromancyView(
       {
         id: m.id,
         name: m.character.name,
-        spellsLeft: Math.max(0, magic.slots.spellsCast - m.spellsCast),
+        left: castsLeftText(poolOf(m, magic), magic),
         raise,
         knight: prepared.includes('raise-grave-knight'),
         command: prepared.includes('command-the-dead'),

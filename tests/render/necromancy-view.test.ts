@@ -45,7 +45,7 @@ describe('necromancy view (Phase 14b)', () => {
         {
           id: m.id,
           name: 'Fizzwick',
-          spellsLeft: 1,
+          left: '1 spell left today',
           raise: true,
           knight: false,
           command: false,
@@ -62,7 +62,7 @@ describe('necromancy view (Phase 14b)', () => {
     };
     m.spellsCast = 9;
     expect(necromancyView(w, data)?.casters[0]).toMatchObject({
-      spellsLeft: 0,
+      left: '0 spells left today',
       raise: false,
       command: true,
       mend: [],

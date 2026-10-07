@@ -1,4 +1,4 @@
-// The class picker's list (Sam's call, docs/rules-adaptation.md, Class names): the single classes
+// The class picker's list (Sam's call, docs/rules-adaptation.md, Class roster): the single classes
 // first, then the partial ones, each in content order, a partial class labeled with its halves.
 import type { ClassOption } from '../data/schemas/index.ts';
 

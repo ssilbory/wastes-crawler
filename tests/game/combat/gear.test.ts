@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { act } from '../../../src/game/combat/actions.ts';
 import { commandsFor } from '../../../src/game/combat/commands.ts';
 import { readyOrStow } from '../../../src/game/combat/gear.ts';
-import { carryBack } from '../../../src/game/world/fight.ts';
+import { carryBack } from '../../../src/game/world/carry-back.ts';
 import { member, world } from '../world/helpers.ts';
 import { data, standardBattle, who } from './helpers.ts';
 

@@ -502,6 +502,18 @@ describe('summoning and the seemingly slain', () => {
     expect(log(b)).toContain("Snag's remains flow back together.");
   });
 
+  it('Prudentially Transient Abnegation of Life costs an Invoker 2 points (1.5.11)', () => {
+    const b = standardBattle([['thug-or-militia']]);
+    const f = mage(b, ['prudentially-transient-abnegation-of-life'], 3);
+    Object.assign(f.caster as CasterState, { spellsLeft: 0, pointsLeft: 3 });
+    const snag = who(b, 'Snag');
+    harm(b, snag, snag.hp);
+    expect([snag.status, (f.caster as CasterState).pointsLeft]).toEqual(['out', 1]);
+    const grukk = who(b, 'Grukk');
+    harm(b, grukk, grukk.hp);
+    expect(grukk.status).toBe('dying');
+  });
+
   it('leaves the seemingly slain on a lost field', () => {
     const b = standardBattle([['thug-or-militia']]);
     mage(b, ['prudentially-transient-abnegation-of-life'], 3);

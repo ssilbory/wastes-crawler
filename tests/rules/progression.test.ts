@@ -101,6 +101,7 @@ describe('castingRow', () => {
       level: 1,
       maxSpellLevel: 1,
       spellsCast: 1,
+      spellPoints: 0,
       spellsPrepared: 3,
       arts: ['elemental-resilience', 'elemental-sparks'],
       anyArts: 1,
@@ -109,6 +110,7 @@ describe('castingRow', () => {
       level: 11,
       maxSpellLevel: 5,
       spellsCast: 7,
+      spellPoints: 0,
       spellsPrepared: 13,
       arts: [],
       anyArts: 0,
@@ -117,10 +119,23 @@ describe('castingRow', () => {
     expect(castingRow(elementalist, 19)).toMatchObject({
       maxSpellLevel: 5,
       spellsCast: 12,
+      spellPoints: 0,
       spellsPrepared: 22,
     });
     expect(castingRow(elementalist, 20)).toMatchObject({ spellsCast: 12, spellsPrepared: 23 });
     expect(() => castingRow(elementalist, 0)).toThrow();
+  });
+
+  it('reads the Invoker’s spell points, extended past 10th like spells cast (1.5.11)', () => {
+    const invoker = casting('full-invoker-spells');
+    expect(castingRow(invoker, 1)).toMatchObject({
+      spellsCast: 0,
+      spellPoints: 1,
+      spellsPrepared: 2,
+    });
+    expect(castingRow(invoker, 10)).toMatchObject({ spellPoints: 11, spellsPrepared: 9 });
+    // 11 + (row 3 − row 2) = 11 + 1.
+    expect(castingRow(invoker, 11).spellPoints).toBe(12);
   });
 });
 

@@ -41,6 +41,11 @@ export const ClassOptionSchema = z.strictObject({
   name: z.string().min(1),
   /** A partial class's two halves, shown beside its name in the class picker (Sam's call). */
   halves: z.string().min(1).optional(),
+  /**
+   * The SRD level table, when it is another option's: partial Invokers use the High Mage
+   * partial-class tables (vendor/wwn-srd/1.0 Character Creation/1.5.0 Class List/1.5.11 The Invoker.md).
+   */
+  progression: IdSchema.optional(),
   /** Class abilities that matter to the engine: the full Warrior's (SRD 1.5.18), and the Expert's
    * Quick Learner (1.5.8), which partial Experts share (1.5.1). */
   abilities: z.array(z.enum(['killing-blow', 'veterans-luck', 'quick-learner'])).optional(),

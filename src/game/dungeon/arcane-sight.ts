@@ -7,7 +7,7 @@ import type { Special } from '../../data/schemas/index.ts';
 import { cellKey } from '../../rules/grid.ts';
 import { characterLevel } from '../../rules/progression.ts';
 import type { GameData } from '../character/context.ts';
-import { cannotCast } from '../world/casting.ts';
+import { cannotCast, spendCast } from '../world/casting.ts';
 import { note } from '../world/members.ts';
 import type { TownResult } from '../world/services.ts';
 import type { Member, World } from '../world/types.ts';
@@ -37,7 +37,7 @@ export function apprehend(w: World, data: GameData, memberId: string): TownResul
   const why = cannotCast(data, m, ARCANE_FORM);
   if (why) return no(why);
   const caster = m as Member;
-  caster.spellsCast += 1;
+  spendCast(data, caster, ARCANE_FORM);
   s.sight = {
     member: caster.id,
     until: s.turn + sightTurns(characterLevel(caster.character.classes)),

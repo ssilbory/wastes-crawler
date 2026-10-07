@@ -176,6 +176,14 @@ describe('High Magic sheltering spells (Phase 18d, 4.4.0)', () => {
     expect(lirael.status).not.toBe('dying');
   });
 
+  it('The Invincible Citadel costs an Invoker 5 points (1.5.11)', () => {
+    const b = standardBattle([['thug-or-militia']]);
+    const f = mage(b, ['invocation-of-the-invincible-citadel'], 9);
+    Object.assign(f.caster as CasterState, { spellsLeft: 0, pointsLeft: 5 });
+    harm(b, who(b, 'Snag'), 99);
+    expect([b.escaped, (f.caster as CasterState).pointsLeft]).toEqual([true, 0]);
+  });
+
   it('The Invincible Citadel spares the Frail, and once up costs nothing more', () => {
     const b = standardBattle([['thug-or-militia']]);
     const f = mage(b, ['invocation-of-the-invincible-citadel'], 9);

@@ -7,7 +7,7 @@
 import type { PendingEncounter } from '../../data/schemas/index.ts';
 import { characterLevel } from '../../rules/progression.ts';
 import type { GameData } from '../character/context.ts';
-import { cannotCast } from './casting.ts';
+import { cannotCast, spendCast } from './casting.ts';
 import { alive, note } from './members.ts';
 import type { TownResult } from './services.ts';
 import type { Member, World } from './types.ts';
@@ -34,7 +34,7 @@ export function adoptVisage(w: World, data: GameData, memberId: string): TownRes
   const level = characterLevel(m.character.classes);
   if (ids.length > level)
     return no(`${m.character.name} can change no more than ${level} of the party.`);
-  m.spellsCast += 1;
+  spendCast(data, m, VISAGE);
   w.disguise = { day: w.day, ids };
   note(w, `${m.character.name} gives the party the seeming of the bound.`);
   return { ok: true };
@@ -67,7 +67,7 @@ export function raisePalanquin(w: World, data: GameData, memberId: string): Town
   if (palanquinUp(w)) return no('The palanquin already floats beside the party.');
   const m = caster(w, data, memberId, PALANQUIN);
   if (typeof m === 'string') return no(m);
-  m.spellsCast += 1;
+  spendCast(data, m, PALANQUIN);
   w.palanquin = w.quarter < 2 ? w.day * 4 + 2 : (w.day + 1) * 4;
   note(w, `${m.character.name} calls up a jade palanquin, and the party's packs ride on it.`);
   return { ok: true };

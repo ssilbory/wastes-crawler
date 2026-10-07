@@ -4,7 +4,7 @@
 // garrison. The post counts as beaten, with no loot and no XP, and its order holds elsewhere.
 // Underground the tremor would bury the party too, so it is cast only above ground.
 import type { GameData } from '../character/context.ts';
-import { cannotCast } from './casting.ts';
+import { cannotCast, spendCast } from './casting.ts';
 import { note } from './members.ts';
 import type { TownResult } from './services.ts';
 import type { Member, World } from './types.ts';
@@ -32,7 +32,7 @@ export function topple(w: World, data: GameData, memberId: string): TownResult {
   const bar = cannotCast(data, m, TREMORS);
   if (bar) return no(bar);
   const e = w.encounter as NonNullable<World['encounter']>;
-  (m as Member).spellsCast += 1;
+  spendCast(data, m as Member, TREMORS);
   w.beaten.push(e.garrison as string);
   w.encounter = null;
   note(

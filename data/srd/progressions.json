@@ -3229,5 +3229,142 @@
         ]
       }
     ]
+  },
+  {
+    "id": "full-invoker",
+    "name": "Full Invoker",
+    "sources": [
+      {
+        "file": "1.0 Character Creation/1.5.0 Class List/1.5.11 The Invoker.md",
+        "heading": "Full Invoker"
+      }
+    ],
+    "levels": [
+      {
+        "level": 1,
+        "hitDice": {
+          "count": 1,
+          "sides": 6,
+          "modifier": -1
+        },
+        "attackBonus": 0,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "hitDice": {
+          "count": 2,
+          "sides": 6,
+          "modifier": -2
+        },
+        "attackBonus": 0,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "hitDice": {
+          "count": 3,
+          "sides": 6,
+          "modifier": -3
+        },
+        "attackBonus": 0,
+        "focusPicks": []
+      },
+      {
+        "level": 4,
+        "hitDice": {
+          "count": 4,
+          "sides": 6,
+          "modifier": -4
+        },
+        "attackBonus": 0,
+        "focusPicks": []
+      },
+      {
+        "level": 5,
+        "hitDice": {
+          "count": 5,
+          "sides": 6,
+          "modifier": -5
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "hitDice": {
+          "count": 6,
+          "sides": 6,
+          "modifier": -6
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 7,
+        "hitDice": {
+          "count": 7,
+          "sides": 6,
+          "modifier": -7
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "hitDice": {
+          "count": 8,
+          "sides": 6,
+          "modifier": -8
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 9,
+        "hitDice": {
+          "count": 9,
+          "sides": 6,
+          "modifier": -9
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 10,
+        "hitDice": {
+          "count": 10,
+          "sides": 6,
+          "modifier": -10
+        },
+        "attackBonus": 2,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      }
+    ]
   }
 ]

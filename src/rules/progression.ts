@@ -78,6 +78,8 @@ export interface CastingLevelRow {
   level: number;
   maxSpellLevel: number;
   spellsCast: number;
+  /** The Invoker's daily spell points (1.5.11); 0 for other casters. */
+  spellPoints: number;
   spellsPrepared: number;
   /** Named arts and free art picks gained at this level. */
   arts: string[];
@@ -95,6 +97,7 @@ export function castingRow(c: CastingProgression, level: number): CastingLevelRo
       extended(level, (l) => row(l).maxSpellLevel),
     ),
     spellsCast: extended(level, (l) => row(l).spellsCast),
+    spellPoints: extended(level, (l) => row(l).spellPoints ?? 0),
     spellsPrepared: extended(level, (l) => row(l).spellsPrepared),
     arts: gains.arts,
     anyArts: gains.anyArts,

@@ -8,23 +8,20 @@ import {
   type ModifierBonuses,
 } from '../../rules/attributes.ts';
 import { canCastIn, effortMaximum, type ArmoredCasting } from '../../rules/magic.ts';
-import { castingRow, type CastingLevelRow, type ClassLevels } from '../../rules/progression.ts';
+import { castingRow, type ClassLevels } from '../../rules/progression.ts';
 import { classOption, findTradition } from './class-step.ts';
 import type { GameData } from './context.ts';
 import { activeEffects } from './equipment.ts';
 import type { HeldFocus } from './foci.ts';
 import { entryEncumbrance, findItem, type InventoryEntry } from './items.ts';
 import type { Skills } from './skills.ts';
+import { addsInt, castingTable, gainsArts, spellSlots } from './slots.ts';
 import { fail, INCOMPLETE, OK, type StepStatus } from './steps.ts';
 import { gameSpells, type GameSpell } from '../../data/spells.ts';
 
 type Mage = NonNullable<ClassOption['mage']>;
 
-function table(data: GameData, id: string) {
-  const t = data.srd['casting-progressions'].find((c) => c.id === id);
-  if (!t) throw new Error(`unknown casting table ${id}`);
-  return t;
-}
+export { addsInt, gainsArts, spellSlots };
 
 export interface ArtPick {
   tradition: string;
@@ -37,16 +34,12 @@ export interface ArtPick {
 /** Each class picks its own arts (4.1.0), from its tradition's arts table. */
 export function artPicks(data: GameData, mage: Mage, level = 1): ArtPick[] {
   return mage.traditions.map((t) => {
-    const row = castingRow(table(data, t.arts), level);
+    const row = castingRow(castingTable(data, t.arts), level);
     // Excluded arts are never granted, not even automatically (Elemental Sparks, Phase 15).
     const excluded = findTradition(data, t.tradition)?.excludedArts ?? [];
     const automatic = row.arts.filter((a) => !excluded.includes(a));
     return { tradition: t.tradition, automatic, picks: row.anyArts };
   });
-}
-
-export function spellSlots(data: GameData, mage: Mage, level = 1): CastingLevelRow {
-  return castingRow(table(data, mage.slots), level);
 }
 
 /**
@@ -157,6 +150,7 @@ export function evaluateMagic(
   data: GameData,
   mage: Mage | undefined,
   choice: MagicChoice | null,
+  intModifier = 0,
 ): MagicOutcome {
   const empty = (status: StepStatus): MagicOutcome => ({
     status,
@@ -193,7 +187,7 @@ export function evaluateMagic(
   );
   if (stray) return done(fail(`${stray} isn't an art of your tradition`));
 
-  const slots = spellSlots(data, mage);
+  const slots = spellSlots(data, mage, 1, intModifier);
   const learnable = new Set(learnableSpells(data, mage, slots.maxSpellLevel).map((s) => s.id));
   const unknown = choice.known.find((id) => !learnable.has(id));
   if (unknown) return done(fail(`${unknown} isn't a spell you can learn yet`));

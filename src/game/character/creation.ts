@@ -28,7 +28,7 @@ import { findProgression, isSkill, type GameData } from './context.ts';
 import { loadoutSummary, type EquipmentSummary } from './equipment.ts';
 import { evaluateClass } from './class-step.ts';
 import { evaluateGear } from './gear.ts';
-import { effortFor, evaluateMagic, type MagicOutcome } from './magic.ts';
+import { effortFor, evaluateMagic, gainsArts, type MagicOutcome } from './magic.ts';
 import type { InventoryEntry } from './items.ts';
 import { evaluatePeople, findLineage, findPeople } from './people.ts';
 import { addCreationSkill, type Skills } from './skills.ts';
@@ -133,8 +133,9 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
     }
   }
 
+  const intModifier = scores ? boostedModifier(scores.int, modifierBonuses.int) : 0;
   if (classOk) {
-    magic = evaluateMagic(data, cls.option?.mage, choices.magic);
+    magic = evaluateMagic(data, cls.option?.mage, choices.magic, intModifier);
     steps.magic = magic.status;
   }
 
@@ -151,7 +152,8 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
     }
   }
 
-  if (scores && classOk) {
+  const mage = cls.option?.mage;
+  if (scores && classOk && mage && gainsArts(data, mage)) {
     effort = effortFor(
       data,
       startingClass(choices.classId as string),
@@ -195,6 +197,7 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
     classReplacing: cls.replacing,
     foci,
     modifierBonuses,
+    intModifier,
     inventory,
     crownsTenths,
     equipment,
@@ -248,7 +251,7 @@ export function finishCharacter(choices: Choices, data: GameData, rng: Rng): Fin
     inventory: ev.inventory,
     crowns: ev.crownsTenths / 10,
     skills: ev.skills,
-    classes: startingClass(progression.id),
+    classes: startingClass(choices.classId as string),
     hp: { max: hp, current: hp },
     xp: 0,
     advancement: { skillPoints: 0, quickPoints: 0, skillCredit: {} },

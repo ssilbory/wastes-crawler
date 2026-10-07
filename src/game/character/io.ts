@@ -3,6 +3,7 @@ import {
   CharacterSchema,
   type Character,
 } from '../../data/schemas/index.ts';
+import { classOption } from './class-step.ts';
 import { findProgression, isSkill, type GameData } from './context.ts';
 import { focusInfo } from './foci.ts';
 import { findItem } from './items.ts';
@@ -117,7 +118,7 @@ export function importCharacter(
     if (!focusInfo(data, f.id)) errors.push(`foci: unknown ${f.id}`);
   }
   for (const id of Object.keys(c.classes.levels)) {
-    if (!findProgression(data, id)) errors.push(`classes: unknown ${id}`);
+    if (!classOption(data, id) || !findProgression(data, id)) errors.push(`classes: unknown ${id}`);
   }
   if (!Object.hasOwn(c.classes.levels, c.classes.current)) {
     errors.push(`classes.current: ${c.classes.current} has no level entry`);

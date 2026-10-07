@@ -4,7 +4,9 @@
 // Phase 18a the High Magic spell Prudentially Transient Abnegation of Life, and in Phase 18d the
 // Invincible Citadel.
 import { roll } from '../../rules/dice.ts';
+import { canPay, payFor } from '../../rules/spell-points.ts';
 import { say } from './log.ts';
+import { spellLevel } from './spell-level.ts';
 import { canAct } from './targeting.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
 
@@ -116,12 +118,13 @@ export function abnegate(b: Battle, target: Combatant): boolean {
   for (const x of b.combatants) {
     const c = x.caster;
     if (x.side !== target.side || !(x === target || x.status === 'active')) continue;
-    if (!c?.canCast || c.spellsLeft === 0) continue;
-    const effect = b.data.content.combatMagic.find(
+    if (!c?.canCast) continue;
+    const spell = b.data.content.combatMagic.find(
       (m) => m.effect.kind === 'abnegation' && c.prepared.includes(m.id),
-    )?.effect;
-    if (effect?.kind !== 'abnegation') continue;
-    c.spellsLeft -= 1;
+    );
+    const effect = spell?.effect;
+    if (!spell || effect?.kind !== 'abnegation' || !canPay(c, spellLevel(b, spell.id))) continue;
+    payFor(c, spellLevel(b, spell.id));
     target.status = 'out';
     target.revives = { hp: effect.hpPerLevel * c.level, strain: effect.strain };
     say(b, `${target.name} is cut down in a spray of gore, to all eyes dead.`);
@@ -140,12 +143,13 @@ export function everlast(b: Battle, target: Combatant): boolean {
   for (const x of b.combatants) {
     const c = x.caster;
     if (x.side !== target.side || !(x === target || x.status === 'active')) continue;
-    if (!c?.canCast || c.spellsLeft === 0) continue;
+    if (!c?.canCast) continue;
     const m = b.data.content.combatMagic.find(
       (y) => y.effect.kind === 'everlasting' && c.prepared.includes(y.id),
     );
     if (m?.effect.kind !== 'everlasting' || c.usedThisScene.has(m.id)) continue;
-    c.spellsLeft -= 1;
+    if (!canPay(c, spellLevel(b, m.id))) continue;
+    payFor(c, spellLevel(b, m.id));
     c.usedThisScene.add(m.id);
     b.everlasting = { side: x.side, caster: x.id, until: b.round + m.effect.rounds - 1 };
     say(b, `${x.name} pours unquenchable life into ${b.sideNames[x.side]}.`);
@@ -164,12 +168,12 @@ export function shelter(b: Battle, target: Combatant): boolean {
   for (const x of b.combatants) {
     const c = x.caster;
     if (x.side !== 'party' || !(x === target || canAct(x))) continue;
-    if (!c?.canCast || c.spellsLeft === 0) continue;
+    if (!c?.canCast) continue;
     const m = b.data.content.combatMagic.find(
       (y) => y.effect.kind === 'citadel' && c.prepared.includes(y.id),
     );
-    if (!m) continue;
-    c.spellsLeft -= 1;
+    if (!m || !canPay(c, spellLevel(b, m.id))) continue;
+    payFor(c, spellLevel(b, m.id));
     b.escaped = true;
     b.outcome = 'draw';
     say(b, `${x.name} raises the Invincible Citadel; the foes can't reach the party and give up.`);

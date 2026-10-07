@@ -7,6 +7,7 @@ import { netSteps } from '../../rules/advantage.ts';
 import { roll } from '../../rules/dice.ts';
 import { strainCastCost } from '../../rules/magic.ts';
 import type { SaveType } from '../../rules/saves.ts';
+import { canPay, payFor } from '../../rules/spell-points.ts';
 import { addStrain } from '../../rules/strain.ts';
 import { effectiveAc, harm, save, say } from './damage.ts';
 import { attackSteps, hitModifier, isUp } from './targeting.ts';
@@ -16,6 +17,7 @@ import { healingFails, necromancerEffect } from './necromancer.ts';
 import { bearsHealing, takeHealingStrain } from './healing-strain.ts';
 import { donorFor, sanctuaryEffect } from './sanctuary.ts';
 import { highMagicEffect, type Resists } from './high-magic.ts';
+import { spellLevel } from './spell-level.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
 import { gameSpells } from '../../data/spells.ts';
 
@@ -23,8 +25,6 @@ export function combatMagic(b: Battle, id: string): CombatMagic | undefined {
   return b.data.content.combatMagic.find((m) => m.id === id);
 }
 
-const spellLevel = (b: Battle, id: string) =>
-  gameSpells(b.data.srd, b.data.content).find((s) => s.id === id)?.level ?? 1;
 export const magicName = (b: Battle, id: string) =>
   [...gameSpells(b.data.srd, b.data.content), ...b.data.srd.arts].find((x) => x.id === id)?.name ??
   id;
@@ -73,7 +73,7 @@ export function canUse(
       c.known.includes(m.id) && s !== null && !s.broken && s.strain + spellLevel(b, m.id) <= s.max
     );
   }
-  return c.prepared.includes(m.id) && c.spellsLeft > 0;
+  return c.prepared.includes(m.id) && canPay(c, spellLevel(b, m.id));
 }
 
 /** A target's save, which Inexorable Effect can make the target reroll once per scene. */
@@ -108,7 +108,7 @@ function pay(b: Battle, actor: Combatant, m: CombatMagic, strain: boolean): void
   } else if (strain && actor.strain) {
     const outcome = addStrain(actor.strain, strainCastCost(spellLevel(b, m.id)), 'strain-cast');
     actor.strain = outcome.state;
-  } else if (!retainsSpell(b, actor)) c.spellsLeft -= 1;
+  } else if (!retainsSpell(b, actor)) payFor(c, spellLevel(b, m.id));
 }
 
 /** Healing that revives the Mortally Wounded and adds System Strain, unless it is refused. */
