@@ -138,8 +138,9 @@ describe('groves of walking trees (Sam’s calls)', () => {
 });
 
 describe('groves and the roads', () => {
-  it('never cut a hex off from the region’s start', () => {
-    for (const region of data.content.regions) {
+  it.each(data.content.regions.map((r) => [r.id, r] as const))(
+    'never cut a hex off from the start of %s',
+    (_, region) => {
       const w = world();
       w.region = region.id;
       const map = regionMap(data, region.id);
@@ -158,6 +159,6 @@ describe('groves and the roads', () => {
           `${region.id} ${key}`,
         ).not.toBeNull();
       }
-    }
-  });
+    },
+  );
 });
