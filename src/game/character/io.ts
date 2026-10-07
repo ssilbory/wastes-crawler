@@ -6,6 +6,7 @@ import {
 import { classOption } from './class-step.ts';
 import { findProgression, isSkill, type GameData } from './context.ts';
 import { focusInfo } from './foci.ts';
+import { formProblem } from './forms.ts';
 import { findItem } from './items.ts';
 import { findLineage, findPeople } from './people.ts';
 import { retire } from './retired.ts';
@@ -120,6 +121,8 @@ export function importCharacter(
   for (const id of Object.keys(c.classes.levels)) {
     if (!classOption(data, id) || !findProgression(data, id)) errors.push(`classes: unknown ${id}`);
   }
+  const forms = formProblem(data, c, c.forms ?? []);
+  if (forms) errors.push(`forms: ${forms}`);
   if (!Object.hasOwn(c.classes.levels, c.classes.current)) {
     errors.push(`classes.current: ${c.classes.current} has no level entry`);
   }

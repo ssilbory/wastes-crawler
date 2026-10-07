@@ -18,6 +18,7 @@ import { PartyPanel } from './PartyPanel.tsx';
 import { HealerPanel } from './HealerPanel.tsx';
 import { PurgePanel } from './PurgePanel.tsx';
 import { GreenwoodPanel } from './GreenwoodPanel.tsx';
+import { FormsPanel } from './FormsPanel.tsx';
 import { ConjunctPanel } from './ConjunctPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
 import { PactPanel } from './PactPanel.tsx';
@@ -270,6 +271,7 @@ export function DungeonScreen(props: {
           <NpcPanel world={w} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />
           <GreenwoodPanel world={w} onChange={props.onChange} />
+          <FormsPanel world={w} onChange={props.onChange} />
           <ConjunctPanel world={w} onChange={props.onChange} />
           <SorceryPanel world={w} onChange={props.onChange} />
           <PactPanel world={w} onChange={props.onChange} />

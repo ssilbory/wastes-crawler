@@ -90,6 +90,18 @@ const ART_SECTIONS: {
     tradition: 'necromancer',
     automatic: false,
   },
+  {
+    file: `${CLASS_DIR}/1.5.15 The Skinshifter.md`,
+    heading: /^1\.5\.15\.1 Skinshifter Arts$/,
+    tradition: 'skinshifter',
+    automatic: true,
+  },
+  {
+    file: `${CLASS_DIR}/1.5.15 The Skinshifter.md`,
+    heading: /^Other Skinshifter Arts$/,
+    tradition: 'skinshifter',
+    automatic: false,
+  },
 ];
 
 export function extractArts(reader: SrdReader): Art[] {

@@ -45,7 +45,7 @@ export interface BattleSetup {
   data: GameData;
   rng: Rng;
   /** PCs fill the front row left to right, then the rear, unless a slot is given. */
-  party: { character: Character; row?: number; column?: number }[];
+  party: { character: Character; row?: number; column?: number; form?: number | null }[];
   /** Monster rows on the party's side, front first, for monster-vs-monster fights. */
   allies?: string[][];
   /** NPCs in the party's formation: hirelings and captives (docs/rules-adaptation.md). */
@@ -92,7 +92,7 @@ export function createBattle(s: BattleSetup): Battle {
   checkRows(s.enemies);
   const party: Combatant[] = [
     ...s.party.map((p, i) => ({
-      ...pcCombatant(s.data, p.character, `pc-${i}`),
+      ...pcCombatant(s.data, p.character, `pc-${i}`, p.form ?? null),
       row: p.row ?? Math.floor(i / ROW_SLOTS),
       column: p.column ?? i % ROW_SLOTS,
     })),

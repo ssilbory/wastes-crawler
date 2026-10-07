@@ -7,11 +7,18 @@ import type { WorldBattle } from './fight.ts';
 import { note, setHp } from './members.ts';
 import { removeNpc } from './npcs.ts';
 import type { Member, Npc, World } from './types.ts';
+import { wearForm } from './wear.ts';
 
 export function carryBack(data: GameData, m: Member, c: Battle['combatants'][number]): void {
-  // Gear readied or stowed mid-fight stays where it was put, even by the fallen.
-  if (c.character) m.character = { ...m.character, inventory: c.character.inventory };
+  // Gear readied or stowed mid-fight stays where it was put, even by the fallen; so does the form,
+  // with the hit point maximum Feral Prowess gave it.
+  if (c.character) {
+    const { inventory, hp } = c.character;
+    m.character = { ...m.character, inventory, hp: { ...m.character.hp, max: hp.max } };
+  }
+  m.form = c.form;
   if (c.status === 'dead') {
+    wearForm(data, m, null);
     m.dead = true;
     setHp(m, 0);
     return;

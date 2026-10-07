@@ -2,6 +2,7 @@
 // Instinct check (vendor/wwn-srd/5.0 Monsters and Foes/Instinct Checks.md) makes them lash out at a
 // random target; casters cast first, as PCs do, unless Instinct has them. PCs in auto-combat
 // stabilize the dying, use combat magic, then attack.
+import { shiftAction } from './forms.ts';
 import type { Dice } from '../../data/schemas/index.ts';
 import { rollDie } from '../../rules/dice.ts';
 import { breathRow } from './specials.ts';
@@ -183,6 +184,8 @@ export function partyAction(b: Battle, actor: Combatant): Action {
       (first ? { kind: 'stabilize', target: first.id } : { kind: 'total-defense' })
     );
   if (first && !inMelee(b, actor)) return { kind: 'stabilize', target: first.id };
+  const form = shiftAction(actor);
+  if (form) return form;
   const magic = magicAction(b, actor);
   if (magic) return magic;
   const attack = attackWeakest(b, actor);

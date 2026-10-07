@@ -92,7 +92,16 @@ export interface Loadout {
   foci: readonly HeldFocus[];
   level: number;
   attackBonus: number;
+  /** An alternate form's attacks and bonuses, beside the foci's (forms.ts). */
+  formEffects?: readonly FocusEffect[];
+  /** An alternate form's base AC: Intrinsic Armor (forms.ts). */
+  formAc?: number | null;
 }
+
+const effectsOf = (data: GameData, l: Loadout) => [
+  ...activeEffects(data, l.foci),
+  ...(l.formEffects ?? []),
+];
 
 export function loadoutArmorClass(data: GameData, l: Loadout): number {
   return armorClass(loadoutArmorClassInput(data, l));
@@ -109,9 +118,12 @@ export function loadoutArmorClassInput(data: GameData, l: Loadout): ArmorClassIn
     r?.item.kind === 'armor'
       ? r.item.armor.ac + (r.entry.barding ? 0 : upgrade(data, r.entry).ac)
       : null;
-  const innate = activeEffects(data, l.foci).flatMap((e) =>
-    e.kind === 'innate-ac' ? [innateArmorClass(e.base, l.level)] : [],
-  );
+  const innate = [
+    ...activeEffects(data, l.foci).flatMap((e) =>
+      e.kind === 'innate-ac' ? [innateArmorClass(e.base, l.level)] : [],
+    ),
+    ...(l.formAc ? [l.formAc] : []),
+  ];
   return {
     armorAc: acOf(armor),
     ...(l.people.barding ? { barding: { ac: acOf(barding) } } : {}),
@@ -211,7 +223,7 @@ function attackLine(
 
 /** One line per readied weapon and mode, plus natural weapons and an unarmed attack. */
 export function loadoutAttacks(data: GameData, l: Loadout): AttackLine[] {
-  const effects = activeEffects(data, l.foci);
+  const effects = effectsOf(data, l);
   const sources: [Source, AttackMode[]][] = [];
   const seen = new Set<string>();
   const readied = resolve(data, l.entries).flatMap(({ entry, item }) =>

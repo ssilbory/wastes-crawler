@@ -1,4 +1,5 @@
 // The character creation choices and their evaluated result.
+import type { Form } from '../../data/schemas/index.ts';
 import type { AttributeScores, ModifierBonuses } from '../../rules/attributes.ts';
 import type { Adjustments, AttributeMethod } from './attributes.ts';
 import type { ChosenBackground } from './background.ts';
@@ -30,6 +31,8 @@ export interface Choices {
   foci: (FocusChoice | null)[];
   /** Arts and starting spells, for Mage classes. */
   magic: MagicChoice | null;
+  /** A Skinshifter's first form (1.5.15); absent in drafts saved before forms. */
+  forms?: Form[];
   freeSkill: string | null;
   gear: GearChoice | null;
   name: string;

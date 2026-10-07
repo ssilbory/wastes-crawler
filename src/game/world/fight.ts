@@ -90,6 +90,8 @@ export interface PartySetup {
     frail: boolean;
     spellsCast: number;
     pointsSpent: number;
+    /** The alternate form worn into the fight (1.5.15). */
+    form: number | null;
     effortDay: number;
     /** Limited art uses since the last rest (Phase 15). */
     artUses: Record<string, number>;
@@ -124,6 +126,7 @@ export function partySetup(
       frail: m.frail,
       spellsCast: m.spellsCast,
       pointsSpent: m.pointsSpent,
+      form: m.form,
       effortDay: m.effortDay,
       artUses: { ...m.artUses },
       committed: m === faith ? 1 : 0,
@@ -142,7 +145,12 @@ export function battleFrom(data: GameData, rng: Rng, setup: PartySetup, log: boo
   const battle = createBattle({
     data,
     rng,
-    party: setup.party.map((p) => ({ character: p.character, row: p.row, column: p.column })),
+    party: setup.party.map((p) => ({
+      character: p.character,
+      row: p.row,
+      column: p.column,
+      form: p.form,
+    })),
     npcs: setup.npcs,
     enemies: setup.enemies.map((r) => [...r]),
     dark: setup.dark,

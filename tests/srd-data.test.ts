@@ -13,16 +13,16 @@ describe('data/srd', () => {
     expect(Object.fromEntries(Object.entries(srd).map(([k, v]) => [k, v.length]))).toEqual({
       skills: 21,
       foci: 35,
-      classes: 10,
-      progressions: 24,
-      'casting-progressions': 11,
+      classes: 11,
+      progressions: 27,
+      'casting-progressions': 12,
       'weapon-traits': 12,
       weapons: 29,
       armor: 15,
       gear: 29,
       'gear-bundles': 6,
       spells: 83,
-      arts: 65,
+      arts: 80,
       monsters: 35,
       'faction-assets': 81,
     });
@@ -128,6 +128,23 @@ describe('data/srd', () => {
       hitDice: { count: 10, sides: 6, modifier: -10 },
       attackBonus: 2,
     });
+  });
+
+  it('reads the Skinshifter’s tables and arts, with the PDF’s casing (pages 28 and 29)', () => {
+    const table = srd['casting-progressions'].find(
+      (p) => p.id === 'skinshifter-arts-and-form-bonus',
+    );
+    expect(table?.levels.map((l) => l.formBonus)).toEqual([1, 1, 2, 2, 3, 3, 4, 4, 5, 6]);
+    expect(table?.levels[0]).toMatchObject({ maxSpellLevel: 0, arts: ['change-form'], anyArts: 1 });
+    expect(
+      srd.progressions.find((p) => p.id === 'partial-warrior-skinshifter')?.levels[9],
+    ).toMatchObject({ hitDice: { count: 10, sides: 6, modifier: 20 }, attackBonus: 7 });
+    const arts = srd.arts.filter((a) => a.tradition === 'skinshifter');
+    expect(arts.filter((a) => a.automatic).map((a) => a.id)).toEqual(['change-form']);
+    expect(arts.find((a) => a.id === 'eyes-of-the-hawk')).toMatchObject({
+      name: 'Eyes of the Hawk',
+    });
+    expect(arts.find((a) => a.id === 'pliant-flesh')?.text).toContain('Whenever you spend Effort');
   });
 
   it('records every copy of a shared progression table', () => {

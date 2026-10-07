@@ -243,5 +243,26 @@
     "replace": "|     1 |               1 | 1 + Int modifier | 1 + Int modifier |",
     "pdfPage": 26,
     "note": "Partial Invoker level 1 spells prepared: the PDF (printed page 22) has \"1 + Int Mod\"."
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.15 The Skinshifter.md",
+    "find": "The Arts Of a Skinshifter Revolve Around Improving Or Adjusting Their Alternate Forms.\nThese Alternate Forms Have a Few Basic Rules That Apply To All Their Permutations.",
+    "replace": "The arts of a Skinshifter revolve around improving or adjusting their alternate forms.\nThese alternate forms have a few basic rules that apply to all their permutations.",
+    "pdfPage": 32,
+    "note": "Skinshifter Forms: the PDF (printed page 28) has these sentences in sentence case; the mirror title-cased them."
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.15 The Skinshifter.md",
+    "find": "- **Eyes Of The Hawk**: This Shape Has Remarkably Acute Senses.\n  You Can Scent Trails And Objects Like a Dog, Hear Very Faint Noises, See Objects Clearly Enough To Identify Faces At a Thousand Feet Of Distance, And See Clearly In Anything Short Of Complete Darkness.",
+    "replace": "- **Eyes of the Hawk**: This shape has remarkably acute senses.\n  You can scent trails and objects like a dog, hear very faint noises, see objects clearly enough to identify faces at a thousand feet of distance, and see clearly in anything short of complete darkness.",
+    "pdfPage": 33,
+    "note": "Eyes of the Hawk: the PDF (printed page 29) has the name and text in sentence case; the mirror title-cased them."
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.15 The Skinshifter.md",
+    "find": "When ever you spend Effort",
+    "replace": "Whenever you spend Effort",
+    "pdfPage": 33,
+    "note": "\"When ever\" is \"Whenever\" in the PDF (printed page 29); the mirror split the word in two (arts/pliant-flesh)."
   }
 ]

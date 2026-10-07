@@ -18,6 +18,8 @@ describe('the class picker list', () => {
       'Blood Knight (Blood Priest/Warrior)',
       'Warlock (Invoker/Warrior)',
       'Hedge Wizard (Invoker/Expert)',
+      'Berserker (Skinshifter/Warrior)',
+      'Wildshaper (Elementalist/Skinshifter)',
       'Priest of Death (Necromancer/Healer)',
       'Blood Saint (Blood Priest/Healer)',
     ]);

@@ -11,7 +11,14 @@ export type Spell = z.infer<typeof SpellSchema>;
 
 export const ArtSchema = z.strictObject({
   ...recordBase,
-  tradition: z.enum(['high-mage', 'elementalist', 'necromancer', 'blood-priest', 'healer']),
+  tradition: z.enum([
+    'high-mage',
+    'elementalist',
+    'necromancer',
+    'blood-priest',
+    'healer',
+    'skinshifter',
+  ]),
   /** Arts every member of the tradition gains at first level. */
   automatic: z.boolean(),
   text: z.string().min(1),

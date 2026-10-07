@@ -5,17 +5,17 @@
 // who was already Frail dies at once (vendor/wwn-srd/2.0 The Rules of the Game/2.5.0 Injury,
 // Healing, And System Strain.md, 2.5.1). Dungeon poison takes half the victim's maximum hit points
 // (2.10.0 Falling and Other Hazards.md).
+import { wearForm } from '../world/wear.ts';
 import type { Trap } from '../../data/schemas/index.ts';
 import { MORTAL_ROUNDS, stabilizeDifficulty } from '../../rules/combat.ts';
 import { roll } from '../../rules/dice.ts';
 import { ahead, cellKey, type Cell } from '../../rules/grid.ts';
 import { rollSave } from '../../rules/saves.ts';
 import type { GameData } from '../character/context.ts';
-import { characterSheet } from '../character/derived.ts';
 import { poisonProof } from '../world/arts.ts';
 import { HEALERS_KIT } from '../world/first-aid.ts';
 import { pactOf } from '../world/pacts.ts';
-import { alive, bestAt, memberCheck, note, setHp } from '../world/members.ts';
+import { alive, bestAt, memberCheck, memberSheet, note, setHp } from '../world/members.ts';
 import type { TownResult } from '../world/services.ts';
 import { wipe } from '../world/town.ts';
 import type { Member, World } from '../world/types.ts';
@@ -80,6 +80,7 @@ function mortal(w: World, data: GameData, m: Member): void {
     note(w, `${medic.character.name} saves ${m.character.name}, who is left Frail.`);
     return;
   }
+  wearForm(data, m, null);
   m.dead = true;
   note(w, `${m.character.name} dies.`);
 }
@@ -93,6 +94,7 @@ function wound(w: World, data: GameData, m: Member, amount: number): void {
   }
   setHp(m, 0);
   if (m.frail) {
+    wearForm(data, m, null);
     m.dead = true;
     note(w, `${m.character.name} was already Frail and dies.`);
   } else mortal(w, data, m);
@@ -115,7 +117,7 @@ function spring(w: World, data: GameData, trap: Trap): void {
       return false;
     }
     if (!trap.save) return true;
-    const target = characterSheet(m.character, data).saves[trap.save];
+    const target = memberSheet(data, m).saves[trap.save];
     if (!rollSave(w.rng, target).success) return true;
     note(w, `${m.character.name} avoids it.`);
     return false;

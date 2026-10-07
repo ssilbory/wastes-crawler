@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { FormsTraining } from './FormsTraining.tsx';
 import type { Attribute } from '../../data/schemas/index.ts';
 import { levelPlan, takeFreeFocus } from '../../game/character/advance.ts';
 import { characterSheet } from '../../game/character/derived.ts';
@@ -151,6 +152,7 @@ export function TrainingTab(props: { world: World; act: Act }) {
           })}
         </section>
       )}
+      <FormsTraining key={m.id} world={w} member={m} act={props.act} />
       <section class="panel" aria-label="Class">
         <h3>Class</h3>
         <p class="hint">

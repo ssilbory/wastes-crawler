@@ -1,6 +1,7 @@
 // The SRD 1.0 character creation steps (vendor/wwn-srd/1.0 Character Creation/), limited to the
 // Phase 3 scope so far: the setting's peoples, the standard array, a background, a fighting class,
 // and a free skill.
+import { formProblem } from './forms.ts';
 import {
   CHARACTER_SCHEMA_VERSION,
   CharacterSchema,
@@ -137,6 +138,12 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
   if (classOk) {
     magic = evaluateMagic(data, cls.option?.mage, choices.magic, intModifier);
     steps.magic = magic.status;
+    const forms = choices.forms ?? [];
+    const who = { name: choices.name.trim() || 'This character', arts: magic.arts };
+    const why =
+      forms.length > 0 &&
+      formProblem(data, { ...who, classes: startingClass(choices.classId as string) }, forms);
+    if (why) steps.magic = fail(why);
   }
 
   if (choices.freeSkill !== null) {
@@ -247,6 +254,7 @@ export function finishCharacter(choices: Choices, data: GameData, rng: Rng): Fin
     },
     foci: ev.foci,
     arts: ev.magic.arts,
+    ...(choices.forms?.length ? { forms: choices.forms } : {}),
     spells: { known: ev.magic.known, prepared: ev.magic.prepared },
     inventory: ev.inventory,
     crowns: ev.crownsTenths / 10,

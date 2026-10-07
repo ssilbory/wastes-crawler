@@ -178,6 +178,48 @@
     "abilities": ["quick-learner"]
   },
   {
+    "id": "partial-warrior-skinshifter",
+    "name": "Berserker",
+    "halves": "Skinshifter/Warrior",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "skinshifter",
+          "partial": true,
+          "arts": "skinshifter-arts-and-form-bonus"
+        }
+      ],
+      "slots": "skinshifter-arts-and-form-bonus",
+      "startingSpells": 0,
+      "spellsPerLevel": 0,
+      "excludedSpells": []
+    }
+  },
+  {
+    "id": "elementalist-partial-skinshifter",
+    "name": "Wildshaper",
+    "halves": "Elementalist/Skinshifter",
+    "progression": "partial-other-mage-skinshifter",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "elementalist",
+          "partial": true,
+          "arts": "partial-elementalist-arts-and-spells"
+        },
+        {
+          "tradition": "skinshifter",
+          "partial": true,
+          "arts": "skinshifter-arts-and-form-bonus"
+        }
+      ],
+      "slots": "partial-elementalist-arts-and-spells",
+      "startingSpells": 2,
+      "spellsPerLevel": 1,
+      "excludedSpells": []
+    }
+  },
+  {
     "id": "healer-partial-mage",
     "name": "Priest of Death",
     "halves": "Necromancer/Healer",

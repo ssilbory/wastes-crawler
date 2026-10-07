@@ -35,7 +35,7 @@ export function readyOrStow(
   const entry = actor.character?.inventory[index];
   if (!next || !entry) return false;
   actor.character = next;
-  actor.attacks = pcCombatant(b.data, next, actor.id).attacks;
+  actor.attacks = pcCombatant(b.data, next, actor.id, actor.form).attacks;
   say(
     b,
     `${actor.name} ${location === 'readied' ? 'readies' : 'stows'} ${lineLabel(b.data, entry)}.`,

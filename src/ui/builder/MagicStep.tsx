@@ -1,4 +1,7 @@
 import type { ClassOption } from '../../data/schemas/index.ts';
+import type { Form } from '../../data/schemas/index.ts';
+import { formArts } from '../../game/character/forms.ts';
+import { FormsEditor } from './FormsEditor.tsx';
 import type { MagicChoice, StepStatus } from '../../game/character/creation.ts';
 import { findTradition } from '../../game/character/class-step.ts';
 import {
@@ -9,7 +12,7 @@ import {
   spellSlots,
 } from '../../game/character/magic.ts';
 import { data } from './data.ts';
-import { Step } from './Field.tsx';
+import { Check, Step } from './Field.tsx';
 import { gameSpells } from '../../data/spells.ts';
 import { artHint } from '../../render/describe-view.ts';
 
@@ -21,24 +24,6 @@ function toggle(list: readonly string[], id: string, on: boolean): string[] {
   return on ? [...list, id] : list.filter((x) => x !== id);
 }
 
-function Check(props: {
-  label: string;
-  checked: boolean;
-  title?: string;
-  onChange: (on: boolean) => void;
-}) {
-  return (
-    <label class="check" title={props.title}>
-      <input
-        type="checkbox"
-        checked={props.checked}
-        onChange={(e) => props.onChange((e.target as HTMLInputElement).checked)}
-      />
-      {props.label}
-    </label>
-  );
-}
-
 /** Arts and starting spells for Mage classes (SRD 1.5.10, 1.5.7, 1.7.5, 4.1.0). */
 export function MagicStep(props: {
   option: ClassOption | undefined;
@@ -47,6 +32,9 @@ export function MagicStep(props: {
   /** For the Invoker's spell points and preparations (1.5.11). */
   intModifier: number;
   onChange: (choice: MagicChoice) => void;
+  /** A Skinshifter's first form (1.5.15). */
+  forms: readonly Form[];
+  onForms: (forms: Form[]) => void;
 }) {
   const mage = props.option?.mage;
   const choice = props.choice ?? { arts: [], known: [], prepared: [] };
@@ -93,8 +81,22 @@ export function MagicStep(props: {
             </fieldset>
           );
         })}
+      {mage.traditions.some((t) => t.tradition === 'skinshifter') && (
+        <FormsEditor
+          forms={props.forms}
+          arts={formArts(data, {
+            arts: [...artPicks(data, mage).flatMap((p) => p.automatic), ...choice.arts],
+          }).map((id) => ({ id, name: artName(id) }))}
+          max={1}
+          onChange={props.onForms}
+        />
+      )}
       {mage.startingSpells === 0 ? (
-        <p class="hint">No spells: miracles alone, worked with Effort, and unhindered by armor.</p>
+        <p class="hint">
+          No spells:{' '}
+          {mage.traditions.some((t) => t.tradition === 'blood-priest') ? 'miracles' : 'arts'} alone,
+          worked with Effort, and unhindered by armor.
+        </p>
       ) : (
         <>
           <fieldset class="picks">

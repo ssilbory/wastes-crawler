@@ -2,6 +2,7 @@
 // 2.4.6 damage and Shock, 2.4.4 Total Defense), shields ignoring the first Shock each round (3.4.2),
 // Wardpact Invocation and Mantle of Disjecting Dissection (4.4.0), the Warrior's Veteran's Luck
 // (1.5.18), and creature resistances and on-hit effects (specials.ts).
+import { venom } from './forms.ts';
 import { netSteps } from '../../rules/advantage.ts';
 import { attackRoll, hitDamage, shockDamage, type ShockContext } from '../../rules/attacks.ts';
 import { crossWall, cutVines, mantleCut, subdue } from './conditions.ts';
@@ -108,14 +109,15 @@ export function resolveAttack(
   // Smite the Wicked rolls the damage twice and keeps the better, then adds the level.
   const rolled = boost ? Math.max(damageRoll(), damageRoll()) + boost.damage : damageRoll();
   // The doomed lose their defenses against blows, too.
-  const damage = doomed ? rolled : resisted(target, attack, rolled);
+  const blow = doomed ? rolled : resisted(target, attack, rolled);
   // Veteran's Luck: once per scene, turn a hit that would drop the Warrior into a miss.
-  if (target.veteransLuck && target.status === 'active' && damage >= target.hp) {
+  if (target.veteransLuck && target.status === 'active' && blow >= target.hp) {
     target.veteransLuck = false;
     say(b, `${target.name}'s veteran's luck turns aside ${actor.name}'s blow.`);
     missShock(b, actor, target, attack);
     return;
   }
+  const damage = blow + venom(b, actor, attack, target);
   if (subdue(b, actor, target, damage)) return;
   say(b, `${actor.name} hits ${target.name} with ${attack.name} for ${damage}.`);
   harm(b, target, damage);

@@ -9,6 +9,7 @@ import { dateOf } from './calendar.ts';
 import { addMemberStrain, alive, healNight, note } from './members.ts';
 import { npcCheck } from '../../rules/checks.ts';
 import { emit } from './bus.ts';
+import { endForms } from './forms.ts';
 import { immuneTo, sacredBlood } from './arts.ts';
 import { nightForBeasts } from './beasts.ts';
 import { nightForTrees } from './greenwood.ts';
@@ -33,6 +34,8 @@ export function endOfDay(w: World, data: GameData, waystation = false): void {
     if (!use.available) note(w, 'There is nothing left to eat.');
     w.rations = use.die;
   }
+  // Forms last until night (Sam's call); hit points from Feral Prowess go with them.
+  endForms(data, w);
   const sheltered = inTown || w.camp === 'made';
   const physician = firstPhysician(w, data);
   // Underground there is no weather.

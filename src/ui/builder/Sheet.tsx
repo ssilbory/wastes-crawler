@@ -4,7 +4,9 @@ import { characterSheet, type Preview } from '../../game/character/derived.ts';
 import type { AttackLine, EquipmentSummary } from '../../game/character/equipment.ts';
 import { focusInfo } from '../../game/character/foci.ts';
 import { crowns, entryName } from './GearStep.tsx';
+import { heldTraditions } from '../../game/character/magic.ts';
 import { castingText } from '../../render/casting-view.ts';
+import { formText } from '../../render/forms-view.ts';
 import { artHint, focusHint, spellHint } from '../../render/describe-view.ts';
 import { spellName } from './MagicStep.tsx';
 import type { Skills } from '../../game/character/skills.ts';
@@ -174,7 +176,11 @@ export function CharacterSheet(props: { character: Character }) {
           <h3>Magic</h3>
           <p>
             {c.arts.length > 0 && `Effort ${sheet.magic.effort}. `}
-            {castingText(sheet.magic.slots, sheet.magic.points)}
+            {castingText(
+              sheet.magic.slots,
+              sheet.magic.points,
+              heldTraditions(data, c.classes).some((t) => t.tradition === 'blood-priest'),
+            )}
             {sheet.magic.canCast ? '' : ' Armor or a shield blocks casting.'}
           </p>
           {c.arts.length > 0 && (
@@ -190,6 +196,9 @@ export function CharacterSheet(props: { character: Character }) {
               ))}
               .
             </p>
+          )}
+          {(c.forms ?? []).length > 0 && (
+            <p>Forms: {(c.forms ?? []).map((f) => formText(data, f)).join('; ')}.</p>
           )}
           <ul class="skills">
             {c.spells.known.map((id) => (

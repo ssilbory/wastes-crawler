@@ -1,14 +1,12 @@
 // Combatants from saved characters, with every sheet value folded in; the defaults every
 // combatant starts from. SRD monsters are built in monster-combatant.ts.
 import type { Character } from '../../data/schemas/index.ts';
-import { boostedModifier } from '../../rules/attributes.ts';
 import { killingBlowBonus } from '../../rules/combat.ts';
 import { characterLevel } from '../../rules/progression.ts';
 import { classOption } from '../character/class-step.ts';
 import type { GameData } from '../character/context.ts';
-import { characterSheet, finalScores } from '../character/derived.ts';
+import { characterSheet } from '../character/derived.ts';
 import { activeEffects } from '../character/equipment.ts';
-import { characterBonuses } from '../character/shaping.ts';
 import { armorFreeArts } from '../character/magic.ts';
 import { findItem } from '../character/items.ts';
 import type { Attack, Combatant } from './types.ts';
@@ -87,6 +85,7 @@ export function base(
     flame: 0,
     stone: 0,
     misted: false,
+    form: null,
     vitality: null,
     enfeebledUntil: 0,
     compelled: 0,
@@ -99,11 +98,14 @@ export function base(
   };
 }
 
-/** A PC with every sheet value, focus effect, and class ability folded in. */
-export function pcCombatant(data: GameData, c: Character, id = c.id): Combatant {
-  const sheet = characterSheet(c, data);
-  const scores = finalScores(c);
-  const bonuses = characterBonuses(c);
+/** A PC with every sheet value, focus effect, and class ability folded in, in `form` if any. */
+export function pcCombatant(
+  data: GameData,
+  c: Character,
+  id = c.id,
+  form: number | null = null,
+): Combatant {
+  const sheet = characterSheet(c, data, form);
   const level = characterLevel(c.classes);
   const effects = activeEffects(data, c.foci);
   const abilities = new Set(
@@ -154,10 +156,7 @@ export function pcCombatant(data: GameData, c: Character, id = c.id): Combatant 
     hitDice: level,
     modifiers: sheet.modifiers,
     skills: { ...c.skills },
-    healModifier: Math.max(
-      boostedModifier(scores.dex, bonuses.dex),
-      boostedModifier(scores.int, bonuses.int),
-    ),
+    healModifier: Math.max(sheet.modifiers.dex, sheet.modifiers.int),
     hasHealKit: c.inventory.some((e) => e.id === 'healers-pouch'),
     shield: shields.length > 0,
     towerShield: shields.some((i) => i?.kind === 'shield' && i.shield.cover),
@@ -190,6 +189,7 @@ export function pcCombatant(data: GameData, c: Character, id = c.id): Combatant 
     status: c.hp.current > 0 ? 'active' : 'dead',
     sapient: true,
     character: c,
+    form,
     // Cold Flesh: Shock of 2 at most, and a natural AC of 12 plus half the level (1.5.14).
     ...(c.arts.includes('cold-flesh') ? { shockCap: 2, acFloor: 12 + Math.floor(level / 2) } : {}),
     // Unaging: immune to poisons (1.5.14).

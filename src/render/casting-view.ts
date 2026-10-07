@@ -7,9 +7,12 @@ import type { SpellPool } from '../rules/spell-points.ts';
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
-/** "Casts 1 a day, prepares 3, up to level 1.", or with spell points, or "Miracles only." */
-export function castingText(s: CastingLevelRow, points: boolean): string {
-  if (s.maxSpellLevel === 0) return 'Miracles only.';
+/**
+ * "Casts 1 a day, prepares 3, up to level 1.", or with spell points, or with no spells "Miracles
+ * only." for a Blood Priest and "Arts only." for others.
+ */
+export function castingText(s: CastingLevelRow, points: boolean, miracles = false): string {
+  if (s.maxSpellLevel === 0) return miracles ? 'Miracles only.' : 'Arts only.';
   const pay = [
     s.spellsCast > 0 && `casts ${s.spellsCast} a day`,
     points && `has ${plural(s.spellPoints, 'spell point')} a day`,

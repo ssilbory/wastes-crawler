@@ -2,6 +2,7 @@
 // order, then the end-of-round formation shifts, mortal-wound clock, and condition timers from
 // docs/rules-adaptation.md and 2.5.1. Turns run one at a time, so a caller can stop for a player's
 // command (advance) or let controllers decide everything (runRound, runBattle).
+import { freeShift, mayShiftFree } from './forms.ts';
 import { actsOnInstinct, MORTAL_ROUNDS } from '../../rules/combat.ts';
 import { frontDrops, ROW_SLOTS, type Formation, type FormationRow } from '../../rules/formation.ts';
 import { act } from './actions.ts';
@@ -73,6 +74,12 @@ function beginTurn(b: Battle, actor: Combatant): void {
 /** Plays the current actor's turn: free actions, then one action (monsters: one per attack). */
 export function takeTurn(b: Battle, actor: Combatant, controller: Controller): void {
   beginTurn(b, actor);
+  // An On Turn change of form leaves the turn with the actor, to choose its Main Action (1.5.15).
+  const first = mayShiftFree(b, actor) ? controller(b, actor) : null;
+  if (first && freeShift(b, actor, first)) {
+    act(b, actor, first);
+    return;
+  }
   b.queue.shift();
   b.turnBegun = null;
   struggle(b, actor);
@@ -81,7 +88,7 @@ export function takeTurn(b: Battle, actor: Combatant, controller: Controller): v
   const plan = swingPlan(b, actor);
   for (let i = 0; i < plan.length && canAct(actor) && !b.outcome; i++) {
     actor.forcedAttack = plan[i] as number | null;
-    const action = controller(b, actor);
+    const action = i === 0 && first ? first : controller(b, actor);
     actor.forcedAttack = null;
     act(b, actor, action);
     checkMorale(b);

@@ -16,6 +16,7 @@ import { findProgression, progressionLookup, type GameData } from './context.ts'
 import type { Evaluation } from './creation.ts';
 import { loadoutSummary, type EquipmentSummary } from './equipment.ts';
 import { classOption } from './class-step.ts';
+import { formShape } from './forms.ts';
 import { characterBonuses } from './shaping.ts';
 import { addsInt, armoredArts, castingAllowed, effortFor, spellSlots } from './magic.ts';
 import { findPeople } from './people.ts';
@@ -111,13 +112,19 @@ function modifiersAndSaves(scores: AttributeScores, level: number, bonuses: Modi
   };
 }
 
-export function characterSheet(c: Character, data: GameData): Sheet {
+/** `form` is the index of a Skinshifter's alternate form worn now, if any (forms.ts). */
+export function characterSheet(c: Character, data: GameData, form: number | null = null): Sheet {
   const people = findPeople(data, c.people);
   if (!people) throw new Error(`unknown people ${c.people}`);
   const scores = finalScores(c);
   const level = characterLevel(c.classes);
-  const bonuses = characterBonuses(c);
-  const attackBonus = totalAttackBonus(c.classes, progressionLookup(data));
+  const worn = form === null ? undefined : c.forms?.[form];
+  const shape = worn ? formShape(data, c, worn, scores, characterBonuses(c)) : null;
+  const bonuses = shape?.bonuses ?? characterBonuses(c);
+  const attackBonus = Math.max(
+    totalAttackBonus(c.classes, progressionLookup(data)),
+    shape?.attackFloor ?? 0,
+  );
   return {
     scores,
     ...modifiersAndSaves(scores, level, bonuses),
@@ -132,6 +139,7 @@ export function characterSheet(c: Character, data: GameData): Sheet {
       foci: c.foci,
       level,
       attackBonus,
+      ...(shape ? { formEffects: shape.effects, formAc: shape.innateAc } : {}),
     }),
     strainMax: scores.con,
     size: people.size,

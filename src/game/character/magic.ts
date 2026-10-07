@@ -206,7 +206,7 @@ export function evaluateMagic(
 }
 
 /** The traditions of every casting class the character holds a level in. */
-const heldTraditions = (data: GameData, classes: ClassLevels) =>
+export const heldTraditions = (data: GameData, classes: ClassLevels) =>
   Object.entries(classes.levels)
     .filter(([, level]) => level >= 1)
     .flatMap(([id]) => classOption(data, id)?.mage?.traditions ?? []);

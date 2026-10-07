@@ -49,3 +49,22 @@ export function Step(props: { title: string; status: StepStatus; children: Compo
     </section>
   );
 }
+
+/** A labeled checkbox. */
+export function Check(props: {
+  label: string;
+  checked: boolean;
+  title?: string;
+  onChange: (on: boolean) => void;
+}) {
+  return (
+    <label class="check" title={props.title}>
+      <input
+        type="checkbox"
+        checked={props.checked}
+        onChange={(e) => props.onChange((e.target as HTMLInputElement).checked)}
+      />
+      {props.label}
+    </label>
+  );
+}
