@@ -9,7 +9,7 @@ const MOST_ARTS = 3;
 /** Builds a Skinshifter's forms: a name, a shape, and up to three of the arts they hold. */
 export function FormsEditor(props: {
   forms: readonly Form[];
-  arts: readonly { id: string; name: string }[];
+  arts: readonly { id: string; name: string; hint?: string }[];
   max: number;
   onChange: (forms: Form[]) => void;
 }) {
@@ -45,6 +45,7 @@ export function FormsEditor(props: {
             <Check
               key={a.id}
               label={a.name}
+              {...(a.hint ? { title: a.hint } : {})}
               checked={f.arts.includes(a.id)}
               onChange={(on) => {
                 if (on && f.arts.length >= MOST_ARTS) return;

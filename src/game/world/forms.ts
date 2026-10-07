@@ -1,6 +1,6 @@
 // Changing form outside a fight (vendor/wwn-srd/1.0 Character Creation/1.5.0 Class List/1.5.15 The
 // Skinshifter.md; docs/rules-adaptation.md, The Skinshifter): Change Form spends Effort for the
-// day, or a minute and no Effort with Pliant Flesh; going back is free. Forms end at night.
+// day, or a minute and no Effort with Pliant Flesh; going back is free. A form lasts until changed.
 import type { GameData } from '../character/context.ts';
 import type { SheetMagic } from '../character/derived.ts';
 import { memberSheet, note } from './members.ts';
@@ -48,9 +48,4 @@ export function shiftMember(
   wearForm(data, m, form);
   note(w, `${name} takes the ${shape.name} form.`);
   return { ok: true };
-}
-
-/** Night: everyone returns to their own shape. */
-export function endForms(data: GameData, w: World): void {
-  for (const m of [...w.members, ...w.benched]) if (m.form !== null) wearForm(data, m, null);
 }

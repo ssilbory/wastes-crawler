@@ -86,7 +86,7 @@ export function MagicStep(props: {
           forms={props.forms}
           arts={formArts(data, {
             arts: [...artPicks(data, mage).flatMap((p) => p.automatic), ...choice.arts],
-          }).map((id) => ({ id, name: artName(id) }))}
+          }).map((id) => ({ id, name: artName(id), hint: artHint(data, id) }))}
           max={1}
           onChange={props.onForms}
         />

@@ -22,6 +22,10 @@ function living(w: World, data: GameData, id: string): Member {
 const ownShape = (data: GameData, m: Member) =>
   m.form === null ? m.character : shiftCharacter(data, m.character, m.form, null);
 
+/** Puts the worn form back on the trained character. */
+const reshape = (data: GameData, m: Member, c: Character) =>
+  m.form === null ? c : shiftCharacter(data, c, null, m.form);
+
 export function levelUpMember(
   w: World,
   data: GameData,
@@ -31,8 +35,7 @@ export function levelUpMember(
   const m = living(w, data, id);
   const result = advance(data, ownShape(data, m), choices, w.rng);
   if (!result.ok) return result;
-  m.form = null;
-  m.character = result.character;
+  m.character = reshape(data, m, result.character);
   const level = characterSheet(m.character, data).level;
   note(w, `${m.character.name} reaches level ${level} (${m.character.hp.max} HP).`);
   return { ok: true };
@@ -48,7 +51,6 @@ export function trainMember(
   const m = living(w, data, id);
   const result = step(ownShape(data, m));
   if (!result.ok) return result;
-  m.form = null;
-  m.character = result.character;
+  m.character = reshape(data, m, result.character);
   return { ok: true };
 }

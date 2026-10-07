@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { artHint } from '../../render/describe-view.ts';
 import type { Form } from '../../data/schemas/index.ts';
 import { formArts, maxForms } from '../../game/character/forms.ts';
 import { setForms } from '../../game/world/practice.ts';
@@ -16,6 +17,7 @@ export function FormsTraining(props: { world: World; member: Member; act: Act })
   const arts = formArts(data, c).map((id) => ({
     id,
     name: data.srd.arts.find((a) => a.id === id)?.name ?? id,
+    hint: artHint(data, id),
   }));
   const forms = draft ?? c.forms ?? [];
   return (

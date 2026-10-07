@@ -1,12 +1,13 @@
 import type { Attribute, Character } from '../../data/schemas/index.ts';
 import { ATTRIBUTES } from '../../game/character/attributes.ts';
 import { characterSheet, type Preview } from '../../game/character/derived.ts';
-import type { AttackLine, EquipmentSummary } from '../../game/character/equipment.ts';
+import type { EquipmentSummary } from '../../game/character/equipment.ts';
 import { focusInfo } from '../../game/character/foci.ts';
 import { crowns, entryName } from './GearStep.tsx';
 import { heldTraditions } from '../../game/character/magic.ts';
+import { attackText } from '../../render/attack-view.ts';
 import { castingText } from '../../render/casting-view.ts';
-import { formText } from '../../render/forms-view.ts';
+import { formDetails, formHint } from '../../render/form-details.ts';
 import { artHint, focusHint, spellHint } from '../../render/describe-view.ts';
 import { spellName } from './MagicStep.tsx';
 import type { Skills } from '../../game/character/skills.ts';
@@ -61,15 +62,6 @@ function SkillList(props: { skills: Skills }) {
       ))}
     </ul>
   );
-}
-
-function attackText(a: AttackLine): string {
-  const dice = `${a.damage.count}d${a.damage.sides}`;
-  const bonus = a.damage.modifier + a.damageBonus;
-  const shock = a.shock
-    ? `, Shock ${a.shock.damage}/${a.shock.maxAc === null ? 'any AC' : `AC ${a.shock.maxAc}`}`
-    : '';
-  return `${a.name} (${a.mode}) ${signed(a.hit)}, ${dice}${bonus === 0 ? '' : signed(bonus)}${shock}`;
 }
 
 function Equipment(props: { equipment: EquipmentSummary }) {
@@ -197,9 +189,7 @@ export function CharacterSheet(props: { character: Character }) {
               .
             </p>
           )}
-          {(c.forms ?? []).length > 0 && (
-            <p>Forms: {(c.forms ?? []).map((f) => formText(data, f)).join('; ')}.</p>
-          )}
+          <FormsDetail character={c} />
           <ul class="skills">
             {c.spells.known.map((id) => (
               <li key={id}>
@@ -224,5 +214,41 @@ export function CharacterSheet(props: { character: Character }) {
         ))}
       </ul>
     </section>
+  );
+}
+
+/** Each of a Skinshifter's forms: its arts, and what wearing it changes (1.5.15). */
+function FormsDetail(props: { character: Character }) {
+  const forms = formDetails(data, props.character);
+  if (forms.length === 0) return null;
+  return (
+    <>
+      <h4>Forms</h4>
+      <ul class="forms">
+        {forms.map((f) => (
+          <li key={f.name}>
+            <strong class="has-hint" title={formHint(f)}>
+              {f.name}
+            </strong>{' '}
+            ({f.shape}
+            {f.arts.length > 0 ? ': ' : ''}
+            {f.arts.map((a, i) => (
+              <span key={a.id}>
+                {i > 0 ? ', ' : ''}
+                <span class="has-hint" title={a.hint}>
+                  {a.name}
+                </span>
+              </span>
+            ))}
+            )
+            <ul>
+              {(f.changes.length > 0 ? f.changes : ['No change to the sheet.']).map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }
