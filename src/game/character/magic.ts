@@ -8,23 +8,20 @@ import {
   type ModifierBonuses,
 } from '../../rules/attributes.ts';
 import { canCastIn, effortMaximum, type ArmoredCasting } from '../../rules/magic.ts';
-import { castingRow, type CastingLevelRow, type ClassLevels } from '../../rules/progression.ts';
+import { castingRow, type ClassLevels } from '../../rules/progression.ts';
 import { classOption, findTradition } from './class-step.ts';
 import type { GameData } from './context.ts';
 import { activeEffects } from './equipment.ts';
 import type { HeldFocus } from './foci.ts';
 import { entryEncumbrance, findItem, type InventoryEntry } from './items.ts';
 import type { Skills } from './skills.ts';
+import { addsInt, castingTable, gainsArts, spellSlots } from './slots.ts';
 import { fail, INCOMPLETE, OK, type StepStatus } from './steps.ts';
 import { gameSpells, type GameSpell } from '../../data/spells.ts';
 
 type Mage = NonNullable<ClassOption['mage']>;
 
-function table(data: GameData, id: string) {
-  const t = data.srd['casting-progressions'].find((c) => c.id === id);
-  if (!t) throw new Error(`unknown casting table ${id}`);
-  return t;
-}
+export { addsInt, gainsArts, spellSlots };
 
 export interface ArtPick {
   tradition: string;
@@ -37,37 +34,12 @@ export interface ArtPick {
 /** Each class picks its own arts (4.1.0), from its tradition's arts table. */
 export function artPicks(data: GameData, mage: Mage, level = 1): ArtPick[] {
   return mage.traditions.map((t) => {
-    const row = castingRow(table(data, t.arts), level);
+    const row = castingRow(castingTable(data, t.arts), level);
     // Excluded arts are never granted, not even automatically (Elemental Sparks, Phase 15).
     const excluded = findTradition(data, t.tradition)?.excludedArts ?? [];
     const automatic = row.arts.filter((a) => !excluded.includes(a));
     return { tradition: t.tradition, automatic, picks: row.anyArts };
   });
-}
-
-/** Whether the class ever gains arts, and so has Effort to spend; the Invoker doesn't (1.5.11). */
-export const gainsArts = (data: GameData, mage: Mage): boolean =>
-  mage.traditions.some((t) =>
-    table(data, t.arts).levels.some((l) => l.arts.length + l.anyArts > 0),
-  );
-
-/** Whether the class's spell points and preparations add the Int modifier: the Invoker (1.5.11). */
-export const addsInt = (data: GameData, mage: Mage): boolean => !!table(data, mage.slots).plusInt;
-
-/** `intModifier` counts only for the Invoker, whose points and preparations add it (1.5.11). */
-export function spellSlots(
-  data: GameData,
-  mage: Mage,
-  level = 1,
-  intModifier = 0,
-): CastingLevelRow {
-  const row = castingRow(table(data, mage.slots), level);
-  if (!addsInt(data, mage)) return row;
-  return {
-    ...row,
-    spellPoints: Math.max(0, row.spellPoints + intModifier),
-    spellsPrepared: Math.max(0, row.spellsPrepared + intModifier),
-  };
 }
 
 /**

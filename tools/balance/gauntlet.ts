@@ -8,7 +8,8 @@ import type { Character, EncounterTable } from '../../src/data/schemas/index.ts'
 import { autoLevel } from '../../src/game/character/auto-level.ts';
 import { importCharacter } from '../../src/game/character/io.ts';
 import { runBattle } from '../../src/game/combat/battle.ts';
-import { carryBack, partyBattle } from '../../src/game/world/fight.ts';
+import { carryBack } from '../../src/game/world/carry-back.ts';
+import { partyBattle } from '../../src/game/world/fight.ts';
 import { newWorld } from '../../src/game/world/new-world.ts';
 import type { Member } from '../../src/game/world/types.ts';
 import { roll } from '../../src/rules/dice.ts';
