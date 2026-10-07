@@ -20,7 +20,13 @@ import type { World } from './types.ts';
 
 export type Approach = 'talk' | 'intimidate' | 'bribe';
 
-const BANDS: readonly Reaction[] = ['aggressive', 'unfriendly', 'expected', 'friendly', 'helpful'];
+export const BANDS: readonly Reaction[] = [
+  'aggressive',
+  'unfriendly',
+  'expected',
+  'friendly',
+  'helpful',
+];
 const no = (reason: string): TownResult => ({ ok: false, reason });
 
 /** Whether the party can still parley with the pending encounter. */
@@ -43,7 +49,7 @@ export function bribePrice(w: World, data: GameData): number {
 }
 
 /** What friendlier moods bring: a freed captive, then tribute and a would-be recruit. */
-function goodwill(w: World, data: GameData): void {
+export function goodwill(w: World, data: GameData): void {
   const e = w.encounter;
   if (!e || BANDS.indexOf(e.reaction) < BANDS.indexOf('friendly')) return;
   if (e.captive) {

@@ -8,7 +8,7 @@ import { classOption } from '../character/class-step.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet, finalScores } from '../character/derived.ts';
 import { activeEffects } from '../character/equipment.ts';
-import { modifierBonuses } from '../character/foci.ts';
+import { characterBonuses } from '../character/shaping.ts';
 import { armorFreeArts } from '../character/magic.ts';
 import { findItem } from '../character/items.ts';
 import type { Attack, Combatant } from './types.ts';
@@ -73,6 +73,7 @@ export function base(
     harvestRound: 0,
     shockCap: null,
     poisonImmune: false,
+    pact: null,
     mantle: null,
     echo: null,
     torment: null,
@@ -102,7 +103,7 @@ export function base(
 export function pcCombatant(data: GameData, c: Character, id = c.id): Combatant {
   const sheet = characterSheet(c, data);
   const scores = finalScores(c);
-  const bonuses = modifierBonuses(c.foci);
+  const bonuses = characterBonuses(c);
   const level = characterLevel(c.classes);
   const effects = activeEffects(data, c.foci);
   const abilities = new Set(

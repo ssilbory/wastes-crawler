@@ -1,12 +1,12 @@
 import { z } from 'zod';
-import { IdSchema } from './common.ts';
+import { ElementSchema, IdSchema } from './common.ts';
 import { DefaultPresetSchema } from './roster.ts';
 import { CharacterSchema } from './character.ts';
 import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { FactionStateSchema } from './faction-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 27;
+export const WORLD_SCHEMA_VERSION = 28;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -195,6 +195,10 @@ export const DungeonStateSchema = z.strictObject({
   traps: z.record(IdSchema, z.record(z.string(), z.enum(['noticed', 'disarmed']))),
   /** Message squares already read, by level. */
   read: z.record(IdSchema, z.array(z.string())),
+  /** Apprehending the Arcane Form: whose sight it is, and the turn it fades. */
+  sight: z.strictObject({ member: z.string().min(1), until: z.int().min(0) }).nullable(),
+  /** Magical squares the party has sensed with it, by level, as "x,y". */
+  sensed: z.record(IdSchema, z.array(z.string())),
 });
 export type DungeonState = z.infer<typeof DungeonStateSchema>;
 
@@ -316,7 +320,16 @@ export const WorldSaveSchema = z.strictObject({
    * Corpses left by the party's last won fight, as each one's hit dice, and where they lie: a hex
    * key above ground, or dungeon/level/cell below (Phase 14b).
    */
-  corpses: z.strictObject({ at: z.string(), hitDice: z.array(z.int().min(1)) }).nullable(),
+  corpses: z
+    .strictObject({
+      at: z.string(),
+      hitDice: z.array(z.int().min(1)),
+      /** The day the latest of them fell; Query the Skull reaches back a day per caster level. */
+      day: z.int().min(0),
+      /** Query the Skull has been cast on them (it may not be cast twice on the same corpse). */
+      queried: z.boolean(),
+    })
+    .nullable(),
   /**
    * Members slain in the party's last fight, and where it was fought: a Healer can revive them
    * there before the party moves on or the day ends (Phase 14d).
@@ -328,6 +341,21 @@ export const WorldSaveSchema = z.strictObject({
   bestiary: z.array(IdSchema),
   /** Each faction's state, by id, once it has started (Phase 13). */
   factions: z.record(IdSchema, FactionStateSchema),
+  /** Adopt the Simulacular Visage: the day it was cast, and who wears the seeming. */
+  disguise: z.strictObject({ day: z.int().min(0), ids: z.array(z.string()) }).nullable(),
+  /** The Jade Palanquin: the quarter, counted from the world's start, at which it fades. */
+  palanquin: z.int().min(0).nullable(),
+  /**
+   * Pact of Stone and Sea: where (a dungeon level, or the surface) and on what day the pacts were
+   * made, and each pacted member's element.
+   */
+  pacts: z
+    .strictObject({
+      at: z.string().min(1),
+      day: z.int().min(0),
+      by: z.record(z.string(), ElementSchema),
+    })
+    .nullable(),
   log: z.array(z.string()),
 });
 export type WorldSave = z.infer<typeof WorldSaveSchema>;

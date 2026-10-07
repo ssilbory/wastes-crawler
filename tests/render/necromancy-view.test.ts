@@ -50,6 +50,9 @@ describe('necromancy view (Phase 14b)', () => {
           knight: false,
           command: false,
           mend: [{ id: 'a', name: 'a' }],
+          query: null,
+          shape: false,
+          shaped: [],
         },
       ],
     });
@@ -66,5 +69,36 @@ describe('necromancy view (Phase 14b)', () => {
     });
     m.dead = true;
     expect(necromancyView(w, data)).toBeNull();
+  });
+
+  it('offers Query the Skull and Boneshaper, and shapings to lift', () => {
+    const w = world();
+    const m = member(w, 'Fizzwick');
+    const snag = member(w, 'Snag');
+    m.character = {
+      ...m.character,
+      classes: { current: 'full-necromancer', levels: { 'full-necromancer': 7 } },
+      spells: { known: ['query-the-skull', 'boneshaper'], prepared: ['query-the-skull'] },
+    };
+    expect(necromancyView(w, data)?.casters[0]).toMatchObject({
+      query: { questions: ['land'], ask: 7, bar: 'There are no corpses here.' },
+      shape: false,
+      shaped: [],
+    });
+    leaveCorpses(w, data, [['thug-or-militia']]);
+    expect(necromancyView(w, data)?.casters[0]?.query?.bar).toBeNull();
+    // A shaping stays theirs to lift, prepared or not.
+    m.character.spells.prepared = [];
+    expect(necromancyView(w, data)).toBeNull();
+    snag.character = {
+      ...snag.character,
+      shaped: { by: m.character.id, changes: { str: 1, cha: -1 } },
+    };
+    expect(necromancyView(w, data)?.casters[0]).toMatchObject({
+      query: null,
+      shaped: [{ id: snag.id, name: 'Snag', changes: '+1 STR, −1 CHA' }],
+    });
+    m.character.spells.prepared = ['boneshaper'];
+    expect(necromancyView(w, data)?.casters[0]?.shape).toBe(true);
   });
 });

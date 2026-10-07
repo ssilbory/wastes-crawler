@@ -6,6 +6,7 @@ import type {
   AttackMode,
   Character,
   Dice,
+  Element,
   MonsterCombat,
   MonsterTag,
   OnHit,
@@ -151,6 +152,8 @@ export interface Combatant {
   harvestRound: number;
   shockCap: number | null;
   poisonImmune: boolean;
+  /** Pact of Stone and Sea: breath of this element can't harm it. */
+  pact: Element | null;
   /**
    * Phase 18a High Magic: Mantle of Disjecting Dissection's blades, Resounding Temporal Echo's last
    * round and strain, the Torment of Tumefaction, a spell holding the creature out

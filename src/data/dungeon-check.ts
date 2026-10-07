@@ -64,6 +64,9 @@ function dungeonErrors(d: Dungeon, content: ContentData): string[] {
     for (const c of level.safe)
       if (!map.inBounds(c))
         errors.push(`${where}/${level.id}: safe square ${c.x},${c.y} is off the level`);
+      // Pierce the Pallid Gate lands the party on safe squares with no trap to spring.
+      else if (map.cell(c) === 'trap')
+        errors.push(`${where}/${level.id}: safe square ${c.x},${c.y} is on a trap`);
     for (const l of level.links) {
       const at = `${where}/${level.id}: link at ${l.at.x},${l.at.y}`;
       if (!map.inBounds(l.at) || !['up', 'down'].includes(map.cell(l.at)))

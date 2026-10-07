@@ -104,6 +104,12 @@ export interface World {
   bestiary: string[];
   /** Faction state by id (Phase 13). */
   factions: Record<string, FactionState>;
+  /** Adopt the Simulacular Visage, until the next dawn. */
+  disguise: WorldSave['disguise'];
+  /** When the Jade Palanquin fades, as a quarter counted from the world's start. */
+  palanquin: number | null;
+  /** Pact of Stone and Sea, for the rest of the scene. */
+  pacts: WorldSave['pacts'];
   log: string[];
 }
 

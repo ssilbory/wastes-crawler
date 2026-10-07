@@ -11,6 +11,7 @@ import { beastOfferText, knownFoes } from '../../render/bestiary-view.ts';
 import { orderChoices } from '../../render/setting-view.ts';
 import { crowns } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
+import { EncounterSorcery } from './EncounterSorcery.tsx';
 import { KnownFoes } from './KnownFoes.tsx';
 
 /**
@@ -115,6 +116,7 @@ export function EncounterPanel(props: {
           )}
         </div>
       )}
+      <EncounterSorcery world={w} run={run} />
       {canParley(w, data) && (
         <div class="parley" role="group" aria-label="Parley">
           <button

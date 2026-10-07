@@ -10,7 +10,8 @@ import type { Rng } from '../../rules/rng.ts';
 import { classBonusSkills, classOption } from './class-step.ts';
 import { progressionLookup, type GameData } from './context.ts';
 import { characterSheet, finalScores } from './derived.ts';
-import { allowedSkills, focusInfo, hasDieHard, modifierBonuses, type FocusChoice } from './foci.ts';
+import { allowedSkills, focusInfo, hasDieHard, type FocusChoice } from './foci.ts';
+import { characterBonuses } from './shaping.ts';
 import {
   artBar,
   learnableSpells,
@@ -191,7 +192,7 @@ export function advance(
   for (const skill of plan.bonusSkills) next = creditSkill(next, skill, FOCUS_SKILL_POINTS);
   const { classes } = levelUp(next.classes);
   const scores = finalScores(next);
-  const bonuses = modifierBonuses(next.foci);
+  const bonuses = characterBonuses(next);
   const hp = rollMaxHp(rng, {
     dice: hitDiceForLevels(classes, progressionLookup(data)),
     conModifier: boostedModifier(scores.con, bonuses.con),

@@ -389,6 +389,7 @@
               "difficulty": 9
             },
             "save": "evasion",
+            "element": "fire",
             "effect": {
               "kind": "damage",
               "dice": {
@@ -770,6 +771,7 @@
               "difficulty": 9
             },
             "save": "evasion",
+            "element": "water",
             "effect": {
               "kind": "damage",
               "dice": {
@@ -1262,6 +1264,7 @@
               "difficulty": 9
             },
             "save": "evasion",
+            "element": "earth",
             "effect": {
               "kind": "damage",
               "dice": {

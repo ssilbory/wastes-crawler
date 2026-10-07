@@ -20,6 +20,8 @@ import { PurgePanel } from './PurgePanel.tsx';
 import { GreenwoodPanel } from './GreenwoodPanel.tsx';
 import { ConjunctPanel } from './ConjunctPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
+import { PactPanel } from './PactPanel.tsx';
+import { SorceryPanel } from './SorceryPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { QuestLog } from './QuestLog.tsx';
 import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
@@ -246,6 +248,17 @@ export function DungeonScreen(props: {
                 {map.lines.map((l) => (
                   <line key={l.key} class={l.kind} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} />
                 ))}
+                {map.sensed.map((c) => (
+                  <circle
+                    key={c.key}
+                    class="sensed"
+                    cx={(c.x + 0.5) * MAP_CELL}
+                    cy={(c.y + 0.5) * MAP_CELL}
+                    r={MAP_CELL * 0.25}
+                  >
+                    <title>A working of magic</title>
+                  </circle>
+                ))}
                 <polygon class="party" points={map.party} />
               </svg>
             </section>
@@ -258,6 +271,8 @@ export function DungeonScreen(props: {
           <NecromancyPanel world={w} onChange={props.onChange} />
           <GreenwoodPanel world={w} onChange={props.onChange} />
           <ConjunctPanel world={w} onChange={props.onChange} />
+          <SorceryPanel world={w} onChange={props.onChange} />
+          <PactPanel world={w} onChange={props.onChange} />
           <HealerPanel world={w} onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />
         </div>

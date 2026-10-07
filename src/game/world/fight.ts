@@ -5,7 +5,7 @@ import { componentDrops } from './components.ts';
 import { createBattle, type BattleResult, type NpcSetup } from '../combat/battle.ts';
 import { pcCombatant } from '../combat/combatants.ts';
 import type { Battle, CasterState } from '../combat/types.ts';
-import type { Character } from '../../data/schemas/index.ts';
+import type { Character, Element } from '../../data/schemas/index.ts';
 import type { Rng } from '../../rules/rng.ts';
 import type { GameData } from '../character/context.ts';
 import { difficultyTier, type Difficulty } from './difficulty.ts';
@@ -26,6 +26,7 @@ import { onSpecial } from '../dungeon/specials.ts';
 import { butcher } from './butcher.ts';
 import { recordFallen } from './healer.ts';
 import { leaveCorpses } from './necromancy.ts';
+import { endPacts, pactOf } from './pacts.ts';
 import { freeCaptive } from './rescue.ts';
 import { addLoot } from './shop.ts';
 import { wipe } from './town.ts';
@@ -93,6 +94,8 @@ export interface PartySetup {
     artUses: Record<string, number>;
     /** Effort already committed: Light of Faith lighting the way (Phase 15). */
     committed: number;
+    /** The element of a Pact of Stone and Sea on them, if any. */
+    pact: Element | null;
   }[];
   npcs: NpcSetup[];
   enemies: string[][];
@@ -122,6 +125,7 @@ export function partySetup(
       effortDay: m.effortDay,
       artUses: { ...m.artUses },
       committed: m === faith ? 1 : 0,
+      pact: pactOf(w, m.id) ?? null,
     })),
     npcs: withNpcs ? w.npcs.filter((n) => n.hp > 0).map((n) => npcSetup(data, n)) : [],
     enemies,
@@ -147,6 +151,7 @@ export function battleFrom(data: GameData, rng: Rng, setup: PartySetup, log: boo
   setup.party.forEach((p, i) => {
     const c = battle.combatants[i] as Battle['combatants'][number];
     c.frail = p.frail;
+    c.pact = p.pact;
     if (c.caster) {
       c.caster.spellsLeft = Math.max(0, c.caster.spellsLeft - p.spellsCast);
       c.caster.effortDay = Math.min(c.caster.effortMax, p.effortDay);
@@ -261,6 +266,8 @@ export function applyBattle(
     carryBack(data, m, fight.battle.combatants[i] as Battle['combatants'][number]);
   });
   recordFallen(w, fight.memberIds, fight.battle);
+  // The fight ends the scene, and any Pact of Stone and Sea with it.
+  endPacts(w);
   // Tireless Vigor: a Healer regains a hit point after each fight (Phase 15).
   vigor(w, data, 1);
   const npcLost = npcsBack(w, data, fight);

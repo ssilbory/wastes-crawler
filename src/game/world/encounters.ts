@@ -11,6 +11,7 @@ import { findMonster, type GameData } from '../character/context.ts';
 import { rollPatrol, type Patrol } from '../factions/patrols.ts';
 import { characterSheet } from '../character/derived.ts';
 import { bonetalker } from './arts.ts';
+import { passInDisguise } from './guises.ts';
 import { alive, memberCheck, note } from './members.ts';
 import { reactionBonus } from './minds.ts';
 import { captiveOf, firstGuide } from './npcs.ts';
@@ -158,6 +159,7 @@ export function startEncounter(
   );
   bonetalker(w, data, e);
   if (rolled.order) e.order = rolled.order;
+  passInDisguise(w, e);
   if (rolled.patrol) {
     e.patrol = rolled.patrol.key;
     note(w, `They march for ${rolled.patrol.name}.`);

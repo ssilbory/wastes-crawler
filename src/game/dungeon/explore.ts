@@ -117,6 +117,8 @@ export function enterDungeon(w: World, data: GameData): TownResult {
     glimpsed: {},
     traps: {},
     read: {},
+    sight: null,
+    sensed: {},
   };
   note(w, `The party ${goesDown(data, d.id) ? 'goes down into' : 'enters'} ${d.name}.`);
   drawKits(w);
