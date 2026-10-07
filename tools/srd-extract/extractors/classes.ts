@@ -34,6 +34,7 @@ export const CLASS_FILES = [
   '1.5.5 The Blood Priest.md',
   '1.5.9 The Healer.md',
   '1.5.11 The Invoker.md',
+  '1.5.15 The Skinshifter.md',
 ].map((f) => `${CLASS_DIR}/${f}`);
 
 export interface ClassExtract {
@@ -192,10 +193,12 @@ function classFromDoc(doc: MdDoc, out: ClassExtract, seen: Map<string, string>):
       });
     } else if (
       table &&
-      table.header.length === 2 &&
-      /Arts( Gained)?$/.test(table.header[1] ?? '')
+      /Arts( Gained)?$/.test(table.header.at(-1) ?? '') &&
+      table.header.every((c) => /^(Level|Form Bonus)$|Arts( Gained)?$/.test(c))
     ) {
-      // A tradition of arts alone (the Blood Priest, the Healer): no spells at any level.
+      // A tradition of arts alone (the Blood Priest, the Healer, the Skinshifter with its form
+      // bonus): no spells at any level.
+      const bonus = table.header.indexOf('Form Bonus');
       addOnce(out.casting, seen, {
         id: slug(h.text),
         name: h.text,
@@ -205,7 +208,8 @@ function classFromDoc(doc: MdDoc, out: ClassExtract, seen: Map<string, string>):
           maxSpellLevel: 0,
           spellsCast: 0,
           spellsPrepared: 0,
-          ...parseArtsGained(r[1] ?? ''),
+          ...(bonus >= 0 ? { formBonus: parseSigned(r[bonus] ?? '') } : {}),
+          ...parseArtsGained(r.at(-1) ?? ''),
         })),
       });
     } else if (table && table.header.some((c) => /^Spell Points$/.test(c))) {

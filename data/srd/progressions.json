@@ -3366,5 +3366,424 @@
         ]
       }
     ]
+  },
+  {
+    "id": "partial-expert-skinshifter",
+    "name": "Partial Expert/Skinshifter",
+    "sources": [
+      {
+        "file": "1.0 Character Creation/1.5.0 Class List/1.5.15 The Skinshifter.md",
+        "heading": "Partial Expert/Skinshifter"
+      }
+    ],
+    "levels": [
+      {
+        "level": 1,
+        "hitDice": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 0,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "expert"
+          },
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "hitDice": {
+          "count": 2,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "hitDice": {
+          "count": 3,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 4,
+        "hitDice": {
+          "count": 4,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 2,
+        "focusPicks": []
+      },
+      {
+        "level": 5,
+        "hitDice": {
+          "count": 5,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 2,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "hitDice": {
+          "count": 6,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 3,
+        "focusPicks": []
+      },
+      {
+        "level": 7,
+        "hitDice": {
+          "count": 7,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 3,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "hitDice": {
+          "count": 8,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 4,
+        "focusPicks": []
+      },
+      {
+        "level": 9,
+        "hitDice": {
+          "count": 9,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 4,
+        "focusPicks": []
+      },
+      {
+        "level": 10,
+        "hitDice": {
+          "count": 10,
+          "sides": 6,
+          "modifier": 0
+        },
+        "attackBonus": 5,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "partial-other-mage-skinshifter",
+    "name": "Partial Other Mage/Skinshifter",
+    "sources": [
+      {
+        "file": "1.0 Character Creation/1.5.0 Class List/1.5.15 The Skinshifter.md",
+        "heading": "Partial Other Mage/Skinshifter"
+      }
+    ],
+    "levels": [
+      {
+        "level": 1,
+        "hitDice": {
+          "count": 1,
+          "sides": 6,
+          "modifier": -1
+        },
+        "attackBonus": 0,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "hitDice": {
+          "count": 2,
+          "sides": 6,
+          "modifier": -2
+        },
+        "attackBonus": 0,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "hitDice": {
+          "count": 3,
+          "sides": 6,
+          "modifier": -3
+        },
+        "attackBonus": 0,
+        "focusPicks": []
+      },
+      {
+        "level": 4,
+        "hitDice": {
+          "count": 4,
+          "sides": 6,
+          "modifier": -4
+        },
+        "attackBonus": 0,
+        "focusPicks": []
+      },
+      {
+        "level": 5,
+        "hitDice": {
+          "count": 5,
+          "sides": 6,
+          "modifier": -5
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "hitDice": {
+          "count": 6,
+          "sides": 6,
+          "modifier": -6
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 7,
+        "hitDice": {
+          "count": 7,
+          "sides": 6,
+          "modifier": -7
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "hitDice": {
+          "count": 8,
+          "sides": 6,
+          "modifier": -8
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 9,
+        "hitDice": {
+          "count": 9,
+          "sides": 6,
+          "modifier": -9
+        },
+        "attackBonus": 1,
+        "focusPicks": []
+      },
+      {
+        "level": 10,
+        "hitDice": {
+          "count": 10,
+          "sides": 6,
+          "modifier": -10
+        },
+        "attackBonus": 2,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "partial-warrior-skinshifter",
+    "name": "Partial Warrior/Skinshifter",
+    "sources": [
+      {
+        "file": "1.0 Character Creation/1.5.0 Class List/1.5.15 The Skinshifter.md",
+        "heading": "Partial Warrior/Skinshifter"
+      }
+    ],
+    "levels": [
+      {
+        "level": 1,
+        "hitDice": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 2
+        },
+        "attackBonus": 1,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "warrior"
+          },
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 2,
+        "hitDice": {
+          "count": 2,
+          "sides": 6,
+          "modifier": 4
+        },
+        "attackBonus": 2,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 3,
+        "hitDice": {
+          "count": 3,
+          "sides": 6,
+          "modifier": 6
+        },
+        "attackBonus": 2,
+        "focusPicks": []
+      },
+      {
+        "level": 4,
+        "hitDice": {
+          "count": 4,
+          "sides": 6,
+          "modifier": 8
+        },
+        "attackBonus": 3,
+        "focusPicks": []
+      },
+      {
+        "level": 5,
+        "hitDice": {
+          "count": 5,
+          "sides": 6,
+          "modifier": 10
+        },
+        "attackBonus": 4,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 6,
+        "hitDice": {
+          "count": 6,
+          "sides": 6,
+          "modifier": 12
+        },
+        "attackBonus": 5,
+        "focusPicks": []
+      },
+      {
+        "level": 7,
+        "hitDice": {
+          "count": 7,
+          "sides": 6,
+          "modifier": 14
+        },
+        "attackBonus": 5,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      },
+      {
+        "level": 8,
+        "hitDice": {
+          "count": 8,
+          "sides": 6,
+          "modifier": 16
+        },
+        "attackBonus": 6,
+        "focusPicks": []
+      },
+      {
+        "level": 9,
+        "hitDice": {
+          "count": 9,
+          "sides": 6,
+          "modifier": 18
+        },
+        "attackBonus": 6,
+        "focusPicks": []
+      },
+      {
+        "level": 10,
+        "hitDice": {
+          "count": 10,
+          "sides": 6,
+          "modifier": 20
+        },
+        "attackBonus": 7,
+        "focusPicks": [
+          {
+            "count": 1,
+            "category": "any"
+          }
+        ]
+      }
+    ]
   }
 ]

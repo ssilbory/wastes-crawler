@@ -49,6 +49,8 @@ export const CastingProgressionSchema = z.strictObject({
         spellsCast: z.int().min(0),
         /** A daily pool spent by spell level in place of spells cast (the Invoker, 1.5.11). */
         spellPoints: z.int().min(0).optional(),
+        /** The hit bonus in a non-humanoid alternate form (the Skinshifter, 1.5.15). */
+        formBonus: z.int().min(0).optional(),
         spellsPrepared: z.int().min(0),
         /** Named art ids gained at this level. */
         arts: z.array(IdSchema),

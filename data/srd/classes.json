@@ -192,5 +192,28 @@
         "text": "Partial Invokers use the High Mage partial-class tables for hit dice and attack bonuses when blending with other classes."
       }
     ]
+  },
+  {
+    "id": "skinshifter",
+    "name": "Skinshifter",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.15 The Skinshifter.md",
+      "heading": "1.5.15 The Skinshifter"
+    },
+    "description": "The Skinshifter is a partial Mage class that grants the user shapeshifting abilities, whether to adopt the form of beasts or configurations of their own devising.",
+    "abilities": [
+      {
+        "name": "Skinshifter Benefits",
+        "text": "Skinshifter is a partial Mage class, meant to be taken by an Adventurer in conjunction with another partial class. A partial Warrior/Skinshifter might be a shapeshifting assassin or feral savage warrior, while a Partial Expert/Skinshifter could be an undetectable impostor or con artist.\n\nAll Skinshifters gain Survive-0 as a bonus skill, or Survive-1 if they already have Survive-0 as a skill."
+      },
+      {
+        "name": "Skinshifter Forms",
+        "text": "The arts of a Skinshifter revolve around improving or adjusting their alternate forms. These alternate forms have a few basic rules that apply to all their permutations.\n\nA Skinshifter can master one alternate form per character level. A Skinshifter who wants to change a form selection can do so with a day of careful practice and adjustment. Skinshifter PCs should note down the special powers or traits of their alternate forms and keep in mind which of them they have available at any one time.\n\nA Skinshifter’s alternate forms use the same hit points, character attributes, and movement speed as their normal form, unless modified by particular arts. Thus, a Skinshifter shifted into a wolf’s shape would do no more damage with its bite than the human’s unarmed attack would do without some augmenting art. Alternate forms do grant a minimum level of combat competence, however, and so the “Form Bonus” hit bonus is used in place of the PC’s basic class hit bonus when in a non-humanoid shape, assuming they don’t already have a better basic bonus from their other partial class.\n\nArts that improve the alternate forms can apply their benefits even if the creature’s natural shape wouldn’t normally grant it. Thus, a Skinshifter with the Manifest Wings art could have a wolf-form that had wings and a flying speed if they wished. A given form can have no more than three arts applied to it.\n\nA Skinshifter’s alternate forms can be any size between a horse and a kitten, barring modification by some art. They do not need to emulate a specific type of creature; a Skinshifter could have a clawed and winged humanoid form as an alternate shape, or a dog with the head of a man, or a cat with razor-sharp mandibles.\n\nThe belongings carried by a Skinshifter meld into any new form unless the PC decides otherwise, granting any benefit to Armor Class or other worn advantage they may normally give. Melded objects can be manifested and dropped as an On Turn action, but cannot be re-melded again unless the PC changes form with them again.\n\nSkinshifter forms cannot perfectly duplicate another individual creature without an appropriate art."
+      },
+      {
+        "name": "Skinshifter Arts",
+        "text": "Skinshifter Effort is based on Survive, and is equal to the PC’s Survive skill level plus the highest of their Constitution or Charisma modifiers, to a minimum of one point. All Skinshifters begin play with the Change Form art and one more of their choice. Additional arts are learned as the PC advances in experience."
+      }
+    ]
   }
 ]
