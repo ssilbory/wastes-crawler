@@ -223,6 +223,17 @@ describe('export and import', () => {
     });
   });
 
+  it('rejects classes the game no longer offers', () => {
+    const c = {
+      ...goblinWarrior(),
+      classes: { current: 'high-mage-partial-warrior', levels: { 'high-mage-partial-warrior': 1 } },
+    };
+    expect(importCharacter(JSON.stringify(c), data)).toEqual({
+      ok: false,
+      errors: ['classes: unknown high-mage-partial-warrior'],
+    });
+  });
+
   it('rejects unknown foci', () => {
     const c = { ...goblinWarrior(), foci: [{ id: 'flying', level: 1 }] };
     expect(importCharacter(JSON.stringify(c), data)).toEqual({

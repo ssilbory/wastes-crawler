@@ -28,7 +28,7 @@ import { findProgression, isSkill, type GameData } from './context.ts';
 import { loadoutSummary, type EquipmentSummary } from './equipment.ts';
 import { evaluateClass } from './class-step.ts';
 import { evaluateGear } from './gear.ts';
-import { effortFor, evaluateMagic, type MagicOutcome } from './magic.ts';
+import { effortFor, evaluateMagic, gainsArts, type MagicOutcome } from './magic.ts';
 import type { InventoryEntry } from './items.ts';
 import { evaluatePeople, findLineage, findPeople } from './people.ts';
 import { addCreationSkill, type Skills } from './skills.ts';
@@ -152,7 +152,8 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
     }
   }
 
-  if (scores && classOk) {
+  const mage = cls.option?.mage;
+  if (scores && classOk && mage && gainsArts(data, mage)) {
     effort = effortFor(
       data,
       startingClass(choices.classId as string),

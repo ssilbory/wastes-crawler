@@ -138,7 +138,7 @@ describe('the Elementalist tree spells (Sam’s calls)', () => {
         id: f.id,
         name: 'Fizzwick',
         // A 7th-level Elementalist casts four a day; one went on the sapling.
-        spellsLeft: 3,
+        left: '3 spells left today',
         spells: [
           { spell: 'rouse-the-sapling', mend: [{ id: tree.id, name: 'Walking Sapling' }] },
           { spell: 'call-the-elder-tree', mend: [] },

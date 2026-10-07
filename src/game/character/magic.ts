@@ -45,6 +45,12 @@ export function artPicks(data: GameData, mage: Mage, level = 1): ArtPick[] {
   });
 }
 
+/** Whether the class ever gains arts, and so has Effort to spend; the Invoker doesn't (1.5.11). */
+export const gainsArts = (data: GameData, mage: Mage): boolean =>
+  mage.traditions.some((t) =>
+    table(data, t.arts).levels.some((l) => l.arts.length + l.anyArts > 0),
+  );
+
 /** Whether the class's spell points and preparations add the Int modifier: the Invoker (1.5.11). */
 export const addsInt = (data: GameData, mage: Mage): boolean => !!table(data, mage.slots).plusInt;
 

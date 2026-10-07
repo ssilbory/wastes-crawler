@@ -8,7 +8,12 @@ import {
   evaluateClass,
 } from '../../src/game/character/class-step.ts';
 import type { GameData } from '../../src/game/character/context.ts';
-import { emptyChoices, finishCharacter, type Choices } from '../../src/game/character/creation.ts';
+import {
+  type Choices,
+  emptyChoices,
+  evaluateChoices,
+  finishCharacter,
+} from '../../src/game/character/creation.ts';
 import { characterSheet } from '../../src/game/character/derived.ts';
 import { exportCharacter, importCharacter } from '../../src/game/character/io.ts';
 import type { InventoryEntry } from '../../src/game/character/items.ts';
@@ -17,6 +22,7 @@ import {
   castingAllowed,
   effortFor,
   evaluateMagic,
+  gainsArts,
   learnableSpells,
   spellSlots,
   type MagicChoice,
@@ -124,6 +130,25 @@ describe('class bonus skills', () => {
 });
 
 describe('arts and spells', () => {
+  it('adds the Int modifier only to the Invoker’s points and preparations, never below 0', () => {
+    expect(spellSlots(data, mage('full-invoker'), 1, 2)).toMatchObject({
+      spellPoints: 3,
+      spellsPrepared: 4,
+    });
+    expect(spellSlots(data, mage('invoker-partial-expert'), 1, -2)).toMatchObject({
+      spellPoints: 0,
+      spellsPrepared: 0,
+    });
+    expect(spellSlots(data, mage('full-high-mage'), 1, 2)).toMatchObject({
+      spellsCast: 1,
+      spellPoints: 0,
+      spellsPrepared: 3,
+    });
+    expect(gainsArts(data, mage('full-invoker'))).toBe(false);
+    expect(gainsArts(data, mage('full-high-mage'))).toBe(true);
+    expect(gainsArts(data, mage('blood-priest-partial-warrior'))).toBe(true);
+  });
+
   it('reads level-1 art picks and spell slots from the casting tables', () => {
     expect(artPicks(data, mage('full-high-mage'))).toEqual([
       { tradition: 'high-mage', automatic: [], picks: 2 },
@@ -291,6 +316,26 @@ describe('a finished caster', () => {
       'wardpact-invocation',
     ];
   }
+
+  it('builds an Invoker with Int on points and preparations, and no Effort (1.5.11)', () => {
+    // Gnome Int 14 + 2 = 16 (+1): 1 + 1 points, 2 + 1 prepared.
+    const invoker = (prepared: number) =>
+      evaluateChoices(
+        highMage({
+          classId: 'full-invoker',
+          magic: { arts: [], known: four(), prepared: four().slice(0, prepared) },
+        }),
+        data,
+      );
+    expect(invoker(3)).toMatchObject({
+      intModifier: 1,
+      effort: null,
+      steps: { magic: { state: 'ok' } },
+    });
+    expect(invoker(4).steps.magic).toMatchObject({ message: 'you can prepare 3 spells' });
+    expect(evaluateChoices(highMage(), data).effort).toBe(2);
+    expect(evaluateChoices(emptyChoices(), data).intModifier).toBe(0);
+  });
 
   it('saves arts and spells and shows Effort and slots on the sheet', () => {
     const r = finishCharacter(highMage(), data, scriptedRng([3, 1, 2]));

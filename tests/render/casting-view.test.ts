@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { castingText } from '../../src/render/casting-view.ts';
+import { castingText, castsLeftText } from '../../src/render/casting-view.ts';
 import type { CastingLevelRow } from '../../src/rules/progression.ts';
 
 const row = (r: Partial<CastingLevelRow>): CastingLevelRow => ({
@@ -29,9 +29,27 @@ describe('the casting line', () => {
     );
   });
 
+  it('gives preparations alone when there is nothing to pay with', () => {
+    expect(castingText(row({}), false)).toBe('Prepares 2, up to level 1.');
+  });
+
   it('is miracles only for a tradition with no spells', () => {
-    expect(castingText(row({ maxSpellLevel: 0, spellsPrepared: 0 }), false)).toBe(
-      'Miracles only.',
+    expect(castingText(row({ maxSpellLevel: 0, spellsPrepared: 0 }), false)).toBe('Miracles only.');
+  });
+});
+
+describe('what a caster has left today', () => {
+  const magic = (spellsCast: number, points: boolean) =>
+    ({ slots: row({ spellsCast }), points }) as Parameters<typeof castsLeftText>[1];
+  it('counts spells, spell points, or both', () => {
+    expect(castsLeftText({ spellsLeft: 1, pointsLeft: 0 }, magic(2, false))).toBe(
+      '1 spell left today',
+    );
+    expect(castsLeftText({ spellsLeft: 0, pointsLeft: 3 }, magic(0, true))).toBe(
+      '3 spell points left today',
+    );
+    expect(castsLeftText({ spellsLeft: 2, pointsLeft: 1 }, magic(2, true))).toBe(
+      '2 spells and 1 spell point left today',
     );
   });
 });

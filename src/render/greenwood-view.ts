@@ -2,13 +2,16 @@
 // spells), as data for the panel. Pure.
 import type { GameData } from '../game/character/context.ts';
 import { characterSheet } from '../game/character/derived.ts';
+import { poolOf } from '../game/world/casting.ts';
 import { TREES, treesOf, type TreeSpell } from '../game/world/greenwood.ts';
 import type { World } from '../game/world/types.ts';
+import { castsLeftText } from './casting-view.ts';
 
 export interface TreeCasterView {
   id: string;
   name: string;
-  spellsLeft: number;
+  /** "3 spells left today", or with spell points. */
+  left: string;
   /** Each tree spell prepared, and the caster's hurt trees it would mend. */
   spells: { spell: TreeSpell; mend: { id: string; name: string }[] }[];
 }
@@ -24,7 +27,7 @@ export function greenwoodView(w: World, data: GameData): TreeCasterView[] {
       {
         id: m.id,
         name: m.character.name,
-        spellsLeft: Math.max(0, magic.slots.spellsCast - m.spellsCast),
+        left: castsLeftText(poolOf(m, magic), magic),
         spells: prepared.map((spell) => ({
           spell,
           mend: treesOf(w, m, spell)

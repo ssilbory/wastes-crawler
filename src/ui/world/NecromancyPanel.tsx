@@ -39,8 +39,7 @@ export function NecromancyPanel(props: { world: World; onChange: () => void }) {
       {view.casters.map((c) => (
         <div key={c.id} class="parley" role="group" aria-label={c.name}>
           <p>
-            <strong>{c.name}</strong>: {c.spellsLeft} spell{c.spellsLeft === 1 ? '' : 's'} left
-            today
+            <strong>{c.name}</strong>: {c.left}
           </p>
           {c.raise && !w.encounter && (
             <>
