@@ -9,8 +9,13 @@ import type { TownResult } from '../../game/world/services.ts';
 import type { World } from '../../game/world/types.ts';
 import { necromancyView } from '../../render/necromancy-view.ts';
 import { data } from '../builder/data.ts';
+import { Boneshaping } from './Boneshaping.tsx';
+import { SkullQuery } from './SkullQuery.tsx';
 
-/** Raise Corpse, Raise Grave Knight, and Command the Dead for the party's Necromancers. */
+/**
+ * Raise Corpse, Raise Grave Knight, Command the Dead, Query the Skull, and Boneshaper for the
+ * party's Necromancers.
+ */
 export function NecromancyPanel(props: { world: World; onChange: () => void }) {
   const w = props.world;
   const [message, setMessage] = useState<string | null>(null);
@@ -70,6 +75,8 @@ export function NecromancyPanel(props: { world: World; onChange: () => void }) {
                 Mend {n.name}
               </button>
             ))}
+          <SkullQuery world={w} caster={c} run={run} />
+          <Boneshaping world={w} caster={c} run={run} />
         </div>
       ))}
       {message && <p class="bump">{message}</p>}

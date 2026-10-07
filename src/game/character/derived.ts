@@ -16,7 +16,7 @@ import { findProgression, progressionLookup, type GameData } from './context.ts'
 import type { Evaluation } from './creation.ts';
 import { loadoutSummary, type EquipmentSummary } from './equipment.ts';
 import { classOption } from './class-step.ts';
-import { modifierBonuses } from './foci.ts';
+import { characterBonuses } from './shaping.ts';
 import { armoredArts, castingAllowed, effortFor, spellSlots } from './magic.ts';
 import { findPeople } from './people.ts';
 
@@ -98,7 +98,7 @@ export function characterSheet(c: Character, data: GameData): Sheet {
   if (!people) throw new Error(`unknown people ${c.people}`);
   const scores = finalScores(c);
   const level = characterLevel(c.classes);
-  const bonuses = modifierBonuses(c.foci);
+  const bonuses = characterBonuses(c);
   const attackBonus = totalAttackBonus(c.classes, progressionLookup(data));
   return {
     scores,

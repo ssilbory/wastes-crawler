@@ -96,5 +96,16 @@ export const CharacterSchema = z.strictObject({
     freeFoci: z.int().min(1).optional(),
   }),
   strain: z.strictObject({ value: z.int().min(0), broken: z.boolean() }),
+  /**
+   * Flesh reshaped by a Necromancer's Boneshaper until they lift it: the caster's character id, and
+   * the changes to attribute modifiers, each within ±2 (vendor/wwn-srd/4.0 Magic and Spellcasting/
+   * 4.6.0 Necromancer Spells.md).
+   */
+  shaped: z
+    .strictObject({
+      by: z.string().min(1),
+      changes: z.partialRecord(AttributeSchema, z.int().min(-2).max(2)),
+    })
+    .optional(),
 });
 export type Character = z.infer<typeof CharacterSchema>;

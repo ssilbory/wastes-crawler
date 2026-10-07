@@ -40,15 +40,19 @@ describe('corpses (Phase 14b)', () => {
     const w = world();
     expect(placeKey(w)).toBe('borderlands/3,8');
     leaveCorpses(w, data, [['thug-or-militia', 'automaton-humanlike'], ['veteran-soldier']]);
-    expect(w.corpses).toEqual({ at: 'borderlands/3,8', hitDice: [1, 1] });
+    expect(w.corpses).toEqual({ at: 'borderlands/3,8', hitDice: [1, 1], day: 0, queried: false });
+    w.day = 2;
+    (w.corpses as NonNullable<typeof w.corpses>).queried = true;
     leaveCorpses(w, data, [['thug-or-militia']]);
+    // Fresh dead can be questioned, and the pile is dated to the latest.
+    expect(w.corpses).toMatchObject({ day: 2, queried: false });
     expect(corpsesHere(w)).toEqual([1, 1, 1]);
     leaveCorpses(w, data, [['automaton-humanlike']]);
     expect(corpsesHere(w)).toHaveLength(3);
     w.position = { col: 4, row: 8 };
     expect(corpsesHere(w)).toEqual([]);
     leaveCorpses(w, data, [['thug-or-militia']]);
-    expect(w.corpses).toEqual({ at: 'borderlands/4,8', hitDice: [1] });
+    expect(w.corpses).toEqual({ at: 'borderlands/4,8', hitDice: [1], day: 2, queried: false });
     const d = below();
     expect(placeKey(d)).toMatch(/^old-barrow\/barrow-upper\/\d+,\d+$/);
   });

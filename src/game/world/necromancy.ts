@@ -35,7 +35,10 @@ const monster = (data: GameData, id: string) => findMonster(data, id) as Monster
 const tagged = (data: GameData, id: string, tag: 'unliving' | 'undead') =>
   (data.content.monsterCombat.find((c) => c.id === id) as MonsterCombat).tags.includes(tag);
 
-/** After a won fight, the slain that were ever alive lie where it was fought. */
+/**
+ * After a won fight, the slain that were ever alive lie where it was fought, dated to today; fresh
+ * corpses can be questioned even where older ones already were.
+ */
 export function leaveCorpses(w: World, data: GameData, enemies: string[][]): void {
   const fallen = enemies
     .flat()
@@ -44,7 +47,7 @@ export function leaveCorpses(w: World, data: GameData, enemies: string[][]): voi
   if (fallen.length === 0) return;
   const at = placeKey(w);
   const already = w.corpses?.at === at ? w.corpses.hitDice : [];
-  w.corpses = { at, hitDice: [...already, ...fallen] };
+  w.corpses = { at, hitDice: [...already, ...fallen], day: w.day, queried: false };
 }
 
 /** The hit dice of the corpses lying where the party stands. */

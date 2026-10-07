@@ -6,7 +6,7 @@ import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { FactionStateSchema } from './faction-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 26;
+export const WORLD_SCHEMA_VERSION = 27;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -314,7 +314,16 @@ export const WorldSaveSchema = z.strictObject({
    * Corpses left by the party's last won fight, as each one's hit dice, and where they lie: a hex
    * key above ground, or dungeon/level/cell below (Phase 14b).
    */
-  corpses: z.strictObject({ at: z.string(), hitDice: z.array(z.int().min(1)) }).nullable(),
+  corpses: z
+    .strictObject({
+      at: z.string(),
+      hitDice: z.array(z.int().min(1)),
+      /** The day the latest of them fell; Query the Skull reaches back a day per caster level. */
+      day: z.int().min(0),
+      /** Query the Skull has been cast on them (it may not be cast twice on the same corpse). */
+      queried: z.boolean(),
+    })
+    .nullable(),
   /**
    * Members slain in the party's last fight, and where it was fought: a Healer can revive them
    * there before the party moves on or the day ends (Phase 14d).

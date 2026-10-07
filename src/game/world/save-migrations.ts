@@ -153,4 +153,9 @@ export const WORLD_MIGRATIONS: Migrations = {
     const d = raw.dungeon as Raw | null | undefined;
     return { ...raw, schemaVersion: 26, dungeon: d && { ...d, dug: {} } };
   },
+  // Version 27 dates the corpses for Query the Skull: as fallen today, and not yet questioned.
+  26: (raw) => {
+    const c = raw.corpses as Raw | null | undefined;
+    return { ...raw, schemaVersion: 27, corpses: c && { ...c, day: raw.day, queried: false } };
+  },
 };
