@@ -9,7 +9,7 @@ import { partyLevel } from './difficulty.ts';
 import { note } from './members.ts';
 import { addNpc } from './npcs.ts';
 import { fulfilOrders, gainAuthority, learnCountersign } from './orders.ts';
-import { failQuest, giverName, questOf } from './quests.ts';
+import { failQuest, giverName, payerName, payerOf, questOf } from './quests.ts';
 import { anyDead, isRaising, raisingBlocked } from './raising.ts';
 import { revive, type TownResult } from './services.ts';
 import { addLoot } from './shop.ts';
@@ -47,15 +47,22 @@ export function questsFrom(data: GameData, giverId: string): Quest[] {
   return data.content.quests.filter((q) => q.giver === giverId);
 }
 
-/** A giver's quests as the board shows them: a raising quest only while offered or taken. */
+/**
+ * A giver's quests as the board shows them: a raising quest only while offered or taken, and
+ * another giver's quest this giver pays for once it is under way.
+ */
 export function questBoard(w: World, data: GameData, giverId: string): Quest[] {
-  return questsFrom(data, giverId).filter(
-    (q) => !isRaising(q) || standing(w, q) || (w.raising.offer === q.id && anyDead(w)),
-  );
+  const underWay = (q: Quest) => ['active', 'ready'].includes(w.quests[q.id]?.status ?? '');
+  return [
+    ...questsFrom(data, giverId).filter(
+      (q) => !isRaising(q) || standing(w, q) || (w.raising.offer === q.id && anyDead(w)),
+    ),
+    ...data.content.quests.filter((q) => q.payer === giverId && underWay(q)),
+  ];
 }
 
-function giverHere(w: World, data: GameData, q: Quest): boolean {
-  return giversHere(w, data).some((g) => g.id === q.giver);
+function giverHere(w: World, data: GameData, q: Quest, id = q.giver): boolean {
+  return giversHere(w, data).some((g) => g.id === id);
 }
 
 export function acceptQuest(w: World, data: GameData, id: string): TownResult {
@@ -83,7 +90,7 @@ export function acceptQuest(w: World, data: GameData, id: string): TownResult {
 export function turnInQuest(w: World, data: GameData, id: string, raise?: string): TownResult {
   const q = questOf(data, id);
   if (w.quests[id]?.status !== 'ready') return no(`${q.name} isn't finished.`);
-  if (!giverHere(w, data, q)) return no(`${giverName(data, q)} isn't here.`);
+  if (!giverHere(w, data, q, payerOf(q))) return no(`${payerName(data, q)} isn't here.`);
   if (isRaising(q)) {
     const m = w.members.find((x) => x.id === raise);
     if (!m?.dead) return no('Choose a dead PC to raise.');
@@ -101,7 +108,7 @@ export function turnInQuest(w: World, data: GameData, id: string, raise?: string
   addLoot(w, q.reward.loot);
   note(
     w,
-    `${giverName(data, q)} pays for ${q.name}: ${q.reward.crowns} crowns and ${q.reward.xp} XP each.`,
+    `${payerName(data, q)} pays for ${q.name}: ${q.reward.crowns} crowns and ${q.reward.xp} XP each.`,
   );
   for (const o of q.reward.countersigns ?? []) learnCountersign(w, data, o);
   if (q.reward.authority) gainAuthority(w, data, q.reward.authority);

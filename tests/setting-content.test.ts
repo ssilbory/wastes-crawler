@@ -16,6 +16,10 @@ describe('setting content (Phase 12b)', () => {
       'ashgate-hold',
       'bunker-watch',
       'vaels-war',
+      'throne-road',
+      'saltgate-hold',
+      'archive-keep',
+      'citadel-watch',
     ]);
     expect(content.raidRules.region).toBe('dark-lands');
   });

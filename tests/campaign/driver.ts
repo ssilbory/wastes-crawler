@@ -163,6 +163,7 @@ export function attempt(
   town: { id: string; col: number; row: number },
   run: () => void,
   tries = 3,
+  region = 'dark-lands',
 ): number {
   for (let n = 1; ; n++) {
     try {
@@ -170,7 +171,7 @@ export function attempt(
       return n;
     } catch (e) {
       if (!(e instanceof Wiped) || n >= tries) throw e;
-      enterRegion(w, 'dark-lands', town);
+      enterRegion(w, region, town);
       w.purse = Math.max(w.purse, 5000);
       for (const m of w.members.filter((x) => x.dead)) raiseDead(w, data, m.id);
       stayAtInn(w, data);

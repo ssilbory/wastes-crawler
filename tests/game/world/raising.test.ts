@@ -48,7 +48,7 @@ describe('raising quests (docs/rules-adaptation.md, Raising quests)', () => {
       'Ysolde the Necromancer has work that would raise the dead: The Barrow-Bones.',
     );
     expect(questBoard(w, data, 'necromancer-ysolde').map((q) => q.id)).toEqual(['barrow-bones']);
-    expect(questBoard(w, data, 'reeve-halda')).toHaveLength(3);
+    expect(questBoard(w, data, 'reeve-halda')).toHaveLength(4);
   });
 
   it('keeps the offer standing in its town, and draws anew in another', () => {
