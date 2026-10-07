@@ -7,6 +7,7 @@ import { crowns, lootText, tradeText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { NpcPanel } from '../world/NpcPanel.tsx';
 import { QuestLog } from '../world/QuestLog.tsx';
+import { JournalPanel } from '../world/JournalPanel.tsx';
 import { FactionsPanel } from '../world/FactionsPanel.tsx';
 import { SettingPanel } from '../world/SettingPanel.tsx';
 import { raidedText } from '../../render/setting-view.ts';
@@ -99,34 +100,29 @@ export function TownScreen(props: {
         {message}
       </p>
       <div class="world-main">
-        <div class="town-main" role="tabpanel" aria-label={TABS[tab]}>
-          {tab === 'quests' && <QuestsTab world={w} act={act} />}
-          {tab === 'services' && <ServicesTab world={w} act={act} />}
-          {tab === 'shop' && <ShopTab world={w} act={act} />}
-          {tab === 'tavern' && <TavernTab world={w} roster={props.roster} act={act} />}
-          {tab === 'training' && <TrainingTab world={w} act={act} />}
-          {tab === 'workshop' && <WorkshopTab world={w} act={act} />}
-          {tab === 'craftsman' && <CraftsmanTab world={w} act={act} />}
-          {tab === 'travel' && <TravelTab world={w} act={act} onBoard={props.onLeave} />}
-          {tab === 'arena' && <ArenaTab world={w} act={act} onBout={props.onBout} />}
+        <div class="world-left">
+          <div class="town-main" role="tabpanel" aria-label={TABS[tab]}>
+            {tab === 'quests' && <QuestsTab world={w} act={act} />}
+            {tab === 'services' && <ServicesTab world={w} act={act} />}
+            {tab === 'shop' && <ShopTab world={w} act={act} />}
+            {tab === 'tavern' && <TavernTab world={w} roster={props.roster} act={act} />}
+            {tab === 'training' && <TrainingTab world={w} act={act} />}
+            {tab === 'workshop' && <WorkshopTab world={w} act={act} />}
+            {tab === 'craftsman' && <CraftsmanTab world={w} act={act} />}
+            {tab === 'travel' && <TravelTab world={w} act={act} onBoard={props.onLeave} />}
+            {tab === 'arena' && <ArenaTab world={w} act={act} onBout={props.onBout} />}
+          </div>
+          <QuestLog world={w} onChange={props.onChange} />
+          <SettingPanel world={w} inTown onChange={props.onChange} />
+          <FactionsPanel world={w} />
+          <JournalPanel world={w} lines={30} />
         </div>
-        <div class="world-side">
+        <div class="world-side flow">
           <PartyPanel members={w.members} />
           <FormationPanel world={w} onChange={props.onChange} />
           <NpcPanel world={w} onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />
           <InventoryPanel world={w} onChange={props.onChange} />
-          <QuestLog world={w} onChange={props.onChange} />
-          <SettingPanel world={w} inTown onChange={props.onChange} />
-          <FactionsPanel world={w} />
-          <section class="panel log" aria-label="Journey log">
-            <h3>Journal</h3>
-            <ol>
-              {w.log.slice(-30).map((line, i) => (
-                <li key={`${i}-${line}`}>{line}</li>
-              ))}
-            </ol>
-          </section>
         </div>
       </div>
     </div>
