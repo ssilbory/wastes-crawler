@@ -33,14 +33,17 @@ export function wayDownHere(
   return r && { name: r.name, level: r.level };
 }
 
-/** Every way down in the party's region, hand-made and ruins, for the map. */
-export const entrancesIn = (data: GameData, region: string) => [
+/**
+ * Every way down in the party's region, hand-made and ruins, for the map; `heard` marks those a
+ * tavern rumor has told of, by id.
+ */
+export const entrancesIn = (data: GameData, region: string, rumors: readonly string[] = []) => [
   ...data.content.dungeons
     .filter((d) => d.region === region)
-    .map((d) => ({ ...d.entrance, name: d.name })),
+    .map((d) => ({ ...d.entrance, name: d.name, heard: rumors.includes(d.id) })),
   ...data.content.ruins
     .filter((r) => r.region === region)
-    .map((r) => ({ col: r.col, row: r.row, name: r.name })),
+    .map((r) => ({ col: r.col, row: r.row, name: r.name, heard: rumors.includes(r.id) })),
 ];
 
 /** The ruin's dungeon for this visit, drawing a seed on the first visit or once it has shifted. */

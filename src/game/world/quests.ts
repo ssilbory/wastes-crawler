@@ -69,7 +69,7 @@ function advance(w: World, data: GameData, id: string): void {
   st.step += 1;
   if (st.step >= q.objectives.length) {
     st.status = 'ready';
-    note(w, `${q.name}: done. Return to ${giverName(data, q)} for the reward.`);
+    note(w, `${q.name}: done. Return to ${payerName(data, q)} for the reward.`);
     return;
   }
   note(w, `${q.name}: ${(q.objectives[st.step] as Objective).text}`);
@@ -79,6 +79,14 @@ function advance(w: World, data: GameData, id: string): void {
 export function giverName(data: GameData, q: Quest): string {
   // Content checks guarantee every quest's giver exists.
   return (data.content.missionGivers.find((g) => g.id === q.giver) as { name: string }).name;
+}
+
+/** Who pays for a finished quest: its payer, or else its giver. */
+export const payerOf = (q: Quest): string => q.payer ?? q.giver;
+
+export function payerName(data: GameData, q: Quest): string {
+  // Content checks guarantee every quest's payer exists.
+  return (data.content.missionGivers.find((g) => g.id === payerOf(q)) as { name: string }).name;
 }
 
 /** Ends a quest as failed, sending any escort away. */

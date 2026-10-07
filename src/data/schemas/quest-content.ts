@@ -72,6 +72,11 @@ export const QuestSchema = z.strictObject({
   id: IdSchema,
   name: z.string().min(1),
   giver: IdSchema,
+  /**
+   * The giver who pays on turning it in, if not the one who offered it: a letter of introduction is
+   * paid for by whoever it is addressed to (Sam's call).
+   */
+  payer: IdSchema.optional(),
   summary: z.string().min(1),
   prerequisites: z.strictObject({
     quests: z.array(IdSchema),
