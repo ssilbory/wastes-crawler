@@ -504,7 +504,8 @@
         "modifier": 0
       },
       "save": "evasion",
-      "uses": 2
+      "uses": 2,
+      "element": "fire"
     }
   },
   {

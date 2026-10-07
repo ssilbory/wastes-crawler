@@ -27,6 +27,11 @@ export function breathe(b: Battle, actor: Combatant, row: number): void {
   say(b, `${actor.name} unleashes ${breath.name}.`);
   for (const t of b.combatants.filter((c) => c.side !== actor.side && c.row === row && isUp(c))) {
     if (negatesUndead(b, actor, t)) continue;
+    // Pact of Stone and Sea: breath of the pacted element can't harm them.
+    if (breath.element && t.pact === breath.element) {
+      say(b, `${t.name} is untouched by ${breath.name}.`);
+      continue;
+    }
     harm(b, t, save(b, t, breath.save).success ? Math.floor(total / 2) : total);
   }
 }

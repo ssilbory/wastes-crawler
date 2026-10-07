@@ -73,6 +73,7 @@ export function base(
     harvestRound: 0,
     shockCap: null,
     poisonImmune: false,
+    pact: null,
     mantle: null,
     echo: null,
     torment: null,

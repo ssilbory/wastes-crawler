@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { IdSchema } from './common.ts';
+import { ElementSchema, IdSchema } from './common.ts';
 import { DefaultPresetSchema } from './roster.ts';
 import { CharacterSchema } from './character.ts';
 import { CellSchema, FacingSchema } from './dungeon-content.ts';
@@ -343,6 +343,17 @@ export const WorldSaveSchema = z.strictObject({
   disguise: z.strictObject({ day: z.int().min(0), ids: z.array(z.string()) }).nullable(),
   /** The Jade Palanquin: the quarter, counted from the world's start, at which it fades. */
   palanquin: z.int().min(0).nullable(),
+  /**
+   * Pact of Stone and Sea: where (a dungeon level, or the surface) and on what day the pacts were
+   * made, and each pacted member's element.
+   */
+  pacts: z
+    .strictObject({
+      at: z.string().min(1),
+      day: z.int().min(0),
+      by: z.record(z.string(), ElementSchema),
+    })
+    .nullable(),
   log: z.array(z.string()),
 });
 export type WorldSave = z.infer<typeof WorldSaveSchema>;

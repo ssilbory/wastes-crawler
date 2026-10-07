@@ -26,6 +26,10 @@ export type Cost = z.infer<typeof CostSchema>;
 export const AttributeSchema = z.enum(['str', 'dex', 'con', 'int', 'wis', 'cha']);
 export type Attribute = z.infer<typeof AttributeSchema>;
 
+/** The four substances of Pact of Stone and Sea (vendor/wwn-srd/4.0 Magic and Spellcasting/4.5.0). */
+export const ElementSchema = z.enum(['earth', 'water', 'fire', 'wind']);
+export type Element = z.infer<typeof ElementSchema>;
+
 export const recordBase = {
   id: IdSchema,
   name: z.string().min(1),

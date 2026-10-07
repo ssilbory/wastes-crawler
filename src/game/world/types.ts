@@ -106,6 +106,8 @@ export interface World {
   disguise: WorldSave['disguise'];
   /** When the Jade Palanquin fades, as a quarter counted from the world's start. */
   palanquin: number | null;
+  /** Pact of Stone and Sea, for the rest of the scene. */
+  pacts: WorldSave['pacts'];
   log: string[];
 }
 

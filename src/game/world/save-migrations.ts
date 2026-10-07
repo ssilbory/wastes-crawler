@@ -154,7 +154,7 @@ export const WORLD_MIGRATIONS: Migrations = {
     return { ...raw, schemaVersion: 26, dungeon: d && { ...d, dug: {} } };
   },
   // Version 27 adds spells cast outside fights: the corpses are dated for Query the Skull, as
-  // fallen today and not yet questioned; no disguise, palanquin, or arcane sight is in force.
+  // fallen today and not yet questioned; no disguise, palanquin, arcane sight, or pact is in force.
   26: (raw) => {
     const c = raw.corpses as Raw | null | undefined;
     const d = raw.dungeon as Raw | null | undefined;
@@ -165,6 +165,7 @@ export const WORLD_MIGRATIONS: Migrations = {
       dungeon: d && { ...d, sight: null, sensed: {} },
       disguise: null,
       palanquin: null,
+      pacts: null,
     };
   },
 };

@@ -88,6 +88,29 @@ describe('breath weapons', () => {
     expect(breathRow(b, wyrm)).toBeNull();
     breathe(monsterCombatantBattle(), monsterCombatant(data, 'cave-bear', 'x', createRng('x')), 0);
   });
+
+  it('pass by those pacted with their element (Pact of Stone and Sea)', () => {
+    const b = standardBattle([['chimera']]);
+    const chimera = who(b, 'foe-0-0');
+    expect(chimera.breath?.element).toBe('fire');
+    const [snag, grukk] = [who(b, 'Snag'), who(b, 'Grukk')];
+    for (const pc of [snag, grukk]) pc.hp = 100;
+    snag.pact = 'fire';
+    grukk.pact = 'water';
+    // 3d6 = 12; Grukk fails his save (2); Snag rolls none.
+    b.rng = scriptedRng([4, 4, 4, 2]);
+    breathe(b, chimera, 0);
+    expect([snag.hp, grukk.hp]).toEqual([100, 88]);
+    expect((b.log ?? []).join('\n')).toContain("Snag is untouched by the dragon head's fire.");
+    // A breath with no element harms the pacted all the same.
+    const v = standardBattle([['grave-wyrm']]);
+    const s = who(v, 'Snag');
+    s.hp = 100;
+    s.pact = 'fire';
+    v.rng = scriptedRng([5, 5, 5, 5, 2, 2]);
+    breathe(v, who(v, 'foe-0-0'), 0);
+    expect(s.hp).toBe(80);
+  });
 });
 
 function monsterCombatantBattle() {

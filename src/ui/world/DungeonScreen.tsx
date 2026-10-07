@@ -23,6 +23,7 @@ import { StashPanel } from './StashPanel.tsx';
 import { GreenwoodPanel } from './GreenwoodPanel.tsx';
 import { ConjunctPanel } from './ConjunctPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
+import { PactPanel } from './PactPanel.tsx';
 import { SorceryPanel } from './SorceryPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { QuestLog } from './QuestLog.tsx';
@@ -271,6 +272,7 @@ export function DungeonScreen(props: {
           <GreenwoodPanel world={w} onChange={props.onChange} />
           <ConjunctPanel world={w} onChange={props.onChange} />
           <SorceryPanel world={w} onChange={props.onChange} />
+          <PactPanel world={w} onChange={props.onChange} />
           <HealerPanel world={w} onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />
           <StashPanel world={w} />

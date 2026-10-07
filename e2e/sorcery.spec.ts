@@ -91,3 +91,48 @@ test('casts High Magic outside fights, above ground and below', async ({ page })
   await expect(log).toContainText('Fizzwick tears open a pale rift');
   await expect(page.getByRole('button', { name: 'Climb out of The Old Barrow' })).toBeVisible();
 });
+
+test('seals a pact and brings down a garrison post with the Elementalist', async ({ page }) => {
+  await page.goto('/#/arena');
+  await page.getByLabel('Import character files').setInputFiles(starters);
+  await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(
+    starters.length,
+  );
+  await page.getByRole('link', { name: 'Overland' }).click();
+  await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();
+  await page.getByRole('combobox', { name: 'Front row, slot 1' }).selectOption({ label: 'Snag' });
+  await page
+    .getByRole('combobox', { name: 'Rear row, slot 1' })
+    .selectOption({ label: 'Fizzwick' });
+  await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('elementalist-e2e');
+  await page.getByRole('button', { name: 'Start a new world' }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
+  await expect(page.getByRole('region', { name: 'Pact of Stone and Sea' })).toHaveCount(0);
+  const spells = ['pact-of-stone-and-sea', 'tremors-of-the-depths'];
+  await edit(
+    page,
+    `const fizz = save.members.find((m) => m.character.name === 'Fizzwick').character;
+     fizz.classes = { current: 'full-elementalist', levels: { 'full-elementalist': 9 } };
+     fizz.spells = { known: ${JSON.stringify(spells)}, prepared: ${JSON.stringify(spells)} };`,
+  );
+  const pact = page.getByRole('region', { name: 'Pact of Stone and Sea' });
+  await pact.getByRole('combobox', { name: 'Pact' }).selectOption({ label: 'Snag' });
+  await pact.getByRole('combobox', { name: 'with' }).selectOption('earth');
+  await pact.getByRole('button', { name: 'Fizzwick: seal the pact' }).click();
+  await expect(pact).toContainText('Pacted: Snag: earth.');
+
+  await edit(
+    page,
+    `save.encounter = { enemies: [['bound-orc-guard']], nature: 'hostile', reaction: 'expected',
+       parleyed: false, captive: null, quest: null, offer: null, hostile: true, spotted: true,
+       text: 'The bound hold the gate.', order: 'ruinfield-gate', garrison: 'dark-lands/18,12' };`,
+  );
+  await page
+    .getByRole('region', { name: 'Encounter' })
+    .getByRole('button', { name: 'Fizzwick: bring the post down with Tremors of the Depths' })
+    .click();
+  await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
+    'the post comes down on its garrison.',
+  );
+  await expect(page.getByRole('region', { name: 'Encounter' })).toHaveCount(0);
+});

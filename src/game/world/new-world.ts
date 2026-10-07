@@ -73,6 +73,7 @@ export function newWorld(data: GameData, rng: Rng, party: Recruit[], regionId?: 
     bestiary: [],
     disguise: null,
     palanquin: null,
+    pacts: null,
     factions: {},
     purse: toTenths(party.reduce((sum, p) => sum + p.character.crowns, 0)),
     loot: [],

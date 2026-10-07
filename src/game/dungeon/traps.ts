@@ -14,6 +14,7 @@ import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
 import { poisonProof } from '../world/arts.ts';
 import { HEALERS_KIT } from '../world/first-aid.ts';
+import { pactOf } from '../world/pacts.ts';
 import { alive, bestAt, memberCheck, note, setHp } from '../world/members.ts';
 import type { TownResult } from '../world/services.ts';
 import { wipe } from '../world/town.ts';
@@ -108,6 +109,11 @@ function spring(w: World, data: GameData, trap: Trap): void {
   const victims = able(w);
   // Everyone saves before anyone tries to stabilize the fallen.
   const hit = victims.filter((m) => {
+    // Pact of Stone and Sea wards off a trap of its element.
+    if (trap.element && pactOf(w, m.id) === trap.element) {
+      note(w, `The ${trap.name} can't harm ${m.character.name}.`);
+      return false;
+    }
     if (!trap.save) return true;
     const target = characterSheet(m.character, data).saves[trap.save];
     if (!rollSave(w.rng, target).success) return true;

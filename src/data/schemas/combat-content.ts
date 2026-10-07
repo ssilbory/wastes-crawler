@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AttributeSchema, DiceSchema, IdSchema } from './common.ts';
+import { AttributeSchema, DiceSchema, ElementSchema, IdSchema } from './common.ts';
 import { ElementalistEffects } from './elementalist-content.ts';
 import { HighMagicEffects } from './high-magic-content.ts';
 import { NecromancerEffects } from './necromancer-content.ts';
@@ -77,6 +77,8 @@ export const MonsterCombatSchema = z.strictObject({
       damage: DiceSchema,
       save: SaveKind,
       uses: z.int().min(1),
+      /** The substance breathed, which Pact of Stone and Sea can ward off. */
+      element: ElementSchema.optional(),
     })
     .optional(),
   /** Half damage from blunt or edged weapons, and only 1 from missiles. */

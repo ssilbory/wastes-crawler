@@ -20,6 +20,7 @@ import { StashPanel } from './StashPanel.tsx';
 import { GreenwoodPanel } from './GreenwoodPanel.tsx';
 import { ConjunctPanel } from './ConjunctPanel.tsx';
 import { HighRoadPanel } from './HighRoadPanel.tsx';
+import { PactPanel } from './PactPanel.tsx';
 import { SorceryPanel } from './SorceryPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
@@ -148,6 +149,7 @@ export function MapScreen(props: {
           <ConjunctPanel world={w} onChange={props.onChange} />
           <HighRoadPanel world={w} onChange={props.onChange} />
           <SorceryPanel world={w} onChange={props.onChange} />
+          <PactPanel world={w} onChange={props.onChange} />
           <HealerPanel world={w} onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />
           <StashPanel world={w} />

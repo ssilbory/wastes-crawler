@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AttributeSchema, DiceSchema, IdSchema } from './common.ts';
+import { AttributeSchema, DiceSchema, ElementSchema, IdSchema } from './common.ts';
 import { LootDiceSchema } from './town-content.ts';
 
 export const FacingSchema = z.enum(['n', 'e', 's', 'w']);
@@ -42,6 +42,8 @@ export const TrapSchema = z.strictObject({
     difficulty: z.int().min(1),
   }),
   save: z.enum(['physical', 'evasion', 'mental', 'luck']).nullable(),
+  /** The substance that does the harm, which Pact of Stone and Sea can ward off. */
+  element: ElementSchema.optional(),
   effect: z.discriminatedUnion('kind', [
     z.strictObject({ kind: z.literal('damage'), dice: DiceSchema }),
     /** SRD 2.10.0: dungeon poison takes half the victim's maximum hit points. */
