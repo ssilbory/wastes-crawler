@@ -67,6 +67,7 @@ test('questions the dead, then reshapes a companion and lifts it', async ({ page
   await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(
     starters.length,
   );
+  await page.getByRole('button', { name: 'Menu' }).click();
   await page.getByRole('link', { name: 'Overland' }).click();
   await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();
   await page.getByRole('combobox', { name: 'Front row, slot 1' }).selectOption({ label: 'Snag' });

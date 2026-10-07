@@ -36,6 +36,7 @@ test('casts High Magic outside fights, above ground and below', async ({ page })
   await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(
     starters.length,
   );
+  await page.getByRole('button', { name: 'Menu' }).click();
   await page.getByRole('link', { name: 'Overland' }).click();
   await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();
   await page.getByRole('combobox', { name: 'Front row, slot 1' }).selectOption({ label: 'Snag' });
@@ -98,6 +99,7 @@ test('seals a pact and brings down a garrison post with the Elementalist', async
   await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(
     starters.length,
   );
+  await page.getByRole('button', { name: 'Menu' }).click();
   await page.getByRole('link', { name: 'Overland' }).click();
   await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();
   await page.getByRole('combobox', { name: 'Front row, slot 1' }).selectOption({ label: 'Snag' });
