@@ -80,6 +80,8 @@ export interface CastingLevelRow {
   spellsCast: number;
   /** The Invoker's daily spell points (1.5.11); 0 for other casters. */
   spellPoints: number;
+  /** The Skinshifter's hit bonus in a non-humanoid form (1.5.15); 0 for other casters. */
+  formBonus: number;
   spellsPrepared: number;
   /** Named arts and free art picks gained at this level. */
   arts: string[];
@@ -98,6 +100,7 @@ export function castingRow(c: CastingProgression, level: number): CastingLevelRo
     ),
     spellsCast: extended(level, (l) => row(l).spellsCast),
     spellPoints: extended(level, (l) => row(l).spellPoints ?? 0),
+    formBonus: extended(level, (l) => row(l).formBonus ?? 0),
     spellsPrepared: extended(level, (l) => row(l).spellsPrepared),
     arts: gains.arts,
     anyArts: gains.anyArts,

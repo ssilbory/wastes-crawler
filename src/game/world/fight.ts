@@ -9,6 +9,7 @@ import type { Character, Element } from '../../data/schemas/index.ts';
 import type { Rng } from '../../rules/rng.ts';
 import type { GameData } from '../character/context.ts';
 import { difficultyTier, type Difficulty } from './difficulty.ts';
+import { wearForm } from './forms.ts';
 import { alive, note, setHp } from './members.ts';
 import {
   accrueShares,
@@ -90,6 +91,8 @@ export interface PartySetup {
     frail: boolean;
     spellsCast: number;
     pointsSpent: number;
+    /** The alternate form worn into the fight (1.5.15). */
+    form: number | null;
     effortDay: number;
     /** Limited art uses since the last rest (Phase 15). */
     artUses: Record<string, number>;
@@ -124,6 +127,7 @@ export function partySetup(
       frail: m.frail,
       spellsCast: m.spellsCast,
       pointsSpent: m.pointsSpent,
+      form: m.form,
       effortDay: m.effortDay,
       artUses: { ...m.artUses },
       committed: m === faith ? 1 : 0,
@@ -142,7 +146,12 @@ export function battleFrom(data: GameData, rng: Rng, setup: PartySetup, log: boo
   const battle = createBattle({
     data,
     rng,
-    party: setup.party.map((p) => ({ character: p.character, row: p.row, column: p.column })),
+    party: setup.party.map((p) => ({
+      character: p.character,
+      row: p.row,
+      column: p.column,
+      form: p.form,
+    })),
     npcs: setup.npcs,
     enemies: setup.enemies.map((r) => [...r]),
     dark: setup.dark,
@@ -189,9 +198,15 @@ export function partyBattle(
 }
 
 export function carryBack(data: GameData, m: Member, c: Battle['combatants'][number]): void {
-  // Gear readied or stowed mid-fight stays where it was put, even by the fallen.
-  if (c.character) m.character = { ...m.character, inventory: c.character.inventory };
+  // Gear readied or stowed mid-fight stays where it was put, even by the fallen; so does the form,
+  // with the hit point maximum Feral Prowess gave it.
+  if (c.character) {
+    const { inventory, hp } = c.character;
+    m.character = { ...m.character, inventory, hp: { ...m.character.hp, max: hp.max } };
+  }
+  m.form = c.form;
   if (c.status === 'dead') {
+    wearForm(data, m, null);
     m.dead = true;
     setHp(m, 0);
     return;

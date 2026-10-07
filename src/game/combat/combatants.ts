@@ -87,6 +87,7 @@ export function base(
     flame: 0,
     stone: 0,
     misted: false,
+    form: null,
     vitality: null,
     enfeebledUntil: 0,
     compelled: 0,
@@ -99,9 +100,14 @@ export function base(
   };
 }
 
-/** A PC with every sheet value, focus effect, and class ability folded in. */
-export function pcCombatant(data: GameData, c: Character, id = c.id): Combatant {
-  const sheet = characterSheet(c, data);
+/** A PC with every sheet value, focus effect, and class ability folded in, in `form` if any. */
+export function pcCombatant(
+  data: GameData,
+  c: Character,
+  id = c.id,
+  form: number | null = null,
+): Combatant {
+  const sheet = characterSheet(c, data, form);
   const scores = finalScores(c);
   const bonuses = characterBonuses(c);
   const level = characterLevel(c.classes);
@@ -190,6 +196,7 @@ export function pcCombatant(data: GameData, c: Character, id = c.id): Combatant 
     status: c.hp.current > 0 ? 'active' : 'dead',
     sapient: true,
     character: c,
+    form,
     // Cold Flesh: Shock of 2 at most, and a natural AC of 12 plus half the level (1.5.14).
     ...(c.arts.includes('cold-flesh') ? { shockCap: 2, acFloor: 12 + Math.floor(level / 2) } : {}),
     // Unaging: immune to poisons (1.5.14).

@@ -5,6 +5,17 @@ import { ItemLocationSchema } from './equipment-content.ts';
 
 export const CHARACTER_SCHEMA_VERSION = 7;
 
+/** A Skinshifter's alternate form (1.5.15): up to three arts applied to it. */
+export const FormSchema = z.strictObject({
+  name: z.string().trim().min(1).max(40),
+  /** A humanoid shape takes the form bonus to hit only with Warform. */
+  humanoid: z.boolean(),
+  arts: z.array(IdSchema).max(3),
+  /** The attribute Feral Prowess raises in this form. */
+  feral: z.enum(['str', 'dex', 'con']).optional(),
+});
+export type Form = z.infer<typeof FormSchema>;
+
 const Score = z.int().min(3).max(18);
 const Adjustments = z.partialRecord(AttributeSchema, z.int());
 
@@ -41,6 +52,8 @@ export const CharacterSchema = z.strictObject({
   ),
   /** Mage arts, automatic ones included. */
   arts: z.array(IdSchema),
+  /** A Skinshifter's alternate forms, one per character level at most. */
+  forms: z.array(FormSchema).optional(),
   /** Spells in the grimoire, and those prepared from it. */
   spells: z.strictObject({ known: z.array(IdSchema), prepared: z.array(IdSchema) }),
   /** Carried items; worn armor and shields count as Readied. */

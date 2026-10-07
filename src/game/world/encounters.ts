@@ -9,10 +9,9 @@ import { encounterCheck } from '../../rules/overland.ts';
 import { reactionRoll, type Reaction } from '../../rules/reaction.ts';
 import { findMonster, type GameData } from '../character/context.ts';
 import { rollPatrol, type Patrol } from '../factions/patrols.ts';
-import { characterSheet } from '../character/derived.ts';
 import { bonetalker } from './arts.ts';
 import { passInDisguise } from './guises.ts';
-import { alive, memberCheck, note } from './members.ts';
+import { alive, memberCheck, memberSheet, note } from './members.ts';
 import { reactionBonus } from './minds.ts';
 import { captiveOf, firstGuide } from './npcs.ts';
 import { regionMap } from './region.ts';
@@ -226,7 +225,7 @@ export function meetGroup(
 
 function partyCha(w: World, data: GameData): number {
   const able = alive(w).filter((m) => m.character.hp.current > 0);
-  return Math.max(0, ...able.map((m) => characterSheet(m.character, data).modifiers.cha));
+  return Math.max(0, ...able.map((m) => memberSheet(data, m).modifiers.cha));
 }
 
 /** Slipping away from a spotted group, or letting a peaceful one pass. */

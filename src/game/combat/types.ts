@@ -181,6 +181,8 @@ export interface Combatant {
   flame: number;
   stone: number;
   misted: boolean;
+  /** A Skinshifter's alternate form worn now, by index into the character's forms (1.5.15). */
+  form: number | null;
   /**
    * Phase 18c Necromancer magic: Augment Mortal Vitality's save bonus and unspent healing, the last
    * round Enfeebling Wave hinders it, Compel Flesh's damage per struggle (0 for none), the last
@@ -214,6 +216,8 @@ export type Action =
   | { kind: 'shake-off' }
   /** Spend the Main Action taking form again out of Wind Walking's mist. */
   | { kind: 'end-mist' }
+  /** Change Form into a Skinshifter's form by index, or back to their own shape (1.5.15). */
+  | { kind: 'shift'; form: number | null }
   | { kind: 'wait' };
 
 export type Outcome = 'party' | 'enemy' | 'draw';

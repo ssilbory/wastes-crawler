@@ -1,6 +1,7 @@
 // The command menu: every action a combatant can legally take right now, with its targets. Combat
 // actions follow vendor/wwn-srd/2.0 The Rules of the Game/2.4.3 Combat Actions.md; moving rows is
 // the Formation rules' "Moving rows" in docs/rules-adaptation.md.
+import { shiftChoices } from './forms.ts';
 import { lineLabel } from '../character/items.ts';
 import { afterMove } from './gear.ts';
 import type { CombatMagic } from '../../data/schemas/index.ts';
@@ -171,6 +172,9 @@ export function commandsFor(b: Battle, actor: Combatant): Command[] {
       if (has) commands.push(...magicCommand(b, actor, m));
     }
   }
+  const shapes = shiftChoices(actor);
+  if (shapes.length > 0)
+    commands.push({ key: 'shift', group: 'magic', label: 'Change form', choices: shapes });
   const one = (key: string, group: Command['group'], label: string, action: Action): Command => ({
     key,
     group,

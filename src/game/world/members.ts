@@ -18,12 +18,23 @@ export const alive = (w: World) => w.members.filter((m) => !m.dead);
 /** Living, conscious, and not asleep after a Healer's revive. */
 export const awake = (m: Member) => !m.dead && !m.reviving && m.character.hp.current > 0;
 
-const sheet = (data: GameData, m: Member) => characterSheet(m.character, data);
+/** The member's sheet in the form they wear now (1.5.15). */
+export const memberSheet = (data: GameData, m: Member) => characterSheet(m.character, data, m.form);
+
+/** Eyes of the Hawk: +2 on Notice checks in a form that has it (1.5.15). */
+const keen = (m: Member, skill: string) =>
+  skill === 'notice' &&
+  m.form !== null &&
+  m.character.forms?.[m.form]?.arts.includes('eyes-of-the-hawk')
+    ? 2
+    : 0;
 
 /** A member's best attribute modifier among `attrs` plus their skill (−1 untrained). */
 export function checkBonus(data: GameData, m: Member, skill: string, attrs: Attribute[]): number {
-  const mods = sheet(data, m).modifiers;
-  return (m.character.skills[skill] ?? -1) + Math.max(...attrs.map((a) => mods[a]));
+  const mods = memberSheet(data, m).modifiers;
+  return (
+    (m.character.skills[skill] ?? -1) + Math.max(...attrs.map((a) => mods[a])) + keen(m, skill)
+  );
 }
 
 /** The member best at a skill check, first in party order on ties. */
@@ -48,10 +59,10 @@ export function memberCheck(
   difficulty: number,
   steps = 0,
 ): CheckResult {
-  const mods = sheet(data, m).modifiers;
+  const mods = memberSheet(data, m).modifiers;
   return skillCheck(w.rng, {
     skill: m.character.skills[skill] ?? null,
-    attributeModifier: Math.max(...attrs.map((a) => mods[a])),
+    attributeModifier: Math.max(...attrs.map((a) => mods[a])) + keen(m, skill),
     difficulty,
     steps: m.character.strain.broken ? steps - 1 : steps,
   });
@@ -65,7 +76,11 @@ export function addMemberStrain(
   source: StrainSource,
 ): void {
   const c = m.character;
-  const state = { strain: c.strain.value, max: sheet(data, m).strainMax, broken: c.strain.broken };
+  const state = {
+    strain: c.strain.value,
+    max: memberSheet(data, m).strainMax,
+    broken: c.strain.broken,
+  };
   const outcome = addStrain(state, amount, source);
   m.character = { ...c, strain: { value: outcome.state.strain, broken: outcome.state.broken } };
   if (outcome.kind === 'dead') {
@@ -101,7 +116,7 @@ export function hurt(w: World, m: Member, amount: number): void {
  */
 export function healNight(data: GameData, m: Member, extra = 0): void {
   if (m.frail) return;
-  const { level } = sheet(data, m);
+  const { level } = memberSheet(data, m);
   setHp(m, Math.min(m.character.hp.max, m.character.hp.current + level + extra));
 }
 
@@ -124,6 +139,7 @@ export function newMember(
     slept: false,
     spellsCast: 0,
     pointsSpent: 0,
+    form: null,
     effortDay: 0,
     pendingXp: 0,
     reviving: false,

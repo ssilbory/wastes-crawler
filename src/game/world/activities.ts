@@ -9,10 +9,18 @@ import { EXERT_DIFFICULTY, FREE_HIKES, HIKE_POINTS } from '../../rules/overland.
 import { stepDie } from '../../rules/resource-die.ts';
 import { rollSave } from '../../rules/saves.ts';
 import type { GameData } from '../character/context.ts';
-import { characterSheet } from '../character/derived.ts';
 import { tended } from './arts.ts';
 import { palanquinUp } from './guises.ts';
-import { addMemberStrain, alive, bestAt, hurt, memberCheck, note, restQuarter } from './members.ts';
+import {
+  addMemberStrain,
+  alive,
+  bestAt,
+  hurt,
+  memberCheck,
+  memberSheet,
+  note,
+  restQuarter,
+} from './members.ts';
 import { emit } from './bus.ts';
 import { firstGuide, guideOf } from './npcs.ts';
 import { hexesToAvoid } from './groves.ts';
@@ -69,7 +77,7 @@ export function mishap(w: World, data: GameData, table: Mishap['table']): Mishap
 /** The Overloaded house rule: a Physical save on entering each hex, or 1 System Strain. */
 function overloadedSaves(w: World, data: GameData): void {
   for (const m of alive(w)) {
-    const sheet = characterSheet(m.character, data);
+    const sheet = memberSheet(data, m);
     const load = sheet.equipment.load;
     // The Jade Palanquin carries stowed gear; what is readied still weighs.
     const excess = palanquinUp(w) ? Math.max(0, load.readied - load.readiedLimit) : load.excess;

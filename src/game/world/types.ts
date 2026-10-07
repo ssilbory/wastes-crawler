@@ -35,6 +35,7 @@ export interface Member {
   slept: boolean;
   spellsCast: number;
   pointsSpent: number;
+  form: number | null;
   effortDay: number;
   pendingXp: number;
   reviving: boolean;

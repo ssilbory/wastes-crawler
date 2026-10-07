@@ -176,4 +176,10 @@ export const WORLD_MIGRATIONS: Migrations = {
       Array.isArray(list) ? (list as Raw[]).map((m) => ({ ...m, pointsSpent: 0 })) : list;
     return { ...raw, schemaVersion: 29, members: fresh(raw.members), benched: fresh(raw.benched) };
   },
+  // Version 30 adds the Skinshifter's alternate forms: none worn yet.
+  29: (raw) => {
+    const plain = (list: unknown) =>
+      Array.isArray(list) ? (list as Raw[]).map((m) => ({ ...m, form: null })) : list;
+    return { ...raw, schemaVersion: 30, members: plain(raw.members), benched: plain(raw.benched) };
+  },
 };

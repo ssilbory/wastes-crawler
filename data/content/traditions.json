@@ -100,5 +100,29 @@
     "artText": {
       "purge-ailment": "Commit Effort for the day as a Main Action, out of combat, and roll Wis/Heal or Int/Heal against 8. On a success an ally you are touching loses their Frailty. The Effort is spent either way."
     }
+  },
+  {
+    "id": "skinshifter",
+    "name": "Skinshifter",
+    "bonusSkill": "survive",
+    "spellLists": [],
+    "effort": {
+      "skills": ["survive"],
+      "attributes": ["con", "cha"],
+      "base": 0,
+      "partialPenalty": false,
+      "floorOne": true
+    },
+    "armoredArts": true,
+    "artLevels": {},
+    "excludedArts": [
+      "feline-leap",
+      "manifest-wings",
+      "octopus-embrace",
+      "perfect-mimicry",
+      "the-monkeys-road",
+      "wisdom-of-fin-and-scale"
+    ],
+    "artText": {}
   }
 ]

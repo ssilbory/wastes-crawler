@@ -11,11 +11,10 @@ import { roll } from '../../rules/dice.ts';
 import { ahead, cellKey, type Cell } from '../../rules/grid.ts';
 import { rollSave } from '../../rules/saves.ts';
 import type { GameData } from '../character/context.ts';
-import { characterSheet } from '../character/derived.ts';
 import { poisonProof } from '../world/arts.ts';
 import { HEALERS_KIT } from '../world/first-aid.ts';
 import { pactOf } from '../world/pacts.ts';
-import { alive, bestAt, memberCheck, note, setHp } from '../world/members.ts';
+import { alive, bestAt, memberCheck, memberSheet, note, setHp } from '../world/members.ts';
 import type { TownResult } from '../world/services.ts';
 import { wipe } from '../world/town.ts';
 import type { Member, World } from '../world/types.ts';
@@ -115,7 +114,7 @@ function spring(w: World, data: GameData, trap: Trap): void {
       return false;
     }
     if (!trap.save) return true;
-    const target = characterSheet(m.character, data).saves[trap.save];
+    const target = memberSheet(data, m).saves[trap.save];
     if (!rollSave(w.rng, target).success) return true;
     note(w, `${m.character.name} avoids it.`);
     return false;
