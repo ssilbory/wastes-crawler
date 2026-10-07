@@ -3,6 +3,7 @@ import type { Form } from '../../../src/data/schemas/index.ts';
 import { endOfDay } from '../../../src/game/world/day.ts';
 import { carryBack, encounterBattle } from '../../../src/game/world/fight.ts';
 import { shifters, shiftMember } from '../../../src/game/world/forms.ts';
+import { setForms } from '../../../src/game/world/practice.ts';
 import { checkBonus, memberSheet } from '../../../src/game/world/members.ts';
 import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
@@ -129,5 +130,39 @@ describe('changing form outside a fight (1.5.15)', () => {
     expect([...loaded.world.members, ...loaded.world.benched].every((m) => m.form === null)).toBe(
       true,
     );
+  });
+});
+
+describe('practicing forms in town (1.5.15)', () => {
+  it('fills an empty slot for free, and reshapes a kept form with a night at the inn', () => {
+    const w = world();
+    const m = snagShifter(w, [WOLF], ['sculptors-beauty', 'warform']);
+    const day = w.day;
+    expect(setForms(w, data, m.id, [WOLF, WAR])).toEqual({ ok: true });
+    expect([m.character.forms, w.day]).toEqual([[WOLF, WAR], day]);
+    w.purse = 0;
+    expect(setForms(w, data, m.id, [WAR])).toMatchObject({ ok: false });
+    expect(m.character.forms).toEqual([WOLF, WAR]);
+    w.purse = 100;
+    expect(setForms(w, data, m.id, [WAR])).toEqual({ ok: true });
+    expect([m.character.forms, w.day]).toEqual([[WAR], day + 1]);
+    expect(w.log.join('\n')).toContain('Snag spends the day reshaping their forms.');
+  });
+
+  it('refuses forms the member can’t keep, or a member who isn’t there', () => {
+    const w = world();
+    const m = snagShifter(w, [WOLF]);
+    expect(setForms(w, data, m.id, [WOLF, WAR, HAWK, BEAR])).toEqual({
+      ok: false,
+      reason: 'Snag can keep 3 forms.',
+    });
+    const fresh = { ...m.character };
+    delete fresh.forms;
+    m.character = fresh;
+    expect(setForms(w, data, m.id, [WOLF])).toEqual({ ok: true });
+    expect(setForms(w, data, 'nobody', [])).toEqual({
+      ok: false,
+      reason: 'No one is here to practice.',
+    });
   });
 });

@@ -32,7 +32,9 @@ export function formBonus(data: GameData, classes: ClassLevels): number {
 }
 
 /** The arts the character holds that can be applied to a form. */
-export const formArts = (data: GameData, c: Character): string[] =>
+type Shifter = Pick<Character, 'name' | 'arts' | 'classes'>;
+
+export const formArts = (data: GameData, c: Pick<Character, 'arts'>): string[] =>
   c.arts.filter(
     (id) =>
       !INTRINSIC.includes(id) &&
@@ -40,11 +42,11 @@ export const formArts = (data: GameData, c: Character): string[] =>
   );
 
 /** One form per character level, for a Skinshifter (1.5.15). */
-export const maxForms = (data: GameData, c: Character): number =>
+export const maxForms = (data: GameData, c: Pick<Character, 'classes'>): number =>
   shifterClass(data, c.classes) ? characterLevel(c.classes) : 0;
 
 /** Why a set of forms can't be kept, or null if it can. */
-export function formProblem(data: GameData, c: Character, forms: readonly Form[]): string | null {
+export function formProblem(data: GameData, c: Shifter, forms: readonly Form[]): string | null {
   const most = maxForms(data, c);
   if (forms.length > most) return `${c.name} can keep ${most} form${most === 1 ? '' : 's'}`;
   const names = forms.map((f) => f.name.trim().toLowerCase());

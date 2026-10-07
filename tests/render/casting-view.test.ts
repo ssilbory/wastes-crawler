@@ -35,7 +35,9 @@ describe('the casting line', () => {
   });
 
   it('is miracles only for a tradition with no spells', () => {
-    expect(castingText(row({ maxSpellLevel: 0, spellsPrepared: 0 }), false)).toBe('Miracles only.');
+    const none = row({ maxSpellLevel: 0, spellsPrepared: 0 });
+    expect(castingText(none, false, true)).toBe('Miracles only.');
+    expect(castingText(none, false)).toBe('Arts only.');
   });
 });
 

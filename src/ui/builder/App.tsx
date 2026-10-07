@@ -197,6 +197,8 @@ export function App() {
               status={ev.steps.magic}
               intModifier={ev.intModifier}
               onChange={(magic) => update({ magic })}
+              forms={choices.forms ?? []}
+              onForms={(forms) => update({ forms })}
             />
             <FreeSkillStep
               value={choices.freeSkill}
