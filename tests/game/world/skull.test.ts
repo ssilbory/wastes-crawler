@@ -4,7 +4,7 @@ import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
 import { LAND_RADIUS, queryTheSkull, skullQuestions } from '../../../src/game/world/skull.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
 import { distance, parseHexKey } from '../../../src/rules/hex.ts';
-import { below, state } from '../dungeon/helpers.ts';
+import { below, place, state } from '../dungeon/helpers.ts';
 import { data, encounter, member, world } from './helpers.ts';
 
 /** Fizzwick as a level-`level` Necromancer with Query the Skull prepared. */
@@ -43,6 +43,15 @@ describe('Query the Skull', () => {
     ]);
   });
 
+  it('maps a level the party has seen nothing of', () => {
+    const w = place(below(), 'barrow-lower', 0, 0, 's');
+    delete state(w).seen['barrow-lower'];
+    const m = necromancer(w);
+    leaveCorpses(w, data, [['thug-or-militia']]);
+    expect(queryTheSkull(w, data, m.id, ['map'])).toEqual({ ok: true });
+    expect(state(w).seen['barrow-lower']).toHaveLength(64);
+  });
+
   it('leaves a disarmed trap disarmed and a found door found', () => {
     const w = below();
     const m = necromancer(w);
@@ -77,6 +86,9 @@ describe('Query the Skull', () => {
       fail('Fizzwick can ask no more than 1 question.'),
     );
     m.character.classes.levels['full-necromancer'] = 2;
+    expect(queryTheSkull(w, data, m.id, ['map', 'traps', 'secrets'])).toEqual(
+      fail('Fizzwick can ask no more than 2 questions.'),
+    );
     expect(queryTheSkull(w, data, m.id, ['map', 'traps', 'map'])).toEqual({ ok: true });
     const up = world();
     const n = necromancer(up);

@@ -47,9 +47,10 @@ export function cannotImpute(w: World, data: GameData): string | null {
 
 /** The Inexorable Imputation: one sentence, believed. */
 export function impute(w: World, data: GameData, memberId: string): TownResult {
-  const e = w.encounter;
   const why = cannotImpute(w, data);
-  if (why || !e) return no(why ?? 'There is no one here to tell.');
+  if (why) return no(why);
+  // cannotImpute finds no fault only with a group met.
+  const e = w.encounter as PendingEncounter;
   const m = caster(w, data, memberId, IMPUTATION);
   if (typeof m === 'string') return no(m);
   m.spellsCast += 1;

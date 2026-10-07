@@ -106,6 +106,10 @@ describe('dungeon validation', () => {
         'dungeons/old-barrow/a: safe square 5,0 is off the level',
       ]),
     );
+    const trapped = { ...level, map: ['+-+-+', '|< T|', '+-+-+'], safe: [{ x: 1, y: 0 }] };
+    expect(check({ ...one(tiny, []), levels: [{ ...trapped, wander: null }] })).toEqual(
+      expect.arrayContaining(['dungeons/old-barrow/a: safe square 1,0 is on a trap']),
+    );
   });
 
   it('checks traps, secret doors, and special squares against the map', () => {

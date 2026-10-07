@@ -117,8 +117,9 @@ export const inDark = (w: World, data: GameData) =>
  * (arcane-sight.ts).
  */
 export function arcaneSeer(w: World): boolean {
-  const sight = w.dungeon?.sight;
-  if (!sight || (w.dungeon?.turn ?? 0) >= sight.until) return false;
+  const s = w.dungeon;
+  const sight = s?.sight;
+  if (!s || !sight || s.turn >= sight.until) return false;
   const m = w.members.find((x) => x.id === sight.member);
   return m !== undefined && awake(m);
 }

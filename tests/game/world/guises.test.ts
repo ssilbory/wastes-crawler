@@ -153,5 +153,10 @@ describe('The Jade Palanquin of the Faceless God', () => {
     const n = highMage(w, [PALANQUIN]);
     w.encounter = encounter([['thug-or-militia']]);
     expect(raisePalanquin(w, data, n.id)).toEqual(fail('Settle the encounter first.'));
+    w.encounter = null;
+    n.character.spells.prepared = [];
+    expect(raisePalanquin(w, data, n.id)).toEqual(
+      fail("Fizzwick hasn't prepared The Jade Palanquin of the Faceless God."),
+    );
   });
 });

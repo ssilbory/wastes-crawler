@@ -16,7 +16,6 @@ import { levelOf, look, openFacing } from './explore.ts';
 import { edgeKey, glimpse, knownEdges } from './secrets.ts';
 import { arriveOn } from './specials.ts';
 import { passTurn } from './time.ts';
-import { springHere } from './traps.ts';
 
 export const LITHIC = 'decree-of-lithic-dissolution';
 export const PALLID_GATE = 'pierce-the-pallid-gate';
@@ -96,10 +95,10 @@ export function pierceGate(w: World, data: GameData, memberId: string, to: Cell)
   const { map } = levelOf(data, s.dungeon, s.level);
   s.at = { ...to };
   s.facing = openFacing(map, to, s.facing);
+  // Stairs and safe squares hold no traps (dungeon-check.ts), so there is nothing to spring.
   arriveOn(w, data);
   look(w, data, s);
   glimpse(w, data);
-  springHere(w, data);
-  if (w.dungeon) emit(w, data, { kind: 'cell-entered' });
+  emit(w, data, { kind: 'cell-entered' });
   return { ok: true };
 }

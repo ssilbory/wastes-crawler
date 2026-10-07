@@ -44,6 +44,21 @@ describe('sorcery view', () => {
     expect(sorceryView(w, data)?.casters).toEqual([]);
   });
 
+  it('lists a caster for any one spell they can cast here, and none for the rest', () => {
+    for (const spell of [ARCANE_FORM, LITHIC, VISAGE]) {
+      const w = below();
+      highMage(w, [spell]);
+      expect(sorceryView(w, data)?.casters).toHaveLength(1);
+    }
+    const g = place(below(), 'barrow-upper', 4, 0, 's');
+    highMage(g, [PALLID_GATE]);
+    state(g).seen['barrow-upper'] = ['9,0'];
+    expect(sorceryView(g, data)?.casters).toHaveLength(1);
+    const p = below();
+    highMage(p, [PALANQUIN, PALLID_GATE]);
+    expect(sorceryView(p, data)).toBeNull();
+  });
+
   it('offers the dungeon spells below, with rifts to seen stairs and safe squares', () => {
     const w = place(below(), 'barrow-upper', 4, 0, 's');
     const m = highMage(w, ALL);

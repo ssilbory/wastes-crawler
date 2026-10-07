@@ -7,6 +7,7 @@ import {
   PALLID_GATE,
   pierceGate,
 } from '../../../src/game/dungeon/stonework.ts';
+import type { GameData } from '../../../src/game/character/context.ts';
 import { fail, highMage } from '../world/helpers-mage.ts';
 import { data, encounter, world } from '../world/helpers.ts';
 import { below, place, state } from './helpers.ts';
@@ -73,6 +74,29 @@ describe('Pierce the Pallid Gate', () => {
       { x: 9, y: 0 },
       { x: 5, y: 0 },
     ]);
+  });
+
+  it('opens nowhere on a level the party has seen nothing of', () => {
+    const w = place(below(), 'barrow-lower', 0, 0, 's');
+    delete state(w).seen['barrow-lower'];
+    expect(gateTargets(w, data)).toEqual([]);
+  });
+
+  it('reaches no further than ten cells a caster level', () => {
+    // As a level-1 spell, a level-1 caster's rift reaches 10 cells: short of the far stairs.
+    const low: GameData = {
+      ...data,
+      srd: {
+        ...data.srd,
+        spells: data.srd.spells.map((s) => (s.id === PALLID_GATE ? { ...s, level: 1 } : s)),
+      },
+    };
+    const w = place(below(), 'barrow-upper', 9, 0, 'w');
+    const m = highMage(w, [PALLID_GATE], 1);
+    state(w).seen['barrow-upper'] = ['9,0', '1,8'];
+    expect(pierceGate(w, low, m.id, { x: 1, y: 8 })).toEqual(
+      fail("That is beyond Fizzwick's reach."),
+    );
   });
 
   it('steps the party through to a cell it has seen', () => {

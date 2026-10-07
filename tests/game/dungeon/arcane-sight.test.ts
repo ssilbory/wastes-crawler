@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { apprehend, ARCANE_FORM, sightTurns } from '../../../src/game/dungeon/arcane-sight.ts';
 import { arcaneSeer, blind } from '../../../src/game/dungeon/light.ts';
+import type { GameData } from '../../../src/game/character/context.ts';
 import { automap } from '../../../src/render/automap-view.ts';
 import { fail, highMage } from '../world/helpers-mage.ts';
 import { data, encounter, world } from '../world/helpers.ts';
@@ -25,6 +26,24 @@ describe('Apprehending the Arcane Form', () => {
     apprehend(up, data, n.id);
     expect(up.log.at(-1)).toContain('No working of magic shows on this level.');
     expect(automap(up, data)?.sensed).toEqual([]);
+    const one: GameData = {
+      ...data,
+      content: {
+        ...data.content,
+        dungeons: data.content.dungeons.map((d) => ({
+          ...d,
+          levels: d.levels.map((l) => ({
+            ...l,
+            specials: l.specials
+              .filter((x) => x.kind !== 'teleporter' || l.id !== 'barrow-lower')
+              .filter((x) => l.id !== 'barrow-lower' || ['spinner', 'message'].includes(x.kind)),
+          })),
+        })),
+      },
+    };
+    const v = place(below(), 'barrow-lower', 0, 0, 's');
+    apprehend(v, one, highMage(v, [ARCANE_FORM], 1).id);
+    expect(v.log.at(-1)).toContain('1 working of magic glow on this level.');
   });
 
   it('lets the party see in the dark while the caster is awake and the sight lasts', () => {
