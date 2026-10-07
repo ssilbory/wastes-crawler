@@ -99,9 +99,21 @@
 }
 
 .quarter-panel .tabs [aria-checked='true'] {
-  background: var(--accent);
   border-color: var(--accent);
-  color: var(--panel);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.quarter-head {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.quarter-head h2 {
+  margin: 0;
 }
 
 .roles {

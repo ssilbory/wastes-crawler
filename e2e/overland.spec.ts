@@ -62,7 +62,7 @@ test('wanders the overland map, fighting what it meets', async ({ page }, testIn
     if (col >= 20) east = false;
     if (col <= 3) east = true;
     await page.locator(`[data-hex="${east ? col + 1 : col - 1},8"]`).click();
-    await page.getByRole('button', { name: 'Pass the quarter' }).click();
+    await page.getByRole('button', { name: /^(Hike|Camp)$/ }).click();
   }
   expect(fights).toBe(2);
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText('The party');
@@ -98,7 +98,7 @@ test('camps for the night with the suggested watches and shelter', async ({ page
       await page.getByRole('button', { name: 'Auto-resolve' }).click();
       await page.getByRole('button', { name: 'Back to the map' }).click();
     }
-    await page.getByRole('button', { name: 'Pass the quarter' }).click();
+    await page.getByRole('button', { name: /^(Hike|Camp)$/ }).click();
   }
   await expect(page.locator('.world-bar .date')).toContainText(
     /^(morning|day|evening|night), 2 Seedtime/i,

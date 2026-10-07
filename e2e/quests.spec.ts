@@ -20,7 +20,7 @@ async function walk(page: Page, hex: string, done: () => Promise<boolean>) {
   for (let i = 0; i < 40 && !(await done()); i++) {
     if (await fightIfMet(page)) continue;
     await page.locator(`[data-hex="${hex}"]`).click();
-    await page.getByRole('button', { name: 'Pass the quarter' }).click();
+    await page.getByRole('button', { name: /^(Hike|Camp)$/ }).click();
   }
 }
 

@@ -47,7 +47,7 @@ test('the necromancer offers a raising quest, and its reward raises the dead', a
      save.visited.push('4,8');`,
   );
   await page.locator('[data-hex="3,8"]').click();
-  await page.getByRole('button', { name: 'Pass the quarter' }).click();
+  await page.getByRole('button', { name: /^(Hike|Camp)$/ }).click();
   const log = page.getByRole('region', { name: 'Journey log' });
   await expect(log).toContainText('Ysolde the Necromancer has work that would raise the dead');
 

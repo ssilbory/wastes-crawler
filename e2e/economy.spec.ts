@@ -63,7 +63,7 @@ test('a month later, coming back to town moves the purse with the climate', asyn
   );
   const before = await purse(page);
   await page.locator('[data-hex="3,8"]').click();
-  await page.getByRole('button', { name: 'Pass the quarter' }).click();
+  await page.getByRole('button', { name: /^(Hike|Camp)$/ }).click();
   const log = page.getByRole('region', { name: 'Journey log' });
   await expect(log).toContainText('The economic climate moves the purse');
   expect(await purse(page)).not.toBe(before);

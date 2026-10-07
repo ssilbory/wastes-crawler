@@ -162,7 +162,7 @@ test('builds a mod, keeps it up in camp, and commissions a magic sword', async (
       await page.getByRole('button', { name: 'Auto-resolve' }).click();
       await page.getByRole('button', { name: 'Back to the map' }).click();
     }
-    await page.getByRole('button', { name: 'Pass the quarter' }).click();
+    await page.getByRole('button', { name: /^(Hike|Camp)$/ }).click();
   }
   await expect(log).not.toContainText('stop working');
   await edit(page, `save.position = { col: 3, row: 8 };`);

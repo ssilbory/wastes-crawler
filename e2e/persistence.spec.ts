@@ -42,7 +42,7 @@ test('keeps worlds in three slots', async ({ page }) => {
   await page.getByRole('button', { name: 'Start a new world', exact: true }).click();
   await page.getByRole('button', { name: 'Begin the journey' }).click();
   await page.locator('[data-hex="4,8"]').click();
-  await page.getByRole('button', { name: 'Pass the quarter' }).click();
+  await page.getByRole('button', { name: /^(Hike|Camp)$/ }).click();
   await page.reload();
   await expect(slots).toContainText('Slot 1: Morning, 1 Seedtime');
   await expect(slots).toContainText('Slot 2: Day, 1 Seedtime');
