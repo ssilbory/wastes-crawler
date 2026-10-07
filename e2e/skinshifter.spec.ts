@@ -35,6 +35,10 @@ test('builds a Berserker with a Wolf form', async ({ page }) => {
   await expect(magic.getByRole('button', { name: 'Add a form' })).toHaveCount(0);
   const form = magic.getByRole('group', { name: 'Form 1' });
   await form.getByLabel('Form 1 name').fill('Wolf');
+  await expect(form.locator('label', { hasText: 'Savage Talons' })).toHaveAttribute(
+    'title',
+    /extremely dangerous claws/,
+  );
   await form.getByLabel('Savage Talons', { exact: true }).check();
   await select('Free skill', 'Know');
   await page.getByRole('radio', { name: 'Starting package' }).check();
@@ -44,7 +48,14 @@ test('builds a Berserker with a Wolf form', async ({ page }) => {
   const sheet = page.getByTestId('character-sheet');
   await expect(sheet).toContainText('Arts only.');
   await expect(sheet).toContainText('Arts: Change Form, Savage Talons.');
-  await expect(sheet).toContainText('Forms: Wolf: Savage Talons.');
+  const wolf = sheet.locator('ul.forms > li', { hasText: 'Wolf' });
+  await expect(wolf).toContainText('Wolf (non-humanoid: Savage Talons)');
+  await expect(wolf).toContainText('Savage Talons (melee)');
+  await expect(wolf.locator('strong')).toHaveAttribute('title', /^Wolf, non-humanoid\./);
+  await expect(wolf.getByText('Savage Talons', { exact: true })).toHaveAttribute(
+    'title',
+    /extremely dangerous claws/,
+  );
 });
 
 async function startWorld(page: Page) {
@@ -86,6 +97,10 @@ test('changes form on the map for Effort, and goes back for free', async ({ page
   const panel = page.getByRole('region', { name: 'Forms' });
   const snag = panel.getByRole('group', { name: 'Snag' });
   await expect(snag).toContainText('Snag: own shape');
+  await expect(snag.getByRole('button', { name: 'Take the Wolf form' })).toHaveAttribute(
+    'title',
+    /Savage Talons \(melee\)/,
+  );
   await snag.getByRole('button', { name: 'Take the Wolf form' }).click();
   await expect(snag).toContainText('Snag: Wolf form');
   // Effort 1 is spent: the War Shape waits for tomorrow.

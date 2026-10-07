@@ -1,5 +1,6 @@
 // Practicing forms in town (vendor/wwn-srd/1.0 Character Creation/1.5.0 Class List/1.5.15 The
 // Skinshifter.md): new forms are free; reshaping kept ones takes a day.
+import { wearForm } from './wear.ts';
 import type { Form } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
 import { formProblem } from '../character/forms.ts';
@@ -32,6 +33,9 @@ export function setForms(w: World, data: GameData, memberId: string, forms: Form
     if (!stay.ok) return stay;
     note(w, `${m.character.name} spends the day reshaping their forms.`);
   }
+  // A worn form that is reshaped or dropped, or no longer kept at all, gives way to the own shape.
+  const worn = m.form === null ? undefined : kept[m.form];
+  if (m.form !== null && !(worn && same(worn, forms[m.form]))) wearForm(data, m, null);
   m.character = { ...m.character, forms };
   return { ok: true };
 }

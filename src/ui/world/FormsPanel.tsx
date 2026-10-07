@@ -9,7 +9,7 @@ import { data } from '../builder/data.ts';
 export function FormsPanel(props: { world: World; onChange: () => void }) {
   const w = props.world;
   const [message, setMessage] = useState<string | null>(null);
-  const shifters = formsView(w);
+  const shifters = formsView(w, data);
   if (shifters.length === 0) return null;
   const run = (action: () => TownResult) => {
     const r = action();
@@ -28,6 +28,7 @@ export function FormsPanel(props: { world: World; onChange: () => void }) {
             <button
               key={f.index}
               type="button"
+              title={f.hint}
               onClick={() => run(() => shiftMember(w, data, s.id, f.index))}
             >
               Take the {f.name} form
