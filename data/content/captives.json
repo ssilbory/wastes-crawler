@@ -61,5 +61,23 @@
     "reward": 60,
     "xp": 2,
     "text": "A flesh crafter in chains works among them."
+  },
+  {
+    "id": "taken-mourner",
+    "name": "a mourner taken with her dead",
+    "monster": "peaceful-human",
+    "destination": "cinderhold",
+    "reward": 50,
+    "xp": 1,
+    "text": "An old orc woman, who followed her husband's body here, is tied to a pillar among them."
+  },
+  {
+    "id": "grey-priest",
+    "name": "a grey-robed Priest of Death",
+    "monster": "peaceful-human",
+    "destination": "saltwick",
+    "reward": 80,
+    "xp": 2,
+    "text": "A Priest of Death in torn grey robes kneels in chains. The Faithful need her for the rite."
   }
 ]

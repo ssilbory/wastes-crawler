@@ -36,5 +36,36 @@
     "text": "Lieutenant Vael was bound to win the Dark Lord's war. No one has told him it is over, and no one can.",
     "countersign": "The Dark Lord rides again",
     "bluff": 15
+  },
+  {
+    "id": "throne-road",
+    "name": "Hold the Throne Road",
+    "text": "Bound orcs hold the old road north through the hills to the Pale Reach, as they were ordered when the alliance landed. Only the Faithful pass them now.",
+    "countersign": "The night keeps faith",
+    "bluff": 13,
+    "recruit": "guard"
+  },
+  {
+    "id": "saltgate-hold",
+    "name": "Hold the Saltgate",
+    "text": "Old goblins hold the Saltgate on the road to the capital, as ordered on the day the capital fell. Their sergeant has a son in Thornwatch who brings her bread.",
+    "countersign": "Salt on the threshold",
+    "bluff": 12,
+    "complete": "the-countermand",
+    "recruit": "guard"
+  },
+  {
+    "id": "archive-keep",
+    "name": "Keep the Archive",
+    "text": "The Night Archive's clockwork scribes were ordered to keep its books from every hand but the Dark Lord's own clerks.",
+    "countersign": "Ink outlasts iron",
+    "bluff": 12
+  },
+  {
+    "id": "citadel-watch",
+    "name": "Watch the Hollow Citadel",
+    "text": "The bound of the Hollow Citadel still keep the Dark Lord's house, and let in only those who give the night's watchword.",
+    "countersign": "The throne waits",
+    "bluff": 14
   }
 ]

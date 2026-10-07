@@ -56,5 +56,30 @@
     "name": "Foreman Tikka",
     "town": "gutterwick",
     "text": "A goblin who runs Gutterwick's work gangs and road crews, and pays for anything that keeps the roads open."
+  },
+  {
+    "id": "archivist-sefa",
+    "name": "Archivist Sefa",
+    "town": "saltwick",
+    "text": "An elder elf who keeps what books she could carry out of the Night Archive. She says she was a saboteur in the Dark Lord's service; no one can prove it, and few believe her."
+  },
+  {
+    "id": "saltwarden-brask",
+    "name": "Saltwarden Brask",
+    "town": "saltwick",
+    "text": "A broad orc who runs the salt pans that keep Saltwick alive, and pays in salt or crowns, whichever you would rather carry."
+  },
+  {
+    "id": "sister-orla",
+    "name": "Sister Orla",
+    "town": "saltwick",
+    "raises": "mortuary",
+    "text": "A grey-robed Priest of Death, a gnome, who keeps Saltwick's mortuary. She has buried more of the Pale Reach than anyone alive, and lately some of them have not stayed buried."
+  },
+  {
+    "id": "gaffer-nim",
+    "name": "Gaffer Nim",
+    "town": "thornwatch",
+    "text": "An old goblin who walks bread up to the Saltgate every week. His mother is the sergeant there, and she still does not know him."
   }
 ]

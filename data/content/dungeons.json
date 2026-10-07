@@ -1453,5 +1453,860 @@
         ]
       }
     ]
+  },
+  {
+    "id": "ember-shrine",
+    "name": "The Ember Shrine",
+    "region": "dark-lands",
+    "entrance": {
+      "col": 5,
+      "row": 4
+    },
+    "entry": {
+      "level": "shrine-nave",
+      "at": {
+        "x": 0,
+        "y": 0
+      },
+      "facing": "e"
+    },
+    "levels": [
+      {
+        "id": "shrine-nave",
+        "name": "The Ember Nave",
+        "map": [
+          "+-+-+-+-+-+-+-+-+",
+          "|<    d       | |",
+          "+-+-+ +-+-+-+ + +",
+          "|     |     | d |",
+          "+ +-+-+ + + + + +",
+          "| |T    |     | |",
+          "+ + +-+-+-+d+-+ +",
+          "|   |         | |",
+          "+-+d+ + + + + + +",
+          "|   |    N    d |",
+          "+ + + + + + + + +",
+          "|   |         | |",
+          "+ +-+-+-+d+-+-+ +",
+          "|       |     | |",
+          "+ +-+-+ + +-+ + +",
+          "|     |   |    >|",
+          "+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 7
+            },
+            "to": {
+              "level": "shrine-ossuary",
+              "at": {
+                "x": 7,
+                "y": 0
+              },
+              "facing": "s"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "shrine"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 6
+          },
+          {
+            "x": 0,
+            "y": 7
+          }
+        ],
+        "secrets": [],
+        "traps": [
+          {
+            "at": {
+              "x": 1,
+              "y": 2
+            },
+            "name": "ember grate",
+            "notice": 10,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 10
+            },
+            "save": "evasion",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 2,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 2,
+              "y": 0
+            },
+            "text": "Ember-red banners hang over the nave. The hymn painted on the wall asks the Dark Lord to come home, and promises him an army when he does."
+          },
+          {
+            "kind": "countersign",
+            "at": {
+              "x": 7,
+              "y": 1
+            },
+            "order": "throne-road",
+            "text": "A pilgrim's slate hangs by the vestry door, chalked with the words the guards on the Throne Road want to hear: \"The night keeps faith.\""
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 6
+            },
+            "text": "Carts stand ready in the yard, loaded with shrouded bodies and pointed north."
+          }
+        ],
+        "captives": [
+          {
+            "at": {
+              "x": 4,
+              "y": 4
+            },
+            "captive": "taken-mourner",
+            "guards": [
+              ["faithful-acolyte", "faithful-acolyte", "faithful-acolyte"],
+              ["faithful-zealot"]
+            ],
+            "text": "Faithful acolytes are loading the dead onto carts. An old orc woman screams at them to give her husband back."
+          }
+        ],
+        "garrisons": []
+      },
+      {
+        "id": "shrine-ossuary",
+        "name": "The Emptied Ossuary",
+        "map": [
+          "+-+-+-+-+-+-+-+-+",
+          "|       |      <|",
+          "+ +-+-+ + +-+-+ +",
+          "| |   | | |     |",
+          "+ + + + + + +-+-+",
+          "| | |   d |  T  |",
+          "+ + +-+-+ +-+ + +",
+          "|   |     |     |",
+          "+-+d+-+-+d+-+-+d+",
+          "|       |       |",
+          "+ + + + + + + + +",
+          "|       d       |",
+          "+ + + + + + + + +",
+          "|       |       |",
+          "+-+-+s+-+-+-+-+-+",
+          "|               |",
+          "+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 7,
+              "y": 0
+            },
+            "to": {
+              "level": "shrine-nave",
+              "at": {
+                "x": 7,
+                "y": 7
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "shrine"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 1
+          },
+          {
+            "x": 0,
+            "y": 2
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 2,
+              "y": 6
+            },
+            "side": "s",
+            "difficulty": 10
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 6,
+              "y": 2
+            },
+            "name": "bone chimes",
+            "notice": 9,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 9
+            },
+            "save": null,
+            "effect": {
+              "kind": "alarm"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "text": "Niche after niche stands empty. The Lady's priests laid these dead to rest a hundred years ago; someone has taken every one."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 3
+            },
+            "text": "Among the empty niches {pc} finds name-plates in the old tongue of the homeland: elders deported and buried here, and now taken too.",
+            "people": ["elf", "gnome"]
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 3,
+              "y": 7
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 8
+              }
+            ],
+            "component": "grave-garnet"
+          }
+        ],
+        "captives": [],
+        "garrisons": []
+      }
+    ]
+  },
+  {
+    "id": "night-archive",
+    "name": "The Night Archive",
+    "region": "pale-reach",
+    "entrance": {
+      "col": 4,
+      "row": 8
+    },
+    "entry": {
+      "level": "archive-stacks",
+      "at": {
+        "x": 0,
+        "y": 0
+      },
+      "facing": "s"
+    },
+    "levels": [
+      {
+        "id": "archive-stacks",
+        "name": "The Reading Rooms",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|<  |       |       |",
+          "+ + + +-+-+ + +-+-+ +",
+          "|   d |   | d |   | |",
+          "+ + + + + + + + + + +",
+          "|   | |   | | |   | |",
+          "+-+d+ + + + + + + + +",
+          "|     |   |   |   d |",
+          "+ +-+-+-+d+-+-+-+-+ +",
+          "|        T          |",
+          "+ +-+-+-+-+-+-+-+d+-+",
+          "| |     |     |     |",
+          "+ + + + + + + + + + +",
+          "| d     d     d    >|",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 6
+            },
+            "to": {
+              "level": "archive-sealed",
+              "at": {
+                "x": 9,
+                "y": 0
+              },
+              "facing": "w"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "archive"
+        },
+        "safe": [
+          {
+            "x": 7,
+            "y": 0
+          },
+          {
+            "x": 8,
+            "y": 0
+          }
+        ],
+        "secrets": [],
+        "traps": [
+          {
+            "at": {
+              "x": 4,
+              "y": 4
+            },
+            "name": "falling stack",
+            "notice": 9,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 10
+            },
+            "save": "evasion",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 2,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 2,
+              "y": 1
+            },
+            "text": "Shelves of deportation rolls, a thousand years of them. Somewhere here {pc} finds a family name they were told never to speak.",
+            "people": ["elf", "gnome"]
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 5,
+              "y": 6
+            },
+            "text": "The breeding ledgers of the empire, shelf on shelf. Whole breeds of goblin are entered here and struck out in a single line."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 3,
+              "y": 3
+            },
+            "text": "A reading desk, still laid out for a clerk: ink, sand, and an order to the Saltgate dated the day the capital fell."
+          }
+        ],
+        "captives": [],
+        "garrisons": [
+          {
+            "at": {
+              "x": 6,
+              "y": 4
+            },
+            "order": "archive-keep",
+            "enemies": [["clockwork-servitor", "clockwork-servitor", "clockwork-servitor"]],
+            "text": "Three clockwork scribes step out from the stacks and hold out their hands for your pass."
+          }
+        ]
+      },
+      {
+        "id": "archive-sealed",
+        "name": "The Sealed Stacks",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|   |     |     |  <|",
+          "+ + + + + + + + + + +",
+          "|   d     |     d   |",
+          "+ + +-+-+d+-+d+-+-+-+",
+          "|   |   |     |     |",
+          "+-+d+ + + + + + + + +",
+          "|   |   d  T  d     |",
+          "+ + +-+-+-+-+-+-+d+-+",
+          "|   |     |         |",
+          "+ + + + + + + + + + +",
+          "|   d     d         |",
+          "+ + + + + + + + + + +",
+          "|   |     |         |",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 9,
+              "y": 0
+            },
+            "to": {
+              "level": "archive-stacks",
+              "at": {
+                "x": 9,
+                "y": 6
+              },
+              "facing": "w"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "archive"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 1,
+            "y": 0
+          }
+        ],
+        "secrets": [],
+        "traps": [
+          {
+            "at": {
+              "x": 5,
+              "y": 3
+            },
+            "name": "needle lock",
+            "notice": 10,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 11
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "countersign",
+            "at": {
+              "x": 2,
+              "y": 1
+            },
+            "order": "citadel-watch",
+            "text": "On a Faithful clerk's desk lies the watchword they give the Citadel's bound: \"The throne waits.\""
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 4,
+              "y": 5
+            },
+            "text": "A spy's ledger of the alliance's plans against the Dark Lord: three hundred and twelve of them, each struck through as it failed, but one. That page has been cut out, long ago, with a very sharp knife."
+          }
+        ],
+        "captives": [],
+        "garrisons": [
+          {
+            "at": {
+              "x": 8,
+              "y": 3
+            },
+            "order": "archive-keep",
+            "enemies": [["clockwork-soldier"], ["clockwork-servitor", "clockwork-servitor"]],
+            "text": "A clockwork soldier guards the sealed stacks, with two scribes behind it."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "hollow-citadel",
+    "name": "The Hollow Citadel",
+    "region": "pale-reach",
+    "entrance": {
+      "col": 10,
+      "row": 2
+    },
+    "entry": {
+      "level": "citadel-gate",
+      "at": {
+        "x": 4,
+        "y": 0
+      },
+      "facing": "s"
+    },
+    "levels": [
+      {
+        "id": "citadel-gate",
+        "name": "The Gatehouse",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|        <        | |",
+          "+ +-+-+-+ +-+-+-+ + +",
+          "| |     | |     | d |",
+          "+ + + + + + + + + + +",
+          "| d     d d     | | |",
+          "+ + + + + + + + + + +",
+          "| |     | |     | | |",
+          "+ +-+-+-+ +-+-+-+ + +",
+          "|    T            | |",
+          "+-+-+-+-+d+-+-+-+-+ +",
+          "|       | |       | |",
+          "+ + + + + + + + + + +",
+          "|       d d       d |",
+          "+ + + + + + + + + + +",
+          "|       | |>      | |",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 4,
+              "y": 0
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 7
+            },
+            "to": {
+              "level": "citadel-hall",
+              "at": {
+                "x": 4,
+                "y": 0
+              },
+              "facing": "s"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "citadel"
+        },
+        "safe": [
+          {
+            "x": 9,
+            "y": 6
+          },
+          {
+            "x": 9,
+            "y": 7
+          }
+        ],
+        "secrets": [],
+        "traps": [
+          {
+            "at": {
+              "x": 2,
+              "y": 4
+            },
+            "name": "murder hole",
+            "notice": 11,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 11
+            },
+            "save": "evasion",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 2
+            },
+            "text": "Barracks for a thousand. The bunks are made, and the bound who keep them sleep in shifts beside the gate they have kept for twenty years."
+          }
+        ],
+        "captives": [],
+        "garrisons": [
+          {
+            "at": {
+              "x": 4,
+              "y": 3
+            },
+            "order": "citadel-watch",
+            "enemies": [
+              ["bound-orc-guard", "bound-orc-guard", "bound-orc-guard"],
+              ["bound-orc-captain"]
+            ],
+            "text": "Bound orcs in the Dark Lord's livery fill the gate passage. \"The watchword,\" their captain says."
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 6
+            },
+            "order": "citadel-watch",
+            "enemies": [["war-engine"], ["bound-orc-captain"]],
+            "text": "A war-engine squats at the head of the stair down, and an orc captain stands at its shoulder."
+          }
+        ]
+      },
+      {
+        "id": "citadel-hall",
+        "name": "The Hall of Petitions",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|N  |    <      |   |",
+          "+ + + + + + + + + + +",
+          "|   d           d   |",
+          "+-+-+ + + + + + +-+-+",
+          "|   |           |   |",
+          "+ + + + + + + + + + +",
+          "|   d    T      d   |",
+          "+-+-+ + + + + + +-+-+",
+          "|   |           |   |",
+          "+ + + + + + + + + + +",
+          "|   d           d   |",
+          "+-+-+-+-+d+-+-+-+-+-+",
+          "|                   |",
+          "+ +-+-+-+-+-+-+-+-+ +",
+          "|        >          |",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 4,
+              "y": 0
+            },
+            "to": {
+              "level": "citadel-gate",
+              "at": {
+                "x": 5,
+                "y": 7
+              },
+              "facing": "n"
+            }
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 7
+            },
+            "to": {
+              "level": "citadel-throne",
+              "at": {
+                "x": 3,
+                "y": 6
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "citadel"
+        },
+        "safe": [
+          {
+            "x": 8,
+            "y": 0
+          },
+          {
+            "x": 9,
+            "y": 0
+          }
+        ],
+        "secrets": [],
+        "traps": [
+          {
+            "at": {
+              "x": 4,
+              "y": 3
+            },
+            "name": "petition stone",
+            "notice": 10,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 10
+            },
+            "save": null,
+            "effect": {
+              "kind": "alarm"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 4,
+              "y": 1
+            },
+            "text": "Petitions to the Dark Lord, ten deep on every table. The last are dated the day his will left the world. None was answered."
+          },
+          {
+            "kind": "darkness",
+            "at": {
+              "x": 4,
+              "y": 6
+            }
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 9,
+              "y": 4
+            },
+            "text": "The Faithful have chalked the floor for a rite: a circle of the Lady's dead around an empty chair, and a name left blank."
+          }
+        ],
+        "captives": [
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "captive": "grey-priest",
+            "guards": [
+              ["faithful-zealot", "faithful-zealot", "faithful-zealot"],
+              ["faithful-keeper"]
+            ],
+            "text": "Faithful zealots stand over a chained Priest of Death. Their keeper turns: \"She is for the rite. You are not.\""
+          }
+        ],
+        "garrisons": []
+      },
+      {
+        "id": "citadel-throne",
+        "name": "The Hollow Throne",
+        "map": [
+          "+-+-+-+-+-+-+-+-+",
+          "|               |",
+          "+ + + + + + + + +",
+          "|               |",
+          "+ + + + + + + + +",
+          "|               |",
+          "+-+-+ + + + +-+-+",
+          "|   |       |   |",
+          "+ + + + + + + + +",
+          "|   d       d   |",
+          "+ + +-+ + +-+ + +",
+          "|   | |   | |   |",
+          "+-+-+-+ + +-+-+-+",
+          "|      <|       |",
+          "+ +-+-+-+ +-+-+ +",
+          "|               |",
+          "+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 3,
+              "y": 6
+            },
+            "to": {
+              "level": "citadel-hall",
+              "at": {
+                "x": 4,
+                "y": 7
+              },
+              "facing": "s"
+            }
+          }
+        ],
+        "wander": null,
+        "safe": [
+          {
+            "x": 0,
+            "y": 7
+          },
+          {
+            "x": 1,
+            "y": 7
+          }
+        ],
+        "secrets": [],
+        "traps": [],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 3,
+              "y": 0
+            },
+            "text": "The Dark Lord's throne stands empty. Dust lies undisturbed on the seat, twenty years of it, and in the arm is set a gnome-made device that still hums, as if listening for something that never comes."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 7,
+              "y": 7
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 10
+              }
+            ],
+            "component": "cold-iron"
+          }
+        ],
+        "captives": [],
+        "garrisons": []
+      }
+    ]
   }
 ]
