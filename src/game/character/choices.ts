@@ -50,6 +50,8 @@ export interface Evaluation {
   classReplacing: (string | null)[];
   foci: HeldFocus[];
   modifierBonuses: ModifierBonuses;
+  /** The Int modifier, Developed Attribute included, once scores are known; else 0. */
+  intModifier: number;
   inventory: InventoryEntry[];
   /** Money left after starting gear, in tenths of a crown. */
   crownsTenths: number;

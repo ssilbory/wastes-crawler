@@ -8,7 +8,7 @@ import type { PendingEncounter } from '../../data/schemas/index.ts';
 import type { Reaction } from '../../rules/reaction.ts';
 import { rollSave } from '../../rules/saves.ts';
 import type { GameData } from '../character/context.ts';
-import { cannotCast } from './casting.ts';
+import { cannotCast, spendCast } from './casting.ts';
 import { fights, MOODS } from './encounters.ts';
 import { note } from './members.ts';
 import { mindOf } from './minds.ts';
@@ -53,7 +53,7 @@ export function impute(w: World, data: GameData, memberId: string): TownResult {
   const e = w.encounter as PendingEncounter;
   const m = caster(w, data, memberId, IMPUTATION);
   if (typeof m === 'string') return no(m);
-  m.spellsCast += 1;
+  spendCast(data, m, IMPUTATION);
   e.parleyed = true;
   if (resists(w, data, e)) {
     note(w, `${m.character.name} speaks, but they aren't persuaded.`);
@@ -81,7 +81,7 @@ export function mimesis(w: World, data: GameData, memberId: string): TownResult 
     return no('The mindless pay illusions no heed.');
   const m = caster(w, data, memberId, MIMESIS);
   if (typeof m === 'string') return no(m);
-  m.spellsCast += 1;
+  spendCast(data, m, MIMESIS);
   if (resists(w, data, e)) {
     note(w, `${m.character.name}'s illusion is seen for what it is.`);
     return { ok: true };

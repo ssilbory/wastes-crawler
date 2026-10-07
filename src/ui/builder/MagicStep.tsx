@@ -1,7 +1,13 @@
 import type { ClassOption } from '../../data/schemas/index.ts';
 import type { MagicChoice, StepStatus } from '../../game/character/creation.ts';
 import { findTradition } from '../../game/character/class-step.ts';
-import { artChoices, artPicks, learnableSpells, spellSlots } from '../../game/character/magic.ts';
+import {
+  addsInt,
+  artChoices,
+  artPicks,
+  learnableSpells,
+  spellSlots,
+} from '../../game/character/magic.ts';
 import { data } from './data.ts';
 import { Step } from './Field.tsx';
 import { gameSpells } from '../../data/spells.ts';
@@ -38,6 +44,8 @@ export function MagicStep(props: {
   option: ClassOption | undefined;
   choice: MagicChoice | null;
   status: StepStatus;
+  /** For the Invoker's spell points and preparations (1.5.11). */
+  intModifier: number;
   onChange: (choice: MagicChoice) => void;
 }) {
   const mage = props.option?.mage;
@@ -57,31 +65,34 @@ export function MagicStep(props: {
       </Step>
     );
   }
-  const slots = spellSlots(data, mage);
+  const slots = spellSlots(data, mage, 1, props.intModifier);
   const spells = learnableSpells(data, mage, slots.maxSpellLevel);
   return (
     <Step title="6. Magic" status={props.status}>
-      {artPicks(data, mage).map((p) => {
-        const tradition = findTradition(data, p.tradition)?.name ?? p.tradition;
-        const options = artChoices(data, p, [], 1);
-        return (
-          <fieldset key={p.tradition} class="picks">
-            <legend>
-              {tradition} arts: pick {p.picks}
-              {p.automatic.length > 0 && `, plus ${p.automatic.map(artName).join(' and ')}`}
-            </legend>
-            {options.map((a) => (
-              <Check
-                key={a.id}
-                label={a.name}
-                title={artHint(data, a.id)}
-                checked={choice.arts.includes(a.id)}
-                onChange={(on) => set({ arts: toggle(choice.arts, a.id, on) })}
-              />
-            ))}
-          </fieldset>
-        );
-      })}
+      {/* The Invoker gains no arts (1.5.11). */}
+      {artPicks(data, mage)
+        .filter((p) => p.picks > 0 || p.automatic.length > 0)
+        .map((p) => {
+          const tradition = findTradition(data, p.tradition)?.name ?? p.tradition;
+          const options = artChoices(data, p, [], 1);
+          return (
+            <fieldset key={p.tradition} class="picks">
+              <legend>
+                {tradition} arts: pick {p.picks}
+                {p.automatic.length > 0 && `, plus ${p.automatic.map(artName).join(' and ')}`}
+              </legend>
+              {options.map((a) => (
+                <Check
+                  key={a.id}
+                  label={a.name}
+                  title={artHint(data, a.id)}
+                  checked={choice.arts.includes(a.id)}
+                  onChange={(on) => set({ arts: toggle(choice.arts, a.id, on) })}
+                />
+              ))}
+            </fieldset>
+          );
+        })}
       {mage.startingSpells === 0 ? (
         <p class="hint">No spells: miracles alone, worked with Effort, and unhindered by armor.</p>
       ) : (
@@ -117,8 +128,10 @@ export function MagicStep(props: {
             </fieldset>
           )}
           <p class="hint">
-            Casts {slots.spellsCast} spell{slots.spellsCast === 1 ? '' : 's'} a day. A known spell
-            can also be cast for System Strain equal to its level.
+            {addsInt(data, mage)
+              ? `Has ${slots.spellPoints} spell point${slots.spellPoints === 1 ? '' : 's'} a day; a spell costs its level in points.`
+              : `Casts ${slots.spellsCast} spell${slots.spellsCast === 1 ? '' : 's'} a day.`}{' '}
+            A known spell can also be cast for System Strain equal to its level.
           </p>
         </>
       )}

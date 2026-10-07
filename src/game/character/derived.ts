@@ -17,7 +17,7 @@ import type { Evaluation } from './creation.ts';
 import { loadoutSummary, type EquipmentSummary } from './equipment.ts';
 import { classOption } from './class-step.ts';
 import { characterBonuses } from './shaping.ts';
-import { armoredArts, castingAllowed, effortFor, spellSlots } from './magic.ts';
+import { addsInt, armoredArts, castingAllowed, effortFor, spellSlots } from './magic.ts';
 import { findPeople } from './people.ts';
 
 export interface Sheet {
@@ -38,9 +38,12 @@ export interface SheetMagic {
   effort: number;
   /**
    * Spell slots of every casting class held, each at its own level, combined (Sam's call): the
-   * highest spell level any reaches, and their spells cast and prepared added together.
+   * highest spell level any reaches, and their spells cast, spell points, and prepared added
+   * together, with an Invoker's Int modifier added once.
    */
   slots: CastingLevelRow;
+  /** Casts with spell points: a class held is the Invoker's (1.5.11). */
+  points: boolean;
   /** False while worn armor or a shield blocks casting. */
   canCast: boolean;
 }
@@ -52,23 +55,32 @@ function sheetMagic(
   bonuses: ModifierBonuses,
 ): SheetMagic | null {
   const effort = effortFor(data, c.classes, c.skills, scores, bonuses);
-  const rows = Object.entries(c.classes.levels).flatMap(([id, level]) => {
+  const mages = Object.entries(c.classes.levels).flatMap(([id, level]) => {
     const mage = level >= 1 ? classOption(data, id)?.mage : undefined;
-    return mage ? [spellSlots(data, mage, level)] : [];
+    return mage ? [{ mage, level }] : [];
   });
-  const [first, ...more] = rows;
+  const [first, ...more] = mages.map(({ mage, level }) => spellSlots(data, mage, level));
   if (effort === null || !first) return null;
+  const combined = more.reduce(
+    (all, r) => ({
+      ...all,
+      maxSpellLevel: Math.max(all.maxSpellLevel, r.maxSpellLevel),
+      spellsCast: all.spellsCast + r.spellsCast,
+      spellPoints: all.spellPoints + r.spellPoints,
+      spellsPrepared: all.spellsPrepared + r.spellsPrepared,
+    }),
+    first,
+  );
+  const points = mages.some((x) => addsInt(data, x.mage));
+  const int = points ? boostedModifier(scores.int, bonuses.int) : 0;
   return {
     effort,
-    slots: more.reduce(
-      (all, r) => ({
-        ...all,
-        maxSpellLevel: Math.max(all.maxSpellLevel, r.maxSpellLevel),
-        spellsCast: all.spellsCast + r.spellsCast,
-        spellsPrepared: all.spellsPrepared + r.spellsPrepared,
-      }),
-      first,
-    ),
+    points,
+    slots: {
+      ...combined,
+      spellPoints: Math.max(0, combined.spellPoints + int),
+      spellsPrepared: Math.max(0, combined.spellsPrepared + int),
+    },
     // Blood Priest miracles ignore armor (1.5.5.1); so does a caster with no other tradition.
     canCast: armoredArts(data, c.classes) || castingAllowed(data, c.inventory, c.foci),
   };

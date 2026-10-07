@@ -213,6 +213,17 @@ describe('Necromancer spells in combat (Phase 18c, 4.6.0)', () => {
     c.round = 6;
     roundPasses(c);
     expect(g.hp).not.toBe(1);
+    // An Invoker's points pay its level, 5; four aren't enough.
+    const d = standardBattle([['thug-or-militia']]);
+    const h = necromancer(d, ['everlasting'], 9);
+    Object.assign(h.caster as object, { spellsLeft: 0, pointsLeft: 4 });
+    harm(d, sturdySnag(d), 99);
+    expect(d.everlasting).toBeFalsy();
+    const e = standardBattle([['thug-or-militia']]);
+    const k = necromancer(e, ['everlasting'], 9);
+    Object.assign(k.caster as object, { spellsLeft: 0, pointsLeft: 5 });
+    harm(e, sturdySnag(e), 99);
+    expect([e.everlasting?.caster, k.caster?.pointsLeft]).toEqual([k.id, 0]);
   });
 
   it('end under Extirpate Arcana', () => {

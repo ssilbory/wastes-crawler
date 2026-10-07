@@ -6,7 +6,7 @@
 import type { Attribute, Character } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
-import { cannotCast } from './casting.ts';
+import { cannotCast, spendCast } from './casting.ts';
 import { note } from './members.ts';
 import type { TownResult } from './services.ts';
 import type { Member, World } from './types.ts';
@@ -68,7 +68,7 @@ export function boneshape(
   changes[lower] = (changes[lower] ?? 0) - 1;
   // A change shaped back to nothing is gone; with none left, so is the shaping.
   const kept = Object.fromEntries(Object.entries(changes).filter(([, n]) => n !== 0));
-  caster.spellsCast += 1;
+  spendCast(data, caster, BONESHAPER);
   target.character =
     Object.keys(kept).length > 0
       ? { ...c, shaped: { by: caster.character.id, changes: kept } }

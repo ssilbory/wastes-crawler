@@ -24,7 +24,8 @@ export function magicReferenceErrors(srd: SrdData, content: ContentData): string
   }
   errors.push(...artSupplyErrors(srd, content));
   for (const c of content.classOptions) {
-    if (!progressions.has(c.id)) errors.push(`classOptions/${c.id}: unknown progression`);
+    if (!progressions.has(c.progression ?? c.id))
+      errors.push(`classOptions/${c.id}: unknown progression`);
     if (!c.mage) continue;
     if (!casting.has(c.mage.slots)) {
       errors.push(`classOptions/${c.id}: unknown casting table ${c.mage.slots}`);

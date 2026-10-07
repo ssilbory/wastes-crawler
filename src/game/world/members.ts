@@ -123,6 +123,7 @@ export function newMember(
     cold: false,
     slept: false,
     spellsCast: 0,
+    pointsSpent: 0,
     effortDay: 0,
     pendingXp: 0,
     reviving: false,

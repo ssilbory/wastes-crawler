@@ -8,7 +8,7 @@ import type { Site } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
 import { douse } from '../dungeon/light.ts';
 import { emit } from './bus.ts';
-import { cannotCast } from './casting.ts';
+import { cannotCast, spendCast } from './casting.ts';
 import { hexesToAvoid } from './groves.ts';
 import { alive, note } from './members.ts';
 import { findPath, regionMap } from './region.ts';
@@ -40,7 +40,7 @@ export function sigilEscape(w: World, data: GameData, memberId: string): TownRes
   if (w.encounter) return no('Settle the encounter first.');
   const m = caster(w, data, memberId, SIGIL);
   if (typeof m === 'string') return no(m);
-  m.spellsCast += 1;
+  spendCast(data, m, SIGIL);
   w.dungeon = null;
   douse(w);
   note(w, `${m.character.name} speaks the sigil, and the party stands outside under the sky.`);
@@ -89,7 +89,7 @@ export function openHighRoad(
   if (!town) return no('The party knows no such town to open the road to.');
   const m = caster(w, data, memberId, HIGH_ROAD);
   if (typeof m === 'string') return no(m);
-  m.spellsCast += 1;
+  spendCast(data, m, HIGH_ROAD);
   w.destination = null;
   // SRD 4.4.0: one casting in ten opens onto somewhere else.
   const stray = w.rng.int(1, 10) === 1 ? strayHex(w, data, town) : null;

@@ -6,7 +6,7 @@
 // casting spends one of the day's spells.
 import { characterLevel } from '../../rules/progression.ts';
 import type { GameData } from '../character/context.ts';
-import { cannotCast } from './casting.ts';
+import { cannotCast, spendCast } from './casting.ts';
 import { alive, note } from './members.ts';
 import { addNpc, freshName, monsterOf, npcRoom, removeNpc } from './npcs.ts';
 import type { TownResult } from './services.ts';
@@ -39,7 +39,7 @@ export function wakeTree(w: World, data: GameData, memberId: string, spell: Tree
   if (treesOf(w, caster, spell).length >= limit(caster, spell))
     return no(`${caster.character.name} can wake no more of them.`);
   if (!npcRoom(w, true)) return no('There is no room in the party.');
-  caster.spellsCast += 1;
+  spendCast(data, caster, spell);
   const npc = addNpc(w, data, 'tree', tree.id, tree.id, freshName(w, tree.name), true) as Npc;
   npc.master = caster.id;
   note(w, `${caster.character.name} wakes a tree; ${npc.name} pulls its roots free.`);
@@ -60,7 +60,7 @@ export function mendTree(
   const n = treesOf(w, m as Member, spell).find((x) => x.id === npcId);
   if (!n) return no('That is not one of their trees.');
   if (n.hp >= n.maxHp) return no(`${n.name} is whole.`);
-  (m as Member).spellsCast += 1;
+  spendCast(data, m as Member, spell);
   n.hp = n.maxHp;
   note(w, `${(m as Member).character.name} mends ${n.name}.`);
   return { ok: true };

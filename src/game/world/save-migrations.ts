@@ -170,4 +170,10 @@ export const WORLD_MIGRATIONS: Migrations = {
       pacts: null,
     };
   },
+  // Version 29 adds the Invoker's spell points: none spent yet.
+  28: (raw) => {
+    const fresh = (list: unknown) =>
+      Array.isArray(list) ? (list as Raw[]).map((m) => ({ ...m, pointsSpent: 0 })) : list;
+    return { ...raw, schemaVersion: 29, members: fresh(raw.members), benched: fresh(raw.benched) };
+  },
 };

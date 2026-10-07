@@ -97,6 +97,30 @@ test('a Death Knight, a partial Necromancer warrior, has Effort one lower, 1', a
   await expect(sheet).toContainText('Effort 1.');
 });
 
+test('a Warlock has spell points and preparations of 1 + Int, and no arts (1.5.11)', async ({
+  page,
+}) => {
+  const sheet = await caster(page, {
+    people: 'Orc',
+    bg: 'Raider',
+    picks: ['Sneak', 'Exert'],
+    className: 'Warlock (Invoker/Warrior)',
+    foci: [
+      ['Bonus skill for War-bred', 'Stab'],
+      ['Racial focus', 'Die Hard'],
+      ['Combat focus', 'Impervious Defense'],
+      ['Any focus', 'Lucky'],
+    ],
+    arts: [],
+    spells: ['The Coruscating Coffin', 'Wardpact Invocation'],
+    prepare: ['The Coruscating Coffin', 'Wardpact Invocation'],
+  });
+  // Orc: Int 14 (+1): 1 + 1 points and 1 + 1 prepared.
+  await expect(sheet).toContainText('Has 2 spell points a day, prepares 2, up to level 1.');
+  await expect(sheet).not.toContainText('Effort');
+  await expect(sheet).not.toContainText('Arts:');
+});
+
 test('a Gnome Necromancer picks a necromancer art and spells from both lists (Phase 14b)', async ({
   page,
 }) => {

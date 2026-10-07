@@ -46,6 +46,8 @@ export interface CasterState {
   /** Effort spent for the day, part of effortUsed; it carries over to later fights that day. */
   effortDay: number;
   spellsLeft: number;
+  /** The Invoker's spell points left today (1.5.11). */
+  pointsLeft: number;
   prepared: string[];
   known: string[];
   arts: string[];

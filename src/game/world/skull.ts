@@ -9,7 +9,7 @@ import { characterLevel } from '../../rules/progression.ts';
 import type { GameData } from '../character/context.ts';
 import { levelOf } from '../dungeon/explore.ts';
 import { edgeKey } from '../dungeon/secrets.ts';
-import { cannotCast } from './casting.ts';
+import { cannotCast, spendCast } from './casting.ts';
 import { note } from './members.ts';
 import { corpsesHere } from './necromancy.ts';
 import { regionMap } from './region.ts';
@@ -105,7 +105,7 @@ export function queryTheSkull(
     return no(
       `${caster.character.name} can ask no more than ${level} question${level === 1 ? '' : 's'}.`,
     );
-  caster.spellsCast += 1;
+  spendCast(data, caster, QUERY_THE_SKULL);
   (w.corpses as NonNullable<World['corpses']>).queried = true;
   note(w, `${caster.character.name} questions the dead.`);
   for (const q of asked) note(w, answers[q](w, data));

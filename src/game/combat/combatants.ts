@@ -173,6 +173,7 @@ export function pcCombatant(data: GameData, c: Character, id = c.id): Combatant 
           effortUsed: 0,
           effortDay: 0,
           spellsLeft: magic.slots.spellsCast,
+          pointsLeft: magic.slots.spellPoints,
           prepared: [...c.spells.prepared],
           known: [...c.spells.known],
           arts: [...c.arts],

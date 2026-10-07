@@ -45,8 +45,23 @@ export function artPicks(data: GameData, mage: Mage, level = 1): ArtPick[] {
   });
 }
 
-export function spellSlots(data: GameData, mage: Mage, level = 1): CastingLevelRow {
-  return castingRow(table(data, mage.slots), level);
+/** Whether the class's spell points and preparations add the Int modifier: the Invoker (1.5.11). */
+export const addsInt = (data: GameData, mage: Mage): boolean => !!table(data, mage.slots).plusInt;
+
+/** `intModifier` counts only for the Invoker, whose points and preparations add it (1.5.11). */
+export function spellSlots(
+  data: GameData,
+  mage: Mage,
+  level = 1,
+  intModifier = 0,
+): CastingLevelRow {
+  const row = castingRow(table(data, mage.slots), level);
+  if (!addsInt(data, mage)) return row;
+  return {
+    ...row,
+    spellPoints: Math.max(0, row.spellPoints + intModifier),
+    spellsPrepared: Math.max(0, row.spellsPrepared + intModifier),
+  };
 }
 
 /**
@@ -157,6 +172,7 @@ export function evaluateMagic(
   data: GameData,
   mage: Mage | undefined,
   choice: MagicChoice | null,
+  intModifier = 0,
 ): MagicOutcome {
   const empty = (status: StepStatus): MagicOutcome => ({
     status,
@@ -193,7 +209,7 @@ export function evaluateMagic(
   );
   if (stray) return done(fail(`${stray} isn't an art of your tradition`));
 
-  const slots = spellSlots(data, mage);
+  const slots = spellSlots(data, mage, 1, intModifier);
   const learnable = new Set(learnableSpells(data, mage, slots.maxSpellLevel).map((s) => s.id));
   const unknown = choice.known.find((id) => !learnable.has(id));
   if (unknown) return done(fail(`${unknown} isn't a spell you can learn yet`));

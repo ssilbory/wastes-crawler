@@ -112,6 +112,10 @@ describe('class bonus skills', () => {
       skills: { magic: 1, know: 0, heal: 0 },
     });
     expect(dual([], { magic: 0, heal: 1 } as never).replacing).toEqual([null, 'heal']);
+    // With both at level-1, the first one missing a replacement is the one named.
+    expect(dual([], { magic: 1, heal: 1 } as never).status).toMatchObject({
+      message: 'magic is already level-1; choose a replacement',
+    });
     expect(evaluateClass(data, 'full-high-mage', [], null)).toMatchObject({
       status: { state: 'ok' },
       skills: {},
@@ -303,6 +307,7 @@ describe('a finished caster', () => {
     // Gnome Int 14 + 2 = 16 (+1), Magic-0: 1 + 0 + 1 = 2.
     expect(characterSheet(r.character, data).magic).toEqual({
       effort: 2,
+      points: false,
       slots: expect.objectContaining({ maxSpellLevel: 1, spellsCast: 1, spellsPrepared: 3 }),
       canCast: true,
     });

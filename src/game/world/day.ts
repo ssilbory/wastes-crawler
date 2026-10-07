@@ -53,6 +53,7 @@ export function endOfDay(w: World, data: GameData, waystation = false): void {
     } else if (sheltered && !w.noRecovery) {
       healNight(data, m, physician ? 1 : 0);
       m.spellsCast = 0;
+      m.pointsSpent = 0;
       m.effortDay = 0;
       m.artUses = {};
     }

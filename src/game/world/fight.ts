@@ -89,6 +89,7 @@ export interface PartySetup {
     column: number;
     frail: boolean;
     spellsCast: number;
+    pointsSpent: number;
     effortDay: number;
     /** Limited art uses since the last rest (Phase 15). */
     artUses: Record<string, number>;
@@ -122,6 +123,7 @@ export function partySetup(
       column: m.column,
       frail: m.frail,
       spellsCast: m.spellsCast,
+      pointsSpent: m.pointsSpent,
       effortDay: m.effortDay,
       artUses: { ...m.artUses },
       committed: m === faith ? 1 : 0,
@@ -154,6 +156,7 @@ export function battleFrom(data: GameData, rng: Rng, setup: PartySetup, log: boo
     c.pact = p.pact;
     if (c.caster) {
       c.caster.spellsLeft = Math.max(0, c.caster.spellsLeft - p.spellsCast);
+      c.caster.pointsLeft = Math.max(0, c.caster.pointsLeft - p.pointsSpent);
       c.caster.effortDay = Math.min(c.caster.effortMax, p.effortDay);
       c.caster.effortUsed = Math.min(c.caster.effortMax, c.caster.effortDay + p.committed);
       c.caster.uses = { ...p.artUses };
@@ -208,6 +211,7 @@ export function carryBack(data: GameData, m: Member, c: Battle['combatants'][num
     // The same character fights as a caster outside the battle too.
     const fresh = pcCombatant(data, m.character).caster as CasterState;
     m.spellsCast = Math.max(0, fresh.spellsLeft - c.caster.spellsLeft);
+    m.pointsSpent = Math.max(0, fresh.pointsLeft - c.caster.pointsLeft);
     m.effortDay = c.caster.effortDay;
     m.artUses = { ...c.caster.uses };
   }

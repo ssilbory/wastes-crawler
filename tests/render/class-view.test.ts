@@ -11,10 +11,13 @@ describe('the class picker list', () => {
       'High Mage',
       'Elementalist',
       'Necromancer',
+      'Invoker',
       'Swashbuckler (Expert/Warrior)',
       'Grave Robber (Necromancer/Expert)',
       'Death Knight (Necromancer/Warrior)',
       'Blood Knight (Blood Priest/Warrior)',
+      'Warlock (Invoker/Warrior)',
+      'Hedge Wizard (Invoker/Expert)',
       'Priest of Death (Necromancer/Healer)',
       'Blood Saint (Blood Priest/Healer)',
     ]);

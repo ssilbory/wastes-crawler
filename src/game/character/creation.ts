@@ -133,8 +133,9 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
     }
   }
 
+  const intModifier = scores ? boostedModifier(scores.int, modifierBonuses.int) : 0;
   if (classOk) {
-    magic = evaluateMagic(data, cls.option?.mage, choices.magic);
+    magic = evaluateMagic(data, cls.option?.mage, choices.magic, intModifier);
     steps.magic = magic.status;
   }
 
@@ -195,6 +196,7 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
     classReplacing: cls.replacing,
     foci,
     modifierBonuses,
+    intModifier,
     inventory,
     crownsTenths,
     equipment,
@@ -248,7 +250,7 @@ export function finishCharacter(choices: Choices, data: GameData, rng: Rng): Fin
     inventory: ev.inventory,
     crowns: ev.crownsTenths / 10,
     skills: ev.skills,
-    classes: startingClass(progression.id),
+    classes: startingClass(choices.classId as string),
     hp: { max: hp, current: hp },
     xp: 0,
     advancement: { skillPoints: 0, quickPoints: 0, skillCredit: {} },

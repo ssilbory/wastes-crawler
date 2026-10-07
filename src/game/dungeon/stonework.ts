@@ -8,7 +8,7 @@ import { ahead, cellKey, type Cell } from '../../rules/grid.ts';
 import { characterLevel } from '../../rules/progression.ts';
 import type { GameData } from '../character/context.ts';
 import { emit } from '../world/bus.ts';
-import { cannotCast } from '../world/casting.ts';
+import { cannotCast, spendCast } from '../world/casting.ts';
 import { note } from '../world/members.ts';
 import type { TownResult } from '../world/services.ts';
 import type { Member, World } from '../world/types.ts';
@@ -54,7 +54,7 @@ export function dissolve(w: World, data: GameData, memberId: string): TownResult
     if (e === 'wall' || e === 'secret') dug.push(edgeKey(c, s.facing));
     c = next;
   }
-  m.spellsCast += 1;
+  spendCast(data, m, LITHIC);
   s.dug[s.level] = dug;
   note(w, `${m.character.name} speaks the decree, and the stone ahead falls away to dust.`);
   look(w, data, s);
@@ -90,7 +90,7 @@ export function pierceGate(w: World, data: GameData, memberId: string, to: Cell)
   const bar = gateBar(s.at, to, characterLevel(m.character.classes));
   if (bar === 'too near') return no('That is too near for a rift.');
   if (bar === 'too far') return no(`That is beyond ${m.character.name}'s reach.`);
-  m.spellsCast += 1;
+  spendCast(data, m, PALLID_GATE);
   note(w, `${m.character.name} tears open a pale rift, and the party steps through.`);
   const { map } = levelOf(data, s.dungeon, s.level);
   s.at = { ...to };

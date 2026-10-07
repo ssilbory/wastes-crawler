@@ -110,6 +110,17 @@ describe('spells', () => {
     expect(canUse(b, fizz, coffin, true)).toBe(false);
   });
 
+  it('pays an Invoker’s spell points by spell level once the slots are gone (1.5.11)', () => {
+    const { b, fizz, caster } = setup([['skilled-veteran']], [6, 5, 6, 5, 6, 5, 6, 5]);
+    Object.assign(caster, { spellsLeft: 0, pointsLeft: 2 });
+    const coffin = m(b, 'the-coruscating-coffin');
+    expect(castMagic(b, fizz, coffin.id, 'foe-0-0', undefined)).toBe(true);
+    expect(caster.pointsLeft).toBe(1);
+    expect(castMagic(b, fizz, coffin.id, 'foe-0-0', undefined)).toBe(true);
+    expect(caster.pointsLeft).toBe(0);
+    expect(canUse(b, fizz, coffin)).toBe(false);
+  });
+
   it('refuses magic the caster can’t use', () => {
     const { b, fizz, caster } = setup([['thug-or-militia']]);
     expect(castMagic(b, fizz, 'fireball', undefined, undefined)).toBe(false);

@@ -34,6 +34,7 @@ export interface Member {
   cold: boolean;
   slept: boolean;
   spellsCast: number;
+  pointsSpent: number;
   effortDay: number;
   pendingXp: number;
   reviving: boolean;

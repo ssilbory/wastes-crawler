@@ -67,6 +67,23 @@
     }
   },
   {
+    "id": "full-invoker",
+    "name": "Invoker",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "high-mage",
+          "partial": false,
+          "arts": "full-invoker-spells"
+        }
+      ],
+      "slots": "full-invoker-spells",
+      "startingSpells": 4,
+      "spellsPerLevel": 2,
+      "excludedSpells": []
+    }
+  },
+  {
     "id": "necromancer-partial-expert",
     "name": "Grave Robber",
     "halves": "Necromancer/Expert",
@@ -120,6 +137,45 @@
       "spellsPerLevel": 0,
       "excludedSpells": []
     }
+  },
+  {
+    "id": "invoker-partial-warrior",
+    "name": "Warlock",
+    "halves": "Invoker/Warrior",
+    "progression": "high-mage-partial-warrior",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "high-mage",
+          "partial": true,
+          "arts": "partial-invoker-spells"
+        }
+      ],
+      "slots": "partial-invoker-spells",
+      "startingSpells": 2,
+      "spellsPerLevel": 1,
+      "excludedSpells": []
+    }
+  },
+  {
+    "id": "invoker-partial-expert",
+    "name": "Hedge Wizard",
+    "halves": "Invoker/Expert",
+    "progression": "high-mage-partial-expert",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "high-mage",
+          "partial": true,
+          "arts": "partial-invoker-spells"
+        }
+      ],
+      "slots": "partial-invoker-spells",
+      "startingSpells": 2,
+      "spellsPerLevel": 1,
+      "excludedSpells": []
+    },
+    "abilities": ["quick-learner"]
   },
   {
     "id": "healer-partial-mage",

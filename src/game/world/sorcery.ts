@@ -4,7 +4,7 @@
 // as from one it spotted, and Conjunct
 // the Vital Viscera moves hit points to a hurt member from the one with the most to spare.
 import type { GameData } from '../character/context.ts';
-import { cannotCast } from './casting.ts';
+import { cannotCast, spendCast } from './casting.ts';
 import { alive, note } from './members.ts';
 import { settleByLeaving } from './quarter.ts';
 import type { TownResult } from './services.ts';
@@ -28,7 +28,7 @@ export function vanish(w: World, data: GameData, memberId: string): TownResult {
   if (!e.hostile || e.spotted) return no('The party can leave without magic.');
   const m = caster(w, data, memberId, VANISH);
   if (typeof m === 'string') return no(m);
-  m.spellsCast += 1;
+  spendCast(data, m, VANISH);
   note(w, `${m.character.name} turns the party clear as glass.`);
   // Unseen now, the party slips away as from a group it spotted first, and takes as long.
   e.spotted = true;
@@ -60,7 +60,7 @@ export function infuse(w: World, data: GameData, casterId: string, targetId: str
     .reduce((best, d) => (spare(d) > spare(best) ? d : best));
   const hp = target.character.hp;
   const amount = Math.min(spare(donor), hp.max - hp.current);
-  m.spellsCast += 1;
+  spendCast(data, m, VISCERA);
   donor.character = {
     ...donor.character,
     hp: { ...donor.character.hp, current: donor.character.hp.current - amount },

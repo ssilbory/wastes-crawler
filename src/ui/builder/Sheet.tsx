@@ -4,6 +4,7 @@ import { characterSheet, type Preview } from '../../game/character/derived.ts';
 import type { AttackLine, EquipmentSummary } from '../../game/character/equipment.ts';
 import { focusInfo } from '../../game/character/foci.ts';
 import { crowns, entryName } from './GearStep.tsx';
+import { castingText } from '../../render/casting-view.ts';
 import { artHint, focusHint, spellHint } from '../../render/describe-view.ts';
 import { spellName } from './MagicStep.tsx';
 import type { Skills } from '../../game/character/skills.ts';
@@ -172,24 +173,24 @@ export function CharacterSheet(props: { character: Character }) {
         <>
           <h3>Magic</h3>
           <p>
-            Effort {sheet.magic.effort}.{' '}
-            {sheet.magic.slots.spellsCast === 0
-              ? 'Miracles only.'
-              : `Casts ${sheet.magic.slots.spellsCast} a day, prepares ${sheet.magic.slots.spellsPrepared}, up to level ${sheet.magic.slots.maxSpellLevel}.`}
+            {c.arts.length > 0 && `Effort ${sheet.magic.effort}. `}
+            {castingText(sheet.magic.slots, sheet.magic.points)}
             {sheet.magic.canCast ? '' : ' Armor or a shield blocks casting.'}
           </p>
-          <p>
-            Arts:{' '}
-            {c.arts.map((id, i) => (
-              <span key={id}>
-                {i > 0 ? ', ' : ''}
-                <span class="has-hint" title={artHint(data, id)}>
-                  {data.srd.arts.find((a) => a.id === id)?.name ?? id}
+          {c.arts.length > 0 && (
+            <p>
+              Arts:{' '}
+              {c.arts.map((id, i) => (
+                <span key={id}>
+                  {i > 0 ? ', ' : ''}
+                  <span class="has-hint" title={artHint(data, id)}>
+                    {data.srd.arts.find((a) => a.id === id)?.name ?? id}
+                  </span>
                 </span>
-              </span>
-            ))}
-            .
-          </p>
+              ))}
+              .
+            </p>
+          )}
           <ul class="skills">
             {c.spells.known.map((id) => (
               <li key={id}>

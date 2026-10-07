@@ -8,8 +8,10 @@ export interface GameData {
   content: ContentData;
 }
 
+/** A class's level table, by class option id; an option may borrow another's table. */
 export function findProgression(data: GameData, id: string): Progression | undefined {
-  return data.srd.progressions.find((p) => p.id === id);
+  const table = data.content.classOptions.find((c) => c.id === id)?.progression ?? id;
+  return data.srd.progressions.find((p) => p.id === table);
 }
 
 export function progressionLookup(data: GameData): (id: string) => Progression {
