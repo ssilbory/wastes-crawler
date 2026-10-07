@@ -6,7 +6,7 @@ import { encounterBattle } from '../../../src/game/world/fight.ts';
 import { shifters, shiftMember } from '../../../src/game/world/forms.ts';
 import { setForms } from '../../../src/game/world/practice.ts';
 import { addMemberStrain, checkBonus, memberSheet } from '../../../src/game/world/members.ts';
-import { trainMember } from '../../../src/game/world/training.ts';
+import { levelUpMember, trainMember } from '../../../src/game/world/training.ts';
 import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
 import { shifter, WAR, WOLF } from '../shifter.ts';
@@ -154,6 +154,13 @@ describe('practicing forms in town (1.5.15)', () => {
     expect(m.form).toBe(0);
     expect(setForms(w, data, m.id, [{ ...WAR, name: 'Battle Shape' }, WOLF])).toEqual({ ok: true });
     expect(m.form).toBeNull();
+    // Dropping the worn form, or a worn index no longer kept, does the same.
+    shiftMember(w, data, m.id, 1);
+    expect(setForms(w, data, m.id, [{ ...WAR, name: 'Battle Shape' }])).toEqual({ ok: true });
+    expect(m.form).toBeNull();
+    m.form = 5;
+    expect(setForms(w, data, m.id, [{ ...WAR, name: 'Battle Shape' }])).toEqual({ ok: true });
+    expect(m.form).toBeNull();
   });
 
   it('refuses forms the member can’t keep, or a member who isn’t there', () => {
@@ -201,6 +208,21 @@ describe('a form in town and at death (1.5.15)', () => {
     };
     expect(trainMember(w, data, m.id, step)).toEqual({ ok: true });
     expect([seen, m.form, m.character.hp]).toEqual([20, 0, { max: 28, current: 28 }]);
+  });
+
+  it('levels up in the own shape, then puts the form back on at the new level', () => {
+    const w = world();
+    const m = snagShifter(w, [BEAR]);
+    m.character = { ...m.character, xp: 100 };
+    shiftMember(w, data, m.id, 0);
+    expect(m.character.hp.max).toBe(23);
+    const r = levelUpMember(w, data, m.id, { foci: [], arts: ['eyes-of-the-hawk'], spells: [] });
+    expect(r).toEqual({ ok: true });
+    // Level 4: the own shape rolls its hit points, then the Bear adds 4, one for each level.
+    const worn = m.character.hp.max;
+    expect(m.form).toBe(0);
+    shiftMember(w, data, m.id, null);
+    expect(worn - m.character.hp.max).toBe(4);
   });
 
   it('ends with death from strain', () => {

@@ -33,8 +33,9 @@ export function setForms(w: World, data: GameData, memberId: string, forms: Form
     if (!stay.ok) return stay;
     note(w, `${m.character.name} spends the day reshaping their forms.`);
   }
-  // A worn form that is reshaped or dropped gives way to the own shape.
-  if (m.form !== null && !same(kept[m.form] as Form, forms[m.form])) wearForm(data, m, null);
+  // A worn form that is reshaped or dropped, or no longer kept at all, gives way to the own shape.
+  const worn = m.form === null ? undefined : kept[m.form];
+  if (m.form !== null && !(worn && same(worn, forms[m.form]))) wearForm(data, m, null);
   m.character = { ...m.character, forms };
   return { ok: true };
 }

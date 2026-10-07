@@ -225,8 +225,8 @@ function FormsDetail(props: { character: Character }) {
     <>
       <h4>Forms</h4>
       <ul class="forms">
-        {forms.map((f) => (
-          <li key={f.name}>
+        {forms.map((f, i) => (
+          <li key={`${i}-${f.name}`}>
             <strong class="has-hint" title={formHint(f)}>
               {f.name}
             </strong>{' '}
@@ -242,8 +242,8 @@ function FormsDetail(props: { character: Character }) {
             ))}
             )
             <ul>
-              {(f.changes.length > 0 ? f.changes : ['No change to the sheet.']).map((line) => (
-                <li key={line}>{line}</li>
+              {(f.changes.length > 0 ? f.changes : ['No change to the sheet.']).map((line, j) => (
+                <li key={j}>{line}</li>
               ))}
             </ul>
           </li>

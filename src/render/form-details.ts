@@ -4,6 +4,7 @@ import type { Attribute, Character } from '../data/schemas/index.ts';
 import { ATTRIBUTES } from '../game/character/attributes.ts';
 import type { GameData } from '../game/character/context.ts';
 import { characterSheet } from '../game/character/derived.ts';
+import { shiftCharacter } from '../game/character/shift.ts';
 import { attackText, signed } from './attack-view.ts';
 import { artHint } from './describe-view.ts';
 
@@ -44,7 +45,7 @@ export function formDetails(data: GameData, c: Character): FormDetail[] {
     from('Attack bonus', own.attackBonus, worn.attackBonus);
     from('AC', own.equipment.armorClass, worn.equipment.armorClass, false);
     for (const a of ATTRIBUTES) from(SHORT[a], own.modifiers[a], worn.modifiers[a]);
-    const hp = worn.level * (worn.modifiers.con - own.modifiers.con);
+    const hp = shiftCharacter(data, c, null, i).hp.max - c.hp.max;
     if (hp !== 0) changes.push(`Maximum HP ${signed(hp)}`);
     for (const a of worn.equipment.attacks)
       if (!ownAttacks.has(`${a.id}:${a.mode}`)) changes.push(attackText(a));
