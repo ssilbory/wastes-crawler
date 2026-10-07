@@ -72,15 +72,21 @@ function sheetMagic(
     }),
     first,
   );
-  const points = mages.some((x) => addsInt(data, x.mage));
+  const invoked = mages.filter((x) => addsInt(data, x.mage));
+  const points = invoked.length > 0;
   const int = points ? boostedModifier(scores.int, bonuses.int) : 0;
+  // The Int modifier, added once, touches only the Invoker classes' share of preparations.
+  const ownPrepared = invoked.reduce(
+    (n, x) => n + spellSlots(data, x.mage, x.level).spellsPrepared,
+    0,
+  );
   return {
     effort,
     points,
     slots: {
       ...combined,
       spellPoints: Math.max(0, combined.spellPoints + int),
-      spellsPrepared: Math.max(0, combined.spellsPrepared + int),
+      spellsPrepared: combined.spellsPrepared - ownPrepared + Math.max(0, ownPrepared + int),
     },
     // Blood Priest miracles ignore armor (1.5.5.1); so does a caster with no other tradition.
     canCast: armoredArts(data, c.classes) || castingAllowed(data, c.inventory, c.foci),

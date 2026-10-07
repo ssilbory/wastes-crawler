@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { findProgression } from '../../../src/game/character/context.ts';
+import { classOption } from '../../../src/game/character/class-step.ts';
 import { characterSheet } from '../../../src/game/character/derived.ts';
+import { spellSlots } from '../../../src/game/character/magic.ts';
 import { cannotCast } from '../../../src/game/world/casting.ts';
 import { endOfDay } from '../../../src/game/world/day.ts';
 import { applyBattle, encounterBattle } from '../../../src/game/world/fight.ts';
@@ -37,6 +39,21 @@ describe('the Invoker’s spell points (1.5.11)', () => {
     // The Int modifier counts once, however many Invoker classes are held.
     invoker(w, { 'invoker-partial-warrior': 4, 'full-invoker': 1 });
     expect(slots(f)).toMatchObject({ spellPoints: 2 + 1 + 1, spellsPrepared: 4 + 2 + 1 });
+    // A negative Int takes only from the Invoker's share, never below nothing.
+    invoker(w, { 'full-high-mage': 4, 'invoker-partial-warrior': 1 }, 'invoker-partial-warrior');
+    const { attributes } = f.character;
+    f.character = {
+      ...f.character,
+      attributes: {
+        ...attributes,
+        base: { ...attributes.base, int: 3 },
+        people: { ...attributes.people, int: 0 },
+      },
+    };
+    // Int -2 against the Warlock's 1 prepared.
+    expect(characterSheet(f.character, data).modifiers.int).toBe(-2);
+    const highMage = spellSlots(data, classOption(data, 'full-high-mage')?.mage as never, 4);
+    expect(slots(f)).toMatchObject({ spellPoints: 0, spellsPrepared: highMage.spellsPrepared });
   });
 
   it('spends a spell’s level in points, so the same spell can repeat while they last', () => {

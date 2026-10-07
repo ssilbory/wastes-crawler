@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import type { Form } from '../../../src/data/schemas/index.ts';
 import { endOfDay } from '../../../src/game/world/day.ts';
-import { carryBack, encounterBattle } from '../../../src/game/world/fight.ts';
+import { carryBack } from '../../../src/game/world/carry-back.ts';
+import { encounterBattle } from '../../../src/game/world/fight.ts';
 import { shifters, shiftMember } from '../../../src/game/world/forms.ts';
 import { setForms } from '../../../src/game/world/practice.ts';
 import { addMemberStrain, checkBonus, memberSheet } from '../../../src/game/world/members.ts';
