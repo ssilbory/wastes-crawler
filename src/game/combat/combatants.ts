@@ -1,14 +1,12 @@
 // Combatants from saved characters, with every sheet value folded in; the defaults every
 // combatant starts from. SRD monsters are built in monster-combatant.ts.
 import type { Character } from '../../data/schemas/index.ts';
-import { boostedModifier } from '../../rules/attributes.ts';
 import { killingBlowBonus } from '../../rules/combat.ts';
 import { characterLevel } from '../../rules/progression.ts';
 import { classOption } from '../character/class-step.ts';
 import type { GameData } from '../character/context.ts';
-import { characterSheet, finalScores } from '../character/derived.ts';
+import { characterSheet } from '../character/derived.ts';
 import { activeEffects } from '../character/equipment.ts';
-import { characterBonuses } from '../character/shaping.ts';
 import { armorFreeArts } from '../character/magic.ts';
 import { findItem } from '../character/items.ts';
 import type { Attack, Combatant } from './types.ts';
@@ -108,8 +106,6 @@ export function pcCombatant(
   form: number | null = null,
 ): Combatant {
   const sheet = characterSheet(c, data, form);
-  const scores = finalScores(c);
-  const bonuses = characterBonuses(c);
   const level = characterLevel(c.classes);
   const effects = activeEffects(data, c.foci);
   const abilities = new Set(
@@ -160,10 +156,7 @@ export function pcCombatant(
     hitDice: level,
     modifiers: sheet.modifiers,
     skills: { ...c.skills },
-    healModifier: Math.max(
-      boostedModifier(scores.dex, bonuses.dex),
-      boostedModifier(scores.int, bonuses.int),
-    ),
+    healModifier: Math.max(sheet.modifiers.dex, sheet.modifiers.int),
     hasHealKit: c.inventory.some((e) => e.id === 'healers-pouch'),
     shield: shields.length > 0,
     towerShield: shields.some((i) => i?.kind === 'shield' && i.shield.cover),

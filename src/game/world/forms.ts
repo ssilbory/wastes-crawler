@@ -2,19 +2,13 @@
 // Skinshifter.md; docs/rules-adaptation.md, The Skinshifter): Change Form spends Effort for the
 // day, or a minute and no Effort with Pliant Flesh; going back is free. Forms end at night.
 import type { GameData } from '../character/context.ts';
-import { characterSheet, type SheetMagic } from '../character/derived.ts';
-import { shiftCharacter } from '../character/shift.ts';
-import { note } from './members.ts';
+import type { SheetMagic } from '../character/derived.ts';
+import { memberSheet, note } from './members.ts';
 import type { TownResult } from './services.ts';
 import type { Member, World } from './types.ts';
+import { wearForm } from './wear.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
-
-/** Puts the member in a form, or back in their own shape, with Feral Prowess's hit points. */
-export function wearForm(data: GameData, m: Member, form: number | null): void {
-  m.character = shiftCharacter(data, m.character, m.form, form);
-  m.form = form;
-}
 
 /** Living, awake Skinshifters with forms to take. */
 export const shifters = (w: World): Member[] =>
@@ -47,7 +41,7 @@ export function shiftMember(
   if (m.form === form) return no(`${name} is already in the ${shape.name} form.`);
   // Pliant Flesh: a minute's change costs no Effort (1.5.15).
   if (!m.character.arts.includes('pliant-flesh')) {
-    const effort = (characterSheet(m.character, data).magic as SheetMagic).effort;
+    const effort = (memberSheet(data, m).magic as SheetMagic).effort;
     if (m.effortDay >= effort) return no(`${name} has no Effort left today.`);
     m.effortDay += 1;
   }

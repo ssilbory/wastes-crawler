@@ -1,5 +1,6 @@
 // Leveling, training, preparing spells, and class switching happen in town
 // (docs/rules-adaptation.md, Class switching; Towns in Phase 6a).
+import { shiftCharacter } from '../character/shift.ts';
 import type { Character } from '../../data/schemas/index.ts';
 import { advance, type LevelChoices } from '../character/advance.ts';
 import type { GameData } from '../character/context.ts';
@@ -17,6 +18,10 @@ function living(w: World, data: GameData, id: string): Member {
   return m;
 }
 
+/** Levels and training happen in the member's own shape, so a form's hit points stay out of them. */
+const ownShape = (data: GameData, m: Member) =>
+  m.form === null ? m.character : shiftCharacter(data, m.character, m.form, null);
+
 export function levelUpMember(
   w: World,
   data: GameData,
@@ -24,8 +29,9 @@ export function levelUpMember(
   choices: LevelChoices,
 ): TownResult {
   const m = living(w, data, id);
-  const result = advance(data, m.character, choices, w.rng);
+  const result = advance(data, ownShape(data, m), choices, w.rng);
   if (!result.ok) return result;
+  m.form = null;
   m.character = result.character;
   const level = characterSheet(m.character, data).level;
   note(w, `${m.character.name} reaches level ${level} (${m.character.hp.max} HP).`);
@@ -40,8 +46,9 @@ export function trainMember(
   step: (c: Character) => TrainResult,
 ): TownResult {
   const m = living(w, data, id);
-  const result = step(m.character);
+  const result = step(ownShape(data, m));
   if (!result.ok) return result;
+  m.form = null;
   m.character = result.character;
   return { ok: true };
 }

@@ -4,7 +4,8 @@ import { endOfDay } from '../../../src/game/world/day.ts';
 import { carryBack, encounterBattle } from '../../../src/game/world/fight.ts';
 import { shifters, shiftMember } from '../../../src/game/world/forms.ts';
 import { setForms } from '../../../src/game/world/practice.ts';
-import { checkBonus, memberSheet } from '../../../src/game/world/members.ts';
+import { addMemberStrain, checkBonus, memberSheet } from '../../../src/game/world/members.ts';
+import { trainMember } from '../../../src/game/world/training.ts';
 import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
 import { shifter, WAR, WOLF } from '../shifter.ts';
@@ -164,5 +165,39 @@ describe('practicing forms in town (1.5.15)', () => {
       ok: false,
       reason: 'No one is here to practice.',
     });
+  });
+
+  it('counts a form whose arts were only picked in another order as unchanged', () => {
+    const w = world();
+    const m = snagShifter(w, [WOLF]);
+    const day = w.day;
+    expect(setForms(w, data, m.id, [{ ...WOLF, arts: [...WOLF.arts].reverse() }])).toEqual({
+      ok: true,
+    });
+    expect(w.day).toBe(day);
+  });
+});
+
+describe('a form in town and at death (1.5.15)', () => {
+  it('trains in the own shape, so the form’s hit points stay out of it', () => {
+    const w = world();
+    const m = snagShifter(w, [BEAR]);
+    shiftMember(w, data, m.id, 0);
+    expect(trainMember(w, data, m.id, () => ({ ok: false, reason: 'no' }))).toMatchObject({
+      ok: false,
+    });
+    expect([m.form, m.character.hp.max]).toEqual([0, 23]);
+    expect(trainMember(w, data, m.id, (c) => ({ ok: true, character: c }))).toEqual({ ok: true });
+    expect([m.form, m.character.hp.max]).toEqual([null, 20]);
+  });
+
+  it('ends with death from strain', () => {
+    const w = world();
+    const m = snagShifter(w, [BEAR]);
+    shiftMember(w, data, m.id, 0);
+    const max = memberSheet(data, m).strainMax;
+    m.character = { ...m.character, strain: { value: 2 * max - 1, broken: true } };
+    addMemberStrain(w, data, m, 5, 'condition');
+    expect([m.dead, m.form, m.character.hp.max]).toEqual([true, null, 20]);
   });
 });

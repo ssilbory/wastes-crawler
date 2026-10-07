@@ -14,18 +14,17 @@ import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { shifter, WAR, WOLF } from '../shifter.ts';
 import { data, who } from './helpers.ts';
 
-/** Snag the shifter alone against a thug, with Effort to spare. */
+/** Snag the shifter, Survive-2 for Effort 2, alone against a thug. */
 function fight(c: Character = shifter(), faces: number[] = [], form: number | null = null) {
   const b = createBattle({
     data,
     rng: createRng('forms'),
-    party: [{ character: c, form }],
+    party: [{ character: { ...c, skills: { ...c.skills, survive: 2 } }, form }],
     enemies: [['thug-or-militia']],
     log: true,
   });
   b.rng = scriptedRng(faces);
   const snag = who(b, 'Snag');
-  Object.assign(snag.caster as CasterState, { effortMax: 3 });
   return { b, snag, caster: snag.caster as CasterState };
 }
 
@@ -66,7 +65,7 @@ describe('Change Form in a fight (1.5.15)', () => {
     const { b, snag, caster } = fight(shifter(undefined, [WOLF, WAR], []));
     expect(snag.attacks.some((a) => a.id === 'savage-talons')).toBe(false);
     act(b, snag, shiftTo(0));
-    expect(snag).toMatchObject({ form: 0, ac: 17, modifiers: { dex: 2 } });
+    expect(snag).toMatchObject({ form: 0, ac: 17, modifiers: { dex: 2 }, healModifier: 2 });
     expect(snag.attacks.some((a) => a.id === 'savage-talons')).toBe(true);
     expect([caster.effortUsed, caster.effortDay]).toEqual([1, 1]);
     expect(log(b)).toContain('Snag takes the Wolf form.');
@@ -121,8 +120,10 @@ describe('Change Form in a fight (1.5.15)', () => {
     act(b, snag, shiftTo(0));
     // Con +0 to +1 at level 3.
     expect([snag.maxHp, snag.hp, snag.character?.hp.max]).toEqual([max + 3, max + 3, max + 3]);
+    // Survive-2 and Con +1: the Effort ceiling rises to 3 in the form.
+    expect(snag.caster?.effortMax).toBe(3);
     act(b, snag, shiftTo(null));
-    expect([snag.maxHp, snag.hp]).toEqual([max, max]);
+    expect([snag.maxHp, snag.hp, snag.caster?.effortMax]).toEqual([max, max, 2]);
   });
 
   it('takes its first form as soon as the AI can', () => {
@@ -149,21 +150,38 @@ describe('Serpent’s Kiss (1.5.15)', () => {
     thug.hp = 30;
     const talons = snag.attacks.find((a) => a.id === 'savage-talons') as Combatant['attacks'][0];
     resolveAttack(b, snag, talons, thug);
-    expect(log(b)).toContain("Snag's venom burns for 5 more.");
+    // Survive-2.
+    expect(log(b)).toContain("Snag's venom burns for 7 more.");
     expect([caster.effortUsed, caster.effortDay]).toEqual([1, 0]);
     // Not with other weapons, out of Effort, or out of the form.
     const spear = snag.attacks.find((a) => a.id !== 'savage-talons') as Combatant['attacks'][0];
-    expect(venom(b, snag, spear)).toBe(0);
+    expect(venom(b, snag, spear, thug)).toBe(0);
     caster.effortUsed = 3;
-    expect(venom(b, snag, talons)).toBe(0);
+    expect(venom(b, snag, talons, thug)).toBe(0);
     snag.form = null;
     caster.effortUsed = 0;
-    expect(venom(b, snag, talons)).toBe(0);
-    expect(venom(b, who(b, 'foe-0-0'), talons)).toBe(0);
+    expect(venom(b, snag, talons, thug)).toBe(0);
+    expect(venom(b, who(b, 'foe-0-0'), talons, snag)).toBe(0);
+    // Nothing for the immune to poison.
+    thug.poisonImmune = true;
+    expect(venom(b, snag, talons, thug)).toBe(0);
+    thug.poisonImmune = false;
     // Untrained in Survive, the venom adds nothing for it.
     snag.form = 0;
     delete snag.skills.survive;
     b.rng = scriptedRng([4]);
-    expect(venom(b, snag, talons)).toBe(4);
+    expect(venom(b, snag, talons, thug)).toBe(4);
+  });
+
+  it('is not spent on a blow Veteran’s Luck turns aside', () => {
+    // Hit 20; talons 1d8 = 8, enough to drop the thug.
+    const { b, snag, caster } = fight(c(), [20, 8], 0);
+    const thug = who(b, 'foe-0-0');
+    Object.assign(thug, { hp: 2, veteransLuck: true });
+    const talons = snag.attacks.find((a) => a.id === 'savage-talons') as Combatant['attacks'][0];
+    resolveAttack(b, snag, talons, thug);
+    expect(log(b)).toContain("veteran's luck turns aside Snag's blow");
+    expect(log(b)).not.toContain('venom');
+    expect(caster.effortUsed).toBe(0);
   });
 });

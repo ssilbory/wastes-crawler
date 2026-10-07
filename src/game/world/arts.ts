@@ -20,7 +20,7 @@ export const FAITH_LIGHT = 'the-light-of-faith';
 export function artUsable(data: GameData, m: Member, art: string): boolean {
   const c = m.character;
   if (!awake(m) || !c.arts.includes(art)) return false;
-  const magic = characterSheet(c, data).magic;
+  const magic = characterSheet(c, data, m.form).magic;
   if (!magic || m.effortDay >= magic.effort) return false;
   return magic.canCast || armorFreeArts(data, c.classes, c.arts).includes(art);
 }

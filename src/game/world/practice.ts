@@ -9,7 +9,13 @@ import type { World } from './types.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 
-const same = (a: Form, b: Form | undefined) => JSON.stringify(a) === JSON.stringify(b);
+/** The same form, whatever order its arts were picked in. */
+const same = (a: Form, b: Form | undefined) =>
+  !!b &&
+  a.name === b.name &&
+  a.humanoid === b.humanoid &&
+  a.feral === b.feral &&
+  [...a.arts].sort().join() === [...b.arts].sort().join();
 
 /**
  * Keeps a new set of forms. A form in an empty slot is free; reshaping or dropping one already kept

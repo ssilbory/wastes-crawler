@@ -53,6 +53,9 @@ export function formProblem(data: GameData, c: Shifter, forms: readonly Form[]):
   if (new Set(names).size < names.length) return 'each form needs its own name';
   const held = formArts(data, c);
   for (const f of forms) {
+    const name = f.name.trim();
+    if (name === '' || name.length > 40) return 'each form needs a name of 1 to 40 letters';
+    if (f.arts.length > 3) return `${f.name}: a form takes at most 3 arts`;
     if (new Set(f.arts).size < f.arts.length) return `${f.name}: each art can be applied once`;
     const stray = f.arts.find((a) => !held.includes(a));
     if (stray) return `${f.name}: ${c.name} can't give a form ${stray}`;

@@ -9,7 +9,7 @@ import type { Character, Element } from '../../data/schemas/index.ts';
 import type { Rng } from '../../rules/rng.ts';
 import type { GameData } from '../character/context.ts';
 import { difficultyTier, type Difficulty } from './difficulty.ts';
-import { wearForm } from './forms.ts';
+import { wearForm } from './wear.ts';
 import { alive, note, setHp } from './members.ts';
 import {
   accrueShares,

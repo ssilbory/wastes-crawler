@@ -1,6 +1,7 @@
 // Party members on the overland map: checks, strain, damage, and full recovery. Strain follows
 // vendor/wwn-srd/2.0 The Rules of the Game/2.5.0 (2.5.2) and the System Strain outcomes in
 // docs/rules-adaptation.md.
+import { wearForm } from './wear.ts';
 import type { Attribute, Character, DefaultPreset } from '../../data/schemas/index.ts';
 import { skillCheck, type CheckResult } from '../../rules/checks.ts';
 import { addStrain, type StrainSource } from '../../rules/strain.ts';
@@ -84,6 +85,7 @@ export function addMemberStrain(
   const outcome = addStrain(state, amount, source);
   m.character = { ...c, strain: { value: outcome.state.strain, broken: outcome.state.broken } };
   if (outcome.kind === 'dead') {
+    wearForm(data, m, null);
     m.dead = true;
     note(w, `${c.name} dies of exhaustion and privation.`);
   } else if (outcome.state.broken && !c.strain.broken) note(w, `${c.name} is Broken.`);

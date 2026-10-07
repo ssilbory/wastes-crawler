@@ -5,6 +5,7 @@
 // who was already Frail dies at once (vendor/wwn-srd/2.0 The Rules of the Game/2.5.0 Injury,
 // Healing, And System Strain.md, 2.5.1). Dungeon poison takes half the victim's maximum hit points
 // (2.10.0 Falling and Other Hazards.md).
+import { wearForm } from '../world/wear.ts';
 import type { Trap } from '../../data/schemas/index.ts';
 import { MORTAL_ROUNDS, stabilizeDifficulty } from '../../rules/combat.ts';
 import { roll } from '../../rules/dice.ts';
@@ -79,6 +80,7 @@ function mortal(w: World, data: GameData, m: Member): void {
     note(w, `${medic.character.name} saves ${m.character.name}, who is left Frail.`);
     return;
   }
+  wearForm(data, m, null);
   m.dead = true;
   note(w, `${m.character.name} dies.`);
 }
@@ -92,6 +94,7 @@ function wound(w: World, data: GameData, m: Member, amount: number): void {
   }
   setHp(m, 0);
   if (m.frail) {
+    wearForm(data, m, null);
     m.dead = true;
     note(w, `${m.character.name} was already Frail and dies.`);
   } else mortal(w, data, m);

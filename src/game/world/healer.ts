@@ -41,7 +41,7 @@ export function cannotUseArt(
   if (!healer || healer.dead || healer.character.hp.current <= 0) return art.unable;
   const c = healer.character;
   if (!c.arts.includes(art.id)) return `${c.name} doesn't know ${art.name}.`;
-  const magic = characterSheet(c, data).magic;
+  const magic = characterSheet(c, data, healer.form).magic;
   // Healer arts work in armor (1.5.9); a sheet with arts always has magic.
   const sheet = magic as NonNullable<typeof magic>;
   if (!sheet.canCast && !armorFreeArts(data, c.classes, c.arts).includes(art.id))

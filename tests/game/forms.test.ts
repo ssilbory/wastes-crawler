@@ -76,6 +76,12 @@ describe('a Skinshifter’s alternate forms (1.5.15)', () => {
     };
     expect(formProblem(data, novice, [WOLF, WAR])).toBe('Snag can keep 1 form');
     expect(problem([WOLF, { ...WAR, name: 'wolf' }])).toBe('each form needs its own name');
+    const named = 'each form needs a name of 1 to 40 letters';
+    expect(problem([{ ...WAR, name: '  ' }])).toBe(named);
+    expect(problem([{ ...WAR, name: 'x'.repeat(41) }])).toBe(named);
+    expect(problem([{ ...WOLF, arts: [...WOLF.arts, 'warform'] }])).toBe(
+      'Wolf: a form takes at most 3 arts',
+    );
     expect(problem([{ ...WAR, arts: ['warform', 'warform'] }])).toBe(
       'War Shape: each art can be applied once',
     );

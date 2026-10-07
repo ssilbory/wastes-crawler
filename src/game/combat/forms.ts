@@ -61,6 +61,9 @@ export function shift(b: Battle, actor: Combatant, form: number | null): void {
     modifiers: next.modifiers,
     healModifier: next.healModifier,
   });
+  // Feral Prowess on Con and Sculptor's Beauty can move the Effort ceiling and the casting bonus.
+  const fresh = next.caster as CasterState;
+  Object.assign(c, { effortMax: fresh.effortMax, castModifier: fresh.castModifier });
   const shape = wornForm(actor);
   if (!shape) {
     say(b, `${actor.name} returns to their own shape.`);
@@ -96,11 +99,15 @@ export function shiftAction(actor: Combatant): Action | null {
   return actor.form === null && canShift(actor, 0) ? { kind: 'shift', form: 0 } : null;
 }
 
-/** Serpent's Kiss: a Savage Talons hit, for Effort for the scene, does 1d8 plus Survive more. */
-export function venom(b: Battle, actor: Combatant, attack: Attack): number {
-  const c = actor.caster;
+/**
+ * Serpent's Kiss: a Savage Talons hit that stands, for Effort for the scene, does 1d8 plus Survive
+ * more, except to the immune to poison.
+ */
+export function venom(b: Battle, actor: Combatant, attack: Attack, target: Combatant): number {
   if (attack.id !== 'savage-talons' || !wornForm(actor)?.arts.includes('serpents-kiss')) return 0;
-  if (!c || c.effortUsed >= c.effortMax) return 0;
+  // Wearing a form takes Change Form, so the actor is a caster.
+  const c = actor.caster as CasterState;
+  if (target.poisonImmune || c.effortUsed >= c.effortMax) return 0;
   c.effortUsed += 1;
   const extra =
     roll(b.rng, { count: 1, sides: 8, modifier: 0 }).total + (actor.skills.survive ?? 0);

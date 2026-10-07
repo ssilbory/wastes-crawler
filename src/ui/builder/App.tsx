@@ -171,7 +171,9 @@ export function App() {
               status={ev.steps.class}
               replacing={ev.classReplacing}
               replacements={choices.classSkills}
-              onChange={(classId) => update({ classId, classSkills: [], foci: [], magic: null })}
+              onChange={(classId) =>
+                update({ classId, classSkills: [], foci: [], magic: null, forms: [] })
+              }
               onReplace={(i, skill) => {
                 const classSkills = [...choices.classSkills];
                 classSkills[i] = skill;

@@ -109,14 +109,15 @@ export function resolveAttack(
   // Smite the Wicked rolls the damage twice and keeps the better, then adds the level.
   const rolled = boost ? Math.max(damageRoll(), damageRoll()) + boost.damage : damageRoll();
   // The doomed lose their defenses against blows, too.
-  const damage = (doomed ? rolled : resisted(target, attack, rolled)) + venom(b, actor, attack);
+  const blow = doomed ? rolled : resisted(target, attack, rolled);
   // Veteran's Luck: once per scene, turn a hit that would drop the Warrior into a miss.
-  if (target.veteransLuck && target.status === 'active' && damage >= target.hp) {
+  if (target.veteransLuck && target.status === 'active' && blow >= target.hp) {
     target.veteransLuck = false;
     say(b, `${target.name}'s veteran's luck turns aside ${actor.name}'s blow.`);
     missShock(b, actor, target, attack);
     return;
   }
+  const damage = blow + venom(b, actor, attack, target);
   if (subdue(b, actor, target, damage)) return;
   say(b, `${actor.name} hits ${target.name} with ${attack.name} for ${damage}.`);
   harm(b, target, damage);
