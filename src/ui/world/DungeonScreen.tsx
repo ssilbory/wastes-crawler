@@ -15,16 +15,14 @@ import { automap, FACING_NAMES, MAP_CELL } from '../../render/automap-view.ts';
 import { dungeonView, VIEW_HEIGHT, VIEW_WIDTH } from '../../render/dungeon-view.ts';
 import { data } from '../builder/data.ts';
 import { PartyPanel } from './PartyPanel.tsx';
-import { FormationPanel } from './FormationPanel.tsx';
 import { HealerPanel } from './HealerPanel.tsx';
 import { PurgePanel } from './PurgePanel.tsx';
-import { InventoryPanel } from './InventoryPanel.tsx';
-import { StashPanel } from './StashPanel.tsx';
 import { GreenwoodPanel } from './GreenwoodPanel.tsx';
 import { ConjunctPanel } from './ConjunctPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { QuestLog } from './QuestLog.tsx';
+import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
 import { JournalPanel } from './JournalPanel.tsx';
 import { QuestItemNotice } from './QuestItemNotice.tsx';
 import { CampPanel } from './CampPanel.tsx';
@@ -62,7 +60,7 @@ export function DungeonScreen(props: {
   onChange: () => void;
   onFight: () => void;
   onLeave: () => void;
-  onCharacters: () => void;
+  onOpen: (screen: PartyScreen) => void;
 }) {
   const w = props.world;
   const s = w.dungeon as NonNullable<World['dungeon']>;
@@ -121,9 +119,7 @@ export function DungeonScreen(props: {
         </span>
         <span class="turn">{turnText(w)}</span>
         <span class="light">{lightText(w)}</span>
-        <button type="button" onClick={props.onCharacters}>
-          Characters
-        </button>
+        <PartyButtons onOpen={props.onOpen} />
       </div>
       <div class="world-main">
         <div class="world-left">
@@ -258,15 +254,12 @@ export function DungeonScreen(props: {
             <CampPanel world={w} onChange={props.onChange} />
           )}
           <PartyPanel members={w.members} />
-          <FormationPanel world={w} onChange={props.onChange} />
           <NpcPanel world={w} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />
           <GreenwoodPanel world={w} onChange={props.onChange} />
           <ConjunctPanel world={w} onChange={props.onChange} />
           <HealerPanel world={w} onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />
-          <StashPanel world={w} />
-          <InventoryPanel world={w} onChange={props.onChange} />
         </div>
       </div>
     </div>

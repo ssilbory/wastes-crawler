@@ -9,20 +9,18 @@ import { crowns, lootText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { HEX_SIZE, HexMap } from './HexMap.tsx';
 import { PartyPanel } from './PartyPanel.tsx';
-import { FormationPanel } from './FormationPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
 import { FactionsPanel } from './FactionsPanel.tsx';
 import { SettingPanel } from './SettingPanel.tsx';
 import { HealerPanel } from './HealerPanel.tsx';
 import { PurgePanel } from './PurgePanel.tsx';
-import { InventoryPanel } from './InventoryPanel.tsx';
-import { StashPanel } from './StashPanel.tsx';
 import { GreenwoodPanel } from './GreenwoodPanel.tsx';
 import { ConjunctPanel } from './ConjunctPanel.tsx';
 import { HighRoadPanel } from './HighRoadPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { QuestLog } from './QuestLog.tsx';
+import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
 import { JournalPanel } from './JournalPanel.tsx';
 import { questTargets } from '../../render/quest-view.ts';
 import { CoachPanel } from './CoachPanel.tsx';
@@ -40,7 +38,7 @@ export function MapScreen(props: {
   onFight: () => void;
   onLeave: () => void;
   onTown: () => void;
-  onCharacters: () => void;
+  onOpen: (screen: PartyScreen) => void;
   onRide: () => void;
   onEnter: () => void;
   onCross: () => void;
@@ -87,9 +85,7 @@ export function MapScreen(props: {
               Take {road.name}
             </button>
           )}
-          <button type="button" onClick={props.onCharacters}>
-            Characters
-          </button>
+          <PartyButtons onOpen={props.onOpen} />
           <button type="button" class="secondary" onClick={props.onExport}>
             Export save
           </button>
@@ -149,7 +145,6 @@ export function MapScreen(props: {
             />
           )}
           <PartyPanel members={w.members} />
-          <FormationPanel world={w} onChange={props.onChange} />
           <NpcPanel world={w} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />
           <GreenwoodPanel world={w} onChange={props.onChange} />
@@ -157,8 +152,6 @@ export function MapScreen(props: {
           <HighRoadPanel world={w} onChange={props.onChange} />
           <HealerPanel world={w} onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />
-          <StashPanel world={w} />
-          <InventoryPanel world={w} onChange={props.onChange} />
         </div>
       </div>
     </div>

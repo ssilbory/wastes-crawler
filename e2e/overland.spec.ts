@@ -18,6 +18,7 @@ test('wanders the overland map, fighting what it meets', async ({ page }, testIn
   await page.getByLabel('Import character files').setInputFiles(starters);
   await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(4);
 
+  await page.getByRole('button', { name: 'Menu' }).click();
   await page.getByRole('link', { name: 'Overland' }).click();
 
   // The arena has a formation of its own: wait for the Overland page before picking slots.
@@ -78,6 +79,7 @@ test('wanders the overland map, fighting what it meets', async ({ page }, testIn
 test('camps for the night with the suggested watches and shelter', async ({ page }) => {
   await page.goto('/#/arena');
   await page.getByLabel('Import character files').setInputFiles(starters.slice(0, 2));
+  await page.getByRole('button', { name: 'Menu' }).click();
   await page.getByRole('link', { name: 'Overland' }).click();
   // The arena has a formation of its own: wait for the Overland page before picking slots.
   await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();

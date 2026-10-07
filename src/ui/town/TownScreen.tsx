@@ -7,14 +7,13 @@ import { crowns, lootText, tradeText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { NpcPanel } from '../world/NpcPanel.tsx';
 import { QuestLog } from '../world/QuestLog.tsx';
+import { PartyButtons, type PartyScreen } from '../world/PartyButtons.tsx';
 import { JournalPanel } from '../world/JournalPanel.tsx';
 import { FactionsPanel } from '../world/FactionsPanel.tsx';
 import { SettingPanel } from '../world/SettingPanel.tsx';
 import { raidedText } from '../../render/setting-view.ts';
-import { InventoryPanel } from '../world/InventoryPanel.tsx';
 import { PartyPanel } from '../world/PartyPanel.tsx';
 import { PurgePanel } from '../world/PurgePanel.tsx';
-import { FormationPanel } from '../world/FormationPanel.tsx';
 import { QuestsTab } from './QuestsTab.tsx';
 import { ServicesTab } from './ServicesTab.tsx';
 import { ShopTab } from './ShopTab.tsx';
@@ -37,7 +36,7 @@ const TABS = {
   travel: 'Coaches',
   arena: 'Arena',
 } as const;
-type Tab = keyof typeof TABS;
+export type Tab = keyof typeof TABS;
 
 /** Runs a town action and shows its refusal, or a success message when it returns one. */
 export type Act = (action: () => TownResult | string) => void;
@@ -49,11 +48,15 @@ export function TownScreen(props: {
   version: number;
   onChange: () => void;
   onLeave: () => void;
+  onOpen: (screen: PartyScreen) => void;
+  /** The open tab, kept by the caller so it survives a trip to the party's screens. */
+  tab: Tab;
+  onTab: (tab: Tab) => void;
   onBout: (start: Extract<BoutStart, { ok: true }>) => void;
 }) {
   const w = props.world;
   const town = townHere(w, data);
-  const [tab, setTab] = useState<Tab>('quests');
+  const { tab } = props;
   const [message, setMessage] = useState<string | null>(null);
   const act: Act = (action) => {
     const r = action();
@@ -68,9 +71,12 @@ export function TownScreen(props: {
         <span>Loot: {lootText(w.loot)}</span>
         {raidedText(w, town.id) && <span class="raided">{raidedText(w, town.id)}</span>}
         {tradeText(w, data) && <span class="trade">{tradeText(w, data)}</span>}
-        <button type="button" onClick={props.onLeave}>
-          Back to the map
-        </button>
+        <span class="bar-actions">
+          <PartyButtons onOpen={props.onOpen} />
+          <button type="button" class="create" onClick={props.onLeave}>
+            Back to the map
+          </button>
+        </span>
       </div>
       {w.encounter && (
         <div class="raid-alarm" role="alert">
@@ -88,7 +94,7 @@ export function TownScreen(props: {
             role="tab"
             aria-selected={tab === t}
             onClick={() => {
-              setTab(t);
+              props.onTab(t);
               setMessage(null);
             }}
           >
@@ -119,10 +125,8 @@ export function TownScreen(props: {
         </div>
         <div class="world-side flow">
           <PartyPanel members={w.members} />
-          <FormationPanel world={w} onChange={props.onChange} />
           <NpcPanel world={w} onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />
-          <InventoryPanel world={w} onChange={props.onChange} />
         </div>
       </div>
     </div>
