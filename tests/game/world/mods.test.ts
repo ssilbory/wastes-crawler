@@ -409,7 +409,7 @@ describe('maintenance (SRD 2.8.3)', () => {
     ).toEqual({ level: 2, points: 1 });
   });
 
-  it('keeps mods working each night in town or camp, within capacity', () => {
+  it('keeps mods working each night, in town or out without a camp', () => {
     const w = world();
     modded(w, { upkeep: 3 });
     maintain(w, data);
@@ -417,11 +417,16 @@ describe('maintenance (SRD 2.8.3)', () => {
     w.position = { col: 4, row: 8 };
     w.camp = 'none';
     emit(w, data, { kind: 'day-passed' });
+    expect(spear(w).upkeep).toBeUndefined();
+  });
+
+  it('lets mods lapse with no artisan to keep them up', () => {
+    const w = world();
+    modded(w);
+    withSkills(fizz(w), {}, []);
+    maintain(w, data);
     expect(spear(w).upkeep).toBe(1);
     expect(w.log.at(-1)).toContain("Snag's Spear, Light: its mods stop working unmaintained.");
-    w.camp = 'made';
-    maintain(w, data);
-    expect(spear(w).upkeep).toBeUndefined();
   });
 
   it('breaks down after a week, and needs an artisan who could build the mod', () => {

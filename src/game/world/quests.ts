@@ -128,6 +128,24 @@ function onStep(w: World, data: GameData, id: string, e: WorldEvent): void {
   }
 }
 
+/** Each quest's step number, to hand to itemsTaken after the party moves. */
+export const questSteps = (w: World): Record<string, number> =>
+  Object.fromEntries(Object.entries(w.quests).map(([id, st]) => [id, st.step]));
+
+/** Quest items picked up since `before` (from questSteps), with each quest's name. */
+export function itemsTaken(
+  w: World,
+  data: GameData,
+  before: Record<string, number>,
+): { quest: string; item: string }[] {
+  return Object.entries(before).flatMap(([id, from]) => {
+    const q = questOf(data, id);
+    const o = q.objectives[from];
+    const moved = (w.quests[id]?.step ?? from) > from;
+    return o?.kind === 'retrieve' && moved ? [{ quest: q.name, item: o.item }] : [];
+  });
+}
+
 /** The quests' bus listener: every active quest hears every event; deadlines stop once all steps are done. */
 export function questListener(w: World, data: GameData, e: WorldEvent): void {
   for (const [id, st] of Object.entries(w.quests))

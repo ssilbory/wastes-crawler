@@ -135,7 +135,7 @@ export function ModsPanel(props: { world: World; act: Act }) {
       <section class="panel" aria-label="Maintenance">
         <h2>Maintenance</h2>
         <p class="hint">
-          Each night in town or in a made camp, artisans keep up mods and jury-rigged gear.
+          Each night, wherever the party is, artisans keep up mods and jury-rigged gear.
         </p>
         <ul>
           {artisans.map((m) => (

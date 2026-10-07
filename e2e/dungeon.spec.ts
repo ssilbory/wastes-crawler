@@ -180,6 +180,24 @@ test('searches out the secret closet and works on a known trap', async ({ page }
   await expect(log).toContainText(/(disarms|can't work out|fumbles) the dart trap/);
 });
 
+test('shows a notice on picking up a quest item', async ({ page }) => {
+  await startAtBarrow(page);
+  await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
+  await edit(
+    page,
+    `save.quests['barrow-torc'] = { status: 'active', step: 2, acceptedDay: 0 };
+     Object.assign(save.dungeon, { at: { x: 4, y: 0 }, facing: 'e' });`,
+  );
+  const notice = page.getByRole('status', { name: 'Quest item found' });
+  await expect(notice).toBeHidden();
+  await page.getByRole('button', { name: 'Forward' }).click();
+  await expect(notice).toContainText(
+    "The Barrow-King's Torc: the party takes the barrow-king's torc.",
+  );
+  await notice.getByRole('button', { name: 'OK' }).click();
+  await expect(notice).toBeHidden();
+});
+
 /** Fights out any pending encounters with auto-resolve, until the way is clear. */
 async function settle(page: Page) {
   const encounter = page.getByRole('region', { name: 'Encounter' });
