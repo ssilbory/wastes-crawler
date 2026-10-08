@@ -96,9 +96,11 @@
     "artLevels": {
       "revive-the-fallen": 8
     },
-    "excludedArts": ["far-healer", "limb-restoration", "the-healers-knife"],
+    "excludedArts": ["limb-restoration", "the-healers-knife"],
     "artText": {
-      "purge-ailment": "Commit Effort for the day as a Main Action, out of combat, and roll Wis/Heal or Int/Heal against 8. On a success an ally you are touching loses their Frailty. The Effort is spent either way."
+      "purge-ailment": "Commit Effort for the day as a Main Action, out of combat, and roll Wis/Heal or Int/Heal against 10. On a success an ally you are touching loses their Frailty. The Effort is spent either way, and the ally takes 1 System Strain. You get one try at each Frailty an ally suffers.",
+      "far-healer": "Your Healing Touch ability is improved, and may be used on anyone in the party, wherever they stand in the formation.",
+      "healing-touch": "Commit Effort for the scene as an Instant action; for the rest of the scene, you may heal 2d6 damage plus your Heal skill to an ally as a Main Action. In a fight you can touch yourself, the allies beside you in your row, and the ally directly ahead of you; after the fight, anyone. This healing adds 1 System Strain to the target each time it is applied."
     }
   },
   {

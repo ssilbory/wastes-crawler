@@ -12,7 +12,8 @@ import { roll } from '../../rules/dice.ts';
 import { ahead, cellKey, type Cell } from '../../rules/grid.ts';
 import { rollSave } from '../../rules/saves.ts';
 import type { GameData } from '../character/context.ts';
-import { poisonProof } from '../world/arts.ts';
+import { poisonProof } from '../world/ailing.ts';
+import { infect, poisonMember } from '../world/ailments.ts';
 import { HEALERS_KIT } from '../world/first-aid.ts';
 import { pactOf } from '../world/pacts.ts';
 import { alive, bestAt, memberCheck, memberSheet, note, setHp } from '../world/members.ts';
@@ -123,11 +124,18 @@ function spring(w: World, data: GameData, trap: Trap): void {
     return false;
   });
   for (const m of hit) {
-    // Unaging: immune to poisons (Phase 15).
+    // Filth passes on its disease, doing no other harm (Sam's call).
+    if (e.kind === 'disease') {
+      infect(w, data, m, e.disease);
+      continue;
+    }
+    // Unaging and the Poisoner: immune to poisons (Phase 15; 1.6.0).
     if (e.kind === 'poison' && poisonProof(m)) {
       note(w, `The poison does nothing to ${m.character.name}.`);
       continue;
     }
+    // The poison lingers in those it doesn't kill (Sam's call).
+    if (e.kind === 'poison') poisonMember(w, data, m);
     const amount =
       e.kind === 'damage' ? roll(w.rng, e.dice).total : Math.ceil(m.character.hp.max / 2);
     wound(w, data, m, amount);

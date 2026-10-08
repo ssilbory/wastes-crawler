@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ExposureSchema } from './ailment-content.ts';
 import { DiceSchema, IdSchema } from './common.ts';
 import { TownSizeSchema } from './town-content.ts';
 
@@ -19,6 +20,8 @@ export const TerrainSchema = z.strictObject({
   /** Nights here are harsh, so sleeping without a camp makes a character Cold. */
   harsh: z.boolean(),
   encounters: IdSchema,
+  /** A disease the party may catch spending the night here (Sam's call). */
+  exposure: ExposureSchema.optional(),
 });
 export type Terrain = z.infer<typeof TerrainSchema>;
 

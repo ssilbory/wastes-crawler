@@ -29,7 +29,8 @@ export const DARK_HIT_MODIFIER = -4;
  */
 export const hitModifier = (b: Battle, actor: Combatant) =>
   b.hitModifier[actor.side] +
-  (b.dark && actor.side === 'party' && !actor.seesInDark ? DARK_HIT_MODIFIER : 0);
+  (b.dark && actor.side === 'party' && !actor.seesInDark ? DARK_HIT_MODIFIER : 0) -
+  actor.ailPenalty;
 
 function side(b: Battle, s: Combatant['side']) {
   return b.combatants.filter((c) => c.side === s);

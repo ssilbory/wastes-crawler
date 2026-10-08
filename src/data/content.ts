@@ -42,6 +42,7 @@ import campaign from '../../data/content/campaign.json';
 import ruins from '../../data/content/ruins.json';
 import groves from '../../data/content/groves.json';
 import factions from '../../data/content/factions.json';
+import ailments from '../../data/content/ailments.json';
 import { withSettingMonsters } from './monsters.ts';
 import { combatReferenceErrors } from './combat-check.ts';
 import { equipmentReferenceErrors } from './equipment-check.ts';
@@ -61,6 +62,7 @@ import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.
 import { gameSkills, skillRuleErrors } from './skills.ts';
 import { spellRuleErrors } from './spells.ts';
 import { groveReferenceErrors } from './grove-check.ts';
+import { ailmentReferenceErrors } from './ailment-check.ts';
 
 export function loadContent(): ContentData {
   return withSettingMonsters({
@@ -108,6 +110,7 @@ export function loadContent(): ContentData {
     ruins: ContentSchemas.ruins.parse(ruins),
     groves: ContentSchemas.groves.parse(groves),
     factions: ContentSchemas.factions.parse(factions),
+    ailments: ContentSchemas.ailments.parse(ailments),
   });
 }
 
@@ -202,5 +205,6 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...craftingReferenceErrors(srd, content),
     ...settingReferenceErrors(srd, content),
     ...groveReferenceErrors(srd, content),
+    ...ailmentReferenceErrors(srd, content),
   ];
 }

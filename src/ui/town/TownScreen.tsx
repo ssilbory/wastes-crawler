@@ -16,6 +16,7 @@ import { SettingPanel } from '../world/SettingPanel.tsx';
 import { raidedText } from '../../render/setting-view.ts';
 import { PartyPanel } from '../world/PartyPanel.tsx';
 import { PurgePanel } from '../world/PurgePanel.tsx';
+import { AntidotePanel } from '../world/AntidotePanel.tsx';
 import { QuestsTab } from './QuestsTab.tsx';
 import { ServicesTab } from './ServicesTab.tsx';
 import { ShopTab } from './ShopTab.tsx';
@@ -134,6 +135,7 @@ export function TownScreen(props: {
           <MountsPanel world={w} onChange={props.onChange} />
           <CompanionsPanel world={w} onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />
+          <AntidotePanel world={w} onChange={props.onChange} />
         </div>
       </div>
     </div>

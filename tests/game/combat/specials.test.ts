@@ -167,13 +167,43 @@ describe('on-hit effects', () => {
     b.rng = scriptedRng([2]);
     afterHit(b, bite, grukk);
     expect(grukk.hp).toBe(grukk.maxHp - Math.floor(grukk.maxHp / 2));
+    // The poison lingers, and the widow's venom, with its save penalty, owes 1 strain.
+    expect([grukk.poisoned, grukk.venom]).toEqual([true, 1]);
     grukk.hp = grukk.maxHp;
     b.rng = scriptedRng([20]);
     afterHit(b, bite, grukk);
     expect(grukk.hp).toBe(grukk.maxHp);
+    expect(grukk.venom).toBe(1);
     grukk.status = 'dying';
     afterHit(b, bite, grukk);
     afterHit(b, at(who(b, 'Snag'), 0), who(b, 'Snag'));
+  });
+
+  it('poison at no penalty lingers without owing strain', () => {
+    const b = standardBattle([['giant-rattlesnake']]);
+    const snag = who(b, 'Snag');
+    b.rng = scriptedRng([1]);
+    afterHit(b, at(who(b, 'foe-0-0'), 0), snag);
+    expect([snag.poisoned, snag.venom]).toEqual([true, 0]);
+  });
+
+  it('disease: a Physical save at its penalty, or caught; never by the unliving', () => {
+    const b = standardBattle([['gnawing-dead', 'zombie']]);
+    const bite = at(who(b, 'foe-0-0'), 1);
+    expect(bite.onHit).toEqual({ kind: 'disease', disease: 'grave-rot' });
+    const snag = who(b, 'Snag');
+    b.rng = scriptedRng([20]);
+    afterHit(b, bite, snag);
+    expect(snag.caught).toBeNull();
+    b.rng = scriptedRng([1]);
+    afterHit(b, bite, snag);
+    expect(snag.caught).toBe('grave-rot');
+    // One at a time: a second bite rolls nothing.
+    b.rng = scriptedRng([]);
+    afterHit(b, bite, snag);
+    const zombie = who(b, 'foe-0-1');
+    afterHit(b, bite, zombie);
+    expect(zombie.caught).toBeNull();
   });
 
   it('paralysis: a Physical save or held, unable to act, for the rolled rounds', () => {

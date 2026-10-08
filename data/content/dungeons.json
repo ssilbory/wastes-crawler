@@ -634,6 +634,10 @@
             "y": 0
           }
         ],
+        "exposure": {
+          "disease": "pit-flux",
+          "chance": 2
+        },
         "secrets": [],
         "traps": [
           {
@@ -877,6 +881,10 @@
             "y": 0
           }
         ],
+        "exposure": {
+          "disease": "pit-flux",
+          "chance": 2
+        },
         "secrets": [],
         "traps": [],
         "specials": [

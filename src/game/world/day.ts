@@ -6,10 +6,11 @@ import { isHarshNight } from '../../rules/overland.ts';
 import { useResource } from '../../rules/resource-die.ts';
 import type { GameData } from '../character/context.ts';
 import { dateOf } from './calendar.ts';
-import { addMemberStrain, alive, healNight, note } from './members.ts';
+import { addMemberStrain, alive, cureFrailty, easeStrain, healNight, note } from './members.ts';
 import { npcCheck } from '../../rules/checks.ts';
 import { emit } from './bus.ts';
-import { immuneTo, sacredBlood } from './arts.ts';
+import { nightForAilments } from './ailments.ts';
+import { immuneTo, sacredBlood, tended } from './arts.ts';
 import { nightForBeasts } from './beasts.ts';
 import { nightForCompanions } from './companion-night.ts';
 import { nightForTrees } from './greenwood.ts';
@@ -40,6 +41,8 @@ export function endOfDay(w: World, data: GameData, waystation = false): void {
   // Underground there is no weather.
   const cold = !sheltered && !w.dungeon && isHarshNight(map.terrainAt(w.position).harsh, season);
   if (physician) tendFrail(w, data, physician.name);
+  // Refined Restoration: a Healer awake at night's end tends the sleepers (Phase 15).
+  const care = tended(w);
   // The revived sleep the night through, untouched by hunger, cold, or rest (Phase 14d).
   for (const m of alive(w).filter((x) => !x.reviving)) {
     m.hungry = !fed && !immuneTo(data, m, 'hungry');
@@ -59,8 +62,11 @@ export function endOfDay(w: World, data: GameData, waystation = false): void {
       m.effortDay = 0;
       m.artUses = {};
     }
+    // SRD 1.5.9: the Healer's care takes off 1 more strain after a good night's rest.
+    if (care && m.slept) easeStrain(m, 1);
     m.slept = false;
   }
+  nightForAilments(w, data, inTown);
   if (!sheltered && !cold)
     note(w, `A night without shelter at ${hexKey(w.position)}: no one recovers.`);
   nightForBeasts(w, data, fedFree);
@@ -86,7 +92,7 @@ function tendFrail(w: World, data: GameData, name: string): void {
   for (const m of alive(w).filter((x) => x.frail)) {
     const check = npcCheck(w.rng, { skillBonus: data.content.npcRules.skillBonus, difficulty: 10 });
     if (!check.success) continue;
-    m.frail = false;
+    cureFrailty(m);
     note(w, `${name} nurses ${m.character.name} out of Frailty.`);
   }
 }

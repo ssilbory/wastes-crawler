@@ -2,7 +2,9 @@
 // sweep a row with a save for half, resistances to blunt or edged weapons and missiles, and what
 // a hit does beyond its damage. Poison is the SRD's: a Physical save or the loss of half the
 // victim's maximum hit points (vendor/wwn-srd/2.0 The Rules of the Game/2.10.0 Falling and Other
-// Hazards.md, Poisons).
+// Hazards.md, Poisons), and the victim is left Poisoned; a venom with a save penalty also owes
+// System Strain. Disease is caught on a failed Physical save at its penalty (2.5.0, 2.5.5; Sam's
+// calls in docs/rules-adaptation.md, Poison and disease).
 import { roll } from '../../rules/dice.ts';
 import { harm, save, say } from './damage.ts';
 import { negatesUndead } from './reactions.ts';
@@ -53,7 +55,18 @@ export function afterHit(b: Battle, attack: Attack, target: Combatant): void {
     // Unaging: immune to poisons (Phase 15).
     if (target.poisonImmune || save(b, target, 'physical', -effect.penalty).success) return;
     say(b, `${target.name} is poisoned.`);
+    target.poisoned = true;
+    if (effect.penalty > 0) target.venom += b.data.content.ailments.poisoned.venomStrain;
     harm(b, target, Math.floor(target.maxHp / 2));
+    return;
+  }
+  if (effect.kind === 'disease') {
+    // The unliving can't sicken; one disease is caught at a time.
+    if (target.tags.has('unliving') || target.caught) return;
+    const d = b.data.content.ailments.diseases.find((x) => x.id === effect.disease);
+    if (!d || save(b, target, 'physical', -d.savePenalty).success) return;
+    target.caught = d.id;
+    say(b, `${target.name} is sickened by the ${attack.name.toLowerCase()}.`);
     return;
   }
   if (target.tags.has('unliving') || save(b, target, 'physical').success) return;

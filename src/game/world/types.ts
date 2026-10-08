@@ -46,6 +46,9 @@ export interface Member {
   companion: NpcSave | null;
   /** Hit points Feral Toughness adds to the maximum now (1.5.4). */
   toughness: number;
+  purgeTries: string[];
+  poisoned: boolean;
+  disease: { id: string; nights: number; saves: number } | null;
 }
 
 export type Npc = NpcSave;

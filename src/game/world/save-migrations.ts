@@ -192,4 +192,18 @@ export const WORLD_MIGRATIONS: Migrations = {
   },
   // Version 32 adds mounts: none kept yet.
   31: (raw) => ({ ...raw, schemaVersion: 32, mounts: [] }),
+  // Version 33 gives Purge Ailment one try per Healer on each Frailty, and adds lingering poison
+  // and disease: no one has tried yet, and no one is Poisoned or sick.
+  32: (raw) => {
+    const untried = (list: unknown) =>
+      Array.isArray(list)
+        ? (list as Raw[]).map((m) => ({ ...m, purgeTries: [], poisoned: false, disease: null }))
+        : list;
+    return {
+      ...raw,
+      schemaVersion: 33,
+      members: untried(raw.members),
+      benched: untried(raw.benched),
+    };
+  },
 };

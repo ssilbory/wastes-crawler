@@ -49,8 +49,8 @@ describe('the Priest of Death and the Blood Priest/Healer (Phase 14d)', () => {
     expect(artBar(data, 'healer', 'limb-restoration', 10)).toBe(
       "limb-restoration isn't used in this game",
     );
-    // Healing Touch reaches the whole party, so Far Healer is left out too.
-    expect(artBar(data, 'healer', 'far-healer', 1)).toBe("far-healer isn't used in this game");
+    // Healing Touch reaches only beside and ahead, so Far Healer can be picked from 1st level.
+    expect(artBar(data, 'healer', 'far-healer', 1)).toBeNull();
   });
 
   it('grants automatic arts as listed when a tradition has no content entry', () => {

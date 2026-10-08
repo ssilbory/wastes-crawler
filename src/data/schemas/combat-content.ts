@@ -25,10 +25,13 @@ const SaveKind = z.enum(['physical', 'evasion', 'mental', 'luck']);
  * What a hit does beyond its damage (Phase 14a). Poison: a Physical save at a penalty, or the
  * victim loses half its maximum hit points (vendor/wwn-srd/2.0 The Rules of the Game/2.10.0
  * Falling and Other Hazards.md, Poisons). Paralysis: a Physical save, or the victim is held,
- * unable to act, for the rolled number of rounds.
+ * unable to act, for the rolled number of rounds. A failed poison save also leaves the victim
+ * Poisoned, and disease (SRD 2.5.5) is caught on a failed Physical save at the disease's penalty
+ * (Sam's calls, docs/rules-adaptation.md, Poison and disease).
  */
 export const OnHitSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('poison'), penalty: z.int().min(0) }),
+  z.strictObject({ kind: z.literal('disease'), disease: IdSchema }),
   z.strictObject({ kind: z.literal('paralysis'), rounds: DiceSchema }),
 ]);
 export type OnHit = z.infer<typeof OnHitSchema>;

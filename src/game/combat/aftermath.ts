@@ -91,7 +91,7 @@ export function tendRound(b: Battle): void {
       const helper = free.shift() as Combatant;
       const check = skillCheck(b.rng, {
         skill: helper.skills.heal ?? null,
-        attributeModifier: helper.healModifier,
+        attributeModifier: helper.healModifier - helper.ailPenalty,
         difficulty,
       });
       if (check.success) {

@@ -9,7 +9,6 @@ import { EXERT_DIFFICULTY, FREE_HIKES, HIKE_POINTS } from '../../rules/overland.
 import { stepDie } from '../../rules/resource-die.ts';
 import { rollSave } from '../../rules/saves.ts';
 import type { GameData } from '../character/context.ts';
-import { tended } from './arts.ts';
 import { palanquinUp } from './guises.ts';
 import {
   addMemberStrain,
@@ -172,10 +171,8 @@ export function camp(
   const inTown = map.siteAt(w.position) !== undefined;
   const doing = (a: Activity) => alive(w).filter((m) => activities[m.id] === a);
   let extraChecks = 0;
-  // Refined Restoration: a Healer's care takes off one more strain from sleep (Phase 15).
-  const care = tended(w) ? 1 : 0;
   for (const m of doing('rest')) restQuarter(m);
-  for (const m of doing('sleep')) restQuarter(m, care);
+  for (const m of doing('sleep')) restQuarter(m);
   for (const m of doing('sleep')) m.slept = true;
   const builder = doing('make-camp')[0];
   if (builder && w.camp !== 'made') {

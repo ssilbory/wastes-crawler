@@ -400,7 +400,11 @@
           "sides": 6,
           "modifier": 0
         },
-        "count": 1
+        "count": 1,
+        "onHit": {
+          "kind": "disease",
+          "disease": "grave-rot"
+        }
       }
     ]
   },

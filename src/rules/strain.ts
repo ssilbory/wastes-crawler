@@ -18,6 +18,7 @@ export type StrainSource =
   | 'condition'
   | 'overloaded'
   | 'poison'
+  | 'disease'
   | 'monster';
 
 export type StrainOutcome =

@@ -71,6 +71,10 @@ export function base(
     harvestRound: 0,
     shockCap: null,
     poisonImmune: false,
+    poisoned: false,
+    venom: 0,
+    caught: null,
+    ailPenalty: 0,
     pact: null,
     mantle: null,
     echo: null,
@@ -202,7 +206,8 @@ export function pcCombatant(
     form,
     // Cold Flesh: Shock of 2 at most, and a natural AC of 12 plus half the level (1.5.14).
     ...(c.arts.includes('cold-flesh') ? { shockCap: 2, acFloor: 12 + Math.floor(level / 2) } : {}),
-    // Unaging: immune to poisons (1.5.14).
-    poisonImmune: c.arts.includes('unaging'),
+    // Unaging and the Poisoner at level 2: immune to poisons (1.5.14, 1.6.0).
+    poisonImmune:
+      c.arts.includes('unaging') || c.foci.some((f) => f.id === 'poisoner' && f.level >= 2),
   };
 }

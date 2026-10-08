@@ -6,7 +6,7 @@ import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { FactionStateSchema } from './faction-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 32;
+export const WORLD_SCHEMA_VERSION = 33;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -88,6 +88,14 @@ export const MemberSaveSchema = z.strictObject({
   companion: NpcSaveSchema.nullable(),
   /** Hit points Feral Toughness adds to the maximum now, from the companion's hit dice (1.5.4). */
   toughness: z.int().min(0),
+  /** Healers who have tried Purge Ailment on this Frailty, by member id: one try each. */
+  purgeTries: z.array(z.string().min(1)),
+  /** A lingering poison: a penalty and no natural healing until cured or saved off. */
+  poisoned: z.boolean(),
+  /** The disease carried, the nights since it was caught, and the night saves made against it. */
+  disease: z
+    .strictObject({ id: IdSchema, nights: z.int().min(0), saves: z.int().min(0) })
+    .nullable(),
 });
 
 /** A riding or war mount the party keeps outside the NPC slots (docs/rules-adaptation.md, Mounts). */

@@ -7,6 +7,7 @@ import { skillCheck, type CheckResult } from '../../rules/checks.ts';
 import { addStrain, type StrainSource } from '../../rules/strain.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
+import { ailPenalty } from './ailing.ts';
 import { armorFreeArts } from '../character/magic.ts';
 import { quarterName } from './calendar.ts';
 import type { Member, World } from './types.ts';
@@ -78,7 +79,8 @@ export function memberCheck(
   const mods = memberSheet(data, m).modifiers;
   return skillCheck(w.rng, {
     skill: m.character.skills[skill] ?? null,
-    attributeModifier: Math.max(...attrs.map((a) => mods[a])) + keen(data, m, skill),
+    attributeModifier:
+      Math.max(...attrs.map((a) => mods[a])) + keen(data, m, skill) - ailPenalty(data, m),
     difficulty,
     steps: m.character.strain.broken ? steps - 1 : steps,
   });
@@ -107,14 +109,25 @@ export function addMemberStrain(
 }
 
 /**
- * A quarter of rest: limited arts come back (Sam's call, Phase 15), and strain recovers by 1, or
- * `extra` more with Refined Restoration's care; none while Hungry, Sleepless, or Cold.
+ * A quarter of rest: limited arts come back (Sam's call, Phase 15), and strain recovers by 1; none
+ * while Hungry, Sleepless, or Cold.
  */
-export function restQuarter(m: Member, extra = 0): void {
+export function restQuarter(m: Member): void {
   m.artUses = {};
+  easeStrain(m, 1);
+}
+
+/** Strain recovered by rest, none while Hungry, Sleepless, or Cold. */
+export function easeStrain(m: Member, amount: number): void {
   if (m.hungry || m.sleepless || m.cold) return;
   const s = m.character.strain;
-  m.character = { ...m.character, strain: { ...s, value: Math.max(0, s.value - 1 - extra) } };
+  m.character = { ...m.character, strain: { ...s, value: Math.max(0, s.value - amount) } };
+}
+
+/** Frailty lifts, and with it the Healers' tries at purging it (Phase 14d). */
+export function cureFrailty(m: Member): void {
+  m.frail = false;
+  m.purgeTries = [];
 }
 
 export function setHp(m: Member, hp: number): void {
@@ -132,7 +145,8 @@ export function hurt(w: World, m: Member, amount: number): void {
  * physician's care (Sam's call).
  */
 export function healNight(data: GameData, m: Member, extra = 0): void {
-  if (m.frail) return;
+  // The Poisoned don't heal naturally (Sam's call, Poison and disease).
+  if (m.frail || m.poisoned) return;
   const { level } = memberSheet(data, m);
   setHp(m, Math.min(m.character.hp.max, m.character.hp.current + level + extra));
 }
@@ -164,5 +178,8 @@ export function newMember(
     prayedDay: null,
     companion: null,
     toughness: 0,
+    purgeTries: [],
+    poisoned: false,
+    disease: null,
   };
 }

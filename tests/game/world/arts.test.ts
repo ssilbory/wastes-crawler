@@ -19,7 +19,7 @@ import { startEncounter } from '../../../src/game/world/encounters.ts';
 import { applyBattle, battleFrom, partySetup } from '../../../src/game/world/fight.ts';
 import { endQuarter } from '../../../src/game/world/quarter.ts';
 import { passTurn } from '../../../src/game/dungeon/time.ts';
-import { restQuarter, setHp } from '../../../src/game/world/members.ts';
+import { setHp } from '../../../src/game/world/members.ts';
 import { parley } from '../../../src/game/world/parley.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
 import { createRng } from '../../../src/rules/rng.ts';
@@ -197,20 +197,25 @@ describe('Bonetalker', () => {
 });
 
 describe('Refined Restoration and Unaging', () => {
-  it('takes one more strain off each sleeper a Healer tends', () => {
-    const w = world();
-    expect(tended(w)).toBe(false);
-    gift(w, ['refined-restoration'], 'healer-partial-mage');
-    expect(tended(w)).toBe(true);
-    const snag = member(w, 'Snag');
-    snag.character = { ...snag.character, strain: { value: 3, broken: false } };
-    snag.artUses = { 'swift-healer': 1 };
-    restQuarter(snag, 1);
-    expect(snag.character.strain.value).toBe(1);
-    expect(snag.artUses).toEqual({});
+  it('takes one more strain off each sleeper a Healer tends, once a night', () => {
+    const night = (refined: boolean, slept: boolean) => {
+      const w = world();
+      if (refined) gift(w, ['refined-restoration'], 'healer-partial-mage');
+      expect(tended(w)).toBe(refined);
+      const snag = member(w, 'Snag');
+      snag.character = { ...snag.character, strain: { value: 3, broken: false } };
+      snag.slept = slept;
+      w.rng = createRng('night');
+      endOfDay(w, data);
+      return member(w, 'Snag').character.strain.value;
+    };
+    expect(night(true, true)).toBe(2);
+    // Only a good night's rest: the Sleepless take their strain and get no care.
+    expect(night(true, false)).toBe(4);
+    expect(night(false, true)).toBe(3);
   });
 
-  it('cares for sleepers in camp, above ground and below', () => {
+  it('leaves each quarter of rest at 1 strain, above ground and below', () => {
     const under = place(below(), 'barrow-upper', 4, 0, 'n');
     const o = world();
     o.position = { col: 5, row: 9 };
@@ -218,12 +223,14 @@ describe('Refined Restoration and Unaging', () => {
       gift(w, ['refined-restoration'], 'healer-partial-mage');
       const snag = member(w, 'Snag');
       snag.character = { ...snag.character, strain: { value: 3, broken: false } };
+      snag.artUses = { 'swift-healer': 1 };
       w.rng = createRng('camp');
     }
     campUnderground(under, data, { [member(under, 'Snag').id]: 'sleep' });
     camp(o, data, { [member(o, 'Snag').id]: 'sleep', [member(o, 'Grukk').id]: 'rest' });
-    expect(member(under, 'Snag').character.strain.value).toBe(1);
-    expect(member(o, 'Snag').character.strain.value).toBe(1);
+    expect(member(under, 'Snag').character.strain.value).toBe(2);
+    expect(member(o, 'Snag').character.strain.value).toBe(2);
+    expect(member(o, 'Snag').artUses).toEqual({});
   });
 
   it('turns trap poison aside from the unaging', () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Character } from '../../../src/data/schemas/index.ts';
+import type { Character, CombatMagic } from '../../../src/data/schemas/index.ts';
 import { characterSheet } from '../../../src/game/character/derived.ts';
 import { armorFreeArts } from '../../../src/game/character/magic.ts';
 import { act } from '../../../src/game/combat/actions.ts';
@@ -8,7 +8,7 @@ import { freeActions } from '../../../src/game/combat/free-actions.ts';
 import { createBattle } from '../../../src/game/combat/battle.ts';
 import { commandsFor } from '../../../src/game/combat/commands.ts';
 import { harm, save } from '../../../src/game/combat/damage.ts';
-import { castMagic } from '../../../src/game/combat/spells.ts';
+import { canUse, castMagic, combatMagic } from '../../../src/game/combat/spells.ts';
 import type { Battle, CasterState, Combatant } from '../../../src/game/combat/types.ts';
 import { createRng } from '../../../src/rules/rng.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
@@ -118,10 +118,37 @@ describe('Healing Touch', () => {
     expect(casterOf(snag).effortUsed).toBe(casterOf(snag).effortMax);
   });
 
-  it('reaches anyone in the party, however far along the line', () => {
+  it('reaches only the slots beside and directly ahead while the fight goes on', () => {
     const b = battle(priest());
+    const snag = who(b, 'Snag');
+    const grukk = hurtGrukk(b);
+    const lirael = who(b, 'Lirael');
+    Object.assign(lirael, { hp: 1, strain: { strain: 0, max: 10, broken: false } });
+    const touch = combatMagic(b, 'healing-touch') as CombatMagic;
+    const reaches = (c: Combatant, t: Combatant) => canUse(b, c, touch, false, t.id);
+    // Snag in the front row reaches Grukk beside him, not Lirael behind.
+    expect(reaches(snag, grukk)).toBe(true);
+    expect(reaches(snag, lirael)).toBe(false);
+    grukk.column = 3;
+    expect(reaches(snag, grukk)).toBe(false);
+    // From the rear, the slot directly ahead.
+    Object.assign(snag, { row: 1, column: 1 });
+    Object.assign(grukk, { row: 0, column: 1 });
+    expect(reaches(snag, grukk)).toBe(true);
+    expect(reaches(snag, lirael)).toBe(true);
+    // Once the fight is over, the Healer can walk to anyone.
+    Object.assign(snag, { row: 0, column: 3 });
+    expect(reaches(snag, lirael)).toBe(false);
+    b.outcome = 'party';
+    expect(reaches(snag, lirael)).toBe(true);
+  });
+
+  it('reaches anyone in the party with Far Healer', () => {
+    const b = battle(priest(1, ['healing-touch', 'far-healer']));
     const grukk = hurtGrukk(b);
     grukk.column = 3;
+    const touch = combatMagic(b, 'healing-touch') as CombatMagic;
+    expect(canUse(b, who(b, 'Snag'), touch, false, grukk.id)).toBe(true);
     b.rng = scriptedRng([1, 1]);
     expect(castMagic(b, who(b, 'Snag'), 'healing-touch', grukk.id, undefined)).toBe(true);
     expect(grukk.hp).toBe(4);

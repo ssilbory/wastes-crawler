@@ -1,13 +1,15 @@
 // The inn, the healer, and the crypt, mortuary, or temple (docs/rules-adaptation.md, Towns in
 // Phase 6a and Raising the dead). Inn: SRD 3.3.1's common lifestyle by the night. Healer: SRD
 // 3.3.1 magical healing, which adds System Strain like any magical healing (vendor/wwn-srd/2.0
-// The Rules of the Game/2.5.0, 2.5.2); curing Frailty and raising the dead are house prices.
+// The Rules of the Game/2.5.0, 2.5.2), and magical curing of a disease; curing Frailty and
+// poison and raising the dead are house prices.
 import type { MissionGiver } from '../../data/schemas/index.ts';
 import { addStrain, fullRest } from '../../rules/strain.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
+import { cure } from './ailments.ts';
 import { endOfDay } from './day.ts';
-import { alive, note, setHp } from './members.ts';
+import { alive, cureFrailty, note, setHp } from './members.ts';
 import { FULL_RATIONS, priceHere, spend, townHere } from './town.ts';
 import type { Member, World } from './types.ts';
 
@@ -98,8 +100,30 @@ export function cureFrail(w: World, data: GameData, id: string): TownResult {
   if (m.dead || !m.frail) return no(`${m.character.name} isn't Frail.`);
   const paid = pay(w, data, rules(data).cureFrail);
   if (!paid.ok) return paid;
-  m.frail = false;
+  cureFrailty(m);
   note(w, `The healer cures ${m.character.name}'s Frailty.`);
+  return OK;
+}
+
+/**
+ * The healer neutralizes a lingering poison (Sam's price) or cures a disease (SRD 3.3.1, magical
+ * curing of a disease, 500 sp).
+ */
+export function cureSickness(
+  w: World,
+  data: GameData,
+  id: string,
+  s: 'poison' | 'disease',
+): TownResult {
+  const m = member(w, id);
+  const name = m.character.name;
+  if (s === 'poison' && (m.dead || !m.poisoned)) return no(`${name} isn't Poisoned.`);
+  if (s === 'disease' && (m.dead || !m.disease)) return no(`${name} isn't sick.`);
+  const healer = rules(data);
+  const paid = pay(w, data, s === 'poison' ? healer.curePoison : healer.cureDisease);
+  if (!paid.ok) return paid;
+  cure(m, s);
+  note(w, `The healer cures ${name} of ${s === 'poison' ? 'the poison' : 'the disease'}.`);
   return OK;
 }
 
@@ -118,7 +142,8 @@ export function raiseDead(w: World, data: GameData, id: string): TownResult {
 
 /** Brings a dead member back: 1 HP, no strain, and the XP they earned while dead. */
 export function revive(m: Member): void {
-  Object.assign(m, { dead: false, frail: false, hungry: false, sleepless: false, cold: false });
+  Object.assign(m, { dead: false, hungry: false, sleepless: false, cold: false });
+  cureFrailty(m);
   m.character = {
     ...m.character,
     xp: m.character.xp + m.pendingXp,

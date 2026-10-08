@@ -210,6 +210,15 @@ describe('traps (docs/rules-adaptation.md, Dungeon exploration)', () => {
     w.rng = scriptedRng([]);
     springHere(w, withTrap({ save: null, effect: { kind: 'poison' } }));
     expect(member(w, 'Snag').character.hp.current).toBe(4);
+    // The poison lingers.
+    expect(member(w, 'Snag').poisoned).toBe(true);
+    // Filth passes on its disease and does no other harm.
+    const filth = onTrap();
+    only(filth, 'Snag');
+    filth.rng = scriptedRng([]);
+    springHere(filth, withTrap({ save: null, effect: { kind: 'disease', disease: 'pit-flux' } }));
+    const snag = member(filth, 'Snag');
+    expect([snag.disease?.id, snag.character.hp.current]).toEqual(['pit-flux', 8]);
     const loud = onTrap();
     loud.rng = scriptedRng([1, 1, 1, 1, 1, 1, 1]);
     springHere(loud, withTrap({ save: null, effect: { kind: 'alarm' } }));

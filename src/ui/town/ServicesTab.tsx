@@ -1,5 +1,6 @@
 import {
   cureFrail,
+  cureSickness,
   healListed,
   innListed,
   healerHeal,
@@ -10,6 +11,7 @@ import {
 } from '../../game/world/services.ts';
 import { priceHere } from '../../game/world/town.ts';
 import { shrineHere } from '../../game/world/prayer.ts';
+import { findDisease } from '../../game/world/ailing.ts';
 import type { World } from '../../game/world/types.ts';
 import { crowns } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
@@ -53,7 +55,16 @@ export function ServicesTab(props: { world: World; act: Act }) {
                 <tr key={m.id}>
                   <th scope="row">{c.name}</th>
                   <td>
-                    {m.dead ? 'dead' : `HP ${c.hp.current}/${c.hp.max}${m.frail ? ', Frail' : ''}`}
+                    {m.dead
+                      ? 'dead'
+                      : [
+                          `HP ${c.hp.current}/${c.hp.max}`,
+                          m.frail && 'Frail',
+                          m.poisoned && 'Poisoned',
+                          m.disease && findDisease(data, m.disease.id).name,
+                        ]
+                          .filter(Boolean)
+                          .join(', ')}
                   </td>
                   <td class="actions">
                     {!m.dead && c.hp.current < c.hp.max && (
@@ -70,6 +81,22 @@ export function ServicesTab(props: { world: World; act: Act }) {
                         onClick={() => props.act(() => cureFrail(w, data, m.id))}
                       >
                         Cure Frailty ({price(rules.healer.cureFrail)})
+                      </button>
+                    )}
+                    {!m.dead && m.poisoned && (
+                      <button
+                        type="button"
+                        onClick={() => props.act(() => cureSickness(w, data, m.id, 'poison'))}
+                      >
+                        Cure poison ({price(rules.healer.curePoison)})
+                      </button>
+                    )}
+                    {!m.dead && m.disease && (
+                      <button
+                        type="button"
+                        onClick={() => props.act(() => cureSickness(w, data, m.id, 'disease'))}
+                      >
+                        Cure disease ({price(rules.healer.cureDisease)})
                       </button>
                     )}
                   </td>

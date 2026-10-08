@@ -1,6 +1,6 @@
 import type { Attribute, Trap } from '../../data/schemas/index.ts';
 import { ATTRIBUTES } from '../../game/character/attributes.ts';
-import { skills } from '../builder/data.ts';
+import { data, skills } from '../builder/data.ts';
 
 const SAVES = ['physical', 'evasion', 'mental', 'luck'] as const;
 
@@ -119,17 +119,40 @@ export function TrapForm(props: { trap: Trap; onChange: (t: Trap) => void }) {
           value={effect.kind}
           onChange={(e) => {
             const kind = (e.target as HTMLSelectElement).value as Trap['effect']['kind'];
+            const firstDisease = data.content.ailments.diseases[0]?.id ?? '';
             set({
               effect:
-                kind === 'damage' ? { kind, dice: { count: 1, sides: 6, modifier: 0 } } : { kind },
+                kind === 'damage'
+                  ? { kind, dice: { count: 1, sides: 6, modifier: 0 } }
+                  : kind === 'disease'
+                    ? { kind, disease: firstDisease }
+                    : { kind },
             });
           }}
         >
           <option value="damage">Damage</option>
-          <option value="poison">Poison (half maximum HP)</option>
+          <option value="poison">Poison (half maximum HP, lingers)</option>
+          <option value="disease">Disease (passes it on)</option>
           <option value="alarm">Alarm (calls the wanderers)</option>
         </select>
       </label>
+      {effect.kind === 'disease' && (
+        <label class="field">
+          <span>Disease</span>
+          <select
+            value={effect.disease}
+            onChange={(e) =>
+              set({ effect: { kind: 'disease', disease: (e.target as HTMLSelectElement).value } })
+            }
+          >
+            {data.content.ailments.diseases.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
       {effect.kind === 'damage' && (
         <div class="dice">
           <NumberField

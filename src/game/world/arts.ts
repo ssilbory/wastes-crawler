@@ -91,9 +91,6 @@ export function mercy(w: World, data: GameData): Member | undefined {
 export const tended = (w: World) =>
   w.members.some((m) => awake(m) && m.character.arts.includes('refined-restoration'));
 
-/** Unaging: immune to poisons. */
-export const poisonProof = (m: Member) => m.character.arts.includes('unaging');
-
 /**
  * Tireless Vigor's regeneration (Sam's call, Phase 15): each Healer who can commit Effort heals
  * `hp` lost hit points: 1 after a fight, 1 every 10 dungeon turns, and 5 each quarter.
