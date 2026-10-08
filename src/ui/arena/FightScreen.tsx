@@ -129,7 +129,8 @@ export function FightScreen(props: {
   const setPreset = (preset: DefaultPreset) => {
     if (!actor) return;
     setPresets({ ...presets, [actor.id]: preset });
-    props.onPreset?.(Number(actor.id.slice('pc-'.length)), preset);
+    // A companion under Mind Call (1.5.4) keeps its preset for this fight only.
+    if (actor.kind === 'pc') props.onPreset?.(Number(actor.id.slice('pc-'.length)), preset);
   };
 
   return (

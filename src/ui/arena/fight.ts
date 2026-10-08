@@ -10,6 +10,7 @@ import {
   createBattle,
   type BattleResult,
 } from '../../game/combat/battle.ts';
+import { monsterAction } from '../../game/combat/ai.ts';
 import { answersCall } from '../../game/combat/companions.ts';
 import { defaultAction } from '../../game/combat/defaults.ts';
 import type { Action, Battle, Combatant } from '../../game/combat/types.ts';
@@ -92,6 +93,8 @@ export interface Presets {
 }
 
 export function presetAction(b: Battle, actor: Combatant, p: Presets): Action {
+  // A companion left to itself fights as its stat line would (1.5.4).
+  if (actor.kind !== 'pc' && p.preset(actor.id) === 'auto') return monsterAction(b, actor);
   return defaultAction(b, actor, p.preset(actor.id), p.last.get(actor.id) ?? null);
 }
 

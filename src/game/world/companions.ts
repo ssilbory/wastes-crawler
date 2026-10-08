@@ -158,3 +158,16 @@ export function swiftHealing(w: World, data: GameData, memberId: string): TownRe
   note(w, `${m.character.name} tends ${n.name}: ${healed} hit points.`);
   return { ok: true };
 }
+
+/** Names the companion anew; a beast bound mid-fight comes with its kind's name (1.5.4). */
+export function renameCompanion(w: World, memberId: string, name: string): TownResult {
+  const m = member(w, memberId);
+  const n = companionOf(w, m);
+  if (!n) return no(`${m.character.name} has no companion.`);
+  const problem = nameProblem(name);
+  if (problem) return no(problem);
+  const old = n.name;
+  n.name = name.trim();
+  note(w, `${m.character.name} names ${old} ${n.name}.`);
+  return { ok: true };
+}
