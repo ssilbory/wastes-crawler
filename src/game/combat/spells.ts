@@ -7,6 +7,7 @@ import { netSteps } from '../../rules/advantage.ts';
 import { roll } from '../../rules/dice.ts';
 import { strainCastCost } from '../../rules/magic.ts';
 import type { SaveType } from '../../rules/saves.ts';
+import { inTouch } from '../../rules/formation.ts';
 import { canPay, payFor } from '../../rules/spell-points.ts';
 import { addStrain } from '../../rules/strain.ts';
 import { effectiveAc, harm, save, say } from './damage.ts';
@@ -37,14 +38,25 @@ function hasEffort(c: CasterState, art: string): boolean {
 const freeUse = (c: CasterState, m: CombatMagic) =>
   m.effort === 'activate' && (c.usedThisScene.has(m.id) || c.arts.includes('facile-healer'));
 
+/**
+ * Healing Touch reaches only the slots beside and directly ahead while the fight goes on; Far
+ * Healer reaches anyone, and once the fight is over the Healer can walk to whoever needs them.
+ */
+const touchReaches = (b: Battle, actor: Combatant, t: Combatant) =>
+  b.outcome !== null ||
+  b.escaped ||
+  actor.caster?.arts.includes('far-healer') === true ||
+  inTouch(actor, t);
+
 /** The Long Amber Moment never freezes its caster; Conjunct the Vital Viscera needs a giver. */
 function fitsTarget(b: Battle, actor: Combatant, m: CombatMagic, id?: string): boolean {
   const t = b.combatants.find((x) => x.id === id);
   if (!t) return true;
   if (m.effect.kind === 'amber') return t !== actor;
   // Healing the target couldn't bear is never offered (SRD 2.5.2).
-  if (m.effect.kind === 'heal' || m.effect.kind === 'touch-heal')
-    return bearsHealing(t, m.effect.strain);
+  if (m.effect.kind === 'heal') return bearsHealing(t, m.effect.strain);
+  if (m.effect.kind === 'touch-heal')
+    return touchReaches(b, actor, t) && bearsHealing(t, m.effect.strain);
   return m.effect.kind !== 'conjunct' || donorFor(b, t) !== null;
 }
 

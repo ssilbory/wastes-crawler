@@ -7,7 +7,7 @@ import { addStrain, fullRest } from '../../rules/strain.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
 import { endOfDay } from './day.ts';
-import { alive, note, setHp } from './members.ts';
+import { alive, cureFrailty, note, setHp } from './members.ts';
 import { FULL_RATIONS, priceHere, spend, townHere } from './town.ts';
 import type { Member, World } from './types.ts';
 
@@ -98,7 +98,7 @@ export function cureFrail(w: World, data: GameData, id: string): TownResult {
   if (m.dead || !m.frail) return no(`${m.character.name} isn't Frail.`);
   const paid = pay(w, data, rules(data).cureFrail);
   if (!paid.ok) return paid;
-  m.frail = false;
+  cureFrailty(m);
   note(w, `The healer cures ${m.character.name}'s Frailty.`);
   return OK;
 }
@@ -118,7 +118,8 @@ export function raiseDead(w: World, data: GameData, id: string): TownResult {
 
 /** Brings a dead member back: 1 HP, no strain, and the XP they earned while dead. */
 export function revive(m: Member): void {
-  Object.assign(m, { dead: false, frail: false, hungry: false, sleepless: false, cold: false });
+  Object.assign(m, { dead: false, hungry: false, sleepless: false, cold: false });
+  cureFrailty(m);
   m.character = {
     ...m.character,
     xp: m.character.xp + m.pendingXp,

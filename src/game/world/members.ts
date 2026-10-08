@@ -92,14 +92,25 @@ export function addMemberStrain(
 }
 
 /**
- * A quarter of rest: limited arts come back (Sam's call, Phase 15), and strain recovers by 1, or
- * `extra` more with Refined Restoration's care; none while Hungry, Sleepless, or Cold.
+ * A quarter of rest: limited arts come back (Sam's call, Phase 15), and strain recovers by 1; none
+ * while Hungry, Sleepless, or Cold.
  */
-export function restQuarter(m: Member, extra = 0): void {
+export function restQuarter(m: Member): void {
   m.artUses = {};
+  easeStrain(m, 1);
+}
+
+/** Strain recovered by rest, none while Hungry, Sleepless, or Cold. */
+export function easeStrain(m: Member, amount: number): void {
   if (m.hungry || m.sleepless || m.cold) return;
   const s = m.character.strain;
-  m.character = { ...m.character, strain: { ...s, value: Math.max(0, s.value - 1 - extra) } };
+  m.character = { ...m.character, strain: { ...s, value: Math.max(0, s.value - amount) } };
+}
+
+/** Frailty lifts, and with it the Healers' tries at purging it (Phase 14d). */
+export function cureFrailty(m: Member): void {
+  m.frail = false;
+  m.purgeTries = [];
 }
 
 export function setHp(m: Member, hp: number): void {
@@ -147,5 +158,6 @@ export function newMember(
     reviving: false,
     artUses: {},
     prayedDay: null,
+    purgeTries: [],
   };
 }

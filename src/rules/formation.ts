@@ -111,3 +111,16 @@ export function servantPlace(occupants: readonly Occupant[]): ServantPlace | nul
   const behind = rear.includes(weakest.column) ? weakest.column : rear[0];
   return { row: 0, column: weakest.column, bump: { index: weakest.index, column: behind } };
 }
+
+/**
+ * Healing Touch's reach in a fight (vendor/wwn-srd/1.0 Character Creation/1.5.0 Class List/1.5.9
+ * The Healer.md, "a touched ally"; Sam's call in docs/rules-adaptation.md, Healing Touch): the
+ * Healer themselves, the slot directly ahead, and the slots to either side in their own row.
+ */
+export function inTouch(
+  from: { row: number; column: number },
+  to: { row: number; column: number },
+): boolean {
+  if (to.row === from.row) return Math.abs(to.column - from.column) <= 1;
+  return to.row === from.row - 1 && to.column === from.column;
+}

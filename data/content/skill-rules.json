@@ -56,7 +56,7 @@
   },
   "purgeAilment": {
     "attributes": ["wis", "int"],
-    "difficulty": 8
+    "difficulty": 10
   },
   "know": {
     "attributes": ["int"],

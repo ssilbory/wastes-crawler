@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import type { PendingEncounter } from '../../../src/data/schemas/index.ts';
 import { characterSheet } from '../../../src/game/character/derived.ts';
 import { frailAllies, purgeFrailty } from '../../../src/game/world/purge.ts';
+import { cureFrailty } from '../../../src/game/world/members.ts';
+import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
 import { purgeView } from '../../../src/render/purge-view.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
@@ -32,18 +34,50 @@ function frailSnag(faces: number[]): { w: World; h: Member; snag: Member } {
 const fail = (reason: string) => ({ ok: false, reason });
 
 describe('Purge Ailment lifting Frailty', () => {
-  it('lifts an ally’s Frailty on a Heal check against 8, for a point of day Effort', () => {
+  it('lifts an ally’s Frailty on a Heal check against 10, for day Effort and 1 strain', () => {
     const { w, h, snag } = frailSnag([6, 6]);
     expect(purgeFrailty(w, data, h.id, snag.id)).toEqual({ ok: true });
     expect(snag.frail).toBe(false);
+    expect(snag.purgeTries).toEqual([]);
+    expect(snag.character.strain.value).toBe(1);
     expect(h.effortDay).toBe(1);
     expect(w.log.at(-1)).toMatch(/Fizzwick purges Snag's Frailty\./);
+  });
+
+  it('gives each Healer one try at each Frailty', () => {
+    const { w, h, snag } = frailSnag([1, 1, 6, 6]);
+    purgeFrailty(w, data, h.id, snag.id);
+    expect(snag.purgeTries).toEqual([h.id]);
+    expect(frailAllies(w, h.id)).toEqual([]);
+    expect(purgeFrailty(w, data, h.id, snag.id)).toEqual(
+      fail('Choose a Frail ally you haven’t tried to purge.'),
+    );
+    expect(h.effortDay).toBe(1);
+    // Another Healer may still try.
+    const grukk = member(w, 'Grukk');
+    grukk.character = { ...h.character, name: 'Grukk' };
+    expect(frailAllies(w, grukk.id)).toEqual([snag]);
+    // A Frailty lifted any other way clears the tries, so a new one starts fresh.
+    cureFrailty(snag);
+    snag.frail = true;
+    expect(frailAllies(w, h.id)).toEqual([snag]);
+  });
+
+  it('refuses an ally who can’t bear the strain, spending nothing', () => {
+    const { w, h, snag } = frailSnag([6, 6]);
+    const max = characterSheet(snag.character, data).strainMax;
+    snag.character = { ...snag.character, strain: { value: max, broken: false } };
+    expect(purgeFrailty(w, data, h.id, snag.id)).toEqual(fail("Snag can't bear more strain."));
+    expect(h.effortDay).toBe(0);
+    expect(snag.purgeTries).toEqual([]);
+    expect(snag.frail).toBe(true);
   });
 
   it('spends the Effort on a failed check and leaves the Frailty', () => {
     const { w, h, snag } = frailSnag([1, 1]);
     expect(purgeFrailty(w, data, h.id, snag.id)).toEqual({ ok: true });
     expect(snag.frail).toBe(true);
+    expect(snag.character.strain.value).toBe(1);
     expect(h.effortDay).toBe(1);
     expect(w.log.at(-1)).toMatch(/the Frailty holds/);
   });
@@ -55,7 +89,7 @@ describe('Purge Ailment lifting Frailty', () => {
     grukk.dead = true;
     h.frail = true;
     expect(frailAllies(w, h.id)).toEqual([snag]);
-    const choose = fail('Choose an ally who is Frail.');
+    const choose = fail('Choose a Frail ally you haven’t tried to purge.');
     expect(purgeFrailty(w, data, h.id, h.id)).toEqual(choose);
     expect(purgeFrailty(w, data, h.id, grukk.id)).toEqual(choose);
     expect(purgeFrailty(w, data, h.id, member(w, 'Lirael').id)).toEqual(choose);
@@ -85,8 +119,8 @@ describe('Purge Ailment lifting Frailty', () => {
   });
 
   it('rolls with the better of Wis and Int', () => {
-    // 2 + 3 + Heal-1 is 6: Int 18 (+2) makes 8, Wis 3 (-2) would make 4.
-    const { w, h, snag } = frailSnag([2, 3]);
+    // 3 + 4 + Heal-1 is 8: Int 18 (+2) makes 10, Wis 3 (-2) would make 6.
+    const { w, h, snag } = frailSnag([3, 4]);
     const base = { ...h.character.attributes.base, wis: 3, int: 18 };
     h.character = {
       ...h.character,
@@ -95,13 +129,21 @@ describe('Purge Ailment lifting Frailty', () => {
     expect(purgeFrailty(w, data, h.id, snag.id)).toEqual({ ok: true });
     expect(snag.frail).toBe(false);
     // The same roll with Int 3 as well fails.
-    const low = frailSnag([2, 3]);
+    const low = frailSnag([3, 4]);
     low.h.character = {
       ...low.h.character,
       attributes: { base: { ...base, int: 3 }, people: {}, background: {}, advancement: {} },
     };
     purgeFrailty(low.w, data, low.h.id, low.snag.id);
     expect(low.snag.frail).toBe(true);
+    // One short of 10 with Int 18 fails too: 3 + 3 + 1 + 2 is 9.
+    const near = frailSnag([3, 3]);
+    near.h.character = {
+      ...near.h.character,
+      attributes: { base, people: {}, background: {}, advancement: {} },
+    };
+    purgeFrailty(near.w, data, near.h.id, near.snag.id);
+    expect(near.snag.frail).toBe(true);
   });
 
   it('tends an ally lying unconscious after a revive', () => {
@@ -143,6 +185,26 @@ describe('Purge Ailment lifting Frailty', () => {
     w.encounter = {} as PendingEncounter;
     expect(purgeFrailty(w, data, h.id, snag.id)).toEqual(fail('Settle the encounter first.'));
     expect(h.effortDay).toBe(0);
+  });
+});
+
+describe('saves from before Purge Ailment’s one try', () => {
+  it('loads a version 30 save with no one tried', () => {
+    const w = world();
+    w.benched = [w.members.pop() as Member];
+    const save = JSON.parse(serializeWorld(w));
+    const strip = (list: Record<string, unknown>[]) =>
+      list.map((m) => Object.fromEntries(Object.entries(m).filter(([k]) => k !== 'purgeTries')));
+    const v30 = {
+      ...save,
+      schemaVersion: 30,
+      members: strip(save.members),
+      benched: strip(save.benched),
+    };
+    const loaded = parseWorld(JSON.stringify(v30), data);
+    if (!loaded.ok) throw new Error(loaded.errors.join('; '));
+    const all = [...loaded.world.members, ...loaded.world.benched];
+    expect(all.every((m) => m.purgeTries.length === 0)).toBe(true);
   });
 });
 

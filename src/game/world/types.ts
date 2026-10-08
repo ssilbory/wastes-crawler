@@ -41,6 +41,7 @@ export interface Member {
   reviving: boolean;
   artUses: Record<string, number>;
   prayedDay: number | null;
+  purgeTries: string[];
 }
 
 export type Npc = NpcSave;

@@ -182,4 +182,15 @@ export const WORLD_MIGRATIONS: Migrations = {
       Array.isArray(list) ? (list as Raw[]).map((m) => ({ ...m, form: null })) : list;
     return { ...raw, schemaVersion: 30, members: plain(raw.members), benched: plain(raw.benched) };
   },
+  // Version 31 gives Purge Ailment one try per Healer on each Frailty: no one has tried yet.
+  30: (raw) => {
+    const untried = (list: unknown) =>
+      Array.isArray(list) ? (list as Raw[]).map((m) => ({ ...m, purgeTries: [] })) : list;
+    return {
+      ...raw,
+      schemaVersion: 31,
+      members: untried(raw.members),
+      benched: untried(raw.benched),
+    };
+  },
 };

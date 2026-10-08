@@ -3,7 +3,7 @@
 // lifts one member's Frailty.
 import type { MissionGiver } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
-import { alive, awake, memberCheck, note } from './members.ts';
+import { alive, awake, cureFrailty, memberCheck, note } from './members.ts';
 import type { TownResult } from './services.ts';
 import { townHere } from './town.ts';
 import type { World } from './types.ts';
@@ -44,7 +44,7 @@ export function pray(w: World, data: GameData, memberId: string, prayer: Prayer)
     return { ok: true };
   }
   if (prayer.kind === 'frailty') {
-    target.frail = false;
+    cureFrailty(target);
     note(w, `${name} prays at ${place}, and ${target.character.name}'s Frailty lifts.`);
   } else {
     const s = m.character.strain;

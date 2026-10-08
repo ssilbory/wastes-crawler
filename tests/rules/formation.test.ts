@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { servantPlace, type Occupant } from '../../src/rules/formation.ts';
+import { inTouch, servantPlace, type Occupant } from '../../src/rules/formation.ts';
 
 const at = (row: number, column: number, hp = 10, yields = true): Occupant => ({
   row,
@@ -46,5 +46,27 @@ describe('servant placement', () => {
   it('finds no place with the front full and no rear slot free', () => {
     const full = [0, 1].flatMap((row) => [0, 1, 2, 3].map((c) => at(row, c)));
     expect(servantPlace(full)).toBeNull();
+  });
+});
+
+describe('Healing Touch reach', () => {
+  const at = (row: number, column: number) => ({ row, column });
+
+  it('reaches the healer, and the slots to either side', () => {
+    expect(inTouch(at(1, 1), at(1, 1))).toBe(true);
+    expect(inTouch(at(1, 1), at(1, 0))).toBe(true);
+    expect(inTouch(at(1, 1), at(1, 2))).toBe(true);
+  });
+
+  it('reaches the slot directly ahead, not the diagonals', () => {
+    expect(inTouch(at(1, 1), at(0, 1))).toBe(true);
+    expect(inTouch(at(1, 1), at(0, 0))).toBe(false);
+    expect(inTouch(at(1, 1), at(0, 2))).toBe(false);
+  });
+
+  it('never reaches behind or two slots along', () => {
+    expect(inTouch(at(0, 1), at(1, 1))).toBe(false);
+    expect(inTouch(at(1, 0), at(1, 2))).toBe(false);
+    expect(inTouch(at(0, 0), at(0, 3))).toBe(false);
   });
 });

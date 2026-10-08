@@ -6,7 +6,7 @@ import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { FactionStateSchema } from './faction-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 30;
+export const WORLD_SCHEMA_VERSION = 31;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -39,6 +39,8 @@ export const MemberSaveSchema = z.strictObject({
   artUses: z.record(IdSchema, z.int().min(0)),
   /** The day of the member's last prayer at a temple or mortuary. */
   prayedDay: z.int().min(0).nullable(),
+  /** Healers who have tried Purge Ailment on this Frailty, by member id: one try each. */
+  purgeTries: z.array(z.string().min(1)),
 });
 
 /** A hireling or a freed captive in one of the party's NPC slots (docs/rules-adaptation.md). */
