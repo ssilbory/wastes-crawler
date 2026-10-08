@@ -6,12 +6,13 @@ import { ROW_SLOTS } from '../../rules/formation.ts';
 import type { Rng } from '../../rules/rng.ts';
 import type { GameData } from '../character/context.ts';
 import { pcCombatant } from './combatants.ts';
+import { lifted } from './companions.ts';
 import { monsterCombatant } from './monster-combatant.ts';
 import { say } from './damage.ts';
 import { beginRound } from './round.ts';
 import { canAct } from './targeting.ts';
 import { followRiders } from './mounted.ts';
-import type { Battle, Combatant, SideId } from './types.ts';
+import type { Battle, Combatant, SideId, WaitingCompanion } from './types.ts';
 
 export { act } from './actions.ts';
 export { advance, beginRound, currentActor, MAX_ROUNDS, runRound, takeTurn } from './round.ts';
@@ -38,6 +39,8 @@ export interface NpcSetup {
   healer?: number;
   /** A fighting servant (raised undead, a beast, a woken tree, or a kept summons). */
   servant?: boolean;
+  /** A Beastmaster's companion: its master's index in the party, and its arts' gifts (1.5.4). */
+  companion?: { master: number; chosen: boolean; shared: boolean; hitDice: number };
 }
 
 /** A war mount fighting from its rider's slot (docs/rules-adaptation.md, Mounts). */
@@ -60,7 +63,16 @@ export interface BattleSetup {
   data: GameData;
   rng: Rng;
   /** PCs fill the front row left to right, then the rear, unless a slot is given. */
-  party: { character: Character; row?: number; column?: number; form?: number | null }[];
+  party: {
+    character: Character;
+    row?: number;
+    column?: number;
+    form?: number | null;
+    /** May bind a beast among the foes: holds Bind Companion and has no companion (1.5.4). */
+    canBind?: boolean;
+    /** A companion sent away, which a Howl of Distant Summons can bring in (1.5.4). */
+    waiting?: WaitingCompanion | null;
+  }[];
   /** Monster rows on the party's side, front first, for monster-vs-monster fights. */
   allies?: string[][];
   /** NPCs in the party's formation: hirelings and captives (docs/rules-adaptation.md). */
@@ -78,6 +90,18 @@ export interface BattleSetup {
   /** Underground, where Deluge of Hell can't be cast. */
   indoors?: boolean;
   log?: boolean;
+}
+
+/** An NPC's stat line; a companion's with Shared Vitality's hit dice and hit bonus (1.5.4). */
+function npcCombatant(s: BattleSetup, n: NpcSetup, i: number): Combatant {
+  const c = monsterCombatant(s.data, n.monster, `npc-${i}`, s.rng);
+  if (!n.companion) return c;
+  const { master, chosen, shared, hitDice } = n.companion;
+  return {
+    ...c,
+    ...lifted(c, { hitDice, shared }),
+    companion: { master: `pc-${master}`, chosen, shared },
+  };
 }
 
 function checkRows(rows: string[][]): void {
@@ -127,9 +151,11 @@ export function createBattle(s: BattleSetup): Battle {
       ...pcCombatant(s.data, p.character, `pc-${i}`, p.form ?? null),
       row: p.row ?? Math.floor(i / ROW_SLOTS),
       column: p.column ?? i % ROW_SLOTS,
+      canBind: p.canBind ?? false,
+      waiting: p.waiting ?? null,
     })),
     ...npcs.map((n, i) => ({
-      ...monsterCombatant(s.data, n.monster, `npc-${i}`, s.rng),
+      ...npcCombatant(s, n, i),
       name: n.name,
       side: 'party' as const,
       row: n.row,

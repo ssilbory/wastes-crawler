@@ -182,6 +182,14 @@ export const WORLD_MIGRATIONS: Migrations = {
       Array.isArray(list) ? (list as Raw[]).map((m) => ({ ...m, form: null })) : list;
     return { ...raw, schemaVersion: 30, members: plain(raw.members), benched: plain(raw.benched) };
   },
-  // Version 31 adds mounts: none kept yet.
-  30: (raw) => ({ ...raw, schemaVersion: 31, mounts: [] }),
+  // Version 31 adds the Beastmaster's companion sent away and Feral Toughness's hit points.
+  30: (raw) => {
+    const plain = (list: unknown) =>
+      Array.isArray(list)
+        ? (list as Raw[]).map((m) => ({ ...m, companion: null, toughness: 0 }))
+        : list;
+    return { ...raw, schemaVersion: 31, members: plain(raw.members), benched: plain(raw.benched) };
+  },
+  // Version 32 adds mounts: none kept yet.
+  31: (raw) => ({ ...raw, schemaVersion: 32, mounts: [] }),
 };

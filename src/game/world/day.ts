@@ -11,6 +11,7 @@ import { npcCheck } from '../../rules/checks.ts';
 import { emit } from './bus.ts';
 import { immuneTo, sacredBlood } from './arts.ts';
 import { nightForBeasts } from './beasts.ts';
+import { nightForCompanions } from './companion-night.ts';
 import { nightForTrees } from './greenwood.ts';
 import { dawnTakesSummons } from './summons.ts';
 import { wakeRevived } from './healer.ts';
@@ -67,6 +68,7 @@ export function endOfDay(w: World, data: GameData, waystation = false): void {
   dawnTakesSummons(w);
   nightForNpcs(w, data, fed && sheltered && !w.noRecovery);
   nightForMounts(w, data, fed && sheltered && !w.noRecovery);
+  nightForCompanions(w, data);
   wakeRevived(w);
   w.fallen = null;
   emit(w, data, { kind: 'day-passed' });

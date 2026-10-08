@@ -102,6 +102,18 @@ const ART_SECTIONS: {
     tradition: 'skinshifter',
     automatic: false,
   },
+  {
+    file: `${CLASS_DIR}/1.5.4 The Beastmaster.md`,
+    heading: /^1\.5\.4\.1 Beastmaster Arts$/,
+    tradition: 'beastmaster',
+    automatic: true,
+  },
+  {
+    file: `${CLASS_DIR}/1.5.4 The Beastmaster.md`,
+    heading: /^Other Beastmaster Arts$/,
+    tradition: 'beastmaster',
+    automatic: false,
+  },
 ];
 
 export function extractArts(reader: SrdReader): Art[] {

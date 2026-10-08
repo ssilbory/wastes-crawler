@@ -204,10 +204,36 @@ export interface Combatant {
   finalDeath: boolean;
   /**
    * A war mount's rider, by combatant id, whose slot it fights from; and the Rider focus's guard,
-   * which once a fight turns a hit that would drop the mount into a miss (Mounts).
+   * which once a fight negates a blow that would drop the mount (Mounts).
    */
   rider: string | null;
   steedGuard: boolean;
+  /**
+   * The Beastmaster (1.5.4): the monster stat line a creature fights as, and whether it is an
+   * unintelligent beast; a companion's master (by combatant id), and whether it is their Chosen
+   * Friend or shares their vitality; a foe bound mid-fight, by whom; whether a PC may still bind
+   * one; a companion waiting out of the fight for a Howl of Distant Summons; Beast Ward on a PC; and
+   * a beast that a ward no longer holds back.
+   */
+  monster: string | null;
+  beast: boolean;
+  companion: { master: string; chosen: boolean; shared: boolean } | null;
+  bound: { by: string } | null;
+  canBind: boolean;
+  waiting: WaitingCompanion | null;
+  beastWard: boolean;
+  provoked: boolean;
+}
+
+/** A Beastmaster's companion sent away before the fight, which a howl can bring into it. */
+export interface WaitingCompanion {
+  monster: string;
+  name: string;
+  hp: number;
+  maxHp: number;
+  hitDice: number;
+  chosen: boolean;
+  shared: boolean;
 }
 
 export type Action =
@@ -224,6 +250,9 @@ export type Action =
   | { kind: 'end-mist' }
   /** Change Form into a Skinshifter's form by index, or back to their own shape (1.5.15). */
   | { kind: 'shift'; form: number | null }
+  /** Bind Companion on a beast among the foes, or Howl of Distant Summons (1.5.4). */
+  | { kind: 'bind'; target: string }
+  | { kind: 'howl' }
   | { kind: 'wait' };
 
 export type Outcome = 'party' | 'enemy' | 'draw';

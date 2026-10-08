@@ -97,6 +97,14 @@ export function base(
     finalDeath: false,
     rider: null,
     steedGuard: false,
+    monster: null,
+    beast: false,
+    companion: null,
+    bound: null,
+    canBind: false,
+    waiting: null,
+    beastWard: false,
+    provoked: false,
   };
 }
 

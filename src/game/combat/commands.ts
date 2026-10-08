@@ -10,6 +10,7 @@ import { canUse, magicName } from './spells.ts';
 import { isUp, targets } from './targeting.ts';
 import type { Action, Battle, Combatant } from './types.ts';
 import { inSlot } from './mounted.ts';
+import { bindTargets, canHowl } from './companions.ts';
 
 export type CommandGroup = 'attack' | 'magic' | 'defend' | 'aid' | 'gear' | 'move' | 'wait';
 
@@ -133,6 +134,33 @@ function smiteCommands(b: Battle, actor: Combatant): Command[] {
   });
 }
 
+/** Bind Companion on a beast among the foes, and a Howl of Distant Summons (1.5.4). */
+function companionCommands(b: Battle, actor: Combatant): Command[] {
+  const commands: Command[] = [];
+  const beasts = bindTargets(b, actor);
+  if (beasts.length > 0)
+    commands.push({
+      key: 'bind',
+      group: 'magic',
+      label: 'Bind Companion',
+      choices: beasts.map((t) => ({
+        label: describe(t),
+        targetId: t.id,
+        action: { kind: 'bind', target: t.id },
+      })),
+    });
+  if (canHowl(actor)) {
+    const label = `Howl for ${actor.waiting?.name ?? 'the companion'}`;
+    commands.push({
+      key: 'howl',
+      group: 'magic',
+      label,
+      choices: [{ label, action: { kind: 'howl' } }],
+    });
+  }
+  return commands;
+}
+
 function moveChoices(b: Battle, actor: Combatant): Choice[] {
   if (b.layout[actor.side] !== 'formation') return [];
   const taken = (row: number, column: number) =>
@@ -178,6 +206,7 @@ export function commandsFor(b: Battle, actor: Combatant): Command[] {
   const shapes = shiftChoices(actor);
   if (shapes.length > 0)
     commands.push({ key: 'shift', group: 'magic', label: 'Change form', choices: shapes });
+  commands.push(...companionCommands(b, actor));
   const one = (key: string, group: Command['group'], label: string, action: Action): Command => ({
     key,
     group,

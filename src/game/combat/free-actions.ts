@@ -2,7 +2,8 @@
 // 4.1.0 Spells and Arts.md, On Turn actions), whoever commands the turn: Pavis of
 // Elements, Armor of God when it beats the armor worn, God Wills It in a hard fight (Phase 14c),
 // Swift Healer (Phase 14d), and from Phase 15 the sight arts in a dark fight, Steps of Air for an
-// ally who can't reach a foe, Sanctified Ward when hurt, Swift Casting, and the arts in arts.ts.
+// ally who can't reach a foe, Sanctified Ward when hurt, Swift Casting, and the arts in arts.ts;
+// and the Beastmaster's Savage Senses and Beast Ward (1.5.4).
 import { enemiesOf, magicAction } from './ai.ts';
 import { acWith } from './damage.ts';
 import { turnArts } from './arts.ts';
@@ -18,6 +19,8 @@ const SIGHT = [
   'flamesight',
   'gravesight',
   'healers-eye',
+  // Savage Senses (1.5.4).
+  'savage-senses',
 ];
 
 export function freeActions(b: Battle, actor: Combatant): void {
@@ -31,6 +34,9 @@ export function freeActions(b: Battle, actor: Combatant): void {
   // Sight arts in a dark fight; Light of Faith first, as it lights the whole party.
   if (b.dark && !actor.seesInDark) SIGHT.some((id) => cast(id, actor.id));
   if (actor.acBonus === 0) cast('pavis-of-elements', actor.id);
+  // Beast Ward while unprovoked beasts stand among the foes (1.5.4).
+  if (!actor.beastWard && enemiesOf(b, actor).some((f) => f.beast && !f.provoked))
+    cast('beast-ward', actor.id);
   const armor = combatMagic(b, 'armor-of-god');
   if (
     armor?.effect.kind === 'ac-floor' &&

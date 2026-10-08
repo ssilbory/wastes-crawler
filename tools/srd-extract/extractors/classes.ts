@@ -21,7 +21,7 @@ const CLASS_DIR = '1.0 Character Creation/1.5.0 Class List';
 
 /**
  * The base classes, the Mage umbrella, and six Mage traditions (the Necromancer in Phase 14b, the
- * Blood Priest in 14c, the Healer in 14d, the Invoker after).
+ * Blood Priest in 14c, the Healer in 14d, the Invoker, Skinshifter, and Beastmaster after).
  */
 export const CLASS_FILES = [
   '1.5.1 The Adventurer.md',
@@ -35,6 +35,7 @@ export const CLASS_FILES = [
   '1.5.9 The Healer.md',
   '1.5.11 The Invoker.md',
   '1.5.15 The Skinshifter.md',
+  '1.5.4 The Beastmaster.md',
 ].map((f) => `${CLASS_DIR}/${f}`);
 
 export interface ClassExtract {

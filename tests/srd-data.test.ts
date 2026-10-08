@@ -13,16 +13,16 @@ describe('data/srd', () => {
     expect(Object.fromEntries(Object.entries(srd).map(([k, v]) => [k, v.length]))).toEqual({
       skills: 21,
       foci: 35,
-      classes: 11,
-      progressions: 27,
-      'casting-progressions': 12,
+      classes: 12,
+      progressions: 30,
+      'casting-progressions': 13,
       'weapon-traits': 12,
       weapons: 29,
       armor: 15,
       gear: 29,
       'gear-bundles': 6,
       spells: 83,
-      arts: 80,
+      arts: 92,
       monsters: 35,
       'faction-assets': 81,
     });
@@ -145,6 +145,20 @@ describe('data/srd', () => {
       name: 'Eyes of the Hawk',
     });
     expect(arts.find((a) => a.id === 'pliant-flesh')?.text).toContain('Whenever you spend Effort');
+  });
+
+  it('reads the Beastmaster’s tables and arts, with the mirror’s defects mended', () => {
+    const table = srd['casting-progressions'].find((p) => p.id === 'partial-beastmaster');
+    expect(table?.levels.map((l) => l.anyArts)).toEqual([1, 1, 0, 1, 1, 1, 0, 1, 0, 1]);
+    expect(table?.levels[0]).toMatchObject({ arts: ['bind-companion'] });
+    expect(
+      srd.progressions.find((p) => p.id === 'beastmaster-partial-expert')?.levels[9],
+    ).toMatchObject({ hitDice: { count: 10, sides: 6, modifier: 0 }, attackBonus: 5 });
+    const arts = srd.arts.filter((a) => a.tradition === 'beastmaster');
+    expect(arts.filter((a) => a.automatic).map((a) => a.id)).toEqual(['bind-companion']);
+    expect(arts).toHaveLength(12);
+    expect(arts.find((a) => a.id === 'beast-ward')?.text).toContain('performs some hostile act');
+    expect(arts.find((a) => a.id === 'natural-weaponry')?.text).toContain('a +2 bonus at level 6');
   });
 
   it('records every copy of a shared progression table', () => {

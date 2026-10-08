@@ -1,5 +1,5 @@
-// What a won fight pays (docs/rules-adaptation.md, Loot dice): loot dice, components, and an
-// animal's rations, with hirelings' shares taken as the dice are won.
+// What a won fight pays: the defeated enemies' loot dice (docs/rules-adaptation.md, Loot dice),
+// their components, and the butcher's cuts; hirelings take their shares as the dice are won.
 import type { GameData } from '../character/context.ts';
 import { butcher } from './butcher.ts';
 import { componentDrops } from './components.ts';

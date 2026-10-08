@@ -9,6 +9,7 @@ import { covered, isUp } from './targeting.ts';
 import { say } from './log.ts';
 import { abnegate, everlast, keepsDying, redHarvest, shelter, vitalFurnace } from './reactions.ts';
 import type { Battle, Combatant } from './types.ts';
+import { vitalHold } from './companions.ts';
 
 export { say };
 
@@ -101,6 +102,8 @@ function downed(b: Battle, target: Combatant, before: number): void {
 export function fall(b: Battle, target: Combatant): void {
   // Final Death: the cursed die where others would be Mortally Wounded (4.6.0).
   if (target.kind === 'monster' || target.finalDeath) {
+    // Shared Vitality holds a companion at the edge (1.5.4).
+    if (vitalHold(b, target)) return;
     die(b, target);
     return;
   }

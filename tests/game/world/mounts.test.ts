@@ -337,9 +337,9 @@ describe('saving mounts', () => {
     expect(back.ok && back.world.npcs).toEqual(w.npcs);
   });
 
-  it('gives version 30 saves no mounts', () => {
-    expect(WORLD_MIGRATIONS[30]?.({ schemaVersion: 30 })).toEqual({
-      schemaVersion: 31,
+  it('gives version 31 saves no mounts', () => {
+    expect(WORLD_MIGRATIONS[31]?.({ schemaVersion: 31 })).toEqual({
+      schemaVersion: 32,
       mounts: [],
     });
   });

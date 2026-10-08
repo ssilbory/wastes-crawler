@@ -7,7 +7,7 @@ import {
   type MountSetup,
   type NpcSetup,
 } from '../combat/battle.ts';
-import type { Battle } from '../combat/types.ts';
+import type { Battle, WaitingCompanion } from '../combat/types.ts';
 import type { Character, Element } from '../../data/schemas/index.ts';
 import type { Rng } from '../../rules/rng.ts';
 import type { GameData } from '../character/context.ts';
@@ -28,6 +28,8 @@ import { freeCaptive } from './rescue.ts';
 import { wipe } from './town.ts';
 import type { Member, Mount, Npc, World } from './types.ts';
 import { keepSummons } from './summons.ts';
+import { BIND, companionOf } from './companion-sync.ts';
+import { companionsBack, companionSetup, unbound, waitingSetup } from './companion-fight.ts';
 
 export interface WorldBattle {
   battle: Battle;
@@ -51,9 +53,12 @@ export interface WorldBattle {
   patrol: string | null;
 }
 
-function npcSetup(data: GameData, n: Npc): NpcSetup {
+function npcSetup(data: GameData, n: Npc, party: readonly Member[]): NpcSetup {
   const physician = typeOf(data, n)?.role === 'physician';
+  const master = party.findIndex((m) => n.kind === 'companion' && m.id === n.master);
+  const m = party[master];
   return {
+    ...(m ? { companion: companionSetup(data, m, n, master) } : {}),
     monster: npcMonster(data, n).id,
     name: n.name,
     row: n.row,
@@ -97,6 +102,9 @@ export interface PartySetup {
     committed: number;
     /** The element of a Pact of Stone and Sea on them, if any. */
     pact: Element | null;
+    /** May bind a beast among the foes, and a companion sent away to howl for (1.5.4). */
+    canBind: boolean;
+    waiting: WaitingCompanion | null;
   }[];
   npcs: NpcSetup[];
   /** War mounts under their riders (docs/rules-adaptation.md, Mounts). */
@@ -119,8 +127,9 @@ export function partySetup(
   mounts: readonly Mount[] = [],
 ): PartySetup {
   const faith = faithLit(w, data) ? userOf(w, data, FAITH_LIGHT) : undefined;
+  const party = fighters(w);
   return {
-    party: fighters(w).map((m) => ({
+    party: party.map((m) => ({
       character: m.character,
       row: m.row,
       column: m.column,
@@ -132,9 +141,11 @@ export function partySetup(
       artUses: { ...m.artUses },
       committed: m === faith ? 1 : 0,
       pact: pactOf(w, m.id) ?? null,
+      canBind: m.character.arts.includes(BIND) && !companionOf(w, m),
+      waiting: waitingSetup(data, m),
     })),
-    npcs: withNpcs ? w.npcs.filter((n) => n.hp > 0).map((n) => npcSetup(data, n)) : [],
-    mounts: mountSetups(w, data, fighters(w), mounts),
+    npcs: withNpcs ? w.npcs.filter((n) => n.hp > 0).map((n) => npcSetup(data, n, party)) : [],
+    mounts: mountSetups(w, data, party, mounts),
     enemies,
     dark: inDark(w, data),
     antiMagic: onSpecial(w, data, 'anti-magic'),
@@ -152,6 +163,8 @@ export function battleFrom(data: GameData, rng: Rng, setup: PartySetup, log: boo
       row: p.row,
       column: p.column,
       form: p.form,
+      canBind: p.canBind,
+      waiting: p.waiting,
     })),
     npcs: setup.npcs,
     mounts: setup.mounts,
@@ -242,11 +255,19 @@ export function applyBattle(
   const npcLost = npcsBack(w, data, fight);
   mountsBack(w, fight);
   keepSummons(w, data, fight);
+  companionsBack(w, data, fight);
   w.encounter = null;
   if (result.outcome === 'enemy') {
     // Pack beasts come back with the party, like mounts (docs/rules-adaptation.md, Mounts).
     for (const n of w.npcs.filter((x) => x.kind !== 'hireling' && x.kind !== 'pack')) {
       removeNpc(w, n.id);
+      // A companion runs for the wilds, to be called again (The Beastmaster, Sam's call).
+      const master = w.members.find((m) => n.kind === 'companion' && m.id === n.master);
+      if (master) {
+        master.companion = { ...n, hp: Math.max(n.chosen ? 0 : 1, n.hp) };
+        note(w, `${n.name} flees into the wilds.`);
+        continue;
+      }
       note(w, `${n.name} is taken captive${n.kind === 'captive' ? ' again' : ''}.`);
       if (n.kind === 'escort') emit(w, data, { kind: 'npc-died', npc: n });
     }
@@ -262,8 +283,10 @@ export function applyBattle(
     );
   else {
     note(w, `The party wins after ${result.rounds} round${result.rounds === 1 ? '' : 's'}.`);
-    winnings(w, data, fight.enemies);
-    leaveCorpses(w, data, fight.enemies);
+    // A beast bound mid-fight is neither loot nor a corpse (1.5.4).
+    const slain = unbound(fight);
+    winnings(w, data, slain);
+    leaveCorpses(w, data, slain);
     if (difficulty) award(w, data, fight, difficulty);
     if (fight.captive) freeCaptive(w, data, fight.captive);
     emit(w, data, {

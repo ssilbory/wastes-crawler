@@ -9,6 +9,7 @@ import type { TownResult } from './services.ts';
 import { townHere } from './town.ts';
 import type { GameData } from '../character/context.ts';
 import type { Member, World } from './types.ts';
+import { followMaster } from './companion-sync.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 
@@ -26,6 +27,7 @@ export function bench(w: World, data: GameData, id: string): TownResult {
   if (!m) throw new Error(`no party member ${id}`);
   if (!w.members.some((x) => x !== m && !x.dead))
     return no('Someone living must stay in the party.');
+  followMaster(w, m);
   w.members = w.members.filter((x) => x !== m);
   w.benched.push(m);
   note(w, `${m.character.name} stays behind at the tavern.`);

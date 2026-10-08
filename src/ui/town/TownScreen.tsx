@@ -6,6 +6,7 @@ import type { World } from '../../game/world/types.ts';
 import { crowns, lootText, tradeText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { MountsPanel } from '../world/MountsPanel.tsx';
+import { CompanionsPanel } from '../world/CompanionsPanel.tsx';
 import { NpcPanel } from '../world/NpcPanel.tsx';
 import { QuestLog } from '../world/QuestLog.tsx';
 import { PartyButtons, type PartyScreen } from '../world/PartyButtons.tsx';
@@ -131,6 +132,7 @@ export function TownScreen(props: {
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
           <MountsPanel world={w} onChange={props.onChange} />
+          <CompanionsPanel world={w} onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />
         </div>
       </div>

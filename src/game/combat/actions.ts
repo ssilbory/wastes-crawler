@@ -13,6 +13,7 @@ import { shakeOff, tormentStrike } from './conditions.ts';
 import { canAct, targets } from './targeting.ts';
 import type { Action, Battle, CasterState, Combatant } from './types.ts';
 import { followRiders, inSlot } from './mounted.ts';
+import { bind, howl } from './companions.ts';
 
 /** `aid`: +1 when an ally's aiding check succeeded (SRD 2.3.3). */
 export function stabilize(b: Battle, actor: Combatant, target: Combatant, aid = 0): void {
@@ -87,6 +88,12 @@ export function act(b: Battle, actor: Combatant, action: Action): void {
       return;
     case 'shift':
       shift(b, actor, action.form);
+      return;
+    case 'bind':
+      bind(b, actor, action.target);
+      return;
+    case 'howl':
+      howl(b, actor);
       return;
     case 'end-mist':
       actor.misted = false;

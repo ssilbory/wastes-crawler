@@ -103,6 +103,8 @@ export function monsterCombatant(
     hitDice: m.hitDice,
     tags,
     sapient: combat?.mind === 'sapient',
+    monster: monsterId,
+    beast: combat?.mind === 'animal',
     morale: m.morale,
     instinct: m.instinct,
     routine,
