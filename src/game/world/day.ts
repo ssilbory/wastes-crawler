@@ -14,6 +14,7 @@ import { nightForBeasts } from './beasts.ts';
 import { nightForTrees } from './greenwood.ts';
 import { dawnTakesSummons } from './summons.ts';
 import { wakeRevived } from './healer.ts';
+import { nightForMounts } from './mounts.ts';
 import { firstPhysician, nightForNpcs } from './npcs.ts';
 import { regionMap } from './region.ts';
 import type { World } from './types.ts';
@@ -65,6 +66,7 @@ export function endOfDay(w: World, data: GameData, waystation = false): void {
   nightForTrees(w);
   dawnTakesSummons(w);
   nightForNpcs(w, data, fed && sheltered && !w.noRecovery);
+  nightForMounts(w, data, fed && sheltered && !w.noRecovery);
   wakeRevived(w);
   w.fallen = null;
   emit(w, data, { kind: 'day-passed' });

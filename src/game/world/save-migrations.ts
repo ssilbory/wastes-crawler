@@ -182,4 +182,6 @@ export const WORLD_MIGRATIONS: Migrations = {
       Array.isArray(list) ? (list as Raw[]).map((m) => ({ ...m, form: null })) : list;
     return { ...raw, schemaVersion: 30, members: plain(raw.members), benched: plain(raw.benched) };
   },
+  // Version 31 adds mounts: none kept yet.
+  30: (raw) => ({ ...raw, schemaVersion: 31, mounts: [] }),
 };

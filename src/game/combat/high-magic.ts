@@ -12,6 +12,7 @@ import { monsterCombatant } from './monster-combatant.ts';
 import { dispel } from './conditions.ts';
 import { flying, inLine, isUp } from './targeting.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
+import { followRiders, inSlot } from './mounted.ts';
 
 /** A foe's save against the caster's magic, with the caster's arts that sharpen it. */
 export type Resists = (target: Combatant, type: SaveType, modifier?: number) => boolean;
@@ -107,7 +108,7 @@ function summon(b: Battle, actor: Combatant, e: Effect<'summon'>): void {
     say(b, `${actor.name} already has a servant of that kind.`);
     return;
   }
-  const side = b.combatants.filter((c) => c.side === actor.side);
+  const side = b.combatants.filter((c) => c.side === actor.side && inSlot(c));
   const formation = b.layout[actor.side] === 'formation';
   const place = formation
     ? servantPlace(side.map((c) => ({ ...c, yields: isUp(c) && !c.summoned && !c.servant })))
@@ -122,6 +123,7 @@ function summon(b: Battle, actor: Combatant, e: Effect<'summon'>): void {
   if (bump && bumped) {
     Object.assign(bumped, { row: 1, column: bump.column });
     say(b, `${bumped.name} steps back for ${s.name}.`);
+    followRiders(b.combatants);
   }
   Object.assign(s, {
     row: place.row,

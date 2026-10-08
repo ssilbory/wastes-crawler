@@ -1,9 +1,9 @@
 import { useState } from 'preact/hooks';
 import type { ItemLocation } from '../../data/schemas/index.ts';
 import { buyable, type CatalogItem } from '../../game/character/items.ts';
-import { stowWithPorter, takeFromPorter } from '../../game/world/hire.ts';
-import { typeOf } from '../../game/world/npcs.ts';
+import { carriers, stowWith, takeFrom, type Carrier } from '../../game/world/loads.ts';
 import { buy, giveItem, sell, sellPrice, setLocation, shopPrice } from '../../game/world/shop.ts';
+import { load } from '../../game/world/mounts.ts';
 import type { World } from '../../game/world/types.ts';
 import { itemStats } from '../../render/gear-view.ts';
 import { crowns, entryText } from '../../render/town-view.ts';
@@ -19,6 +19,11 @@ const KINDS: Record<CatalogItem['kind'], string> = {
   gear: 'Gear',
   bundle: 'Bundles',
 };
+const CARRIER: Record<Carrier['kind'], string> = {
+  porter: 'porter',
+  pack: 'pack beast',
+  mount: 'mount',
+};
 const LOCATIONS: ItemLocation[] = ['worn', 'readied', 'stowed'];
 const stock = buyable(data);
 
@@ -31,7 +36,7 @@ export function ShopTab(props: { world: World; act: Act }) {
   const m = living.find((x) => x.id === who) ?? living[0];
   if (!m) return <p class="hint">No one living can shop.</p>;
   const others = living.filter((x) => x !== m);
-  const porters = w.npcs.filter((n) => typeOf(data, n)?.role === 'porter');
+  const porters = carriers(w, data);
   return (
     <>
       <section class="panel" aria-label="Sell loot">
@@ -111,8 +116,8 @@ export function ShopTab(props: { world: World; act: Act }) {
                   value=""
                   onChange={(e) => {
                     const to = (e.target as HTMLSelectElement).value;
-                    if (porters.some((p) => p.id === to))
-                      props.act(() => stowWithPorter(w, data, m.id, i, to));
+                    if (porters.some((p) => p.holder.id === to))
+                      props.act(() => stowWith(w, data, m.id, i, to));
                     else if (to) props.act(() => giveItem(w, data, m.id, i, to));
                   }}
                 >
@@ -123,8 +128,8 @@ export function ShopTab(props: { world: World; act: Act }) {
                     </option>
                   ))}
                   {porters.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name} (porter)
+                    <option key={p.holder.id} value={p.holder.id}>
+                      {p.holder.name} ({CARRIER[p.kind]})
                     </option>
                   ))}
                 </select>
@@ -133,9 +138,11 @@ export function ShopTab(props: { world: World; act: Act }) {
           ))}
         </ul>
       </section>
-      {porters.map((p) => (
+      {porters.map(({ holder: p, capacity }) => (
         <section key={p.id} class="panel" aria-label={`${p.name}'s load`}>
-          <h2>{p.name}'s load</h2>
+          <h2>
+            {p.name}'s load ({load(data, p)}/{capacity})
+          </h2>
           {p.inventory.length === 0 && <p class="hint">Nothing yet.</p>}
           <ul class="pack">
             {p.inventory.map((entry, i) => (
@@ -143,7 +150,7 @@ export function ShopTab(props: { world: World; act: Act }) {
                 <span>{entryText(data, entry)}</span>
                 <button
                   type="button"
-                  onClick={() => props.act(() => takeFromPorter(w, data, p.id, i, m.id))}
+                  onClick={() => props.act(() => takeFrom(w, data, p.id, i, m.id))}
                 >
                   Give to {m.character.name}
                 </button>

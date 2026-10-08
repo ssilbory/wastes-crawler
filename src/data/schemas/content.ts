@@ -34,6 +34,7 @@ import {
   ModSchema,
 } from './crafting-content.ts';
 import { CaptiveSchema, NpcRulesSchema } from './npc-content.ts';
+import { MountRulesSchema } from './mount-content.ts';
 import { ArenaCardSchema, CoachRouteSchema, CoachRulesSchema } from './travel-content.ts';
 import { MissionGiverSchema, QuestSchema } from './quest-content.ts';
 import { AuthoredMonsterSchema, SettingMonsterSchema } from './monsters.ts';
@@ -176,6 +177,7 @@ export const ContentSchemas = {
   skillRules: SkillRulesSchema,
   spellRules: SpellRulesSchema,
   npcRules: NpcRulesSchema,
+  mountRules: MountRulesSchema,
   captives: z.array(CaptiveSchema).min(1),
   coachRoutes: z.array(CoachRouteSchema).min(1),
   coachRules: CoachRulesSchema,

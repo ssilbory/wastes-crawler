@@ -13,6 +13,7 @@ import { crowns } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { EncounterSorcery } from './EncounterSorcery.tsx';
 import { KnownFoes } from './KnownFoes.tsx';
+import { TameMount } from './TameMount.tsx';
 
 /**
  * A pending encounter: fight, leave, or parley once (docs/rules-adaptation.md, Parley); a bound
@@ -93,6 +94,7 @@ export function EncounterPanel(props: {
           </button>
         </div>
       )}
+      {e.beast && <TameMount world={w} run={run} />}
       {order && (
         <div class="parley" role="group" aria-label="Standing order">
           <p class="hint">Standing order: {order.name}</p>

@@ -11,11 +11,6 @@
       "why": "Towns have no contacts to find yet."
     },
     {
-      "id": "ride",
-      "becomes": "animal-ken",
-      "why": "Returns when mounts are added."
-    },
-    {
       "id": "sail",
       "becomes": "survive",
       "why": "The wastes have no water travel."
@@ -26,7 +21,7 @@
       "why": "The party plies no trade between delves."
     }
   ],
-  "retiredFoci": ["rider"],
+  "retiredFoci": [],
   "added": [
     {
       "id": "animal-ken",
@@ -41,12 +36,28 @@
   },
   "perform": {
     "attributes": ["cha"],
-    "difficulty": { "village": 7, "town": 8, "city": 9 },
+    "difficulty": {
+      "village": 7,
+      "town": 8,
+      "city": 9
+    },
     "tipMargin": 3,
     "tips": {
-      "village": { "count": 1, "sides": 4, "modifier": 0 },
-      "town": { "count": 1, "sides": 6, "modifier": 0 },
-      "city": { "count": 2, "sides": 6, "modifier": 0 }
+      "village": {
+        "count": 1,
+        "sides": 4,
+        "modifier": 0
+      },
+      "town": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      },
+      "city": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 0
+      }
     }
   },
   "prayer": {

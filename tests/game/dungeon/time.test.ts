@@ -126,6 +126,7 @@ describe('exploration turns (SRD 2.13.2, 2.13.3)', () => {
       setup: null as never,
       memberIds: [],
       npcIds: [],
+      mountIds: [],
     };
     settleByFighting(
       w,

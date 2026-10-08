@@ -12,6 +12,7 @@ import { castMagic, combatMagic } from './spells.ts';
 import { shakeOff, tormentStrike } from './conditions.ts';
 import { canAct, targets } from './targeting.ts';
 import type { Action, Battle, CasterState, Combatant } from './types.ts';
+import { followRiders, inSlot } from './mounted.ts';
 
 /** `aid`: +1 when an ally's aiding check succeeded (SRD 2.3.3). */
 export function stabilize(b: Battle, actor: Combatant, target: Combatant, aid = 0): void {
@@ -99,13 +100,15 @@ export function act(b: Battle, actor: Combatant, action: Action): void {
       return;
     case 'move': {
       const taken = b.combatants.some(
-        (c) => c.side === actor.side && c.row === action.row && c.column === action.column,
+        (c) =>
+          c.side === actor.side && inSlot(c) && c.row === action.row && c.column === action.column,
       );
       const slot = action.row >= 0 && action.row <= 1 && action.column >= 0;
       const inFormation = b.layout[actor.side] === 'formation';
       if (inFormation && !taken && slot && action.column < ROW_SLOTS) {
         actor.row = action.row;
         actor.column = action.column;
+        followRiders(b.combatants);
         say(b, `${actor.name} moves to the ${action.row === 0 ? 'front' : 'rear'} row.`);
       }
       return;

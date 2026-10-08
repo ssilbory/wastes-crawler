@@ -262,18 +262,26 @@
   },
   {
     "id": "rider",
-    "availability": "excluded",
+    "availability": "pickable",
     "category": "both",
     "bonusSkill": {
       "kind": "skill",
-      "skill": "animal-ken"
+      "skill": "ride"
     },
     "effects": [
+      {
+        "kind": "steady-steed",
+        "level": 1
+      },
       {
         "kind": "parley",
         "level": 1,
         "minds": ["animal"],
         "evenAggressive": false
+      },
+      {
+        "kind": "steed-guard",
+        "level": 2
       }
     ]
   },

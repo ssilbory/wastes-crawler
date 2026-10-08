@@ -9,7 +9,7 @@ import { crossWall, cutVines, mantleCut, subdue } from './conditions.ts';
 import { effectiveAc, harm, save, say } from './damage.ts';
 import { afterHit, resisted } from './specials.ts';
 import { negatesUndead } from './reactions.ts';
-import { attackSteps, hitModifier, rangedModifier } from './targeting.ts';
+import { attackSteps, canAct, hitModifier, rangedModifier } from './targeting.ts';
 import type { Attack, Battle, Combatant } from './types.ts';
 
 function shockContext(target: Combatant, attack: Attack): ShockContext {
@@ -115,6 +115,13 @@ export function resolveAttack(
     target.veteransLuck = false;
     say(b, `${target.name}'s veteran's luck turns aside ${actor.name}'s blow.`);
     missShock(b, actor, target, attack);
+    return;
+  }
+  // Rider: once a fight the rider negates a blow that would drop their mount (1.6.0).
+  const rider = target.steedGuard ? b.combatants.find((c) => c.id === target.rider) : undefined;
+  if (rider && canAct(rider) && target.status === 'active' && blow >= target.hp) {
+    target.steedGuard = false;
+    say(b, `${rider.name} turns ${target.name} aside from ${actor.name}'s blow.`);
     return;
   }
   const damage = blow + venom(b, actor, attack, target);

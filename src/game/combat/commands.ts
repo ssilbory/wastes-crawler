@@ -9,6 +9,7 @@ import { ROW_SLOTS } from '../../rules/formation.ts';
 import { canUse, magicName } from './spells.ts';
 import { isUp, targets } from './targeting.ts';
 import type { Action, Battle, Combatant } from './types.ts';
+import { inSlot } from './mounted.ts';
 
 export type CommandGroup = 'attack' | 'magic' | 'defend' | 'aid' | 'gear' | 'move' | 'wait';
 
@@ -135,7 +136,9 @@ function smiteCommands(b: Battle, actor: Combatant): Command[] {
 function moveChoices(b: Battle, actor: Combatant): Choice[] {
   if (b.layout[actor.side] !== 'formation') return [];
   const taken = (row: number, column: number) =>
-    b.combatants.some((c) => c.side === actor.side && c.row === row && c.column === column);
+    b.combatants.some(
+      (c) => c.side === actor.side && inSlot(c) && c.row === row && c.column === column,
+    );
   return [0, 1].flatMap((row) =>
     Array.from({ length: ROW_SLOTS }, (_, column) => column)
       .filter((column) => !taken(row, column))

@@ -202,6 +202,12 @@ export interface Combatant {
   amber: boolean;
   fleet: boolean;
   finalDeath: boolean;
+  /**
+   * A war mount's rider, by combatant id, whose slot it fights from; and the Rider focus's guard,
+   * which once a fight turns a hit that would drop the mount into a miss (Mounts).
+   */
+  rider: string | null;
+  steedGuard: boolean;
 }
 
 export type Action =
