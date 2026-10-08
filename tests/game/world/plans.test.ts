@@ -7,14 +7,21 @@ describe('destinations', () => {
     const w = world();
     expect(setDestination(w, data, { col: 4, row: 8 })).toBe(true);
     expect(route(w, data)).toEqual([{ col: 4, row: 8 }]);
-    expect(setDestination(w, data, { col: 20, row: 8 })).toBe(false);
-    expect(w.destination).toEqual({ col: 4, row: 8 });
     expect(setDestination(w, data, { col: 3, row: 8 })).toBe(true);
     expect(w.destination).toBeNull();
     expect(route(w, data)).toEqual([]);
     expect(setDestination(w, data, null)).toBe(false);
-    w.destination = { col: 20, row: 8 };
-    expect(route(w, data)).toEqual([]);
+  });
+
+  it('heads toward an unexplored hex, routing to the edge of the known map', () => {
+    const w = world();
+    expect(setDestination(w, data, { col: 20, row: 8 })).toBe(true);
+    expect(w.destination).toEqual({ col: 20, row: 8 });
+    expect(route(w, data)).toEqual([{ col: 4, row: 8 }]);
+    // South of the lake, every known hex nearer the hills beyond it is water.
+    Object.assign(w, { position: { col: 6, row: 7 }, visited: new Set(['6,7']) });
+    expect(setDestination(w, data, { col: 6, row: 3 })).toBe(false);
+    expect(w.destination).toEqual({ col: 20, row: 8 });
   });
 });
 

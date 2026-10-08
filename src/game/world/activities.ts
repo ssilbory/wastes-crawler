@@ -4,7 +4,7 @@
 import type { Mishap } from '../../data/schemas/index.ts';
 import { npcCheck } from '../../rules/checks.ts';
 import { roll } from '../../rules/dice.ts';
-import { hexKey } from '../../rules/hex.ts';
+import { hexKey, type Hex } from '../../rules/hex.ts';
 import { EXERT_DIFFICULTY, FREE_HIKES, HIKE_POINTS } from '../../rules/overland.ts';
 import { stepDie } from '../../rules/resource-die.ts';
 import { rollSave } from '../../rules/saves.ts';
@@ -24,7 +24,7 @@ import { emit } from './bus.ts';
 import { memberLoad, partyLoad } from './party-load.ts';
 import { firstGuide, guideOf } from './npcs.ts';
 import { hexesToAvoid } from './groves.ts';
-import { findPath, regionMap, seenHexes } from './region.ts';
+import { pathToward, regionMap, seenHexes } from './region.ts';
 import { enterTown } from './town.ts';
 import type { Activity, Member, World } from './types.ts';
 
@@ -115,10 +115,12 @@ function leadTheWay(
 /** One quarter of hiking toward the destination. Returns extra encounter checks owed. */
 export function hike(w: World, data: GameData, leaderId: string | null, dark: boolean): number {
   const map = regionMap(data, w.region);
-  const path =
+  const plan = () =>
     w.destination &&
-    findPath(map, w.position, w.destination, seenHexes(map, w.visited), hexesToAvoid(w, data));
+    pathToward(map, w.position, w.destination, seenHexes(map, w.visited), hexesToAvoid(w, data));
+  let path = plan();
   if (!path) {
+    w.destination = null;
     note(w, 'The party has nowhere it can hike to.');
     return 0;
   }
@@ -134,7 +136,8 @@ export function hike(w: World, data: GameData, leaderId: string | null, dark: bo
   } else w.hikes += 1;
   let points = HIKE_POINTS;
   let extra = 0;
-  for (const next of path) {
+  while (path.length > 0) {
+    const next = path.shift() as Hex;
     const cost = map.costOf(next) as number;
     if (cost > points) break;
     points -= cost;
@@ -155,6 +158,16 @@ export function hike(w: World, data: GameData, leaderId: string | null, dark: bo
     if (site) enterTown(w, data, site.id);
     else emit(w, data, { kind: 'hex-entered' });
     if (site || endMarch || w.encounter) break;
+    // Heading into fog, each step reveals more, so re-plan at the edge of the known map.
+    if (path.length === 0 && w.destination && hexKey(next) !== hexKey(w.destination)) {
+      const ahead = plan();
+      if (!ahead) {
+        w.destination = null;
+        note(w, 'The party can get no closer.');
+        break;
+      }
+      path = ahead;
+    }
   }
   if (w.destination && hexKey(w.position) === hexKey(w.destination)) w.destination = null;
   return extra;
