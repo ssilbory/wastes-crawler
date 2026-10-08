@@ -13,6 +13,7 @@ import { failQuest, giverName, payerName, payerOf, questOf } from './quests.ts';
 import { anyDead, isRaising, raisingBlocked } from './raising.ts';
 import { revive, type TownResult } from './services.ts';
 import { addLoot } from './shop.ts';
+import { pickUp } from './party-load.ts';
 import { townHere } from './town.ts';
 import type { World } from './types.ts';
 
@@ -105,7 +106,7 @@ export function turnInQuest(w: World, data: GameData, id: string, raise?: string
     if (m.dead) m.pendingXp += q.reward.xp;
     else m.character = { ...m.character, xp: m.character.xp + q.reward.xp };
   }
-  addLoot(w, q.reward.loot);
+  pickUp(w, data, () => addLoot(w, q.reward.loot));
   note(
     w,
     `${payerName(data, q)} pays for ${q.name}: ${q.reward.crowns} crowns and ${q.reward.xp} XP each.`,
