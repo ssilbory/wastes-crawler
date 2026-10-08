@@ -10,7 +10,11 @@ import { artUsable, note } from './members.ts';
 import { monsterOf, removeNpc } from './npcs.ts';
 import type { Member, Npc, World } from './types.ts';
 
-const companionFor = (w: World, m: Member): Npc | null =>
+/** The art that binds a companion. */
+export const BIND = 'bind-companion';
+
+/** The member's companion, with the party or sent away. */
+export const companionOf = (w: World, m: Member): Npc | null =>
   w.npcs.find((n) => n.kind === 'companion' && n.master === m.id) ?? m.companion;
 
 /** The companion's natural hit dice, before Shared Vitality. */
@@ -25,7 +29,7 @@ export const sharesVitality = (m: Member, n: Npc): boolean =>
  * 1d8 more hit points (SRD 5.0, Monster and NPC Stats), as a level gained would.
  */
 export function syncCompanion(w: World, data: GameData, m: Member): void {
-  const n = companionFor(w, m);
+  const n = companionOf(w, m);
   if (!n) return;
   const natural = naturalHitDice(data, n);
   const want = sharesVitality(m, n)
@@ -45,7 +49,7 @@ export function syncCompanion(w: World, data: GameData, m: Member): void {
  * bound. Losing them never fells the conscious (as Feral Prowess, Sam's call).
  */
 export function syncToughness(w: World, data: GameData, m: Member): void {
-  const n = companionFor(w, m);
+  const n = companionOf(w, m);
   const want = m.character.arts.includes('feral-toughness') && n ? naturalHitDice(data, n) : 0;
   const change = want - m.toughness;
   if (change === 0) return;

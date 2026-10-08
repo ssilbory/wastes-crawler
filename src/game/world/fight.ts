@@ -1,37 +1,29 @@
 // Overland encounters fought with the combat engine. Fights carry the party's wounds, Frailty,
 // strain, and the day's spent spells and Effort in and out (SRD 2.5.1, 4.2.0); a lost fight sends
 // the party back to the last town (docs/plan.md, Combat → Town).
-import { componentDrops } from './components.ts';
 import { createBattle, type BattleResult, type NpcSetup } from '../combat/battle.ts';
-import type { Battle } from '../combat/types.ts';
+import type { Battle, WaitingCompanion } from '../combat/types.ts';
 import type { Character, Element } from '../../data/schemas/index.ts';
 import type { Rng } from '../../rules/rng.ts';
 import type { GameData } from '../character/context.ts';
 import { difficultyTier, type Difficulty } from './difficulty.ts';
 import { alive, note } from './members.ts';
-import {
-  accrueShares,
-  fights,
-  isServant,
-  moraleAfterFight,
-  npcMonster,
-  removeNpc,
-  typeOf,
-} from './npcs.ts';
+import { fights, isServant, moraleAfterFight, npcMonster, removeNpc, typeOf } from './npcs.ts';
 import { carryBack, npcsBack } from './carry-back.ts';
+import { winnings } from './winnings.ts';
 import { emit } from './bus.ts';
 import { faithLit, inDark } from '../dungeon/light.ts';
 import { FAITH_LIGHT, userOf, vigor } from './arts.ts';
 import { onSpecial } from '../dungeon/specials.ts';
-import { butcher } from './butcher.ts';
 import { recordFallen } from './healer.ts';
 import { leaveCorpses } from './necromancy.ts';
 import { endPacts, pactOf } from './pacts.ts';
 import { freeCaptive } from './rescue.ts';
-import { addLoot } from './shop.ts';
 import { wipe } from './town.ts';
 import type { Member, Npc, World } from './types.ts';
 import { keepSummons } from './summons.ts';
+import { BIND, companionOf } from './companion-sync.ts';
+import { companionsBack, companionSetup, unbound, waitingSetup } from './companion-fight.ts';
 
 export interface WorldBattle {
   battle: Battle;
@@ -53,9 +45,12 @@ export interface WorldBattle {
   patrol: string | null;
 }
 
-function npcSetup(data: GameData, n: Npc): NpcSetup {
+function npcSetup(data: GameData, n: Npc, party: readonly Member[]): NpcSetup {
   const physician = typeOf(data, n)?.role === 'physician';
+  const master = party.findIndex((m) => n.kind === 'companion' && m.id === n.master);
+  const m = party[master];
   return {
+    ...(m ? { companion: companionSetup(data, m, n, master) } : {}),
     monster: npcMonster(data, n).id,
     name: n.name,
     row: n.row,
@@ -99,6 +94,9 @@ export interface PartySetup {
     committed: number;
     /** The element of a Pact of Stone and Sea on them, if any. */
     pact: Element | null;
+    /** May bind a beast among the foes, and a companion sent away to howl for (1.5.4). */
+    canBind: boolean;
+    waiting: WaitingCompanion | null;
   }[];
   npcs: NpcSetup[];
   enemies: string[][];
@@ -118,8 +116,9 @@ export function partySetup(
   withNpcs: boolean,
 ): PartySetup {
   const faith = faithLit(w, data) ? userOf(w, data, FAITH_LIGHT) : undefined;
+  const party = fighters(w);
   return {
-    party: fighters(w).map((m) => ({
+    party: party.map((m) => ({
       character: m.character,
       row: m.row,
       column: m.column,
@@ -131,8 +130,10 @@ export function partySetup(
       artUses: { ...m.artUses },
       committed: m === faith ? 1 : 0,
       pact: pactOf(w, m.id) ?? null,
+      canBind: m.character.arts.includes(BIND) && !companionOf(w, m),
+      waiting: waitingSetup(data, m),
     })),
-    npcs: withNpcs ? w.npcs.filter((n) => n.hp > 0).map((n) => npcSetup(data, n)) : [],
+    npcs: withNpcs ? w.npcs.filter((n) => n.hp > 0).map((n) => npcSetup(data, n, party)) : [],
     enemies,
     dark: inDark(w, data),
     antiMagic: onSpecial(w, data, 'anti-magic'),
@@ -150,6 +151,8 @@ export function battleFrom(data: GameData, rng: Rng, setup: PartySetup, log: boo
       row: p.row,
       column: p.column,
       form: p.form,
+      canBind: p.canBind,
+      waiting: p.waiting,
     })),
     npcs: setup.npcs,
     enemies: setup.enemies.map((r) => [...r]),
@@ -196,25 +199,6 @@ export function partyBattle(
   };
 }
 
-/** The loot dice and components the defeated enemies drop (docs/rules-adaptation.md, Loot dice). */
-function winnings(w: World, data: GameData, enemies: readonly (readonly string[])[]): void {
-  const dice = enemies.flatMap((row) =>
-    row.flatMap((id) => {
-      const loot = data.content.monsterCombat.find((m) => m.id === id)?.loot;
-      return loot ? [loot] : [];
-    }),
-  );
-  componentDrops(w, data, enemies.flat());
-  butcher(w, data, enemies.flat());
-  if (dice.length === 0) return;
-  addLoot(w, dice);
-  accrueShares(w, data, dice);
-  const total = new Map<number, number>();
-  for (const d of dice) total.set(d.sides, (total.get(d.sides) ?? 0) + d.count);
-  const text = [...total].map(([sides, count]) => `${count}d${sides}`).join(' + ');
-  note(w, `The party takes ${text} of loot.`);
-}
-
 /** What a won fight of this difficulty is worth, as the journal and the fight log tell it. */
 export function xpText(data: GameData, difficulty: Difficulty): string {
   const tier = difficultyTier(data, difficulty);
@@ -255,6 +239,7 @@ export function applyBattle(
   vigor(w, data, 1);
   const npcLost = npcsBack(w, data, fight);
   keepSummons(w, data, fight);
+  companionsBack(w, data, fight);
   w.encounter = null;
   if (result.outcome === 'enemy') {
     for (const n of w.npcs.filter((x) => x.kind !== 'hireling')) {
@@ -281,8 +266,10 @@ export function applyBattle(
     );
   else {
     note(w, `The party wins after ${result.rounds} round${result.rounds === 1 ? '' : 's'}.`);
-    winnings(w, data, fight.enemies);
-    leaveCorpses(w, data, fight.enemies);
+    // A beast bound mid-fight is neither loot nor a corpse (1.5.4).
+    const slain = unbound(fight);
+    winnings(w, data, slain);
+    leaveCorpses(w, data, slain);
     if (difficulty) award(w, data, fight, difficulty);
     if (fight.captive) freeCaptive(w, data, fight.captive);
     emit(w, data, {

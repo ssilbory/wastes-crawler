@@ -10,6 +10,7 @@ import {
   createBattle,
   type BattleResult,
 } from '../../game/combat/battle.ts';
+import { answersCall } from '../../game/combat/companions.ts';
 import { defaultAction } from '../../game/combat/defaults.ts';
 import type { Action, Battle, Combatant } from '../../game/combat/types.ts';
 import { createRng } from '../../rules/rng.ts';
@@ -79,10 +80,11 @@ export function batch(
   return { changes: { logFrom, ids }, result: done ? concludeBattle(b) : null };
 }
 
-const isPc = (c: Combatant) => c.kind === 'pc';
+/** PCs take commands, and a companion answering its master's Mind Call (1.5.4). */
+const commanded = (b: Battle) => (c: Combatant) => c.kind === 'pc' || answersCall(b, c);
 
-/** Party fights: the PC awaiting a command, after every turn that needs none. */
-export const nextCommand = (b: Battle) => advance(b, isPc);
+/** Party fights: the combatant awaiting a command, after every turn that needs none. */
+export const nextCommand = (b: Battle) => advance(b, commanded(b));
 
 export interface Presets {
   preset: (id: string) => DefaultPreset;

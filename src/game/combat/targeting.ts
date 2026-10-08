@@ -4,6 +4,7 @@
 import type { AttackMode } from '../../data/schemas/index.ts';
 import { coverSteps } from '../../rules/formation.ts';
 import type { Attack, Battle, Combatant, SideId } from './types.ts';
+import { wardedFrom } from './companions.ts';
 
 export const isUp = (c: Combatant) => c.status === 'active' || c.status === 'asleep';
 /** Up, awake, not held by paralysis, and not frozen in amber. */
@@ -87,7 +88,8 @@ export function targets(b: Battle, actor: Combatant, attack: Attack, mad = false
     return t.row === 0 || exposed(b, t);
   };
   // Sanctified Ward: foes look elsewhere unless acting on Instinct or out of other targets.
-  const reached = foes.filter((t) => isUp(t) && reachable(t));
+  // Beast Ward: an unprovoked beast leaves the warded be (1.5.4).
+  const reached = foes.filter((t) => isUp(t) && reachable(t) && !wardedFrom(actor, t));
   const unwarded = reached.filter((t) => !t.sanctified);
   const up = actor.instinctive || unwarded.length === 0 ? reached : unwarded;
   const fighting = up.filter((t) => !t.noncombatant);

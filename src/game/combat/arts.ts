@@ -45,6 +45,9 @@ export function artEffect(
     case 'sanctify':
       actor.sanctified = true;
       return true;
+    case 'beast-ward':
+      actor.beastWard = true;
+      return true;
     default:
       return false;
   }

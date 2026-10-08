@@ -7,7 +7,9 @@ import { maxCompanionHitDice, swiftHealingDice } from '../../rules/beastmaster.t
 import { roll } from '../../rules/dice.ts';
 import { characterLevel } from '../../rules/progression.ts';
 import type { GameData } from '../character/context.ts';
-import { syncCompanion, syncToughness } from './companion-sync.ts';
+import { BIND, companionOf, syncCompanion, syncToughness } from './companion-sync.ts';
+
+export { BIND, companionOf };
 import { artUsable, awake, note } from './members.ts';
 import { mindOf } from './minds.ts';
 import { addNpc, monsterOf, placeNpc, removeNpc } from './npcs.ts';
@@ -16,16 +18,11 @@ import { regionMap } from './region.ts';
 import type { TownResult } from './services.ts';
 import type { Member, Npc, World } from './types.ts';
 
-export const BIND = 'bind-companion';
 const no = (reason: string): TownResult => ({ ok: false, reason });
 
 /** The member's companion travelling with the party, if any. */
 export const companionHere = (w: World, memberId: string): Npc | undefined =>
   w.npcs.find((n) => n.kind === 'companion' && n.master === memberId);
-
-/** The member's companion, with the party or sent away. */
-export const companionOf = (w: World, m: Member): Npc | null =>
-  companionHere(w, m.id) ?? m.companion;
 
 /** Members who hold Bind Companion. */
 export const beastmasters = (w: World): Member[] =>

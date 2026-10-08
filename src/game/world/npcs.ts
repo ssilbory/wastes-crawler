@@ -183,7 +183,7 @@ export function addNpc(
 export function placeNpc(w: World, n: Npc, front: boolean): boolean {
   const slot = isServant(n) ? servantSlot(w, n.name) : npcRoom(w, front);
   if (!slot) return false;
-  w.npcs.push({ ...n, ...slot });
+  w.npcs.push({ ...n, ...slot, id: nextId(w) });
   return true;
 }
 

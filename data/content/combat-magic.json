@@ -812,5 +812,25 @@
     "effect": {
       "kind": "final-death"
     }
+  },
+  {
+    "id": "beast-ward",
+    "source": "art",
+    "target": "self",
+    "effort": "committed",
+    "limit": "scene",
+    "effect": {
+      "kind": "beast-ward"
+    }
+  },
+  {
+    "id": "swift-healing",
+    "source": "art",
+    "target": "wounded-ally",
+    "effort": "day",
+    "limit": "scene",
+    "effect": {
+      "kind": "companion-heal"
+    }
   }
 ]
