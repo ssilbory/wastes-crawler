@@ -259,6 +259,13 @@ export function applyBattle(
   if (result.outcome === 'enemy') {
     for (const n of w.npcs.filter((x) => x.kind !== 'hireling')) {
       removeNpc(w, n.id);
+      // A companion runs for the wilds, to be called again (The Beastmaster, Sam's call).
+      const master = w.members.find((m) => n.kind === 'companion' && m.id === n.master);
+      if (master) {
+        master.companion = { ...n, hp: Math.max(n.chosen ? 0 : 1, n.hp) };
+        note(w, `${n.name} flees into the wilds.`);
+        continue;
+      }
       note(w, `${n.name} is taken captive${n.kind === 'captive' ? ' again' : ''}.`);
       if (n.kind === 'escort') emit(w, data, { kind: 'npc-died', npc: n });
     }

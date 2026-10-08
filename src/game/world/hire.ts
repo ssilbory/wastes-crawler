@@ -18,6 +18,7 @@ import { settleShare } from './shares.ts';
 import { currentTown, priceHere, spend, townHere } from './town.ts';
 import { shareText } from './wording.ts';
 import type { Npc, World } from './types.ts';
+import { sendAway } from './companions.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 
@@ -46,6 +47,8 @@ export function dismiss(w: World, data: GameData, id: string): TownResult {
   const n = w.npcs.find((x) => x.id === id);
   if (!n) throw new Error(`no NPC ${id}`);
   if (n.inventory.length > 0) return no(`Take ${n.name}'s load first.`);
+  // A companion is sent away to wait, not let go (companions.ts).
+  if (n.kind === 'companion' && n.master) return sendAway(w, n.master);
   if (n.kind === 'hireling') settleShare(w, n);
   removeNpc(w, id);
   const inTown = !w.dungeon && currentTown(w, data) !== undefined;

@@ -162,5 +162,7 @@ export function newMember(
     reviving: false,
     artUses: {},
     prayedDay: null,
+    companion: null,
+    toughness: 0,
   };
 }

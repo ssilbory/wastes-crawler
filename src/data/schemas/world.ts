@@ -6,9 +6,43 @@ import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { FactionStateSchema } from './faction-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 30;
+export const WORLD_SCHEMA_VERSION = 31;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
+
+/** A hireling or a freed captive in one of the party's NPC slots (docs/rules-adaptation.md). */
+export const NpcSaveSchema = z.strictObject({
+  id: z.string().min(1),
+  kind: z.enum(['hireling', 'captive', 'escort', 'undead', 'beast', 'summon', 'tree', 'companion']),
+  /**
+   * The hireling type, captive id, escort quest id, or the monster id of an undead servant, a
+   * beast, a summoned servant (gone at dawn, Phase 18a), a woken tree, or a Beastmaster's companion.
+   */
+  type: IdSchema,
+  name: z.string().min(1),
+  hp: z.int().min(0),
+  maxHp: z.int().min(1),
+  row: z.int().min(0).max(1),
+  column: z.int().min(0).max(3),
+  /** Failed a Morale check: leaves at the next town. */
+  quitting: z.boolean(),
+  /** A porter's load. */
+  inventory: CharacterSchema.shape.inventory,
+  /** A hireling's share of loot taken since the party was last in town, in crowns (Phase 12). */
+  owed: z.number().min(0),
+  /** Crowns of the signing fee returned if they are let go alive in a settlement. */
+  refund: z.number().min(0),
+  /**
+   * Who an undead servant, a beast, a summoned servant, a tree, or a companion answers to, by
+   * member id.
+   */
+  master: z.string().optional(),
+  /** A companion's hit dice, raised by Shared Vitality (1.5.4). */
+  hitDice: z.int().min(1).optional(),
+  /** The Beastmaster's Chosen Friend, who can't truly die while they live (1.5.4). */
+  chosen: z.literal(true).optional(),
+});
+export type NpcSave = z.infer<typeof NpcSaveSchema>;
 
 /** A party member's overland state; the character keeps its own schemaVersion. */
 export const MemberSaveSchema = z.strictObject({
@@ -39,34 +73,11 @@ export const MemberSaveSchema = z.strictObject({
   artUses: z.record(IdSchema, z.int().min(0)),
   /** The day of the member's last prayer at a temple or mortuary. */
   prayedDay: z.int().min(0).nullable(),
+  /** A Beastmaster's companion, sent away out of the party and ready to be called (1.5.4). */
+  companion: NpcSaveSchema.nullable(),
+  /** Hit points Feral Toughness adds to the maximum now, from the companion's hit dice (1.5.4). */
+  toughness: z.int().min(0),
 });
-
-/** A hireling or a freed captive in one of the party's NPC slots (docs/rules-adaptation.md). */
-export const NpcSaveSchema = z.strictObject({
-  id: z.string().min(1),
-  kind: z.enum(['hireling', 'captive', 'escort', 'undead', 'beast', 'summon', 'tree']),
-  /**
-   * The hireling type, captive id, escort quest id, or the monster id of an undead servant, a
-   * beast, a summoned servant (gone at dawn, Phase 18a), or a woken tree.
-   */
-  type: IdSchema,
-  name: z.string().min(1),
-  hp: z.int().min(0),
-  maxHp: z.int().min(1),
-  row: z.int().min(0).max(1),
-  column: z.int().min(0).max(3),
-  /** Failed a Morale check: leaves at the next town. */
-  quitting: z.boolean(),
-  /** A porter's load. */
-  inventory: CharacterSchema.shape.inventory,
-  /** A hireling's share of loot taken since the party was last in town, in crowns (Phase 12). */
-  owed: z.number().min(0),
-  /** Crowns of the signing fee returned if they are let go alive in a settlement. */
-  refund: z.number().min(0),
-  /** Who an undead servant, a beast, a summoned servant, or a tree answers to, by member id. */
-  master: z.string().optional(),
-});
-export type NpcSave = z.infer<typeof NpcSaveSchema>;
 
 export const ReactionSchema = z.enum([
   'aggressive',

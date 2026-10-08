@@ -6,6 +6,7 @@ import { emit } from './bus.ts';
 import type { WorldBattle } from './fight.ts';
 import { note, setHp } from './members.ts';
 import { removeNpc } from './npcs.ts';
+import { syncToughness } from './companion-sync.ts';
 import type { Member, Npc, World } from './types.ts';
 import { wearForm } from './wear.ts';
 
@@ -51,13 +52,30 @@ export function npcsBack(w: World, data: GameData, fight: WorldBattle): boolean 
     const c = fight.battle.combatants[fight.memberIds.length + i] as Battle['combatants'][number];
     const n = w.npcs.find((x) => x.id === id) as Npc;
     if (c.status !== 'dead') {
-      n.hp = c.hp;
+      // A companion Shared Vitality stabilized comes round with 1 hit point (1.5.4).
+      n.hp = c.status === 'stable' ? Math.max(1, c.hp) : c.hp;
       return;
     }
     lost = true;
     removeNpc(w, id);
+    if (n.kind === 'companion' && companionLost(w, data, n)) return;
     note(w, n.kind === 'captive' ? `${n.name} is killed; the rescue is lost.` : `${n.name} dies.`);
     emit(w, data, { kind: 'npc-died', npc: n });
   });
   return lost;
+}
+
+/**
+ * A fallen companion: a Chosen Friend vanishes, to come back at dawn (1.5.4); any other is dead,
+ * and its master loses Feral Toughness's hit points from it. True if the Chosen Friend vanished.
+ */
+function companionLost(w: World, data: GameData, n: Npc): boolean {
+  const master = [...w.members, ...w.benched].find((m) => m.id === n.master);
+  if (master && n.chosen) {
+    master.companion = { ...n, hp: 0 };
+    note(w, `${n.name} fades away; it will be back with the dawn.`);
+    return true;
+  }
+  if (master) syncToughness(w, data, master);
+  return false;
 }
