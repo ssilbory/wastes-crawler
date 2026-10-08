@@ -88,6 +88,10 @@ export const FocusEffectSchema = z.discriminatedUnion('kind', [
     minds: z.array(z.enum(['animal', 'monster'])),
     evenAggressive: z.boolean(),
   }),
+  /** Rider: the rider's mount never panics and uses the rider's AC when higher (Mounts). */
+  z.strictObject({ kind: z.literal('steady-steed'), level: Level }),
+  /** Rider: once a fight, a hit that would drop the rider's mount is negated. */
+  z.strictObject({ kind: z.literal('steed-guard'), level: Level }),
   /** Armored Magic: cast in armor up to this encumbrance (null for any), and with a shield. */
   z.strictObject({
     kind: z.literal('armored-casting'),
@@ -147,5 +151,7 @@ export const EquipmentRulesSchema = z.strictObject({
   bluntWeapons: z.array(IdSchema),
   /** SRD 1.7.7: 3d6 x 10 silver, paid in crowns. */
   startingCrowns: z.strictObject({ dice: DiceSchema, multiplier: z.int().min(1) }),
+  /** Stowed items each loot die and each component in the party stash weighs (Party stash). */
+  stash: z.strictObject({ lootDie: z.number().min(0), component: z.number().min(0) }),
 });
 export type EquipmentRules = z.infer<typeof EquipmentRulesSchema>;

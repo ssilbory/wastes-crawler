@@ -42,28 +42,40 @@ function escortMonster(data: GameData, questId: string): string {
   return step.monster;
 }
 
+/** A pack beast's monster, from its mount type (docs/rules-adaptation.md, Mounts). */
+function packMonster(data: GameData, typeId: string): string {
+  const t = data.content.mountRules.mounts.find((x) => x.id === typeId);
+  if (!t) throw new Error(`unknown mount ${typeId}`);
+  return t.monster;
+}
+
 /** The SRD stat line an NPC fights and heals with. */
 export const npcMonster = (data: GameData, n: Npc) =>
   monsterOf(
     data,
-    n.kind === 'hireling'
-      ? hirelingType(data, n.type).monster
-      : n.kind === 'captive'
-        ? captiveOf(data, n.type).monster
-        : n.kind === 'escort'
-          ? escortMonster(data, n.type)
-          : n.type,
+    n.kind === 'pack'
+      ? packMonster(data, n.type)
+      : n.kind === 'hireling'
+        ? hirelingType(data, n.type).monster
+        : n.kind === 'captive'
+          ? captiveOf(data, n.type).monster
+          : n.kind === 'escort'
+            ? escortMonster(data, n.type)
+            : n.type,
   );
 
 /** The hireling type behind an NPC, or undefined for a captive. */
 export const typeOf = (data: GameData, n: Npc) =>
   n.kind === 'hireling' ? hirelingType(data, n.type) : undefined;
 
-/** Fighting hirelings, servants, beasts, and trees fight; captives and escorts stay out of it. */
+/**
+ * Fighting hirelings, servants, beasts, and trees fight; captives, escorts, and pack beasts stay
+ * out of it.
+ */
 export const fights = (data: GameData, n: Npc) =>
   n.kind === 'hireling'
     ? typeOf(data, n)?.role === 'fighter'
-    : n.kind !== 'captive' && n.kind !== 'escort';
+    : n.kind !== 'captive' && n.kind !== 'escort' && n.kind !== 'pack';
 export const hirelings = (w: World) => w.npcs.filter((n) => n.kind === 'hireling');
 
 /** A conscious Wilderness Guide in the party, if any. */

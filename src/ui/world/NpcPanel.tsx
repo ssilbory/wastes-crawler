@@ -32,6 +32,7 @@ function role(w: World, n: Npc): string {
     }[n.kind];
     return master ? `${kind} ${master}` : n.kind;
   }
+  if (n.kind === 'pack') return 'pack beast';
   if (t) return `${t.name}, ${shareText(t.share)}${n.owed > 0 ? `, owed ${n.owed} crowns` : ''}`;
   const to = n.kind === 'captive' ? captiveOf(data, n.type).destination : escortTo(n.type);
   const town = regionMap(data, w.region).sites.find((s) => s.id === to)?.name ?? to;
@@ -80,7 +81,7 @@ export function NpcPanel(props: { world: World; onChange: () => void }) {
                 ? 'Release'
                 : n.kind === 'companion'
                   ? 'Send away'
-                  : n.kind === 'beast'
+                  : n.kind === 'beast' || n.kind === 'pack'
                     ? 'Set loose'
                     : n.kind === 'tree'
                       ? 'Let it root'

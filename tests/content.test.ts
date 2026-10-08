@@ -101,12 +101,12 @@ describe('data/content', () => {
       'skillRules/animalKen: unknown skill whisper',
     ]);
     // Content may not give a removed skill.
-    const riding = {
+    const sailing = {
       ...content,
-      backgrounds: content.backgrounds.map((b, i) => (i === 0 ? { ...b, freeSkill: 'ride' } : b)),
+      backgrounds: content.backgrounds.map((b, i) => (i === 0 ? { ...b, freeSkill: 'sail' } : b)),
     };
-    expect(contentReferenceErrors(srd, riding)).toContain(
-      `backgrounds/${content.backgrounds[0]?.id} free skill: unknown skill ride`,
+    expect(contentReferenceErrors(srd, sailing)).toContain(
+      `backgrounds/${content.backgrounds[0]?.id} free skill: unknown skill sail`,
     );
   });
 

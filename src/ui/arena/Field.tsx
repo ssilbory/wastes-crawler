@@ -85,16 +85,28 @@ function Side(props: SideProps) {
             class="slots"
             style={{ gridTemplateColumns: `repeat(${row.length}, minmax(0, 1fr))` }}
           >
-            {row.map((slot, column) => (
-              <Slot
-                key={slot?.id ?? `empty-${column}`}
-                slot={slot}
-                active={slot !== null && slot.id === props.activeId}
-                target={slot !== null && (props.targetIds?.has(slot.id) ?? false)}
-                changed={slot !== null && (props.changedIds?.has(slot.id) ?? false)}
-                onPick={props.onPick}
-              />
-            ))}
+            {row.map((slot, column) => {
+              const one = (s: SlotView | null, key: string) => (
+                <Slot
+                  key={key}
+                  slot={s}
+                  active={s !== null && s.id === props.activeId}
+                  target={s !== null && (props.targetIds?.has(s.id) ?? false)}
+                  changed={s !== null && (props.changedIds?.has(s.id) ?? false)}
+                  onPick={props.onPick}
+                />
+              );
+              const key = slot?.id ?? `empty-${column}`;
+              // A war mount fights from its rider's slot, shown beneath them.
+              return slot?.mount ? (
+                <div class="slot-stack" key={key}>
+                  {one(slot, slot.id)}
+                  {one(slot.mount, slot.mount.id)}
+                </div>
+              ) : (
+                one(slot, key)
+              );
+            })}
           </div>
         </div>
       ))}

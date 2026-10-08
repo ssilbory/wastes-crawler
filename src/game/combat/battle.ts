@@ -11,6 +11,7 @@ import { monsterCombatant } from './monster-combatant.ts';
 import { say } from './damage.ts';
 import { beginRound } from './round.ts';
 import { canAct } from './targeting.ts';
+import { followRiders } from './mounted.ts';
 import type { Battle, Combatant, SideId, WaitingCompanion } from './types.ts';
 
 export { act } from './actions.ts';
@@ -42,6 +43,20 @@ export interface NpcSetup {
   companion?: { master: number; chosen: boolean; shared: boolean; hitDice: number };
 }
 
+/** A war mount fighting from its rider's slot (docs/rules-adaptation.md, Mounts). */
+export interface MountSetup {
+  monster: string;
+  name: string;
+  /** The rider's index in `party`. */
+  rider: number;
+  hp: number;
+  maxHp: number;
+  /** Rider: the rider's AC when higher than the mount's own. */
+  ac?: number;
+  /** Rider level 2: once a fight, a blow that would drop the mount is negated. */
+  guard?: boolean;
+}
+
 export { DARK_HIT_MODIFIER } from './targeting.ts';
 
 export interface BattleSetup {
@@ -62,6 +77,8 @@ export interface BattleSetup {
   allies?: string[][];
   /** NPCs in the party's formation: hirelings and captives (docs/rules-adaptation.md). */
   npcs?: NpcSetup[];
+  /** War mounts under PCs in `party`, after the NPCs among the combatants. */
+  mounts?: MountSetup[];
   /** Enemy rows, front first: up to three rows of up to eight monster ids. */
   enemies: string[][];
   /** Names for the log; the party and the enemy by default. */
@@ -105,6 +122,21 @@ function monsterRows(s: BattleSetup, rows: string[][], side: SideId, prefix: str
   );
 }
 
+function mountCombatant(s: BattleSetup, m: MountSetup, i: number): Combatant {
+  const c = monsterCombatant(s.data, m.monster, `mount-${i}`, s.rng);
+  return {
+    ...c,
+    name: m.name,
+    side: 'party',
+    hp: m.hp,
+    maxHp: m.maxHp,
+    ac: Math.max(c.ac, m.ac ?? 0),
+    status: m.hp > 0 ? 'active' : 'dead',
+    rider: `pc-${m.rider}`,
+    steedGuard: m.guard ?? false,
+  };
+}
+
 export function createBattle(s: BattleSetup): Battle {
   const npcs = s.npcs ?? [];
   if (s.party.length + npcs.length > 2 * ROW_SLOTS) throw new Error('at most eight party members');
@@ -136,8 +168,10 @@ export function createBattle(s: BattleSetup): Battle {
       hasHealKit: n.healer !== undefined,
       servant: n.servant ?? false,
     })),
+    ...(s.mounts ?? []).map((m, i) => mountCombatant(s, m, i)),
     ...monsterRows(s, allies, 'party', 'ally'),
   ];
+  followRiders(party);
   const enemies = monsterRows(s, s.enemies, 'enemy', 'foe');
   if (s.antiMagic)
     for (const c of [...party, ...enemies])

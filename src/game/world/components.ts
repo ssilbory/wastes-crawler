@@ -1,6 +1,6 @@
 // Crafting components (docs/rules-adaptation.md, Crafting and modifying gear): the SRD's arcane
 // salvage (2.8.2) as named, typed parts that drop from some monsters by chance. The party carries
-// them in one weightless stash, like loot dice.
+// them in its shared stash with the loot dice, at half an item each (party-load.ts).
 import { baseMonster } from '../../data/monsters.ts';
 import type { ComponentType } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';

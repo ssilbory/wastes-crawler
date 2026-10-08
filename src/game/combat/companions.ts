@@ -4,6 +4,7 @@
 // Mind Call's commands, Know the Weak Spot, and Beast Ward.
 import { maxCompanionHitDice, sharedHitFloor } from '../../rules/beastmaster.ts';
 import { servantPlace } from '../../rules/formation.ts';
+import { followRiders, inSlot } from './mounted.ts';
 import { save } from './damage.ts';
 import { say } from './log.ts';
 import { monsterCombatant } from './monster-combatant.ts';
@@ -31,13 +32,16 @@ export function bindTargets(b: Battle, actor: Combatant): Combatant[] {
 
 /** A slot on the actor's side for a creature joining it, stepping someone back if it must. */
 function joinSide(b: Battle, side: Combatant['side'], who: Combatant): boolean {
-  const mine = b.combatants.filter((c) => c.side === side && c !== who && c.status !== 'dead');
+  const mine = b.combatants.filter(
+    (c) => c.side === side && c !== who && c.status !== 'dead' && inSlot(c),
+  );
   const place = servantPlace(mine.map((c) => ({ ...c, yields: isUp(c) && !c.servant })));
   if (!place) return false;
   const bumped = place.bump ? mine[place.bump.index] : undefined;
   if (place.bump && bumped) {
     Object.assign(bumped, { row: 1, column: place.bump.column });
     say(b, `${bumped.name} steps back for ${who.name}.`);
+    followRiders(b.combatants);
   }
   Object.assign(who, { side, row: place.row, column: place.column, group: place.row });
   return true;

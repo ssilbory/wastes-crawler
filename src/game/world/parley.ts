@@ -14,6 +14,7 @@ import { accrueShares, addNpc, fights as npcFights, hirelingType, monsterOf } fr
 import { freeCaptive } from './rescue.ts';
 import type { TownResult } from './services.ts';
 import { addLoot } from './shop.ts';
+import { pickUp } from './party-load.ts';
 import { speechCheck } from './speech.ts';
 import { shareText } from './wording.ts';
 import type { World } from './types.ts';
@@ -62,8 +63,11 @@ export function goodwill(w: World, data: GameData): void {
     return loot ? [loot] : [];
   });
   if (dice.length > 0) {
-    addLoot(w, dice);
-    accrueShares(w, data, dice);
+    accrueShares(
+      w,
+      data,
+      pickUp(w, data, () => addLoot(w, dice)),
+    );
     note(w, 'They offer tribute to be left in peace.');
   }
   const kin = data.content.npcRules.hirelings.find((h) => e.enemies.flat().includes(h.monster));

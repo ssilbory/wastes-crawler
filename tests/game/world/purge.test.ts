@@ -189,7 +189,7 @@ describe('Purge Ailment lifting Frailty', () => {
 });
 
 describe('saves from before Purge Ailment’s one try', () => {
-  it('loads a version 31 save with no one tried', () => {
+  it('loads a version 32 save with no one tried', () => {
     const w = world();
     w.benched = [w.members.pop() as Member];
     const save = JSON.parse(serializeWorld(w));
@@ -199,13 +199,13 @@ describe('saves from before Purge Ailment’s one try', () => {
           Object.entries(m).filter(([k]) => !['purgeTries', 'poisoned', 'disease'].includes(k)),
         ),
       );
-    const v31 = {
+    const v32 = {
       ...save,
-      schemaVersion: 31,
+      schemaVersion: 32,
       members: strip(save.members),
       benched: strip(save.benched),
     };
-    const loaded = parseWorld(JSON.stringify(v31), data);
+    const loaded = parseWorld(JSON.stringify(v32), data);
     if (!loaded.ok) throw new Error(loaded.errors.join('; '));
     const all = [...loaded.world.members, ...loaded.world.benched];
     expect(all.every((m) => m.purgeTries.length === 0)).toBe(true);

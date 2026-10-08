@@ -99,6 +99,8 @@ export function base(
     amber: false,
     fleet: false,
     finalDeath: false,
+    rider: null,
+    steedGuard: false,
     monster: null,
     beast: false,
     companion: null,

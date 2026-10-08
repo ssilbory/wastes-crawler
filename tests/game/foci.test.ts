@@ -143,8 +143,8 @@ describe('evaluateFoci', () => {
     expect(msg([null, null, { id: 'alert' }, { id: 'poisoner' }], 'full-expert')).toBe(
       'incomplete',
     );
-    // Rider waits for mounts (docs/rules-adaptation.md, Skills).
-    expect(msg(goblin({ id: 'rider' }, null))).toBe("Rider can't be picked in this version");
+    // Rider came back with mounts (docs/rules-adaptation.md, Mounts).
+    expect(msg(goblin({ id: 'rider' }, null))).toBe('incomplete');
   });
 
   it('raises a second pick of a focus to level 2 without another bonus skill', () => {
@@ -212,8 +212,8 @@ describe('evaluateFoci', () => {
         .status;
     expect(expert({ id: 'polymath', skill: 'animal-ken' })).toEqual({ state: 'ok' });
     // Removed skills are no longer offered (docs/rules-adaptation.md, Skills).
-    expect(expert({ id: 'polymath', skill: 'ride' })).toMatchObject({
-      message: "Polymath can't give ride",
+    expect(expert({ id: 'polymath', skill: 'sail' })).toMatchObject({
+      message: "Polymath can't give sail",
     });
     expect(expert({ id: 'specialist', skill: 'magic' })).toMatchObject({
       message: "Specialist can't give magic",

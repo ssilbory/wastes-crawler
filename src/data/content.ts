@@ -18,6 +18,7 @@ import townRules from '../../data/content/town-rules.json';
 import skillRules from '../../data/content/skill-rules.json';
 import spellRules from '../../data/content/spell-rules.json';
 import npcRules from '../../data/content/npc-rules.json';
+import mountRules from '../../data/content/mount-rules.json';
 import captives from '../../data/content/captives.json';
 import coachRoutes from '../../data/content/coach-routes.json';
 import coachRules from '../../data/content/coach-rules.json';
@@ -52,6 +53,7 @@ import { overlandReferenceErrors } from './overland-check.ts';
 import { settingReferenceErrors } from './setting-check.ts';
 import { townReferenceErrors } from './town-check.ts';
 import { npcReferenceErrors } from './npc-check.ts';
+import { mountReferenceErrors } from './mount-check.ts';
 import { travelReferenceErrors } from './travel-check.ts';
 import { questReferenceErrors } from './quest-check.ts';
 import { dungeonReferenceErrors } from './dungeon-check.ts';
@@ -84,6 +86,7 @@ export function loadContent(): ContentData {
     skillRules: ContentSchemas.skillRules.parse(skillRules),
     spellRules: ContentSchemas.spellRules.parse(spellRules),
     npcRules: ContentSchemas.npcRules.parse(npcRules),
+    mountRules: ContentSchemas.mountRules.parse(mountRules),
     captives: ContentSchemas.captives.parse(captives),
     coachRoutes: ContentSchemas.coachRoutes.parse(coachRoutes),
     coachRules: ContentSchemas.coachRules.parse(coachRules),
@@ -154,6 +157,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['encounterTables', content.encounterTables],
     ['mishaps', content.mishaps],
     ['hirelings', content.npcRules.hirelings],
+    ['mounts', content.mountRules.mounts],
     ['captives', content.captives],
     ['coachRoutes', content.coachRoutes],
     ['missionGivers', content.missionGivers],
@@ -194,6 +198,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...overlandReferenceErrors(srd, content),
     ...townReferenceErrors(content),
     ...npcReferenceErrors(srd, content),
+    ...mountReferenceErrors(srd, content),
     ...travelReferenceErrors(srd, content),
     ...questReferenceErrors(srd, content),
     ...dungeonReferenceErrors(content),

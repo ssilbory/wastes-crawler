@@ -1,0 +1,60 @@
+{
+  "mounts": [
+    {
+      "id": "riding-elk",
+      "monster": "riding-elk",
+      "role": "riding",
+      "price": 200,
+      "riderSizes": ["small", "standard"],
+      "loadRidden": 5,
+      "loadUnridden": 20,
+      "tameFrom": []
+    },
+    {
+      "id": "riding-aurochs",
+      "monster": "riding-aurochs",
+      "role": "riding",
+      "price": 150,
+      "riderSizes": ["small", "standard"],
+      "loadRidden": 5,
+      "loadUnridden": 30,
+      "tameFrom": ["herd-beast"]
+    },
+    {
+      "id": "riding-goat",
+      "monster": "riding-goat",
+      "role": "riding",
+      "price": 30,
+      "riderSizes": ["small"],
+      "loadRidden": 3,
+      "loadUnridden": 15,
+      "tameFrom": []
+    },
+    {
+      "id": "war-boar",
+      "monster": "war-boar",
+      "role": "war",
+      "price": 2000,
+      "riderSizes": ["small", "standard"],
+      "loadRidden": 5,
+      "loadUnridden": 20,
+      "tameFrom": []
+    },
+    {
+      "id": "pack-bison",
+      "monster": "pack-bison",
+      "role": "pack",
+      "price": 150,
+      "riderSizes": [],
+      "loadRidden": 0,
+      "loadUnridden": 30,
+      "tameFrom": []
+    }
+  ],
+  "ride": {
+    "skill": "ride",
+    "attributes": ["cha"],
+    "difficulty": 8
+  },
+  "slipAwayBonus": 2
+}

@@ -6,6 +6,7 @@ import type {
   Light,
   DefaultPreset,
   LootDice,
+  MountSave,
   NpcSave,
   PendingEncounter,
   QuestState,
@@ -51,6 +52,7 @@ export interface Member {
 }
 
 export type Npc = NpcSave;
+export type Mount = MountSave;
 
 export interface World {
   region: string;
@@ -69,6 +71,7 @@ export interface World {
   members: Member[];
   benched: Member[];
   npcs: Npc[];
+  mounts: Mount[];
   purse: number;
   loot: LootDice[];
   towns: Record<string, TownLedger>;

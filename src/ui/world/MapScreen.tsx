@@ -23,6 +23,7 @@ import { HighRoadPanel } from './HighRoadPanel.tsx';
 import { PactPanel } from './PactPanel.tsx';
 import { SorceryPanel } from './SorceryPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
+import { MountsPanel } from './MountsPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { QuestLog } from './QuestLog.tsx';
 import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
@@ -151,6 +152,7 @@ export function MapScreen(props: {
           )}
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
+          <MountsPanel world={w} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />
           <GreenwoodPanel world={w} onChange={props.onChange} />
           <FormsPanel world={w} onChange={props.onChange} />

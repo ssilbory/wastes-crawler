@@ -12,6 +12,7 @@ import { meetGroup } from '../world/encounters.ts';
 import { note } from '../world/members.ts';
 import { accrueShares } from '../world/npcs.ts';
 import { addLoot } from '../world/shop.ts';
+import { pickUp } from '../world/party-load.ts';
 import type { World } from '../world/types.ts';
 import { dungeonHere, levelOf } from './explore.ts';
 import { generateRuin, ruinDungeonId } from './generate.ts';
@@ -79,15 +80,16 @@ function cacheHere(w: World, data: GameData): { key: string; cache: Cache } | nu
 
 function take(w: World, data: GameData, key: string, cache: Cache): void {
   w.caches.push(key);
-  addLoot(w, cache.loot);
-  accrueShares(w, data, cache.loot);
   const dice = cache.loot.map((d) => `${d.count}d${d.sides}`).join(' + ');
   note(w, `${cache.vault ? 'The vault holds' : 'A cache holds'} ${dice} of loot.`);
-  if (cache.component) {
+  const kept = pickUp(w, data, () => {
+    addLoot(w, cache.loot);
+    if (!cache.component) return;
     w.components[cache.component] = (w.components[cache.component] ?? 0) + 1;
     const c = data.content.components.find((x) => x.id === cache.component);
     note(w, `The party takes ${c?.name ?? cache.component}.`);
-  }
+  });
+  accrueShares(w, data, kept);
   if (!cache.vault) return;
   // Vaults are only generated, so the party is in a ruin it has opened.
   const ruin = data.content.ruins.find((r) => {

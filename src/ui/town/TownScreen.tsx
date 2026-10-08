@@ -5,6 +5,7 @@ import { townHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
 import { crowns, lootText, tradeText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
+import { MountsPanel } from '../world/MountsPanel.tsx';
 import { CompanionsPanel } from '../world/CompanionsPanel.tsx';
 import { NpcPanel } from '../world/NpcPanel.tsx';
 import { QuestLog } from '../world/QuestLog.tsx';
@@ -19,6 +20,7 @@ import { AntidotePanel } from '../world/AntidotePanel.tsx';
 import { QuestsTab } from './QuestsTab.tsx';
 import { ServicesTab } from './ServicesTab.tsx';
 import { ShopTab } from './ShopTab.tsx';
+import { StableTab } from './StableTab.tsx';
 import { TavernTab } from './TavernTab.tsx';
 import { TrainingTab } from './TrainingTab.tsx';
 import { TravelTab } from './TravelTab.tsx';
@@ -31,6 +33,7 @@ const TABS = {
   quests: 'Quests',
   services: 'Inn and healer',
   shop: 'Shop',
+  stable: 'Stable',
   tavern: 'Tavern',
   training: 'Training',
   workshop: 'Workshop',
@@ -113,6 +116,7 @@ export function TownScreen(props: {
             {tab === 'quests' && <QuestsTab world={w} act={act} />}
             {tab === 'services' && <ServicesTab world={w} act={act} />}
             {tab === 'shop' && <ShopTab world={w} act={act} />}
+            {tab === 'stable' && <StableTab world={w} act={act} />}
             {tab === 'tavern' && <TavernTab world={w} roster={props.roster} act={act} />}
             {tab === 'training' && <TrainingTab world={w} act={act} />}
             {tab === 'workshop' && <WorkshopTab world={w} act={act} />}
@@ -128,6 +132,7 @@ export function TownScreen(props: {
         <div class="world-side flow">
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
+          <MountsPanel world={w} onChange={props.onChange} />
           <CompanionsPanel world={w} onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />
           <AntidotePanel world={w} onChange={props.onChange} />
