@@ -54,6 +54,7 @@ export function TownScreen(props: {
   onChange: () => void;
   onLeave: () => void;
   onOpen: (screen: PartyScreen) => void;
+  onExport: () => void;
   /** The open tab, kept by the caller so it survives a trip to the party's screens. */
   tab: Tab;
   onTab: (tab: Tab) => void;
@@ -78,6 +79,9 @@ export function TownScreen(props: {
         {tradeText(w, data) && <span class="trade">{tradeText(w, data)}</span>}
         <span class="bar-actions">
           <PartyButtons onOpen={props.onOpen} />
+          <button type="button" class="secondary" onClick={props.onExport}>
+            Export save
+          </button>
           <button type="button" class="create" onClick={props.onLeave}>
             Back to the map
           </button>
