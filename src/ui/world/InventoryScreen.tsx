@@ -42,7 +42,7 @@ export function InventoryScreen(props: {
       {m && (
         <div class="sub-screen">
           <InventoryPanel world={w} memberId={m.id} onChange={props.onChange} />
-          <StashPanel world={w} />
+          <StashPanel world={w} onChange={props.onChange} />
         </div>
       )}
     </div>

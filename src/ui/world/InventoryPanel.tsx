@@ -42,6 +42,9 @@ export function InventoryPanel(props: {
         </label>
       )}
       <p class={view.load.state === 'ok' ? 'hint' : 'bump'}>{loadText(view.load)}</p>
+      {view.stash > 0 && (
+        <p class="hint">Stowed includes {view.stash} of the party's loot and components.</p>
+      )}
       {view.blocked && <p class="hint">{view.blocked}</p>}
       {view.costsTurn && !view.blocked && (
         <p class="hint">Underground, each change takes a turn.</p>

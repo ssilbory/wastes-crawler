@@ -41,6 +41,7 @@ export function newWorld(data: GameData, rng: Rng, party: Recruit[], regionId?: 
     members: party.map((p, i) => newMember(`m-${i}`, p)),
     benched: [],
     npcs: [],
+    mounts: [],
     coach: null,
     arenaDay: null,
     quests: {},

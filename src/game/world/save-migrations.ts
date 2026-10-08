@@ -190,4 +190,6 @@ export const WORLD_MIGRATIONS: Migrations = {
         : list;
     return { ...raw, schemaVersion: 31, members: plain(raw.members), benched: plain(raw.benched) };
   },
+  // Version 32 adds mounts: none kept yet.
+  31: (raw) => ({ ...raw, schemaVersion: 32, mounts: [] }),
 };

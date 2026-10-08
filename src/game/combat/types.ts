@@ -203,6 +203,12 @@ export interface Combatant {
   fleet: boolean;
   finalDeath: boolean;
   /**
+   * A war mount's rider, by combatant id, whose slot it fights from; and the Rider focus's guard,
+   * which once a fight negates a blow that would drop the mount (Mounts).
+   */
+  rider: string | null;
+  steedGuard: boolean;
+  /**
    * The Beastmaster (1.5.4): the monster stat line a creature fights as, and whether it is an
    * unintelligent beast; a companion's master (by combatant id), and whether it is their Chosen
    * Friend or shares their vitality; a foe bound mid-fight, by whom; whether a PC may still bind

@@ -27,5 +27,9 @@
       "modifier": 0
     },
     "multiplier": 10
+  },
+  "stash": {
+    "lootDie": 1,
+    "component": 0.5
   }
 }

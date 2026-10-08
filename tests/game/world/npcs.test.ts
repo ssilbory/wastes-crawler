@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { hike } from '../../../src/game/world/activities.ts';
 import { endOfDay } from '../../../src/game/world/day.ts';
-import { dismiss, hire, stowWithPorter, takeFromPorter } from '../../../src/game/world/hire.ts';
+import { dismiss, hire } from '../../../src/game/world/hire.ts';
+import { stowWith, takeFrom } from '../../../src/game/world/loads.ts';
 import {
   addNpc,
   captiveOf,
@@ -87,7 +88,7 @@ describe('hiring (SRD 3.3.0)', () => {
     const w = town([4, 4, 2]);
     hire(w, data, 'guard');
     hire(w, data, 'porter');
-    stowWithPorter(w, data, 'm-0', 4, 'npc-1');
+    stowWith(w, data, 'm-0', 4, 'npc-1');
     expect(dismiss(w, data, 'npc-1')).toEqual({ ok: false, reason: "Take Brenna's load first." });
     // Let go alive in a settlement: half the signing fee comes back.
     const purse = w.purse;
@@ -128,7 +129,7 @@ describe('porters', () => {
   it('carry up to twelve stowed items, handed over and back one at a time', () => {
     const w = town([4, 4]);
     hire(w, data, 'porter');
-    expect(stowWithPorter(w, data, 'm-0', 4, 'npc-0')).toEqual({ ok: true });
+    expect(stowWith(w, data, 'm-0', 4, 'npc-0')).toEqual({ ok: true });
     expect(w.npcs[0]?.inventory).toEqual([
       { id: 'dungeoneering-kit', quantity: 1, location: 'stowed' },
     ]);
@@ -142,20 +143,20 @@ describe('porters', () => {
       ],
     };
     // The kit is 6 and a week of rations 4: a second week would make 14.
-    expect(stowWithPorter(w, data, 'm-0', 4, 'npc-0')).toEqual({ ok: true });
-    expect(stowWithPorter(w, data, 'm-0', 4, 'npc-0')).toEqual({
+    expect(stowWith(w, data, 'm-0', 4, 'npc-0')).toEqual({ ok: true });
+    expect(stowWith(w, data, 'm-0', 4, 'npc-0')).toEqual({
       ok: false,
       reason: "Aldo can't carry any more.",
     });
     expect(w.npcs[0]?.inventory[1]).toMatchObject({ id: 'rations-one-week', quantity: 1 });
-    expect(takeFromPorter(w, data, 'npc-0', 1, 'm-3')).toEqual({ ok: true });
-    expect(takeFromPorter(w, data, 'npc-0', 0, 'm-3')).toMatchObject({ ok: false });
-    expect(takeFromPorter(w, data, 'npc-0', 0, 'm-0')).toEqual({ ok: true });
+    expect(takeFrom(w, data, 'npc-0', 1, 'm-3')).toEqual({ ok: true });
+    expect(takeFrom(w, data, 'npc-0', 0, 'm-3')).toMatchObject({ ok: false });
+    expect(takeFrom(w, data, 'npc-0', 0, 'm-0')).toEqual({ ok: true });
     expect(w.npcs[0]?.inventory).toEqual([]);
-    expect(() => stowWithPorter(w, data, 'm-0', 99, 'npc-0')).toThrow('no item 99 on m-0');
-    expect(() => takeFromPorter(w, data, 'npc-0', 99, 'm-0')).toThrow('no item 99 on npc-0');
+    expect(() => stowWith(w, data, 'm-0', 99, 'npc-0')).toThrow('no item 99 on m-0');
+    expect(() => takeFrom(w, data, 'npc-0', 99, 'm-0')).toThrow('no item 99 on npc-0');
     hire(w, data, 'guard');
-    expect(() => stowWithPorter(w, data, 'm-0', 0, 'npc-1')).toThrow('no porter npc-1');
+    expect(() => stowWith(w, data, 'm-0', 0, 'npc-1')).toThrow('no carrier npc-1');
   });
 });
 

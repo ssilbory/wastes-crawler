@@ -7,8 +7,9 @@ import {
   roundsText,
   sideView,
   slotView,
+  type SlotView,
 } from '../../src/render/arena-view.ts';
-import { data, standardBattle, who } from '../game/combat/helpers.ts';
+import { data, standardBattle, starter, who } from '../game/combat/helpers.ts';
 
 describe('arena view', () => {
   it('shows HP and every condition on a slot', () => {
@@ -96,5 +97,21 @@ describe('arena view', () => {
     expect(outcomeText(b, 'enemy')).toBe('The enemy wins.');
     expect(outcomeText(b, 'draw')).toBe('The fight is a draw.');
     expect([roundsText(1), roundsText(4)]).toEqual(['1 round', '4 rounds']);
+  });
+
+  it('shows a war mount under its rider, not in a slot of its own', () => {
+    const b = createBattle({
+      data,
+      rng: createRng('mount-view'),
+      party: [{ character: starter('grukk'), row: 0, column: 2 }],
+      mounts: [{ monster: 'war-boar', name: 'Tusker', rider: 0, hp: 9, maxHp: 20 }],
+      enemies: [['thug-or-militia']],
+    });
+    const front = sideView(b, 'party').rows[0] as (SlotView | null)[];
+    expect(front.filter((s) => s !== null)).toHaveLength(1);
+    expect(front[2]).toMatchObject({
+      label: 'Grukk',
+      mount: { label: expect.stringContaining('Tusker'), hp: 9 },
+    });
   });
 });

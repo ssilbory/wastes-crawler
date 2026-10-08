@@ -1,6 +1,7 @@
 // Read-only views of a battle for the arena UI: each side's slots with HP and conditions. Nothing
 // here changes the battle.
 import { describe } from '../game/combat/commands.ts';
+import { inSlot } from '../game/combat/mounted.ts';
 import type { Battle, Combatant, Outcome, SideId } from '../game/combat/types.ts';
 import { ROW_SLOTS } from '../rules/formation.ts';
 
@@ -17,6 +18,8 @@ export interface SlotView {
   conditions: string[];
   /** Out of the fight for good: dead, fled, or enthralled. */
   gone: boolean;
+  /** The war mount fighting from this slot under its rider (docs/rules-adaptation.md, Mounts). */
+  mount?: SlotView;
 }
 
 export interface SideView {
@@ -88,9 +91,11 @@ export function sideView(b: Battle, side: SideId): SideView {
   const rows = Array.from({ length: rowCount }, (_, row) =>
     Array.from({ length: width }, (_, column) => {
       // Fallen monsters keep their slot; a living one that advanced takes precedence.
-      const here = members.filter((c) => c.row === row && c.column === column);
+      const here = members.filter((c) => c.row === row && c.column === column && inSlot(c));
       const shown = here.find((c) => c.status === 'active' || c.status === 'asleep') ?? here[0];
-      return shown ? slotView(shown) : null;
+      if (!shown) return null;
+      const mount = members.find((c) => c.rider === shown.id);
+      return mount ? { ...slotView(shown), mount: slotView(mount) } : slotView(shown);
     }),
   );
   const rowNames = formation ? ['Front', 'Rear'] : ['Front', 'Second', 'Third'];

@@ -184,5 +184,35 @@
     "name": "The Hierophant",
     "base": "mighty-general",
     "description": "The Hierophant of the Faithful, a human agent the Dark Lord bound before the alliance landed. Bound or believer, no one can tell, and the Hierophant has never said."
+  },
+  {
+    "id": "riding-elk",
+    "name": "Riding Elk",
+    "base": "herd-beast",
+    "description": "A rangy elk broken to the saddle, quick to startle and quicker to bolt. Elf and orc outriders alike swear by them."
+  },
+  {
+    "id": "riding-aurochs",
+    "name": "Riding Aurochs",
+    "base": "herd-beast",
+    "description": "A wild aurochs gentled to carry a rider and a heavy load. Slow to anger, slower to turn, and impossible to stop once it means to go somewhere."
+  },
+  {
+    "id": "riding-goat",
+    "name": "Riding Goat",
+    "base": "herd-beast",
+    "description": "A shaggy mountain goat the size of a pony, sure on any ledge. Too small for anyone bigger than a goblin, and it knows it."
+  },
+  {
+    "id": "war-boar",
+    "name": "War Boar",
+    "base": "vicious-large-herbivore",
+    "description": "A tusked boar the height of an orc's shoulder, raised from a piglet to charge into spears. It hates everything but its rider, and is not sure about them."
+  },
+  {
+    "id": "pack-bison",
+    "name": "Pack Bison",
+    "base": "herd-beast",
+    "description": "A patient bison under a mountain of bundles. It goes where it is led, even underground, and will not be ridden."
   }
 ]

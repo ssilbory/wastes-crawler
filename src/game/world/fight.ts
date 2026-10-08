@@ -1,7 +1,12 @@
 // Overland encounters fought with the combat engine. Fights carry the party's wounds, Frailty,
 // strain, and the day's spent spells and Effort in and out (SRD 2.5.1, 4.2.0); a lost fight sends
 // the party back to the last town (docs/plan.md, Combat → Town).
-import { createBattle, type BattleResult, type NpcSetup } from '../combat/battle.ts';
+import {
+  createBattle,
+  type BattleResult,
+  type MountSetup,
+  type NpcSetup,
+} from '../combat/battle.ts';
 import type { Battle, WaitingCompanion } from '../combat/types.ts';
 import type { Character, Element } from '../../data/schemas/index.ts';
 import type { Rng } from '../../rules/rng.ts';
@@ -11,6 +16,7 @@ import { alive, note } from './members.ts';
 import { fights, isServant, moraleAfterFight, npcMonster, removeNpc, typeOf } from './npcs.ts';
 import { carryBack, npcsBack } from './carry-back.ts';
 import { winnings } from './winnings.ts';
+import { calmWarMounts, mountSetups, mountsBack } from './mount-fights.ts';
 import { emit } from './bus.ts';
 import { faithLit, inDark } from '../dungeon/light.ts';
 import { FAITH_LIGHT, userOf, vigor } from './arts.ts';
@@ -20,7 +26,7 @@ import { leaveCorpses } from './necromancy.ts';
 import { endPacts, pactOf } from './pacts.ts';
 import { freeCaptive } from './rescue.ts';
 import { wipe } from './town.ts';
-import type { Member, Npc, World } from './types.ts';
+import type { Member, Mount, Npc, World } from './types.ts';
 import { keepSummons } from './summons.ts';
 import { BIND, companionOf } from './companion-sync.ts';
 import { companionsBack, companionSetup, unbound, waitingSetup } from './companion-fight.ts';
@@ -31,6 +37,8 @@ export interface WorldBattle {
   memberIds: string[];
   /** NPC ids in the order of the battle's npc-N combatants. */
   npcIds: string[];
+  /** War mount ids in the order of the battle's mount-N combatants. */
+  mountIds: string[];
   /** The line-up the XP simulation replays. */
   setup: PartySetup;
   /** The encounter's enemy rows, for loot. */
@@ -99,6 +107,8 @@ export interface PartySetup {
     waiting: WaitingCompanion | null;
   }[];
   npcs: NpcSetup[];
+  /** War mounts under their riders (docs/rules-adaptation.md, Mounts). */
+  mounts: MountSetup[];
   enemies: string[][];
   /** The party fights without light. */
   dark: boolean;
@@ -108,12 +118,13 @@ export interface PartySetup {
   indoors: boolean;
 }
 
-/** The conscious party as it stands, and its NPCs if `withNpcs`, against enemy rows. */
+/** The conscious party as it stands, its NPCs if `withNpcs`, and war mounts, against enemy rows. */
 export function partySetup(
   w: World,
   data: GameData,
   enemies: string[][],
   withNpcs: boolean,
+  mounts: readonly Mount[] = [],
 ): PartySetup {
   const faith = faithLit(w, data) ? userOf(w, data, FAITH_LIGHT) : undefined;
   const party = fighters(w);
@@ -134,6 +145,7 @@ export function partySetup(
       waiting: waitingSetup(data, m),
     })),
     npcs: withNpcs ? w.npcs.filter((n) => n.hp > 0).map((n) => npcSetup(data, n, party)) : [],
+    mounts: mountSetups(w, data, party, mounts),
     enemies,
     dark: inDark(w, data),
     antiMagic: onSpecial(w, data, 'anti-magic'),
@@ -155,6 +167,7 @@ export function battleFrom(data: GameData, rng: Rng, setup: PartySetup, log: boo
       waiting: p.waiting,
     })),
     npcs: setup.npcs,
+    mounts: setup.mounts,
     enemies: setup.enemies.map((r) => [...r]),
     dark: setup.dark,
     antiMagic: setup.antiMagic,
@@ -184,13 +197,15 @@ export function partyBattle(
   withNpcs: boolean,
   captive: string | null,
 ): WorldBattle {
-  const setup = partySetup(w, data, enemies, withNpcs);
+  const mounts = withNpcs ? calmWarMounts(w, data, fighters(w)) : [];
+  const setup = partySetup(w, data, enemies, withNpcs, mounts);
   const npcs = withNpcs ? w.npcs.filter((n) => n.hp > 0) : [];
   return {
     battle: battleFrom(data, w.rng, setup, true),
     setup,
     memberIds: fighters(w).map((m) => m.id),
     npcIds: npcs.map((n) => n.id),
+    mountIds: mounts.map((m) => m.id),
     enemies,
     captive,
     quest: null,
@@ -238,11 +253,13 @@ export function applyBattle(
   // Tireless Vigor: a Healer regains a hit point after each fight (Phase 15).
   vigor(w, data, 1);
   const npcLost = npcsBack(w, data, fight);
+  mountsBack(w, fight);
   keepSummons(w, data, fight);
   companionsBack(w, data, fight);
   w.encounter = null;
   if (result.outcome === 'enemy') {
-    for (const n of w.npcs.filter((x) => x.kind !== 'hireling')) {
+    // Pack beasts come back with the party, like mounts (docs/rules-adaptation.md, Mounts).
+    for (const n of w.npcs.filter((x) => x.kind !== 'hireling' && x.kind !== 'pack')) {
       removeNpc(w, n.id);
       // A companion runs for the wilds, to be called again (The Beastmaster, Sam's call).
       const master = w.members.find((m) => n.kind === 'companion' && m.id === n.master);

@@ -6,17 +6,28 @@ import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { FactionStateSchema } from './faction-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 31;
+export const WORLD_SCHEMA_VERSION = 32;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
 /** A hireling or a freed captive in one of the party's NPC slots (docs/rules-adaptation.md). */
 export const NpcSaveSchema = z.strictObject({
   id: z.string().min(1),
-  kind: z.enum(['hireling', 'captive', 'escort', 'undead', 'beast', 'summon', 'tree', 'companion']),
+  kind: z.enum([
+    'hireling',
+    'captive',
+    'escort',
+    'undead',
+    'beast',
+    'summon',
+    'tree',
+    'companion',
+    'pack',
+  ]),
   /**
-   * The hireling type, captive id, escort quest id, or the monster id of an undead servant, a
-   * beast, a summoned servant (gone at dawn, Phase 18a), a woken tree, or a Beastmaster's companion.
+   * The mount type of a pack beast, the hireling type, captive id, escort quest id, or the monster
+   * id of an undead servant, a beast, a summoned servant (gone at dawn, Phase 18a), a woken tree, or
+   * a Beastmaster's companion.
    */
   type: IdSchema,
   name: z.string().min(1),
@@ -26,7 +37,7 @@ export const NpcSaveSchema = z.strictObject({
   column: z.int().min(0).max(3),
   /** Failed a Morale check: leaves at the next town. */
   quitting: z.boolean(),
-  /** A porter's load. */
+  /** A porter's or a pack beast's load. */
   inventory: CharacterSchema.shape.inventory,
   /** A hireling's share of loot taken since the party was last in town, in crowns (Phase 12). */
   owed: z.number().min(0),
@@ -78,6 +89,21 @@ export const MemberSaveSchema = z.strictObject({
   /** Hit points Feral Toughness adds to the maximum now, from the companion's hit dice (1.5.4). */
   toughness: z.int().min(0),
 });
+
+/** A riding or war mount the party keeps outside the NPC slots (docs/rules-adaptation.md, Mounts). */
+export const MountSaveSchema = z.strictObject({
+  id: z.string().min(1),
+  /** The mount type, from data/content/mount-rules.json. */
+  type: IdSchema,
+  name: z.string().min(1),
+  hp: z.int().min(0),
+  maxHp: z.int().min(1),
+  /** The member who rides it, by id, or null when it goes unridden. */
+  rider: z.string().nullable(),
+  /** The gear it carries. */
+  inventory: CharacterSchema.shape.inventory,
+});
+export type MountSave = z.infer<typeof MountSaveSchema>;
 
 export const ReactionSchema = z.enum([
   'aggressive',
@@ -258,6 +284,8 @@ export const WorldSaveSchema = z.strictObject({
   members: z.array(MemberSaveSchema).min(1).max(8),
   /** Hirelings and captives in the NPC slots. */
   npcs: z.array(NpcSaveSchema).max(2),
+  /** Riding and war mounts, outside the NPC slots. */
+  mounts: z.array(MountSaveSchema),
   /** PCs left at a tavern; any tavern can bring them back. */
   benched: z.array(MemberSaveSchema),
   /** The party's pooled crowns. */

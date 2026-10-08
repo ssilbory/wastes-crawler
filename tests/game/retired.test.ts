@@ -7,17 +7,37 @@ import { data, starter } from './combat/helpers.ts';
 
 const snag = starter('snag');
 
+/** The content as it stood before mounts: Ride became Animal Ken and Rider was retired. */
+const beforeMounts = {
+  ...data,
+  content: {
+    ...data.content,
+    skillRules: {
+      ...data.content.skillRules,
+      removed: [
+        ...data.content.skillRules.removed,
+        { id: 'ride', becomes: 'animal-ken', why: 'No mounts yet.' },
+      ],
+      retiredFoci: ['rider'],
+    },
+    focusRules: data.content.focusRules.map((f) =>
+      f.id === 'rider' ? { ...f, availability: 'excluded' as const } : f,
+    ),
+  },
+};
+
 describe('skills and foci the game took away (docs/rules-adaptation.md, Skills)', () => {
   it('lists the SRD skills less the removed ones, plus Animal Ken', () => {
     const ids = gameSkills(data.srd, data.content).map((s) => s.id);
-    for (const gone of ['administer', 'connect', 'ride', 'sail', 'work'])
-      expect(ids).not.toContain(gone);
+    for (const gone of ['administer', 'connect', 'sail', 'work']) expect(ids).not.toContain(gone);
+    // Ride is back with mounts (docs/rules-adaptation.md, Mounts).
+    expect(ids).toContain('ride');
     expect(ids).toContain('animal-ken');
-    expect(ids).toHaveLength(data.srd.skills.length - 5 + 1);
+    expect(ids).toHaveLength(data.srd.skills.length - 4 + 1);
   });
 
   it('turns removed skills into their replacements at the higher level', () => {
-    const c = retire(data, {
+    const c = retire(beforeMounts, {
       ...snag,
       skills: { ride: 1, 'animal-ken': 0, work: 0, exert: 2, connect: 0 },
       advancement: { ...snag.advancement, skillCredit: { ride: 2, stab: 1 } },
@@ -39,14 +59,21 @@ describe('skills and foci the game took away (docs/rules-adaptation.md, Skills)'
       foci: [...snag.foci, { id: 'rider', level: 2 }],
       advancement: { ...snag.advancement, freeFoci: 1 },
     };
-    const c = retire(data, rider);
+    const c = retire(beforeMounts, rider);
     expect(c.foci.some((f) => f.id === 'rider')).toBe(false);
     expect(c.advancement.freeFoci).toBe(3);
     // Loading a file from before version 7 does the same; a version 7 file is left as it is.
-    const old = importCharacter(JSON.stringify({ ...rider, schemaVersion: 6 }), data);
+    const old = importCharacter(JSON.stringify({ ...rider, schemaVersion: 6 }), beforeMounts);
     expect(old.ok && old.character.advancement.freeFoci).toBe(3);
-    const current = importCharacter(exportCharacter(rider), data);
+    const current = importCharacter(exportCharacter(rider), beforeMounts);
     expect(current.ok && current.character.advancement.freeFoci).toBe(1);
+    // With mounts, an old file keeps its Rider and Ride.
+    const kept = importCharacter(
+      JSON.stringify({ ...rider, skills: { ...rider.skills, ride: 1 }, schemaVersion: 6 }),
+      data,
+    );
+    expect(kept.ok && kept.character.foci.some((f) => f.id === 'rider')).toBe(true);
+    expect(kept.ok && kept.character.skills.ride).toBe(1);
   });
 
   it('takes an owed focus pick, any category, until none are left', () => {
@@ -55,9 +82,9 @@ describe('skills and foci the game took away (docs/rules-adaptation.md, Skills)'
       reason: 'No focus pick is owed.',
     });
     const owed = { ...snag, advancement: { ...snag.advancement, freeFoci: 2 } };
-    expect(takeFreeFocus(data, owed, { id: 'rider' })).toEqual({
+    expect(takeFreeFocus(data, owed, { id: 'unique-gift' })).toEqual({
       ok: false,
-      reason: "rider can't be picked",
+      reason: "unique-gift can't be picked",
     });
     const one = takeFreeFocus(data, owed, { id: 'alert' });
     expect(one.ok && one.character.advancement.freeFoci).toBe(1);

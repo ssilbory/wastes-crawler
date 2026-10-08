@@ -13,6 +13,7 @@ import { bonetalker } from './arts.ts';
 import { passInDisguise } from './guises.ts';
 import { alive, memberCheck, memberSheet, note } from './members.ts';
 import { reactionBonus } from './minds.ts';
+import { allMounted } from './mounts.ts';
 import { captiveOf, firstGuide, npcMonster } from './npcs.ts';
 import { sharedEyes } from './companion-sync.ts';
 import { regionMap } from './region.ts';
@@ -124,14 +125,16 @@ export function startEncounter(
       skillBonus: Math.max(...monsters.map((m) => m.skill)),
       difficulty: 0,
     });
+    // A mounted party slips away more easily (docs/rules-adaptation.md, Mounts).
+    const mounted = allMounted(w, data) ? data.content.mountRules.slipAwayBonus : 0;
     if (watcher) {
       const ours = memberCheck(w, data, watcher, 'notice', ['wis'], 0, steps);
-      if (pcWinsOpposed(ours.score, theirs.score)) spotter = watcher.character.name;
+      if (pcWinsOpposed(ours.score + mounted, theirs.score)) spotter = watcher.character.name;
     }
     if (!spotter && guide) {
       const skillBonus = data.content.npcRules.skillBonus;
       const ours = npcCheck(w.rng, { skillBonus, difficulty: 0, steps });
-      if (pcWinsOpposed(ours.score, theirs.score)) spotter = guide.name;
+      if (pcWinsOpposed(ours.score + mounted, theirs.score)) spotter = guide.name;
     }
   }
   // Eyes of the Beast: a Beastmaster sharing a companion's senses is surprised only if it is too.

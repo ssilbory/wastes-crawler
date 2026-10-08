@@ -2,8 +2,8 @@
 // Readied and Stowed totals against their limits, and who could take it. Pure.
 import type { ItemLocation } from '../data/schemas/index.ts';
 import type { GameData } from '../game/character/context.ts';
-import { characterSheet } from '../game/character/derived.ts';
 import { entryEncumbrance, findItem, lineLabel } from '../game/character/items.ts';
+import { memberLoad, partyLoad } from '../game/world/party-load.ts';
 import type { World } from '../game/world/types.ts';
 import type { Load } from '../rules/encumbrance.ts';
 import { defenseStats } from './gear-view.ts';
@@ -21,7 +21,10 @@ export interface GearLine {
 
 export interface InventoryView {
   name: string;
+  /** Their own gear and their share of the party stash. */
   load: Load;
+  /** Their share of the party stash's weight (Party stash). */
+  stash: number;
   lines: GearLine[];
   /** Living members who could be handed something. */
   others: { id: string; name: string }[];
@@ -35,9 +38,11 @@ export function inventoryView(w: World, data: GameData, memberId: string): Inven
   const m = w.members.find((x) => x.id === memberId);
   if (!m) return null;
   const c = m.character;
+  const party = partyLoad(w, data);
   return {
     name: c.name,
-    load: characterSheet(c, data).equipment.load,
+    load: memberLoad(w, data, m, party),
+    stash: party.shares[m.id] ?? 0,
     lines: c.inventory.map((e, index) => {
       const item = findItem(data, e.id);
       return {

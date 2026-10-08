@@ -8,6 +8,7 @@ import type { Craftsman, CraftsmanState } from '../../data/schemas/index.ts';
 import { roll } from '../../rules/dice.ts';
 import { toTenths } from '../../rules/economy.ts';
 import type { GameData } from '../character/context.ts';
+import { roomFor } from './party-load.ts';
 import { componentName, removeComponents } from './components.ts';
 import { note } from './members.ts';
 import type { TownResult } from './services.ts';
@@ -130,6 +131,8 @@ export function buyComponent(w: World, data: GameData, id: string): TownResult {
   const price = componentPrice(data, id) * rules(data).sellMarkup;
   if (!st.parts[id])
     return no(`${c.name} has no ${componentName(data, id).toLowerCase()} to sell.`);
+  if (!roomFor(w, data, id))
+    return no(`The party can't carry any more; leave something from the stash first.`);
   if (!pay(w, data, c, st, price)) return no(`That costs ${price} crowns.`);
   const n = (st.parts[id] as number) - 1;
   st.parts = Object.fromEntries(Object.entries({ ...st.parts, [id]: n }).filter(([, v]) => v > 0));

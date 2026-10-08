@@ -286,6 +286,7 @@ describe('Tireless Vigor’s regeneration', () => {
       setup: null as never,
       memberIds: [],
       npcIds: [],
+      mountIds: [],
       enemies: [['thug-or-militia']],
       captive: null,
       quest: null,

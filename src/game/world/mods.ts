@@ -10,6 +10,7 @@ import { payDice } from '../../rules/loot-dice.ts';
 import type { GameData } from '../character/context.ts';
 import { findItem, type CatalogItem, type InventoryEntry } from '../character/items.ts';
 import { addComponents, pickComponents, removeComponents } from './components.ts';
+import { pickUp } from './party-load.ts';
 import { note } from './members.ts';
 import { daysText } from './wording.ts';
 import type { TownResult } from './services.ts';
@@ -215,7 +216,7 @@ export function completeMod(w: World, data: GameData, p: Project): void {
   if (p.kind === 'strip') {
     const off = mods.find((x) => x.id === mod.id);
     mods = mods.filter((x) => x !== off);
-    addComponents(w, off?.components ?? []);
+    pickUp(w, data, () => addComponents(w, off?.components ?? []));
     note(w, `${crafter.character.name} strips ${mod.name} off the ${item}.`);
   } else {
     // SRD 2.8.1: the creator's first mod on a mastercrafted item needs no maintenance.

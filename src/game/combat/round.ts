@@ -13,6 +13,7 @@ import { echoes, landing, quickens, roundPasses, struggle, weakestSwing } from '
 import { checkMorale } from './morale.ts';
 import { canAct, isUp, targets } from './targeting.ts';
 import type { Attack, Battle, Combatant, Controller } from './types.ts';
+import { followRiders, inSlot } from './mounted.ts';
 import { heedCall } from './companions.ts';
 
 export const MAX_ROUNDS = 100;
@@ -132,7 +133,7 @@ function swingPlan(b: Battle, actor: Combatant): (number | null)[] {
 function formation(b: Battle): Formation {
   const grid: Formation = [Array(ROW_SLOTS).fill(null), Array(ROW_SLOTS).fill(null)];
   for (const c of b.combatants) {
-    if (c.side !== 'party') continue;
+    if (c.side !== 'party' || !inSlot(c)) continue;
     // Non-combatants hold their slot but are never promoted to the front.
     const standing = canAct(c) && !c.noncombatant;
     // Only the downed drop back: the held, the asleep, and the frozen keep their place.
@@ -147,7 +148,7 @@ const pickAtRandom = (b: Battle) => (cols: number[]) =>
   cols[b.rng.int(0, cols.length - 1)] as number;
 
 function shiftFormation(b: Battle): void {
-  const party = b.combatants.filter((c) => c.side === 'party');
+  const party = b.combatants.filter((c) => c.side === 'party' && inSlot(c));
   const at = (row: number, col: number) => party.find((c) => c.row === row && c.column === col);
   const rearHp = [0, 1, 2, 3].map((col) => at(1, col)?.hp ?? 0);
   for (const move of frontDrops(formation(b), rearHp, pickAtRandom(b))) {
@@ -157,6 +158,7 @@ function shiftFormation(b: Battle): void {
     [down.row, down.column] = move.to;
     if (other) [other.row, other.column] = move.from;
   }
+  followRiders(b.combatants);
 }
 
 export function endOfRound(b: Battle): void {

@@ -22,6 +22,7 @@ import {
   restQuarter,
 } from './members.ts';
 import { emit } from './bus.ts';
+import { memberLoad, partyLoad } from './party-load.ts';
 import { firstGuide, guideOf } from './npcs.ts';
 import { hexesToAvoid } from './groves.ts';
 import { findPath, regionMap, seenHexes } from './region.ts';
@@ -76,9 +77,11 @@ export function mishap(w: World, data: GameData, table: Mishap['table']): Mishap
 
 /** The Overloaded house rule: a Physical save on entering each hex, or 1 System Strain. */
 function overloadedSaves(w: World, data: GameData): void {
+  const party = partyLoad(w, data);
   for (const m of alive(w)) {
     const sheet = memberSheet(data, m);
-    const load = sheet.equipment.load;
+    // The member's own gear and their share of the party stash.
+    const load = memberLoad(w, data, m, party);
     // The Jade Palanquin carries stowed gear; what is readied still weighs.
     const excess = palanquinUp(w) ? Math.max(0, load.readied - load.readiedLimit) : load.excess;
     if (excess === 0) continue;
