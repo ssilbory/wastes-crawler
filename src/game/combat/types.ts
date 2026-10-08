@@ -154,6 +154,15 @@ export interface Combatant {
   harvestRound: number;
   shockCap: number | null;
   poisonImmune: boolean;
+  /**
+   * Lingering poison and disease (docs/rules-adaptation.md, Poison and disease): Poisoned, the
+   * strain a venom owes once the fight is over, a disease caught in this fight, and the penalty
+   * to hit and to skill checks the PC's ailments bring into it.
+   */
+  poisoned: boolean;
+  venom: number;
+  caught: string | null;
+  ailPenalty: number;
   /** Pact of Stone and Sea: breath of this element can't harm it. */
   pact: Element | null;
   /**

@@ -19,6 +19,8 @@ import {
   typeOf,
 } from './npcs.ts';
 import { carryBack, npcsBack } from './carry-back.ts';
+import { ailPenalty } from './ailing.ts';
+import { ailmentsBack } from './ailments.ts';
 import { emit } from './bus.ts';
 import { faithLit, inDark } from '../dungeon/light.ts';
 import { FAITH_LIGHT, userOf, vigor } from './arts.ts';
@@ -99,6 +101,9 @@ export interface PartySetup {
     committed: number;
     /** The element of a Pact of Stone and Sea on them, if any. */
     pact: Element | null;
+    /** Poisoned, and the penalty their poison and disease bring into the fight. */
+    poisoned: boolean;
+    ailPenalty: number;
   }[];
   npcs: NpcSetup[];
   enemies: string[][];
@@ -131,6 +136,8 @@ export function partySetup(
       artUses: { ...m.artUses },
       committed: m === faith ? 1 : 0,
       pact: pactOf(w, m.id) ?? null,
+      poisoned: m.poisoned,
+      ailPenalty: ailPenalty(data, m),
     })),
     npcs: withNpcs ? w.npcs.filter((n) => n.hp > 0).map((n) => npcSetup(data, n)) : [],
     enemies,
@@ -162,6 +169,8 @@ export function battleFrom(data: GameData, rng: Rng, setup: PartySetup, log: boo
     const c = battle.combatants[i] as Battle['combatants'][number];
     c.frail = p.frail;
     c.pact = p.pact;
+    c.poisoned = p.poisoned;
+    c.ailPenalty = p.ailPenalty;
     if (c.caster) {
       c.caster.spellsLeft = Math.max(0, c.caster.spellsLeft - p.spellsCast);
       c.caster.pointsLeft = Math.max(0, c.caster.pointsLeft - p.pointsSpent);
@@ -246,7 +255,9 @@ export function applyBattle(
 ): void {
   fight.memberIds.forEach((id, i) => {
     const m = w.members.find((x) => x.id === id) as Member;
-    carryBack(data, m, fight.battle.combatants[i] as Battle['combatants'][number]);
+    const c = fight.battle.combatants[i] as Battle['combatants'][number];
+    carryBack(data, m, c);
+    ailmentsBack(w, data, m, c);
   });
   recordFallen(w, fight.memberIds, fight.battle);
   // The fight ends the scene, and any Pact of Stone and Sea with it.

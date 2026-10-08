@@ -31,6 +31,10 @@ export const TownRulesSchema = z.strictObject({
     /** SRD 3.3.1 magical healing of wounds. */
     perHp: Crowns,
     cureFrail: Crowns,
+    /** Sam's call: neutralizing a lingering poison. */
+    curePoison: Crowns,
+    /** SRD 3.3.1: magical curing of a disease, 500 sp. */
+    cureDisease: Crowns,
   }),
   /** A round in the tavern for a rumor of a way down nearby (Sam's call). */
   rumor: Crowns,

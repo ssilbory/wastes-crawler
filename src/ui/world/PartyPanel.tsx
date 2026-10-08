@@ -2,6 +2,7 @@ import type { Member } from '../../game/world/types.ts';
 import { characterSheet } from '../../game/character/derived.ts';
 import { levelLine } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
+import { findDisease } from '../../game/world/ailing.ts';
 
 function tags(m: Member): string[] {
   if (m.dead) return ['dead'];
@@ -11,6 +12,8 @@ function tags(m: Member): string[] {
     m.sleepless && 'Sleepless',
     m.cold && 'Cold',
     m.frail && 'Frail',
+    m.poisoned && 'Poisoned',
+    m.disease && findDisease(data, m.disease.id).name,
     m.character.strain.broken && 'Broken',
     m.slept && 'slept today',
   ].filter((t): t is string => typeof t === 'string');

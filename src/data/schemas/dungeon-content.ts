@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ExposureSchema } from './ailment-content.ts';
 import { AttributeSchema, DiceSchema, ElementSchema, IdSchema } from './common.ts';
 import { LootDiceSchema } from './town-content.ts';
 
@@ -46,8 +47,10 @@ export const TrapSchema = z.strictObject({
   element: ElementSchema.optional(),
   effect: z.discriminatedUnion('kind', [
     z.strictObject({ kind: z.literal('damage'), dice: DiceSchema }),
-    /** SRD 2.10.0: dungeon poison takes half the victim's maximum hit points. */
+    /** SRD 2.10.0: dungeon poison takes half the victim's maximum hit points, and lingers. */
     z.strictObject({ kind: z.literal('poison') }),
+    /** SRD 2.5.5: filth that passes on a disease (Sam's call). */
+    z.strictObject({ kind: z.literal('disease'), disease: IdSchema }),
     /** Brings the level's wanderers at once. */
     z.strictObject({ kind: z.literal('alarm') }),
   ]),
@@ -145,6 +148,8 @@ export const DungeonLevelSchema = z.strictObject({
   wander: z.strictObject({ every: z.int().min(1).max(6), table: IdSchema }).nullable(),
   /** The only squares the party can camp on (docs/rules-adaptation.md, Dungeon exploration). */
   safe: z.array(CellSchema),
+  /** A disease the party may catch ending the day on this level (Sam's call). */
+  exposure: ExposureSchema.optional(),
   secrets: z.array(SecretSchema),
   traps: z.array(TrapSchema),
   specials: z.array(SpecialSchema),

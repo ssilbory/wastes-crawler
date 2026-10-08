@@ -7,6 +7,7 @@ import { skillCheck, type CheckResult } from '../../rules/checks.ts';
 import { addStrain, type StrainSource } from '../../rules/strain.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
+import { ailPenalty } from './ailing.ts';
 import { quarterName } from './calendar.ts';
 import type { Member, World } from './types.ts';
 
@@ -63,7 +64,8 @@ export function memberCheck(
   const mods = memberSheet(data, m).modifiers;
   return skillCheck(w.rng, {
     skill: m.character.skills[skill] ?? null,
-    attributeModifier: Math.max(...attrs.map((a) => mods[a])) + keen(m, skill),
+    attributeModifier:
+      Math.max(...attrs.map((a) => mods[a])) + keen(m, skill) - ailPenalty(data, m),
     difficulty,
     steps: m.character.strain.broken ? steps - 1 : steps,
   });
@@ -128,7 +130,8 @@ export function hurt(w: World, m: Member, amount: number): void {
  * physician's care (Sam's call).
  */
 export function healNight(data: GameData, m: Member, extra = 0): void {
-  if (m.frail) return;
+  // The Poisoned don't heal naturally (Sam's call, Poison and disease).
+  if (m.frail || m.poisoned) return;
   const { level } = memberSheet(data, m);
   setHp(m, Math.min(m.character.hp.max, m.character.hp.current + level + extra));
 }
@@ -159,5 +162,7 @@ export function newMember(
     artUses: {},
     prayedDay: null,
     purgeTries: [],
+    poisoned: false,
+    disease: null,
   };
 }

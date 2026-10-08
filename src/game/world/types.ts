@@ -42,6 +42,8 @@ export interface Member {
   artUses: Record<string, number>;
   prayedDay: number | null;
   purgeTries: string[];
+  poisoned: boolean;
+  disease: { id: string; nights: number; saves: number } | null;
 }
 
 export type Npc = NpcSave;

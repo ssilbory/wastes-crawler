@@ -14,6 +14,7 @@ import { FactionsPanel } from './FactionsPanel.tsx';
 import { SettingPanel } from './SettingPanel.tsx';
 import { HealerPanel } from './HealerPanel.tsx';
 import { PurgePanel } from './PurgePanel.tsx';
+import { AntidotePanel } from './AntidotePanel.tsx';
 import { GreenwoodPanel } from './GreenwoodPanel.tsx';
 import { FormsPanel } from './FormsPanel.tsx';
 import { ConjunctPanel } from './ConjunctPanel.tsx';
@@ -158,6 +159,7 @@ export function MapScreen(props: {
           <PactPanel world={w} onChange={props.onChange} />
           <HealerPanel world={w} onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />
+          <AntidotePanel world={w} onChange={props.onChange} />
         </div>
       </div>
     </div>

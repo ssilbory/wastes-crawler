@@ -9,6 +9,7 @@ import type { BattleResult } from '../combat/battle.ts';
 import type { Battle } from '../combat/types.ts';
 import type { GameData } from '../character/context.ts';
 import { carryBack } from './carry-back.ts';
+import { ailmentsBack } from './ailments.ts';
 import { partyBattle, type WorldBattle } from './fight.ts';
 import { alive, note, setHp } from './members.ts';
 import { priceHere, spend, townHere } from './town.ts';
@@ -59,6 +60,7 @@ export function settleBout(
     const m = w.members.find((x) => x.id === id) as Member;
     const c = fight.battle.combatants[i] as Battle['combatants'][number];
     carryBack(data, m, c);
+    ailmentsBack(w, data, m, c);
     // Pulled out alive: everyone in a bout to yield, and the not-yet-dead in a bout to the death.
     if (fell(c) && !(bout.toTheDeath && c.status === 'dead')) {
       m.dead = false;

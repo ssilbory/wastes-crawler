@@ -75,6 +75,10 @@ export function catalog(data: GameData): CatalogItem[] {
       cost: g.cost,
       gear: g,
     })),
+    // SRD 2.5.5's antitoxin, sold as the game's antidote (Sam's call).
+    ((g) => ({ kind: 'gear' as const, id: g.id, name: g.name, cost: g.cost, gear: g }))(
+      data.content.ailments.antidote,
+    ),
     ...data.srd['gear-bundles'].map((b) => ({
       kind: 'bundle' as const,
       id: b.id,

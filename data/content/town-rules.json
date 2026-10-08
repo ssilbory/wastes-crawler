@@ -2,7 +2,9 @@
   "innPerPc": 3,
   "healer": {
     "perHp": 10,
-    "cureFrail": 100
+    "cureFrail": 100,
+    "curePoison": 50,
+    "cureDisease": 500
   },
   "rumor": 10,
   "raisePerLevel": 125,

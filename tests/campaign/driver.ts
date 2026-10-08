@@ -21,7 +21,7 @@ import {
   presentAuthority,
 } from '../../src/game/world/orders.ts';
 import { settleByFighting, settleByLeaving } from '../../src/game/world/quarter.ts';
-import { raiseDead, stayAtInn } from '../../src/game/world/services.ts';
+import { cureSickness, raiseDead, stayAtInn } from '../../src/game/world/services.ts';
 import { enterTown } from '../../src/game/world/town.ts';
 import type { World } from '../../src/game/world/types.ts';
 
@@ -35,6 +35,17 @@ const SIDES: [Facing, number, number][] = [
 const ORDER: Facing[] = ['n', 'e', 's', 'w'];
 
 export class Wiped extends Error {}
+
+/** The dead raised, and the healer's cures for poison and disease, paid from a topped-up purse. */
+function townCare(w: World, data: GameData): void {
+  if (!w.members.some((m) => m.dead || m.poisoned || m.disease)) return;
+  w.purse = Math.max(w.purse, 5000);
+  for (const m of w.members.filter((x) => x.dead)) raiseDead(w, data, m.id);
+  for (const m of w.members) {
+    if (m.poisoned) cureSickness(w, data, m.id, 'poison');
+    if (m.disease) cureSickness(w, data, m.id, 'disease');
+  }
+}
 
 /** Settles the pending encounter: stand a garrison down if the party can, else fight. */
 export function settle(w: World, data: GameData): void {
@@ -131,7 +142,10 @@ export function delve(
   settle(w, data);
 }
 
-/** Back to a town, a night at the inn, and the party trained to `level`. */
+/**
+ * Back to a town, a night at the inn, and the party trained to `level`. As a player would, the
+ * party first has its dead raised and its poison and disease cured.
+ */
 export function townRest(
   w: World,
   data: GameData,
@@ -143,6 +157,7 @@ export function townRest(
   enterTown(w, data, town.id);
   settle(w, data);
   w.purse = Math.max(w.purse, 500);
+  townCare(w, data);
   stayAtInn(w, data);
   settle(w, data);
   for (const m of w.members) {
@@ -173,7 +188,7 @@ export function attempt(
       if (!(e instanceof Wiped) || n >= tries) throw e;
       enterRegion(w, region, town);
       w.purse = Math.max(w.purse, 5000);
-      for (const m of w.members.filter((x) => x.dead)) raiseDead(w, data, m.id);
+      townCare(w, data);
       stayAtInn(w, data);
     }
   }

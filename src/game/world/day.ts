@@ -9,6 +9,7 @@ import { dateOf } from './calendar.ts';
 import { addMemberStrain, alive, cureFrailty, easeStrain, healNight, note } from './members.ts';
 import { npcCheck } from '../../rules/checks.ts';
 import { emit } from './bus.ts';
+import { nightForAilments } from './ailments.ts';
 import { immuneTo, sacredBlood, tended } from './arts.ts';
 import { nightForBeasts } from './beasts.ts';
 import { nightForTrees } from './greenwood.ts';
@@ -63,6 +64,7 @@ export function endOfDay(w: World, data: GameData, waystation = false): void {
     if (care && m.slept) easeStrain(m, 1);
     m.slept = false;
   }
+  nightForAilments(w, data, inTown);
   if (!sheltered && !cold)
     note(w, `A night without shelter at ${hexKey(w.position)}: no one recovers.`);
   nightForBeasts(w, data, fedFree);

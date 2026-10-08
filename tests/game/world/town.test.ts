@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   cureFrail,
+  cureSickness,
   healListed,
   innListed,
   raiseDead,
@@ -170,6 +171,31 @@ describe('the healer, and the crypt or mortuary', () => {
     snag.frail = true;
     w.purse = 99;
     expect(cureFrail(w, data, 'm-0')).toMatchObject({ ok: false });
+  });
+
+  it('cures poison and disease at their prices', () => {
+    const w = westhold();
+    const snag = member(w, 'Snag');
+    expect(cureSickness(w, data, 'm-0', 'poison')).toEqual({
+      ok: false,
+      reason: "Snag isn't Poisoned.",
+    });
+    expect(cureSickness(w, data, 'm-0', 'disease')).toEqual({
+      ok: false,
+      reason: "Snag isn't sick.",
+    });
+    snag.poisoned = true;
+    expect(cureSickness(w, data, 'm-0', 'poison')).toEqual({ ok: true });
+    expect([snag.poisoned, w.purse]).toEqual([false, 950]);
+    snag.disease = { id: 'grave-rot', nights: 2, saves: 0 };
+    w.purse = 499;
+    expect(cureSickness(w, data, 'm-0', 'disease')).toMatchObject({ ok: false });
+    w.purse = 500;
+    expect(cureSickness(w, data, 'm-0', 'disease')).toEqual({ ok: true });
+    expect([snag.disease, w.purse]).toEqual([null, 0]);
+    snag.dead = true;
+    snag.poisoned = true;
+    expect(cureSickness(w, data, 'm-0', 'poison')).toMatchObject({ ok: false });
   });
 
   it('raises the dead at 1 HP with the XP they missed', () => {

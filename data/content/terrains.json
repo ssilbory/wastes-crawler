@@ -63,7 +63,11 @@
     "hunt": 10,
     "water": true,
     "harsh": false,
-    "encounters": "swamp"
+    "encounters": "swamp",
+    "exposure": {
+      "disease": "swamp-fever",
+      "chance": 1
+    }
   },
   {
     "id": "badlands",

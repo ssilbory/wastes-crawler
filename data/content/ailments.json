@@ -1,0 +1,55 @@
+{
+  "poisoned": {
+    "penalty": 1,
+    "venomStrain": 1
+  },
+  "purgeSceneLevel": 7,
+  "antidote": {
+    "id": "antidote",
+    "name": "Antidote",
+    "source": {
+      "file": "2.0 The Rules of the Game/2.5.0 Injury, Healing, And System Strain.md",
+      "heading": "2.5.5 Poisons and Diseases"
+    },
+    "cost": {
+      "amount": 25,
+      "unit": "sp"
+    },
+    "encumbrance": null,
+    "weightless": true,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  "diseases": [
+    {
+      "id": "grave-rot",
+      "name": "Grave Rot",
+      "text": "A black rot from the bite of the corpse-eating dead. It saps the body's strength night after night.",
+      "onsetNights": 1,
+      "savePenalty": 1,
+      "harm": { "kind": "strain", "amount": 1 },
+      "savesToRecover": 2,
+      "purgeDifficulty": 8
+    },
+    {
+      "id": "swamp-fever",
+      "name": "Swamp Fever",
+      "text": "A shaking fever caught from the bad air and biting flies of the marshes. The sick fight and work poorly until it breaks.",
+      "onsetNights": 2,
+      "savePenalty": 0,
+      "harm": { "kind": "penalty" },
+      "savesToRecover": 2,
+      "purgeDifficulty": null
+    },
+    {
+      "id": "pit-flux",
+      "name": "Pit Flux",
+      "text": "A bloody flux bred in filth and standing water. It wrings the sick out each night.",
+      "onsetNights": 1,
+      "savePenalty": 0,
+      "harm": { "kind": "hp", "dice": { "count": 1, "sides": 6, "modifier": 0 } },
+      "savesToRecover": 2,
+      "purgeDifficulty": null
+    }
+  ]
+}

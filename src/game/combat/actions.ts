@@ -19,7 +19,7 @@ export function stabilize(b: Battle, actor: Combatant, target: Combatant, aid = 
   b.stabilizedThisRound.add(target.id);
   const check = skillCheck(b.rng, {
     skill: actor.skills.heal ?? null,
-    attributeModifier: actor.healModifier,
+    attributeModifier: actor.healModifier - actor.ailPenalty,
     modifier: aid,
     difficulty: stabilizeDifficulty(b.round - target.fellRound, actor.hasHealKit),
   });

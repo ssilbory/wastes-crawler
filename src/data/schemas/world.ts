@@ -41,6 +41,12 @@ export const MemberSaveSchema = z.strictObject({
   prayedDay: z.int().min(0).nullable(),
   /** Healers who have tried Purge Ailment on this Frailty, by member id: one try each. */
   purgeTries: z.array(z.string().min(1)),
+  /** A lingering poison: a penalty and no natural healing until cured or saved off. */
+  poisoned: z.boolean(),
+  /** The disease carried, the nights since it was caught, and the night saves made against it. */
+  disease: z
+    .strictObject({ id: IdSchema, nights: z.int().min(0), saves: z.int().min(0) })
+    .nullable(),
 });
 
 /** A hireling or a freed captive in one of the party's NPC slots (docs/rules-adaptation.md). */

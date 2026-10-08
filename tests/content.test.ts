@@ -10,6 +10,64 @@ const srd = loadSrd();
 const content = loadContent();
 
 describe('data/content', () => {
+  it('checks every disease named by places, traps, and strikes', () => {
+    const broken = {
+      ...content,
+      terrains: content.terrains.map((t, i) =>
+        i === 0 ? { ...t, exposure: { disease: 'plague', chance: 1 } } : t,
+      ),
+      monsterCombat: content.monsterCombat.map((m) =>
+        m.id === 'gnawing-dead'
+          ? {
+              ...m,
+              routine: m.routine?.map((r) => ({
+                ...r,
+                onHit: { kind: 'disease' as const, disease: 'rot' },
+              })),
+            }
+          : m,
+      ),
+      dungeons: content.dungeons.map((d, i) =>
+        i === 0
+          ? {
+              ...d,
+              levels: d.levels.map((l, j) =>
+                j === 0
+                  ? {
+                      ...l,
+                      exposure: { disease: 'mold', chance: 2 },
+                      // The Old Barrow's upper level has a trap to turn to filth.
+                      traps: l.traps.map((t) => ({
+                        ...t,
+                        effect: { kind: 'disease' as const, disease: 'ooze' },
+                      })),
+                    }
+                  : l,
+              ),
+            }
+          : d,
+      ),
+      ailments: {
+        ...content.ailments,
+        antidote: { ...content.ailments.antidote, id: 'healers-pouch' },
+        diseases: [...content.ailments.diseases, content.ailments.diseases[0] as never],
+      },
+    };
+    const errors = contentReferenceErrors(srd, broken).filter((e) =>
+      /disease|ailments|antidote/.test(e),
+    );
+    expect(errors).toEqual(
+      expect.arrayContaining([
+        'ailments: duplicate disease ids',
+        `terrains/${content.terrains[0]?.id} exposure: unknown disease plague`,
+        expect.stringMatching(/exposure: unknown disease mold$/),
+        expect.stringMatching(/trap: unknown disease ooze$/),
+        'monsterCombat/gnawing-dead Claw: unknown disease rot',
+        "ailments: the antidote's id healers-pouch is SRD gear",
+      ]),
+    );
+  });
+
   it('validates and references only existing SRD skills', () => {
     expect(contentReferenceErrors(srd, content)).toEqual([]);
     expect(content.peoples.map((p) => p.id)).toEqual([
