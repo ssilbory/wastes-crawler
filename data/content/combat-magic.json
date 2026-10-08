@@ -322,6 +322,16 @@
     }
   },
   {
+    "id": "savage-senses",
+    "source": "art",
+    "target": "self",
+    "effort": "scene",
+    "effect": {
+      "kind": "dark-sight",
+      "party": false
+    }
+  },
+  {
     "id": "steps-of-air",
     "source": "art",
     "target": "ally",
@@ -801,6 +811,26 @@
     "target": "enemy-row",
     "effect": {
       "kind": "final-death"
+    }
+  },
+  {
+    "id": "beast-ward",
+    "source": "art",
+    "target": "self",
+    "effort": "committed",
+    "limit": "scene",
+    "effect": {
+      "kind": "beast-ward"
+    }
+  },
+  {
+    "id": "swift-healing",
+    "source": "art",
+    "target": "wounded-ally",
+    "effort": "day",
+    "limit": "scene",
+    "effect": {
+      "kind": "companion-heal"
     }
   }
 ]

@@ -1054,6 +1054,100 @@
     ]
   },
   {
+    "id": "partial-beastmaster",
+    "name": "Partial Beastmaster",
+    "sources": [
+      {
+        "file": "1.0 Character Creation/1.5.0 Class List/1.5.4 The Beastmaster.md",
+        "heading": "Partial Beastmaster"
+      }
+    ],
+    "levels": [
+      {
+        "level": 1,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "spellsPrepared": 0,
+        "arts": [
+          "bind-companion"
+        ],
+        "anyArts": 1
+      },
+      {
+        "level": 2,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "spellsPrepared": 0,
+        "arts": [],
+        "anyArts": 1
+      },
+      {
+        "level": 3,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "spellsPrepared": 0,
+        "arts": [],
+        "anyArts": 0
+      },
+      {
+        "level": 4,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "spellsPrepared": 0,
+        "arts": [],
+        "anyArts": 1
+      },
+      {
+        "level": 5,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "spellsPrepared": 0,
+        "arts": [],
+        "anyArts": 1
+      },
+      {
+        "level": 6,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "spellsPrepared": 0,
+        "arts": [],
+        "anyArts": 1
+      },
+      {
+        "level": 7,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "spellsPrepared": 0,
+        "arts": [],
+        "anyArts": 0
+      },
+      {
+        "level": 8,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "spellsPrepared": 0,
+        "arts": [],
+        "anyArts": 1
+      },
+      {
+        "level": 9,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "spellsPrepared": 0,
+        "arts": [],
+        "anyArts": 0
+      },
+      {
+        "level": 10,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "spellsPrepared": 0,
+        "arts": [],
+        "anyArts": 1
+      }
+    ]
+  },
+  {
     "id": "dual-partial-spellcasters",
     "name": "Dual Partial Spellcasters",
     "sources": [

@@ -12,6 +12,7 @@ import { emit } from './bus.ts';
 import { nightForAilments } from './ailments.ts';
 import { immuneTo, sacredBlood, tended } from './arts.ts';
 import { nightForBeasts } from './beasts.ts';
+import { nightForCompanions } from './companion-night.ts';
 import { nightForTrees } from './greenwood.ts';
 import { dawnTakesSummons } from './summons.ts';
 import { wakeRevived } from './healer.ts';
@@ -71,6 +72,7 @@ export function endOfDay(w: World, data: GameData, waystation = false): void {
   nightForTrees(w);
   dawnTakesSummons(w);
   nightForNpcs(w, data, fed && sheltered && !w.noRecovery);
+  nightForCompanions(w, data);
   wakeRevived(w);
   w.fallen = null;
   emit(w, data, { kind: 'day-passed' });

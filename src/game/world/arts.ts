@@ -7,23 +7,22 @@
 import type { PendingEncounter } from '../../data/schemas/index.ts';
 import { roll } from '../../rules/dice.ts';
 import type { GameData } from '../character/context.ts';
-import { characterSheet } from '../character/derived.ts';
-import { armorFreeArts } from '../character/magic.ts';
-import { alive, awake, note, setHp } from './members.ts';
+import { alive, artUsable, awake, note, setHp } from './members.ts';
+
+export { artUsable };
 import type { Member, World } from './types.ts';
 
 /** Arts that see without light; Light of Faith lights the party instead. */
-export const SIGHT_ARTS = ['earthsight', 'flamesight', 'gravesight', 'sense-magic', 'healers-eye'];
+export const SIGHT_ARTS = [
+  'earthsight',
+  'flamesight',
+  'gravesight',
+  'sense-magic',
+  'healers-eye',
+  // The Beastmaster's Savage Senses (1.5.4).
+  'savage-senses',
+];
 export const FAITH_LIGHT = 'the-light-of-faith';
-
-/** A conscious member holds the art, it works in what they wear, and they have Effort left. */
-export function artUsable(data: GameData, m: Member, art: string): boolean {
-  const c = m.character;
-  if (!awake(m) || !c.arts.includes(art)) return false;
-  const magic = characterSheet(c, data, m.form).magic;
-  if (!magic || m.effortDay >= magic.effort) return false;
-  return magic.canCast || armorFreeArts(data, c.classes, c.arts).includes(art);
-}
 
 /** The first member who can use the art now. */
 export const userOf = (w: World, data: GameData, art: string) =>
@@ -40,8 +39,13 @@ export function immuneTo(
   condition: 'cold' | 'sleepless' | 'hungry',
 ): boolean {
   const arts = m.character.arts;
+  // Feral Toughness keeps off outdoor heat and cold (1.5.4).
   if (condition === 'cold')
-    return arts.includes('elemental-resilience') || artUsable(data, m, 'wizards-grandeur');
+    return (
+      arts.includes('elemental-resilience') ||
+      arts.includes('feral-toughness') ||
+      artUsable(data, m, 'wizards-grandeur')
+    );
   const vigor = artUsable(data, m, 'tireless-vigor');
   return condition === 'hungry' ? vigor : vigor || arts.includes('cold-flesh');
 }

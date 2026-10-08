@@ -126,5 +126,22 @@
       "wisdom-of-fin-and-scale"
     ],
     "artText": {}
+  },
+  {
+    "id": "beastmaster",
+    "name": "Beastmaster",
+    "bonusSkill": "survive",
+    "spellLists": [],
+    "effort": {
+      "skills": ["survive"],
+      "attributes": ["wis", "cha"],
+      "base": 0,
+      "partialPenalty": false,
+      "floorOne": true
+    },
+    "armoredArts": true,
+    "artLevels": {},
+    "excludedArts": [],
+    "artText": {}
   }
 ]

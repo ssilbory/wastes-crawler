@@ -16,6 +16,7 @@ import { HealerPanel } from './HealerPanel.tsx';
 import { PurgePanel } from './PurgePanel.tsx';
 import { AntidotePanel } from './AntidotePanel.tsx';
 import { GreenwoodPanel } from './GreenwoodPanel.tsx';
+import { CompanionsPanel } from './CompanionsPanel.tsx';
 import { FormsPanel } from './FormsPanel.tsx';
 import { ConjunctPanel } from './ConjunctPanel.tsx';
 import { HighRoadPanel } from './HighRoadPanel.tsx';
@@ -153,6 +154,7 @@ export function MapScreen(props: {
           <NecromancyPanel world={w} onChange={props.onChange} />
           <GreenwoodPanel world={w} onChange={props.onChange} />
           <FormsPanel world={w} onChange={props.onChange} />
+          <CompanionsPanel world={w} onChange={props.onChange} />
           <ConjunctPanel world={w} onChange={props.onChange} />
           <HighRoadPanel world={w} onChange={props.onChange} />
           <SorceryPanel world={w} onChange={props.onChange} />

@@ -21,6 +21,7 @@ import { highMagicEffect, type Resists } from './high-magic.ts';
 import { spellLevel } from './spell-level.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
 import { gameSpells } from '../../data/spells.ts';
+import { swiftHealingDice } from '../../rules/beastmaster.ts';
 
 export function combatMagic(b: Battle, id: string): CombatMagic | undefined {
   return b.data.content.combatMagic.find((m) => m.id === id);
@@ -53,6 +54,8 @@ function fitsTarget(b: Battle, actor: Combatant, m: CombatMagic, id?: string): b
   const t = b.combatants.find((x) => x.id === id);
   if (!t) return true;
   if (m.effect.kind === 'amber') return t !== actor;
+  // Swift Healing tends only the Beastmaster's own companion (1.5.4).
+  if (m.effect.kind === 'companion-heal' && t.companion?.master !== actor.id) return false;
   // Healing the target couldn't bear is never offered (SRD 2.5.2).
   if (m.effect.kind === 'heal') return bearsHealing(t, m.effect.strain);
   if (m.effect.kind === 'touch-heal')
@@ -247,6 +250,9 @@ export function castMagic(
       restore(b, target, dice + (actor.skills[e.skill] ?? 0) + empowered, e.strain);
       return true;
     }
+    case 'companion-heal':
+      if (target) restore(b, target, roll(b.rng, swiftHealingDice(actor.hitDice)).total, 0);
+      return true;
     case 'repose':
       if (target && !target.tags.has('unliving')) target.reposePenalty = actor.skills[e.skill] ?? 0;
       return true;

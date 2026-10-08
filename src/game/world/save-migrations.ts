@@ -182,16 +182,24 @@ export const WORLD_MIGRATIONS: Migrations = {
       Array.isArray(list) ? (list as Raw[]).map((m) => ({ ...m, form: null })) : list;
     return { ...raw, schemaVersion: 30, members: plain(raw.members), benched: plain(raw.benched) };
   },
-  // Version 31 gives Purge Ailment one try per Healer on each Frailty, and adds lingering poison
-  // and disease: no one has tried yet, and no one is Poisoned or sick.
+  // Version 31 adds the Beastmaster's companion sent away and Feral Toughness's hit points.
   30: (raw) => {
+    const plain = (list: unknown) =>
+      Array.isArray(list)
+        ? (list as Raw[]).map((m) => ({ ...m, companion: null, toughness: 0 }))
+        : list;
+    return { ...raw, schemaVersion: 31, members: plain(raw.members), benched: plain(raw.benched) };
+  },
+  // Version 32 gives Purge Ailment one try per Healer on each Frailty, and adds lingering poison
+  // and disease: no one has tried yet, and no one is Poisoned or sick.
+  31: (raw) => {
     const untried = (list: unknown) =>
       Array.isArray(list)
         ? (list as Raw[]).map((m) => ({ ...m, purgeTries: [], poisoned: false, disease: null }))
         : list;
     return {
       ...raw,
-      schemaVersion: 31,
+      schemaVersion: 32,
       members: untried(raw.members),
       benched: untried(raw.benched),
     };

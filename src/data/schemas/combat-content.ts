@@ -193,6 +193,10 @@ export const CombatEffectSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('petrify'), save: Save }),
   /** Sanctified Ward: +4 AC and saves, no Shock, and foes look elsewhere, until a hostile act. */
   z.strictObject({ kind: z.literal('sanctify') }),
+  /** Beast Ward: unprovoked beasts leave the Beastmaster be while the Effort stays (1.5.4). */
+  z.strictObject({ kind: z.literal('beast-ward') }),
+  /** Swift Healing: the Beastmaster's own companion heals 1d6 per character level (1.5.4). */
+  z.strictObject({ kind: z.literal('companion-heal') }),
   /** Reroll a spell's damage and keep the better (Empowered Sorcery). */
   z.strictObject({ kind: z.literal('reroll-damage') }),
   /** Make an enemy reroll a successful save and keep the worse (Inexorable Effect). */

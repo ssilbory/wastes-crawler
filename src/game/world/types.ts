@@ -41,6 +41,10 @@ export interface Member {
   reviving: boolean;
   artUses: Record<string, number>;
   prayedDay: number | null;
+  /** A Beastmaster's companion sent away, ready to be called (1.5.4). */
+  companion: NpcSave | null;
+  /** Hit points Feral Toughness adds to the maximum now (1.5.4). */
+  toughness: number;
   purgeTries: string[];
   poisoned: boolean;
   disease: { id: string; nights: number; saves: number } | null;

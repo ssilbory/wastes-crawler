@@ -16,6 +16,7 @@ import { findProgression, progressionLookup, type GameData } from './context.ts'
 import type { Evaluation } from './creation.ts';
 import { loadoutSummary, type EquipmentSummary } from './equipment.ts';
 import { classOption } from './class-step.ts';
+import { beastShape } from './beast-arts.ts';
 import { formShape } from './forms.ts';
 import { characterBonuses } from './shaping.ts';
 import { addsInt, armoredArts, castingAllowed, effortFor, spellSlots } from './magic.ts';
@@ -112,6 +113,16 @@ function modifiersAndSaves(scores: AttributeScores, level: number, bonuses: Modi
   };
 }
 
+/** A form's and the Beastmaster arts' attacks and base AC together; the better AC stands. */
+function arted(shape: ReturnType<typeof formShape> | null, beast: ReturnType<typeof beastShape>) {
+  const acs = [shape?.innateAc, beast.innateAc].filter((x): x is number => typeof x === 'number');
+  const effects = [...(shape?.effects ?? []), ...beast.effects];
+  return {
+    ...(effects.length > 0 ? { formEffects: effects } : {}),
+    ...(acs.length > 0 ? { formAc: Math.max(...acs) } : {}),
+  };
+}
+
 /** `form` is the index of a Skinshifter's alternate form worn now, if any (forms.ts). */
 export function characterSheet(c: Character, data: GameData, form: number | null = null): Sheet {
   const people = findPeople(data, c.people);
@@ -139,7 +150,7 @@ export function characterSheet(c: Character, data: GameData, form: number | null
       foci: c.foci,
       level,
       attackBonus,
-      ...(shape ? { formEffects: shape.effects, formAc: shape.innateAc } : {}),
+      ...arted(shape, beastShape(c)),
     }),
     strainMax: scores.con,
     size: people.size,

@@ -264,5 +264,26 @@
     "replace": "Whenever you spend Effort",
     "pdfPage": 33,
     "note": "\"When ever\" is \"Whenever\" in the PDF (printed page 29); the mirror split the word in two (arts/pliant-flesh)."
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.4 The Beastmaster.md",
+    "find": "#### Other Beastmaster\n\n- **Arts Beast Ward**:",
+    "replace": "#### Other Beastmaster Arts\n\n- **Beast Ward**:",
+    "pdfPage": 15,
+    "note": "Other Beastmaster Arts: the mirror moved \"Arts\" from the heading into the Beast Ward entry's name. (PDF page not yet confirmed against the official PDF.)"
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.4 The Beastmaster.md",
+    "find": "per forms some hostile act",
+    "replace": "performs some hostile act",
+    "pdfPage": 15,
+    "note": "\"per forms\" is \"performs\" in the PDF; the mirror split the word in two (arts/beast-ward). (PDF page not yet confirmed against the official PDF.)"
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.4 The Beastmaster.md",
+    "find": "a + bonus at level 6",
+    "replace": "a +2 bonus at level 6",
+    "pdfPage": 15,
+    "note": "Natural Weaponry: the mirror dropped the 2 from \"+2 bonus at level 6\" (arts/natural-weaponry). (PDF page not yet confirmed against the official PDF.)"
   }
 ]
