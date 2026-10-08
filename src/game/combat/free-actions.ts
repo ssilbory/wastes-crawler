@@ -18,6 +18,8 @@ const SIGHT = [
   'flamesight',
   'gravesight',
   'healers-eye',
+  // Savage Senses (1.5.4).
+  'savage-senses',
 ];
 
 export function freeActions(b: Battle, actor: Combatant): void {

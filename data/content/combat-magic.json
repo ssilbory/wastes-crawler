@@ -322,6 +322,16 @@
     }
   },
   {
+    "id": "savage-senses",
+    "source": "art",
+    "target": "self",
+    "effort": "scene",
+    "effect": {
+      "kind": "dark-sight",
+      "party": false
+    }
+  },
+  {
     "id": "steps-of-air",
     "source": "art",
     "target": "ally",

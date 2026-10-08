@@ -7,6 +7,7 @@ import { skillCheck, type CheckResult } from '../../rules/checks.ts';
 import { addStrain, type StrainSource } from '../../rules/strain.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
+import { armorFreeArts } from '../character/magic.ts';
 import { quarterName } from './calendar.ts';
 import type { Member, World } from './types.ts';
 
@@ -22,11 +23,23 @@ export const awake = (m: Member) => !m.dead && !m.reviving && m.character.hp.cur
 /** The member's sheet in the form they wear now (1.5.15). */
 export const memberSheet = (data: GameData, m: Member) => characterSheet(m.character, data, m.form);
 
-/** Eyes of the Hawk: +2 on Notice checks in a form that has it (1.5.15). */
-const keen = (m: Member, skill: string) =>
+/** A conscious member holds the art, it works in what they wear, and they have Effort left. */
+export function artUsable(data: GameData, m: Member, art: string): boolean {
+  const c = m.character;
+  if (!awake(m) || !c.arts.includes(art)) return false;
+  const magic = characterSheet(c, data, m.form).magic;
+  if (!magic || m.effortDay >= magic.effort) return false;
+  return magic.canCast || armorFreeArts(data, c.classes, c.arts).includes(art);
+}
+
+/**
+ * +2 on Notice checks: Eyes of the Hawk in a form that has it (1.5.15), and Savage Senses while
+ * Effort is left to commit to it (1.5.4).
+ */
+const keen = (data: GameData, m: Member, skill: string) =>
   skill === 'notice' &&
-  m.form !== null &&
-  m.character.forms?.[m.form]?.arts.includes('eyes-of-the-hawk')
+  ((m.form !== null && m.character.forms?.[m.form]?.arts.includes('eyes-of-the-hawk')) ||
+    artUsable(data, m, 'savage-senses'))
     ? 2
     : 0;
 
@@ -34,7 +47,9 @@ const keen = (m: Member, skill: string) =>
 export function checkBonus(data: GameData, m: Member, skill: string, attrs: Attribute[]): number {
   const mods = memberSheet(data, m).modifiers;
   return (
-    (m.character.skills[skill] ?? -1) + Math.max(...attrs.map((a) => mods[a])) + keen(m, skill)
+    (m.character.skills[skill] ?? -1) +
+    Math.max(...attrs.map((a) => mods[a])) +
+    keen(data, m, skill)
   );
 }
 
@@ -63,7 +78,7 @@ export function memberCheck(
   const mods = memberSheet(data, m).modifiers;
   return skillCheck(w.rng, {
     skill: m.character.skills[skill] ?? null,
-    attributeModifier: Math.max(...attrs.map((a) => mods[a])) + keen(m, skill),
+    attributeModifier: Math.max(...attrs.map((a) => mods[a])) + keen(data, m, skill),
     difficulty,
     steps: m.character.strain.broken ? steps - 1 : steps,
   });
