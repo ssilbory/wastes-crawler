@@ -69,6 +69,29 @@ test('exports a full save and loads it back, roster and all', async ({ page }, t
   await expect(page.getByRole('region', { name: 'Roster' })).toContainText('Snag');
 });
 
+test('exports a save from town and from underground', async ({ page }) => {
+  await begin(page, 'export-e2e');
+  const exported = async () => {
+    const download = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Export save' }).click();
+    expect((await download).suggestedFilename()).toBe('wastes-crawler-save.json');
+  };
+  await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
+  await exported();
+  await page.getByRole('button', { name: 'Back to the map' }).click();
+  await page.evaluate((key) => {
+    const save = JSON.parse(localStorage.getItem(key) as string);
+    save.position = { col: 5, row: 10 };
+    save.visited.push('4,9', '5,10');
+    localStorage.setItem(key, JSON.stringify(save));
+  }, WORLD_KEY);
+  await page.reload();
+  await page.getByRole('button', { name: 'Continue journey' }).click();
+  await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
+  await expect(page.getByRole('img', { name: 'Dungeon view' })).toBeVisible();
+  await exported();
+});
+
 test('reloads mid-dungeon into identical state, RNG included', async ({ page }) => {
   await begin(page, 'reload-e2e');
   await page.evaluate((key) => {

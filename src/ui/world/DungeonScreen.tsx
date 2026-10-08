@@ -66,6 +66,7 @@ export function DungeonScreen(props: {
   onFight: () => void;
   onLeave: () => void;
   onOpen: (screen: PartyScreen) => void;
+  onExport: () => void;
 }) {
   const w = props.world;
   const s = w.dungeon as NonNullable<World['dungeon']>;
@@ -125,6 +126,9 @@ export function DungeonScreen(props: {
         <span class="turn">{turnText(w)}</span>
         <span class="light">{lightText(w)}</span>
         <PartyButtons onOpen={props.onOpen} />
+        <button type="button" class="secondary" onClick={props.onExport}>
+          Export save
+        </button>
       </div>
       <div class="world-main">
         <div class="world-left">

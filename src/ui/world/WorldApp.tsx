@@ -101,6 +101,9 @@ export function WorldApp() {
   };
 
   const w = world.current;
+  const exportSave = () => {
+    if (w) download(serializeBundle(w, roster));
+  };
   /** Starts the pending encounter's fight, with the XP simulation running alongside. */
   const startFight = () => {
     if (!w) return;
@@ -215,6 +218,7 @@ export function WorldApp() {
         onFight={startFight}
         onLeave={leave}
         onOpen={openFrom('map')}
+        onExport={exportSave}
       />
     );
   if (screen === 'town')
@@ -226,6 +230,7 @@ export function WorldApp() {
         onChange={changed}
         onLeave={() => setScreen('map')}
         onOpen={openFrom('town')}
+        onExport={exportSave}
         tab={townTab}
         onTab={setTownTab}
         onBout={(start) =>
@@ -262,7 +267,7 @@ export function WorldApp() {
       onTown={() => setScreen('town')}
       onOpen={openFrom('map')}
       onLeave={leave}
-      onExport={() => download(serializeBundle(w, roster))}
+      onExport={exportSave}
       onAbandon={() => {
         if (!confirm('Abandon this world? The save is deleted.')) return;
         saveWorldText(null);
