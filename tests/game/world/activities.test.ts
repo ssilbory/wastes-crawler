@@ -111,6 +111,16 @@ describe('hiking', () => {
     expect(w.log.at(-1)).toContain('nowhere it can hike to');
   });
 
+  it('drops the destination mid-hike once the party can get no closer', () => {
+    const w = at(world(), 2, 5);
+    w.visited = new Set(['2,5']);
+    w.destination = { col: 5, row: 4 };
+    hike(w, data, 'm-2', false);
+    expect(w.position).toEqual({ col: 4, row: 5 });
+    expect(w.destination).toBeNull();
+    expect(w.log.at(-1)).toContain('can get no closer');
+  });
+
   it('makes the Overloaded save on each hex, at 1 strain a failure', () => {
     const w = at(world([1, 6, 6]), 3, 8);
     const snag = member(w, 'Snag');

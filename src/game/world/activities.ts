@@ -159,8 +159,15 @@ export function hike(w: World, data: GameData, leaderId: string | null, dark: bo
     else emit(w, data, { kind: 'hex-entered' });
     if (site || endMarch || w.encounter) break;
     // Heading into fog, each step reveals more, so re-plan at the edge of the known map.
-    if (path.length === 0 && w.destination && hexKey(next) !== hexKey(w.destination))
-      path = plan() ?? [];
+    if (path.length === 0 && w.destination && hexKey(next) !== hexKey(w.destination)) {
+      const ahead = plan();
+      if (!ahead) {
+        w.destination = null;
+        note(w, 'The party can get no closer.');
+        break;
+      }
+      path = ahead;
+    }
   }
   if (w.destination && hexKey(w.position) === hexKey(w.destination)) w.destination = null;
   return extra;
