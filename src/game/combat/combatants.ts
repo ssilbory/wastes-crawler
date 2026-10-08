@@ -95,6 +95,14 @@ export function base(
     amber: false,
     fleet: false,
     finalDeath: false,
+    monster: null,
+    beast: false,
+    companion: null,
+    bound: null,
+    canBind: false,
+    waiting: null,
+    beastWard: false,
+    provoked: false,
   };
 }
 

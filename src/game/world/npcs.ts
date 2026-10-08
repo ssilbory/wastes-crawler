@@ -111,9 +111,13 @@ function nextName(w: World, data: GameData): string {
   return names.find((name) => !w.npcs.some((x) => x.name === name)) ?? (names[0] as string);
 }
 
-/** Fighting servants: raised undead, beasts, woken trees, and kept summons. */
+/** Fighting servants: raised undead, beasts, woken trees, kept summons, and companions. */
 export const isServant = (n: Pick<Npc, 'kind'>) =>
-  n.kind === 'undead' || n.kind === 'beast' || n.kind === 'summon' || n.kind === 'tree';
+  n.kind === 'undead' ||
+  n.kind === 'beast' ||
+  n.kind === 'summon' ||
+  n.kind === 'tree' ||
+  n.kind === 'companion';
 
 /**
  * A servant's slot (docs/rules-adaptation.md, Formation rules: Servants): in front where it can,
@@ -175,6 +179,14 @@ export function addNpc(
   return npc;
 }
 
+/** Puts an NPC who left the party back in a free slot, by the same rules as a new one. */
+export function placeNpc(w: World, n: Npc, front: boolean): boolean {
+  const slot = isServant(n) ? servantSlot(w, n.name) : npcRoom(w, front);
+  if (!slot) return false;
+  w.npcs.push({ ...n, ...slot, id: nextId(w) });
+  return true;
+}
+
 export function removeNpc(w: World, id: string): Npc {
   const n = w.npcs.find((x) => x.id === id);
   if (!n) throw new Error(`no NPC ${id}`);
@@ -194,7 +206,7 @@ export function nightForNpcs(w: World, data: GameData, rested: boolean): void {
   for (const n of w.npcs) {
     if (n.kind === 'undead') {
       if (n.type === GRAVE_KNIGHT) n.hp = n.maxHp;
-    } else if (rested) n.hp = Math.min(n.maxHp, n.hp + npcMonster(data, n).hitDice);
+    } else if (rested) n.hp = Math.min(n.maxHp, n.hp + (n.hitDice ?? npcMonster(data, n).hitDice));
   }
 }
 

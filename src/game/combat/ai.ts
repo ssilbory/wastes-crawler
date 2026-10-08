@@ -75,7 +75,7 @@ function cursedAction(b: Battle, actor: Combatant): Action | null {
 }
 
 /** Healing arts, in the order the AI reaches for them. */
-export const HEALING = ['merciful-healing', 'healing-touch'];
+export const HEALING = ['merciful-healing', 'healing-touch', 'swift-healing'];
 
 export const enemiesOf = (b: Battle, actor: Combatant) =>
   b.combatants.filter((c) => c.side !== actor.side && isUp(c));

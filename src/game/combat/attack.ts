@@ -11,6 +11,7 @@ import { afterHit, resisted } from './specials.ts';
 import { negatesUndead } from './reactions.ts';
 import { attackSteps, hitModifier, rangedModifier } from './targeting.ts';
 import type { Attack, Battle, Combatant } from './types.ts';
+import { knowsWeakSpot, provoke } from './companions.ts';
 
 function shockContext(target: Combatant, attack: Attack): ShockContext {
   return {
@@ -64,6 +65,7 @@ export function resolveAttack(
 ): void {
   if (!crossWall(b, actor, attack, target) || !cutVines(b, actor, attack, target)) return;
   if (!mantleCut(b, actor, target, attack)) return;
+  provoke(actor, target);
   // Red Harvest's +4 is spent on the next hit roll (Phase 15).
   const harvest = actor.nextHitBonus;
   actor.nextHitBonus = 0;
@@ -106,8 +108,11 @@ export function resolveAttack(
     ).total;
   // Enfeebling Wave: damage rolled twice, the worse kept (4.6.0).
   const damageRoll = () => (actor.enfeebledUntil >= b.round ? Math.min(once(), once()) : once());
-  // Smite the Wicked rolls the damage twice and keeps the better, then adds the level.
-  const rolled = boost ? Math.max(damageRoll(), damageRoll()) + boost.damage : damageRoll();
+  // Smite the Wicked rolls the damage twice and keeps the better, then adds the level; Know the
+  // Weak Spot rolls it twice against a beast (1.5.4).
+  const twice = boost !== null || knowsWeakSpot(actor, target);
+  const rolled =
+    (twice ? Math.max(damageRoll(), damageRoll()) : damageRoll()) + (boost?.damage ?? 0);
   // The doomed lose their defenses against blows, too.
   const blow = doomed ? rolled : resisted(target, attack, rolled);
   // Veteran's Luck: once per scene, turn a hit that would drop the Warrior into a miss.

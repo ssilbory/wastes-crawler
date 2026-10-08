@@ -13,7 +13,8 @@ import { bonetalker } from './arts.ts';
 import { passInDisguise } from './guises.ts';
 import { alive, memberCheck, memberSheet, note } from './members.ts';
 import { reactionBonus } from './minds.ts';
-import { captiveOf, firstGuide } from './npcs.ts';
+import { captiveOf, firstGuide, npcMonster } from './npcs.ts';
+import { sharedEyes } from './companion-sync.ts';
 import { regionMap } from './region.ts';
 import type { Member, World } from './types.ts';
 import { identify } from './bestiary.ts';
@@ -132,6 +133,17 @@ export function startEncounter(
       const ours = npcCheck(w.rng, { skillBonus, difficulty: 0, steps });
       if (pcWinsOpposed(ours.score, theirs.score)) spotter = guide.name;
     }
+  }
+  // Eyes of the Beast: a Beastmaster sharing a companion's senses is surprised only if it is too.
+  const eyes = steps === null || spotter ? undefined : sharedEyes(w, data);
+  if (eyes) {
+    const theirs = npcCheck(w.rng, {
+      skillBonus: Math.max(...rows.flat().map((id) => (findMonster(data, id) as Monster).skill)),
+      difficulty: 0,
+    });
+    const skillBonus = npcMonster(data, eyes).skill;
+    const ours = npcCheck(w.rng, { skillBonus, difficulty: 0, steps: steps ?? 0 });
+    if (pcWinsOpposed(ours.score, theirs.score)) spotter = eyes.name;
   }
   const spotted = spotter !== null;
   const counts = new Map<string, number>();

@@ -5,7 +5,7 @@
 import type { FocusEffect, Mind } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
 import { activeEffects } from '../character/equipment.ts';
-import { alive, awake } from './members.ts';
+import { alive, artUsable, awake } from './members.ts';
 import type { World } from './types.ts';
 
 export function mindOf(data: GameData, monsterId: string): Mind {
@@ -41,10 +41,15 @@ export function parleyReach(w: World, data: GameData): ParleyReach {
   };
 }
 
-/** Anyone awake with Animal Ken, who can talk to beasts (docs/rules-adaptation.md, Skills). */
+/**
+ * Anyone awake with Animal Ken, who can talk to beasts (docs/rules-adaptation.md, Skills), or a
+ * Beastmaster with Effort to commit to Tongue of the Beasts (1.5.4).
+ */
 export const beastSpeaker = (w: World, data: GameData) =>
   w.members.some(
-    (m) => awake(m) && m.character.skills[data.content.skillRules.animalKen.skill] !== undefined,
+    (m) =>
+      (awake(m) && m.character.skills[data.content.skillRules.animalKen.skill] !== undefined) ||
+      artUsable(data, m, 'tongue-of-the-beasts'),
   );
 
 /** True when every monster in the rows is an animal. */

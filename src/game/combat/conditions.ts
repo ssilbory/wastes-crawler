@@ -9,6 +9,7 @@ import { fall, harm, save, say } from './damage.ts';
 import { smite } from './elementalist.ts';
 import { canAct, flying, isUp, targets } from './targeting.ts';
 import type { Action, Attack, Battle, Combatant } from './types.ts';
+import { arrive } from './companions.ts';
 
 /** Monster sides stand in up to three rows. */
 const ENEMY_ROWS = 3;
@@ -184,6 +185,11 @@ export function roundPasses(b: Battle): void {
   furyWanders(b);
   for (const c of b.combatants) {
     if (c.returnsRound === 0 || c.returnsRound > b.round) continue;
+    // A companion answering a Howl of Distant Summons (1.5.4).
+    if (c.companion) {
+      arrive(b, c);
+      continue;
+    }
     c.returnsRound = 0;
     c.status = 'active';
     say(b, `${c.name} returns from the black glass maze.`);

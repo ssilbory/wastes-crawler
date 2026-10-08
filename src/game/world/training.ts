@@ -6,6 +6,7 @@ import { advance, type LevelChoices } from '../character/advance.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
 import type { TrainResult } from '../character/training.ts';
+import { untoughened } from './companion-sync.ts';
 import { note } from './members.ts';
 import type { TownResult } from './services.ts';
 import { townHere } from './town.ts';
@@ -33,9 +34,12 @@ export function levelUpMember(
   choices: LevelChoices,
 ): TownResult {
   const m = living(w, data, id);
-  const result = advance(data, ownShape(data, m), choices, w.rng);
+  const result = untoughened(w, data, m, () => {
+    const r = advance(data, ownShape(data, m), choices, w.rng);
+    if (r.ok) m.character = reshape(data, m, r.character);
+    return r;
+  });
   if (!result.ok) return result;
-  m.character = reshape(data, m, result.character);
   const level = characterSheet(m.character, data).level;
   note(w, `${m.character.name} reaches level ${level} (${m.character.hp.max} HP).`);
   return { ok: true };
@@ -49,8 +53,10 @@ export function trainMember(
   step: (c: Character) => TrainResult,
 ): TownResult {
   const m = living(w, data, id);
-  const result = step(ownShape(data, m));
-  if (!result.ok) return result;
-  m.character = reshape(data, m, result.character);
-  return { ok: true };
+  const result = untoughened(w, data, m, () => {
+    const r = step(ownShape(data, m));
+    if (r.ok) m.character = reshape(data, m, r.character);
+    return r;
+  });
+  return result.ok ? { ok: true } : result;
 }

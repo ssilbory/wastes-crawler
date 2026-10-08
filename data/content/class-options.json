@@ -220,6 +220,43 @@
     }
   },
   {
+    "id": "beastmaster-partial-warrior",
+    "name": "Ranger",
+    "halves": "Beastmaster/Warrior",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "beastmaster",
+          "partial": true,
+          "arts": "partial-beastmaster"
+        }
+      ],
+      "slots": "partial-beastmaster",
+      "startingSpells": 0,
+      "spellsPerLevel": 0,
+      "excludedSpells": []
+    }
+  },
+  {
+    "id": "beastmaster-partial-expert",
+    "name": "Hunter",
+    "halves": "Beastmaster/Expert",
+    "abilities": ["quick-learner"],
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "beastmaster",
+          "partial": true,
+          "arts": "partial-beastmaster"
+        }
+      ],
+      "slots": "partial-beastmaster",
+      "startingSpells": 0,
+      "spellsPerLevel": 0,
+      "excludedSpells": []
+    }
+  },
+  {
     "id": "healer-partial-mage",
     "name": "Priest of Death",
     "halves": "Necromancer/Healer",

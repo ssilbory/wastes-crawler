@@ -8,6 +8,7 @@ import { note } from './members.ts';
 import { innListed, stayAtInn, type TownResult } from './services.ts';
 import { priceHere, spend, townHere } from './town.ts';
 import type { World } from './types.ts';
+import { followMaster } from './companion-sync.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 
@@ -46,6 +47,7 @@ export function stayToWork(w: World, data: GameData, crafterId: string): TownRes
   const price = priceHere(w, data, listed);
   if (!spend(w, data, listed)) return no(`${daysText(p.daysLeft)}' rent costs ${price} crowns.`);
   Object.assign(p, { staying: true, town: town.id });
+  followMaster(w, m);
   w.members = w.members.filter((x) => x !== m);
   w.benched.push(m);
   const name = findItem(data, p.item)?.name as string;

@@ -13,6 +13,7 @@ import { echoes, landing, quickens, roundPasses, struggle, weakestSwing } from '
 import { checkMorale } from './morale.ts';
 import { canAct, isUp, targets } from './targeting.ts';
 import type { Attack, Battle, Combatant, Controller } from './types.ts';
+import { heedCall } from './companions.ts';
 
 export const MAX_ROUNDS = 100;
 
@@ -222,6 +223,8 @@ export function advance(
     if (!actor) closeRound(b);
     else if (needsCommand(actor)) {
       beginTurn(b, actor);
+      // A companion under its master's command has had Mind Call's Effort committed (1.5.4).
+      if (actor.companion) heedCall(b, actor);
       return actor;
     } else takeTurn(b, actor, controllerFor(actor, party, enemy));
   }
