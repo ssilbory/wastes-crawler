@@ -7,7 +7,7 @@ import {
   type Site,
   type Terrain,
 } from '../../data/schemas/index.ts';
-import { hexKey, neighbors, type Hex } from '../../rules/hex.ts';
+import { distance, hexKey, neighbors, parseHexKey, type Hex } from '../../rules/hex.ts';
 import { moveCost } from '../../rules/overland.ts';
 import type { GameData } from '../character/context.ts';
 
@@ -69,19 +69,14 @@ export function seenHexes(map: RegionMap, visited: ReadonlySet<string>): Set<str
   return seen;
 }
 
-/**
- * The cheapest route by hike points through hexes the party knows (seen), ending at `to` and
- * going around the hexes in `avoid`. Returns the hexes after `from`, or null if there's no route.
- */
-export function findPath(
+/** Cheapest hike-point costs from `from` through known hexes, stopping once `goal` is settled. */
+function explore(
   map: RegionMap,
   from: Hex,
-  to: Hex,
   known: ReadonlySet<string>,
-  avoid: ReadonlySet<string> = new Set(),
-): Hex[] | null {
-  const goal = hexKey(to);
-  if (!known.has(goal) || map.costOf(to) === null) return null;
+  avoid: ReadonlySet<string>,
+  goal?: string,
+): { best: Map<string, number>; prev: Map<string, Hex> } {
   const best = new Map<string, number>([[hexKey(from), 0]]);
   const prev = new Map<string, Hex>();
   const open: { hex: Hex; cost: number }[] = [{ hex: from, cost: 0 }];
@@ -103,9 +98,55 @@ export function findPath(
       }
     }
   }
-  if (!prev.has(goal)) return null;
+  return { best, prev };
+}
+
+/** The hexes after `from` on the way to `to`, walking back along `prev`. */
+function trace(prev: ReadonlyMap<string, Hex>, from: Hex, to: Hex): Hex[] {
   const path: Hex[] = [];
   for (let h: Hex | undefined = to; h && hexKey(h) !== hexKey(from); h = prev.get(hexKey(h)))
     path.unshift(h);
   return path;
+}
+
+/**
+ * The cheapest route by hike points through hexes the party knows (seen), ending at `to` and
+ * going around the hexes in `avoid`. Returns the hexes after `from`, or null if there's no route.
+ */
+export function findPath(
+  map: RegionMap,
+  from: Hex,
+  to: Hex,
+  known: ReadonlySet<string>,
+  avoid: ReadonlySet<string> = new Set(),
+): Hex[] | null {
+  const goal = hexKey(to);
+  if (!known.has(goal) || map.costOf(to) === null) return null;
+  const { prev } = explore(map, from, known, avoid, goal);
+  return prev.has(goal) ? trace(prev, from, to) : null;
+}
+
+/**
+ * A route toward `to`: findPath's once `to` is known; while it's unexplored, the route to the
+ * reachable known hex nearest it, cheapest on ties, so fog never gives its terrain away. Null if
+ * that gets the party no closer than it is.
+ */
+export function pathToward(
+  map: RegionMap,
+  from: Hex,
+  to: Hex,
+  known: ReadonlySet<string>,
+  avoid: ReadonlySet<string> = new Set(),
+): Hex[] | null {
+  if (known.has(hexKey(to))) return findPath(map, from, to, known, avoid);
+  const { best, prev } = explore(map, from, known, avoid);
+  let goal = from;
+  let near = distance(from, to);
+  let goalCost = 0;
+  for (const [key, cost] of best) {
+    const h = parseHexKey(key);
+    const d = distance(h, to);
+    if (d < near || (d === near && cost < goalCost)) [goal, near, goalCost] = [h, d, cost];
+  }
+  return hexKey(goal) === hexKey(from) ? null : trace(prev, from, goal);
 }

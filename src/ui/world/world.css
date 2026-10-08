@@ -20,7 +20,6 @@
 
 .hex.fog polygon {
   fill: var(--line);
-  cursor: default;
 }
 
 .t-plains polygon {

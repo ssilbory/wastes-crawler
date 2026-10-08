@@ -4,7 +4,7 @@ const SIZE = 18;
 
 export const HEX_SIZE = SIZE;
 
-/** The overland map as SVG; clicking a known hex picks it as the destination. */
+/** The overland map as SVG; clicking a hex, even under fog, picks it as the destination. */
 export function HexMap(props: {
   cells: HexCell[];
   width: number;
@@ -32,7 +32,7 @@ export function HexMap(props: {
             .filter(Boolean)
             .join(' ')}
           data-hex={c.key}
-          onClick={() => c.terrain && props.onPick(c.col, c.row)}
+          onClick={() => props.onPick(c.col, c.row)}
         >
           <title>{c.label}</title>
           <polygon points={c.points} />

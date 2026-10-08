@@ -96,6 +96,21 @@ describe('hiking', () => {
     expect(w.log.at(-1)).toContain('nowhere it can hike to');
   });
 
+  it('re-plans into fog at the edge of the known map, and drops a destination it cannot reach', () => {
+    const w = at(world(), 3, 8);
+    w.destination = { col: 8, row: 8 };
+    hike(w, data, 'm-2', false);
+    expect(w.position).toEqual({ col: 5, row: 7 });
+    expect(w.destination).toEqual({ col: 8, row: 8 });
+    // The lake at 6,4 shows once the party stands beside it.
+    at(w, 6, 7);
+    w.visited.add('6,7');
+    w.destination = { col: 6, row: 6 };
+    expect(hike(w, data, 'm-2', false)).toBe(0);
+    expect(w.destination).toBeNull();
+    expect(w.log.at(-1)).toContain('nowhere it can hike to');
+  });
+
   it('makes the Overloaded save on each hex, at 1 strain a failure', () => {
     const w = at(world([1, 6, 6]), 3, 8);
     const snag = member(w, 'Snag');

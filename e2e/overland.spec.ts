@@ -106,3 +106,25 @@ test('camps for the night with the suggested watches and shelter', async ({ page
     /^(morning|day|evening|night), 2 Seedtime/i,
   );
 });
+
+test('heads toward an unexplored hex picked on the map', async ({ page }) => {
+  await page.goto('/#/arena');
+  await page.getByLabel('Import character files').setInputFiles(starters.slice(0, 2));
+  await page.getByRole('button', { name: 'Menu' }).click();
+  await page.getByRole('link', { name: 'Overland' }).click();
+  await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();
+  await page.getByRole('combobox', { name: 'Front row, slot 1' }).selectOption({ label: 'Snag' });
+  await page.getByRole('combobox', { name: 'Front row, slot 2' }).selectOption({ label: 'Grukk' });
+  await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('fog-e2e');
+  await page.getByRole('button', { name: 'Start a new world' }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
+  const target = page.locator('[data-hex="10,8"]');
+  await expect(target).toHaveClass(/\bfog\b/);
+  await target.click();
+  await expect(target).toHaveClass(/\bdestination\b/);
+  await expect(page.locator('.hex.route')).not.toHaveCount(0);
+  const plan = page.getByRole('region', { name: 'Quarter plan' });
+  await expect(plan.getByRole('radio', { name: 'Hike' })).toHaveAttribute('aria-checked', 'true');
+  await page.getByRole('button', { name: 'Hike' }).click();
+  await expect(page.locator('.world-bar')).not.toContainText('Rubblegate');
+});
