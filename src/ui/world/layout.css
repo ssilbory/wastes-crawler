@@ -1,19 +1,65 @@
-/* Page layout shared by the overland map, dungeons, towns, and the character screen. */
+/* Screen layout shared by the overland map, dungeons, towns, and the party screens: a status bar
+   across the top and a stage that fills the rest of the window. The window never scrolls; a dock
+   or a long list scrolls inside itself when it runs out of room. */
 .world {
-  max-width: 1560px;
-  margin: 0 auto;
-  padding: 12px 16px;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 10px 10px;
+  overflow: hidden;
 }
 
+.world > * {
+  flex: none;
+}
+
+/* The status bar: readouts on the left, actions on the right. Clears the ☰ menu button. */
 .world-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 14px;
+  gap: 6px 8px;
   align-items: center;
+  min-height: 46px;
+  padding: 4px 8px 4px 54px;
+  background: linear-gradient(180deg, var(--panel-raised), var(--panel));
+  border: 2px solid var(--bevel-lo);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--bevel-out);
+}
+
+.world-bar > span:not(.bar-actions) {
+  padding: 1px 6px;
+  font-family: var(--font-term);
+  font-size: 1.2rem;
+  line-height: 1.3;
+  color: var(--ink);
+  background: var(--panel-sunk);
+  border: 1px solid var(--bevel-lo);
+  border-radius: var(--radius-control);
+  box-shadow: var(--bevel-in);
+  white-space: nowrap;
 }
 
 .world-bar .date {
-  font-weight: 600;
+  font-family: var(--font-term);
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--gold);
+  text-transform: none;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.world-bar span.date {
+  color: var(--gold);
+}
+
+/* Screen titles in the bar (towns, the party screens) use the title face. */
+.world-bar h1.date {
+  font-family: var(--font-title);
+  font-size: 2rem;
+  line-height: 1;
 }
 
 .world-bar .bar-actions {
@@ -24,65 +70,94 @@
 }
 
 .world-bar button {
-  padding: 4px 10px;
+  padding: 4px 9px;
 }
 
+/* Party member tabs on the character and inventory screens. */
+.world-bar .tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* The stage: the main view on the left, two docks of panels on the right. */
 .world-main {
+  flex: 1 1 auto;
+  min-height: 0;
   display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr);
-  gap: 12px;
-  margin-top: 12px;
-  align-items: start;
+  grid-auto-flow: column;
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-columns: minmax(250px, 340px);
+  gap: 10px;
 }
 
-.world-left,
-.world-side {
-  display: grid;
-  gap: 12px;
-  align-content: start;
+.world-left {
+  min-height: 0;
   min-width: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 10px;
 }
 
-/* Wide screens: side panels flow into two columns instead of one long stack. */
-@media (min-width: 1320px) {
-  .world-main:has(> .world-side.flow) {
-    grid-template-columns: minmax(0, 1fr) minmax(600px, 0.9fr);
-  }
-
-  .world-side.flow {
-    display: block;
-    columns: 2 290px;
-    column-gap: 12px;
-  }
-
-  .world-side.flow > * {
-    break-inside: avoid;
-    margin: 0 0 12px;
-  }
-
-  /* Four slots to a row in a narrow column: trim the padding so names still fit. */
-  .world-side.flow .formation-slots select {
-    padding: 4px 2px;
-    font-size: 0.85rem;
-  }
+.dock {
+  min-height: 0;
+  min-width: 0;
+  overflow-y: auto;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding-bottom: 4px;
+  /* The same width whether or not the dock scrolls. */
+  scrollbar-gutter: stable;
 }
 
-@media (max-width: 860px) {
+/* A dock with nothing to show gives its room back to the main view. */
+.dock:empty {
+  display: none;
+}
+
+/* Narrow windows: the docks stack in one column beside the main view. */
+@media (max-width: 1100px) {
   .world-main {
-    grid-template-columns: minmax(0, 1fr);
+    grid-auto-flow: row;
+    grid-template-columns: minmax(0, 1fr) minmax(250px, 320px);
+    grid-auto-rows: minmax(0, 1fr);
+  }
+
+  .world-main > .world-left {
+    grid-row: span 2;
   }
 }
 
-/* The journal scrolls inside itself, newest line on top. */
+.world .panel > :is(h2, h3):first-child {
+  margin-top: 0;
+}
+
+/* The journal: a fixed strip under the main view, newest line on top. */
+.world .log {
+  display: flex;
+  flex-direction: column;
+  height: 8.5rem;
+  min-height: 0;
+}
+
 .world .log ol {
+  flex: 1 1 auto;
+  min-height: 0;
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: 14rem;
+  max-height: none;
   overflow-y: auto;
-  font-size: 0.85rem;
-  display: flex;
-  flex-direction: column-reverse;
+  font-size: 0.9rem;
+}
+
+.world .log li:first-child {
+  color: var(--ink);
+}
+
+.world .log li {
+  color: var(--muted);
 }
 
 .party-panel .member-head {
@@ -113,18 +188,24 @@
   text-align: right;
 }
 
-.world .panel > :is(h2, h3):first-child {
-  margin-top: 0;
-}
-
-/* Formation and Inventory: one main panel with a narrower one beside it. */
+/* Formation, Inventory, and Characters: one main panel with a narrower one beside it, each
+   scrolling on its own. */
 .sub-screen {
+  flex: 1 1 auto;
+  min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
-  gap: 12px;
-  margin-top: 12px;
+  gap: 10px;
   align-items: start;
-  max-width: 1100px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.sub-screen > * {
+  max-height: 100%;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 @media (max-width: 760px) {
@@ -133,20 +214,25 @@
   }
 }
 
-.world-bar h1.date {
-  font-size: 1.3rem;
+/* The character sheet spreads across the screen in columns instead of running down it. */
+.characters .sub-screen {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: none;
+  align-items: stretch;
+}
+
+.characters .sheet.final {
+  max-width: none;
   margin: 0;
+  columns: 3 300px;
+  column-gap: 28px;
+  column-rule: 1px solid var(--line);
 }
 
-/* Party member tabs on the character and inventory screens. */
-.world-bar .tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
+.characters .sheet.final > :is(h2, h3) {
+  break-after: avoid;
 }
 
-.world-bar .tabs [aria-selected='true'] {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--panel);
+.characters .sheet.final > :is(table, dl, ul, p) {
+  break-inside: avoid;
 }

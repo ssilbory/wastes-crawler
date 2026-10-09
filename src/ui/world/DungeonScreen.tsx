@@ -125,10 +125,12 @@ export function DungeonScreen(props: {
         </span>
         <span class="turn">{turnText(w)}</span>
         <span class="light">{lightText(w)}</span>
-        <PartyButtons onOpen={props.onOpen} />
-        <button type="button" class="secondary" onClick={props.onExport}>
-          Export save
-        </button>
+        <span class="bar-actions">
+          <PartyButtons onOpen={props.onOpen} />
+          <button type="button" class="secondary" onClick={props.onExport}>
+            Export save
+          </button>
+        </span>
       </div>
       <div class="world-main">
         <div class="world-left">
@@ -153,86 +155,94 @@ export function DungeonScreen(props: {
                 </text>
               )}
             </svg>
-            <QuestItemNotice found={found} onDismiss={() => setFound([])} />
-            <EncounterPanel
-              world={w}
-              onFight={props.onFight}
-              onLeave={props.onLeave}
-              onChange={props.onChange}
-            />
-            <p class="bump" aria-live="polite">
-              {bump ?? ' '}
-            </p>
-            <div class="moves" role="group" aria-label="Move">
-              <button type="button" onClick={() => move({ step: 'left' })}>
-                Step left
-              </button>
-              <button type="button" onClick={() => move({ step: 'forward' })}>
-                Forward
-              </button>
-              <button type="button" onClick={() => move({ step: 'right' })}>
-                Step right
-              </button>
-              <button type="button" onClick={() => move({ turn: 'left' })}>
-                Turn left
-              </button>
-              <button type="button" onClick={() => move({ step: 'back' })}>
-                Back
-              </button>
-              <button type="button" onClick={() => move({ turn: 'right' })}>
-                Turn right
-              </button>
-            </div>
-            {!w.encounter && (
-              <div class="actions" role="group" aria-label="Explore">
-                <button type="button" onClick={() => act(() => search(w, data))}>
-                  Search (1 turn)
+            <div class="dungeon-controls">
+              <p class="bump" aria-live="polite">
+                {bump ?? ' '}
+              </p>
+              <div class="moves" role="group" aria-label="Move">
+                <button type="button" onClick={() => move({ step: 'left' })}>
+                  Step left
                 </button>
-                {burrowers(w).map((m) => (
-                  <button key={m.id} type="button" onClick={() => act(() => burrow(w, data, m.id))}>
-                    {m.character.name}: dig through the wall ahead (1 turn)
-                  </button>
-                ))}
-                {castersOf(w, SIGIL).map((m) => (
-                  <button
-                    key={m.id}
-                    type="button"
-                    onClick={() => act(() => sigilEscape(w, data, m.id))}
-                  >
-                    {m.character.name}: escape to the surface with the Ochre Sigil
-                  </button>
-                ))}
-                {trap && (
-                  <>
-                    <button type="button" onClick={() => act(() => disarm(w, data))}>
-                      Disarm the {trap.name} (1 turn)
-                    </button>
-                    <button type="button" onClick={() => act(() => step(w, data, 'forward', true))}>
-                      Step onto the {trap.name}
-                    </button>
-                  </>
-                )}
+                <button type="button" onClick={() => move({ step: 'forward' })}>
+                  Forward
+                </button>
+                <button type="button" onClick={() => move({ step: 'right' })}>
+                  Step right
+                </button>
+                <button type="button" onClick={() => move({ turn: 'left' })}>
+                  Turn left
+                </button>
+                <button type="button" onClick={() => move({ step: 'back' })}>
+                  Back
+                </button>
+                <button type="button" onClick={() => move({ turn: 'right' })}>
+                  Turn right
+                </button>
               </div>
-            )}
-            {stairsLabel && !w.encounter && (
-              <button
-                type="button"
-                onClick={() => {
-                  const before = questSteps(w);
-                  takeStairs(w, data);
-                  setBump(null);
-                  setFound(itemsTaken(w, data, before));
-                  props.onChange();
-                }}
-              >
-                {stairsLabel}
-              </button>
-            )}
+              {!w.encounter && (
+                <div class="actions" role="group" aria-label="Explore">
+                  <button type="button" onClick={() => act(() => search(w, data))}>
+                    Search (1 turn)
+                  </button>
+                  {burrowers(w).map((m) => (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => act(() => burrow(w, data, m.id))}
+                    >
+                      {m.character.name}: dig through the wall ahead (1 turn)
+                    </button>
+                  ))}
+                  {castersOf(w, SIGIL).map((m) => (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => act(() => sigilEscape(w, data, m.id))}
+                    >
+                      {m.character.name}: escape to the surface with the Ochre Sigil
+                    </button>
+                  ))}
+                  {trap && (
+                    <>
+                      <button type="button" onClick={() => act(() => disarm(w, data))}>
+                        Disarm the {trap.name} (1 turn)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => act(() => step(w, data, 'forward', true))}
+                      >
+                        Step onto the {trap.name}
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+              {stairsLabel && !w.encounter && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const before = questSteps(w);
+                    takeStairs(w, data);
+                    setBump(null);
+                    setFound(itemsTaken(w, data, before));
+                    props.onChange();
+                  }}
+                >
+                  {stairsLabel}
+                </button>
+              )}
+            </div>
           </div>
-          <QuestLog world={w} onChange={props.onChange} />
           <JournalPanel world={w} />
         </div>
-        <div class="world-side flow">
+        <div class="dock">
+          <QuestItemNotice found={found} onDismiss={() => setFound([])} />
+          <EncounterPanel
+            world={w}
+            onFight={props.onFight}
+            onLeave={props.onLeave}
+            onChange={props.onChange}
+          />
           {map && (
             <section class="panel" aria-label="Automap">
               <h3>Map</h3>
@@ -275,10 +285,13 @@ export function DungeonScreen(props: {
           )}
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
+          <CompanionsPanel world={w} onChange={props.onChange} />
+        </div>
+        <div class="dock">
+          <QuestLog world={w} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />
           <GreenwoodPanel world={w} onChange={props.onChange} />
           <FormsPanel world={w} onChange={props.onChange} />
-          <CompanionsPanel world={w} onChange={props.onChange} />
           <ConjunctPanel world={w} onChange={props.onChange} />
           <SorceryPanel world={w} onChange={props.onChange} />
           <PactPanel world={w} onChange={props.onChange} />

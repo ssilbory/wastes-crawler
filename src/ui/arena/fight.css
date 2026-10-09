@@ -35,15 +35,11 @@
 }
 
 .side {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 6px;
   padding: 8px;
 }
 
 .side h3 {
   margin: 0 0 4px;
-  font-size: 0.95rem;
 }
 
 .field-row {
@@ -98,24 +94,9 @@
   font-variant-numeric: tabular-nums;
 }
 
-.hp-bar {
-  display: block;
-  height: 5px;
-  background: var(--line);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.hp-bar span {
-  display: block;
-  height: 100%;
-  background: var(--ok);
-  transition: width 0.3s;
-}
-
 .slot.down .hp-bar span,
 .slot.gone .hp-bar span {
-  background: var(--error);
+  background: linear-gradient(180deg, #f0806f, var(--blood));
 }
 
 .slot.gone {
@@ -149,9 +130,6 @@
 }
 
 .commands {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 6px;
   padding: 8px;
 }
 
@@ -185,9 +163,6 @@
 }
 
 .log {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 6px;
   padding: 8px;
 }
 
@@ -202,8 +177,6 @@
   max-height: 420px;
   overflow-y: auto;
   font-size: 0.85rem;
-  display: flex;
-  flex-direction: column-reverse;
 }
 
 .log li.new {

@@ -64,7 +64,7 @@ export function MapScreen(props: {
   const road = map.exitAt(w.position);
   const entrances = entrancesIn(data, w.region, w.rumors);
   return (
-    <div class="world">
+    <div class="world map-screen">
       <div class="world-bar">
         <span class="date">{describeDate(data.content.overlandRules, w.day, w.quarter)}</span>
         <span class="region">{map.name}</span>
@@ -121,12 +121,9 @@ export function MapScreen(props: {
               }}
             />
           </div>
-          <QuestLog world={w} onChange={props.onChange} />
-          <SettingPanel world={w} inTown={town !== undefined} onChange={props.onChange} />
-          <FactionsPanel world={w} />
           <JournalPanel world={w} />
         </div>
-        <div class="world-side flow">
+        <div class="dock">
           {w.encounter ? (
             <EncounterPanel
               world={w}
@@ -153,10 +150,14 @@ export function MapScreen(props: {
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
           <MountsPanel world={w} onChange={props.onChange} />
+          <CompanionsPanel world={w} onChange={props.onChange} />
+        </div>
+        <div class="dock">
+          <QuestLog world={w} onChange={props.onChange} />
+          <SettingPanel world={w} inTown={town !== undefined} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />
           <GreenwoodPanel world={w} onChange={props.onChange} />
           <FormsPanel world={w} onChange={props.onChange} />
-          <CompanionsPanel world={w} onChange={props.onChange} />
           <ConjunctPanel world={w} onChange={props.onChange} />
           <HighRoadPanel world={w} onChange={props.onChange} />
           <SorceryPanel world={w} onChange={props.onChange} />
@@ -164,6 +165,7 @@ export function MapScreen(props: {
           <HealerPanel world={w} onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />
           <AntidotePanel world={w} onChange={props.onChange} />
+          <FactionsPanel world={w} />
         </div>
       </div>
     </div>

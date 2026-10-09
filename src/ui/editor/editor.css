@@ -17,29 +17,30 @@
   flex: 0 0 auto;
   max-width: 100%;
   height: auto;
-  background: var(--panel, #fffdf6);
+  background: var(--panel-sunk);
 }
 
 .editor-grid .cell {
-  fill: #e9e2d0;
+  fill: #3a3128;
   cursor: pointer;
 }
 
 .editor-grid .cell.up,
 .editor-grid .cell.down {
-  fill: #d8c79a;
+  fill: #6e5f3a;
 }
 
 .editor-grid .cell.trap {
-  fill: #e0a49c;
+  fill: #7a3a32;
 }
 
 .editor-grid .cell.npc {
-  fill: #b9c9df;
+  fill: #34506e;
 }
 
 .editor-grid .glyph {
   font: bold 14px monospace;
+  fill: var(--ink);
   text-anchor: middle;
   pointer-events: none;
 }
@@ -51,19 +52,19 @@
 }
 
 .editor-grid .edge.wall {
-  stroke: #3d3528;
+  stroke: #cbbd9f;
 }
 
 .editor-grid .edge.open {
-  stroke: rgb(0 0 0 / 6%);
+  stroke: rgb(255 255 255 / 6%);
 }
 
 .editor-grid .edge.door {
-  stroke: #a0642a;
+  stroke: var(--accent);
 }
 
 .editor-grid .edge.secret {
-  stroke: #8a3fb0;
+  stroke: #b06ad6;
   stroke-dasharray: 3 3;
 }
 
@@ -72,7 +73,7 @@
 }
 
 .editor-grid .walker {
-  fill: #2d6a3e;
+  fill: var(--ok);
 }
 
 .editor-side {

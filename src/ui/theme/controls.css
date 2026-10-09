@@ -1,0 +1,142 @@
+/* Buttons, tabs, and form fields: bevelled and rounded, lit from the top left. */
+button,
+select,
+input,
+textarea {
+  font: inherit;
+  color: var(--ink);
+}
+
+button {
+  cursor: pointer;
+  padding: 5px 12px;
+  border: 2px solid var(--bevel-lo);
+  border-radius: var(--radius-control);
+  background: linear-gradient(180deg, #3a3026, #2a231c);
+  box-shadow: var(--bevel-out);
+  line-height: 1.25;
+}
+
+button:hover:not(:disabled) {
+  background: linear-gradient(180deg, #4a3d2f, #352b22);
+  color: #fff6e2;
+}
+
+button:active:not(:disabled) {
+  box-shadow: var(--bevel-in);
+  background: var(--panel-sunk);
+  transform: translateY(1px);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+/* The one action a screen is waiting on. */
+button.create,
+.actions > button:first-child {
+  color: var(--accent-ink);
+  font-weight: 600;
+  background: linear-gradient(180deg, var(--accent-hi), var(--accent));
+  box-shadow:
+    inset 1px 1px 0 #ffd6a0,
+    inset -1px -1px 0 #7a4413;
+}
+
+button.create:hover:not(:disabled),
+.actions > button:first-child:hover:not(:disabled) {
+  color: var(--accent-ink);
+  background: linear-gradient(180deg, #ffc27a, var(--accent-hi));
+}
+
+button.secondary {
+  color: var(--muted);
+  background: transparent;
+  box-shadow: none;
+  border-color: var(--line);
+}
+
+button.secondary:hover:not(:disabled) {
+  background: var(--panel-raised);
+}
+
+/* Selected tabs and toggles. */
+button[role='tab'][aria-selected='true'],
+button[role='radio'][aria-checked='true'],
+button[role='tab'][aria-selected='true']:hover,
+button[role='radio'][aria-checked='true']:hover {
+  color: var(--accent-ink);
+  background: linear-gradient(180deg, var(--accent-hi), var(--accent));
+  font-weight: 600;
+}
+
+select,
+input[type='text'],
+input[type='number'],
+input[type='search'],
+textarea {
+  padding: 4px 8px;
+  border: 2px solid var(--bevel-lo);
+  border-radius: var(--radius-control);
+  background-color: var(--panel-sunk);
+  box-shadow: var(--bevel-in);
+}
+
+select {
+  appearance: none;
+  padding-right: 26px;
+  cursor: pointer;
+  /* A small pixel arrow. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' shape-rendering='crispEdges'%3E%3Cpath fill='%23d98c3f' d='M0 0h10v2H8v2H6v2H4V4H2V2H0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+}
+
+select:hover {
+  border-color: var(--line);
+}
+
+option {
+  background: var(--panel);
+  color: var(--ink);
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+  accent-color: var(--accent);
+}
+
+input[type='file'] {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+input[type='file']::file-selector-button {
+  font: inherit;
+  margin-right: 8px;
+  padding: 4px 10px;
+  color: var(--ink);
+  border: 2px solid var(--bevel-lo);
+  border-radius: var(--radius-control);
+  background: linear-gradient(180deg, #3a3026, #2a231c);
+  box-shadow: var(--bevel-out);
+  cursor: pointer;
+}
+
+fieldset {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+}
+
+legend {
+  color: var(--muted);
+}
+
+details > summary {
+  cursor: pointer;
+}
+
+table {
+  border-collapse: collapse;
+}

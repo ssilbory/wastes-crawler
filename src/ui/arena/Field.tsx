@@ -123,16 +123,19 @@ export function Field(props: FieldProps) {
   );
 }
 
+/** The fight so far, newest line first, so it reads from the top of its scrolling box. */
 export function BattleLog(props: { lines: readonly string[]; from: number }) {
   return (
     <section class="log" aria-label="Battle log">
       <h3>Log</h3>
       <ol>
-        {props.lines.map((line, i) => (
-          <li key={i} class={i >= props.from ? 'new' : undefined}>
-            {line}
-          </li>
-        ))}
+        {props.lines
+          .map((line, i) => (
+            <li key={i} class={i >= props.from ? 'new' : undefined}>
+              {line}
+            </li>
+          ))
+          .reverse()}
       </ol>
     </section>
   );
