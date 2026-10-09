@@ -19,6 +19,6 @@ export function projectText(w: World, data: GameData, p: Project): string {
       ? `${mod} on the ${item}`
       : p.kind === 'strip'
         ? `stripping ${mod} off the ${item}`
-        : `${tierName(p.quality)}${item}`;
+        : `${tierName(p.quality)}${item}${p.small ? ' (small)' : ''}`;
   return `${crafter.character.name}: ${work}, ${days}${where}`;
 }

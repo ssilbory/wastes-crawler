@@ -12,6 +12,8 @@ import {
   workshopHere,
   type Tier,
 } from '../../game/world/crafting.ts';
+import type { Size } from '../../game/character/gear.ts';
+import { fitSizeOf } from '../../game/world/shop.ts';
 import { priceHere, townHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
 import { stayToWork, workDay } from '../../game/world/workshop.ts';
@@ -31,6 +33,7 @@ export function WorkshopTab(props: { world: World; act: Act }) {
   const [who, setWho] = useState(crafters[0]?.id ?? '');
   const [itemId, setItemId] = useState(items[0]?.id ?? '');
   const [tier, setTier] = useState<Tier>('normal');
+  const [size, setSize] = useState<Size | null>(null);
   const shop = workshopHere(w, data);
   const rules = data.content.craftingRules.workshop;
   const town = townHere(w, data);
@@ -38,6 +41,8 @@ export function WorkshopTab(props: { world: World; act: Act }) {
   const item = items.find((i) => i.id === itemId) ?? items[0];
   const tiers = item ? tiersFor(item) : [];
   const t = tiers.includes(tier) ? tier : 'normal';
+  const armor = item?.kind === 'armor';
+  const sized: Size = size ?? (m ? fitSizeOf(data, m) : 'standard');
   return (
     <>
       <section class="panel" aria-label="Workshop">
@@ -91,7 +96,13 @@ export function WorkshopTab(props: { world: World; act: Act }) {
           <>
             <label>
               Crafter{' '}
-              <select value={m.id} onChange={(e) => setWho((e.target as HTMLSelectElement).value)}>
+              <select
+                value={m.id}
+                onChange={(e) => {
+                  setWho((e.target as HTMLSelectElement).value);
+                  setSize(null);
+                }}
+              >
                 {crafters.map((x) => (
                   <option key={x.id} value={x.id}>
                     {x.character.name}
@@ -125,9 +136,25 @@ export function WorkshopTab(props: { world: World; act: Act }) {
                 ))}
               </select>
             </label>{' '}
+            {armor && (
+              <>
+                <label>
+                  Size{' '}
+                  <select
+                    value={sized}
+                    onChange={(e) => setSize((e.target as HTMLSelectElement).value as Size)}
+                  >
+                    <option value="standard">standard</option>
+                    <option value="small">small</option>
+                  </select>
+                </label>{' '}
+              </>
+            )}
             <button
               type="button"
-              onClick={() => props.act(() => startProject(w, data, m.id, item.id, t))}
+              onClick={() =>
+                props.act(() => startProject(w, data, m.id, item.id, t, armor ? sized : undefined))
+              }
             >
               Start ({crowns(priceHere(w, data, partsListed(data, item, t)))},{' '}
               {daysText(buildDays(data, item, t))})

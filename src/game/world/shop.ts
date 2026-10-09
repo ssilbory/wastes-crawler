@@ -7,7 +7,7 @@ import { lootPayout, toTenths } from '../../rules/economy.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
 import { inventoryErrors } from '../character/equipment.ts';
-import { sizeEntries } from '../character/gear.ts';
+import { fitSize, sizedLine, type Size } from '../character/gear.ts';
 import { entryPrice, findItem, type InventoryEntry } from '../character/items.ts';
 import { findPeople } from '../character/people.ts';
 import { note } from './members.ts';
@@ -72,11 +72,26 @@ function addUnit(inventory: InventoryEntry[], entry: InventoryEntry): InventoryE
   return inventory.map((e, i) => (i === same ? { ...e, quantity: e.quantity + 1 } : e));
 }
 
-export function buy(w: World, data: GameData, memberId: string, itemId: string): TownResult {
+/** The size a member's own armor comes in; a purchase can ask for the other (Small armor). */
+export const fitSizeOf = (data: GameData, m: Member): Size => fitSize(peopleOf(data, m));
+
+/**
+ * Sells one unit into a member's pack. Armor comes in either size at the standard price; `size`
+ * defaults to the member's own. A stowed suit of either size is carried by anyone.
+ */
+export function buy(
+  w: World,
+  data: GameData,
+  memberId: string,
+  itemId: string,
+  size?: Size,
+): TownResult {
   const m = member(w, memberId);
-  const item = [{ id: itemId, quantity: 1, location: 'stowed' as const }];
-  const [entry] = sizeEntries(data, item, peopleOf(data, m));
-  const inventory = addUnit(m.character.inventory, entry as InventoryEntry);
+  if (size === 'small' && findItem(data, itemId)?.kind !== 'armor')
+    return no(`${findItem(data, itemId)?.name ?? itemId} isn't sold small.`);
+  const line = { id: itemId, quantity: 1, location: 'stowed' as const };
+  const entry = sizedLine(data, line, size ?? fitSizeOf(data, m));
+  const inventory = addUnit(m.character.inventory, entry);
   const problem = inventoryProblem(data, m, inventory);
   if (problem) return no(problem);
   const price = shopPrice(w, data, itemId);
