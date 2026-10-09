@@ -243,9 +243,6 @@ function LevelEditor(props: { original: Dungeon; onDungeon: (id: string) => void
               </>
             )}
           </section>
-          {picked && (
-            <CellPanel dungeon={edited} level={level.id} cell={picked} onChange={setEdited} />
-          )}
           <WalkPanel
             dungeon={edited}
             level={level.id}
@@ -262,6 +259,11 @@ function LevelEditor(props: { original: Dungeon; onDungeon: (id: string) => void
             </button>
             <textarea readOnly rows={rows.length} aria-label="Map text" value={rows.join('\n')} />
           </section>
+        </div>
+        <div class="editor-side">
+          {picked && (
+            <CellPanel dungeon={edited} level={level.id} cell={picked} onChange={setEdited} />
+          )}
         </div>
       </div>
     </main>

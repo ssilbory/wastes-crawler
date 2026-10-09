@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { openStep } from './wizard.ts';
 
 // The Phase 3e exit criterion (docs/plan.md): build casters, and Effort matches the best skill
 // plus best attribute rule across classes (1 + Magic + best of Int or Cha, one lower if partial).
@@ -27,19 +28,27 @@ async function caster(
     ['Wisdom', '10'],
     ['Charisma', '9'],
   ];
+  await openStep(page, 'Attributes');
   for (const [attr, v] of array) await select(attr, v);
+  await openStep(page, 'Background');
   await select('Background', opts.bg);
   await select('Learning pick 1', opts.picks[0]);
   await select('Learning pick 2', opts.picks[1]);
+  await openStep(page, 'Class');
   await select('Class', opts.className);
+  await openStep(page, 'Foci');
   for (const [label, option] of opts.foci) await select(label, option);
+  await openStep(page, 'Magic');
   const magic = page.locator('section.step', { hasText: '6. Magic' });
   for (const art of opts.arts) await magic.getByLabel(art, { exact: true }).check();
   for (const spell of opts.spells) await magic.getByLabel(spell, { exact: true }).check();
   for (const spell of opts.prepare) await magic.getByLabel(`Prepare ${spell}`).check();
+  await openStep(page, 'Free skill');
   await select('Free skill', 'Know');
+  await openStep(page, 'Gear');
   await page.getByRole('radio', { name: 'Starting package' }).check();
   await select('Package', 'Apprentice');
+  await openStep(page, 'Name and goal');
   await page.getByRole('textbox', { name: 'Name', exact: true }).fill('Caster');
   await page.getByRole('button', { name: 'Create character' }).click();
   return page.getByTestId('character-sheet');
@@ -176,9 +185,11 @@ test('a Priest of Death heals and binds the dead, but learns no raising (Phase 1
   page,
 }) => {
   await page.goto('/');
+  await openStep(page, 'Class');
   await page
     .getByRole('combobox', { name: 'Class', exact: true })
     .selectOption({ label: 'Priest of Death (Necromancer/Healer)' });
+  await openStep(page, 'Magic');
   const magic = page.locator('section.step', { hasText: '6. Magic' });
   await expect(magic).toContainText('Healer arts: pick 1, plus Healing Touch');
   // Revive the Fallen waits for 8th level; Limb Restoration is left out of the game.
@@ -231,8 +242,13 @@ test('a Blood Saint works miracles and heals (Phase 14d)', async ({ page }) => {
 test('arts the game leaves out are never offered (Phase 15)', async ({ page }) => {
   await page.goto('/');
   const magic = page.locator('section.step', { hasText: '6. Magic' });
-  const select = (option: string) =>
-    page.getByRole('combobox', { name: 'Class', exact: true }).selectOption({ label: option });
+  const select = async (option: string) => {
+    await openStep(page, 'Class');
+    await page
+      .getByRole('combobox', { name: 'Class', exact: true })
+      .selectOption({ label: option });
+    await openStep(page, 'Magic');
+  };
   await select('High Mage');
   await expect(magic.getByLabel('Counter Magic', { exact: true })).toHaveCount(1);
   await expect(magic.getByLabel('Ward Allies', { exact: true })).toHaveCount(0);

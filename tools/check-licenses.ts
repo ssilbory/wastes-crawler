@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process';
 
-/** Shipped (production) dependencies must use one of these. */
+/** Shipped (production) dependencies must use one of these. OFL covers the bundled fonts. */
 const ALLOWED = new Set([
   'MIT',
   'BSD-2-Clause',
@@ -10,6 +10,7 @@ const ALLOWED = new Set([
   'Zlib',
   'CC0-1.0',
   '0BSD',
+  'OFL-1.1',
 ]);
 
 /** No dependency at all, dev tooling included, may be limited to these. */

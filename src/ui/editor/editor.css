@@ -1,5 +1,21 @@
+/* The editor fills the window: the tool rows on top, the map scaled to fit on the left, and two
+   columns of panels on the right that scroll inside themselves only when they are long. */
 .editor {
-  padding: 0 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.editor > * {
+  flex: none;
+}
+
+.editor-bar,
+.editor > .tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: center;
 }
 
 .editor-bar input[type='number'] {
@@ -7,39 +23,46 @@
 }
 
 .editor-main {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  align-items: flex-start;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-columns: minmax(260px, 360px);
+  gap: 10px;
 }
 
 .editor-grid {
-  flex: 0 0 auto;
-  max-width: 100%;
-  height: auto;
-  background: var(--panel, #fffdf6);
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: var(--panel-sunk);
+  border: 2px solid var(--bevel-lo);
+  border-radius: var(--radius-panel);
 }
 
 .editor-grid .cell {
-  fill: #e9e2d0;
+  fill: #3a3128;
   cursor: pointer;
 }
 
 .editor-grid .cell.up,
 .editor-grid .cell.down {
-  fill: #d8c79a;
+  fill: #6e5f3a;
 }
 
 .editor-grid .cell.trap {
-  fill: #e0a49c;
+  fill: #7a3a32;
 }
 
 .editor-grid .cell.npc {
-  fill: #b9c9df;
+  fill: #34506e;
 }
 
 .editor-grid .glyph {
   font: bold 14px monospace;
+  fill: var(--ink);
   text-anchor: middle;
   pointer-events: none;
 }
@@ -51,19 +74,19 @@
 }
 
 .editor-grid .edge.wall {
-  stroke: #3d3528;
+  stroke: #cbbd9f;
 }
 
 .editor-grid .edge.open {
-  stroke: rgb(0 0 0 / 6%);
+  stroke: rgb(255 255 255 / 6%);
 }
 
 .editor-grid .edge.door {
-  stroke: #a0642a;
+  stroke: var(--accent);
 }
 
 .editor-grid .edge.secret {
-  stroke: #8a3fb0;
+  stroke: #b06ad6;
   stroke-dasharray: 3 3;
 }
 
@@ -72,17 +95,80 @@
 }
 
 .editor-grid .walker {
-  fill: #2d6a3e;
+  fill: var(--ok);
 }
 
 .editor-side {
-  flex: 1 1 22rem;
+  min-height: 0;
   min-width: 0;
+  overflow-y: auto;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  scrollbar-gutter: stable;
+}
+
+/* No cell picked: the second column gives its room to the map. */
+.editor-side:empty {
+  display: none;
 }
 
 .editor-side textarea {
   width: 100%;
+  max-height: 7.5rem;
   font-family: monospace;
+  font-size: 0.85rem;
+  line-height: 1.2;
+  resize: vertical;
+}
+
+/* The test walk's first-person view: small enough to leave the export in view. */
+.editor .dungeon-view {
+  width: auto;
+  height: 150px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Cell details in two columns, so a trap's whole form fits beside the map. */
+.cell-panel fieldset {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 10px;
+  min-width: 0;
+  margin: 6px 0 0;
+  padding: 4px 8px 8px;
+}
+
+.cell-panel fieldset > legend,
+.cell-panel fieldset > .field:has(.check),
+.cell-panel fieldset > .field:has(textarea),
+.cell-panel fieldset > p {
+  grid-column: 1 / -1;
+}
+
+.cell-panel .field {
+  margin: 3px 0;
+}
+
+.cell-panel :is(input:not([type='checkbox']), select, textarea) {
+  width: 100%;
+  min-width: 0;
+}
+
+.cell-panel .field:has(> .check) {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+}
+
+.cell-panel .field:has(> .check) > span {
+  flex-basis: 100%;
+}
+
+.cell-panel .field > label.check {
+  display: inline-flex;
+  gap: 4px;
 }
 
 .walk-buttons {
@@ -100,10 +186,6 @@
 .editor-grid .cell.picked {
   stroke: var(--accent);
   stroke-width: 3;
-}
-
-.cell-panel fieldset {
-  margin-top: 0.75rem;
 }
 
 .cell-panel .dice {

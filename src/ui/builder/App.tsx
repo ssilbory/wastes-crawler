@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'preact/hooks';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { Character } from '../../data/schemas/index.ts';
 import { rollAttributes } from '../../game/character/attributes.ts';
 import {
@@ -24,6 +24,7 @@ import { MagicStep } from './MagicStep.tsx';
 import { ClassStep, FreeSkillStep, IdentityStep } from './OtherSteps.tsx';
 import { PeopleStep } from './PeopleStep.tsx';
 import { CharacterSheet, PreviewSheet } from './Sheet.tsx';
+import { StepNav, WizardFooter } from './Wizard.tsx';
 
 function download(character: Character) {
   const blob = new Blob([exportCharacter(character)], { type: 'application/json' });
@@ -43,6 +44,10 @@ export function App() {
   const [resets, setResets] = useState(0);
   const [errors, setErrors] = useState<string[]>([]);
   const [saved, setSaved] = useState<string | null>(null);
+  /** The wizard step on screen. Every step stays mounted so its own picks survive moving on. */
+  const [at, setAt] = useState(0);
+  const pages = useRef<HTMLDivElement>(null);
+  useEffect(() => pages.current?.scrollTo(0, 0), [at]);
 
   const ev = useMemo(() => evaluateChoices(choices, data), [choices]);
   const option = choices.classId === null ? undefined : classOption(data, choices.classId);
@@ -82,6 +87,7 @@ export function App() {
     setChoices(emptyChoices());
     setResets((n) => n + 1);
     setErrors([]);
+    setAt(0);
   };
 
   return (
@@ -125,119 +131,150 @@ export function App() {
           </div>
         </main>
       ) : (
-        <main class="steps">
-          <div class="column">
-            <PeopleStep
-              people={choices.people}
-              lineage={choices.lineage}
-              status={ev.steps.people}
-              onChange={(people, lineage) => {
-                // Drop a background the new people can't take.
-                const bg = data.content.backgrounds.find((b) => b.id === choices.background?.id);
-                const keep = bg !== undefined && backgroundOpenTo(bg, people);
-                update({
-                  people,
-                  lineage,
-                  foci: [],
-                  gear: null,
-                  ...(keep ? {} : { background: null }),
-                });
-              }}
+        <main class="wizard">
+          <StepNav statuses={ev.steps} at={at} onGo={setAt} />
+          <div class="wizard-body">
+            <div class="wizard-pages" ref={pages}>
+              <div class="wizard-page" hidden={at !== 0}>
+                <PeopleStep
+                  people={choices.people}
+                  lineage={choices.lineage}
+                  status={ev.steps.people}
+                  onChange={(people, lineage) => {
+                    // Drop a background the new people can't take.
+                    const bg = data.content.backgrounds.find(
+                      (b) => b.id === choices.background?.id,
+                    );
+                    const keep = bg !== undefined && backgroundOpenTo(bg, people);
+                    update({
+                      people,
+                      lineage,
+                      foci: [],
+                      gear: null,
+                      ...(keep ? {} : { background: null }),
+                    });
+                  }}
+                />
+              </div>
+              <div class="wizard-page" hidden={at !== 1}>
+                <AttributesStep
+                  key={resets}
+                  method={choices.attributeMethod}
+                  scores={choices.array}
+                  status={ev.steps.attributes}
+                  roll={() => rollAttributes(rng.current)}
+                  onChange={({ method, scores }) =>
+                    update({ attributeMethod: method, array: scores })
+                  }
+                />
+              </div>
+              <div class="wizard-page" hidden={at !== 2}>
+                <BackgroundStep
+                  choices={choices}
+                  status={ev.steps.background}
+                  onChange={(background) => update({ background })}
+                  onRoll={(tables) =>
+                    choices.background &&
+                    update({
+                      background: {
+                        id: choices.background.id,
+                        choice: { mode: 'roll', rolls: rollBackground(rng.current, tables) },
+                      },
+                    })
+                  }
+                />
+              </div>
+              <div class="wizard-page" hidden={at !== 3}>
+                <ClassStep
+                  value={choices.classId}
+                  status={ev.steps.class}
+                  replacing={ev.classReplacing}
+                  replacements={choices.classSkills}
+                  onChange={(classId) =>
+                    update({ classId, classSkills: [], foci: [], magic: null, forms: [] })
+                  }
+                  onReplace={(i, skill) => {
+                    const classSkills = [...choices.classSkills];
+                    classSkills[i] = skill;
+                    update({ classSkills: Array.from(classSkills, (s) => s ?? null) });
+                  }}
+                />
+              </div>
+              <div class="wizard-page" hidden={at !== 4}>
+                <FociStep
+                  slots={ev.focusSlots}
+                  choices={choices.foci}
+                  skillsBefore={ev.focusSkillsBefore}
+                  fallbackSkills={ev.skills}
+                  status={ev.steps.foci}
+                  ready={
+                    ev.steps.class.state === 'ok' &&
+                    ev.steps.background.state === 'ok' &&
+                    ev.focusSlots.length > 0
+                  }
+                  onChange={(foci) => update({ foci })}
+                />
+              </div>
+              <div class="wizard-page" hidden={at !== 5}>
+                <MagicStep
+                  option={ev.steps.class.state === 'ok' ? option : undefined}
+                  choice={choices.magic}
+                  status={ev.steps.magic}
+                  intModifier={ev.intModifier}
+                  onChange={(magic) => update({ magic })}
+                  forms={choices.forms ?? []}
+                  onForms={(forms) => update({ forms })}
+                />
+              </div>
+              <div class="wizard-page" hidden={at !== 6}>
+                <FreeSkillStep
+                  value={choices.freeSkill}
+                  status={ev.steps['free-skill']}
+                  onChange={(freeSkill) => update({ freeSkill })}
+                />
+              </div>
+              <div class="wizard-page" hidden={at !== 7}>
+                <GearStep
+                  people={
+                    ev.steps.people.state === 'ok' && ev.scores
+                      ? findPeople(data, choices.people)
+                      : undefined
+                  }
+                  choice={choices.gear}
+                  inventory={ev.inventory}
+                  crownsTenths={ev.crownsTenths}
+                  status={ev.steps.gear}
+                  onRoll={() =>
+                    choices.gear?.mode === 'shop' &&
+                    update({
+                      gear: { ...choices.gear, crowns: rollStartingCrowns(rng.current, data) },
+                    })
+                  }
+                  onChange={(gear) => update({ gear })}
+                />
+              </div>
+              <div class="wizard-page" hidden={at !== 8}>
+                <IdentityStep
+                  name={choices.name}
+                  goal={choices.goal}
+                  status={ev.steps.identity}
+                  onChange={update}
+                />
+              </div>
+            </div>
+            <PreviewSheet
+              preview={preview}
+              skills={ev.skills}
+              equipment={ev.equipment}
+              effort={ev.effort}
             />
-            <AttributesStep
-              key={resets}
-              method={choices.attributeMethod}
-              scores={choices.array}
-              status={ev.steps.attributes}
-              roll={() => rollAttributes(rng.current)}
-              onChange={({ method, scores }) => update({ attributeMethod: method, array: scores })}
-            />
-            <BackgroundStep
-              choices={choices}
-              status={ev.steps.background}
-              onChange={(background) => update({ background })}
-              onRoll={(tables) =>
-                choices.background &&
-                update({
-                  background: {
-                    id: choices.background.id,
-                    choice: { mode: 'roll', rolls: rollBackground(rng.current, tables) },
-                  },
-                })
-              }
-            />
-            <ClassStep
-              value={choices.classId}
-              status={ev.steps.class}
-              replacing={ev.classReplacing}
-              replacements={choices.classSkills}
-              onChange={(classId) =>
-                update({ classId, classSkills: [], foci: [], magic: null, forms: [] })
-              }
-              onReplace={(i, skill) => {
-                const classSkills = [...choices.classSkills];
-                classSkills[i] = skill;
-                update({ classSkills: Array.from(classSkills, (s) => s ?? null) });
-              }}
-            />
-            <FociStep
-              slots={ev.focusSlots}
-              choices={choices.foci}
-              skillsBefore={ev.focusSkillsBefore}
-              fallbackSkills={ev.skills}
-              status={ev.steps.foci}
-              ready={
-                ev.steps.class.state === 'ok' &&
-                ev.steps.background.state === 'ok' &&
-                ev.focusSlots.length > 0
-              }
-              onChange={(foci) => update({ foci })}
-            />
-            <MagicStep
-              option={ev.steps.class.state === 'ok' ? option : undefined}
-              choice={choices.magic}
-              status={ev.steps.magic}
-              intModifier={ev.intModifier}
-              onChange={(magic) => update({ magic })}
-              forms={choices.forms ?? []}
-              onForms={(forms) => update({ forms })}
-            />
-            <FreeSkillStep
-              value={choices.freeSkill}
-              status={ev.steps['free-skill']}
-              onChange={(freeSkill) => update({ freeSkill })}
-            />
-            <GearStep
-              people={
-                ev.steps.people.state === 'ok' && ev.scores
-                  ? findPeople(data, choices.people)
-                  : undefined
-              }
-              choice={choices.gear}
-              inventory={ev.inventory}
-              crownsTenths={ev.crownsTenths}
-              status={ev.steps.gear}
-              onRoll={() =>
-                choices.gear?.mode === 'shop' &&
-                update({ gear: { ...choices.gear, crowns: rollStartingCrowns(rng.current, data) } })
-              }
-              onChange={(gear) => update({ gear })}
-            />
-            <IdentityStep
-              name={choices.name}
-              goal={choices.goal}
-              status={ev.steps.identity}
-              onChange={update}
-            />
-            <button type="button" class="create" disabled={!ev.complete} onClick={create}>
-              Create character
-            </button>
           </div>
-          <PreviewSheet
-            preview={preview}
-            skills={ev.skills}
-            equipment={ev.equipment}
-            effort={ev.effort}
+          <WizardFooter
+            statuses={ev.steps}
+            at={at}
+            onGo={setAt}
+            complete={ev.complete}
+            onCreate={create}
           />
         </main>
       )}

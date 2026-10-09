@@ -1,41 +1,3 @@
-:root {
-  --bg: #f6f3ec;
-  --panel: #fffdf8;
-  --ink: #1f1b16;
-  --muted: #6b6257;
-  --line: #d9d1c3;
-  --accent: #8a4b14;
-  --ok: #2f6b2f;
-  --error: #a32020;
-  color-scheme: light dark;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #181614;
-    --panel: #221f1b;
-    --ink: #ece6dc;
-    --muted: #a39a8d;
-    --line: #3b362f;
-    --accent: #e09a52;
-    --ok: #7fc27f;
-    --error: #ff8a80;
-  }
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font:
-    15px/1.45 system-ui,
-    sans-serif;
-}
-
 .builder {
   max-width: 1100px;
   margin: 0 auto;
@@ -52,40 +14,8 @@ header {
   padding-bottom: 12px;
 }
 
-h1 {
-  font-size: 1.4rem;
-  margin: 0;
-}
-
-h2 {
-  font-size: 1.1rem;
-  margin: 0 0 8px;
-}
-
-h3 {
-  font-size: 0.95rem;
-  margin: 12px 0 4px;
-}
-
-.steps {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
-  gap: 16px;
-  margin-top: 16px;
-}
-
-@media (max-width: 760px) {
-  .steps {
-    grid-template-columns: 1fr;
-  }
-}
-
 .step,
 .sheet {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 12px 14px;
   margin-bottom: 12px;
 }
 
@@ -95,10 +25,6 @@ h3 {
 
 .step-error {
   border-left: 4px solid var(--error);
-}
-
-.tick {
-  color: var(--ok);
 }
 
 .sheet {
@@ -131,34 +57,6 @@ h3 {
   gap: 0 12px;
 }
 
-select,
-input[type='text'],
-button {
-  font: inherit;
-  padding: 4px 6px;
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  background: var(--bg);
-  color: var(--ink);
-}
-
-button {
-  cursor: pointer;
-  padding: 6px 12px;
-}
-
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.create,
-.actions button:first-child {
-  background: var(--accent);
-  color: var(--panel);
-  border-color: var(--accent);
-}
-
 .actions {
   display: flex;
   gap: 8px;
@@ -186,17 +84,6 @@ button:disabled {
 
 .rolls li {
   margin: 6px 0;
-}
-
-.hint {
-  color: var(--muted);
-  font-size: 0.9rem;
-  margin: 4px 0;
-}
-
-.error,
-.errors {
-  color: var(--error);
 }
 
 .errors {
@@ -278,10 +165,7 @@ fieldset.picks legend {
 
 .dialog {
   margin-top: 0.75rem;
-  padding: 0.75rem 1rem;
-  border: 2px solid var(--accent);
-  border-radius: 6px;
-  background: var(--panel);
+  border-color: var(--accent);
 }
 
 .dialog p {

@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
+import { openStep } from './wizard.ts';
 
 // The Phase 3c exit criterion (docs/plan.md): the builder enforces foci counts and pick lists for
 // every people. Expectations come straight from the content files.
@@ -37,10 +38,13 @@ async function setUp(page: Page, people: string, lineage: string | undefined) {
   if (lineage) await select('Lineage', lineage);
   const array = [14, 12, 11, 10, 9, 7];
   const attrs = ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma'];
+  await openStep(page, 'Attributes');
   for (const [i, attr] of attrs.entries()) await select(attr, String(array[i]));
+  await openStep(page, 'Background');
   await select('Background', 'Raider');
   await select('Learning pick 1', 'Sneak');
   await select('Learning pick 2', 'Exert');
+  await openStep(page, 'Class');
   await select('Class', 'Warrior');
   return select;
 }
@@ -54,6 +58,7 @@ for (const c of CASES) {
   const label = c.lineage ? `${c.people.name} (${c.lineage.name})` : c.people.name;
   test(`enforces racial and class foci: ${label}`, async ({ page }) => {
     const select = await setUp(page, c.people.name, c.lineage?.name);
+    await openStep(page, 'Foci');
     const step = page.locator('section.step', { hasText: '5. Foci' });
 
     // Signature foci are given, and the rest of the three come from the people's list.

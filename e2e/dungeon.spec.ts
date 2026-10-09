@@ -5,6 +5,10 @@ import { expect, test, type Page } from '@playwright/test';
 const starters = ['snag', 'grukk'].map((n) => `tools/sim/parties/starter/${n}.json`);
 const WORLD_KEY = 'wastes-crawler.world';
 
+// A MacBook-sized window, where the view has room to draw at its full 640x480, so the screenshots
+// compare unscaled pixels.
+test.use({ viewport: { width: 1440, height: 900 } });
+
 async function startAtBarrow(page: Page) {
   await page.goto('/#/arena');
   await page.getByLabel('Import character files').setInputFiles(starters);

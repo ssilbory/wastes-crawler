@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { openStep } from './wizard.ts';
 
 // Phase 16: attributes rolled 3d6 in order with one score swapped for 14 (SRD 1.1.1); three free
 // rerolls, then the builder asks for the stats the player wants (Sam's call).
@@ -9,6 +10,7 @@ test('rolls, rerolls three times, then takes the stats the player names', async 
   const select = (label: string, option: string) =>
     page.getByRole('combobox', { name: label, exact: true }).selectOption({ label: option });
   await select('People', 'Goblin');
+  await openStep(page, 'Attributes');
   await page.getByRole('radio', { name: 'Roll 3d6 in order' }).check();
   const step = page.locator('section.step', { hasText: '2. Attributes' });
   await expect(step).toContainText('Rolled: Strength');
@@ -40,16 +42,22 @@ test('rolls, rerolls three times, then takes the stats the player names', async 
   await expect(step).toContainText('each score must be a whole number from 3 to 18');
   await step.getByRole('spinbutton', { name: 'Charisma' }).fill('8');
 
+  await openStep(page, 'Background');
   await select('Background', 'Raider');
   await select('Learning pick 1', 'Sneak');
   await select('Learning pick 2', 'Exert');
+  await openStep(page, 'Class');
   await select('Class', 'Warrior');
+  await openStep(page, 'Foci');
   await select('Racial focus', 'Alert');
   await select('Combat focus', 'Armsmaster');
   await select('Any focus', 'Lucky');
+  await openStep(page, 'Free skill');
   await select('Free skill', 'Notice');
+  await openStep(page, 'Gear');
   await page.getByRole('radio', { name: 'Starting package' }).check();
   await select('Package', 'Shield Wall');
+  await openStep(page, 'Name and goal');
   await page.getByRole('textbox', { name: 'Name', exact: true }).fill('Grit');
   await page.getByRole('button', { name: 'Create character' }).click();
   const sheet = page.getByTestId('character-sheet');

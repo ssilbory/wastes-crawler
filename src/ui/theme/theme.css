@@ -1,0 +1,190 @@
+/* The game's look: a dark, worn palette with bevelled panels and controls in the manner of old PC
+   role-playing games. Contrast stays high enough to read for hours; decoration never sits over text. */
+:root {
+  --bg: #0e0c0a;
+  --bg-deep: #070605;
+  --panel: #1b1612;
+  --panel-raised: #262019;
+  --panel-sunk: #120f0c;
+  --ink: #e8dfcc;
+  --muted: #ab9d86;
+  --line: #463a2c;
+  --bevel-hi: #6b5840;
+  --bevel-lo: #050403;
+  --accent: #d98c3f;
+  --accent-hi: #f0ac5c;
+  --accent-ink: #1a1007;
+  --gold: #d9b45a;
+  --ok: #8cc06a;
+  --error: #ec6a5c;
+  --blood: #8e2a20;
+  --focus: #ffd27a;
+
+  --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-term: 'VT323', ui-monospace, monospace;
+  --font-title: 'Jacquard 12', 'VT323', serif;
+
+  --bevel-out: inset 1px 1px 0 var(--bevel-hi), inset -1px -1px 0 var(--bevel-lo);
+  --bevel-in: inset 1px 1px 0 var(--bevel-lo), inset -1px -1px 0 var(--bevel-hi);
+  --radius-control: 6px;
+  --radius-panel: 5px;
+
+  color-scheme: dark;
+  font-size: 15px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.45;
+  /* A dim vignette over faint scanlines: texture at the edges, a clean field under the text. */
+  background:
+    radial-gradient(ellipse at center, transparent 55%, rgb(0 0 0 / 55%) 100%),
+    repeating-linear-gradient(0deg, rgb(255 255 255 / 1.5%) 0 1px, transparent 1px 3px), var(--bg);
+}
+
+#app {
+  height: 100%;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--gold);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+h1 {
+  font-family: var(--font-title);
+  font-size: 2.2rem;
+  letter-spacing: 0.02em;
+  margin: 0;
+  text-shadow: 0 2px 0 var(--bevel-lo);
+}
+
+h2,
+h3 {
+  font-family: var(--font-term);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+h2 {
+  font-size: 1.45rem;
+  margin: 0 0 8px;
+}
+
+h3 {
+  font-size: 1.25rem;
+  margin: 12px 0 4px;
+}
+
+h4 {
+  margin: 10px 0 4px;
+  color: var(--ink);
+}
+
+strong,
+b {
+  font-weight: 600;
+}
+
+a {
+  color: var(--accent-hi);
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--line);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Panels: a raised plate with a dark rim and a lit top-left edge. */
+.panel,
+.step,
+.sheet,
+.side,
+.commands,
+.log,
+.dialog {
+  background: linear-gradient(180deg, var(--panel-raised), var(--panel) 48px);
+  border: 2px solid var(--bevel-lo);
+  border-radius: var(--radius-panel);
+  box-shadow:
+    var(--bevel-out),
+    0 3px 10px rgb(0 0 0 / 45%);
+  padding: 10px 12px;
+}
+
+/* Small status tags. */
+.chip {
+  font-size: 0.8rem;
+  padding: 0 7px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel-sunk);
+  color: var(--ink);
+}
+
+/* Health bars read as notched gauges. */
+.hp-bar {
+  display: block;
+  height: 7px;
+  background: var(--panel-sunk);
+  border: 1px solid var(--bevel-lo);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.hp-bar span {
+  display: block;
+  height: 100%;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 7px, rgb(0 0 0 / 45%) 7px 8px),
+    linear-gradient(180deg, #a8d884, #5e9640);
+  transition: width 0.3s;
+}
+
+/* Scrollbars, where a pane must scroll. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--bevel-hi) var(--panel-sunk);
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 4px 0;
+}
+
+.error,
+.errors {
+  color: var(--error);
+}
+
+.tick,
+.saved {
+  color: var(--ok);
+}

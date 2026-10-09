@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { openStep } from './wizard.ts';
 
 // The Phase 3a exit criterion (docs/plan.md): build a Goblin Warrior in the browser, export it to
 // JSON, reload the page, and import it.
@@ -16,18 +17,25 @@ test('builds, exports, and re-imports a Goblin Warrior', async ({ page }, testIn
     ['Charisma', '7'],
   ];
   await select('People', 'Goblin');
+  await openStep(page, 'Attributes');
   for (const [attr, value] of array) await select(attr as string, value as string);
 
+  await openStep(page, 'Background');
   await select('Background', 'Raider');
   await select('Learning pick 1', 'Sneak');
   await select('Learning pick 2', 'Exert');
+  await openStep(page, 'Class');
   await select('Class', 'Warrior');
+  await openStep(page, 'Foci');
   await select('Racial focus', 'Alert');
   await select('Combat focus', 'Armsmaster');
   await select('Any focus', 'Lucky');
+  await openStep(page, 'Free skill');
   await select('Free skill', 'Notice');
+  await openStep(page, 'Gear');
   await page.getByRole('radio', { name: 'Starting package' }).check();
   await select('Package', 'Shield Wall');
+  await openStep(page, 'Name and goal');
   await page.getByRole('textbox', { name: 'Name', exact: true }).fill('Snag');
   await page.getByRole('textbox', { name: 'Goal', exact: true }).fill('Outlive the war-band');
 

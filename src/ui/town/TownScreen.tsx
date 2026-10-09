@@ -128,18 +128,20 @@ export function TownScreen(props: {
             {tab === 'travel' && <TravelTab world={w} act={act} onBoard={props.onLeave} />}
             {tab === 'arena' && <ArenaTab world={w} act={act} onBout={props.onBout} />}
           </div>
-          <QuestLog world={w} onChange={props.onChange} />
-          <SettingPanel world={w} inTown onChange={props.onChange} />
-          <FactionsPanel world={w} />
           <JournalPanel world={w} lines={30} />
         </div>
-        <div class="world-side flow">
+        <div class="dock">
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
           <MountsPanel world={w} onChange={props.onChange} />
           <CompanionsPanel world={w} onChange={props.onChange} />
+        </div>
+        <div class="dock">
+          <QuestLog world={w} onChange={props.onChange} />
+          <SettingPanel world={w} inTown onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />
           <AntidotePanel world={w} onChange={props.onChange} />
+          <FactionsPanel world={w} />
         </div>
       </div>
     </div>
