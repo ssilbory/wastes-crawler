@@ -50,6 +50,8 @@ export function FightScreen(props: {
   known?: KnownFoe[];
   /** The XP a win earns, added to the end of the log once the party wins. */
   xp?: Promise<string> | undefined;
+  /** No fight, only the dying to tend: a trap's fallen (trap-falls.ts). */
+  aftermath?: boolean;
   onDone: (result: BattleResult | null) => void;
 }) {
   const [session, setSession] = useState<Session>(() => begin(props.createBattle()));
@@ -159,8 +161,11 @@ export function FightScreen(props: {
       </div>
       {result && (
         <p class="result" role="status">
-          {outcomeText(b, result.outcome)} {roundsText(result.rounds)};{' '}
-          {result.deaths === 0 ? 'no one died' : `${result.deaths} dead`}.
+          {props.aftermath
+            ? `${result.deaths === 0 ? 'The fallen live' : `${result.deaths} dead`}.`
+            : `${outcomeText(b, result.outcome)} ${roundsText(result.rounds)}; ${
+                result.deaths === 0 ? 'no one died' : `${result.deaths} dead`
+              }.`}
         </p>
       )}
       <div class="fight-main">
@@ -171,6 +176,7 @@ export function FightScreen(props: {
           targetIds={targetIds}
           changedIds={changes.ids}
           onPick={pickTarget}
+          nearOnly={props.aftermath ?? false}
         />
         <div class="fight-side">
           {actor && !result && (

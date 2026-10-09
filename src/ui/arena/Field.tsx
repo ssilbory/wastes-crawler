@@ -12,6 +12,8 @@ interface FieldProps {
   /** Slots changed by the last batch of turns. */
   changedIds?: ReadonlySet<string>;
   onPick?: (id: string) => void;
+  /** Only the near side: no foes to draw, as when tending a trap's fallen. */
+  nearOnly?: boolean;
 }
 
 function Slot(props: {
@@ -117,7 +119,7 @@ function Side(props: SideProps) {
 export function Field(props: FieldProps) {
   return (
     <div class="battlefield">
-      <Side {...props} view={props.far} isFar={true} />
+      {!props.nearOnly && <Side {...props} view={props.far} isFar={true} />}
       <Side {...props} view={props.near} isFar={false} />
     </div>
   );

@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { step } from '../../../src/game/dungeon/explore.ts';
 import { disarm, knownTrapAhead, springHere } from '../../../src/game/dungeon/traps.ts';
+import { tendTrapFallen, trapFallen } from '../../../src/game/dungeon/trap-falls.ts';
 import { checkBonus, setHp } from '../../../src/game/world/members.ts';
 import type { World } from '../../../src/game/world/types.ts';
 import type { Trap } from '../../../src/data/schemas/index.ts';
-import { scriptedRng } from '../../helpers/scripted-rng.ts';
+import { scriptedRng, scriptedThen } from '../../helpers/scripted-rng.ts';
+import { createRng } from '../../../src/rules/rng.ts';
 import { data, encounter, member, world } from '../world/helpers.ts';
 import { below, place, state } from './helpers.ts';
 
@@ -115,60 +117,97 @@ describe('traps (docs/rules-adaptation.md, Dungeon exploration)', () => {
     expect(() => disarm(world(), data)).toThrow('the party is not in a dungeon');
   });
 
-  it('leaves a PC brought to 0 HP Mortally Injured until another stabilizes them', () => {
+  it('leaves a PC brought to 0 HP Mortally Wounded until the party tends them', () => {
     const w = onTrap();
     only(w, 'Snag', 'Grukk');
     setHp(member(w, 'Grukk'), 1);
-    w.rng = scriptedRng([6, 6, 1, 1, 6, 6]);
+    w.rng = scriptedRng([6, 6]);
     springHere(w, sure);
     expect(member(w, 'Snag').character.hp.current).toBe(2);
+    expect(member(w, 'Grukk')).toMatchObject({ frail: false, dead: false });
+    expect(member(w, 'Grukk').character.hp.current).toBe(0);
+    expect(trapFallen(w).map((m) => m.character.name)).toEqual(['Grukk']);
+    expect(w.log.at(-1)).toContain('Grukk falls, mortally wounded.');
+    // Initiative for the tending, a failed Heal check, then one that saves him.
+    w.rng = scriptedRng([1, 1, 1, 1, 6, 6]);
+    expect(tendTrapFallen(w, sure)?.outcome).toBe('party');
     expect(member(w, 'Grukk')).toMatchObject({ frail: true, dead: false });
     expect(member(w, 'Grukk').character.hp.current).toBe(1);
-    expect(w.log.at(-1)).toContain('Snag saves Grukk, who is left Frail.');
+    expect(trapFallen(w)).toEqual([]);
+    expect(tendTrapFallen(w, sure)).toBeNull();
   });
 
-  it('kills the Mortally Injured no one can save, and the Frail at once', () => {
+  it('kills the Mortally Wounded no one can save, and the Frail at once', () => {
     const w = onTrap();
     only(w, 'Snag', 'Grukk');
     setHp(member(w, 'Grukk'), 1);
-    w.rng = scriptedRng([1, 1, ...Array(12).fill(1)]);
+    w.rng = scriptedRng([6, 6]);
     springHere(w, sure);
+    w.rng = scriptedThen(Array(20).fill(1), createRng('after'));
+    tendTrapFallen(w, sure);
     expect(member(w, 'Grukk').dead).toBe(true);
+    expect(w.log.at(-1)).toContain('Grukk dies.');
+    // A Healer could still revive him where he fell.
+    expect(w.fallen?.members).toEqual([member(w, 'Grukk').id]);
     const frail = onTrap();
     only(frail, 'Snag', 'Grukk');
     member(frail, 'Grukk').frail = true;
     setHp(member(frail, 'Grukk'), 1);
     frail.rng = scriptedRng([1, 1]);
     springHere(frail, sure);
-    expect(frail.log.at(-1)).toContain('Grukk was already Frail and dies.');
+    frail.rng = scriptedThen([], createRng('after'));
+    // The Frail die at once, before anyone can try.
+    expect(tendTrapFallen(frail, sure)?.rounds).toBe(1);
+    expect(member(frail, 'Grukk').dead).toBe(true);
   });
 
-  it('sends the party back to town when it kills everyone', () => {
+  it('lets a Healer’s magic save the fallen, as after a fight', () => {
+    const w = onTrap();
+    only(w, 'Fizzwick', 'Grukk');
+    const fizz = member(w, 'Fizzwick');
+    fizz.character = { ...fizz.character, arts: [...fizz.character.arts, 'healing-touch'] };
+    setHp(member(w, 'Grukk'), 1);
+    w.rng = scriptedRng([6, 1]);
+    springHere(w, sure);
+    expect(trapFallen(w).map((m) => m.character.name)).toEqual(['Grukk']);
+    w.rng = createRng('heal');
+    const result = tendTrapFallen(w, sure);
+    expect(result?.battle.log?.join('\n')).toContain('Fizzwick');
+    expect(member(w, 'Grukk').dead).toBe(false);
+    expect(member(w, 'Grukk').character.hp.current).toBeGreaterThan(0);
+    // Healing Touch's System Strain stays with him.
+    expect(member(w, 'Grukk').character.strain.value).toBe(1);
+  });
+
+  it('sends the party back to town when the last of it dies', () => {
     const w = onTrap();
     only(w, 'Grukk');
     setHp(member(w, 'Grukk'), 1);
-    // The last face draws the crypt's raising quest for the dead (raising.ts).
-    w.rng = scriptedRng([1, 0]);
+    w.rng = scriptedRng([1]);
     springHere(w, sure);
+    expect(w.dungeon).not.toBeNull();
+    // No one is left to tend him; the last face draws the crypt's raising quest (raising.ts).
+    w.rng = scriptedRng([1, 1, 0]);
+    tendTrapFallen(w, sure);
     expect(w.dungeon).toBeNull();
     expect(w.log.join('\n')).toContain('The party falls.');
   });
 
-  it('ends the step or the disarming there when it kills the last of the party', () => {
+  it('leaves the fallen of a step or a disarming for the party to tend', () => {
     const w = facing();
     only(w, 'Grukk');
     setHp(member(w, 'Grukk'), 1);
-    w.rng = scriptedRng([1, 1, 1, 6, 0]);
+    w.rng = scriptedThen([1, 1, 1, 6], createRng('after'));
     expect(step(w, data, 'forward')).toEqual({ ok: true });
-    expect(w.dungeon).toBeNull();
+    expect(trapFallen(w)).toHaveLength(1);
     const d = facing();
     only(d, 'Grukk');
     d.rng = scriptedRng([6, 6]);
     step(d, data, 'forward');
     setHp(member(d, 'Grukk'), 1);
-    d.rng = scriptedRng([1, 1, 1, 6, 0]);
+    d.rng = scriptedThen([1, 1, 1, 6], createRng('after'));
     expect(disarm(d, data)).toEqual({ ok: true });
-    expect(d.dungeon).toBeNull();
+    expect(trapFallen(d)).toHaveLength(1);
   });
 
   it('alarms bring nothing on a quiet level, or while others wait', () => {

@@ -1,10 +1,9 @@
 import { useRef, useState } from 'preact/hooks';
 import { newWorld, type Recruit } from '../../game/world/new-world.ts';
-import type { BattleResult } from '../../game/combat/battle.ts';
 import { settleBout } from '../../game/world/arena.ts';
 import { coachQuarter } from '../../game/world/coach.ts';
 import { difficultySeed } from '../../game/world/difficulty.ts';
-import { encounterBattle, xpText, type WorldBattle } from '../../game/world/fight.ts';
+import { encounterBattle, xpText } from '../../game/world/fight.ts';
 import { passQuarter, settleByFighting, settleByLeaving } from '../../game/world/quarter.ts';
 import { addStarterParty, removeFromRoster } from '../../game/character/roster.ts';
 import { mergeRoster, parseSave, serializeBundle } from '../../game/world/bundle.ts';
@@ -35,6 +34,8 @@ import { PartyScreens } from './PartyScreens.tsx';
 import { StartScreen } from './StartScreen.tsx';
 import { crossOver } from '../../game/world/crossing.ts';
 import { Toasts, useAlerts } from './Toasts.tsx';
+import { trapFallen } from '../../game/dungeon/trap-falls.ts';
+import { tending, type Fight } from './tending.ts';
 import { knownFoes } from '../../render/bestiary-view.ts';
 
 function download(text: string) {
@@ -72,22 +73,18 @@ function WorldScreens(props: { track: (w: World, fresh?: boolean) => void }) {
     setMember(undefined);
     setScreen(next);
   };
-  /** The fight on screen, what settles it, and where the party goes after. */
-  const [fight, setFight] = useState<{
-    battle: WorldBattle;
-    settle: (result: BattleResult) => void | Promise<void>;
-    back: 'map' | 'town';
-    /** The XP a win earns, once the simulation has judged the fight; none in the arena. */
-    xp?: Promise<string>;
-  } | null>(null);
+  const [fight, setFight] = useState<Fight | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
   const [, setSaves] = useState(0);
   const hasSave = loadWorldText(slot) !== null;
 
   const changed = (fresh = false) => {
-    if (world.current) {
-      saveWorldText(serializeWorld(world.current));
-      props.track(world.current, fresh === true);
+    const now = world.current;
+    if (now) {
+      saveWorldText(serializeWorld(now));
+      props.track(now, fresh === true);
+      // A trap's fallen are tended at once, as after a won fight (trap-falls.ts).
+      if (trapFallen(now).length > 0) setFight((f) => f ?? tending(now));
     }
     setVersion((v) => v + 1);
   };
@@ -196,6 +193,7 @@ function WorldScreens(props: { track: (w: World, fresh?: boolean) => void }) {
           }}
           canLeave={false}
           xp={fight.xp}
+          aftermath={fight.aftermath ?? false}
           known={knownFoes(w, data, fight.battle.enemies)}
           doneLabel={
             fight.back === 'town'

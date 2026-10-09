@@ -204,6 +204,27 @@ test('shows a notice on picking up a quest item', async ({ page }) => {
   await expect(notice).toBeHidden();
 });
 
+test('tends a PC a trap brings down, as after a fight', async ({ page }) => {
+  await startAtBarrow(page);
+  await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
+  await edit(
+    page,
+    `Object.assign(save.dungeon, { at: { x: 4, y: 7 }, facing: 'n' });
+     save.dungeon.traps = { 'barrow-upper': { '4,6': 'noticed' } };
+     save.members.find((m) => m.character.name === 'Grukk').character.hp.current = 1;`,
+  );
+  await page.getByRole('button', { name: 'Step onto the dart trap' }).click();
+  // The fallen are tended on the fight screen, Heal checks and healing magic and all.
+  await expect(page.locator('.fight')).toContainText('Grukk falls, mortally wounded.');
+  const result = page.getByRole('status').filter({ hasText: /^(The fallen live|1 dead)\.$/ });
+  await expect(result).toBeVisible();
+  const saved = (await result.innerText()).startsWith('The fallen live');
+  await page.getByRole('button', { name: 'Back to the dungeon' }).click();
+  const party = page.getByRole('region', { name: 'Party' });
+  if (saved) await expect(party).toContainText('Frail');
+  else await expect(page.getByRole('region', { name: 'Journey log' })).toContainText('Grukk dies.');
+});
+
 /** Fights out any pending encounters with auto-resolve, until the way is clear. */
 async function settle(page: Page) {
   const encounter = page.getByRole('region', { name: 'Encounter' });

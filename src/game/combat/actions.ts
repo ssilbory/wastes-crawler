@@ -25,7 +25,10 @@ export function stabilize(b: Battle, actor: Combatant, target: Combatant, aid = 
     modifier: aid,
     difficulty: stabilizeDifficulty(b.round - target.fellRound, actor.hasHealKit),
   });
-  if (!check.success) return;
+  if (!check.success) {
+    say(b, `${actor.name} tries to stabilize ${target.name}, and fails.`);
+    return;
+  }
   target.status = 'stable';
   target.frail = true;
   say(b, `${actor.name} stabilizes ${target.name}.`);

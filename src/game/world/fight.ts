@@ -123,16 +123,19 @@ export interface PartySetup {
   indoors: boolean;
 }
 
-/** The conscious party as it stands, its NPCs if `withNpcs`, and war mounts, against enemy rows. */
+/**
+ * The conscious party as it stands (or `party`), its NPCs if `withNpcs`, and war mounts, against
+ * enemy rows.
+ */
 export function partySetup(
   w: World,
   data: GameData,
   enemies: string[][],
   withNpcs: boolean,
   mounts: readonly Mount[] = [],
+  party: readonly Member[] = fighters(w),
 ): PartySetup {
   const faith = faithLit(w, data) ? userOf(w, data, FAITH_LIGHT) : undefined;
-  const party = fighters(w);
   return {
     party: party.map((m) => ({
       character: m.character,
