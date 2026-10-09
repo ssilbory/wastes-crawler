@@ -154,8 +154,3 @@ fieldset.slots {
   gap: 4px 16px;
   margin: 0 0 10px;
 }
-
-/* The builder: the steps scroll; the preview stays beside them. */
-.builder .sheet {
-  top: 0;
-}

@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { openStep } from './wizard.ts';
 
 // Shop mode (SRD 1.7.7): roll 3d6 x 10 crowns, buy items sized for the people, and place them.
 async function start(page: import('@playwright/test').Page, people: string, lineage?: string) {
@@ -8,7 +9,9 @@ async function start(page: import('@playwright/test').Page, people: string, line
   await select('People', people);
   if (lineage) await select('Lineage', lineage);
   const attrs = ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma'];
+  await openStep(page, 'Attributes');
   for (const [i, attr] of attrs.entries()) await select(attr, String([14, 12, 11, 10, 9, 7][i]));
+  await openStep(page, 'Gear');
   await page.getByRole('radio', { name: 'Roll for crowns and shop' }).check();
   await page.getByRole('button', { name: 'Roll 3d6 × 10 crowns' }).click();
   await expect(page.getByText(/Starting purse: \d+ crowns\./)).toBeVisible();

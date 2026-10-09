@@ -1,0 +1,141 @@
+/* The character builder as a wizard: the step list on top, one step at a time with the preview
+   beside it, and Back, Next, and Create along the bottom. Only the step itself scrolls, and only
+   when it is long (foci descriptions, the gear shop). */
+.builder {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.builder > * {
+  flex: none;
+}
+
+.builder > main {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.wizard {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.step-nav ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step-link {
+  padding: 4px 10px;
+  color: var(--muted);
+}
+
+.step-link .step-num {
+  font-family: var(--font-term);
+  font-size: 1.15rem;
+  line-height: 1;
+  color: var(--gold);
+}
+
+.step-link-ok {
+  color: var(--ok);
+}
+
+.step-link-error {
+  color: var(--error);
+}
+
+.step-link[aria-current='step'],
+.step-link[aria-current='step']:hover {
+  color: var(--accent-ink);
+  font-weight: 600;
+  background: linear-gradient(180deg, var(--accent-hi), var(--accent));
+}
+
+.step-link[aria-current='step'] .step-num {
+  color: var(--accent-ink);
+}
+
+.wizard-body {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 12px;
+}
+
+.wizard-pages,
+.wizard-body > .sheet {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.wizard-body > .sheet {
+  position: static;
+  align-self: start;
+  max-height: 100%;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.wizard-body > .sheet h3 {
+  margin: 8px 0 2px;
+}
+
+.wizard-body > .sheet :is(p, ul) {
+  margin: 4px 0;
+}
+
+.wizard-page .step {
+  margin: 0;
+}
+
+.wizard-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  align-items: center;
+  padding: 8px 10px;
+  background: linear-gradient(180deg, var(--panel-raised), var(--panel));
+  border: 2px solid var(--bevel-lo);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--bevel-out);
+}
+
+.wizard-footer .hint {
+  flex: 1 1 12rem;
+  margin: 0;
+}
+
+/* The finished character: the sheet in columns, the actions under it. */
+.builder > main.done {
+  overflow-y: auto;
+}
+
+.builder .done .sheet.final {
+  max-width: none;
+  margin: 0 0 12px;
+  columns: 3 300px;
+  column-gap: 28px;
+  column-rule: 1px solid var(--line);
+}
+
+.builder .done .sheet.final > :is(h2, h3) {
+  break-after: avoid;
+}
+
+.builder .done .sheet.final > :is(table, dl, ul, p) {
+  break-inside: avoid;
+}
+
+@media (max-width: 760px) {
+  .wizard-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

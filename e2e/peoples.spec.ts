@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { openStep } from './wizard.ts';
 
 // The Phase 3b exit criterion (docs/plan.md): build a valid character of every people. Each one is
 // also exported and re-imported, so the saved file carries the people and lineage.
@@ -84,18 +85,25 @@ async function build(page: Page, c: (typeof CASES)[number]) {
   await select('People', c.people);
   if (c.lineage) await select('Lineage', c.lineage);
   const array = { Strength: 14, Dexterity: 12, Constitution: 11, Intelligence: 10, Wisdom: 9 };
+  await openStep(page, 'Attributes');
   for (const [attr, v] of Object.entries(array)) await select(attr, String(v));
   await select('Charisma', '7');
+  await openStep(page, 'Background');
   await select('Background', c.bg);
   await select('Learning pick 1', c.picks[0]);
   await select('Learning pick 2', c.picks[1]);
+  await openStep(page, 'Class');
   await select('Class', 'Expert');
+  await openStep(page, 'Foci');
   for (const [label, option] of c.foci) await select(label, option);
   await select('Non-combat focus', 'Lucky');
   await select('Any focus', 'Well Met');
+  await openStep(page, 'Free skill');
   await select('Free skill', 'Lead');
+  await openStep(page, 'Gear');
   await page.getByRole('radio', { name: 'Starting package' }).check();
   await select('Package', 'Wanderer');
+  await openStep(page, 'Name and goal');
   await page.getByRole('textbox', { name: 'Name', exact: true }).fill(`${c.people} tester`);
   await page.getByRole('button', { name: 'Create character' }).click();
 }
@@ -130,9 +138,12 @@ test('offers only backgrounds open to the chosen people, and clears one that no 
     page.getByRole('combobox', { name: label, exact: true }).selectOption({ label: option });
   const background = page.getByRole('combobox', { name: 'Background', exact: true });
   await select('People', 'Goblin');
+  await openStep(page, 'Background');
   await select('Background', 'Tunneler');
   await expect(background.locator('option', { hasText: 'Outrider' })).toHaveCount(0);
+  await openStep(page, 'People');
   await select('People', 'Centaur');
+  await openStep(page, 'Background');
   await expect(background).toHaveValue('');
   await expect(background.locator('option', { hasText: 'Tunneler' })).toHaveCount(0);
   await expect(background.locator('option', { hasText: 'Outrider' })).toHaveCount(1);

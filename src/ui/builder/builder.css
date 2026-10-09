@@ -14,19 +14,6 @@ header {
   padding-bottom: 12px;
 }
 
-.steps {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
-  gap: 16px;
-  margin-top: 16px;
-}
-
-@media (max-width: 760px) {
-  .steps {
-    grid-template-columns: 1fr;
-  }
-}
-
 .step,
 .sheet {
   margin-bottom: 12px;

@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { openStep } from './wizard.ts';
 
 // The Skinshifter (1.5.15): a first form built in the builder, and Change Form on the map.
 const WORLD_KEY = 'wastes-crawler.world';
@@ -8,6 +9,7 @@ test('builds a Berserker with a Wolf form', async ({ page }) => {
     page.getByRole('combobox', { name: label, exact: true }).selectOption({ label: option });
   await page.goto('/');
   await select('People', 'Orc');
+  await openStep(page, 'Attributes');
   for (const [attr, v] of [
     ['Strength', '14'],
     ['Dexterity', '12'],
@@ -17,10 +19,13 @@ test('builds a Berserker with a Wolf form', async ({ page }) => {
     ['Charisma', '9'],
   ] as const)
     await select(attr, v);
+  await openStep(page, 'Background');
   await select('Background', 'Raider');
   await select('Learning pick 1', 'Sneak');
   await select('Learning pick 2', 'Exert');
+  await openStep(page, 'Class');
   await select('Class', 'Berserker (Skinshifter/Warrior)');
+  await openStep(page, 'Foci');
   for (const [label, option] of [
     ['Bonus skill for War-bred', 'Stab'],
     ['Racial focus', 'Die Hard'],
@@ -28,6 +33,7 @@ test('builds a Berserker with a Wolf form', async ({ page }) => {
     ['Any focus', 'Lucky'],
   ] as const)
     await select(label, option);
+  await openStep(page, 'Magic');
   const magic = page.locator('section.step', { hasText: '6. Magic' });
   await expect(magic).toContainText('No spells: arts alone');
   await magic.getByLabel('Savage Talons', { exact: true }).check();
@@ -40,9 +46,12 @@ test('builds a Berserker with a Wolf form', async ({ page }) => {
     /extremely dangerous claws/,
   );
   await form.getByLabel('Savage Talons', { exact: true }).check();
+  await openStep(page, 'Free skill');
   await select('Free skill', 'Know');
+  await openStep(page, 'Gear');
   await page.getByRole('radio', { name: 'Starting package' }).check();
   await select('Package', 'Apprentice');
+  await openStep(page, 'Name and goal');
   await page.getByRole('textbox', { name: 'Name', exact: true }).fill('Fang');
   await page.getByRole('button', { name: 'Create character' }).click();
   const sheet = page.getByTestId('character-sheet');
