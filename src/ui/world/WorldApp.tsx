@@ -34,6 +34,7 @@ import type { PartyScreen } from './PartyButtons.tsx';
 import { PartyScreens } from './PartyScreens.tsx';
 import { StartScreen } from './StartScreen.tsx';
 import { crossOver } from '../../game/world/crossing.ts';
+import { Toasts, useAlerts } from './Toasts.tsx';
 import { knownFoes } from '../../render/bestiary-view.ts';
 
 function download(text: string) {
@@ -46,6 +47,17 @@ function download(text: string) {
 }
 
 export function WorldApp() {
+  const alerts = useAlerts();
+  return (
+    <>
+      <WorldScreens track={alerts.track} />
+      <Toasts shown={alerts.shown} onDismiss={alerts.dismiss} />
+    </>
+  );
+}
+
+/** `track` hears of every change to the world, for the notices beside the screen. */
+function WorldScreens(props: { track: (w: World, fresh?: boolean) => void }) {
   const [roster, setRoster] = useState(() => loadRoster().entries);
   const [slot, setSlot] = useState<Slot>(activeSlot);
   const world = useRef<World | null>(null);
@@ -72,8 +84,11 @@ export function WorldApp() {
   const [, setSaves] = useState(0);
   const hasSave = loadWorldText(slot) !== null;
 
-  const changed = () => {
-    if (world.current) saveWorldText(serializeWorld(world.current));
+  const changed = (fresh = false) => {
+    if (world.current) {
+      saveWorldText(serializeWorld(world.current));
+      props.track(world.current, fresh === true);
+    }
     setVersion((v) => v + 1);
   };
   /** Opens a slot's save, a plain world save, or a full save, whose roster joins this one. */
@@ -91,13 +106,13 @@ export function WorldApp() {
     world.current = loaded.world;
     setErrors([]);
     setScreen('map');
-    changed();
+    changed(true);
   };
   const start = (party: Recruit[], seed: string) => {
     world.current = newWorld(data, seed.trim() ? createRng(seed.trim()) : freshRng(), party);
     setErrors([]);
     setScreen('intro');
-    changed();
+    changed(true);
   };
 
   const w = world.current;

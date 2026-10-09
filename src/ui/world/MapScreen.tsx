@@ -25,6 +25,7 @@ import { SorceryPanel } from './SorceryPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
 import { MountsPanel } from './MountsPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
+import { PopOut } from './PopOut.tsx';
 import { QuestLog } from './QuestLog.tsx';
 import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
 import { JournalPanel } from './JournalPanel.tsx';
@@ -122,16 +123,19 @@ export function MapScreen(props: {
             />
           </div>
           <JournalPanel world={w} />
+          {w.encounter && (
+            <PopOut>
+              <EncounterPanel
+                world={w}
+                onFight={props.onFight}
+                onLeave={props.onLeave}
+                onChange={props.onChange}
+              />
+            </PopOut>
+          )}
         </div>
         <div class="dock">
-          {w.encounter ? (
-            <EncounterPanel
-              world={w}
-              onFight={props.onFight}
-              onLeave={props.onLeave}
-              onChange={props.onChange}
-            />
-          ) : w.coach ? (
+          {w.encounter ? null : w.coach ? (
             <CoachPanel world={w} onRide={props.onRide} />
           ) : (
             <QuarterPanel
@@ -150,10 +154,10 @@ export function MapScreen(props: {
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
           <MountsPanel world={w} onChange={props.onChange} />
-          <CompanionsPanel world={w} onChange={props.onChange} />
         </div>
         <div class="dock">
           <QuestLog world={w} onChange={props.onChange} />
+          <CompanionsPanel world={w} onChange={props.onChange} />
           <SettingPanel world={w} inTown={town !== undefined} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />
           <GreenwoodPanel world={w} onChange={props.onChange} />

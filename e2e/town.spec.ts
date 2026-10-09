@@ -120,6 +120,10 @@ test('plays the common room for the party’s lodging', async ({ page }) => {
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
     /Grukk plays (to a cold room|the common room)/,
   );
+  // A notice pops up beside the screen to say how it went.
+  await expect(
+    page.getByRole('status', { name: /^(A cold room|A good night at the inn)$/ }),
+  ).toContainText(/Grukk plays (to a cold room|the common room)/);
 });
 
 test('buys a round for a rumor, and the map marks the way down', async ({ page }, testInfo) => {

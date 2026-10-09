@@ -12,6 +12,7 @@ import './ui/world/layout.css';
 import './ui/world/world.css';
 import './ui/world/hex-map.css';
 import './ui/town/town.css';
+import './ui/world/popups.css';
 import './ui/theme/screens.css';
 // After the shared screen rules: the builder fits its window instead of scrolling.
 import './ui/builder/wizard.css';

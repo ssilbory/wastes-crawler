@@ -124,7 +124,8 @@ test('fights a wanderer, camps on a safe square, and goes dark', async ({ page }
   );
   const encounter = page.getByRole('region', { name: 'Encounter' });
   await expect(encounter).toContainText('scuttles out of the dark');
-  await page.getByRole('button', { name: 'Forward' }).click();
+  // The encounter pops out over the view and its buttons; the keys still try to move.
+  await page.keyboard.press('w');
   await expect(page.locator('.bump')).toHaveText('Settle the encounter first.');
   await page.screenshot({ path: testInfo.outputPath('dungeon-encounter.png'), fullPage: true });
   await encounter.getByRole('button', { name: 'Fight' }).click();
@@ -199,7 +200,7 @@ test('shows a notice on picking up a quest item', async ({ page }) => {
   await expect(notice).toContainText(
     "The Barrow-King's Torc: the party takes the barrow-king's torc.",
   );
-  await notice.getByRole('button', { name: 'OK' }).click();
+  await notice.getByRole('button', { name: 'Dismiss' }).click();
   await expect(notice).toBeHidden();
 });
 

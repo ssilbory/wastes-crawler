@@ -1,0 +1,149 @@
+/* Pop-outs over the view (PopOut.tsx) and notices beside the screen (Toasts.tsx). */
+.world,
+.world-left {
+  position: relative;
+}
+
+/* The view beneath dims; the card sits in the middle and scrolls inside itself if it must. */
+.pop-out {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgb(5 4 3 / 72%);
+  border-radius: var(--radius-panel);
+  animation: pop-fade 0.15s ease-out;
+}
+
+.pop-out-card {
+  width: min(38rem, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  animation: pop-in 0.18s ease-out;
+}
+
+.pop-out-card > .panel {
+  border-color: var(--accent);
+  box-shadow:
+    var(--bevel-out),
+    0 0 0 1px var(--bevel-lo),
+    0 12px 48px rgb(0 0 0 / 70%);
+}
+
+.pop-out-card .encounter h2 {
+  font-size: 1.8rem;
+  color: var(--accent-hi);
+}
+
+.pop-out-card .actions,
+.pop-out-card .parley {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+/* Notices stack down the right edge, under the status bar, newest at the bottom. */
+.toasts {
+  position: fixed;
+  top: 64px;
+  right: 14px;
+  z-index: 40;
+  display: grid;
+  gap: 8px;
+  width: min(330px, calc(100vw - 28px));
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: start;
+  padding: 8px 10px;
+  background: linear-gradient(180deg, var(--panel-raised), var(--panel));
+  border: 2px solid var(--gold);
+  border-left-width: 6px;
+  border-radius: var(--radius-panel);
+  box-shadow:
+    var(--bevel-out),
+    0 8px 28px rgb(0 0 0 / 65%);
+  animation: toast-in 0.2s ease-out;
+}
+
+.toast-strain {
+  border-color: var(--error);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--blood) 45%, var(--panel-raised)),
+    var(--panel)
+  );
+}
+
+.toast-icon {
+  font-size: 1.3rem;
+  line-height: 1.2;
+  color: var(--gold);
+}
+
+.toast-strain .toast-icon,
+.toast-strain h3 {
+  color: var(--error);
+}
+
+.toast h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+.toast p {
+  margin: 2px 0 0;
+  font-size: 0.9rem;
+}
+
+.toast-close {
+  padding: 0 6px;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+@keyframes pop-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pop-out,
+  .pop-out-card,
+  .toast {
+    animation: none;
+  }
+}
+
+.toast-inn {
+  border-color: var(--accent);
+}
+
+.toast-inn .toast-icon {
+  color: var(--accent-hi);
+}

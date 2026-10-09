@@ -28,6 +28,7 @@ import { WorkshopTab } from './WorkshopTab.tsx';
 import { CraftsmanTab } from './CraftsmanTab.tsx';
 import { ArenaTab } from './ArenaTab.tsx';
 import type { BoutStart } from '../../game/world/arena.ts';
+import { PopOut } from '../world/PopOut.tsx';
 
 const TABS = {
   quests: 'Quests',
@@ -88,12 +89,15 @@ export function TownScreen(props: {
         </span>
       </div>
       {w.encounter && (
-        <div class="raid-alarm" role="alert">
-          <p>{w.encounter.text}</p>
-          <button type="button" class="create" onClick={props.onLeave}>
-            To the gates
-          </button>
-        </div>
+        <PopOut>
+          <div class="raid-alarm" role="alert">
+            <h2>Raid</h2>
+            <p>{w.encounter.text}</p>
+            <button type="button" class="create" onClick={props.onLeave}>
+              To the gates
+            </button>
+          </div>
+        </PopOut>
       )}
       <div class="tabs town-tabs" role="tablist" aria-label="Town">
         {(Object.keys(TABS) as Tab[]).map((t) => (
@@ -134,10 +138,10 @@ export function TownScreen(props: {
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
           <MountsPanel world={w} onChange={props.onChange} />
-          <CompanionsPanel world={w} onChange={props.onChange} />
         </div>
         <div class="dock">
           <QuestLog world={w} onChange={props.onChange} />
+          <CompanionsPanel world={w} onChange={props.onChange} />
           <SettingPanel world={w} inTown onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />
           <AntidotePanel world={w} onChange={props.onChange} />
