@@ -211,19 +211,21 @@
   padding-left: 1.1rem;
 }
 
+/* A raid on the town pops out over the whole screen (PopOut.tsx). */
 .raid-alarm {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-  padding: 0.5rem 0.75rem;
+  padding: 12px 16px;
   border: 2px solid var(--error);
   border-radius: var(--radius-panel);
   background: color-mix(in srgb, var(--blood) 35%, var(--panel));
+  box-shadow: var(--bevel-out);
+}
+
+.raid-alarm h2 {
+  color: var(--error);
 }
 
 .raid-alarm p {
-  margin: 0;
-  flex: 1;
+  margin: 0 0 12px;
 }
 
 .raided {
@@ -268,25 +270,4 @@
 
 .inventory input[type='number'] {
   width: 4rem;
-}
-
-.quest-found {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-  width: 100%;
-  max-width: 640px;
-  box-sizing: border-box;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--ok);
-  border-radius: 4px;
-}
-
-.quest-found div {
-  flex: 1;
-}
-
-.quest-found h3,
-.quest-found p {
-  margin: 0;
 }

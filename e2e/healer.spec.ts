@@ -82,11 +82,20 @@ test('purges an ally of Frailty, spending Effort win or lose', async ({ page }) 
   await expect(log).toContainText(
     /Fizzwick (purges Snag's Frailty|tends Snag, but the Frailty holds)\./,
   );
-  if ((await log.innerText()).includes("purges Snag's Frailty")) {
-    await expect(panel).toHaveCount(0);
-    await expect(page.getByRole('region', { name: 'Party' })).not.toContainText('Frail');
-  } else {
-    await expect(panel).toContainText('Fizzwick: 1 Effort left today');
-    await expect(page.getByRole('region', { name: 'Party' })).toContainText('Frail');
-  }
+  // Either way the panel closes: a cure leaves no one to tend, and a Healer gets one try at each
+  // Frailty (docs/rules-adaptation.md, Purge Ailment).
+  await expect(panel).toHaveCount(0);
+  const party = page.getByRole('region', { name: 'Party' });
+  if ((await log.innerText()).includes("purges Snag's Frailty"))
+    await expect(party).not.toContainText('Frail');
+  else await expect(party).toContainText('Frail');
+  // The Effort and Snag's 1 System Strain are spent win or lose.
+  await expect(party).toContainText('Strain 1/');
+  const spent = await page.evaluate((key) => {
+    const save = JSON.parse(localStorage.getItem(key) as string);
+    return save.members.find(
+      (m: { character: { name: string } }) => m.character.name === 'Fizzwick',
+    ).effortDay as number;
+  }, WORLD_KEY);
+  expect(spent).toBe(1);
 });

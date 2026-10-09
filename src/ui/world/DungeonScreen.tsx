@@ -9,7 +9,6 @@ import {
   type Step,
 } from '../../game/dungeon/explore.ts';
 import { describeDate } from '../../game/world/calendar.ts';
-import { itemsTaken, questSteps } from '../../game/world/quests.ts';
 import type { World } from '../../game/world/types.ts';
 import { automap, FACING_NAMES, MAP_CELL } from '../../render/automap-view.ts';
 import { dungeonView, VIEW_HEIGHT, VIEW_WIDTH } from '../../render/dungeon-view.ts';
@@ -29,7 +28,7 @@ import { NpcPanel } from './NpcPanel.tsx';
 import { QuestLog } from './QuestLog.tsx';
 import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
 import { JournalPanel } from './JournalPanel.tsx';
-import { QuestItemNotice } from './QuestItemNotice.tsx';
+import { PopOut } from './PopOut.tsx';
 import { CampPanel } from './CampPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
 import { blind } from '../../game/dungeon/light.ts';
@@ -71,14 +70,11 @@ export function DungeonScreen(props: {
   const w = props.world;
   const s = w.dungeon as NonNullable<World['dungeon']>;
   const [bump, setBump] = useState<string | null>(null);
-  const [found, setFound] = useState<ReturnType<typeof itemsTaken>>([]);
   const move = (m: Move) => {
     if (!w.dungeon) return;
     if ('step' in m) {
-      const before = questSteps(w);
       const r = step(w, data, m.step);
       setBump(r.ok ? null : r.reason);
-      if (r.ok) setFound(itemsTaken(w, data, before));
       play(r.ok ? 'step' : 'bump');
     } else {
       turnParty(w, data, m.turn);
@@ -221,10 +217,8 @@ export function DungeonScreen(props: {
                 <button
                   type="button"
                   onClick={() => {
-                    const before = questSteps(w);
                     takeStairs(w, data);
                     setBump(null);
-                    setFound(itemsTaken(w, data, before));
                     props.onChange();
                   }}
                 >
@@ -234,15 +228,18 @@ export function DungeonScreen(props: {
             </div>
           </div>
           <JournalPanel world={w} />
+          {w.encounter && (
+            <PopOut>
+              <EncounterPanel
+                world={w}
+                onFight={props.onFight}
+                onLeave={props.onLeave}
+                onChange={props.onChange}
+              />
+            </PopOut>
+          )}
         </div>
         <div class="dock">
-          <QuestItemNotice found={found} onDismiss={() => setFound([])} />
-          <EncounterPanel
-            world={w}
-            onFight={props.onFight}
-            onLeave={props.onLeave}
-            onChange={props.onChange}
-          />
           {map && (
             <section class="panel" aria-label="Automap">
               <h3>Map</h3>
@@ -285,10 +282,10 @@ export function DungeonScreen(props: {
           )}
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
-          <CompanionsPanel world={w} onChange={props.onChange} />
         </div>
         <div class="dock">
           <QuestLog world={w} onChange={props.onChange} />
+          <CompanionsPanel world={w} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />
           <GreenwoodPanel world={w} onChange={props.onChange} />
           <FormsPanel world={w} onChange={props.onChange} />

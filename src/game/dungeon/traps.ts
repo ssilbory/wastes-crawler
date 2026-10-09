@@ -1,24 +1,20 @@
 // Traps (docs/rules-adaptation.md, Dungeon exploration): stepping toward a trap, the party's best
 // Wis/Notice may spot it and stop; a known trap can be disarmed in a turn (failing by 2 or more
 // springs it), stepped into, or walked around. A sprung trap asks each PC for its save. A PC
-// brought to 0 HP is Mortally Injured and the others have six rounds to stabilize them, and one
-// who was already Frail dies at once (vendor/wwn-srd/2.0 The Rules of the Game/2.5.0 Injury,
-// Healing, And System Strain.md, 2.5.1). Dungeon poison takes half the victim's maximum hit points
+// brought to 0 HP is Mortally Wounded, and the party tends them as after a won fight
+// (trap-falls.ts; vendor/wwn-srd/2.0 The Rules of the Game/2.5.0 Injury, Healing, And System
+// Strain.md, 2.5.1). Dungeon poison takes half the victim's maximum hit points
 // (2.10.0 Falling and Other Hazards.md).
-import { wearForm } from '../world/wear.ts';
 import type { Trap } from '../../data/schemas/index.ts';
-import { MORTAL_ROUNDS, stabilizeDifficulty } from '../../rules/combat.ts';
 import { roll } from '../../rules/dice.ts';
 import { ahead, cellKey, type Cell } from '../../rules/grid.ts';
 import { rollSave } from '../../rules/saves.ts';
 import type { GameData } from '../character/context.ts';
 import { poisonProof } from '../world/ailing.ts';
 import { infect, poisonMember } from '../world/ailments.ts';
-import { HEALERS_KIT } from '../world/first-aid.ts';
 import { pactOf } from '../world/pacts.ts';
 import { alive, bestAt, memberCheck, memberSheet, note, setHp } from '../world/members.ts';
 import type { TownResult } from '../world/services.ts';
-import { wipe } from '../world/town.ts';
 import type { Member, World } from '../world/types.ts';
 import { levelOf } from './explore.ts';
 import { blind } from './light.ts';
@@ -68,37 +64,12 @@ export function approach(w: World, data: GameData, target: Cell, stepIn: boolean
   return text;
 }
 
-/** SRD 2.5.1: six rounds for the others to stabilize a Mortally Injured PC. */
-function mortal(w: World, data: GameData, m: Member): void {
-  for (let round = 0; round < MORTAL_ROUNDS; round++) {
-    const medic = bestAt(data, able(w), 'heal', ['dex', 'int']);
-    if (!medic) break;
-    const kit = medic.character.inventory.some((e) => e.id === HEALERS_KIT);
-    const difficulty = stabilizeDifficulty(round, kit);
-    if (!memberCheck(w, data, medic, 'heal', ['dex', 'int'], difficulty).success) continue;
-    setHp(m, 1);
-    m.frail = true;
-    note(w, `${medic.character.name} saves ${m.character.name}, who is left Frail.`);
-    return;
-  }
-  wearForm(data, m, null);
-  m.dead = true;
-  note(w, `${m.character.name} dies.`);
-}
-
-function wound(w: World, data: GameData, m: Member, amount: number): void {
+/** A PC brought to zero lies Mortally Wounded, for the party to tend (trap-falls.ts). */
+function wound(w: World, m: Member, amount: number): void {
   const hp = m.character.hp.current - amount;
   note(w, `${m.character.name} takes ${amount} damage.`);
-  if (hp > 0) {
-    setHp(m, hp);
-    return;
-  }
-  setHp(m, 0);
-  if (m.frail) {
-    wearForm(data, m, null);
-    m.dead = true;
-    note(w, `${m.character.name} was already Frail and dies.`);
-  } else mortal(w, data, m);
+  setHp(m, Math.max(0, hp));
+  if (hp <= 0) note(w, `${m.character.name} falls, mortally wounded.`);
 }
 
 function spring(w: World, data: GameData, trap: Trap): void {
@@ -138,9 +109,8 @@ function spring(w: World, data: GameData, trap: Trap): void {
     if (e.kind === 'poison') poisonMember(w, data, m);
     const amount =
       e.kind === 'damage' ? roll(w.rng, e.dice).total : Math.ceil(m.character.hp.max / 2);
-    wound(w, data, m, amount);
+    wound(w, m, amount);
   }
-  if (alive(w).length === 0) wipe(w, data);
 }
 
 /** Springs the trap where the party now stands, if it is armed. */
