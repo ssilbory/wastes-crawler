@@ -235,3 +235,17 @@ export function modifierBonuses(foci: readonly HeldFocus[]): ModifierBonuses {
   for (const f of foci) if (f.attribute) out[f.attribute] = 1;
   return out;
 }
+
+/**
+ * A background sets the skills the foci build on, so a change to it drops each focus's skill
+ * pick. A replacement that no longer applies would otherwise fail with no control to clear it.
+ */
+export function withoutFocusSkills(
+  choices: readonly (FocusChoice | null)[],
+): (FocusChoice | null)[] {
+  return choices.map((c) =>
+    c === null
+      ? null
+      : { id: c.id, ...(c.attribute === undefined ? {} : { attribute: c.attribute }) },
+  );
+}

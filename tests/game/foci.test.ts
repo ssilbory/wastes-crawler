@@ -17,6 +17,7 @@ import {
   focusSlots,
   hasDieHard,
   modifierBonuses,
+  withoutFocusSkills,
   type FocusChoice,
 } from '../../src/game/character/foci.ts';
 import { findLineage, findPeople } from '../../src/game/character/people.ts';
@@ -275,5 +276,28 @@ describe('foci in a finished character', () => {
     const ev = evaluateChoices({ ...base([]), classId: null }, data);
     expect(ev.focusSlots.map((s) => s.kind)).toEqual(['signature', 'signature', 'racial']);
     expect(ev.steps.foci).toEqual({ state: 'incomplete' });
+  });
+});
+
+describe('withoutFocusSkills', () => {
+  it('drops skill picks and keeps the focus and any attribute', () => {
+    const choices: (FocusChoice | null)[] = [
+      { id: 'war-bred', skill: 'stab' },
+      null,
+      { id: 'developed-attribute', attribute: 'str', skill: 'exert' },
+      { id: 'lucky' },
+    ];
+    expect(withoutFocusSkills(choices)).toEqual([
+      { id: 'war-bred' },
+      null,
+      { id: 'developed-attribute', attribute: 'str' },
+      { id: 'lucky' },
+    ]);
+  });
+
+  it('leaves the input untouched', () => {
+    const choices: (FocusChoice | null)[] = [{ id: 'armsmaster', skill: 'notice' }];
+    withoutFocusSkills(choices);
+    expect(choices).toEqual([{ id: 'armsmaster', skill: 'notice' }]);
   });
 });
