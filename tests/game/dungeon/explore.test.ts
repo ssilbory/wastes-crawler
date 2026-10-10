@@ -174,3 +174,19 @@ describe('world save version 6', () => {
     expect(old.ok && old.world.dungeon).toBeNull();
   });
 });
+
+describe('turning with an encounter pending', () => {
+  it('refuses to turn the party until the encounter is settled', () => {
+    const w = world();
+    w.position = { ...entrance };
+    w.destination = { col: 9, row: 9 };
+    expect(enterDungeon(w, data)).toEqual({ ok: true });
+    w.encounter = encounter([['thug-or-militia']]);
+    const facing = w.dungeon?.facing;
+    expect(turnParty(w, data, 'left')).toEqual({
+      ok: false,
+      reason: 'Settle the encounter first.',
+    });
+    expect(w.dungeon?.facing).toBe(facing);
+  });
+});

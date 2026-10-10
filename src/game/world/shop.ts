@@ -7,6 +7,7 @@ import { lootPayout, toTenths } from '../../rules/economy.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
 import { inventoryErrors } from '../character/equipment.ts';
+import { putLine } from '../character/stacks.ts';
 import { fitSize, sizedLine, type Size } from '../character/gear.ts';
 import { entryPrice, findItem, type InventoryEntry } from '../character/items.ts';
 import { findPeople } from '../character/people.ts';
@@ -59,19 +60,6 @@ export function inventoryProblem(
   return `${c.name} can't carry that much`;
 }
 
-/** Merges a bought unit into a matching stowed line, or adds one. */
-function addUnit(inventory: InventoryEntry[], entry: InventoryEntry): InventoryEntry[] {
-  const same = inventory.findIndex(
-    (e) =>
-      e.id === entry.id &&
-      e.location === 'stowed' &&
-      e.small === entry.small &&
-      e.barding === entry.barding,
-  );
-  if (same < 0) return [...inventory, entry];
-  return inventory.map((e, i) => (i === same ? { ...e, quantity: e.quantity + 1 } : e));
-}
-
 /** The size a member's own armor comes in; a purchase can ask for the other (Small armor). */
 export const fitSizeOf = (data: GameData, m: Member): Size => fitSize(peopleOf(data, m));
 
@@ -91,7 +79,7 @@ export function buy(
     return no(`${findItem(data, itemId)?.name ?? itemId} isn't sold small.`);
   const line = { id: itemId, quantity: 1, location: 'stowed' as const };
   const entry = sizedLine(data, line, size ?? fitSizeOf(data, m));
-  const inventory = addUnit(m.character.inventory, entry);
+  const inventory = putLine(m.character.inventory, entry);
   const problem = inventoryProblem(data, m, inventory);
   if (problem) return no(problem);
   const price = shopPrice(w, data, itemId);
@@ -154,7 +142,7 @@ export function giveItem(
   const to = member(w, toId);
   const entry = from.character.inventory[index];
   if (!entry) throw new Error(`no inventory line ${index}`);
-  const received = addUnit(to.character.inventory, { ...entry, quantity: 1, location: 'stowed' });
+  const received = putLine(to.character.inventory, { ...entry, quantity: 1, location: 'stowed' });
   const problem = inventoryProblem(data, to, received);
   if (problem) return no(problem);
   from.character = {

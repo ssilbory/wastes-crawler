@@ -8,6 +8,7 @@ import { passQuarter, settleByFighting, settleByLeaving } from '../../game/world
 import { addStarterParty, removeFromRoster } from '../../game/character/roster.ts';
 import { mergeRoster, parseSave, serializeBundle } from '../../game/world/bundle.ts';
 import { serializeWorld } from '../../game/world/save.ts';
+import { setDefaultAction } from '../../game/world/members.ts';
 import { slotSummary } from '../../render/save-view.ts';
 import type { World } from '../../game/world/types.ts';
 import { createRng } from '../../rules/rng.ts';
@@ -62,6 +63,8 @@ function WorldScreens(props: { track: (w: World, fresh?: boolean) => void }) {
   const [roster, setRoster] = useState(() => loadRoster().entries);
   const [slot, setSlot] = useState<Slot>(activeSlot);
   const world = useRef<World | null>(null);
+  // Fights already settled, so a second click on "Back" can't settle the same one again.
+  const settled = useRef(new WeakSet<object>());
   const [version, setVersion] = useState(0);
   const [screen, setScreen] = useState<'start' | 'intro' | 'map' | 'town' | PartyScreen>('start');
   /** Where a party screen returns to, and the member the inventory opens on. */
@@ -188,8 +191,10 @@ function WorldScreens(props: { track: (w: World, fresh?: boolean) => void }) {
             (id) => w.members.find((m) => m.id === id)?.defaultAction ?? 'auto',
           )}
           onPreset={(i, preset) => {
-            const m = w.members.find((x) => x.id === fight.battle.memberIds[i]);
-            if (m) m.defaultAction = preset;
+            const id = fight.battle.memberIds[i];
+            if (!id) return;
+            setDefaultAction(w, id, preset);
+            changed();
           }}
           canLeave={false}
           xp={fight.xp}
@@ -204,6 +209,8 @@ function WorldScreens(props: { track: (w: World, fresh?: boolean) => void }) {
           }
           onDone={(result) => {
             if (!result) return done();
+            if (settled.current.has(fight)) return;
+            settled.current.add(fight);
             void Promise.resolve(fight.settle(result)).then(done);
           }}
         />

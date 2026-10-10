@@ -19,6 +19,7 @@ import type { Battle, Combatant } from '../../../src/game/combat/types.ts';
 import { createRng } from '../../../src/rules/rng.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { data, standardBattle, starter, who } from './helpers.ts';
+import { finishMending } from '../../../src/game/combat/aftermath.ts';
 
 /** A won fight: every foe dead. */
 function won(b: Battle): Battle {
@@ -174,5 +175,14 @@ describe('healing magic for the dying', () => {
     const grukk = fall(who(b, 'Grukk'), b.round);
     expect(concludeBattle(b).deaths).toBe(0);
     expect(grukk.status).toBe('active');
+  });
+});
+
+describe('finishMending', () => {
+  it('sets the mended flag the healing pause waits on', () => {
+    const b = standardBattle([['thug-or-militia']]);
+    expect(b.mended).toBe(false);
+    finishMending(b);
+    expect(b.mended).toBe(true);
   });
 });

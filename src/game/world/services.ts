@@ -43,7 +43,8 @@ export function restAtInn(w: World, data: GameData): void {
   for (const m of alive(w)) m.slept = true;
   w.camp = 'made';
   w.noRecovery = false;
-  endOfDay(w, data);
+  // A night that wipes the party out ends at the last town, with no inn stay to note.
+  if (endOfDay(w, data)) return;
   for (const m of alive(w)) {
     const s = m.character.strain;
     const rested = fullRest({ strain: s.value, max: 0, broken: s.broken });

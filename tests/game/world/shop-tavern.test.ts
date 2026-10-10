@@ -296,3 +296,23 @@ describe('the tavern', () => {
     expect(freeSlot(w, true)).toBeNull();
   });
 });
+
+describe('buying into a pack that already has a magic copy (#3)', () => {
+  it('keeps a plain purchase on its own line, apart from a +2 copy', () => {
+    const w = world();
+    const m = member(w, 'Snag');
+    m.character = {
+      ...m.character,
+      inventory: [{ id: 'crowbar', quantity: 1, location: 'stowed', bonus: 2 }],
+    };
+    expect(buy(w, data, m.id, 'crowbar')).toEqual({ ok: true });
+    const bonuses = m.character.inventory
+      .filter((e) => e.id === 'crowbar')
+      .map((e) => [e.quantity, e.bonus ?? 0])
+      .sort();
+    expect(bonuses).toEqual([
+      [1, 0],
+      [1, 2],
+    ]);
+  });
+});

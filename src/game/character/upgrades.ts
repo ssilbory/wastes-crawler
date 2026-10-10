@@ -27,8 +27,8 @@ export function brokenEntry(data: GameData, entry: InventoryEntry): boolean {
 }
 
 export function upgrade(data: GameData, entry: InventoryEntry): Upgrade {
-  // SRD 2.8.3: a mod a day without maintenance stops working.
-  const working = entry.upkeep ? [] : (entry.mods ?? []);
+  // SRD 2.8.3: a mod a day without maintenance stops working. The creator's first mod needs none (2.8.1).
+  const working = (entry.mods ?? []).filter((m) => m.free || !entry.upkeep);
   const mods = working.flatMap((m) => {
     const mod = data.content.mods.find((x) => x.id === m.id);
     return mod ? [mod] : [];

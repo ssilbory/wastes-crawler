@@ -177,14 +177,17 @@ export function endOfRound(b: Battle): void {
     if (c.flyingRounds > 0) c.flyingRounds -= 1;
   }
   if (b.layout.party === 'formation') shiftFormation(b);
-  // Monster rows step up when their front row is empty.
+  // Monster rows step up when their front row is empty. A monster held out of action (spellbound,
+  // banished and due back) still holds its slot, so only the dead and the fled leave it open.
   const monsters = b.combatants.filter((c) => c.kind === 'monster' && isUp(c));
+  const gone = (c: Combatant) => c.status === 'dead' || c.status === 'fled';
   for (const side of ['party', 'enemy'] as const) {
     if (b.layout[side] !== 'rows') continue;
-    const rows = monsters.filter((c) => c.side === side);
+    const frontHeld = () =>
+      b.combatants.some((c) => c.kind === 'monster' && c.side === side && c.row === 0 && !gone(c));
     // Petrifying Stare's rooted stay where they stand (Phase 15).
-    const movers = rows.filter((e) => e.rootedRounds === 0);
-    while (movers.length > 0 && !rows.some((e) => e.row === 0)) for (const e of movers) e.row -= 1;
+    const movers = monsters.filter((c) => c.side === side && c.rootedRounds === 0);
+    while (movers.length > 0 && !frontHeld()) for (const e of movers) e.row -= 1;
   }
   b.stabilizedThisRound.clear();
   b.round += 1;

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { step } from '../../../src/game/dungeon/explore.ts';
 import { inDark } from '../../../src/game/dungeon/light.ts';
-import { onSpecial, specialsHere } from '../../../src/game/dungeon/specials.ts';
+import { arriveOn, onSpecial, specialsHere } from '../../../src/game/dungeon/specials.ts';
 import { battleFrom, partySetup } from '../../../src/game/world/fight.ts';
 import { createRng } from '../../../src/rules/rng.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
@@ -64,5 +64,36 @@ describe('special squares (docs/rules-adaptation.md, Dungeon exploration)', () =
 
   it('has nothing to show on the surface', () => {
     expect(specialsHere(world(), data)).toEqual([]);
+  });
+});
+
+describe('a message for one people (docs/rules-adaptation.md, Dungeon exploration)', () => {
+  // The elf-or-gnome message at ember-shrine, shrine-ossuary (1, 3).
+  const gatedSquare = () => {
+    const w = place(below(), 'shrine-ossuary', 1, 3, 'n');
+    state(w).dungeon = 'ember-shrine';
+    return w;
+  };
+
+  it('stays unread while no elf or gnome is in the party', () => {
+    const w = gatedSquare();
+    for (const m of w.members) m.character = { ...m.character, people: 'orc' };
+    arriveOn(w, data);
+    expect(w.log.some((l) => l.includes('name-plates'))).toBe(false);
+    expect(state(w).read['shrine-ossuary'] ?? []).toEqual([]);
+  });
+
+  it('shows once a reader of that people is in the party, then not again', () => {
+    const w = gatedSquare();
+    for (const m of w.members) m.character = { ...m.character, people: 'orc' };
+    const reader = w.members[0];
+    if (!reader) throw new Error('party expected');
+    reader.character = { ...reader.character, people: 'gnome' };
+    arriveOn(w, data);
+    expect(w.log.at(-1)).toContain('name-plates');
+    expect(w.log.at(-1)).toContain(reader.character.name);
+    const lines = w.log.length;
+    arriveOn(w, data);
+    expect(w.log).toHaveLength(lines);
   });
 });

@@ -97,7 +97,7 @@ function endCoachQuarter(w: World, data: GameData): void {
   for (const m of alive(w)) m.slept = true;
   w.camp = 'made';
   w.noRecovery = false;
-  endOfDay(w, data, true);
+  if (endOfDay(w, data, true)) return;
   w.day += 1;
   w.quarter = 0;
 }

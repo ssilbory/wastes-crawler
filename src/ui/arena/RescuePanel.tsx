@@ -1,6 +1,7 @@
 import {
   castRescue,
   dyingOf,
+  finishMending,
   mendings,
   rescues,
   tendRound,
@@ -69,14 +70,7 @@ function MendPanel(props: { battle: Battle; onTend: (step: () => void) => void }
             {r.label}
           </button>
         ))}
-        <button
-          type="button"
-          onClick={() =>
-            props.onTend(() => {
-              b.mended = true;
-            })
-          }
-        >
+        <button type="button" onClick={() => props.onTend(() => finishMending(b))}>
           Done healing
         </button>
       </div>

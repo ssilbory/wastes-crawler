@@ -159,11 +159,13 @@ export function step(w: World, data: GameData, dir: Step, stepIn = false): TownR
   return { ok: true };
 }
 
-export function turnParty(w: World, data: GameData, by: 'left' | 'right' | 'around'): void {
+export function turnParty(w: World, data: GameData, by: 'left' | 'right' | 'around'): TownResult {
   const s = w.dungeon;
   if (!s) throw new Error('the party is not in a dungeon');
+  if (w.encounter) return no('Settle the encounter first.');
   s.facing = turn(s.facing, by);
   look(w, data, s);
+  return { ok: true };
 }
 
 /** The stairs link at the party's cell, if it stands on stairs. */

@@ -20,9 +20,14 @@ import { nightForMounts } from './mounts.ts';
 import { firstPhysician, nightForNpcs } from './npcs.ts';
 import { regionMap } from './region.ts';
 import type { World } from './types.ts';
+import { wipe } from './town.ts';
 
-/** `waystation`: a coach's night stop, with meals and shelter like a town (Phase 6d). */
-export function endOfDay(w: World, data: GameData, waystation = false): void {
+/**
+ * `waystation`: a coach's night stop, with meals and shelter like a town (Phase 6d).
+ * Returns true when the night leaves no one standing: the party falls back to its last town, which
+ * already moves the day on, so the caller must not advance it again.
+ */
+export function endOfDay(w: World, data: GameData, waystation = false): boolean {
   const map = regionMap(data, w.region);
   const inTown = waystation || map.siteAt(w.position) !== undefined;
   const { season } = dateOf(data.content.overlandRules, w.day);
@@ -81,6 +86,12 @@ export function endOfDay(w: World, data: GameData, waystation = false): void {
   w.camp = 'none';
   w.noRecovery = false;
   w.hikes = 0;
+  // Hunger, sleeplessness and cold can finish off the whole party, as a lost fight does.
+  if (w.members.length > 0 && alive(w).length === 0) {
+    wipe(w, data);
+    return true;
+  }
+  return false;
 }
 
 /**

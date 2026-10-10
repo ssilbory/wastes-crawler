@@ -25,19 +25,24 @@ export const onSpecial = (w: World, data: GameData, kind: Special['kind']) =>
 /** What the square does as the party steps onto it. A teleporter's far end does nothing. */
 export function arriveOn(w: World, data: GameData): void {
   const s = w.dungeon as NonNullable<World['dungeon']>;
-  // Every message on a square shows together, the first time only.
+  // Every plain message on a square shows together, the first time only. A people-gated message
+  // keeps a read record of its own, and waits, unread, until someone of that people is in the party.
   const key = `${s.at.x},${s.at.y}`;
   const read = s.read[s.level] ?? [];
-  if (!read.includes(key) && specialsHere(w, data).some((x) => x.kind === 'message'))
-    s.read[s.level] = [...read, key];
+  const markRead = (id: string) => {
+    const now = s.read[s.level] ?? [];
+    if (!now.includes(id)) s.read[s.level] = [...now, id];
+  };
   for (const sp of specialsHere(w, data)) {
     if (sp.kind === 'message') {
-      if (read.includes(key)) continue;
+      const id = sp.people ? `${key}:${sp.people.join('+')}` : key;
+      if (read.includes(id)) continue;
       const reader = sp.people
         ? alive(w).find((m) => sp.people?.includes(m.character.people))
         : null;
       if (reader === undefined) continue;
       note(w, sp.text.replaceAll('{pc}', reader?.character.name ?? ''));
+      markRead(id);
     } else if (sp.kind === 'notes') {
       findNotes(w, data, sp.set, sp.text);
     } else if (sp.kind === 'token') {

@@ -16,6 +16,12 @@ export function note(w: World, text: string): void {
   w.log.push(`Day ${w.day + 1}, ${quarterName(w.quarter)}: ${text}`);
 }
 
+/** The action a member takes in a fight when the player leaves it to the default. */
+export function setDefaultAction(w: World, id: string, preset: DefaultPreset): void {
+  const m = w.members.find((x) => x.id === id);
+  if (m) m.defaultAction = preset;
+}
+
 export const alive = (w: World) => w.members.filter((m) => !m.dead);
 
 /** Living, conscious, and not asleep after a Healer's revive. */
