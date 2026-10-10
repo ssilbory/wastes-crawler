@@ -214,5 +214,101 @@
     "name": "Pack Bison",
     "base": "herd-beast",
     "description": "A patient bison under a mountain of bundles. It goes where it is led, even underground, and will not be ridden."
+  },
+  {
+    "id": "ash-field-farmer",
+    "name": "Ash-Field Farmer",
+    "base": "peaceful-human",
+    "description": "A farmer who keeps a hoe by the door and a sun-shrine above it. Wants the road clear and the crops left alone."
+  },
+  {
+    "id": "oathbound-champion",
+    "name": "Oathbound Champion",
+    "base": "major-hero",
+    "description": "A sworn knight of a Ruinfield hold, plate patched with three different crests. Fights for the vow and never lets a wounded companion fall behind."
+  },
+  {
+    "id": "ash-king",
+    "name": "Ash King of Scrapmarch",
+    "base": "great-warrior-king",
+    "description": "A conqueror who claims the Ash Mountains and the Ruinfields. Where he leads, his warband follows and his oath holds them together."
+  },
+  {
+    "id": "gallows-wood-seer",
+    "name": "Gallows Wood Seer",
+    "base": "tribal-shaman",
+    "description": "Reads omens in bone and smoke for a clan in the Gallows Wood. Calls the spirits of the trees into the fight and into the sick."
+  },
+  {
+    "id": "ruinfield-sorcerer",
+    "name": "Ruinfield Sorcerer",
+    "base": "skilled-sorcerer",
+    "description": "A self-taught sorcerer who lives among the Ruinfield ruins and trades spells for relics. Keeps a binding circle chalked under every table."
+  },
+  {
+    "id": "ash-mountain-wizard",
+    "name": "Ash Mountain Wizard",
+    "base": "master-wizard",
+    "description": "A wizard who studied in the Old Barrow before the passes closed. Warns off intruders with force before asking any questions."
+  },
+  {
+    "id": "old-barrow-archmage",
+    "name": "Old Barrow Archmage",
+    "base": "famous-arch-mage",
+    "description": "A legend of the Dark Lands who still answers letters from the Grey Sea ports. Has outlived every plot against them and keeps the old wards."
+  },
+  {
+    "id": "gallows-stalker",
+    "name": "Gallows Stalker",
+    "base": "apex-predator",
+    "description": "The largest hunter of the Gallows Wood, moving in silence and striking twice. Its tracks appear near every road camp that failed to post a watch."
+  },
+  {
+    "id": "ruinfield-grazer",
+    "name": "Ruinfield Grazer",
+    "base": "elephantine-grazer",
+    "description": "A great grey herbivore that roams the Ruinfields in lumbering herds. It tramples nothing it does not have to and remembers every fire it has seen."
+  },
+  {
+    "id": "mire-gnasher",
+    "name": "Mire Gnasher",
+    "base": "predator-small-vicious",
+    "description": "A snapping, small, vicious thing from the Mire Vats, mottled with vat-slime. It attacks anything smaller than itself, and some things larger."
+  },
+  {
+    "id": "barrow-ravager",
+    "name": "Barrow Ravager",
+    "base": "predator-large-vicious",
+    "description": "A large, fast predator bred in the Old Barrow's cellars. It drags prey into the dark before anyone sees what took them."
+  },
+  {
+    "id": "gallows-ravener",
+    "name": "Gallows Ravener",
+    "base": "predator-hulking",
+    "description": "A hulking, deep-chested predator that haunts the crypts beneath Gallows. Its two-handed strikes break doors and bones alike."
+  },
+  {
+    "id": "ashen-hellbeast",
+    "name": "Ashen Hellbeast",
+    "base": "predator-hellbeast",
+    "description": "A fire-streaked beast that came down from the Ash Mountains. Its speed and savagery make it the terror of any caravan that strays from the road."
+  },
+  {
+    "id": "vat-swarm",
+    "name": "Vat Swarm",
+    "base": "unnatural-swarm",
+    "description": "A chittering cloud of vat-spawned pests from the Mire Vats. One bite is nothing, but a swarm strips a body to the bone."
+  },
+  {
+    "id": "scrapmarch-warbeast",
+    "name": "Scrapmarch Warbeast",
+    "base": "terrible-warbeast",
+    "description": "A war-bred monster armored in scrap plate by the forges of Scrapmarch. Its snarl is the signal that a raid has started."
+  },
+  {
+    "id": "dead-god-titan",
+    "name": "Dead God Titan",
+    "base": "legendary-god-titan",
+    "description": "A titan from the age before the Fall, still stirring under the Grey Sea. Its footsteps are the only warning the coast towns get."
   }
 ]

@@ -808,5 +808,391 @@
     "id": "elemental-guardian",
     "tags": [],
     "mind": "monster"
+  },
+  {
+    "id": "aurochs",
+    "tags": ["large"],
+    "mind": "animal",
+    "routine": [
+      {
+        "name": "Trample",
+        "damage": {
+          "count": 2,
+          "sides": 4,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "bison",
+    "tags": ["large"],
+    "mind": "animal",
+    "routine": [
+      {
+        "name": "Trample",
+        "damage": {
+          "count": 2,
+          "sides": 4,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "dire-wolf",
+    "tags": [],
+    "mind": "animal",
+    "routine": [
+      {
+        "name": "Bite",
+        "damage": {
+          "count": 2,
+          "sides": 4,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "giant-fly",
+    "tags": [],
+    "mind": "animal",
+    "routine": [
+      {
+        "name": "Bite",
+        "damage": {
+          "count": 2,
+          "sides": 4,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "ghoul",
+    "tags": ["undead"],
+    "mind": "monster",
+    "routine": [
+      {
+        "name": "Claw",
+        "damage": {
+          "count": 1,
+          "sides": 4,
+          "modifier": 0
+        },
+        "count": 2,
+        "onHit": {
+          "kind": "paralysis",
+          "rounds": {
+            "count": 1,
+            "sides": 4,
+            "modifier": 0
+          }
+        }
+      },
+      {
+        "name": "Bite",
+        "damage": {
+          "count": 1,
+          "sides": 4,
+          "modifier": 0
+        },
+        "count": 1,
+        "onHit": {
+          "kind": "paralysis",
+          "rounds": {
+            "count": 1,
+            "sides": 4,
+            "modifier": 0
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "saber-toothed-tiger",
+    "tags": ["large"],
+    "mind": "animal",
+    "routine": [
+      {
+        "name": "Claw",
+        "damage": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 0
+        },
+        "count": 2
+      },
+      {
+        "name": "Bite",
+        "damage": {
+          "count": 2,
+          "sides": 8,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "yeti",
+    "tags": [],
+    "mind": "animal",
+    "routine": [
+      {
+        "name": "Claw",
+        "damage": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 0
+        },
+        "count": 2
+      }
+    ]
+  },
+  {
+    "id": "cyclops",
+    "tags": ["large"],
+    "mind": "monster",
+    "routine": [
+      {
+        "name": "Club",
+        "damage": {
+          "count": 3,
+          "sides": 10,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ],
+    "volley": [
+      {
+        "name": "Rock",
+        "damage": {
+          "count": 3,
+          "sides": 6,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "gargoyle",
+    "tags": ["flying"],
+    "mind": "monster",
+    "routine": [
+      {
+        "name": "Claw",
+        "damage": {
+          "count": 1,
+          "sides": 3,
+          "modifier": 0
+        },
+        "count": 2
+      },
+      {
+        "name": "Bite",
+        "damage": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 0
+        },
+        "count": 1
+      },
+      {
+        "name": "Horn",
+        "damage": {
+          "count": 1,
+          "sides": 4,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "bone-golem",
+    "tags": ["unliving"],
+    "mind": "mindless",
+    "weapon": "sword-short"
+  },
+  {
+    "id": "giant-turtle",
+    "tags": [],
+    "mind": "animal",
+    "routine": [
+      {
+        "name": "Bite",
+        "damage": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "ettin",
+    "tags": ["large"],
+    "mind": "monster",
+    "routine": [
+      {
+        "name": "Left Head",
+        "damage": {
+          "count": 2,
+          "sides": 8,
+          "modifier": 0
+        },
+        "count": 1
+      },
+      {
+        "name": "Right Head",
+        "damage": {
+          "count": 3,
+          "sides": 6,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "hell-hound",
+    "tags": [],
+    "mind": "monster",
+    "routine": [
+      {
+        "name": "Bite",
+        "damage": {
+          "count": 1,
+          "sides": 10,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ],
+    "volley": [
+      {
+        "name": "Fire Breath",
+        "damage": {
+          "count": 2,
+          "sides": 6,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "hydra",
+    "tags": ["large"],
+    "mind": "monster",
+    "routine": [
+      {
+        "name": "Heads, first four",
+        "damage": {
+          "count": 1,
+          "sides": 10,
+          "modifier": 0
+        },
+        "count": 4
+      },
+      {
+        "name": "Heads, second four",
+        "damage": {
+          "count": 1,
+          "sides": 10,
+          "modifier": 0
+        },
+        "count": 4
+      }
+    ]
+  },
+  {
+    "id": "giant-slug",
+    "tags": ["large"],
+    "mind": "animal",
+    "routine": [
+      {
+        "name": "Slam",
+        "damage": {
+          "count": 1,
+          "sides": 12,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "mire-drowned",
+    "tags": ["unliving", "undead"],
+    "mind": "mindless",
+    "routine": [
+      {
+        "name": "Grasp",
+        "damage": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "ash-walker",
+    "tags": ["unliving", "undead"],
+    "mind": "mindless",
+    "routine": [
+      {
+        "name": "Slam",
+        "damage": {
+          "count": 1,
+          "sides": 8,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "gallows-hulk",
+    "tags": ["large", "unliving", "undead"],
+    "mind": "mindless",
+    "routine": [
+      {
+        "name": "Slam",
+        "damage": {
+          "count": 2,
+          "sides": 6,
+          "modifier": 1
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "barrow-crawler",
+    "tags": ["large", "unliving", "undead"],
+    "mind": "mindless",
+    "routine": [
+      {
+        "name": "Drag",
+        "damage": {
+          "count": 1,
+          "sides": 8,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ]
   }
 ]

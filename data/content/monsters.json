@@ -844,5 +844,548 @@
     "skill": 1,
     "save": 13,
     "description": "A man-sized mass of earth an Elementalist has woken with a crude awareness and an eagerness to defend them, called up by Elemental Guardian. It serves with suicidal devotion until it is destroyed or the next dawn comes."
+  },
+  {
+    "id": "aurochs",
+    "name": "Aurochs",
+    "category": "Normal animals",
+    "hitDice": 3,
+    "ac": 15,
+    "armored": false,
+    "attackBonus": 3,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": 13
+    },
+    "move": 40,
+    "morale": 7,
+    "instinct": 6,
+    "skill": 1,
+    "save": 14,
+    "description": "A wild cattle-beast of the Ruinfield grass, dark-hided and short-tempered. Herds run from anything that smells of fire, but a lone bull will put its head down and charge."
+  },
+  {
+    "id": "bison",
+    "name": "Bison",
+    "category": "Normal animals",
+    "hitDice": 4,
+    "ac": 15,
+    "armored": false,
+    "attackBonus": 4,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": 13
+    },
+    "move": 40,
+    "morale": 7,
+    "instinct": 6,
+    "skill": 1,
+    "save": 13,
+    "description": "A shaggy plains grazer with a heavy head and a short temper. Herds stampede through camps when spooked, and a cornered one tramples its way out."
+  },
+  {
+    "id": "dire-wolf",
+    "name": "Dire Wolf",
+    "category": "Normal animals",
+    "hitDice": 4,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 4,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 13
+    },
+    "move": 40,
+    "morale": 9,
+    "instinct": 6,
+    "skill": 2,
+    "save": 13,
+    "description": "A wolf the size of a pony, hunting in packs from the Gallows Wood to the Dark Lands plains. It tracks wounded prey for miles and waits at the edge of the firelight."
+  },
+  {
+    "id": "giant-fly",
+    "name": "Giant Fly",
+    "category": "Normal animals",
+    "hitDice": 4,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 4,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": 13
+    },
+    "move": 40,
+    "morale": 9,
+    "instinct": 5,
+    "skill": 1,
+    "save": 13,
+    "description": "A bloated fly as big as a dog, with a jaw like a pair of pincers. It swarms over carrion and bites anything that moves near its nest."
+  },
+  {
+    "id": "ghoul",
+    "name": "Ghoul",
+    "category": "Unnatural Entities",
+    "hitDice": 2,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 2,
+    "attacks": 3,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": 13
+    },
+    "move": 20,
+    "morale": 9,
+    "instinct": 3,
+    "skill": 1,
+    "save": 14,
+    "description": "A corpse-eater from the Old Barrow that claws its way out of shallow graves. Its touch numbs the limbs, and the paralysis lasts long enough for the pack to finish its meal."
+  },
+  {
+    "id": "saber-toothed-tiger",
+    "name": "Saber-Toothed Tiger",
+    "category": "Normal animals",
+    "hitDice": 8,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 9,
+    "attacks": 3,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 13
+    },
+    "move": 40,
+    "morale": 10,
+    "instinct": 6,
+    "skill": 2,
+    "save": 11,
+    "description": "A huge cat with long curved fangs that hunts the Dark Lands grasslands. Its bite opens a victim's chest, and it stays on the body until the last bite is done."
+  },
+  {
+    "id": "yeti",
+    "name": "Yeti",
+    "category": "Normal animals",
+    "hitDice": 4,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 4,
+    "attacks": 2,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 13
+    },
+    "move": 50,
+    "morale": 8,
+    "instinct": 5,
+    "skill": 1,
+    "save": 13,
+    "description": "A shaggy white ape of the high Ash Mountain passes. It hunts in silence and wraps its prey in its long arms, crushing whatever it cannot bite."
+  },
+  {
+    "id": "cyclops",
+    "name": "Cyclops",
+    "category": "Unnatural Entities",
+    "hitDice": 13,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 13,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 3,
+        "sides": 10,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 6,
+      "maxAc": 15
+    },
+    "move": 70,
+    "morale": 9,
+    "instinct": 3,
+    "skill": 2,
+    "save": 9,
+    "description": "A one-eyed giant from the ruined hills of the Dark Lands, slow to anger and very hard to stop once it is angry. It hurls boulders at anyone who runs."
+  },
+  {
+    "id": "gargoyle",
+    "name": "Gargoyle",
+    "category": "Unnatural Entities",
+    "hitDice": 4,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 4,
+    "attacks": 4,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": 13
+    },
+    "move": 70,
+    "morale": 11,
+    "instinct": 4,
+    "skill": 1,
+    "save": 13,
+    "description": "A winged stone guardian animated by a grey-cult ritual. It perches on ruins and rakes its claws across anyone who wanders beneath."
+  },
+  {
+    "id": "bone-golem",
+    "name": "Bone Golem",
+    "category": "Unnatural Entities",
+    "hitDice": 8,
+    "ac": 16,
+    "armored": false,
+    "attackBonus": 8,
+    "attacks": 2,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 0,
+      "ignoresAc": false
+    },
+    "move": 90,
+    "morale": 12,
+    "instinct": 3,
+    "skill": 1,
+    "save": 11,
+    "description": "A golem of stitched bone and tendon, animated by a Gallows Crypts binding. It fights with whatever weapon is nearest and never stops until its binding is broken."
+  },
+  {
+    "id": "giant-turtle",
+    "name": "Giant Turtle",
+    "category": "Normal animals",
+    "hitDice": 1,
+    "ac": 15,
+    "armored": false,
+    "attackBonus": 1,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "shock": null,
+    "move": 10,
+    "morale": 6,
+    "instinct": 5,
+    "skill": 1,
+    "save": 15,
+    "description": "A turtle the size of a cart, slow on land and quick in the shallow water of the Mire. Its jaws close on anything that comes too near its shell."
+  },
+  {
+    "id": "ettin",
+    "name": "Ettin",
+    "category": "Unnatural Entities",
+    "hitDice": 10,
+    "ac": 15,
+    "armored": false,
+    "attackBonus": 10,
+    "attacks": 2,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 4,
+      "maxAc": 15
+    },
+    "move": 90,
+    "morale": 8,
+    "instinct": 5,
+    "skill": 1,
+    "save": 10,
+    "description": "A two-headed giant of the Dark Lands hills. Its heads argue over every fight, and both swing at once."
+  },
+  {
+    "id": "hell-hound",
+    "name": "Hell Hound",
+    "category": "Unnatural Entities",
+    "hitDice": 5,
+    "ac": 14,
+    "armored": false,
+    "attackBonus": 5,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 10,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 13
+    },
+    "move": 90,
+    "morale": 9,
+    "instinct": 5,
+    "skill": 2,
+    "save": 13,
+    "description": "A black hound from the Ash Mountains that burns the grass it runs over. It breathes fire at range before it closes to bite."
+  },
+  {
+    "id": "hydra",
+    "name": "Hydra",
+    "category": "Unnatural Entities",
+    "hitDice": 8,
+    "ac": 13,
+    "armored": false,
+    "attackBonus": 8,
+    "attacks": 8,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 10,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 13
+    },
+    "move": 90,
+    "morale": 9,
+    "instinct": 4,
+    "skill": 1,
+    "save": 11,
+    "description": "A many-headed reptile from the Mire, one head for every mouth it ever fed. Cut one head and two more are already biting."
+  },
+  {
+    "id": "giant-slug",
+    "name": "Giant Slug",
+    "category": "Normal animals",
+    "hitDice": 12,
+    "ac": 10,
+    "armored": false,
+    "attackBonus": 12,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 12,
+        "modifier": 0
+      }
+    },
+    "shock": null,
+    "move": 40,
+    "morale": 9,
+    "instinct": 5,
+    "skill": 1,
+    "save": 9,
+    "description": "A slug as long as a wagon, leaving a silver trail through the Mire and the Old Barrow's wet tunnels. It is slow, but its single bite crushes bone."
+  },
+  {
+    "id": "mire-drowned",
+    "name": "Mire Drowned",
+    "category": "Unnatural Entities",
+    "hitDice": 2,
+    "ac": 10,
+    "armored": false,
+    "attackBonus": 2,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": 13
+    },
+    "move": 40,
+    "morale": 12,
+    "instinct": 3,
+    "skill": 0,
+    "save": 14,
+    "description": "A corpse that sank in the Mire and walked out again. Faster than a grave-zombie, it grabs at the living from the reeds."
+  },
+  {
+    "id": "ash-walker",
+    "name": "Ash Walker",
+    "category": "Unnatural Entities",
+    "hitDice": 6,
+    "ac": 15,
+    "armored": false,
+    "attackBonus": 6,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 3,
+      "maxAc": 15
+    },
+    "move": 90,
+    "morale": 12,
+    "instinct": 3,
+    "skill": 0,
+    "save": 12,
+    "description": "A blackened dead thing that came down from the Ash Mountains. It moves quickly over burned ground and shrugs off blows that would stop a zombie."
+  },
+  {
+    "id": "gallows-hulk",
+    "name": "Gallows Hulk",
+    "category": "Unnatural Entities",
+    "hitDice": 6,
+    "ac": 12,
+    "armored": false,
+    "attackBonus": 6,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 6,
+        "modifier": 1
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 13
+    },
+    "move": 70,
+    "morale": 12,
+    "instinct": 3,
+    "skill": 0,
+    "save": 12,
+    "description": "A hulking corpse stitched together in the Gallows Crypts from several dead men. Its blows come slow, and they come hard."
+  },
+  {
+    "id": "barrow-crawler",
+    "name": "Barrow Crawler",
+    "category": "Unnatural Entities",
+    "hitDice": 2,
+    "ac": 16,
+    "armored": false,
+    "attackBonus": 2,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": 13
+    },
+    "move": 70,
+    "morale": 12,
+    "instinct": 3,
+    "skill": 0,
+    "save": 14,
+    "description": "A long, low corpse that drags itself out of the Old Barrow's tunnels. Its length lets it reach around corners the living must walk."
   }
 ]
