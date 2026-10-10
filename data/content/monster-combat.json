@@ -1268,5 +1268,56 @@
       "spells": ["final-death", "enfeebling-wave", "compel-flesh", "call-of-the-tomb"],
       "arts": ["gravesight"]
     }
+  },
+  {
+    "id": "mummy-lord",
+    "tags": ["undead", "unliving"],
+    "mind": "sapient",
+    "routine": [
+      {
+        "name": "Touch",
+        "damage": {
+          "count": 1,
+          "sides": 12,
+          "modifier": 0
+        },
+        "count": 2,
+        "onHit": {
+          "kind": "disease",
+          "disease": "grave-rot"
+        }
+      }
+    ],
+    "caster": {
+      "tradition": "high-mage",
+      "slots": "partial-high-mage-arts-and-spells",
+      "spells": ["damnation-of-the-sense", "wardpact-invocation"],
+      "arts": ["empowered-sorcery"]
+    }
+  },
+  {
+    "id": "master-vampire",
+    "weapon": "sword-long",
+    "tags": ["unliving", "metal", "undead"],
+    "loot": {
+      "count": 8,
+      "sides": 6
+    },
+    "mind": "sapient",
+    "onHit": {
+      "kind": "drain",
+      "dice": {
+        "count": 1,
+        "sides": 3,
+        "modifier": 0
+      }
+    },
+    "caster": {
+      "tradition": "blood-priest",
+      "spellTradition": "necromancer",
+      "slots": "full-necromancer-arts-and-spells",
+      "spells": ["final-death", "compel-flesh"],
+      "arts": ["turn-false-life", "wrath-of-the-most-high", "smite-the-wicked"]
+    }
   }
 ]

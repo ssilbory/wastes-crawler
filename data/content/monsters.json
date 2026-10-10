@@ -1470,5 +1470,59 @@
     "skill": 3,
     "save": 9,
     "description": "A sorcerer who refused death and kept the Old Barrow's wards in its own bones. Its cold touch draws the life out of the living, and it casts from the depths of its tomb."
+  },
+  {
+    "id": "mummy-lord",
+    "name": "Mummy Lord",
+    "category": "Unnatural Entities",
+    "hitDice": 10,
+    "ac": 19,
+    "armored": false,
+    "attackBonus": 10,
+    "attacks": 2,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 12,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 13
+    },
+    "move": 20,
+    "morale": 12,
+    "instinct": 3,
+    "skill": 3,
+    "save": 10,
+    "description": "A royal dead from the Old Barrow, wrapped in gold thread and still giving orders. Its hands are wrapped in grave-rot linen, and its spells come from the old wards its tomb was built to keep."
+  },
+  {
+    "id": "master-vampire",
+    "name": "Master Vampire",
+    "category": "Unnatural Entities",
+    "hitDice": 12,
+    "ac": 19,
+    "armored": false,
+    "attackBonus": 14,
+    "attacks": 2,
+    "damage": {
+      "kind": "weapon",
+      "bonus": 4
+    },
+    "shock": {
+      "kind": "weapon",
+      "bonus": 4,
+      "ignoresAc": false
+    },
+    "move": 40,
+    "morale": 12,
+    "instinct": 3,
+    "skill": 4,
+    "save": 9,
+    "description": "The eldest of a vampire line, who has fed on a whole province and rules it from a sealed hall. It commands the faithful it has turned and calls on its blood-rites to bless its own wounds."
   }
 ]

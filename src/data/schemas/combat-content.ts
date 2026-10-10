@@ -9,10 +9,12 @@ import { LootDiceSchema } from './town-content.ts';
  * A monster that casts (vendor/wwn-srd/5.0 Monsters and Foes/Monster and NPC Stats.md: the spells
  * and arts of a mage tradition at a level equal to its hit dice, Effort of its skill plus two): the
  * tradition, the SRD casting table its spell slots come from, and the spells it has prepared and
- * the arts it knows, all from data/content/combat-magic.json.
+ * the arts it knows, all from data/content/combat-magic.json. A mixed caster names its spells'
+ * tradition when that isn't its arts' (a blood priest with necromancy spells, Sam's call).
  */
 export const MonsterCasterSchema = z.strictObject({
   tradition: IdSchema,
+  spellTradition: IdSchema.optional(),
   slots: IdSchema,
   spells: z.array(IdSchema),
   arts: z.array(IdSchema),
