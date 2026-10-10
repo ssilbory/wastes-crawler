@@ -161,6 +161,8 @@ export interface Combatant {
    */
   poisoned: boolean;
   venom: number;
+  /** Health drain: the System Strain a PC owes once the fight is over (Sam's call). */
+  drained: number;
   caught: string | null;
   ailPenalty: number;
   /** Pact of Stone and Sea: breath of this element can't harm it. */

@@ -27,12 +27,14 @@ const SaveKind = z.enum(['physical', 'evasion', 'mental', 'luck']);
  * Falling and Other Hazards.md, Poisons). Paralysis: a Physical save, or the victim is held,
  * unable to act, for the rolled number of rounds. A failed poison save also leaves the victim
  * Poisoned, and disease (SRD 2.5.5) is caught on a failed Physical save at the disease's penalty
- * (Sam's calls, docs/rules-adaptation.md, Poison and disease).
+ * (Sam's calls, docs/rules-adaptation.md, Poison and disease). Drain: a PC hit owes the rolled
+ * System Strain once the fight is over, as a venom does (Sam's call, Health drain).
  */
 export const OnHitSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('poison'), penalty: z.int().min(0) }),
   z.strictObject({ kind: z.literal('disease'), disease: IdSchema }),
   z.strictObject({ kind: z.literal('paralysis'), rounds: DiceSchema }),
+  z.strictObject({ kind: z.literal('drain'), dice: DiceSchema }),
 ]);
 export type OnHit = z.infer<typeof OnHitSchema>;
 
@@ -66,6 +68,8 @@ export const MonsterCombatSchema = z.strictObject({
   /** Who can be parleyed with: people always, animals and monsters with foci, the mindless never. */
   mind: z.enum(['sapient', 'animal', 'monster', 'mindless']),
   caster: MonsterCasterSchema.optional(),
+  /** The effect of any hit the monster lands that its routine strike doesn't set (a drain). */
+  onHit: OnHitSchema.optional(),
   /**
    * Mixed natural attacks made together as the Main Action (claws and a bite), replacing the stat
    * line's single damage; the counts add up to its attacks (Phase 14a).

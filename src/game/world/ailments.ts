@@ -94,6 +94,7 @@ export function ailmentsBack(w: World, data: GameData, m: Member, c: Combatant):
   if (m.dead) return;
   if (c.poisoned && !poisonProof(m)) m.poisoned = true;
   if (c.venom > 0) addMemberStrain(w, data, m, c.venom, 'poison');
+  if (c.drained > 0) addMemberStrain(w, data, m, c.drained, 'monster');
   if (c.caught) infect(w, data, m, c.caught);
 }
 

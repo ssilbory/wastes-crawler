@@ -73,6 +73,7 @@ export function base(
     poisonImmune: false,
     poisoned: false,
     venom: 0,
+    drained: 0,
     caught: null,
     ailPenalty: 0,
     pact: null,

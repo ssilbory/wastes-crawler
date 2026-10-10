@@ -1,7 +1,7 @@
 // SRD monsters as combatants (vendor/wwn-srd/5.0 Monsters and Foes/Monster and NPC Stats.md: 1d8
 // hit points per hit die; Wpn damage uses the weapon in data/content/monster-combat.json), with the
 // routines, volleys, breath weapons, resistances, and on-hit effects of Phase 14a.
-import type { Monster, MonsterCombat, Strike, Weapon } from '../../data/schemas/index.ts';
+import type { Monster, MonsterCombat, OnHit, Strike, Weapon } from '../../data/schemas/index.ts';
 import { rollDie } from '../../rules/dice.ts';
 import type { Rng } from '../../rules/rng.ts';
 import { findMonster, type GameData } from '../character/context.ts';
@@ -10,7 +10,12 @@ import { base } from './combatants.ts';
 import { monsterCaster } from './monster-caster.ts';
 import type { Attack, Combatant } from './types.ts';
 
-function monsterAttack(m: Monster, weapon: Weapon | undefined, reach: boolean): Attack {
+function monsterAttack(
+  m: Monster,
+  weapon: Weapon | undefined,
+  reach: boolean,
+  onHit: OnHit | undefined,
+): Attack {
   const damage =
     m.damage.kind === 'dice'
       ? m.damage.dice
@@ -36,7 +41,7 @@ function monsterAttack(m: Monster, weapon: Weapon | undefined, reach: boolean): 
     reach: reach || (weapon?.traits.includes('long') ?? false),
     twoHanded: weapon?.traits.includes('two-handed') ?? false,
     blunt: false,
-    onHit: null,
+    onHit: onHit ?? null,
   };
 }
 
@@ -88,7 +93,7 @@ export function monsterCombatant(
   for (let i = 0; i < m.hitDice; i++) hp += rollDie(rng, 8);
   const { attacks, routine, volley } = attacksOf(
     combat,
-    monsterAttack(m, weapon, tags.has('reach')),
+    monsterAttack(m, weapon, tags.has('reach'), combat?.onHit),
   );
   return {
     ...base(id, m.name),

@@ -199,12 +199,18 @@ describe('places that sicken', () => {
 
 describe('ailments out of a fight', () => {
   const after = (c: Partial<Combatant>) =>
-    ({ poisoned: false, venom: 0, caught: null, ...c }) as Combatant;
+    ({ poisoned: false, venom: 0, drained: 0, caught: null, ...c }) as Combatant;
 
   it('brings the poison, the venom’s strain, and a disease caught', () => {
     const { w, snag } = alone();
     ailmentsBack(w, data, snag, after({ poisoned: true, venom: 1, caught: 'grave-rot' }));
     expect([snag.poisoned, strain(snag), snag.disease?.id]).toEqual([true, 1, 'grave-rot']);
+  });
+
+  it('owes a drain its strain at the end of the fight', () => {
+    const { w, snag } = alone();
+    ailmentsBack(w, data, snag, after({ drained: 2 }));
+    expect(strain(snag)).toBe(2);
   });
 
   it('brings nothing to the dead, and no poison to the immune', () => {

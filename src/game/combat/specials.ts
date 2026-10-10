@@ -69,6 +69,11 @@ export function afterHit(b: Battle, attack: Attack, target: Combatant): void {
     say(b, `${target.name} is sickened by the ${attack.name.toLowerCase()}.`);
     return;
   }
+  if (effect.kind === 'drain') {
+    // Health drain (Sam's call): a PC owes the strain once the fight is over; monsters have none.
+    if (target.kind === 'pc') target.drained += roll(b.rng, effect.dice).total;
+    return;
+  }
   if (target.tags.has('unliving') || save(b, target, 'physical').success) return;
   target.heldRounds = Math.max(target.heldRounds, roll(b.rng, effect.rounds).total);
   say(b, `${target.name} is paralyzed.`);

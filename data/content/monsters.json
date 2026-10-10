@@ -434,10 +434,10 @@
     "id": "vampire",
     "name": "Vampire",
     "category": "Normal Humans",
-    "hitDice": 8,
-    "ac": 17,
+    "hitDice": 10,
+    "ac": 18,
     "armored": false,
-    "attackBonus": 10,
+    "attackBonus": 12,
     "attacks": 2,
     "damage": {
       "kind": "weapon",
@@ -452,7 +452,7 @@
     "morale": 11,
     "instinct": 3,
     "skill": 3,
-    "save": 11,
+    "save": 10,
     "description": "A noble corpse that drinks the living. It casts no shadow and shows no reflection, its gaze bends the will, and every drop it drinks knits its wounds. Those it drains to death rise as its slaves."
   },
   {
@@ -1387,5 +1387,88 @@
     "skill": 0,
     "save": 14,
     "description": "A long, low corpse that drags itself out of the Old Barrow's tunnels. Its length lets it reach around corners the living must walk."
+  },
+  {
+    "id": "mummy",
+    "name": "Mummy",
+    "category": "Unnatural Entities",
+    "hitDice": 8,
+    "ac": 18,
+    "armored": false,
+    "attackBonus": 8,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 12,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 1,
+      "maxAc": 13
+    },
+    "move": 20,
+    "morale": 12,
+    "instinct": 3,
+    "skill": 1,
+    "save": 11,
+    "description": "A corpse wrapped in linen and resin from a barrow of the Old Barrow. It moves slowly and does not tire. Its touch carries the grave rot, which festers in the wound for days."
+  },
+  {
+    "id": "werewolf",
+    "name": "Werewolf",
+    "category": "Unnatural Entities",
+    "hitDice": 4,
+    "ac": 14,
+    "armored": false,
+    "attackBonus": 4,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 4,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 2,
+      "maxAc": 13
+    },
+    "move": 40,
+    "morale": 8,
+    "instinct": 6,
+    "skill": 1,
+    "save": 13,
+    "description": "A man-shaped hunter that runs on four legs at night in the Gallows Wood. Its bite is said to carry a curse, and the stories disagree on whether a victim is ever released."
+  },
+  {
+    "id": "lich",
+    "name": "Lich",
+    "category": "Unnatural Entities",
+    "hitDice": 12,
+    "ac": 19,
+    "armored": false,
+    "attackBonus": 12,
+    "attacks": 1,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "shock": null,
+    "move": 20,
+    "morale": 8,
+    "instinct": 3,
+    "skill": 3,
+    "save": 9,
+    "description": "A sorcerer who refused death and kept the Old Barrow's wards in its own bones. Its cold touch draws the life out of the living, and it casts from the depths of its tomb."
   }
 ]

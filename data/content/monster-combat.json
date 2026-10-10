@@ -698,7 +698,15 @@
       "count": 8,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "onHit": {
+      "kind": "drain",
+      "dice": {
+        "count": 1,
+        "sides": 3,
+        "modifier": 0
+      }
+    }
   },
   {
     "id": "zombie",
@@ -1194,5 +1202,71 @@
         "count": 1
       }
     ]
+  },
+  {
+    "id": "mummy",
+    "tags": ["undead", "unliving"],
+    "mind": "mindless",
+    "routine": [
+      {
+        "name": "Touch",
+        "damage": {
+          "count": 1,
+          "sides": 12,
+          "modifier": 0
+        },
+        "count": 1,
+        "onHit": {
+          "kind": "disease",
+          "disease": "grave-rot"
+        }
+      }
+    ]
+  },
+  {
+    "id": "werewolf",
+    "tags": [],
+    "mind": "monster",
+    "routine": [
+      {
+        "name": "Bite",
+        "damage": {
+          "count": 2,
+          "sides": 4,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "lich",
+    "tags": ["undead", "unliving"],
+    "mind": "sapient",
+    "routine": [
+      {
+        "name": "Touch",
+        "damage": {
+          "count": 1,
+          "sides": 8,
+          "modifier": 0
+        },
+        "count": 1
+      }
+    ],
+    "onHit": {
+      "kind": "drain",
+      "dice": {
+        "count": 1,
+        "sides": 3,
+        "modifier": 0
+      }
+    },
+    "caster": {
+      "tradition": "necromancer",
+      "slots": "full-necromancer-arts-and-spells",
+      "spells": ["final-death", "enfeebling-wave", "compel-flesh", "call-of-the-tomb"],
+      "arts": ["gravesight"]
+    }
   }
 ]
