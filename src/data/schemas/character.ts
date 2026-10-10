@@ -94,6 +94,7 @@ export const CharacterSchema = z.strictObject({
   classes: z.strictObject({
     current: IdSchema,
     levels: z.record(IdSchema, z.int().min(0)),
+    from: IdSchema.optional(),
   }),
   hp: z.strictObject({ max: z.int().min(1), current: z.int().min(0) }),
   /** Fight awards come in half points (docs/rules-adaptation.md, XP). */

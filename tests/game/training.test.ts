@@ -170,6 +170,7 @@ describe('preparing spells and switching class', () => {
     expect(ok(changeClass(data, veteran, 'full-expert')).classes).toEqual({
       current: 'full-expert',
       levels: { 'full-warrior': 4, 'full-expert': 0 },
+      from: 'full-warrior',
     });
   });
 });

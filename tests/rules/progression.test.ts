@@ -216,6 +216,43 @@ describe('class switching', () => {
   });
 });
 
+describe("taking back a switch (Sam's call: only to the class just left)", () => {
+  const sw = (c: ClassLevels, target: string) => switchClass(c, target, true, () => true);
+
+  it('returns to the class just left, and no other', () => {
+    const left = sw({ current: 'full-warrior', levels: { 'full-warrior': 4 } }, 'full-expert');
+    if (!left.ok) throw new Error('switch refused');
+    expect(left.classes.from).toBe('full-warrior');
+    expect(sw(left.classes, 'full-warrior')).toEqual({
+      ok: true,
+      classes: { current: 'full-warrior', levels: { 'full-warrior': 4 } },
+    });
+  });
+
+  it('refuses a second switch from the new class, however few levels it has', () => {
+    const left = sw({ current: 'full-warrior', levels: { 'full-warrior': 4 } }, 'full-expert');
+    if (!left.ok) throw new Error('switch refused');
+    expect(sw(left.classes, 'full-mage')).toMatchObject({ reason: 'current-below-4' });
+  });
+
+  it('with several earlier classes, undoes only to the one it came from', () => {
+    const second = sw(
+      { current: 'full-expert', levels: { 'full-warrior': 4, 'full-expert': 4 } },
+      'full-mage',
+    );
+    if (!second.ok) throw new Error('switch refused');
+    expect(sw(second.classes, 'full-warrior')).toMatchObject({ reason: 'current-below-4' });
+    expect(sw(second.classes, 'full-expert')).toMatchObject({ ok: true });
+  });
+
+  it('is closed once a level is taken in the new class', () => {
+    const left = sw({ current: 'full-warrior', levels: { 'full-warrior': 4 } }, 'full-expert');
+    if (!left.ok) throw new Error('switch refused');
+    const taken = levelUp(left.classes).classes;
+    expect(sw(taken, 'full-warrior')).toMatchObject({ reason: 'current-below-4' });
+  });
+});
+
 describe('single-class invariants', () => {
   it('agrees with progressionRow for every class and level 1–30', () => {
     for (const p of srd.progressions) {

@@ -37,10 +37,10 @@ export function beginRound(b: Battle): void {
 function checkEnd(b: Battle): void {
   // The Invincible Citadel ends the fight as a break-off, whoever is left standing.
   if (b.escaped) return;
-  // The banished who will find their way back keep the fight going (Phase 18a).
+  // The banished and the howled who will find their way back keep the fight going (Phase 18a).
   const left = (c: Combatant) => canAct(c) || c.returnsRound > 0;
   if (!b.combatants.some((c) => c.side === 'enemy' && left(c))) b.outcome = 'party';
-  else if (!b.combatants.some((c) => c.side === 'party' && canAct(c) && !c.noncombatant))
+  else if (!b.combatants.some((c) => c.side === 'party' && left(c) && !c.noncombatant))
     b.outcome = 'enemy';
 }
 

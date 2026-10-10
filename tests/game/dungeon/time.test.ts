@@ -147,6 +147,12 @@ describe('exploration turns (SRD 2.13.2, 2.13.3)', () => {
   });
 });
 
+const snapshot = (w: World) => ({
+  camp: w.camp,
+  quarter: w.quarter,
+  members: w.members.map((m) => ({ slept: m.slept, strain: m.character.strain })),
+});
+
 describe('camping underground', () => {
   it('only on a safe square, with no encounter waiting', () => {
     const w = below();
@@ -186,6 +192,23 @@ describe('camping underground', () => {
     for (let i = 0; i < 100 && !w.encounter; i++) campUnderground(w, data, watch);
     expect(w.encounter).not.toBeNull();
     expect(w.log.at(-1)).toContain('(The Upper Barrow 4,0)');
+  });
+
+  it('breaks the camp before anyone rests: no rest, no sleep, no made camp, no quarter', () => {
+    // A fresh camp whose first wandering check finds someone (a 1 on the d6).
+    const found = Array.from({ length: 200 }, (_, seed) => seed).find((seed) => {
+      const w = below();
+      place(w, 4, 0);
+      w.rng = createRng(`camp-break-${seed}`);
+      for (const m of w.members)
+        m.character = { ...m.character, strain: { value: 2, broken: false } };
+      const before = snapshot(w);
+      campUnderground(w, data, Object.fromEntries(w.members.map((m) => [m.id, 'rest'])));
+      if (!w.encounter) return false;
+      expect(snapshot(w)).toEqual(before);
+      return true;
+    });
+    expect(found).toBeDefined();
   });
 
   it('can’t spot wanderers at a camp in the dark', () => {
