@@ -13,6 +13,7 @@ import { exportCharacter, importCharacter } from '../../game/character/io.ts';
 import { classOption } from '../../game/character/class-step.ts';
 import { rollStartingCrowns } from '../../game/character/gear.ts';
 import { addToRoster } from '../../game/character/roster.ts';
+import { withoutFocusSkills } from '../../game/character/foci.ts';
 import { backgroundOpenTo, findPeople } from '../../game/character/people.ts';
 import { AttributesStep } from './AttributesStep.tsx';
 import { BackgroundStep } from './BackgroundStep.tsx';
@@ -53,6 +54,9 @@ export function App() {
   const option = choices.classId === null ? undefined : classOption(data, choices.classId);
   const preview = useMemo(() => previewSheet(ev, choices.classId, data), [ev, choices.classId]);
   const update = (patch: Partial<Choices>) => setChoices((c) => ({ ...c, ...patch }));
+  // A background sets the skills the foci build on, so its change re-asks each focus's skill.
+  const setBackground = (background: Choices['background']) =>
+    update({ background, foci: withoutFocusSkills(choices.foci) });
 
   const create = () => {
     const result = finishCharacter(choices, data, rng.current);
@@ -172,14 +176,12 @@ export function App() {
                 <BackgroundStep
                   choices={choices}
                   status={ev.steps.background}
-                  onChange={(background) => update({ background })}
+                  onChange={setBackground}
                   onRoll={(tables) =>
                     choices.background &&
-                    update({
-                      background: {
-                        id: choices.background.id,
-                        choice: { mode: 'roll', rolls: rollBackground(rng.current, tables) },
-                      },
+                    setBackground({
+                      id: choices.background.id,
+                      choice: { mode: 'roll', rolls: rollBackground(rng.current, tables) },
                     })
                   }
                 />

@@ -47,6 +47,8 @@ export function AttributesStep(props: {
       setAsking(true);
       return;
     }
+    // A fresh roll (from another method) must not inherit a dialog left open before switching.
+    setAsking(false);
     const scores = props.roll();
     const next = rolled ? rerolls + 1 : 0;
     props.onChange({ method: { kind: 'roll', rolled: scores, swap: null, rerolls: next }, scores });
