@@ -78,4 +78,14 @@ describe('authored monsters', () => {
       'monsters/herd-beast: clashes with an SRD monster',
     );
   });
+
+  it('gives the master vampire blood priest arts and necromancy spells', () => {
+    const vamp = content.monsterCombat.find((m) => m.id === 'master-vampire');
+    expect(vamp?.caster).toMatchObject({
+      tradition: 'blood-priest',
+      spellTradition: 'necromancer',
+      spells: ['final-death', 'compel-flesh'],
+    });
+    expect(combatReferenceErrors(srd, content)).toEqual([]);
+  });
 });

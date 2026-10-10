@@ -64,14 +64,18 @@ export function combatReferenceErrors(srd: SrdData, content: ContentData): strin
 
 /**
  * A monster caster's tradition and table exist, and it prepares no more spells than its table
- * allows at its hit dice, of a level it can cast, from its tradition's lists; its arts are its
- * tradition's. Every spell and art needs combat mechanics.
+ * allows at its hit dice, of a level it can cast, from its spell tradition's lists (its own
+ * unless it names another); its arts are its tradition's. Every spell and art needs combat mechanics.
  */
 function casterErrors(srd: SrdData, content: ContentData, m: Monster, c: MonsterCaster): string[] {
   const where = `monsterCombat/${m.id}`;
   const tradition = content.traditions.find((t) => t.id === c.tradition);
+  const spellTradition = c.spellTradition
+    ? content.traditions.find((t) => t.id === c.spellTradition)
+    : tradition;
   const table = srd['casting-progressions'].find((t) => t.id === c.slots);
   if (!tradition) return [`${where}: unknown tradition ${c.tradition}`];
+  if (!spellTradition) return [`${where}: unknown spell tradition ${c.spellTradition}`];
   if (!table) return [`${where}: unknown casting table ${c.slots}`];
   const errors: string[] = [];
   // SRD tables run from level 1 without gaps; a monster past the last uses the last row.
@@ -84,7 +88,7 @@ function casterErrors(srd: SrdData, content: ContentData, m: Monster, c: Monster
     const spell = gameSpells(srd, content).find((s) => s.id === id);
     if (!spell || !content.combatMagic.some((x) => x.id === id && x.source === 'spell'))
       errors.push(`${where}: no combat spell ${id}`);
-    else if (!(tradition.spellLists as string[]).includes(spell.tradition))
+    else if (!(spellTradition.spellLists as string[]).includes(spell.tradition))
       errors.push(`${where}: ${id} is not on its tradition's lists`);
     else if (spell.level > row.maxSpellLevel)
       errors.push(`${where}: ${id} is above its spell level`);

@@ -1314,8 +1314,9 @@
     },
     "caster": {
       "tradition": "blood-priest",
-      "slots": "blood-priest-arts",
-      "spells": [],
+      "spellTradition": "necromancer",
+      "slots": "full-necromancer-arts-and-spells",
+      "spells": ["final-death", "compel-flesh"],
       "arts": ["turn-false-life", "wrath-of-the-most-high", "smite-the-wicked"]
     }
   }
