@@ -18,6 +18,18 @@ export function rollStartingCrowns(rng: Rng, data: GameData): number {
   return roll(rng, dice).total * multiplier;
 }
 
+/** Body armor comes in two sizes (docs/rules-adaptation.md, Small armor). */
+export type Size = 'standard' | 'small';
+
+/** The size that fits a character's people: small for small peoples, standard for the rest. */
+export const fitSize = (people: People): Size => (people.size === 'small' ? 'small' : 'standard');
+
+/** A new inventory line, sized as asked. Only armor is ever small; other kinds are unchanged. */
+export function sizedLine(data: GameData, entry: InventoryEntry, size: Size): InventoryEntry {
+  if (size === 'standard' || findItem(data, entry.id)?.kind !== 'armor') return entry;
+  return { ...entry, small: true };
+}
+
 /**
  * Fits an item to the people: armor is small for small peoples, and a centaur's worn body armor
  * comes with matching barding.

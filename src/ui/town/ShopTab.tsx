@@ -2,7 +2,16 @@ import { useState } from 'preact/hooks';
 import type { ItemLocation } from '../../data/schemas/index.ts';
 import { buyable, type CatalogItem } from '../../game/character/items.ts';
 import { carriers, stowWith, takeFrom, type Carrier } from '../../game/world/loads.ts';
-import { buy, giveItem, sell, sellPrice, setLocation, shopPrice } from '../../game/world/shop.ts';
+import type { Size } from '../../game/character/gear.ts';
+import {
+  buy,
+  fitSizeOf,
+  giveItem,
+  sell,
+  sellPrice,
+  setLocation,
+  shopPrice,
+} from '../../game/world/shop.ts';
 import { load } from '../../game/world/mounts.ts';
 import type { World } from '../../game/world/types.ts';
 import { itemStats } from '../../render/gear-view.ts';
@@ -33,8 +42,11 @@ export function ShopTab(props: { world: World; act: Act }) {
   const living = w.members.filter((m) => !m.dead);
   const [who, setWho] = useState(living[0]?.id ?? '');
   const [item, setItem] = useState(stock[0]?.id ?? '');
+  const [size, setSize] = useState<Size | null>(null);
   const m = living.find((x) => x.id === who) ?? living[0];
   if (!m) return <p class="hint">No one living can shop.</p>;
+  const armor = stock.find((i) => i.id === item)?.kind === 'armor';
+  const shownSize: Size = size ?? fitSizeOf(data, m);
   const others = living.filter((x) => x !== m);
   const porters = carriers(w, data);
   return (
@@ -47,7 +59,13 @@ export function ShopTab(props: { world: World; act: Act }) {
         <h2>Buy</h2>
         <label>
           For{' '}
-          <select value={m.id} onChange={(e) => setWho((e.target as HTMLSelectElement).value)}>
+          <select
+            value={m.id}
+            onChange={(e) => {
+              setWho((e.target as HTMLSelectElement).value);
+              setSize(null);
+            }}
+          >
             {living.map((x) => (
               <option key={x.id} value={x.id}>
                 {x.character.name}
@@ -73,9 +91,25 @@ export function ShopTab(props: { world: World; act: Act }) {
             ))}
           </select>
         </label>{' '}
+        {armor && (
+          <>
+            <label>
+              Size{' '}
+              <select
+                value={shownSize}
+                onChange={(e) => setSize((e.target as HTMLSelectElement).value as Size)}
+              >
+                <option value="standard">standard</option>
+                <option value="small">small</option>
+              </select>
+            </label>{' '}
+          </>
+        )}
         <button
           type="button"
-          onClick={() => props.act(() => cue(buy(w, data, m.id, item), 'coin'))}
+          onClick={() =>
+            props.act(() => cue(buy(w, data, m.id, item, armor ? shownSize : undefined), 'coin'))
+          }
         >
           Buy
         </button>

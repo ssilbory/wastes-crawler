@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { characterSheet } from '../../../src/game/character/derived.ts';
 import { inventoryErrors } from '../../../src/game/character/equipment.ts';
-import { findItem, type CatalogItem } from '../../../src/game/character/items.ts';
+import {
+  findItem,
+  type CatalogItem,
+  type InventoryEntry,
+} from '../../../src/game/character/items.ts';
+import type { People } from '../../../src/data/schemas/index.ts';
 import { findPeople } from '../../../src/game/character/people.ts';
 import { emit } from '../../../src/game/world/bus.ts';
 import {
@@ -118,7 +123,7 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
     expect(w.projects[0]).toMatchObject({ small: true, daysLeft: 4 });
     (w.projects[0] as World['projects'][0]).daysLeft = 1;
     expect(projectText(w, data, w.projects[0] as World['projects'][0])).toBe(
-      'Fizzwick: jury-rigged Linothorax, 1 day left',
+      'Fizzwick: jury-rigged Linothorax (small), 1 day left',
     );
     w.position = { col: 4, row: 8 };
     w.camp = 'made';
@@ -133,8 +138,46 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
     w.position = { col: 3, row: 8 };
     startProject(w, data, 'm-3', 'linothorax', 'jury-rigged');
     expect(projectText(w, data, w.projects[0] as World['projects'][0])).toBe(
-      'Fizzwick: jury-rigged Linothorax, 4 days left',
+      'Fizzwick: jury-rigged Linothorax (small), 4 days left',
     );
+  });
+
+  it("lets any crafter build small armor for a small member (Small armor, Sam's call)", () => {
+    const w = rich();
+    const lirael = member(w, 'Lirael');
+    lirael.character = { ...lirael.character, skills: { ...lirael.character.skills, craft: 1 } };
+    expect(startProject(w, data, 'm-2', 'linothorax', 'normal')).toEqual({ ok: true });
+    expect(w.projects[0]).not.toHaveProperty('small');
+    w.projects = [];
+    expect(startProject(w, data, 'm-2', 'linothorax', 'normal', 'small')).toEqual({ ok: true });
+    expect(w.projects[0]).toMatchObject({ crafter: 'm-2', small: true, daysLeft: 7 });
+    expect(projectText(w, data, w.projects[0] as World['projects'][0])).toBe(
+      'Lirael: Linothorax (small), 7 days left',
+    );
+    w.projects = [];
+    expect(startProject(w, data, 'm-3', 'linothorax', 'normal', 'standard')).toEqual({ ok: true });
+    expect(w.projects[0]).not.toHaveProperty('small');
+  });
+
+  it('builds small only armor, and the finished suit only fits a small member', () => {
+    const w = rich();
+    const lirael = member(w, 'Lirael');
+    lirael.character = { ...lirael.character, skills: { ...lirael.character.skills, craft: 1 } };
+    expect(startProject(w, data, 'm-2', 'crowbar', 'normal', 'small')).toEqual({
+      ok: false,
+      reason: `${item('crowbar').name} isn't made small.`,
+    });
+    startProject(w, data, 'm-2', 'linothorax', 'normal', 'small');
+    w.position = { col: 4, row: 8 };
+    w.camp = 'made';
+    for (let day = 0; day < 7; day += 1) pass(w);
+    const suit = lirael.character.inventory.at(-1) as InventoryEntry;
+    expect(suit).toEqual({ id: 'linothorax', quantity: 1, location: 'stowed', small: true });
+    const elf = findPeople(data, lirael.character.people) as People;
+    expect(inventoryErrors(data, [suit], elf)).toEqual([]);
+    expect(inventoryErrors(data, [{ ...suit, location: 'worn' }], elf)).toEqual([
+      'Linothorax is sized for small peoples',
+    ]);
   });
 
   it('works on in a made camp out in the wilds, not in town or without camp', () => {

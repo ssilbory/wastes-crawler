@@ -13,6 +13,10 @@ import {
 import { bench, catchUpXp, inWorld, recruit, rejoin } from '../../../src/game/world/tavern.ts';
 import { freeSlot } from '../../../src/game/world/npcs.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
+import { inventoryErrors } from '../../../src/game/character/equipment.ts';
+import { findPeople } from '../../../src/game/character/people.ts';
+import type { InventoryEntry } from '../../../src/game/character/items.ts';
+import type { People } from '../../../src/data/schemas/index.ts';
 import { data, member, starter, world, encounter } from './helpers.ts';
 
 const rich = () => {
@@ -46,6 +50,44 @@ describe('the shop (SRD 3.0 prices)', () => {
     ]);
     expect(w.purse).toBe(742);
     expect(w.towns.westhold?.spent).toBe(258);
+  });
+
+  it("sells armor in either size at the standard price (Small armor, Sam's call)", () => {
+    const w = rich();
+    expect(buy(w, data, 'm-2', 'mail-shirt', 'small')).toEqual({ ok: true });
+    expect(buy(w, data, 'm-0', 'mail-shirt', 'standard')).toEqual({ ok: true });
+    expect(w.purse).toBe(500);
+    const lirael = member(w, 'Lirael').character.inventory;
+    expect(lirael.at(-1)).toEqual({
+      id: 'mail-shirt',
+      quantity: 1,
+      location: 'stowed',
+      small: true,
+    });
+    const snag = member(w, 'Snag').character.inventory;
+    expect(snag.at(-1)).toEqual({ id: 'mail-shirt', quantity: 1, location: 'stowed' });
+  });
+
+  it('carries small armor to a small member, who can wear it', () => {
+    const w = rich();
+    buy(w, data, 'm-2', 'mail-shirt', 'small');
+    const idx = member(w, 'Lirael').character.inventory.length - 1;
+    expect(giveItem(w, data, 'm-2', idx, 'm-0')).toEqual({ ok: true });
+    const snag = member(w, 'Snag').character.inventory;
+    expect(snag.at(-1)).toEqual({ id: 'mail-shirt', quantity: 1, location: 'stowed', small: true });
+    const snagPeople = member(w, 'Snag').character.people;
+    const goblinPeople = findPeople(data, snagPeople) as People;
+    expect(
+      inventoryErrors(
+        data,
+        [{ ...snag.at(-1), location: 'worn' }] as InventoryEntry[],
+        goblinPeople,
+      ),
+    ).toEqual([]);
+    expect(buy(w, data, 'm-2', 'crowbar', 'small')).toEqual({
+      ok: false,
+      reason: "Crowbar isn't sold small.",
+    });
   });
 
   it('refuses goods too heavy to carry, or too dear', () => {

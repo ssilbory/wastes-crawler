@@ -5,7 +5,7 @@
 // The work goes on in a town's workshop, or in a made camp out in the wilds (Sam's call).
 import type { People, Project } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
-import { sizeEntries } from '../character/gear.ts';
+import { fitSize, sizedLine, type Size } from '../character/gear.ts';
 import { entryPrice, findItem, type CatalogItem, type InventoryEntry } from '../character/items.ts';
 import { findPeople } from '../character/people.ts';
 import type { WorldEvent } from './bus.ts';
@@ -18,6 +18,8 @@ import { priceHere, spend, townHere } from './town.ts';
 import type { Member, World } from './types.ts';
 
 export type Tier = Project['quality'];
+
+const peopleOf = (data: GameData, m: Member) => findPeople(data, m.character.people) as People;
 type Craftable = Extract<CatalogItem, { kind: 'weapon' | 'armor' | 'shield' | 'gear' }>;
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
@@ -75,12 +77,17 @@ export { daysText } from './wording.ts';
 const anyone = (w: World, id: string) =>
   [...w.members, ...w.benched].find((m) => m.id === id) as Member;
 
+/**
+ * Starts a build. `size` is for armor only (docs/rules-adaptation.md, Small armor); left out, it
+ * fits the crafter's own people, and any crafter can ask for either size.
+ */
 export function startProject(
   w: World,
   data: GameData,
   crafterId: string,
   itemId: string,
   tier: Tier,
+  size?: Size,
 ): TownResult {
   if (w.encounter) return no('Settle the encounter first.');
   townHere(w, data);
@@ -92,21 +99,18 @@ export function startProject(
   if (!canCraft(m)) return no(`${name} has no Craft skill.`);
   if (w.projects.some((p) => p.crafter === m.id)) return no(`${name} is already making something.`);
   if (!tiersFor(item).includes(tier)) return no(`${item.name} is only ever made normal.`);
+  if (size === 'small' && item.kind !== 'armor') return no(`${item.name} isn't made small.`);
   const listed = partsListed(data, item, tier);
   const price = priceHere(w, data, listed);
   if (!spend(w, data, listed)) return no(`The parts cost ${price} crowns.`);
-  const [sized] = sizeEntries(
-    data,
-    [entryOf(item, tier)],
-    findPeople(data, m.character.people) as People,
-  );
+  const small = sizedLine(data, entryOf(item, tier), size ?? fitSize(peopleOf(data, m)));
   const days = buildDays(data, item, tier);
   w.projects.push({
     crafter: m.id,
     kind: 'gear',
     item: item.id,
     quality: tier,
-    ...(sized?.small ? { small: true as const } : {}),
+    ...(small.small ? { small: true as const } : {}),
     daysLeft: days,
     town: townHere(w, data).id,
     staying: false,
