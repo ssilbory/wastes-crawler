@@ -157,6 +157,24 @@ describe('resistances and slowness', () => {
 });
 
 describe('on-hit effects', () => {
+  it('drain: a PC hit owes 1d3 strain at the fight’s end; monsters owe none', () => {
+    const b = standardBattle([['vampire'], ['mummy']]);
+    const vamp = who(b, 'foe-0-0');
+    expect(at(vamp, 0).onHit).toEqual({ kind: 'drain', dice: { count: 1, sides: 3, modifier: 0 } });
+    expect(at(who(b, 'foe-1-0'), 0).onHit).toEqual({
+      kind: 'disease',
+      disease: 'grave-rot',
+    });
+    const grukk = who(b, 'Grukk');
+    grukk.hp = grukk.maxHp;
+    afterHit(b, at(vamp, 0), grukk);
+    expect(grukk.drained).toBeGreaterThanOrEqual(1);
+    expect(grukk.drained).toBeLessThanOrEqual(3);
+    const foe = who(b, 'foe-1-0');
+    afterHit(b, at(vamp, 0), foe);
+    expect(foe.drained).toBe(0);
+  });
+
   it('poison: a Physical save at a penalty, or half maximum hit points', () => {
     const b = standardBattle([['giant-black-widow']]);
     const spider = who(b, 'foe-0-0');
