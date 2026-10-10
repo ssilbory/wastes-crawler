@@ -122,4 +122,9 @@ export const CharacterSchema = z.strictObject({
     })
     .optional(),
 });
+/** A character read from a save: current hit points can't be above the maximum. */
+export const SavedCharacterSchema = CharacterSchema.refine((c) => c.hp.current <= c.hp.max, {
+  message: 'current HP is above maximum HP',
+  path: ['hp', 'current'],
+});
 export type Character = z.infer<typeof CharacterSchema>;

@@ -190,3 +190,33 @@ describe('turning with an encounter pending', () => {
     expect(w.dungeon?.facing).toBe(facing);
   });
 });
+
+describe('the landing square (docs/rules-adaptation.md, Dungeon exploration)', () => {
+  it('reads the message on the square the party arrives on by stairs', () => {
+    const withLanding = {
+      ...data,
+      content: {
+        ...data.content,
+        dungeons: data.content.dungeons.map((d) => ({
+          ...d,
+          levels: d.levels.map((l) =>
+            l.id === 'barrow-lower'
+              ? {
+                  ...l,
+                  specials: [
+                    ...(l.specials ?? []),
+                    { kind: 'message' as const, at: { x: 0, y: 0 }, text: 'A landing message.' },
+                  ],
+                }
+              : l,
+          ),
+        })),
+      },
+    };
+    const w = below();
+    w.dungeon = { ...(w.dungeon as NonNullable<World['dungeon']>), at: { x: 9, y: 0 } };
+    expect(takeStairs(w, withLanding)).toEqual({ ok: true });
+    expect(w.log.at(-2)).toContain('The party reaches The Lower Barrow.');
+    expect(w.log.at(-1)).toContain('A landing message.');
+  });
+});

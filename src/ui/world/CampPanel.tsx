@@ -39,7 +39,9 @@ export function CampPanel(props: { world: World; onChange: () => void }) {
       </div>
       <button
         type="button"
-        onClick={() => {
+        onClick={(e) => {
+          // A double click's second click (detail 2) would camp a second quarter.
+          if ((e as MouseEvent).detail > 1) return;
           campUnderground(w, data, jobs);
           props.onChange();
         }}
