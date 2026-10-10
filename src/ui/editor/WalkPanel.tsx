@@ -45,6 +45,7 @@ export function WalkPanel(props: {
     if (!walk) return;
     const onKey = (e: KeyboardEvent) => {
       if ((e.target as HTMLElement | null)?.closest('input, select, textarea')) return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
       const action = actionForKey(getSettings(), e.key);
       if (!action || action === 'search') return;
       e.preventDefault();

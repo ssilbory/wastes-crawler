@@ -99,13 +99,10 @@ export function campUnderground(
   if (w.encounter) return { ok: false, reason: 'Settle the encounter first.' };
   if (!onSafeSquare(w, data)) return { ok: false, reason: 'This is no place to camp.' };
   const doing = (a: Activity) => alive(w).filter((m) => activities[m.id] === a);
-  for (const m of doing('rest')) restQuarter(m);
-  for (const m of doing('sleep')) restQuarter(m);
-  for (const m of doing('sleep')) m.slept = true;
-  w.camp = 'made';
-  note(w, 'The party camps.');
   const s = state(w);
   const { level } = levelOf(data, s.dungeon, s.level);
+  // The wandering check comes first: an encounter breaks the camp before the quarter passes, so
+  // no one rests or sleeps and the camp doesn't count as made (docs/rules-adaptation.md, Camping).
   if (level.wander && encounterCheck(w.rng, WANDER_DIE)) {
     const watcher = doing('watch')[0];
     const rolled = rollEnemies(w, data, level.wander.table);
@@ -119,6 +116,11 @@ export function campUnderground(
     );
     return { ok: true };
   }
+  for (const m of doing('rest')) restQuarter(m);
+  for (const m of doing('sleep')) restQuarter(m);
+  for (const m of doing('sleep')) m.slept = true;
+  w.camp = 'made';
+  note(w, 'The party camps.');
   endQuarter(w, data);
   return { ok: true };
 }

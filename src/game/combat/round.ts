@@ -37,10 +37,10 @@ export function beginRound(b: Battle): void {
 function checkEnd(b: Battle): void {
   // The Invincible Citadel ends the fight as a break-off, whoever is left standing.
   if (b.escaped) return;
-  // The banished who will find their way back keep the fight going (Phase 18a).
+  // The banished and the howled who will find their way back keep the fight going (Phase 18a).
   const left = (c: Combatant) => canAct(c) || c.returnsRound > 0;
   if (!b.combatants.some((c) => c.side === 'enemy' && left(c))) b.outcome = 'party';
-  else if (!b.combatants.some((c) => c.side === 'party' && canAct(c) && !c.noncombatant))
+  else if (!b.combatants.some((c) => c.side === 'party' && left(c) && !c.noncombatant))
     b.outcome = 'enemy';
 }
 
@@ -177,14 +177,17 @@ export function endOfRound(b: Battle): void {
     if (c.flyingRounds > 0) c.flyingRounds -= 1;
   }
   if (b.layout.party === 'formation') shiftFormation(b);
-  // Monster rows step up when their front row is empty.
+  // Monster rows step up when their front row is empty. A monster held out of action (spellbound,
+  // banished and due back) still holds its slot, so only the dead and the fled leave it open.
   const monsters = b.combatants.filter((c) => c.kind === 'monster' && isUp(c));
+  const gone = (c: Combatant) => c.status === 'dead' || c.status === 'fled';
   for (const side of ['party', 'enemy'] as const) {
     if (b.layout[side] !== 'rows') continue;
-    const rows = monsters.filter((c) => c.side === side);
+    const frontHeld = () =>
+      b.combatants.some((c) => c.kind === 'monster' && c.side === side && c.row === 0 && !gone(c));
     // Petrifying Stare's rooted stay where they stand (Phase 15).
-    const movers = rows.filter((e) => e.rootedRounds === 0);
-    while (movers.length > 0 && !rows.some((e) => e.row === 0)) for (const e of movers) e.row -= 1;
+    const movers = monsters.filter((c) => c.side === side && c.rootedRounds === 0);
+    while (movers.length > 0 && !frontHeld()) for (const e of movers) e.row -= 1;
   }
   b.stabilizedThisRound.clear();
   b.round += 1;

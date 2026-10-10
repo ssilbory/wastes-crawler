@@ -174,3 +174,49 @@ describe('world save version 6', () => {
     expect(old.ok && old.world.dungeon).toBeNull();
   });
 });
+
+describe('turning with an encounter pending', () => {
+  it('refuses to turn the party until the encounter is settled', () => {
+    const w = world();
+    w.position = { ...entrance };
+    w.destination = { col: 9, row: 9 };
+    expect(enterDungeon(w, data)).toEqual({ ok: true });
+    w.encounter = encounter([['thug-or-militia']]);
+    const facing = w.dungeon?.facing;
+    expect(turnParty(w, data, 'left')).toEqual({
+      ok: false,
+      reason: 'Settle the encounter first.',
+    });
+    expect(w.dungeon?.facing).toBe(facing);
+  });
+});
+
+describe('the landing square (docs/rules-adaptation.md, Dungeon exploration)', () => {
+  it('reads the message on the square the party arrives on by stairs', () => {
+    const withLanding = {
+      ...data,
+      content: {
+        ...data.content,
+        dungeons: data.content.dungeons.map((d) => ({
+          ...d,
+          levels: d.levels.map((l) =>
+            l.id === 'barrow-lower'
+              ? {
+                  ...l,
+                  specials: [
+                    ...(l.specials ?? []),
+                    { kind: 'message' as const, at: { x: 0, y: 0 }, text: 'A landing message.' },
+                  ],
+                }
+              : l,
+          ),
+        })),
+      },
+    };
+    const w = below();
+    w.dungeon = { ...(w.dungeon as NonNullable<World['dungeon']>), at: { x: 9, y: 0 } };
+    expect(takeStairs(w, withLanding)).toEqual({ ok: true });
+    expect(w.log.at(-2)).toContain('The party reaches The Lower Barrow.');
+    expect(w.log.at(-1)).toContain('A landing message.');
+  });
+});

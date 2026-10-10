@@ -94,6 +94,7 @@ export const CharacterSchema = z.strictObject({
   classes: z.strictObject({
     current: IdSchema,
     levels: z.record(IdSchema, z.int().min(0)),
+    from: IdSchema.optional(),
   }),
   hp: z.strictObject({ max: z.int().min(1), current: z.int().min(0) }),
   /** Fight awards come in half points (docs/rules-adaptation.md, XP). */
@@ -120,5 +121,10 @@ export const CharacterSchema = z.strictObject({
       changes: z.partialRecord(AttributeSchema, z.int().min(-2).max(2)),
     })
     .optional(),
+});
+/** A character read from a save: current hit points can't be above the maximum. */
+export const SavedCharacterSchema = CharacterSchema.refine((c) => c.hp.current <= c.hp.max, {
+  message: 'current HP is above maximum HP',
+  path: ['hp', 'current'],
 });
 export type Character = z.infer<typeof CharacterSchema>;

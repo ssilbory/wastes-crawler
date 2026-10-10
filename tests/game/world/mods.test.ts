@@ -329,6 +329,12 @@ describe('what mods do on the sheet (SRD 2.8.4)', () => {
     expect(upgrade(data, line({ mods: mods('laser') })).hit).toBe(0);
   });
 
+  it("keeps the creator's free mod working when the rest lapse", () => {
+    const free = { id: 'customized', components: [], free: true };
+    const due = { id: 'customized', components: [] };
+    expect(upgrade(data, line({ mods: [free, due], upkeep: 1 })).hit).toBe(1);
+  });
+
   it('stops mods after a day unmaintained, and penalizes a week', () => {
     expect(upgrade(data, line({ mods: mods('customized'), upkeep: 1 })).hit).toBe(0);
     const week = line({ mods: mods('customized'), upkeep: 7 });

@@ -1,6 +1,6 @@
 import {
   CHARACTER_SCHEMA_VERSION,
-  CharacterSchema,
+  SavedCharacterSchema,
   type Character,
 } from '../../data/schemas/index.ts';
 import { classOption } from './class-step.ts';
@@ -83,7 +83,7 @@ export function importCharacter(
     doc = migrate(doc);
   }
 
-  const parsed = CharacterSchema.safeParse(doc);
+  const parsed = SavedCharacterSchema.safeParse(doc);
   if (!parsed.success) {
     return {
       ok: false,

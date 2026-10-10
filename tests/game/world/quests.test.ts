@@ -356,3 +356,36 @@ describe('quest odds and ends', () => {
     );
   });
 });
+
+describe('two slays at one hex', () => {
+  it('springs the second once the first fight is won, while the party is still there', () => {
+    const original = questOf(data, 'bandit-camp');
+    const twin = {
+      ...data,
+      content: {
+        ...data.content,
+        quests: [
+          ...data.content.quests,
+          { ...original, id: 'bandit-camp-twin', name: 'The Twin Camp' },
+        ],
+      },
+    };
+    const w = world();
+    acceptQuest(w, data, 'bandit-camp');
+    w.quests['bandit-camp-twin'] = {
+      ...(w.quests['bandit-camp'] as NonNullable<(typeof w.quests)['bandit-camp']>),
+    };
+    at(w, 6, 12);
+    emit(w, twin, { kind: 'hex-entered' });
+    expect(w.encounter?.quest).toBe('bandit-camp');
+    const fight = encounterBattle(w, twin);
+    applyBattle(
+      w,
+      twin,
+      fight,
+      { outcome: 'party', rounds: 2, deaths: 0, battle: fight.battle },
+      null,
+    );
+    expect(w.encounter?.quest).toBe('bandit-camp-twin');
+  });
+});

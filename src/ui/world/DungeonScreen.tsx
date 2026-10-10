@@ -77,8 +77,8 @@ export function DungeonScreen(props: {
       setBump(r.ok ? null : r.reason);
       play(r.ok ? 'step' : 'bump');
     } else {
-      turnParty(w, data, m.turn);
-      setBump(null);
+      const r = turnParty(w, data, m.turn);
+      setBump(r.ok ? null : r.reason);
     }
     props.onChange();
   };
@@ -87,6 +87,8 @@ export function DungeonScreen(props: {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
       if (target?.closest('input, select, textarea')) return;
+      // Ctrl, Cmd and Alt chords belong to the browser (find, save), not the dungeon.
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
       // Keys come from the settings (docs/plan.md, Phase 11: key remapping).
       const action = actionForKey(getSettings(), e.key);
       if (!action) return;

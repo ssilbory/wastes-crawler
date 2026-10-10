@@ -85,12 +85,18 @@ export function goesDown(data: GameData, dungeonId: string): boolean {
 export const exitLabel = (data: GameData, dungeonId: string) =>
   `${goesDown(data, dungeonId) ? 'Climb out of' : 'Leave'} ${dungeonOf(data, dungeonId).name}`;
 
+/** Lands the party on a level, with the landing square's own effects as a step onto it has. */
 function arrive(w: World, data: GameData, level: string, at: Cell, facing: Facing): void {
   const s = w.dungeon as NonNullable<World['dungeon']>;
   const { map } = levelOf(data, s.dungeon, level);
   Object.assign(s, { level, at, facing: openFacing(map, at, facing) });
-  look(w, data, s);
   note(w, `The party reaches ${levelOf(data, s.dungeon, level).level.name}.`);
+  arriveOn(w, data);
+  look(w, data, s);
+  glimpse(w, data);
+  springHere(w, data);
+  // A trap at the landing may have killed the party; the wipe has already moved the clock on.
+  if (!w.dungeon) return;
   emit(w, data, { kind: 'level-entered' });
   emit(w, data, { kind: 'cell-entered' });
 }
@@ -124,6 +130,7 @@ export function enterDungeon(w: World, data: GameData): TownResult {
   drawKits(w);
   kindle(w);
   arrive(w, data, d.entry.level, d.entry.at, d.entry.facing);
+  if (!w.dungeon) return { ok: true };
   endQuarter(w, data);
   return { ok: true };
 }
@@ -159,11 +166,13 @@ export function step(w: World, data: GameData, dir: Step, stepIn = false): TownR
   return { ok: true };
 }
 
-export function turnParty(w: World, data: GameData, by: 'left' | 'right' | 'around'): void {
+export function turnParty(w: World, data: GameData, by: 'left' | 'right' | 'around'): TownResult {
   const s = w.dungeon;
   if (!s) throw new Error('the party is not in a dungeon');
+  if (w.encounter) return no('Settle the encounter first.');
   s.facing = turn(s.facing, by);
   look(w, data, s);
+  return { ok: true };
 }
 
 /** The stairs link at the party's cell, if it stands on stairs. */
@@ -186,7 +195,10 @@ export function takeStairs(w: World, data: GameData): TownResult {
     note(w, `The party ${goesDown(data, s.dungeon) ? 'climbs out of' : 'leaves'} ${name}.`);
     w.dungeon = null;
     douse(w);
-  } else arrive(w, data, link.to.level, link.to.at, link.to.facing);
+  } else {
+    arrive(w, data, link.to.level, link.to.at, link.to.facing);
+    if (!w.dungeon) return { ok: true };
+  }
   endQuarter(w, data);
   return { ok: true };
 }

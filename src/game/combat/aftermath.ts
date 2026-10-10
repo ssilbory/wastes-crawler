@@ -128,6 +128,11 @@ export const awaitsRescue = (b: Battle) =>
 export const awaitsMending = (b: Battle) =>
   safe(b) && !b.mended && dyingOf(b).length === 0 && mendings(b).length > 0;
 
+/** The player says they're done healing the wounded. */
+export function finishMending(b: Battle): void {
+  b.mended = true;
+}
+
 /** The party holds the field: it won, or escaped behind the Invincible Citadel. */
 const safe = (b: Battle) => b.outcome === 'party' || b.escaped;
 

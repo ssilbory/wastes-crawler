@@ -111,6 +111,8 @@ export function castingRow(c: CastingProgression, level: number): CastingLevelRo
 export interface ClassLevels {
   current: string;
   levels: Readonly<Record<string, number>>;
+  /** The class a switch came from, while that switch can still be taken back (Sam's call). */
+  from?: string | undefined;
 }
 
 export function startingClass(progressionId: string): ClassLevels {
@@ -144,16 +146,18 @@ export function switchClass(
   if (target === c.current) return { ok: false, reason: 'same-class' };
   if (!inTown) return { ok: false, reason: 'not-in-town' };
   const held = levelIn(c, c.current);
-  // A switch with no level taken in the new class yet can be taken back (Sam's call).
-  const undo = held === 0 && Object.entries(c.levels).some(([id, l]) => id !== c.current && l > 0);
+  // A switch with no level taken in the new class yet can be taken back, to the class it came from.
+  const undo = held === 0 && c.from === target;
   if (held < SWITCH_MIN_CLASS_LEVEL && !undo) return { ok: false, reason: 'current-below-4' };
   const levels = Object.fromEntries(
     Object.entries(c.levels).filter(([id, level]) => id !== c.current || level > 0),
   );
-  return {
-    ok: true,
-    classes: { current: target, levels: { ...levels, [target]: levelIn(c, target) } },
+  const classes: ClassLevels = {
+    current: target,
+    levels: { ...levels, [target]: levelIn(c, target) },
+    ...(undo ? {} : { from: c.current }),
   };
+  return { ok: true, classes };
 }
 
 /** Adds a level to the current class and returns the class level gained. */

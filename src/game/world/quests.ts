@@ -116,6 +116,9 @@ function onStep(w: World, data: GameData, id: string, e: WorldEvent): void {
       return;
     case 'fight-won':
       if (e.quest === id && (o.kind === 'slay' || o.kind === 'guardian')) advance(w, data, id);
+      // A slay held back while the fight ran (one encounter at a time) springs now, if the party
+      // still stands at its hex.
+      else springSlay(w, data, id);
       return;
     case 'level-entered':
       if (o.kind === 'reach' && below(w, o)) advance(w, data, id);

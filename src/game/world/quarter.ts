@@ -24,7 +24,7 @@ export function endQuarter(w: World, data: GameData): void {
     w.quarter += 1;
     return;
   }
-  endOfDay(w, data);
+  if (endOfDay(w, data)) return;
   w.day += 1;
   w.quarter = 0;
 }
