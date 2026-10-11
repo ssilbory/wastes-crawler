@@ -1,8 +1,8 @@
 // What crafting and magic do to one weapon or suit of armor on the sheet (vendor/wwn-srd/2.0 The
 // Rules of the Game/2.8.0 Crafting and Modifying Gear.md): mastercrafted weapons +1 to hit (2.8.1),
-// working mods (2.8.4), a magic weapon's bonus to hit, damage, and Shock (4.0 Magic and
-// Spellcasting/4.9.0, 4.9.3), no bonus above +3 (2.8.4), and an item left unmaintained too long
-// working badly (2.8.3, with Sam's penalty in place of "stops working").
+// working mods (2.8.4), a magic weapon's bonus to hit, damage, and Shock and magic armor's to its
+// AC (4.0 Magic and Spellcasting/4.9.0, 4.9.3), no bonus above +3 (2.8.4), and an item left
+// unmaintained too long working badly (2.8.3, with Sam's penalty in place of "stops working").
 import type { GameData } from './context.ts';
 import type { InventoryEntry } from './items.ts';
 
@@ -42,11 +42,8 @@ export function upgrade(data: GameData, entry: InventoryEntry): Upgrade {
   return {
     hit: Math.min(BONUS_CAP, master + magic + sum((m) => m.weapon?.hit)) - penalty,
     damage: Math.min(BONUS_CAP, magic + sum((m) => m.weapon?.damage)),
-    ac:
-      Math.min(
-        BONUS_CAP,
-        sum((m) => m.armor?.ac),
-      ) - penalty,
+    // Only armor reads the AC, and only weapons the hit and damage, so one bonus serves both.
+    ac: Math.min(BONUS_CAP, magic + sum((m) => m.armor?.ac)) - penalty,
     encumbrance: sum((m) => m.armor?.encumbrance),
     broken,
   };

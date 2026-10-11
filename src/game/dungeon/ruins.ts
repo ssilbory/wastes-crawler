@@ -78,6 +78,12 @@ function cacheHere(w: World, data: GameData): { key: string; cache: Cache } | nu
   return cache && !w.caches.includes(key) ? { key, cache } : null;
 }
 
+/** True while the party stands over a vault whose guards are not yet beaten: a boss fight. */
+export function atGuardedVault(w: World, data: GameData): boolean {
+  const found = cacheHere(w, data);
+  return found?.cache.vault === true && !!found.cache.guards && !w.beaten.includes(found.key);
+}
+
 function take(w: World, data: GameData, key: string, cache: Cache): void {
   w.caches.push(key);
   const dice = cache.loot.map((d) => `${d.count}d${d.sides}`).join(' + ');

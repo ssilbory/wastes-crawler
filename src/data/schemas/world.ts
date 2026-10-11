@@ -180,7 +180,8 @@ export const ProjectSchema = z.strictObject({
   components: z.array(IdSchema).optional(),
   quality: z.enum(['jury-rigged', 'normal', 'mastercrafted']),
   small: z.literal(true).optional(),
-  daysLeft: z.int().min(1),
+  /** Days of work left; a camp shift is half a day (Sam's call). */
+  daysLeft: z.number().positive().multipleOf(0.5),
   /** The town where the parts were bought. */
   town: IdSchema,
   /** The crafter stayed behind at that town's workshop to finish it. */

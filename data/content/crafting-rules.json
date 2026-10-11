@@ -1,5 +1,22 @@
 {
   "xpPerDay": 0.5,
+  "shiftDays": 0.5,
+  "tools": {
+    "id": "crafting-tools",
+    "name": "Crafting Tools",
+    "source": {
+      "file": "2.0 The Rules of the Game/2.8.0 Crafting and Modifying Gear.md",
+      "heading": "2.8.1 Crafting Gear"
+    },
+    "cost": {
+      "amount": 100,
+      "unit": "sp"
+    },
+    "encumbrance": 3,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
   "buildDays": {
     "weapon": 7,
     "armor": 7,
@@ -101,5 +118,53 @@
     },
     "sellMarkup": 2,
     "thresholdShare": 0.25
+  },
+  "drops": {
+    "chance": 20,
+    "magicChance": 25,
+    "bands": [
+      {
+        "minLevel": 1,
+        "weights": {
+          "jury-rigged": 1,
+          "normal": 0,
+          "mastercrafted": 0
+        }
+      },
+      {
+        "minLevel": 3,
+        "weights": {
+          "jury-rigged": 1,
+          "normal": 1,
+          "mastercrafted": 0
+        }
+      },
+      {
+        "minLevel": 5,
+        "weights": {
+          "jury-rigged": 0,
+          "normal": 1,
+          "mastercrafted": 0
+        }
+      },
+      {
+        "minLevel": 7,
+        "weights": {
+          "jury-rigged": 0,
+          "normal": 2,
+          "mastercrafted": 1
+        }
+      },
+      {
+        "minLevel": 9,
+        "weights": {
+          "jury-rigged": 0,
+          "normal": 1,
+          "mastercrafted": 1
+        }
+      }
+    ],
+    "lateArmor": ["plate-armor", "great-armor", "grand-plate"],
+    "lootKept": 0.75
   }
 }

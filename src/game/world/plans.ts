@@ -1,8 +1,10 @@
 // Choosing where to go, and a sensible default plan for each quarter so a player can pass time in
 // one click: hike by day toward a destination; make camp in the evening and sleep in shifts with
-// someone always on watch (docs/rules-adaptation.md, Overland travel).
+// someone always on watch (docs/rules-adaptation.md, Overland travel). A crafter with work and
+// tools crafts the day's camp shifts instead of foraging, and is spared the watch (Sam's call).
 import { hexKey, type Hex } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
+import { campProject } from './crafting.ts';
 import { alive, bestAt, checkBonus } from './members.ts';
 import { firstGuide } from './npcs.ts';
 import { hexesToAvoid } from './groves.ts';
@@ -58,21 +60,27 @@ export function suggestPlan(w: World, data: GameData, prefer?: QuarterPlan['kind
     for (const m of party) set(m, w.quarter >= 2 ? 'sleep' : 'rest');
     return { kind: 'camp', activities };
   }
+  const crafters = party.filter((m) => campProject(w, data, m));
+  const free = others(party, ...crafters);
   if (w.quarter < 2) {
     for (const m of party) set(m, 'rest');
-    set(leader, 'forage');
-    set(bestAt(data, others(party, leader), 'survive', ['wis']), 'hunt');
+    const forager = bestAt(data, free, 'survive', ['wis']);
+    set(forager, 'forage');
+    set(bestAt(data, others(free, forager), 'survive', ['wis']), 'hunt');
+    for (const m of crafters) set(m, 'craft');
     return { kind: 'camp', activities };
   }
   // Evening: one makes camp, one keeps watch, the rest sleep. Night: whoever is still awake sleeps,
-  // and someone already rested takes the watch.
+  // and someone already rested takes the watch. A crafter watches only if no one else can.
+  const watch = (list: Member[]) =>
+    bestAt(data, others(list, ...crafters), 'notice', ['wis']) ??
+    bestAt(data, list, 'notice', ['wis']);
   for (const m of party) set(m, m.slept ? 'rest' : 'sleep');
   if (w.quarter === 2) {
     if (w.camp !== 'made') set(leader, 'make-camp');
-    set(bestAt(data, others(party, leader), 'notice', ['wis']) ?? leader, 'watch');
+    set(watch(others(party, leader)) ?? leader, 'watch');
   } else {
-    const rested = party.filter((m) => m.slept);
-    set(bestAt(data, rested, 'notice', ['wis']), 'watch');
+    set(watch(party.filter((m) => m.slept)), 'watch');
   }
   return { kind: 'camp', activities };
 }

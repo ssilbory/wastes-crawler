@@ -2,7 +2,7 @@
   {
     "id": "peaceful-human",
     "weapon": "club",
-    "tags": [],
+    "tags": ["humanoid"],
     "loot": {
       "count": 1,
       "sides": 4
@@ -12,7 +12,7 @@
   {
     "id": "thug-or-militia",
     "weapon": "spear-light",
-    "tags": ["metal"],
+    "tags": ["metal", "humanoid"],
     "loot": {
       "count": 1,
       "sides": 6
@@ -22,7 +22,7 @@
   {
     "id": "barbarian-fighter",
     "weapon": "axe-war",
-    "tags": ["metal"],
+    "tags": ["metal", "humanoid"],
     "loot": {
       "count": 1,
       "sides": 6
@@ -32,7 +32,7 @@
   {
     "id": "veteran-soldier",
     "weapon": "spear-light",
-    "tags": ["metal"],
+    "tags": ["metal", "humanoid"],
     "loot": {
       "count": 1,
       "sides": 6
@@ -42,7 +42,7 @@
   {
     "id": "skilled-veteran",
     "weapon": "sword-long",
-    "tags": ["metal"],
+    "tags": ["metal", "humanoid"],
     "loot": {
       "count": 2,
       "sides": 6
@@ -52,7 +52,7 @@
   {
     "id": "elites-or-special-guards",
     "weapon": "halberd",
-    "tags": ["metal"],
+    "tags": ["metal", "humanoid"],
     "loot": {
       "count": 3,
       "sides": 6
@@ -62,7 +62,7 @@
   {
     "id": "knight-or-minor-hero",
     "weapon": "sword-long",
-    "tags": ["metal"],
+    "tags": ["metal", "humanoid"],
     "loot": {
       "count": 4,
       "sides": 6
@@ -72,7 +72,7 @@
   {
     "id": "warrior-baron",
     "weapon": "sword-great",
-    "tags": ["metal"],
+    "tags": ["metal", "humanoid"],
     "loot": {
       "count": 6,
       "sides": 6
@@ -82,7 +82,7 @@
   {
     "id": "barbarian-warlord",
     "weapon": "axe-war",
-    "tags": ["metal"],
+    "tags": ["metal", "humanoid"],
     "loot": {
       "count": 8,
       "sides": 6
@@ -92,7 +92,7 @@
   {
     "id": "mighty-general",
     "weapon": "sword-long",
-    "tags": ["metal"],
+    "tags": ["metal", "humanoid"],
     "loot": {
       "count": 8,
       "sides": 6
@@ -102,7 +102,7 @@
   {
     "id": "major-hero",
     "weapon": "sword-great",
-    "tags": ["metal"],
+    "tags": ["metal", "humanoid"],
     "loot": {
       "count": 10,
       "sides": 6
@@ -112,7 +112,7 @@
   {
     "id": "great-warrior-king",
     "weapon": "sword-great",
-    "tags": ["metal"],
+    "tags": ["metal", "humanoid"],
     "loot": {
       "count": 12,
       "sides": 6
@@ -122,7 +122,7 @@
   {
     "id": "petty-mage",
     "weapon": "dagger",
-    "tags": ["metal"],
+    "tags": ["metal", "humanoid"],
     "loot": {
       "count": 2,
       "sides": 6
@@ -138,7 +138,7 @@
   {
     "id": "tribal-shaman",
     "weapon": "staff",
-    "tags": [],
+    "tags": ["humanoid"],
     "loot": {
       "count": 4,
       "sides": 6
@@ -154,7 +154,7 @@
   {
     "id": "skilled-sorcerer",
     "weapon": "dagger",
-    "tags": ["metal"],
+    "tags": ["metal", "humanoid"],
     "loot": {
       "count": 5,
       "sides": 6
@@ -174,7 +174,7 @@
   {
     "id": "master-wizard",
     "weapon": "staff",
-    "tags": [],
+    "tags": ["humanoid"],
     "loot": {
       "count": 8,
       "sides": 6
@@ -194,7 +194,7 @@
   {
     "id": "famous-arch-mage",
     "weapon": "staff",
-    "tags": [],
+    "tags": ["humanoid"],
     "loot": {
       "count": 10,
       "sides": 6
@@ -515,7 +515,7 @@
   {
     "id": "gnoll",
     "weapon": "axe-hand",
-    "tags": ["metal"],
+    "tags": ["metal", "humanoid"],
     "loot": {
       "count": 2,
       "sides": 6
@@ -693,7 +693,7 @@
   {
     "id": "vampire",
     "weapon": "sword-long",
-    "tags": ["unliving", "metal", "undead"],
+    "tags": ["unliving", "metal", "undead", "humanoid"],
     "loot": {
       "count": 8,
       "sides": 6
@@ -735,7 +735,7 @@
   },
   {
     "id": "grave-knight",
-    "tags": ["unliving", "undead"],
+    "tags": ["unliving", "undead", "humanoid"],
     "mind": "sapient"
   },
   {
@@ -1241,7 +1241,7 @@
   },
   {
     "id": "lich",
-    "tags": ["undead", "unliving"],
+    "tags": ["undead", "unliving", "humanoid"],
     "mind": "sapient",
     "routine": [
       {
@@ -1271,7 +1271,7 @@
   },
   {
     "id": "mummy-lord",
-    "tags": ["undead", "unliving"],
+    "tags": ["undead", "unliving", "humanoid"],
     "mind": "sapient",
     "routine": [
       {
@@ -1298,7 +1298,7 @@
   {
     "id": "master-vampire",
     "weapon": "sword-long",
-    "tags": ["unliving", "metal", "undead"],
+    "tags": ["unliving", "metal", "undead", "humanoid"],
     "loot": {
       "count": 8,
       "sides": 6

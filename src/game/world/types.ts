@@ -135,7 +135,7 @@ export const NO_LIGHT: World['light'] = {
 };
 
 /** What a member does in a camp quarter (docs/rules-adaptation.md, Overland travel). */
-export type Activity = 'rest' | 'sleep' | 'forage' | 'hunt' | 'make-camp' | 'watch';
+export type Activity = 'rest' | 'sleep' | 'forage' | 'hunt' | 'make-camp' | 'watch' | 'craft';
 
 export type QuarterPlan =
   | { kind: 'hike'; leader: string | null; watcher: string | null }

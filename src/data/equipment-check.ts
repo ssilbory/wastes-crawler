@@ -11,6 +11,7 @@ export function equipmentReferenceErrors(srd: SrdData, content: ContentData): st
     ...srd.armor.filter((a) => a.category !== 'shield').map((a) => a.id),
     ...srd.gear.map((g) => g.id),
     ...srd['gear-bundles'].map((b) => b.id),
+    content.craftingRules.tools.id,
   ]);
   for (const s of content.shields) {
     if (items.has(s.id)) errors.push(`shields/${s.id}: clashes with another item id`);

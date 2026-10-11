@@ -36,7 +36,7 @@ export interface InventoryEntry {
   serial?: string | undefined;
   maker?: string | undefined;
   mods?: InstalledMod[] | undefined;
-  /** A magic weapon's bonus (SRD 4.9.3). */
+  /** A magic weapon or suit of armor's bonus (SRD 4.9.3). */
   bonus?: number | undefined;
   /** Days since its mods were last maintained (SRD 2.8.3). */
   upkeep?: number | undefined;
@@ -79,6 +79,10 @@ export function catalog(data: GameData): CatalogItem[] {
     ((g) => ({ kind: 'gear' as const, id: g.id, name: g.name, cost: g.cost, gear: g }))(
       data.content.ailments.antidote,
     ),
+    // The crafting tools that let a crafter work in camp (Sam's call).
+    ((g) => ({ kind: 'gear' as const, id: g.id, name: g.name, cost: g.cost, gear: g }))(
+      data.content.craftingRules.tools,
+    ),
     ...data.srd['gear-bundles'].map((b) => ({
       kind: 'bundle' as const,
       id: b.id,
@@ -110,7 +114,7 @@ export function entryPrice(data: GameData, item: CatalogItem, entry: InventoryEn
   if (!item.cost) return 0;
   const barding = entry.barding ? data.content.equipmentRules.barding.costMultiplier : 1;
   const tier = entry.quality ? data.content.craftingRules.quality[entry.quality].cost : 1;
-  // A magic weapon is worth its commission besides (Sam's call).
+  // A magic weapon or suit of armor is worth its commission besides (Sam's call).
   const magic = data.content.craftingRules.magic.tiers.find((t) => t.bonus === entry.bonus);
   const each = tenths(item.cost) * barding * tier + (magic ? magic.commission * 10 : 0);
   return Math.round(each * entry.quantity);

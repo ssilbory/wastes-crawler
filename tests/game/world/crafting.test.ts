@@ -13,8 +13,11 @@ import {
   abandonProject,
   buildDays,
   buyWorkshop,
+  campProject,
   canCraft,
+  craftShift,
   craftable,
+  hasTools,
   partsListed,
   startProject,
   tiersFor,
@@ -39,6 +42,19 @@ function rich(): World {
 }
 const fizz = (w: World) => member(w, 'Fizzwick');
 const pass = (w: World) => emit(w, data, { kind: 'day-passed' });
+const TOOLS = data.content.craftingRules.tools.id;
+/** Hands a member the crafting tools. */
+function tools(m: World['members'][0]): void {
+  m.character = {
+    ...m.character,
+    inventory: [...m.character.inventory, { id: TOOLS, quantity: 1, location: 'stowed' }],
+  };
+}
+/** Camp shifts spent crafting, out in the wilds by Rubblegate. */
+function shifts(w: World, m: World['members'][0], n: number): void {
+  w.position = { col: 4, row: 8 };
+  for (let i = 0; i < n; i++) craftShift(w, data, m);
+}
 
 describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)', () => {
   it('needs the Craft skill or the Artisan focus', () => {
@@ -125,9 +141,8 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
     expect(projectText(w, data, w.projects[0] as World['projects'][0])).toBe(
       'Fizzwick: jury-rigged Linothorax (small), 1 day left',
     );
-    w.position = { col: 4, row: 8 };
-    w.camp = 'made';
-    pass(w);
+    tools(fizz(w));
+    shifts(w, fizz(w), 2);
     expect(fizz(w).character.inventory.at(-1)).toEqual({
       id: 'linothorax',
       quantity: 1,
@@ -168,9 +183,8 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
       reason: `${item('crowbar').name} isn't made small.`,
     });
     startProject(w, data, 'm-2', 'linothorax', 'normal', 'small');
-    w.position = { col: 4, row: 8 };
-    w.camp = 'made';
-    for (let day = 0; day < 7; day += 1) pass(w);
+    tools(lirael);
+    shifts(w, lirael, 14);
     const suit = lirael.character.inventory.at(-1) as InventoryEntry;
     expect(suit).toEqual({ id: 'linothorax', quantity: 1, location: 'stowed', small: true });
     const elf = findPeople(data, lirael.character.people) as People;
@@ -180,30 +194,94 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
     ]);
   });
 
-  it('works on in a made camp out in the wilds, not in town or without camp', () => {
+  it('works half a day a camp shift with tools out in the wilds, not in town or without tools', () => {
     const w = rich();
     startProject(w, data, 'm-3', 'crowbar', 'normal');
-    startProject(w, data, 'm-3', 'crowbar', 'normal');
-    w.camp = 'made';
-    pass(w);
-    expect(w.projects).toHaveLength(1);
+    const f = fizz(w);
+    const p = w.projects[0] as World['projects'][0];
+    // A made camp alone no longer works the build: it takes a crafter's shift.
     w.position = { col: 4, row: 8 };
-    w.camp = 'none';
-    pass(w);
-    expect(w.projects).toHaveLength(1);
-    fizz(w).dead = true;
     w.camp = 'made';
     pass(w);
-    expect(w.projects).toHaveLength(1);
-    fizz(w).dead = false;
-    pass(w);
+    expect(p.daysLeft).toBe(1);
+    expect(hasTools(data, f)).toBe(false);
+    expect(campProject(w, data, f)).toBeNull();
+    craftShift(w, data, f);
+    expect(w.log.at(-1)).toContain('Fizzwick has nothing to work on here without tools.');
+    tools(f);
+    expect(campProject(w, data, f)).toBe(p);
+    w.position = { col: 3, row: 8 };
+    expect(campProject(w, data, f)).toBeNull();
+    craftShift(w, data, f);
+    expect(w.log.at(-1)).toContain('Fizzwick has nothing to work on here.');
+    const xp = f.character.xp;
+    shifts(w, f, 1);
+    expect(p.daysLeft).toBe(0.5);
+    expect(w.log.at(-1)).toContain('Fizzwick works on the Crowbar.');
+    // XP comes in half points: the day's half point once the day is done.
+    expect(f.character.xp).toBe(xp);
+    expect(projectText(w, data, p)).toBe('Fizzwick: Crowbar, 0.5 days left');
+    shifts(w, f, 1);
+    expect(f.character.xp).toBe(xp + 0.5);
     expect(w.projects).toEqual([]);
     expect(w.log.at(-1)).toContain('Fizzwick finishes the Crowbar.');
-    expect(fizz(w).character.inventory.at(-1)).toEqual({
+    expect(f.character.inventory.at(-1)).toEqual({
       id: 'crowbar',
       quantity: 1,
       location: 'stowed',
     });
+  });
+
+  it('works mods only at the workshop, never in a camp shift', () => {
+    const w = rich();
+    tools(fizz(w));
+    w.projects = [
+      {
+        crafter: 'm-3',
+        kind: 'mod',
+        item: 'dagger',
+        mod: 'customized',
+        target: 's-1',
+        quality: 'normal',
+        daysLeft: 3,
+        town: 'westhold',
+        staying: false,
+      },
+    ];
+    shifts(w, fizz(w), 2);
+    expect(w.projects[0]?.daysLeft).toBe(3);
+  });
+
+  it('sells crafting tools: 100 crowns and 3 items of encumbrance', () => {
+    const kit = findItem(data, TOOLS) as CatalogItem;
+    expect(kit).toMatchObject({ kind: 'gear', name: 'Crafting Tools', cost: { amount: 100 } });
+    expect(kit.kind === 'gear' && kit.gear.encumbrance).toBe(3);
+    expect(craftable(data).map((i) => i.id)).not.toContain(TOOLS);
+    const pkg = data.content.startingPackages.find((x) => x.id === 'artisan');
+    expect(pkg?.items).toEqual([{ id: TOOLS, quantity: 1, location: 'stowed' }]);
+  });
+
+  it('builds armor in every tier', () => {
+    const ids = craftable(data).map((i) => i.id);
+    for (const id of ['war-shirt', 'mail-shirt', 'plate-armor', 'great-armor']) {
+      expect(ids).toContain(id);
+      expect(tiersFor(item(id))).toEqual(['jury-rigged', 'normal', 'mastercrafted']);
+    }
+    const w = rich();
+    w.purse = 5000;
+    expect(startProject(w, data, 'm-3', 'plate-armor', 'normal', 'standard')).toEqual({ ok: true });
+    expect(w.projects[0]).toMatchObject({ item: 'plate-armor', daysLeft: 7 });
+  });
+
+  it('charges a whole day’s rent for a half day left', () => {
+    const w = rich();
+    startProject(w, data, 'm-3', 'spear-light', 'normal');
+    (w.projects[0] as World['projects'][0]).daysLeft = 2.5;
+    const purse = w.purse;
+    expect(stayToWork(w, data, 'm-3')).toEqual({ ok: true });
+    expect(w.purse).toBe(purse - 15);
+    for (let i = 0; i < 3; i++) pass(w);
+    expect(w.projects).toEqual([]);
   });
 
   it('stacks finished normal gear, and keeps crafted tiers on their own lines', () => {
@@ -213,8 +291,7 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
       ...f.character,
       inventory: [...f.character.inventory, { id: 'crowbar', quantity: 1, location: 'stowed' }],
     };
-    w.position = { col: 4, row: 8 };
-    w.camp = 'made';
+    tools(f);
     w.projects = [
       {
         crafter: 'm-3',
@@ -226,11 +303,10 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
         staying: false,
       },
     ];
-    pass(w);
+    shifts(w, f, 2);
     expect(f.character.inventory.filter((e) => e.id === 'crowbar')).toEqual([
       { id: 'crowbar', quantity: 2, location: 'stowed' },
     ]);
-    w.camp = 'made';
     w.projects = [
       {
         crafter: 'm-3',
@@ -242,7 +318,7 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
         staying: false,
       },
     ];
-    pass(w);
+    shifts(w, f, 2);
     expect(fizz(w).character.inventory.at(-1)).toEqual({
       id: 'dagger',
       quantity: 1,

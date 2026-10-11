@@ -1,11 +1,39 @@
 import { z } from 'zod';
 import { IdSchema } from './common.ts';
+import { GearSchema } from './gear.ts';
 
 const Crowns = z.number().min(0);
 
 /** A crafted item's quality tier (SRD 2.8.1); normal gear carries no tier on the sheet. */
 export const QualitySchema = z.enum(['jury-rigged', 'mastercrafted']);
 export type Quality = z.infer<typeof QualitySchema>;
+
+const Weights = z.strictObject({
+  'jury-rigged': z.int().min(0),
+  normal: z.int().min(0),
+  mastercrafted: z.int().min(0),
+});
+
+/**
+ * Weapons and armor dropped by beaten humanoids (docs/rules-adaptation.md, Gear drops; Sam's
+ * calls): the chance a won fight that pays XP drops one, the tier by party level, the costly
+ * armors that only drop where mastercrafted gear would, and the magic chance in boss fights.
+ */
+const DropsSchema = z.strictObject({
+  /** Percent chance a qualifying won fight drops a weapon or suit of armor. */
+  chance: z.int().min(0).max(100),
+  /** Percent chance a boss fight (a quest's fixed fight or a vault's guards) drops a magic one. */
+  magicChance: z.int().min(0).max(100),
+  /** Tier weights by party level; the band with the highest minimum at or below it applies. */
+  bands: z
+    .array(z.strictObject({ minLevel: z.int().min(1), weights: Weights }))
+    .min(1)
+    .refine((bands) => bands.some((b) => b.minLevel === 1), 'a band must start at level 1'),
+  /** Armor only dropped where mastercrafted gear could be, and then as normal quality. */
+  lateArmor: z.array(IdSchema),
+  /** The share of a fight's loot dice a drop always leaves (rounded up). */
+  lootKept: z.number().min(0).max(1),
+});
 
 const Tier = z.strictObject({
   /** Parts cost as a multiple of the market cost. */
@@ -18,6 +46,11 @@ const Tier = z.strictObject({
 export const CraftingRulesSchema = z.strictObject({
   /** XP a crafter earns for each day of work on a project, so they keep pace (Sam's call). */
   xpPerDay: z.number().min(0),
+  /** Days of work a crafting shift in camp is worth, with crafting tools (Sam's call). */
+  shiftDays: z.number().positive().multipleOf(0.5),
+  /** The crafting tools that let a crafter work in camp (Sam's call; SRD 2.8.1's workshop). */
+  tools: GearSchema,
+  drops: DropsSchema,
   /** Days to build a normal item of each kind (SRD 2.8.1: a week for a weapon or armor). */
   buildDays: z.strictObject({
     weapon: z.int().min(1),
