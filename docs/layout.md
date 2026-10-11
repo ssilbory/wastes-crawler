@@ -1,0 +1,169 @@
+# Repository layout
+
+A map of where things live and what each area holds. Read this before
+searching the tree. Keep it current when adding or moving a directory or a
+group of modules; single new files in an existing group need no entry.
+
+Snapshot: 2026-10-11, about 850 tracked files.
+
+## Top level
+
+| Path                                    | What it is                                                                                                               |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `AGENTS.md`                             | Project rules for agents (layers, SRD citation, RNG, licensing, done criteria)                                           |
+| `NOTICE`                                | Attributions: WWN and CWN SRDs, Year Zero Engine inspiration                                                             |
+| `package.json`                          | Scripts and dependencies. Runtime deps: preact, zod, three @fontsource fonts                                             |
+| `pnpm-workspace.yaml`, `pnpm-lock.yaml` | pnpm policy (7-day release age, no install scripts) and lockfile                                                         |
+| `index.html`, `src/main.ts`             | Browser entry: loads theme CSS and fonts, then mounts `src/ui/Shell.tsx` on `#app`                                       |
+| `vite.config.ts`                        | Vite build (relative base for GitHub Pages, Preact JSX via Oxc) and Vitest config (100% coverage on rules, game, render) |
+| `tsconfig.json`, `eslint.config.js`     | TypeScript and ESLint config                                                                                             |
+| `.prettierrc.json`, `.prettierignore`   | Formatting                                                                                                               |
+| `playwright.config.ts`                  | E2E config for `e2e/`                                                                                                    |
+| `Dockerfile`, `.dockerignore`           | Two-stage build: pnpm build, then serve `dist/` from unprivileged nginx on 8080                                          |
+| `.github/workflows/ci.yml`              | CI: typecheck, lint, format:check, test:coverage, srd:check, license:check, build, sim, e2e, then GitHub Pages deploy    |
+| `.github/dependabot.yml`                | Dependency update config                                                                                                 |
+| `.gitattributes`, `.gitignore`          | Git config                                                                                                               |
+| `.bak`                                  | Stray, tracked older copy of `src/game/world/ailments.ts`. Not imported anywhere; safe to delete                         |
+
+## Scripts (`pnpm <name>`)
+
+| Script                     | Runs                                                                               |
+| -------------------------- | ---------------------------------------------------------------------------------- |
+| `dev`, `build`, `preview`  | Vite                                                                               |
+| `typecheck`, `lint`        | `tsc --noEmit`, `eslint .`                                                         |
+| `format`, `format:check`   | Prettier                                                                           |
+| `test`, `test:coverage`    | Vitest over `tests/**/*.test.ts` and `src/**/*.test.ts`                            |
+| `test:e2e`                 | Playwright over `e2e/`                                                             |
+| `srd:extract`, `srd:check` | `tools/srd-extract`: regenerate `data/srd/`, or verify it matches the vendored SRD |
+| `license:check`            | `tools/check-licenses.ts`: shipped deps must be MIT/BSD/Apache/ISC/zlib/CC0/OFL    |
+| `sim`                      | `tools/sim`: auto-combat of exported characters vs SRD monsters                    |
+| `economy`                  | `tools/economy.ts`: Phase 9 economy validator, driven by `data/economy-sim.json`   |
+| `balance`                  | `tools/balance.ts`: campaign fights against the auto-levelled starter party        |
+| `factions`                 | `tools/factions.ts`: faction turns run headless for two years, many seeds          |
+| `validate:levels`          | `tools/validate-levels.ts`: every dungeon level parses, connects, and completes    |
+
+## docs/
+
+| File                                       | Contents                                                                                                    |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| `plan.md`                                  | Project plan: goals, setting summary, architecture, map format, save/load, phases                           |
+| `rules-adaptation.md`                      | Every house rule and "Sam's call". The only place house rules live                                          |
+| `setting.md`                               | Setting bible for the Dark Lands: peoples, timeline, binding and standing orders, religion, factions, hooks |
+| `content-guide.md`                         | Level map format (doubled ASCII grid) and every content type with its key fields                            |
+| `todo.md`                                  | Ideas awaiting a rules decision before they are built                                                       |
+| `layout.md`                                | This file                                                                                                   |
+| `decisions/0001-high-level-progression.md` | ADR: high-level progression                                                                                 |
+| `decisions/0002-placeholder-setting.md`    | ADR: placeholder setting until the content phase                                                            |
+| `decisions/0003-level-authoring.md`        | ADR: hand-written ASCII levels with an in-game editor                                                       |
+| `decisions/0004-procedural-levels.md`      | ADR: procedural levels are optional side dungeons                                                           |
+
+## vendor/ (read-only sources)
+
+| Path              | Contents                                                                                                                                                                                                                                            |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `vendor/wwn-srd/` | Worlds Without Number SRD as Markdown, one folder per chapter: 1.0 Character Creation, 2.0 Rules of the Game, 3.0 Equipment, 4.0 Magic, 5.0 Monsters, 6.0 Factions, 7.0 Major Projects. `SOURCE` records provenance. Cite these paths in rules code |
+| `vendor/cwn-srd/` | Cities Without Number SRD as one text file, plus `SOURCE`                                                                                                                                                                                           |
+
+## data/
+
+All content is JSON validated by zod schemas in `src/data/schemas/`.
+
+### data/srd/ (generated, never edit)
+
+Output of `pnpm srd:extract` from `vendor/wwn-srd/`. Fix mirror errors in `tools/srd-extract/errata.json`.
+
+`armor`, `arts`, `casting-progressions`, `classes`, `faction-assets`, `foci`, `gear-bundles`, `gear`, `monsters`, `progressions`, `skills`, `spells`, `weapon-traits`, `weapons` (all `.json`).
+
+### data/content/ (hand-authored setting content)
+
+| Area              | Files                                                                                                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Characters        | `peoples`, `racial-foci`, `backgrounds`, `class-options`, `traditions`, `focus-rules`, `skill-rules`, `starting-packages`, `starter-party` |
+| Magic and combat  | `combat-magic` (72 spell/art effects), `spell-rules`, `monster-combat` (89 combat profiles), `mishaps`                                     |
+| Monsters          | `monsters` (54 authored), `setting-monsters` (51 reskins of SRD monsters)                                                                  |
+| Gear and crafting | `shields`, `equipment-rules`, `components`, `crafting-rules`, `craftsmen`, `mods`                                                          |
+| World and travel  | `regions` (3 hex maps), `terrains`, `overland-rules`, `encounter-tables` (27), `coach-routes`, `coach-rules`, `mount-rules`, `groves`      |
+| Dungeons          | `dungeons` (8 hand-authored dungeons with ASCII levels), `ruins` (10 procedural ruin kinds)                                                |
+| Towns and NPCs    | `town-rules`, `arena-cards`, `npc-rules`, `captives`, `mission-givers`, `quests` (25), `authorities`                                       |
+| Setting and story | `campaign` (intro, warlord's clock, crafter's notes, Seal), `factions`, `standing-orders`, `raid-rules`, `ailments`                        |
+| App               | `settings-defaults`, `sound-cues`                                                                                                          |
+
+`data/economy-sim.json` holds the economy validator's party, delve, and fight parameters.
+
+## src/ (layered; see AGENTS.md for import rules)
+
+Entry: `src/main.ts` → `src/ui/Shell.tsx`, which routes by URL hash: `#/world` (game), `#/arena`, `#/editor` (level editor), `#/settings`, default builder.
+
+### src/data/ (schemas and loaders; imports no other src layer)
+
+| Group        | Files                                                                                                                                                                                                                                                                        | Purpose                                                                                         |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Loaders      | `load.ts`, `content.ts`, `monsters.ts`, `skills.ts`, `spells.ts`, `focus-content.ts`, `dungeon-map.ts`                                                                                                                                                                       | Parse `data/srd` and `data/content`; merged monster, skill, and spell lists; ASCII level parser |
+| Cross-checks | `*-check.ts` (ailment, combat, crafting, dungeon, equipment, faction, grove, magic, mount, npc, overland, quest, setting, town, travel)                                                                                                                                      | Referential integrity: content may only name records that exist                                 |
+| `schemas/`   | `index.ts` (one schema per `data/srd` file), SRD shapes (`armor`, `weapons`, `gear`, `classes`, `foci`, `skills`, `magic`, `monsters`, `factions`), content shapes (`*-content.ts`), save shapes (`character`, `roster`, `world`, `settings`), `common.ts`, `economy-sim.ts` | zod schemas and inferred types                                                                  |
+
+### src/rules/ (pure rules math; no game, render, or ui imports)
+
+| File                                        | Rule                                                            |
+| ------------------------------------------- | --------------------------------------------------------------- |
+| `rng.ts`, `dice.ts`                         | Seeded xoshiro128** RNG (state saved in saves) and dice rolling |
+| `attributes.ts`, `checks.ts`, `saves.ts`    | Attribute modifiers, skill checks, saving throws                |
+| `advantage.ts`                              | Advantage/disadvantage house rule                               |
+| `attacks.ts`, `combat.ts`, `armor-class.ts` | Attack rolls, damage, Shock, initiative, AC with shields        |
+| `hit-points.ts`, `strain.ts`                | HP gain, System Strain                                          |
+| `advancement.ts`, `progression.ts`          | XP and level tables, class progressions                         |
+| `magic.ts`, `spell-points.ts`               | Effort, spell slots then spell points                           |
+| `forms.ts`, `beastmaster.ts`                | Skinshifter forms, Beastmaster numbers                          |
+| `formation.ts`                              | Two rows of four, who can reach whom                            |
+| `grid.ts`, `hex.ts`                         | Dungeon grid geometry, overland hex geometry                    |
+| `overland.ts`, `reaction.ts`                | Quarter-day travel, reaction rolls                              |
+| `encumbrance.ts`, `resource-die.ts`         | Encumbrance and Overloaded, resource dice                       |
+| `economy.ts`, `loot-dice.ts`                | Prices and economy house rules, paying in loot dice             |
+| `factions.ts`                               | Faction attribute checks and arithmetic                         |
+
+### src/game/ (the only layer that mutates state)
+
+| Folder / file | Contents                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `character/`  | Character creation steps (`creation`, `steps`, `choices`, `attributes`, `background`, `skills`, `foci`, `people`, `class-step`, `magic`, `gear`), the sheet (`derived`, `equipment`, `items`, `stacks`, `slots`, `upgrades`, `shaping`), levelling (`advance`, `auto-level`, `training`), Skinshifter (`forms`, `shift`), Beastmaster (`beast-arts`), saves (`io`, `roster`, `retired`), `context.ts` (lookup tables built from SRD + content)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `combat/`     | Combat engine. `types.ts` (Battle state), `battle.ts` (setup), `round.ts` (initiative and turns), `commands.ts` (legal actions), `actions.ts`, `attack.ts`, `damage.ts`, `targeting.ts`, `morale.ts`, `ai.ts`, `defaults.ts`, `log.ts`, `aftermath.ts`; monsters (`monster-combatant`, `monster-caster`, `specials`); magic by tradition (`spells`, `spell-level`, `high-magic`, `elementalist`, `necromancer`, `sanctuary`, `conditions`, `free-actions`, `healing-strain`); class features (`arts`, `reactions`, `forms`, `companions`, `mounted`, `gear`); `combatants.ts`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `dungeon/`    | `explore.ts` (walking a level), `time.ts`, `light.ts`, `traps.ts`, `trap-falls.ts`, `secrets.ts`, `specials.ts`, `rescues.ts`; procedural ruins (`ruins`, `generate`, `maze`, `city`); level editor model (`level-edit`, `level-details`, `sandbox`); dungeon spells (`arcane-sight`, `burrow`, `stonework`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `world/`      | Overland campaign state. Core: `types.ts`, `new-world`, `quarter` (one quarter day), `day`, `calendar`, `plans`, `activities`, `region`, `crossing`, `encounters`, `fight`, `carry-back`, `winnings`, `bus` (event bus), `save`, `save-migrations`, `bundle`. Towns: `town`, `shop`, `trade`, `tavern`, `services`, `rumors`, `arena`, `coach`, `training`, `perform`, `prayer`, `quest-board`, `quests`, `workshop`, `crafting`, `craftsmen`, `commissions`, `components`, `mods`, `maintenance`. Party: `members`, `formation`, `inventory`, `party-load`, `loads`, `npcs`, `hire`, `shares`, `rescue`, `mounts`, `mount-fights`, `beasts`, `butcher`, `companions`, `companion-*`, `first-aid`, `ailments`, `ailing`, `antidote`, `purge`, `healer`. Talking: `parley`, `speech`, `minds`, `bestiary`. Magic outside combat: `casting`, `sorcery`, `guises`, `illusions`, `waygates`, `summons`, `necromancy`, `raising`, `boneshaper`, `skull`, `greenwood`, `groves`, `pacts`, `tremors`, `arts`, `forms`, `wear`, `practice`. Setting: `orders`, `raids`, `clock`, `seal`, `notes`, `difficulty`. `wording.ts` (shared log phrasing) |
+| `factions/`   | Faction turn (`turn`, `state`, `actions`, `combat`, `goals`), and how results reach the world (`patrols`, `raid`, `strikes`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `economy/`    | `run.ts`, `report.ts`: the economy validator used by `pnpm economy`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `settings.ts` | Player settings: keys, sound, combat speed, text size                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+
+### src/render/ (pure, read-only view data)
+
+One `*-view.ts` per screen or panel that turns game state into text or drawing data: dungeon first-person view and automap, hex map, level editor grid, arena, town, quests, factions, setting, inventory, stash, gear, attack lines, casting, class picker, describe (hover text), level-up summary, alerts, save slots, settings, plus panel data for antidote, companions, crafting, formation, forms, form-details, greenwood, healer, light, necromancy, purge, sorcery, bestiary.
+
+### src/ui/ (Preact components and CSS)
+
+| Folder / file                                 | Contents                                                                                                                                                                                                                                                                                                                                |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Shell.tsx`, `AppMenu.tsx`, `app-menu.css`    | Hash router and ☰ mode menu                                                                                                                                                                                                                                                                                                            |
+| `builder/`                                    | Character builder wizard: one component per SRD step (`AttributesStep`, `BackgroundStep`, `PeopleStep`, `FociStep`, `MagicStep`, `GearStep`, `FormsEditor`, `OtherSteps`), `Sheet.tsx`, `Wizard.tsx`, `data.ts` (UI RNG seed)                                                                                                           |
+| `world/`                                      | Main game: `WorldApp.tsx`, `StartScreen`, `IntroScreen`, `MapScreen` + `HexMap`, `DungeonScreen`, character, formation, and inventory screens, encounter and quarter panels, one panel per class power or service, `Toasts`, `JournalPanel`, `QuestLog`; `difficulty-worker.ts` + `assess.ts` run the XP difficulty sim in a Web Worker |
+| `town/`                                       | `TownScreen.tsx` and one tab per town service (shop, tavern, training, quests, arena, stable, travel, workshop, craftsman, services)                                                                                                                                                                                                    |
+| `arena/`                                      | Standalone arena mode: roster import, party setup, monster picker, fight and spectator screens                                                                                                                                                                                                                                          |
+| `editor/`                                     | Level editor: `EditorApp`, `CellPanel`, `TrapForm`, `WalkPanel` (first-person test walk)                                                                                                                                                                                                                                                |
+| `settings/`                                   | Settings page                                                                                                                                                                                                                                                                                                                           |
+| `theme/`                                      | `theme.css`, `controls.css`, `screens.css`, `fonts.ts` (OFL fonts)                                                                                                                                                                                                                                                                      |
+| `storage.ts`, `settings-store.ts`, `sound.ts` | Browser storage for roster and settings; Web Audio sound cues                                                                                                                                                                                                                                                                           |
+
+## tests/ (Vitest)
+
+About 180 `*.test.ts` files mirroring `src/`: `tests/rules/`, `tests/game/` (with `combat/`, `dungeon/`, `factions/`, `world/` subfolders), `tests/render/`, plus top-level content and SRD integrity tests (`*-content.test.ts`, `srd-*.test.ts`, `smoke.test.ts`). `tests/campaign/` holds a headless campaign driver and its end-to-end campaign test. Shared helpers: `tests/helpers/scripted-rng.ts` (forces exact die faces) and `helpers*.ts` in each game subfolder.
+
+## e2e/ (Playwright)
+
+One `*.spec.ts` per player-facing feature (builder, wizard, dungeon, town, quests, magic, mounts, factions, persistence, endgame, and others), `wizard.ts` helper, and screenshot baselines in `dungeon.spec.ts-snapshots/`.
+
+## tools/ (dev-only scripts, run with tsx)
+
+| Path                                                                   | Contents                                                                                                                                                                               |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `srd-extract/`                                                         | SRD extractor: `index.ts`, `reader.ts`, `markdown.ts`, `parse-values.ts`, `validate.ts`, `errata.json`, and `extractors/` (classes, equipment, factions, magic, monsters, skills-foci) |
+| `sim/`                                                                 | Combat sim (`index.ts`), `make-starter-party.ts`, and the four starter characters in `parties/starter/`                                                                                |
+| `balance.ts`, `balance/`                                               | Balance tool and its gauntlets                                                                                                                                                         |
+| `economy.ts`, `factions.ts`, `validate-levels.ts`, `check-licenses.ts` | Backing scripts for the pnpm commands above                                                                                                                                            |

@@ -1,5 +1,8 @@
 # Project rules
 
+- Layout: docs/layout.md maps every directory and module group. Read it
+  before searching the tree; update it when adding or moving a directory or
+  module group.
 - Layers: src/data (schemas and loaders) imports no other src/ layer; every
   layer may import it. src/rules imports nothing from src/game, src/render, or src/ui.
   src/render never mutates state. Only src/game mutates state.
