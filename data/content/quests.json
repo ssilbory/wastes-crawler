@@ -894,5 +894,202 @@
       "xp": 1,
       "loot": []
     }
+  },
+  {
+    "id": "warden-below",
+    "name": "The Warden Below",
+    "giver": "warden-osk",
+    "summary": "Goats come down from the high pass frozen stiff, and the barrow-wardens' sepulchre in the mountains at 15,1 stands open. Osk says the last warden never died: a sorcerer who kept the Old Barrow's wards in his own bones. Put him in the ground for good.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 6
+    },
+    "objectives": [
+      {
+        "kind": "reach",
+        "dungeon": "wardens-sepulchre",
+        "level": "sepulchre-vault",
+        "text": "Go down to the warden's vault."
+      },
+      {
+        "kind": "guardian",
+        "dungeon": "wardens-sepulchre",
+        "level": "sepulchre-vault",
+        "at": {
+          "x": 6,
+          "y": 4
+        },
+        "enemies": [
+          ["mummy", "mummy", "mummy", "bone-golem"],
+          ["lich", "mummy-lord"]
+        ],
+        "text": "Destroy the lich and his honor guard in the vault."
+      },
+      {
+        "kind": "retrieve",
+        "dungeon": "wardens-sepulchre",
+        "level": "sepulchre-vault",
+        "at": {
+          "x": 7,
+          "y": 7
+        },
+        "item": "the lich's phylactery",
+        "text": "Take the lich's phylactery, so he cannot rise again."
+      }
+    ],
+    "reward": {
+      "crowns": 350,
+      "xp": 5,
+      "loot": [
+        {
+          "count": 3,
+          "sides": 10
+        }
+      ]
+    }
+  },
+  {
+    "id": "red-hunger",
+    "name": "The Red Hunger",
+    "giver": "sister-orla",
+    "summary": "Saltwick's woodcutters are coming home pale, or not at all, and the ones buried last month dug themselves out. Sister Orla follows the trail to Mourncourt, a sealed manor in the deep forest at 2,3. Kill the vampires feeding there.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 5
+    },
+    "objectives": [
+      {
+        "kind": "guardian",
+        "dungeon": "mourncourt",
+        "level": "mourncourt-hall",
+        "at": {
+          "x": 1,
+          "y": 1
+        },
+        "enemies": [["gnawing-dead", "vampire", "vampire"]],
+        "text": "Kill the vampires feasting in Mourncourt's dining hall."
+      }
+    ],
+    "reward": {
+      "crowns": 200,
+      "xp": 4,
+      "loot": [
+        {
+          "count": 2,
+          "sides": 10
+        }
+      ]
+    }
+  },
+  {
+    "id": "lord-of-mourncourt",
+    "name": "The Lord of Mourncourt",
+    "giver": "sister-orla",
+    "summary": "The vampire you killed was only a child of the house. Its maker, the eldest of the line, sleeps in the blood crypt under Mourncourt and has fed on the Pale Reach for six hundred years. Send it to the Lady.",
+    "prerequisites": {
+      "quests": ["red-hunger"],
+      "minLevel": 6
+    },
+    "objectives": [
+      {
+        "kind": "reach",
+        "dungeon": "mourncourt",
+        "level": "mourncourt-crypt",
+        "text": "Go down to Mourncourt's blood crypt."
+      },
+      {
+        "kind": "guardian",
+        "dungeon": "mourncourt",
+        "level": "mourncourt-crypt",
+        "at": {
+          "x": 3,
+          "y": 6
+        },
+        "enemies": [["vampire", "vampire", "gnawing-dead"], ["master-vampire"]],
+        "text": "Destroy the master of Mourncourt in its sealed hall."
+      }
+    ],
+    "reward": {
+      "crowns": 450,
+      "xp": 6,
+      "loot": [
+        {
+          "count": 3,
+          "sides": 10
+        }
+      ]
+    }
+  },
+  {
+    "id": "cistern-hydra",
+    "name": "The Cistern Hydra",
+    "giver": "ferrywoman-grut",
+    "summary": "Something with too many heads lairs in the flooded imperial cisterns at 14,22 and hunts the Mire's ferry lanes at night. Grut wants it dead, and she has saved for a long time to pay for it.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 5
+    },
+    "objectives": [
+      {
+        "kind": "reach",
+        "dungeon": "drowned-cisterns",
+        "level": "cistern-pool",
+        "text": "Go down to the hydra's pool."
+      },
+      {
+        "kind": "guardian",
+        "dungeon": "drowned-cisterns",
+        "level": "cistern-pool",
+        "at": {
+          "x": 3,
+          "y": 3
+        },
+        "enemies": [["hydra", "swamp-thing", "swamp-thing"]],
+        "text": "Kill the hydra in its pool."
+      }
+    ],
+    "reward": {
+      "crowns": 250,
+      "xp": 4,
+      "loot": [
+        {
+          "count": 2,
+          "sides": 10
+        }
+      ]
+    }
+  },
+  {
+    "id": "mere-hydra",
+    "name": "The Mere Hydra",
+    "giver": "saltwarden-brask",
+    "summary": "A pair of hydras has come up out of the Pale Mere into the reed beds at 21,11, where the salt barges land. Brask has lost a barge and its crew. Kill them before the next one sails.",
+    "prerequisites": {
+      "quests": [],
+      "minLevel": 6
+    },
+    "deadlineDays": 20,
+    "objectives": [
+      {
+        "kind": "slay",
+        "region": "pale-reach",
+        "hex": {
+          "col": 21,
+          "row": 11
+        },
+        "enemies": [["hydra", "hydra"]],
+        "text": "Kill the hydras in the reed beds at 21,11."
+      }
+    ],
+    "reward": {
+      "crowns": 220,
+      "xp": 3,
+      "loot": [
+        {
+          "count": 2,
+          "sides": 10
+        }
+      ]
+    }
   }
 ]

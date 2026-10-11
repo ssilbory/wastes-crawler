@@ -79,5 +79,14 @@
     "reward": 80,
     "xp": 2,
     "text": "A Priest of Death in torn grey robes kneels in chains. The Faithful need her for the rite."
+  },
+  {
+    "id": "kept-thrall",
+    "name": "a thrall kept for feeding",
+    "monster": "peaceful-human",
+    "destination": "saltwick",
+    "reward": 70,
+    "xp": 1,
+    "text": "A gnome woodcutter, bitten and bled white, is chained to a bed among them."
   }
 ]

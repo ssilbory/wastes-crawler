@@ -11,7 +11,7 @@ describe('quest content', () => {
   it('loads clean givers and quests', () => {
     expect(questReferenceErrors(srd, content)).toEqual([]);
     expect(content.quests.map((q) => q.reward.xp)).toEqual([
-      3, 2, 2, 3, 3, 0, 0, 0, 0, 0, 0, 3, 4, 2, 3, 4, 6, 4, 2, 0, 3, 4, 6, 1, 1,
+      3, 2, 2, 3, 3, 0, 0, 0, 0, 0, 0, 3, 4, 2, 3, 4, 6, 4, 2, 0, 3, 4, 6, 1, 1, 5, 4, 6, 4, 3,
     ]);
     expect(content.quests.filter((q) => q.reward.raise).map((q) => q.giver)).toEqual([
       'necromancer-ysolde',
@@ -22,6 +22,30 @@ describe('quest content', () => {
       'mother-skrell',
       'sister-orla',
     ]);
+  });
+
+  it('sends the party after the lich, the vampires, and the hydras', () => {
+    const targets = (id: string) => {
+      const q = content.quests.find((x) => x.id === id) as Quest;
+      return q.objectives.flatMap((o) =>
+        o.kind === 'guardian'
+          ? [`${o.dungeon}: ${o.enemies.flat().join(' ')}`]
+          : o.kind === 'slay'
+            ? [`${o.region} ${o.hex.col},${o.hex.row}: ${o.enemies.flat().join(' ')}`]
+            : [],
+      );
+    };
+    expect(targets('warden-below')).toEqual([
+      'wardens-sepulchre: mummy mummy mummy bone-golem lich mummy-lord',
+    ]);
+    expect(targets('red-hunger')).toEqual(['mourncourt: gnawing-dead vampire vampire']);
+    expect(targets('lord-of-mourncourt')).toEqual([
+      'mourncourt: vampire vampire gnawing-dead master-vampire',
+    ]);
+    expect(targets('cistern-hydra')).toEqual(['drowned-cisterns: hydra swamp-thing swamp-thing']);
+    expect(targets('mere-hydra')).toEqual(['pale-reach 21,11: hydra hydra']);
+    const lord = content.quests.find((q) => q.id === 'lord-of-mourncourt') as Quest;
+    expect(lord.prerequisites.quests).toEqual(['red-hunger']);
   });
 
   it('checks delve steps against the dungeons', () => {
