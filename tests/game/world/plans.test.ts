@@ -103,6 +103,30 @@ describe('suggested plans', () => {
     });
   });
 
+  it('sends those with Survival who have slept for food at night instead of resting', () => {
+    const w = world();
+    w.position = { col: 5, row: 9 };
+    w.camp = 'made';
+    w.quarter = 3;
+    for (const name of ['Snag', 'Grukk', 'Fizzwick']) member(w, name).slept = true;
+    // Snag has Survive; Grukk and Fizzwick don't, so one watches and the other rests.
+    expect(suggestPlan(w, data)).toEqual({
+      kind: 'camp',
+      activities: { 'm-0': 'forage', 'm-1': 'rest', 'm-2': 'sleep', 'm-3': 'watch' },
+    });
+    const grukk = member(w, 'Grukk');
+    grukk.character = { ...grukk.character, skills: { ...grukk.character.skills, survive: 0 } };
+    expect(suggestPlan(w, data)).toMatchObject({ activities: { 'm-0': 'forage', 'm-1': 'hunt' } });
+    // Unslept, Snag sleeps and Grukk forages in his place.
+    member(w, 'Snag').slept = false;
+    expect(suggestPlan(w, data)).toMatchObject({ activities: { 'm-0': 'sleep', 'm-1': 'forage' } });
+    // In the evening no one has slept yet, so nobody goes for food then.
+    for (const m of w.members) m.slept = false;
+    w.quarter = 2;
+    const evening = suggestPlan(w, data);
+    expect(evening.kind === 'camp' && Object.values(evening.activities)).not.toContain('forage');
+  });
+
   it('has a crafter with tools craft the day’s camp shifts instead of foraging or hunting', () => {
     const w = world();
     w.position = { col: 5, row: 9 };

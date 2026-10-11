@@ -3,7 +3,7 @@ import type { ContentData, SrdData } from './schemas/index.ts';
 
 /**
  * Components drop from real monsters, every component type a mod or magic weapon needs exists, and
- * craftsmen work in towns (one each, never a village) and forge real weapons, the crafting tools
+ * craftsmen work in towns (one each, never a village) and forge real weapons and armor, the crafting tools
  * are an item of their own, and the armor that drops late is real body armor.
  */
 export function craftingReferenceErrors(srd: SrdData, content: ContentData): string[] {
@@ -38,6 +38,7 @@ export function craftingReferenceErrors(srd: SrdData, content: ContentData): str
     if (towns.has(c.town)) errors.push(`${where}: ${c.town} already has a craftsman`);
     towns.add(c.town);
     for (const id of c.weapons) if (!weapons.has(id)) errors.push(`${where}: unknown weapon ${id}`);
+    for (const id of c.armor) if (!body.has(id)) errors.push(`${where}: unknown armor ${id}`);
   }
   return errors;
 }

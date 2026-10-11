@@ -1,13 +1,17 @@
 // Craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craftsmen; Sam's calls). One in
 // each town, never a village. Each month a craftsman has a trade pool of crowns for buying loot dice
-// and components, a few components for sale, and up to two ready-made magic weapons at the SRD's
-// creation prices (vendor/wwn-srd/4.0 Magic and Spellcasting/4.10.0). What the party pays them goes
+// and components, a few components for sale, and up to two ready-made magic weapons or suits of
+// armor (4.9.3) at the SRD's creation prices (vendor/wwn-srd/4.0 Magic and Spellcasting/4.10.0). What the party pays them goes
 // back into the pool, and a quarter of it counts toward the town's spending threshold. The month's
 // stock is drawn when the party calls on them, so arriving in town rolls nothing.
 import type { Craftsman, CraftsmanState } from '../../data/schemas/index.ts';
 import { roll } from '../../rules/dice.ts';
 import { toTenths } from '../../rules/economy.ts';
 import type { GameData } from '../character/context.ts';
+import { fitSize, sizedLine } from '../character/gear.ts';
+import { findItem } from '../character/items.ts';
+import { findPeople } from '../character/people.ts';
+import type { People } from '../../data/schemas/index.ts';
 import { roomFor } from './party-load.ts';
 import { componentName, removeComponents } from './components.ts';
 import { note } from './members.ts';
@@ -17,6 +21,13 @@ import type { Member, World } from './types.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 const rules = (data: GameData) => data.content.craftingRules.craftsmen;
+
+/** Everything a craftsman makes magic: their weapons, then their armor. */
+export const wares = (c: Craftsman) => [...c.weapons, ...c.armor];
+
+/** "weapon" or "suit of armor", for the journal. */
+export const kindWord = (data: GameData, id: string) =>
+  findItem(data, id)?.kind === 'armor' ? 'suit of armor' : 'weapon';
 
 export function craftsmanHere(w: World, data: GameData): Craftsman | undefined {
   const town = currentTown(w, data);
@@ -37,7 +48,8 @@ export function visitCraftsman(w: World, data: GameData): TownResult {
   const tiers = data.content.craftingRules.magic.tiers;
   const total = tiers.reduce((n, t) => n + t.weight, 0);
   const stock = Array.from({ length: w.rng.int(0, rules(data).maxStock) }, () => {
-    const weapon = c.weapons[w.rng.int(0, c.weapons.length - 1)] as string;
+    const all = wares(c);
+    const weapon = all[w.rng.int(0, all.length - 1)] as string;
     let pick = w.rng.int(1, total);
     const tier = tiers.find((t) => (pick -= t.weight) <= 0) as (typeof tiers)[number];
     return { weapon, bonus: tier.bonus };
@@ -141,12 +153,11 @@ export function buyComponent(w: World, data: GameData, id: string): TownResult {
   return { ok: true };
 }
 
-/** Puts a magic weapon in a member's pack. */
-export function giveMagic(m: Member, weapon: string, bonus: number): void {
-  m.character = {
-    ...m.character,
-    inventory: [...m.character.inventory, { id: weapon, quantity: 1, location: 'stowed', bonus }],
-  };
+/** Puts a magic weapon or suit of armor in a member's pack, armor sized for their people. */
+export function giveMagic(data: GameData, m: Member, id: string, bonus: number): void {
+  const people = findPeople(data, m.character.people) as People;
+  const entry = sizedLine(data, { id, quantity: 1, location: 'stowed', bonus }, fitSize(people));
+  m.character = { ...m.character, inventory: [...m.character.inventory, entry] };
 }
 
 export const tierOf = (data: GameData, bonus: number) => {
@@ -161,7 +172,7 @@ export function partyMember(w: World, id: string): Member {
   return m;
 }
 
-/** Buys a ready-made magic weapon from the month's stock. */
+/** Buys a ready-made magic weapon or suit of armor from the month's stock. */
 export function buyMagic(w: World, data: GameData, index: number, memberId: string): TownResult {
   const shop = open(w, data);
   if ('ok' in shop) return shop;
@@ -172,8 +183,11 @@ export function buyMagic(w: World, data: GameData, index: number, memberId: stri
   const price = tierOf(data, item.bonus).stockPrice;
   if (!pay(w, data, c, st, price)) return no(`That costs ${price} crowns.`);
   st.stock = st.stock.filter((_, i) => i !== index);
-  giveMagic(m, item.weapon, item.bonus);
-  note(w, `${m.character.name} buys a +${item.bonus} weapon from ${c.name}.`);
+  giveMagic(data, m, item.weapon, item.bonus);
+  note(
+    w,
+    `${m.character.name} buys a +${item.bonus} ${kindWord(data, item.weapon)} from ${c.name}.`,
+  );
   return { ok: true };
 }
 

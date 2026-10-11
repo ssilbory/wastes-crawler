@@ -154,5 +154,7 @@ export const CraftsmanSchema = z.strictObject({
   tradePool: z.number().min(0),
   /** Weapons they forge as magic weapons, on commission or for stock. */
   weapons: z.array(IdSchema).min(1),
+  /** Body armor they make as magic armor (SRD 4.9.3), on commission or for stock. */
+  armor: z.array(IdSchema),
 });
 export type Craftsman = z.infer<typeof CraftsmanSchema>;

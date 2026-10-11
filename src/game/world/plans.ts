@@ -32,6 +32,8 @@ export function route(w: World, data: GameData): Hex[] {
   return pathToward(map, w.position, w.destination, seenHexes(map, w.visited), avoid) ?? [];
 }
 
+const survivor = (m: Member) => Object.hasOwn(m.character.skills, 'survive');
+
 const able = (w: World) => alive(w).filter((m) => m.character.hp.current > 0);
 
 function others(list: Member[], ...skip: (Member | undefined)[]): Member[] {
@@ -71,7 +73,8 @@ export function suggestPlan(w: World, data: GameData, prefer?: QuarterPlan['kind
     return { kind: 'camp', activities };
   }
   // Evening: one makes camp, one keeps watch, the rest sleep. Night: whoever is still awake sleeps,
-  // and someone already rested takes the watch. A crafter watches only if no one else can.
+  // and someone already rested takes the watch. A crafter watches only if no one else can. Those
+  // with Survival who have slept go for food rather than rest (Sam's call).
   const watch = (list: Member[]) =>
     bestAt(data, others(list, ...crafters), 'notice', ['wis']) ??
     bestAt(data, list, 'notice', ['wis']);
@@ -80,7 +83,14 @@ export function suggestPlan(w: World, data: GameData, prefer?: QuarterPlan['kind
     if (w.camp !== 'made') set(leader, 'make-camp');
     set(watch(others(party, leader)) ?? leader, 'watch');
   } else {
-    set(watch(party.filter((m) => m.slept)), 'watch');
+    // Food comes first for those with Survival, so the watch goes to someone without it if it can.
+    const rested = party.filter((m) => m.slept);
+    const plain = rested.filter((m) => !survivor(m));
+    set(watch(plain.length > 0 ? plain : rested), 'watch');
   }
+  const hunters = free.filter((m) => m.slept && activities[m.id] === 'rest' && survivor(m));
+  const forager = bestAt(data, hunters, 'survive', ['wis']);
+  set(forager, 'forage');
+  set(bestAt(data, others(hunters, forager), 'survive', ['wis']), 'hunt');
   return { kind: 'camp', activities };
 }

@@ -195,6 +195,42 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
     expect(collect(w, data, 0, 'm-1')).toMatchObject({ ok: false });
   });
 
+  it('make magic armor too, sized for whoever takes it', () => {
+    expect(hagen.armor).toEqual(['buff-coat', 'mail-shirt', 'cuirass-and-greaves']);
+    // Stock draws from the weapons, then the armor: index 6 is the mail shirt.
+    const w = world([1, 6, 1, 2, 2]);
+    w.purse = 1000;
+    visitCraftsman(w, data);
+    expect(w.craftsmen['smith-westhold']?.stock).toEqual([{ weapon: 'mail-shirt', bonus: 1 }]);
+    expect(buyMagic(w, data, 0, 'm-0')).toEqual({ ok: true });
+    // Snag is a goblin, so the suit comes small.
+    expect(member(w, 'Snag').character.inventory.at(-1)).toEqual({
+      id: 'mail-shirt',
+      quantity: 1,
+      location: 'stowed',
+      bonus: 1,
+      small: true,
+    });
+    expect(w.log.at(-1)).toContain('Snag buys a +1 suit of armor from Hagen the Smith.');
+    expect(commission(w, data, 'cuirass-and-greaves', 1)).toEqual({
+      ok: false,
+      reason: 'A +1 suit of armor needs 1 metal, 1 essence.',
+    });
+    w.purse = 1000;
+    w.components = { 'cold-iron': 1, 'ooze-essence': 1 };
+    expect(commission(w, data, 'cuirass-and-greaves', 1)).toEqual({ ok: true });
+    w.day = 30;
+    w.rng = scriptedRng([0, 0, 0, 0]);
+    visitCraftsman(w, data);
+    expect(collect(w, data, 0, 'm-1')).toEqual({ ok: true });
+    expect(member(w, 'Grukk').character.inventory.at(-1)).toEqual({
+      id: 'cuirass-and-greaves',
+      quantity: 1,
+      location: 'stowed',
+      bonus: 1,
+    });
+  });
+
   it('give magic weapons their bonus to hit, damage, and Shock, and their worth', () => {
     const w = world();
     const g = member(w, 'Grukk');
@@ -214,7 +250,7 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
     expect(entryPrice(data, findItem(data, 'axe-war') as CatalogItem, line)).toBe(8500);
   });
 
-  it('are checked against towns and weapons', () => {
+  it('are checked against towns, weapons, and armor', () => {
     const { srd, content } = data;
     expect(craftingReferenceErrors(srd, content)).toEqual([]);
     const broken = {
@@ -222,7 +258,7 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
       craftsmen: [
         hagen,
         { ...hagen, id: 'twin' },
-        { ...hagen, id: 'hill', town: 'highcairn', weapons: ['laser'] },
+        { ...hagen, id: 'hill', town: 'highcairn', weapons: ['laser'], armor: ['dagger'] },
         { ...hagen, id: 'lost', town: 'atlantis' },
       ],
     };
@@ -230,6 +266,7 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
       'craftsmen/twin: westhold already has a craftsman',
       'craftsmen/hill: villages have no craftsman',
       'craftsmen/hill: unknown weapon laser',
+      'craftsmen/hill: unknown armor dagger',
       'craftsmen/lost: unknown town atlantis',
     ]);
   });

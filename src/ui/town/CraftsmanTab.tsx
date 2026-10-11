@@ -11,6 +11,7 @@ import {
   sellComponent,
   sellLootTo,
   visitCraftsman,
+  wares,
 } from '../../game/world/craftsmen.ts';
 import type { World } from '../../game/world/types.ts';
 import { crowns } from '../../render/town-view.ts';
@@ -18,7 +19,7 @@ import { data } from '../builder/data.ts';
 import type { Act } from './TownScreen.tsx';
 
 const rules = data.content.craftingRules;
-const weaponName = (id: string) => findItem(data, id)?.name ?? id;
+const itemName = (id: string) => findItem(data, id)?.name ?? id;
 
 /** The town's craftsman (docs/rules-adaptation.md, Crafting and modifying gear: Craftsmen). */
 export function CraftsmanTab(props: { world: World; act: Act }) {
@@ -27,6 +28,7 @@ export function CraftsmanTab(props: { world: World; act: Act }) {
   const living = w.members.filter((m) => !m.dead);
   const [who, setWho] = useState(living[0]?.id ?? '');
   const [weapon, setWeapon] = useState(c?.weapons[0] ?? '');
+  const sized = (id: string) => (findItem(data, id)?.kind === 'armor' ? ' (sized to fit)' : '');
   const [bonus, setBonus] = useState(1);
   if (!c) return <p class="hint">No craftsman works here.</p>;
   const st = craftsmanState(w, data, c);
@@ -67,13 +69,14 @@ export function CraftsmanTab(props: { world: World; act: Act }) {
           Sell loot dice to {c.name}
         </button>
       </section>
-      <section class="panel" aria-label="Magic weapons for sale">
-        <h2>Magic weapons for sale</h2>
+      <section class="panel" aria-label="Magic gear for sale">
+        <h2>Magic weapons and armor for sale</h2>
         {st.stock.length === 0 && <p class="hint">Nothing ready-made this month.</p>}
         <ul>
           {st.stock.map((s, i) => (
             <li key={`${s.weapon}-${i}`}>
-              {weaponName(s.weapon)} +{s.bonus}{' '}
+              {itemName(s.weapon)} +{s.bonus}
+              {sized(s.weapon)}{' '}
               <button type="button" onClick={() => props.act(() => buyMagic(w, data, i, m.id))}>
                 Buy ({crowns(rules.magic.tiers[s.bonus - 1]?.stockPrice ?? 0)})
               </button>
@@ -84,11 +87,11 @@ export function CraftsmanTab(props: { world: World; act: Act }) {
       <section class="panel" aria-label="Commissions">
         <h2>Commissions</h2>
         <label>
-          Weapon{' '}
+          Item{' '}
           <select value={weapon} onChange={(e) => setWeapon((e.target as HTMLSelectElement).value)}>
-            {c.weapons.map((id) => (
+            {wares(c).map((id) => (
               <option key={id} value={id}>
-                {weaponName(id)}
+                {itemName(id)}
               </option>
             ))}
           </select>
@@ -113,7 +116,7 @@ export function CraftsmanTab(props: { world: World; act: Act }) {
         <ul>
           {jobs.map(({ j, i }) => (
             <li key={`${j.weapon}-${i}`}>
-              {weaponName(j.weapon)} +{j.bonus}:{' '}
+              {itemName(j.weapon)} +{j.bonus}:{' '}
               {w.day >= j.readyDay ? (
                 <button type="button" onClick={() => props.act(() => collect(w, data, i, m.id))}>
                   Collect for {m.character.name}
