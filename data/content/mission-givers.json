@@ -81,5 +81,11 @@
     "name": "Gaffer Nim",
     "town": "thornwatch",
     "text": "An old goblin who walks bread up to the Saltgate every week. His mother is the sergeant there, and she still does not know him."
+  },
+  {
+    "id": "ferrywoman-grut",
+    "name": "Ferrywoman Grut",
+    "town": "mirewatch",
+    "text": "A one-eyed goblin who poles the ferry across the Mire. She has lost two boats and a nephew to whatever lives in the old cisterns, and she wants it dead."
   }
 ]

@@ -2319,5 +2319,820 @@
         "garrisons": []
       }
     ]
+  },
+  {
+    "id": "wardens-sepulchre",
+    "name": "The Warden's Sepulchre",
+    "region": "borderlands",
+    "entrance": {
+      "col": 15,
+      "row": 1
+    },
+    "entry": {
+      "level": "sepulchre-wards",
+      "at": {
+        "x": 0,
+        "y": 0
+      },
+      "facing": "e"
+    },
+    "levels": [
+      {
+        "id": "sepulchre-wards",
+        "name": "The Hall of Wards",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|<            d     |",
+          "+-+d+-+-+-+-+-+ + + +",
+          "|       |     |     |",
+          "+ + + + + + + + + + +",
+          "|       |     |  T  |",
+          "+ + + + + + + + + + +",
+          "|       |     |     |",
+          "+-+d+-+-+-+s+-+-+d+-+",
+          "|                   |",
+          "+-+-+d+-+-+-+-+d+-+-+",
+          "|         |         |",
+          "+ + + + + + + + + + +",
+          "|         |         |",
+          "+ + + + + + + + + + +",
+          "|         |        >|",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 7
+            },
+            "to": {
+              "level": "sepulchre-vault",
+              "at": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": "s"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "sepulchre"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 7
+          },
+          {
+            "x": 1,
+            "y": 7
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 5,
+              "y": 3
+            },
+            "side": "s",
+            "difficulty": 10
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 8,
+              "y": 2
+            },
+            "name": "warding glyph",
+            "notice": 10,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 10
+            },
+            "save": "mental",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 2,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 2,
+              "y": 0
+            },
+            "text": "Wards are cut into every lintel, the same knot of lines over and over. They are fresh. Someone has been recutting them for a hundred years."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 6,
+              "y": 1
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 8
+              }
+            ],
+            "component": "grave-garnet"
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 6
+            },
+            "text": "A ledger of the barrow-wardens lies open on a lectern, every name struck through but the last. The last has no date of death."
+          }
+        ],
+        "captives": [],
+        "garrisons": []
+      },
+      {
+        "id": "sepulchre-vault",
+        "name": "The Warden's Vault",
+        "map": [
+          "+-+-+-+-+-+-+-+-+",
+          "|<|     | d     |",
+          "+ + + + + + + + +",
+          "| d     d |  T  |",
+          "+ + + + + +-+-+-+",
+          "| |     | |     |",
+          "+ +-+-+-+ + + + +",
+          "| | | | | |     |",
+          "+ +-+-+-+ + + + +",
+          "| |     | d     |",
+          "+ + + + + + + + +",
+          "| d     | |     |",
+          "+ + + + + + + + +",
+          "| |     d |     |",
+          "+ + + + + + + + +",
+          "| |     | |     |",
+          "+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "to": {
+              "level": "sepulchre-wards",
+              "at": {
+                "x": 9,
+                "y": 7
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "sepulchre-deep"
+        },
+        "safe": [
+          {
+            "x": 1,
+            "y": 7
+          },
+          {
+            "x": 2,
+            "y": 7
+          }
+        ],
+        "secrets": [],
+        "traps": [
+          {
+            "at": {
+              "x": 6,
+              "y": 1
+            },
+            "name": "needle in the lid",
+            "notice": 11,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 11
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 2,
+              "y": 1
+            },
+            "text": "Mummified wardens stand in their niches, linen fresh and resin still tacky. They were wrapped by someone who meant them to get up again."
+          },
+          {
+            "kind": "darkness",
+            "at": {
+              "x": 4,
+              "y": 3
+            }
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 7,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 10
+              }
+            ],
+            "component": "cold-iron"
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 5,
+              "y": 4
+            },
+            "text": "The air is cold enough to hurt. A voice like dry leaves says, from everywhere: \"The wards hold. They will always hold. Lie down.\""
+          }
+        ],
+        "captives": [],
+        "garrisons": []
+      }
+    ]
+  },
+  {
+    "id": "mourncourt",
+    "name": "Mourncourt",
+    "region": "pale-reach",
+    "entrance": {
+      "col": 2,
+      "row": 3
+    },
+    "entry": {
+      "level": "mourncourt-hall",
+      "at": {
+        "x": 4,
+        "y": 7
+      },
+      "facing": "n"
+    },
+    "levels": [
+      {
+        "id": "mourncourt-hall",
+        "name": "The Manor Hall",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|       |   |      >|",
+          "+ + + + + + + + + + +",
+          "|       |   s       |",
+          "+ + + + + + + + + + +",
+          "|       |   |       |",
+          "+-+d+-+-+-+d+-+-+d+-+",
+          "|              T    |",
+          "+-+-+-+-+d+-+-+-+-+-+",
+          "|   |           |   |",
+          "+ + + + + + + + + + +",
+          "|   d           d   |",
+          "+ + + + + + + + + + +",
+          "|   |           |   |",
+          "+ + + + + + + + + + +",
+          "|   |    <      |  N|",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 4,
+              "y": 7
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 0
+            },
+            "to": {
+              "level": "mourncourt-crypt",
+              "at": {
+                "x": 7,
+                "y": 0
+              },
+              "facing": "w"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "mourncourt"
+        },
+        "safe": [
+          {
+            "x": 4,
+            "y": 0
+          },
+          {
+            "x": 4,
+            "y": 1
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 5,
+              "y": 1
+            },
+            "side": "e",
+            "difficulty": 10
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 7,
+              "y": 3
+            },
+            "name": "bell-pull",
+            "notice": 9,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 9
+            },
+            "save": null,
+            "effect": {
+              "kind": "alarm"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 4,
+              "y": 6
+            },
+            "text": "Mourncourt's great hall is swept and the candles lit, though the forest has grown through the windows. The portraits on the walls are all of one family, and none of them has aged across six hundred years of paint."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 4,
+              "y": 1
+            },
+            "text": "A chapel of the Lady, its altar overturned and its grey hangings slashed. It still feels like hers. The dead here sleep, and so might you."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 2,
+              "y": 1
+            },
+            "text": "A long table set for forty. The plates are clean. The cups are not."
+          }
+        ],
+        "captives": [
+          {
+            "at": {
+              "x": 9,
+              "y": 7
+            },
+            "captive": "kept-thrall",
+            "guards": [
+              ["gnawing-dead", "gnawing-dead", "gnawing-dead"],
+              ["ghoul", "ghoul"]
+            ],
+            "text": "The house dead stand watch over a pale figure chained to a bed, who looks at you without hope."
+          }
+        ],
+        "garrisons": []
+      },
+      {
+        "id": "mourncourt-crypt",
+        "name": "The Blood Crypt",
+        "map": [
+          "+-+-+-+-+-+-+-+-+",
+          "|              <|",
+          "+-+d+-+-+d+-+d+-+",
+          "|     |   |     |",
+          "+ + + + + + + + +",
+          "|     |   |     |",
+          "+ + + + + + + + +",
+          "|     |   |     |",
+          "+d+-+-+d+-+-+-+d+",
+          "|          T    |",
+          "+d+-+-+d+-+-+-+s+",
+          "| |           | |",
+          "+ + + + + + + + +",
+          "| |           | |",
+          "+ + + + + + + + +",
+          "| |           | |",
+          "+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 7,
+              "y": 0
+            },
+            "to": {
+              "level": "mourncourt-hall",
+              "at": {
+                "x": 9,
+                "y": 0
+              },
+              "facing": "s"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "mourncourt-deep"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 6
+          },
+          {
+            "x": 0,
+            "y": 7
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 7,
+              "y": 4
+            },
+            "side": "s",
+            "difficulty": 11
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 5,
+              "y": 4
+            },
+            "name": "blood gutter",
+            "notice": 10,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 10
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "disease",
+              "disease": "grave-rot"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 2
+            },
+            "text": "Coffins of black wood, each lined with earth from somewhere else. Most are empty, and the earth in them is warm."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 5,
+              "y": 2
+            },
+            "text": "The coffins in this vault are small."
+          },
+          {
+            "kind": "darkness",
+            "at": {
+              "x": 3,
+              "y": 5
+            }
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 7,
+              "y": 7
+            },
+            "loot": [
+              {
+                "count": 3,
+                "sides": 8
+              }
+            ],
+            "component": "grave-garnet"
+          }
+        ],
+        "captives": [],
+        "garrisons": []
+      }
+    ]
+  },
+  {
+    "id": "drowned-cisterns",
+    "name": "The Drowned Cisterns",
+    "region": "dark-lands",
+    "entrance": {
+      "col": 14,
+      "row": 22
+    },
+    "entry": {
+      "level": "cistern-sluices",
+      "at": {
+        "x": 0,
+        "y": 0
+      },
+      "facing": "e"
+    },
+    "levels": [
+      {
+        "id": "cistern-sluices",
+        "name": "The Sluice Gallery",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|<                  |",
+          "+-+d+-+-+-+d+-+-+-+-+",
+          "|     |             |",
+          "+ + + + + + + + + + +",
+          "|     |        T    |",
+          "+ + + + + + + + + + +",
+          "|     |             |",
+          "+-+-+d+-+-+-+-+-+d+-+",
+          "|                   |",
+          "+-+-+d+-+-+-+d+-+-+-+",
+          "|         |         |",
+          "+ + + + + + + + + + +",
+          "|         s         |",
+          "+ + + + + + + + + + +",
+          "|         |        >|",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 7
+            },
+            "to": {
+              "level": "cistern-pool",
+              "at": {
+                "x": 0,
+                "y": 7
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "cisterns"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 2
+          },
+          {
+            "x": 0,
+            "y": 3
+          }
+        ],
+        "exposure": {
+          "disease": "swamp-fever",
+          "chance": 2
+        },
+        "secrets": [
+          {
+            "at": {
+              "x": 4,
+              "y": 6
+            },
+            "side": "e",
+            "difficulty": 9
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 7,
+              "y": 2
+            },
+            "name": "rotten sluice gate",
+            "notice": 9,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 9
+            },
+            "save": "evasion",
+            "element": "water",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 2,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 0
+            },
+            "text": "The empire's cisterns watered the vat-farms of the Mire. The pumps stopped twenty years ago and the swamp came in."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 2
+            },
+            "text": "Something big has been through the sluice hall. The iron grilles are bent outward, and the walls are scored in rows, many heads wide."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 0,
+              "y": 7
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 8
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": []
+      },
+      {
+        "id": "cistern-pool",
+        "name": "The Hydra's Pool",
+        "map": [
+          "+-+-+-+-+-+-+-+-+",
+          "|               |",
+          "+ +-+-+d+-+-+-+ +",
+          "| |           | |",
+          "+ + + + + + + + +",
+          "| |           | |",
+          "+ + + + + + + + +",
+          "| |           | |",
+          "+ + + + + + + + +",
+          "| |           s |",
+          "+ + + + + + + + +",
+          "| |           |T|",
+          "+ + + + + + + + +",
+          "| |           | |",
+          "+ +-+-+-+-+-+-+ +",
+          "|<              |",
+          "+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 0,
+              "y": 7
+            },
+            "to": {
+              "level": "cistern-sluices",
+              "at": {
+                "x": 9,
+                "y": 7
+              },
+              "facing": "w"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "cisterns"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 1,
+            "y": 0
+          }
+        ],
+        "exposure": {
+          "disease": "swamp-fever",
+          "chance": 3
+        },
+        "secrets": [
+          {
+            "at": {
+              "x": 6,
+              "y": 4
+            },
+            "side": "e",
+            "difficulty": 10
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 7,
+              "y": 5
+            },
+            "name": "sinkhole",
+            "notice": 10,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 10
+            },
+            "save": "evasion",
+            "element": "water",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 1,
+                "sides": 10,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 0,
+              "y": 3
+            },
+            "text": "Ferry poles, a boat's ribs, and a goblin's boot lie along the ledge, all of it chewed."
+          },
+          {
+            "kind": "darkness",
+            "at": {
+              "x": 7,
+              "y": 3
+            }
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 6,
+              "y": 6
+            },
+            "loot": [
+              {
+                "count": 3,
+                "sides": 8
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": []
+      }
+    ]
   }
 ]
