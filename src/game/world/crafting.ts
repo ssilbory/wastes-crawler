@@ -2,7 +2,8 @@
 // of the Game/2.8.0 Crafting and Modifying Gear.md, 2.8.1). A PC with Craft or the Artisan focus
 // buys parts in a settlement and builds one item at a time: jury-rigged at a quarter of the cost and
 // half the time, normal at market cost, or mastercrafted at ten times the cost and twice the time.
-// The work goes on in a town's workshop, or in a made camp out in the wilds (Sam's call).
+// The work goes on in a town's workshop, or in camp shifts out in the wilds for a crafter carrying
+// crafting tools, a portable workshop in the SRD's sense (Sam's calls).
 import type { People, Project } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
 import { fitSize, sizedLine, type Size } from '../character/gear.ts';
@@ -120,14 +121,17 @@ export function startProject(
 }
 
 /**
- * A day of work on a project, worth XP to the crafter so they keep pace with those out fighting;
- * the finished item goes to the crafter's pack.
+ * Work on a project, a day unless said otherwise. Each whole day finished is worth XP to the
+ * crafter so they keep pace with those out fighting; the finished item goes to the crafter's pack.
  */
-export function workOn(w: World, data: GameData, p: Project): void {
+export function workOn(w: World, data: GameData, p: Project, days = 1): void {
   const crafter = anyone(w, p.crafter);
-  const xp = crafter.character.xp + data.content.craftingRules.xpPerDay;
+  const left = Math.max(0, p.daysLeft - days);
+  // XP comes in half points, so a half day's shift pays when the day it starts is done.
+  const finished = Math.ceil(p.daysLeft) - Math.ceil(left);
+  const xp = crafter.character.xp + finished * data.content.craftingRules.xpPerDay;
   crafter.character = { ...crafter.character, xp };
-  p.daysLeft -= 1;
+  p.daysLeft = left;
   if (p.daysLeft > 0) return;
   w.projects = w.projects.filter((x) => x !== p);
   if (p.kind !== 'gear') {
@@ -187,17 +191,37 @@ export function buyWorkshop(w: World, data: GameData): TownResult {
   return { ok: true };
 }
 
+/** Whether a member carries crafting tools, anywhere on them. */
+export const hasTools = (data: GameData, m: Member) =>
+  m.character.inventory.some((e) => e.id === data.content.craftingRules.tools.id);
+
 /**
- * The crafting bus listener: each day, crafters who stayed behind work a day, and crafters in the
- * party work a day if the party made camp out in the wilds.
+ * The gear a party member could work on in a camp shift out in the wilds: their own build, not a
+ * mod (mods need the workshop), with crafting tools in their pack. Null if there is none.
  */
+export function campProject(w: World, data: GameData, m: Member): Project | null {
+  if (regionMap(data, w.region).siteAt(w.position) !== undefined || w.dungeon) return null;
+  const p = w.projects.find((x) => x.crafter === m.id && x.kind === 'gear' && !x.staying);
+  return p && hasTools(data, m) ? p : null;
+}
+
+/** A camp quarter spent crafting: half a day off the build (Sam's call). */
+export function craftShift(w: World, data: GameData, m: Member): void {
+  const p = campProject(w, data, m);
+  const name = m.character.name;
+  if (!p) {
+    note(w, `${name} has nothing to work on here${hasTools(data, m) ? '' : ' without tools'}.`);
+    return;
+  }
+  workOn(w, data, p, data.content.craftingRules.shiftDays);
+  if (w.projects.includes(p)) note(w, `${name} works on the ${itemName(data, p)}.`);
+}
+
+const itemName = (data: GameData, p: Project) =>
+  `${tierName(p.quality)}${(findItem(data, p.item) as Craftable).name}`;
+
+/** The crafting bus listener: each day, crafters who stayed behind at a workshop work a day. */
 export function craftingListener(w: World, data: GameData, e: WorldEvent): void {
   if (e.kind !== 'day-passed') return;
-  const wilds = regionMap(data, w.region).siteAt(w.position) === undefined;
-  for (const p of [...w.projects]) {
-    const inParty = w.members.some((m) => m.id === p.crafter && !m.dead);
-    // Only plain gear is worked on in camp; mods need the workshop (Sam's call).
-    const camp = p.kind === 'gear' && inParty && wilds && w.camp === 'made';
-    if (p.staying || camp) workOn(w, data, p);
-  }
+  for (const p of [...w.projects]) if (p.staying) workOn(w, data, p);
 }

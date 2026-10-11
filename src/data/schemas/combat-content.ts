@@ -54,7 +54,8 @@ export type Strike = z.infer<typeof StrikeSchema>;
  * `flying` ignores formation and cover, `reach` attacks from the second row, `unliving` doesn't
  * sleep, `metal` carries enough metal for Stunning Shock, `slow` always acts last, `undead`
  * answers to necromancy (Phase 14b), `large` is bigger than a man (the Sigil of Aeolian
- * Auctoritas can't move it), and `plant` withers under Decree of Ligneous Dissolution. `loot` is
+ * Auctoritas can't move it), `plant` withers under Decree of Ligneous Dissolution, and `humanoid`
+ * can drop its weapon or armor when beaten (docs/rules-adaptation.md, Gear drops). `loot` is
  * what each one drops when the party wins; none for beasts and the mindless. `caster` makes it
  * cast.
  */
@@ -62,7 +63,17 @@ export const MonsterCombatSchema = z.strictObject({
   id: IdSchema,
   weapon: IdSchema.optional(),
   tags: z.array(
-    z.enum(['flying', 'reach', 'unliving', 'metal', 'slow', 'undead', 'large', 'plant']),
+    z.enum([
+      'flying',
+      'reach',
+      'unliving',
+      'metal',
+      'slow',
+      'undead',
+      'large',
+      'plant',
+      'humanoid',
+    ]),
   ),
   /** Its blows only knock foes out, as the Phantasmal Eidolon's (4.4.0). */
   nonLethal: z.literal(true).optional(),

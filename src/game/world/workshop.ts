@@ -43,9 +43,11 @@ export function stayToWork(w: World, data: GameData, crafterId: string): TownRes
   if (!p || !m) throw new Error(`${crafterId} has no work to stay for`);
   if (!w.members.some((x) => x !== m && !x.dead))
     return no('Someone living must stay in the party.');
-  const listed = rent(w, data, p.daysLeft);
+  // A half day left from a camp shift still takes the day's rent.
+  const listed = rent(w, data, Math.ceil(p.daysLeft));
   const price = priceHere(w, data, listed);
-  if (!spend(w, data, listed)) return no(`${daysText(p.daysLeft)}' rent costs ${price} crowns.`);
+  if (!spend(w, data, listed))
+    return no(`${daysText(Math.ceil(p.daysLeft))}' rent costs ${price} crowns.`);
   Object.assign(p, { staying: true, town: town.id });
   followMaster(w, m);
   w.members = w.members.filter((x) => x !== m);

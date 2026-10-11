@@ -180,7 +180,8 @@ export const ProjectSchema = z.strictObject({
   components: z.array(IdSchema).optional(),
   quality: z.enum(['jury-rigged', 'normal', 'mastercrafted']),
   small: z.literal(true).optional(),
-  daysLeft: z.int().min(1),
+  /** Days of work left; a camp shift is half a day (Sam's call). */
+  daysLeft: z.number().positive().multipleOf(0.5),
   /** The town where the parts were bought. */
   town: IdSchema,
   /** The crafter stayed behind at that town's workshop to finish it. */
@@ -188,18 +189,20 @@ export const ProjectSchema = z.strictObject({
 });
 export type Project = z.infer<typeof ProjectSchema>;
 
-/** A craftsman's month: trade pool left, magic weapons and components for sale. */
+/** A craftsman's month: trade pool left, magic weapons and armor, and components for sale. */
 export const CraftsmanStateSchema = z.strictObject({
   since: z.int().min(0),
   pool: z.number().min(0),
+  /** `weapon` names the weapon or suit of armor (the field predates magic armor). */
   stock: z.array(z.strictObject({ weapon: IdSchema, bonus: z.int().min(1).max(3) })),
   parts: z.record(IdSchema, z.int().min(1)),
 });
 export type CraftsmanState = z.infer<typeof CraftsmanStateSchema>;
 
-/** A magic weapon commissioned from a craftsman, collected in their town once ready. */
+/** A magic weapon or suit of armor commissioned from a craftsman, collected in their town once ready. */
 export const CommissionSchema = z.strictObject({
   craftsman: IdSchema,
+  /** The weapon or suit of armor (the field predates magic armor). */
   weapon: IdSchema,
   bonus: z.int().min(1).max(3),
   readyDay: z.int().min(0),

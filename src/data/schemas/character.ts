@@ -81,7 +81,7 @@ export const CharacterSchema = z.strictObject({
           }),
         )
         .optional(),
-      /** A magic weapon's bonus to hit, damage, and Shock (SRD 4.9.3). */
+      /** A magic weapon's bonus to hit, damage, and Shock, or magic armor's to AC (SRD 4.9.3). */
       bonus: z.int().min(1).max(3).optional(),
       /** Days since its mods were last maintained (SRD 2.8.3). */
       upkeep: z.int().min(1).optional(),

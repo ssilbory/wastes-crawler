@@ -5,6 +5,7 @@
     "town": "westhold",
     "tradePool": 300,
     "weapons": ["spear-light", "sword-short", "axe-war", "dagger", "sword-long"],
+    "armor": ["buff-coat", "mail-shirt", "cuirass-and-greaves"],
     "text": "A broad, scarred smith who forges for anyone who pays, and asks no questions about the metal they bring."
   },
   {
@@ -13,6 +14,7 @@
     "town": "eastmarch",
     "tradePool": 300,
     "weapons": ["spear-light", "mace", "axe-hand", "bow-small", "dagger"],
+    "armor": ["linothorax", "mail-shirt", "scaled-armor"],
     "text": "She works cold iron the old way, and buys whatever strange parts come down the road."
   },
   {
@@ -21,6 +23,7 @@
     "town": "cinderhold",
     "tradePool": 300,
     "weapons": ["axe-war", "spear-heavy", "sword-long", "hammer-war", "halberd"],
+    "armor": ["mail-hauberk", "plate-armor", "great-armor"],
     "text": "An orc smith of an old breed who forged for a lieutenant's legion. She is free now, and she charges like it."
   },
   {
@@ -29,6 +32,7 @@
     "town": "gutterwick",
     "tradePool": 300,
     "weapons": ["crossbow", "bow-small", "dagger", "stiletto", "throwing-blade"],
+    "armor": ["buff-coat", "pieced-armor"],
     "text": "A gnome artificer who can coax the Dark Lord's machines back to life. Nobody asks what she made for him."
   }
 ]

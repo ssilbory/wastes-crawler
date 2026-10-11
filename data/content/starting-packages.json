@@ -176,5 +176,18 @@
         "location": "worn"
       }
     ]
+  },
+  {
+    "id": "artisan",
+    "name": "Artisan",
+    "description": "Nothing but a crafter's tools, to build gear in camp.",
+    "crowns": 0,
+    "items": [
+      {
+        "id": "crafting-tools",
+        "quantity": 1,
+        "location": "stowed"
+      }
+    ]
   }
 ]
