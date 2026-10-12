@@ -27,6 +27,7 @@ import missionGivers from '../../data/content/mission-givers.json';
 import quests from '../../data/content/quests.json';
 import monsters from '../../data/content/monsters.json';
 import dungeons from '../../data/content/dungeons.json';
+import mapGen from '../../data/content/map-gen.json';
 import craftingRules from '../../data/content/crafting-rules.json';
 import components from '../../data/content/components.json';
 import mods from '../../data/content/mods.json';
@@ -95,6 +96,7 @@ export function loadContent(): ContentData {
     quests: ContentSchemas.quests.parse(quests),
     monsters: ContentSchemas.monsters.parse(monsters),
     dungeons: ContentSchemas.dungeons.parse(dungeons),
+    mapGen: ContentSchemas.mapGen.parse(mapGen),
     craftingRules: ContentSchemas.craftingRules.parse(craftingRules),
     components: ContentSchemas.components.parse(components),
     mods: ContentSchemas.mods.parse(mods),

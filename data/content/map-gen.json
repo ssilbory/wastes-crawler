@@ -1,0 +1,52 @@
+{
+  "biomes": [
+    { "terrain": "lake", "height": [0, 0.14], "wet": [0, 1], "dangerous": false },
+    { "terrain": "mountains", "height": [0.82, 1], "wet": [0, 1], "dangerous": true },
+    { "terrain": "hills", "height": [0.68, 0.82], "wet": [0, 1], "dangerous": false },
+    { "terrain": "swamp", "height": [0.14, 0.3], "wet": [0.62, 1], "dangerous": true },
+    { "terrain": "deep-forest", "height": [0.3, 0.68], "wet": [0.72, 1], "dangerous": true },
+    { "terrain": "forest", "height": [0.14, 0.68], "wet": [0.52, 1], "dangerous": false },
+    { "terrain": "badlands", "height": [0.14, 0.68], "wet": [0, 0.2], "dangerous": true },
+    { "terrain": "plains", "height": [0, 1], "wet": [0, 1], "dangerous": false }
+  ],
+  "sizes": { "village": 6, "town": 3, "city": 1 },
+  "spacing": 4,
+  "safeRadius": 2,
+  "names": {
+    "first": [
+      "Rust",
+      "Ash",
+      "Grim",
+      "Scrap",
+      "Rubble",
+      "Cinder",
+      "Bone",
+      "Salt",
+      "Iron",
+      "Gall",
+      "Mire",
+      "Thorn",
+      "Black",
+      "Grey",
+      "Hollow",
+      "Shard"
+    ],
+    "second": [
+      "gate",
+      "march",
+      "cairn",
+      "ford",
+      "hold",
+      "well",
+      "stead",
+      "wick",
+      "barrow",
+      "reach",
+      "moor",
+      "watch",
+      "fall",
+      "end"
+    ]
+  },
+  "defaults": { "width": 24, "height": 18, "settlements": 5 }
+}

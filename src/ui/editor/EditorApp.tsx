@@ -1,271 +1,154 @@
 import { useState } from 'preact/hooks';
-import type { CellKind, EdgeKind } from '../../data/dungeon-map.ts';
-import type { Dungeon } from '../../data/schemas/index.ts';
-import { paintCell } from '../../game/dungeon/level-details.ts';
+import type { Dungeon, EditorLibrary } from '../../data/schemas/index.ts';
+import { newDungeon } from '../../game/dungeon/dungeon-edit.ts';
 import {
-  blankMap,
-  editorErrors,
-  exportDungeons,
-  setEdge,
-  withLevelMap,
-} from '../../game/dungeon/level-edit.ts';
-import type { Cell } from '../../rules/grid.ts';
-import type { Walk } from '../../game/dungeon/sandbox.ts';
-import { EDIT_CELL, editorGrid } from '../../render/level-editor-view.ts';
+  deleteDungeon,
+  importDungeons,
+  saveDungeon,
+  slug,
+  uniqueId,
+  withLibrary,
+} from '../../game/editor/library.ts';
+import { freeHex } from '../../game/editor/map-edit.ts';
 import { data } from '../builder/data.ts';
+import { loadLibrary, saveLibrary } from '../editor-store.ts';
 import '../world/world.css';
 import './editor.css';
-import { CellPanel } from './CellPanel.tsx';
-import { WalkPanel } from './WalkPanel.tsx';
+import { LevelEditor } from './LevelEditor.tsx';
 
-type Tool = { cell: CellKind } | { edge: EdgeKind } | { select: true };
-const TOOLS: [string, Tool][] = [
-  ['Select', { select: true }],
-  ['Wall', { edge: 'wall' }],
-  ['Open', { edge: 'open' }],
-  ['Door', { edge: 'door' }],
-  ['Secret door', { edge: 'secret' }],
-  ['Floor', { cell: 'floor' }],
-  ['Stairs up', { cell: 'up' }],
-  ['Stairs down', { cell: 'down' }],
-  ['Trap', { cell: 'trap' }],
-  ['NPC', { cell: 'npc' }],
-];
-
-function download(text: string) {
-  const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'dungeons.json';
-  a.click();
-  URL.revokeObjectURL(url);
+/** What the editor can tell the author about saving. */
+export interface Saving {
+  /** The dungeon is in the shipped content. */
+  shipped: boolean;
+  /** A copy is saved in the browser. */
+  saved: boolean;
+  save: (d: Dungeon) => void;
+  /** Drops the saved copy, back to the shipped dungeon or gone. */
+  discard: () => void;
+  /** Saves under a new id and name, and edits that. */
+  saveAs: (d: Dungeon) => void;
 }
 
-const dungeons = data.content.dungeons;
-/** Problems listed at once; one cut-off room can make dozens. */
-const MAX_SHOWN = 8;
-
-/** The level editor (docs/decisions/0003-level-authoring.md): edit, validate, walk, export. */
+/**
+ * The level editor (docs/decisions/0003-level-authoring.md): edit, validate, walk, export, and
+ * (Sam's call) save dungeons in the browser and start new ones.
+ */
 export function EditorApp() {
+  const [loaded] = useState(loadLibrary);
+  const [lib, setLib] = useState<EditorLibrary>(loaded.library);
+  const [message, setMessage] = useState<string | null>(loaded.errors.join('; ') || null);
+  const content = withLibrary(data.content, lib);
+  const dungeons = content.dungeons;
   const [dungeonId, setDungeonId] = useState(dungeons[0]?.id ?? '');
-  const original = dungeons.find((d) => d.id === dungeonId);
-  if (!original) return <p class="hint">There are no dungeons to edit.</p>;
-  return <LevelEditor key={original.id} original={original} onDungeon={setDungeonId} />;
-}
+  // Bumped to start the editor afresh from what is saved.
+  const [generation, setGeneration] = useState(0);
+  const original = dungeons.find((d) => d.id === dungeonId) ?? dungeons[0];
 
-/** One dungeon's levels being edited; choosing another dungeon starts afresh. */
-function LevelEditor(props: { original: Dungeon; onDungeon: (id: string) => void }) {
-  const { original } = props;
-  const dungeonId = original.id;
-  const [levelId, setLevelId] = useState(original.levels[0]?.id ?? '');
-  const [edited, setEdited] = useState<Dungeon>(original);
-  // Painting walls is the usual first job, as it was before the Select tool came first.
-  const [tool, setTool] = useState(TOOLS.findIndex(([name]) => name === 'Wall'));
-  const [walk, setWalk] = useState<Walk | null>(null);
-  const [size, setSize] = useState({ w: 8, h: 8 });
-  /** The cell whose details are shown, on the level it was picked on. */
-  const [selected, setSelected] = useState<{ level: string; cell: Cell } | null>(null);
-  const level =
-    edited.levels.find((l) => l.id === levelId) ??
-    (edited.levels[0] as (typeof original.levels)[0]);
-  const rows = level.map;
-  const grid = editorGrid(rows);
-  const errors = editorErrors(data.content, edited, data.srd);
-  const update = (next: string[]) => setEdited(withLevelMap(edited, level.id, next));
-  const picked = selected?.level === level.id ? selected.cell : null;
-  const posts = new Set(level.garrisons.map((g) => `${g.at.x},${g.at.y}`));
-  const safe = new Set(level.safe.map((c) => `${c.x},${c.y}`));
-  const current = (TOOLS[tool] as [string, Tool])[1];
-  const walkingHere = walk?.level === level.id ? walk : null;
+  const store = (next: EditorLibrary, done: string) => {
+    setLib(next);
+    setMessage(saveLibrary(next) ? done : 'Browser storage is unavailable; nothing was saved.');
+  };
+  const pick = (id: string) => {
+    setDungeonId(id);
+    setGeneration(generation + 1);
+  };
+  const ids = () => dungeons.map((d) => d.id);
+  const create = () => {
+    const region = content.regions[0];
+    const taken = dungeons.filter((d) => d.region === region?.id).map((d) => d.entrance);
+    const at = region && freeHex(content.terrains, region, taken);
+    if (!region || !at) return setMessage('There is no free hex on the first map for a dungeon.');
+    const id = uniqueId('new-dungeon', ids());
+    const d = newDungeon(id, 'New dungeon', region, at);
+    store(saveDungeon(lib, d), `Created and saved ${d.name}.`);
+    pick(id);
+  };
+  const onImport = async (file: File) => {
+    const { dungeons: found, errors } = importDungeons(await file.text());
+    let next = lib;
+    for (const d of found) next = saveDungeon(next, d);
+    if (found.length > 0) {
+      store(
+        next,
+        `Imported ${found.map((d) => d.name).join(', ')}.${errors.length ? ` ${errors.join('; ')}` : ''}`,
+      );
+      pick((found[0] as Dungeon).id);
+    } else setMessage(errors.join('; '));
+  };
 
+  const head = (
+    <div class="editor-bar">
+      <label>
+        Dungeon{' '}
+        <select value={original?.id} onChange={(e) => pick((e.target as HTMLSelectElement).value)}>
+          {dungeons.map((d) => (
+            <option key={d.id} value={d.id}>
+              {d.name}
+              {lib.dungeons.some((s) => s.id === d.id) ? ' (saved)' : ''}
+            </option>
+          ))}
+        </select>
+      </label>{' '}
+      <button type="button" onClick={create}>
+        New dungeon
+      </button>{' '}
+      <label class="button-like">
+        Import…{' '}
+        <input
+          type="file"
+          accept="application/json,.json"
+          aria-label="Import dungeons"
+          onChange={(e) => {
+            const input = e.target as HTMLInputElement;
+            const file = input.files?.[0];
+            if (file) void onImport(file);
+            input.value = '';
+          }}
+        />
+      </label>
+      {message && (
+        <span class="hint" role="status">
+          {message}
+        </span>
+      )}
+    </div>
+  );
+  if (!original)
+    return (
+      <main class="editor">
+        <h1>Level editor</h1>
+        {head}
+        <p class="hint">There are no dungeons to edit.</p>
+      </main>
+    );
+  const shipped = data.content.dungeons.some((d) => d.id === original.id);
+  const saving: Saving = {
+    shipped,
+    saved: lib.dungeons.some((d) => d.id === original.id),
+    save: (d) => store(saveDungeon(lib, d), `Saved ${d.name} in this browser.`),
+    discard: () => {
+      store(
+        deleteDungeon(lib, original.id),
+        shipped ? `Back to the shipped ${original.name}.` : `Deleted ${original.name}.`,
+      );
+      pick(shipped ? original.id : (data.content.dungeons[0]?.id ?? ''));
+    },
+    saveAs: (d) => {
+      store(saveDungeon(lib, d), `Saved a copy as ${d.name}.`);
+      pick(d.id);
+    },
+  };
   return (
     <main class="editor">
       <h1>Level editor</h1>
-      <div class="editor-bar">
-        <label>
-          Dungeon{' '}
-          <select
-            value={dungeonId}
-            onChange={(e) => {
-              props.onDungeon((e.target as HTMLSelectElement).value);
-            }}
-          >
-            {dungeons.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.name}
-              </option>
-            ))}
-          </select>
-        </label>{' '}
-        <label>
-          Level{' '}
-          <select
-            value={level.id}
-            onChange={(e) => setLevelId((e.target as HTMLSelectElement).value)}
-          >
-            {edited.levels.map((l) => (
-              <option key={l.id} value={l.id}>
-                {l.name}
-              </option>
-            ))}
-          </select>
-        </label>{' '}
-        <button
-          type="button"
-          onClick={() =>
-            setEdited({
-              ...edited,
-              levels: edited.levels.map(
-                (l) => original.levels.find((o) => o.id === l.id && l.id === level.id) ?? l,
-              ),
-            })
-          }
-        >
-          Revert level
-        </button>{' '}
-        <label>
-          Width{' '}
-          <input
-            type="number"
-            min="1"
-            max="30"
-            value={size.w}
-            onInput={(e) => setSize({ ...size, w: Number((e.target as HTMLInputElement).value) })}
-          />
-        </label>{' '}
-        <label>
-          Height{' '}
-          <input
-            type="number"
-            min="1"
-            max="30"
-            value={size.h}
-            onInput={(e) => setSize({ ...size, h: Number((e.target as HTMLInputElement).value) })}
-          />
-        </label>{' '}
-        <button type="button" onClick={() => update(blankMap(size.w, size.h))}>
-          New blank map
-        </button>
-      </div>
-      <div class="tabs" role="radiogroup" aria-label="Tool">
-        {TOOLS.map(([name], i) => (
-          <button
-            key={name}
-            type="button"
-            role="radio"
-            aria-checked={tool === i}
-            onClick={() => setTool(i)}
-          >
-            {name}
-          </button>
-        ))}
-      </div>
-      <div class="editor-main">
-        {grid && (
-          <svg
-            class="editor-grid"
-            viewBox={`-4 -4 ${grid.width + 8} ${grid.height + 8}`}
-            width={(grid.width + 8) * 1.5}
-            role="img"
-            aria-label={`Editing ${level.name}`}
-          >
-            {grid.cells.map((c) => (
-              <rect
-                key={`${c.x},${c.y}`}
-                class={`cell ${c.kind}${safe.has(`${c.x},${c.y}`) ? ' safe' : ''}${
-                  picked?.x === c.x && picked.y === c.y ? ' picked' : ''
-                }`}
-                data-cell={`${c.x},${c.y}`}
-                x={c.x * EDIT_CELL}
-                y={c.y * EDIT_CELL}
-                width={EDIT_CELL}
-                height={EDIT_CELL}
-                onClick={() => {
-                  const cell = { x: c.x, y: c.y };
-                  if ('cell' in current)
-                    setEdited(paintCell(data.content, edited, level.id, cell, current.cell));
-                  if (!('edge' in current)) setSelected({ level: level.id, cell });
-                }}
-              />
-            ))}
-            {grid.cells.map((c) =>
-              c.kind === 'floor' && !posts.has(`${c.x},${c.y}`) ? null : (
-                <text
-                  key={`t-${c.x},${c.y}`}
-                  class="glyph"
-                  x={(c.x + 0.5) * EDIT_CELL}
-                  y={(c.y + 0.68) * EDIT_CELL}
-                >
-                  {{ floor: 'G', up: '<', down: '>', trap: 'T', npc: 'N' }[c.kind]}
-                </text>
-              ),
-            )}
-            {grid.edges.map((e) => (
-              <line
-                key={e.key}
-                class={`edge ${e.kind}${e.border ? ' border' : ''}`}
-                data-edge={e.key}
-                x1={e.x1}
-                y1={e.y1}
-                x2={e.x2}
-                y2={e.y2}
-                onClick={() => {
-                  if ('edge' in current && !e.border)
-                    update(setEdge(rows, e, e.side, current.edge));
-                }}
-              />
-            ))}
-            {walkingHere && (
-              <circle
-                class="walker"
-                cx={(walkingHere.at.x + 0.5) * EDIT_CELL}
-                cy={(walkingHere.at.y + 0.5) * EDIT_CELL}
-                r={EDIT_CELL / 4}
-              />
-            )}
-          </svg>
-        )}
-        <div class="editor-side">
-          <section class="panel" aria-label="Problems">
-            <h2>Problems</h2>
-            {errors.length === 0 ? (
-              <p>The dungeon is valid.</p>
-            ) : (
-              <>
-                <ul class="errors">
-                  {errors.slice(0, MAX_SHOWN).map((e) => (
-                    <li key={e}>{e}</li>
-                  ))}
-                </ul>
-                {errors.length > MAX_SHOWN && (
-                  <p class="hint">and {errors.length - MAX_SHOWN} more.</p>
-                )}
-              </>
-            )}
-          </section>
-          <WalkPanel
-            dungeon={edited}
-            level={level.id}
-            ready={grid !== null}
-            walk={walk}
-            onWalk={setWalk}
-            onLevel={setLevelId}
-          />
-          <section class="panel" aria-label="Export">
-            <h2>Export</h2>
-            <p class="hint">Save over data/content/dungeons.json, then run pnpm validate:levels.</p>
-            <button type="button" onClick={() => download(exportDungeons(data.content, edited))}>
-              Download dungeons.json
-            </button>
-            <textarea readOnly rows={rows.length} aria-label="Map text" value={rows.join('\n')} />
-          </section>
-        </div>
-        <div class="editor-side">
-          {picked && (
-            <CellPanel dungeon={edited} level={level.id} cell={picked} onChange={setEdited} />
-          )}
-        </div>
-      </div>
+      {head}
+      <LevelEditor
+        key={`${original.id}#${generation}`}
+        original={original}
+        content={content}
+        saving={saving}
+        newId={(name) => uniqueId(slug(name, 'dungeon'), ids())}
+      />
     </main>
   );
 }

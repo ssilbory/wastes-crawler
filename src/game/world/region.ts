@@ -3,6 +3,7 @@
 import {
   DANGER_GLYPHS,
   type Danger,
+  type Region,
   type RegionExit,
   type Site,
   type Terrain,
@@ -33,7 +34,12 @@ export interface RegionMap {
 export function regionMap(data: GameData, id: string): RegionMap {
   const r = data.content.regions.find((x) => x.id === id);
   if (!r) throw new Error(`unknown region ${id}`);
-  const glyphs = new Map(data.content.terrains.map((t) => [t.glyph, t]));
+  return regionMapOf(data.content.terrains, r);
+}
+
+/** A region's map from its record, for regions that aren't in the content, such as an editor's. */
+export function regionMapOf(terrains: readonly Terrain[], r: Region): RegionMap {
+  const glyphs = new Map(terrains.map((t) => [t.glyph, t]));
   const width = (r.terrain[0] as string).length;
   const height = r.terrain.length;
   const inBounds = (h: Hex) => h.col >= 0 && h.row >= 0 && h.col < width && h.row < height;

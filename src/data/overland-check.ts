@@ -61,6 +61,14 @@ export function overlandReferenceErrors(srd: SrdData, content: ContentData): str
       }
     }
   }
+  for (const b of content.mapGen.biomes)
+    if (!content.terrains.some((t) => t.id === b.terrain))
+      errors.push(`mapGen: unknown terrain ${b.terrain}`);
+  const passable = content.terrains.filter((t) => t.movement !== 'impassable').map((t) => t.id);
+  if (!content.mapGen.biomes.some((b) => passable.includes(b.terrain)))
+    errors.push('mapGen: no biome has land a settlement can stand on');
+  if (!Object.values(content.mapGen.sizes).some((w) => w > 0))
+    errors.push('mapGen: no settlement size has any odds');
   for (const table of ['travel', 'camp'] as const) {
     if (!content.mishaps.some((m) => m.table === table))
       errors.push(`mishaps: no ${table} mishaps`);
