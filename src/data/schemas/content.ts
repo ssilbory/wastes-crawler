@@ -40,6 +40,7 @@ import { ArenaCardSchema, CoachRouteSchema, CoachRulesSchema } from './travel-co
 import { MissionGiverSchema, QuestSchema } from './quest-content.ts';
 import { AuthoredMonsterSchema, SettingMonsterSchema } from './monsters.ts';
 import { DungeonSchema } from './dungeon-content.ts';
+import { MapGenSchema } from './map-gen-content.ts';
 import { FactionContentSchema } from './faction-content.ts';
 
 const contentBase = {
@@ -189,6 +190,8 @@ export const ContentSchemas = {
   /** Monsters authored for the setting, alongside the SRD's. */
   monsters: z.array(AuthoredMonsterSchema),
   dungeons: z.array(DungeonSchema),
+  /** How the overland map editor rolls a random region. */
+  mapGen: MapGenSchema,
   /** Setting monsters on existing stat lines; their combat entries are added on loading. */
   settingMonsters: z.array(SettingMonsterSchema),
   standingOrders: z.array(StandingOrderSchema),

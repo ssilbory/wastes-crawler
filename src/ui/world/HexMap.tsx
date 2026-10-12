@@ -4,19 +4,25 @@ const SIZE = 18;
 
 export const HEX_SIZE = SIZE;
 
-/** The overland map as SVG; clicking a hex, even under fog, picks it as the destination. */
+/**
+ * The overland map as SVG; clicking a hex, even under fog, picks it as the destination. With
+ * `onDrag`, moving over hexes with the button held picks them too, for painting in the map editor.
+ */
 export function HexMap(props: {
   cells: HexCell[];
   width: number;
   height: number;
   onPick: (col: number, row: number) => void;
+  onDrag?: (col: number, row: number) => void;
+  label?: string;
 }) {
+  const { onDrag } = props;
   return (
     <svg
       class="hex-map"
       viewBox={`0 0 ${props.width} ${props.height}`}
       role="img"
-      aria-label="Overland map"
+      aria-label={props.label ?? 'Overland map'}
     >
       {props.cells.map((c) => (
         <g
@@ -33,6 +39,9 @@ export function HexMap(props: {
             .join(' ')}
           data-hex={c.key}
           onClick={() => props.onPick(c.col, c.row)}
+          onPointerEnter={
+            onDrag ? (e: PointerEvent) => e.buttons === 1 && onDrag(c.col, c.row) : undefined
+          }
         >
           <title>{c.label}</title>
           <polygon points={c.points} />

@@ -3,6 +3,7 @@ import { AppMenu, type Route } from './AppMenu.tsx';
 import { ArenaApp } from './arena/ArenaApp.tsx';
 import { App as BuilderApp } from './builder/App.tsx';
 import { EditorApp } from './editor/EditorApp.tsx';
+import { MapEditorApp } from './map-editor/MapEditorApp.tsx';
 import { SettingsApp } from './settings/SettingsApp.tsx';
 import { WorldApp } from './world/WorldApp.tsx';
 
@@ -15,7 +16,9 @@ const routeOf = (hash: string): Route =>
         ? 'settings'
         : hash.startsWith('#/editor')
           ? 'editor'
-          : 'builder';
+          : hash.startsWith('#/maps')
+            ? 'maps'
+            : 'builder';
 
 export function Shell() {
   const [route, setRoute] = useState<Route>(() => routeOf(location.hash));
@@ -35,6 +38,8 @@ export function Shell() {
         <SettingsApp />
       ) : route === 'editor' ? (
         <EditorApp />
+      ) : route === 'maps' ? (
+        <MapEditorApp />
       ) : (
         <BuilderApp />
       )}

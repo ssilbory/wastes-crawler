@@ -192,3 +192,32 @@
   display: flex;
   gap: 0.5rem;
 }
+
+/* Stairs that lead nowhere yet, and where the party comes in. */
+.editor-grid .cell.unlinked {
+  stroke: var(--error);
+  stroke-width: 2;
+  stroke-dasharray: 4 3;
+}
+
+.editor-grid .entry {
+  fill: none;
+  stroke: var(--ok);
+  stroke-width: 2;
+  pointer-events: none;
+}
+
+.editor-side .row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.editor-side .row input[type='number'] {
+  width: 3.5rem;
+}
+
+.editor-side .notice {
+  color: var(--ok);
+}

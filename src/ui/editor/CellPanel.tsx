@@ -10,17 +10,25 @@ import {
 import type { Cell } from '../../rules/grid.ts';
 import { MonsterPicker } from '../arena/MonsterPicker.tsx';
 import { data } from '../builder/data.ts';
+import { walkMap } from '../../game/dungeon/sandbox.ts';
+import { EntryForm, LinkForm } from './LinkForm.tsx';
 import { TrapForm } from './TrapForm.tsx';
 
-/** The selected cell's details: safe camping, a trap's details, and a captive or guard post. */
+/**
+ * The selected cell's details: safe camping, a trap's details, a captive or guard post, where its
+ * stairs lead, and whether the party comes in here.
+ */
 export function CellPanel(props: {
   dungeon: Dungeon;
   level: string;
   cell: Cell;
   onChange: (d: Dungeon) => void;
+  onLevel: (id: string) => void;
 }) {
   const { dungeon: d, level, cell } = props;
   const details = cellDetails(d, level, cell);
+  const map = walkMap(d, level);
+  const kind = map?.inBounds(cell) ? map.cell(cell) : null;
   const { trap, captive, garrison } = details;
   return (
     <section class="panel cell-panel" aria-label="Cell details">
@@ -37,6 +45,17 @@ export function CellPanel(props: {
         />{' '}
         Safe to camp
       </label>
+      <EntryForm dungeon={d} level={level} cell={cell} onChange={props.onChange} />
+      {(kind === 'up' || kind === 'down') && (
+        <LinkForm
+          dungeon={d}
+          level={level}
+          cell={cell}
+          up={kind === 'up'}
+          onChange={props.onChange}
+          onLevel={props.onLevel}
+        />
+      )}
       {trap && <TrapForm trap={trap} onChange={(t) => props.onChange(setTrap(d, level, t))} />}
       {(captive || garrison) && (
         <fieldset>
@@ -139,10 +158,10 @@ export function CellPanel(props: {
           )}
         </fieldset>
       )}
-      {!trap && !captive && !garrison && (
+      {!trap && !captive && !garrison && kind !== 'up' && kind !== 'down' && (
         <p class="hint">
-          Paint a trap or an NPC here for more details. To place a guard post, paint an NPC and make
-          it a guard post.
+          Paint a trap, an NPC, or stairs here for more details. To place a guard post, paint an NPC
+          and make it a guard post.
         </p>
       )}
     </section>

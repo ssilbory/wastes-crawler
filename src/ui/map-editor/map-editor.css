@@ -1,0 +1,16 @@
+/* The map editor shares the level editor's layout; the hex map scrolls inside its own box. */
+.map-scroll {
+  min-height: 0;
+  overflow: auto;
+  background: var(--panel-sunk);
+  border: 2px solid var(--bevel-lo);
+  border-radius: var(--radius-panel);
+}
+
+.map-editor .hex-map {
+  touch-action: none;
+}
+
+.map-editor .tabs button {
+  font-size: 0.85rem;
+}

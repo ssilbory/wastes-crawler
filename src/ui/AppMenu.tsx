@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 
-export type Route = 'builder' | 'arena' | 'world' | 'editor' | 'settings';
+export type Route = 'builder' | 'arena' | 'world' | 'editor' | 'maps' | 'settings';
 
 const ROUTES: { route: Route; label: string }[] = [
   { route: 'world', label: 'Overland' },
   { route: 'builder', label: 'Character builder' },
   { route: 'arena', label: 'Arena' },
   { route: 'editor', label: 'Level editor' },
+  { route: 'maps', label: 'Map editor' },
   { route: 'settings', label: 'Settings' },
 ];
 

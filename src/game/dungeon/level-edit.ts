@@ -55,12 +55,18 @@ export function withLevelMap(d: Dungeon, levelId: string, rows: readonly string[
   return { ...d, levels: d.levels.map((l) => (l.id === levelId ? { ...l, map: [...rows] } : l)) };
 }
 
+/** The content's dungeons with the edited one in place, or added if it is new. */
+const withDungeon = (content: ContentData, edited: Dungeon): Dungeon[] =>
+  content.dungeons.some((d) => d.id === edited.id)
+    ? content.dungeons.map((d) => (d.id === edited.id ? edited : d))
+    : [...content.dungeons, edited];
+
 /**
  * The dungeon's problems with the edits in place: its shape against the content schema, the level
  * validator, and, given the SRD, the garrison and special-square checks, so an export loads.
  */
 export function editorErrors(content: ContentData, edited: Dungeon, srd?: SrdData): string[] {
-  const dungeons = content.dungeons.map((d) => (d.id === edited.id ? edited : d));
+  const dungeons = withDungeon(content, edited);
   const prefix = `dungeons/${edited.id}`;
   const parsed = DungeonSchema.safeParse(edited);
   const shape = parsed.success
@@ -73,8 +79,8 @@ export function editorErrors(content: ContentData, edited: Dungeon, srd?: SrdDat
   );
 }
 
-/** data/content/dungeons.json with the edited dungeon in place, ready to save over the file. */
+/** data/content/dungeons.json with the edited dungeon in place, or added, ready to save over the file. */
 export function exportDungeons(content: ContentData, edited: Dungeon): string {
-  const dungeons = content.dungeons.map((d) => (d.id === edited.id ? edited : d));
+  const dungeons = withDungeon(content, edited);
   return `${JSON.stringify(dungeons, null, 2)}\n`;
 }
