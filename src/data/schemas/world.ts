@@ -4,9 +4,10 @@ import { DefaultPresetSchema } from './roster.ts';
 import { CharacterSchema } from './character.ts';
 import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { FactionStateSchema } from './faction-content.ts';
+import { RegionSchema } from './overland-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 33;
+export const WORLD_SCHEMA_VERSION = 34;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -275,6 +276,11 @@ export type Light = z.infer<typeof LightSchema>;
 export const WorldSaveSchema = z.strictObject({
   schemaVersion: z.literal(WORLD_SCHEMA_VERSION),
   region: IdSchema,
+  /**
+   * A custom overland map the world is played on (Sam's call), kept in the save so later edits in
+   * the map editor don't change a world under way; null for the campaign's own regions.
+   */
+  map: RegionSchema.nullable(),
   rng: z.tuple([z.int(), z.int(), z.int(), z.int()]),
   /** Days since the world began, and the quarter: morning, day, evening, night. */
   day: z.int().min(0),

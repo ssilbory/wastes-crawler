@@ -37,6 +37,16 @@ export function regionMap(data: GameData, id: string): RegionMap {
   return regionMapOf(data.content.terrains, r);
 }
 
+/**
+ * The game data with a world's custom map among the regions (Sam's call: worlds on maps from the
+ * map editor), in place of any region with its id; the data itself for the campaign.
+ */
+export function withWorldMap(data: GameData, map: Region | null): GameData {
+  if (!map) return data;
+  const regions = [...data.content.regions.filter((r) => r.id !== map.id), map];
+  return { ...data, content: { ...data.content, regions } };
+}
+
 /** A region's map from its record, for regions that aren't in the content, such as an editor's. */
 export function regionMapOf(terrains: readonly Terrain[], r: Region): RegionMap {
   const glyphs = new Map(terrains.map((t) => [t.glyph, t]));

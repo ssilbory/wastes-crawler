@@ -7,7 +7,7 @@ test('rolls, edits, and saves an overland map with a dungeon on it', async ({ pa
   const problems = page.getByRole('region', { name: 'Problems' });
   await expect(problems).toContainText('The map is valid.');
 
-  const random = page.getByRole('region', { name: 'Random map' });
+  const random = page.getByRole('region', { name: 'New map' });
   await random.getByRole('textbox', { name: 'Name' }).fill('Ember Wastes');
   await random.getByRole('textbox', { name: 'Seed' }).fill('42');
   await random.getByRole('button', { name: 'Roll a new map' }).click();
@@ -15,6 +15,14 @@ test('rolls, edits, and saves an overland map with a dungeon on it', async ({ pa
   await expect(problems).toContainText('The map is valid.');
   await expect(page.locator('.hex .site')).toHaveCount(5);
   await page.screenshot({ path: testInfo.outputPath('map-editor.png'), fullPage: true });
+
+  // A blank map is one terrain with a village to start in; rolling again comes after.
+  await random.getByRole('button', { name: 'Create blank map' }).click();
+  await expect(page.locator('.hex .site')).toHaveCount(1);
+  await expect(problems).toContainText('The map is valid.');
+  await random.getByRole('textbox', { name: 'Seed' }).fill('42');
+  await random.getByRole('button', { name: 'Roll a new map' }).click();
+  await expect(page.locator('.hex .site')).toHaveCount(5);
 
   // Painting a settlement's hex as lake is a problem; painting it back clears it.
   const site = page.locator('.hex:has(.site)').first();

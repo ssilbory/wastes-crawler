@@ -3,9 +3,14 @@ import type { RosterEntry } from '../../game/character/roster.ts';
 import { MAX_PCS, type Recruit } from '../../game/world/new-world.ts';
 import { PartySetup, type Placement } from '../arena/PartySetup.tsx';
 import { RosterList } from './RosterList.tsx';
+import { playableWorld, WorldPicker } from './WorldPicker.tsx';
+import type { Region } from '../../data/schemas/index.ts';
 import { SLOTS, type Slot } from '../storage.ts';
 
-/** Starting a new world from the roster, continuing a saved one, or loading a save file. */
+/**
+ * Starting a new world from the roster, on the campaign or a custom map, continuing a saved one, or
+ * loading a save file.
+ */
 export function StartScreen(props: {
   roster: RosterEntry[];
   /** Each slot's one-line summary, and the slot chosen. */
@@ -15,7 +20,7 @@ export function StartScreen(props: {
   hasSave: boolean;
   errors: string[];
   onContinue: () => void;
-  onNew: (party: Recruit[], seed: string) => void;
+  onNew: (party: Recruit[], seed: string, map: Region | null) => void;
   /** Adds the starter party to the roster and returns where its members stand. */
   onStarters: () => Placement;
   onImport: (file: File) => void;
@@ -23,6 +28,7 @@ export function StartScreen(props: {
 }) {
   const [placement, setPlacement] = useState<Placement>({});
   const [seed, setSeed] = useState('');
+  const [map, setMap] = useState<Region | null>(null);
   const party: Recruit[] = Object.entries(placement).flatMap(([key, id]) => {
     const entry = props.roster.find((e) => e.id === id);
     const [row, column] = key.split('-').map(Number) as [number, number];
@@ -67,6 +73,7 @@ export function StartScreen(props: {
           </label>
         ))}
       </fieldset>
+      <WorldPicker onChange={setMap} />
       {props.errors.length > 0 && (
         <ul class="errors" role="alert">
           {props.errors.map((e) => (
@@ -106,8 +113,8 @@ export function StartScreen(props: {
         <button
           type="button"
           class="create"
-          disabled={party.length === 0 || party.length > MAX_PCS}
-          onClick={() => props.onNew(party, seed)}
+          disabled={party.length === 0 || party.length > MAX_PCS || !playableWorld(map)}
+          onClick={() => props.onNew(party, seed, map)}
         >
           {props.hasSave ? 'Start a new world (replaces the save)' : 'Start a new world'}
         </button>

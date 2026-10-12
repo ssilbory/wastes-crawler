@@ -233,7 +233,7 @@ export function MapEditorApp() {
             taken={listed.map((r) => r.id)}
             onRegion={(r) => {
               open(r);
-              setMessage(`Rolled ${r.name}. Save it to keep it.`);
+              setMessage(`Made ${r.name}. Save it to keep it.`);
             }}
           />
         </div>

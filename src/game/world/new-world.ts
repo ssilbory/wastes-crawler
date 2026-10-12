@@ -1,12 +1,12 @@
 // Starting a world: the chosen characters set out from the region's starting town.
-import type { Character, DefaultPreset } from '../../data/schemas/index.ts';
+import type { Character, DefaultPreset, Region } from '../../data/schemas/index.ts';
 import { toTenths } from '../../rules/economy.ts';
 import { hexKey } from '../../rules/hex.ts';
 import type { Rng } from '../../rules/rng.ts';
 import type { GameData } from '../character/context.ts';
 import { startFactions } from '../factions/state.ts';
 import { newMember, note } from './members.ts';
-import { regionMap } from './region.ts';
+import { regionMap, withWorldMap } from './region.ts';
 import { enterTown, FULL_RATIONS } from './town.ts';
 import { NO_LIGHT, type World } from './types.ts';
 
@@ -20,12 +20,27 @@ export interface Recruit {
   defaultAction: DefaultPreset;
 }
 
-export function newWorld(data: GameData, rng: Rng, party: Recruit[], regionId?: string): World {
+/**
+ * A new world. With `custom`, a map from the map editor, the party starts in its starting town and
+ * the campaign's factions stay out of it (Sam's call: custom maps have no campaign story).
+ */
+export function newWorld(
+  campaignData: GameData,
+  rng: Rng,
+  party: Recruit[],
+  regionId?: string,
+  custom: Region | null = null,
+): World {
   if (party.length === 0 || party.length > MAX_PCS) throw new Error('a party has one to six PCs');
-  const map = regionMap(data, regionId ?? (data.content.regions[0] as { id: string }).id);
+  const data = withWorldMap(campaignData, custom);
+  const map = regionMap(
+    data,
+    custom?.id ?? regionId ?? (data.content.regions[0] as { id: string }).id,
+  );
   const start = { col: map.start.col, row: map.start.row };
   const w: World = {
     region: map.id,
+    map: custom,
     rng,
     day: 0,
     quarter: 0,
@@ -84,7 +99,7 @@ export function newWorld(data: GameData, rng: Rng, party: Recruit[], regionId?: 
     encounter: null,
     log: [],
   };
-  startFactions(w, data);
+  if (!custom) startFactions(w, data);
   note(w, `The party gathers in ${map.start.name}.`);
   enterTown(w, data, map.start.id, true);
   return w;

@@ -22,6 +22,7 @@ export function serializeWorld(w: World): string {
   const save: WorldSave = {
     schemaVersion: WORLD_SCHEMA_VERSION,
     region: w.region,
+    map: w.map,
     rng: [...w.rng.state()],
     day: w.day,
     quarter: w.quarter,
@@ -138,7 +139,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
     };
   }
   const s = parsed.data;
-  if (!data.content.regions.some((r) => r.id === s.region))
+  if (s.map ? s.map.id !== s.region : !data.content.regions.some((r) => r.id === s.region))
     return { ok: false, errors: [`unknown region ${s.region}`] };
   const errors: string[] = [];
   const party = members(s.members, data, errors);
@@ -146,6 +147,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
   if (errors.length > 0) return { ok: false, errors };
   const world = {
     region: s.region,
+    map: s.map,
     day: s.day,
     quarter: s.quarter,
     position: s.position,

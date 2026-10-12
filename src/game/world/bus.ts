@@ -52,6 +52,18 @@ const LISTENERS: readonly Listener[] = [
   ruinsListener,
 ];
 
+/**
+ * The campaign's own story: its standing orders, raids, factions, warlord's clock, and crafter's
+ * notes, all tied to the shipped towns. A world on a custom map has none of it (Sam's call).
+ */
+const CAMPAIGN: ReadonlySet<Listener> = new Set([
+  ordersListener,
+  raidsListener,
+  factionsListener,
+  clockListener,
+  notesListener,
+]);
+
 export function emit(w: World, data: GameData, e: WorldEvent): void {
-  for (const listen of LISTENERS) listen(w, data, e);
+  for (const listen of LISTENERS) if (w.map === null || !CAMPAIGN.has(listen)) listen(w, data, e);
 }

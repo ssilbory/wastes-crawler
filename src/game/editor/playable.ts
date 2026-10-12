@@ -1,8 +1,10 @@
 // Saved dungeons in the game (Sam's call): the game plays the shipped content plus each saved
 // dungeon that stands on a shipped map and passes every content check, so a broken one can't break
-// a campaign. Saved maps stay in the editor until the game can start on them.
+// a campaign. A saved map plays as a world of its own, without the campaign's story.
 import { contentReferenceErrors } from '../../data/content.ts';
-import type { ContentData, EditorLibrary, SrdData } from '../../data/schemas/index.ts';
+import type { ContentData, EditorLibrary, Region, SrdData } from '../../data/schemas/index.ts';
+import { withWorldMap } from '../world/region.ts';
+import { mapErrors } from './map-edit.ts';
 
 export interface Playable {
   content: ContentData;
@@ -10,13 +12,22 @@ export interface Playable {
   skipped: Record<string, string>;
 }
 
-/** The content the game plays, saved dungeons taken one at a time in the order they were saved. */
-export function playableContent(srd: SrdData, shipped: ContentData, lib: EditorLibrary): Playable {
-  const known = new Set(contentReferenceErrors(srd, shipped));
+/**
+ * The content the game plays, saved dungeons taken one at a time in the order they were saved.
+ * With `map`, the custom map a world is played on (Sam's call), its saved dungeons play too.
+ */
+export function playableContent(
+  srd: SrdData,
+  shipped: ContentData,
+  lib: EditorLibrary,
+  map: Region | null = null,
+): Playable {
+  const base = withWorldMap({ srd, content: shipped }, map).content;
+  const known = new Set(contentReferenceErrors(srd, base));
   const skipped: Record<string, string> = {};
-  let content = shipped;
+  let content = base;
   for (const d of lib.dungeons) {
-    if (!shipped.regions.some((r) => r.id === d.region)) {
+    if (!base.regions.some((r) => r.id === d.region)) {
       skipped[d.id] = 'it is on a map the game can’t play yet';
       continue;
     }
@@ -29,4 +40,20 @@ export function playableContent(srd: SrdData, shipped: ContentData, lib: EditorL
     else skipped[d.id] = problem;
   }
   return { content, skipped };
+}
+
+/**
+ * Why a saved map can't be a world, or nothing: the overland checks, and town ids already used on
+ * another map, since town services and saves know towns by id.
+ */
+export function worldMapErrors(srd: SrdData, shipped: ContentData, map: Region): string[] {
+  const elsewhere = new Set(
+    shipped.regions.filter((r) => r.id !== map.id).flatMap((r) => r.sites.map((s) => s.id)),
+  );
+  return [
+    ...mapErrors(srd, shipped, map, []),
+    ...map.sites
+      .filter((s) => elsewhere.has(s.id))
+      .map((s) => `regions/${map.id}/${s.id}: another map has a town with this id`),
+  ];
 }

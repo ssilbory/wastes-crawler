@@ -1,6 +1,11 @@
 // Full game saves (docs/plan.md, Phase 11, Persistence): one file holding the world and the
 // character roster. Loading takes either a full save or a plain world save from earlier phases.
-import { SAVE_BUNDLE_KIND, SaveBundleSchema } from '../../data/schemas/index.ts';
+import {
+  RegionSchema,
+  SAVE_BUNDLE_KIND,
+  SaveBundleSchema,
+  type Region,
+} from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
 import { parseRoster, serializeRoster, type RosterEntry } from '../character/roster.ts';
 import { parseWorld, serializeWorld } from './save.ts';
@@ -48,4 +53,18 @@ export function mergeRoster(
 ): RosterEntry[] {
   const ids = new Set(incoming.map((e) => e.id));
   return [...current.filter((e) => !ids.has(e.id)), ...incoming];
+}
+
+/**
+ * The custom map a save's world is played on, or null: read before loading, so the map and its
+ * dungeons can be put into the game's content first. Anything unreadable is null; loading says why.
+ */
+export function savedMap(text: string): Region | null {
+  try {
+    const raw = JSON.parse(text) as { kind?: unknown; world?: { map?: unknown }; map?: unknown };
+    const map = raw.kind === SAVE_BUNDLE_KIND ? raw.world?.map : raw.map;
+    return RegionSchema.safeParse(map).data ?? null;
+  } catch {
+    return null;
+  }
 }
