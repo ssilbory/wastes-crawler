@@ -13,7 +13,7 @@ import { regionMapOf } from '../../game/world/region.ts';
 import { mapPixels } from '../../render/hex-view.ts';
 import { editorHexCells } from '../../render/map-editor-view.ts';
 import type { Hex } from '../../rules/hex.ts';
-import { data, freshRng } from '../builder/data.ts';
+import { data, freshRng, shippedContent } from '../builder/data.ts';
 import { download, loadLibrary, saveLibrary } from '../editor-store.ts';
 import { HexMap, HEX_SIZE } from '../world/HexMap.tsx';
 import '../editor/editor.css';
@@ -43,7 +43,7 @@ export function MapEditorApp() {
   const [loaded] = useState(loadLibrary);
   const [lib, setLib] = useState<EditorLibrary>(loaded.library);
   const [message, setMessage] = useState<string | null>(loaded.errors.join('; ') || null);
-  const content = withLibrary(data.content, lib);
+  const content = withLibrary(shippedContent, lib);
   const [region, setRegion] = useState<Region>(content.regions[0] as Region);
   /** Dungeons placed on this map since it was last saved. */
   const [placed, setPlaced] = useState<Dungeon[]>([]);
@@ -92,7 +92,7 @@ export function MapEditorApp() {
     setPlaced([]);
   };
   const isSaved = lib.regions.some((r) => r.id === region.id);
-  const shipped = data.content.regions.some((r) => r.id === region.id);
+  const shipped = shippedContent.regions.some((r) => r.id === region.id);
   const stranded = lib.dungeons.filter((d) => d.region === region.id);
   const tools: [string, MapTool][] = [
     ['Select', { select: true }],
@@ -153,8 +153,8 @@ export function MapEditorApp() {
                 shipped ? `Back to the shipped ${region.name}.` : `Deleted ${region.name}.`,
               );
               open(
-                withLibrary(data.content, next).regions.find((r) => r.id === region.id) ??
-                  (data.content.regions[0] as Region),
+                withLibrary(shippedContent, next).regions.find((r) => r.id === region.id) ??
+                  (shippedContent.regions[0] as Region),
               );
             }}
           >

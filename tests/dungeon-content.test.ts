@@ -59,6 +59,24 @@ describe('dungeon validation', () => {
     expect(dungeonReferenceErrors(content)).toEqual([]);
   });
 
+  it('gives each way down a hex of its own', () => {
+    const [first] = content.dungeons as [Dungeon];
+    const ruin = content.ruins[0] as (typeof content.ruins)[0];
+    const twin = { ...first, id: 'twin' };
+    const onRuin = {
+      ...first,
+      id: 'on-ruin',
+      region: ruin.region,
+      entrance: { col: ruin.col, row: ruin.row },
+    };
+    const errors = dungeonReferenceErrors({ ...content, dungeons: [first, twin, onRuin] });
+    expect(errors).toContain(`dungeons/twin: the entrance is on ${first.id}'s hex`);
+    expect(errors).toContain(`dungeons/on-ruin: the entrance is on ${ruin.id}'s hex`);
+    const own = { ...onRuin, id: `${ruin.id}-v3` };
+    const generated = dungeonReferenceErrors({ ...content, dungeons: [own] });
+    expect(generated.filter((e) => e.includes('hex'))).toEqual([]);
+  });
+
   const base = content.dungeons[0] as Dungeon;
   const check = (d: Dungeon) => dungeonReferenceErrors({ ...content, dungeons: [d] });
   const one = (

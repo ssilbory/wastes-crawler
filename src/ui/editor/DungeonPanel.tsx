@@ -179,6 +179,13 @@ export function DungeonPanel(props: {
               ? 'Shipped with the game; saving keeps your copy in this browser.'
               : 'Not saved yet.'}
         </p>
+        {saving.saved && (
+          <p class={saving.notPlayable ? 'error' : 'hint'} role="note">
+            {saving.notPlayable
+              ? `Not in the game: ${saving.notPlayable}`
+              : 'In the game: open the Overland screen to play it.'}
+          </p>
+        )}
         <div class="row">
           <button type="button" onClick={() => saving.save(d)}>
             Save
@@ -194,7 +201,16 @@ export function DungeonPanel(props: {
           <button
             type="button"
             disabled={!copyName.trim()}
-            onClick={() => saving.saveAs(copyDungeon(d, props.newId(copyName), copyName.trim()))}
+            onClick={() => {
+              const copy = copyDungeon(d, props.newId(copyName), copyName.trim());
+              // A copy can't share the original's hex.
+              const taken = content.dungeons
+                .filter((x) => x.region === copy.region)
+                .map((x) => x.entrance);
+              const r = content.regions.find((x) => x.id === copy.region);
+              const at = r && freeHex(content.terrains, r, taken);
+              saving.saveAs(at ? { ...copy, entrance: at } : copy);
+            }}
           >
             Save as copy
           </button>

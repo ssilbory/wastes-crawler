@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useMemo, useState } from 'preact/hooks';
 import type { Dungeon, EditorLibrary } from '../../data/schemas/index.ts';
 import { newDungeon } from '../../game/dungeon/dungeon-edit.ts';
 import {
@@ -10,7 +10,8 @@ import {
   withLibrary,
 } from '../../game/editor/library.ts';
 import { freeHex } from '../../game/editor/map-edit.ts';
-import { data } from '../builder/data.ts';
+import { playableContent } from '../../game/editor/playable.ts';
+import { data, shippedContent } from '../builder/data.ts';
 import { loadLibrary, saveLibrary } from '../editor-store.ts';
 import '../world/world.css';
 import './editor.css';
@@ -22,6 +23,8 @@ export interface Saving {
   shipped: boolean;
   /** A copy is saved in the browser. */
   saved: boolean;
+  /** Why the saved copy isn't in the game, or null when it is (or nothing is saved). */
+  notPlayable: string | null;
   save: (d: Dungeon) => void;
   /** Drops the saved copy, back to the shipped dungeon or gone. */
   discard: () => void;
@@ -37,11 +40,12 @@ export function EditorApp() {
   const [loaded] = useState(loadLibrary);
   const [lib, setLib] = useState<EditorLibrary>(loaded.library);
   const [message, setMessage] = useState<string | null>(loaded.errors.join('; ') || null);
-  const content = withLibrary(data.content, lib);
+  const content = withLibrary(shippedContent, lib);
   const dungeons = content.dungeons;
   const [dungeonId, setDungeonId] = useState(dungeons[0]?.id ?? '');
   // Bumped to start the editor afresh from what is saved.
   const [generation, setGeneration] = useState(0);
+  const skipped = useMemo(() => playableContent(data.srd, shippedContent, lib).skipped, [lib]);
   const original = dungeons.find((d) => d.id === dungeonId) ?? dungeons[0];
 
   const store = (next: EditorLibrary, done: string) => {
@@ -121,17 +125,18 @@ export function EditorApp() {
         <p class="hint">There are no dungeons to edit.</p>
       </main>
     );
-  const shipped = data.content.dungeons.some((d) => d.id === original.id);
+  const shipped = shippedContent.dungeons.some((d) => d.id === original.id);
   const saving: Saving = {
     shipped,
     saved: lib.dungeons.some((d) => d.id === original.id),
+    notPlayable: skipped[original.id] ?? null,
     save: (d) => store(saveDungeon(lib, d), `Saved ${d.name} in this browser.`),
     discard: () => {
       store(
         deleteDungeon(lib, original.id),
         shipped ? `Back to the shipped ${original.name}.` : `Deleted ${original.name}.`,
       );
-      pick(shipped ? original.id : (data.content.dungeons[0]?.id ?? ''));
+      pick(shipped ? original.id : (shippedContent.dungeons[0]?.id ?? ''));
     },
     saveAs: (d) => {
       store(saveDungeon(lib, d), `Saved a copy as ${d.name}.`);

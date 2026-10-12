@@ -6,7 +6,14 @@ import { createRng, type Rng } from '../../rules/rng.ts';
 import { gameSkills } from '../../data/skills.ts';
 import { classChoices } from '../../render/class-view.ts';
 
-export const data: GameData = { srd: loadSrd(), content: loadContent() };
+/** The content as shipped, before any of the editors' saved work. */
+export const shippedContent = loadContent();
+
+/**
+ * What the game plays. Its content is the shipped content until the game screen puts the saved
+ * dungeons in (src/ui/playable-store.ts); the editors start from `shippedContent`.
+ */
+export const data: GameData = { srd: loadSrd(), content: shippedContent };
 
 export const ATTRIBUTE_NAMES: Record<Attribute, string> = {
   str: 'Strength',

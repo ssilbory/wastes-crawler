@@ -14,6 +14,7 @@ import type { World } from '../../game/world/types.ts';
 import { createRng } from '../../rules/rng.ts';
 import { FightScreen } from '../arena/FightScreen.tsx';
 import { data, freshRng } from '../builder/data.ts';
+import { loadPlayable } from '../playable-store.ts';
 import {
   SLOTS,
   activeSlot,
@@ -49,6 +50,8 @@ function download(text: string) {
 }
 
 export function WorldApp() {
+  // Before any screen reads the content, so saved dungeons are in it.
+  useState(loadPlayable);
   const alerts = useAlerts();
   return (
     <>

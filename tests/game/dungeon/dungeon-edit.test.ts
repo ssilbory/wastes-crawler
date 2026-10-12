@@ -146,7 +146,8 @@ describe('dungeon-wide edits in the level editor', () => {
     const copy = copyDungeon(barrow, 'barrow-two', 'Barrow Two');
     expect(copy.name).toBe('Barrow Two');
     expect(copy.levels.every((l) => l.id.startsWith('barrow-two'))).toBe(true);
-    expect(errors(copy)).toEqual([]);
+    // Still on the original's hex, until the editor moves it.
+    expect(errors(copy)).toEqual([`dungeons/barrow-two: the entrance is on ${barrow.id}'s hex`]);
     const odd = copyDungeon({ ...fresh(), id: 'other' }, 'x', 'X');
     expect(odd.levels[0]?.id).toBe('x-pit-1');
     expect(odd.entry.level).toBe('x-pit-1');

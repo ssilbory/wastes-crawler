@@ -1,10 +1,17 @@
 // World saves (docs/plan.md, Save/load): versioned JSON with the RNG state, so a reload continues
 // exactly. Characters inside go through the character importer and its migrations.
-import { WORLD_SCHEMA_VERSION, WorldSaveSchema, type WorldSave } from '../../data/schemas/index.ts';
+import { parseLevelMap } from '../../data/dungeon-map.ts';
+import {
+  WORLD_SCHEMA_VERSION,
+  WorldSaveSchema,
+  type DungeonState,
+  type WorldSave,
+} from '../../data/schemas/index.ts';
 import { rngFromState } from '../../rules/rng.ts';
 import type { ResourceDie } from '../../rules/resource-die.ts';
 import type { GameData } from '../character/context.ts';
 import { importCharacter, type Raw } from '../character/io.ts';
+import { note } from './members.ts';
 import { WORLD_MIGRATIONS } from './save-migrations.ts';
 import type { Member, World } from './types.ts';
 
@@ -102,6 +109,18 @@ function members(saved: WorldSave['members'], data: GameData, errors: string[]):
   return out;
 }
 
+/**
+ * Whether the party's place underground is still there: a saved dungeon can be deleted or redrawn
+ * in the editor after the party went down (Sam's call). Ruins are rebuilt from their seed.
+ */
+function standsIn(s: DungeonState, data: GameData): boolean {
+  const d = data.content.dungeons.find((x) => x.id === s.dungeon);
+  if (!d) return data.content.ruins.some((r) => s.dungeon.startsWith(`${r.id}-v`));
+  const level = d.levels.find((l) => l.id === s.level);
+  const parsed = level ? parseLevelMap(level.map) : null;
+  return parsed?.ok === true && parsed.map.inBounds(s.at);
+}
+
 export function parseWorld(text: string, data: GameData): WorldLoad {
   let raw: unknown;
   try {
@@ -125,71 +144,76 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
   const party = members(s.members, data, errors);
   const benched = members(s.benched, data, errors);
   if (errors.length > 0) return { ok: false, errors };
-  return {
-    ok: true,
-    world: {
-      region: s.region,
-      day: s.day,
-      quarter: s.quarter,
-      position: s.position,
-      destination: s.destination,
-      hikes: s.hikes,
-      camp: s.camp,
-      noRecovery: s.noRecovery,
-      lastTown: s.lastTown,
-      encounter: s.encounter,
-      coach: s.coach,
-      arenaDay: s.arenaDay,
-      quests: s.quests,
-      dungeon: s.dungeon,
-      light: {
-        ...s.light,
-        torch: s.light.torch as ResourceDie,
-        lantern: s.light.lantern as ResourceDie,
-      },
-      rescues: s.rescues,
-      raising: s.raising,
-      projects: s.projects,
-      workshops: s.workshops,
-      components: s.components,
-      countersigns: s.countersigns,
-      beaten: s.beaten,
-      clock: s.clock,
-      notes: s.notes,
-      ending: s.ending,
-      hirelingDays: s.hirelingDays,
-      deadShares: s.deadShares,
-      hireBans: s.hireBans,
-      ruins: s.ruins,
-      caches: s.caches,
-      rumors: s.rumors,
-      ordersEnded: s.ordersEnded,
-      authority: s.authority,
-      raid: s.raid,
-      raided: s.raided,
-      craftsmen: s.craftsmen,
-      commissions: s.commissions,
-      corpses: s.corpses,
-      fallen: s.fallen,
-      performedDay: s.performedDay,
-      bestiary: [...s.bestiary],
-      factions: s.factions,
-      disguise: s.disguise,
-      palanquin: s.palanquin,
-      pacts: s.pacts,
-      log: s.log,
-      rng: rngFromState(s.rng),
-      visited: new Set(s.visited),
-      elsewhere: s.elsewhere,
-      rations: s.rations as ResourceDie,
-      members: party,
-      benched,
-      npcs: s.npcs,
-      mounts: s.mounts,
-      purse: s.purse,
-      loot: s.loot,
-      towns: s.towns,
-      climateDay: s.climateDay,
+  const world = {
+    region: s.region,
+    day: s.day,
+    quarter: s.quarter,
+    position: s.position,
+    destination: s.destination,
+    hikes: s.hikes,
+    camp: s.camp,
+    noRecovery: s.noRecovery,
+    lastTown: s.lastTown,
+    encounter: s.encounter,
+    coach: s.coach,
+    arenaDay: s.arenaDay,
+    quests: s.quests,
+    dungeon: s.dungeon,
+    light: {
+      ...s.light,
+      torch: s.light.torch as ResourceDie,
+      lantern: s.light.lantern as ResourceDie,
     },
+    rescues: s.rescues,
+    raising: s.raising,
+    projects: s.projects,
+    workshops: s.workshops,
+    components: s.components,
+    countersigns: s.countersigns,
+    beaten: s.beaten,
+    clock: s.clock,
+    notes: s.notes,
+    ending: s.ending,
+    hirelingDays: s.hirelingDays,
+    deadShares: s.deadShares,
+    hireBans: s.hireBans,
+    ruins: s.ruins,
+    caches: s.caches,
+    rumors: s.rumors,
+    ordersEnded: s.ordersEnded,
+    authority: s.authority,
+    raid: s.raid,
+    raided: s.raided,
+    craftsmen: s.craftsmen,
+    commissions: s.commissions,
+    corpses: s.corpses,
+    fallen: s.fallen,
+    performedDay: s.performedDay,
+    bestiary: [...s.bestiary],
+    factions: s.factions,
+    disguise: s.disguise,
+    palanquin: s.palanquin,
+    pacts: s.pacts,
+    log: s.log,
+    rng: rngFromState(s.rng),
+    visited: new Set(s.visited),
+    elsewhere: s.elsewhere,
+    rations: s.rations as ResourceDie,
+    members: party,
+    benched,
+    npcs: s.npcs,
+    mounts: s.mounts,
+    purse: s.purse,
+    loot: s.loot,
+    towns: s.towns,
+    climateDay: s.climateDay,
   };
+  if (world.dungeon && !standsIn(world.dungeon, data)) {
+    world.dungeon = null;
+    note(
+      world,
+      'The way down has changed beyond knowing; the party finds itself back on the surface.',
+    );
+  }
+  return { ok: true, world };
 }

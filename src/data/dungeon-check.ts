@@ -123,6 +123,25 @@ function dungeonErrors(d: Dungeon, content: ContentData): string[] {
   return errors;
 }
 
+/** Each way down has a hex of its own: a dungeon on another's, or a ruin's, could never be entered. */
+function sharedEntrances(content: ContentData): string[] {
+  const taken = new Map<string, string>(
+    content.ruins.map((r) => [`${r.region}:${r.col},${r.row}`, r.id]),
+  );
+  return content.dungeons.flatMap((d) => {
+    const at = `${d.region}:${d.entrance.col},${d.entrance.row}`;
+    const other = taken.get(at);
+    taken.set(at, other ?? d.id);
+    // A ruin's own levels, generated as `<ruin>-v<seed>`, stand on its hex.
+    return other && !d.id.startsWith(`${other}-v`)
+      ? [`dungeons/${d.id}: the entrance is on ${other}'s hex`]
+      : [];
+  });
+}
+
 export function dungeonReferenceErrors(content: ContentData): string[] {
-  return content.dungeons.flatMap((d) => dungeonErrors(d, content));
+  return [
+    ...content.dungeons.flatMap((d) => dungeonErrors(d, content)),
+    ...sharedEntrances(content),
+  ];
 }
