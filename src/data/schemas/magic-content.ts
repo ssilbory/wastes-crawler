@@ -79,3 +79,13 @@ export const ClassOptionSchema = z.strictObject({
     .optional(),
 });
 export type ClassOption = z.infer<typeof ClassOptionSchema>;
+
+/**
+ * One line per spell and art saying what it does in this game, shown under its description in hover
+ * text (Sam's call). Every spell and art the game offers has one.
+ */
+export const MagicEffectsSchema = z.strictObject({
+  spells: z.record(IdSchema, z.string().min(1)),
+  arts: z.record(IdSchema, z.string().min(1)),
+});
+export type MagicEffects = z.infer<typeof MagicEffectsSchema>;

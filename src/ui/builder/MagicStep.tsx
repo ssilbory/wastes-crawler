@@ -14,7 +14,7 @@ import {
 import { data } from './data.ts';
 import { Check, Step } from './Field.tsx';
 import { gameSpells } from '../../data/spells.ts';
-import { artHint } from '../../render/describe-view.ts';
+import { artHint, spellHint } from '../../render/describe-view.ts';
 
 const artName = (id: string) => data.srd.arts.find((a) => a.id === id)?.name ?? id;
 export const spellName = (id: string) =>
@@ -105,7 +105,7 @@ export function MagicStep(props: {
               <Check
                 key={s.id}
                 label={s.name}
-                title={s.text}
+                title={spellHint(data, s.id)}
                 checked={choice.known.includes(s.id)}
                 onChange={(on) =>
                   set({
