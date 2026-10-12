@@ -4,8 +4,8 @@
     "bouts": [
       {
         "id": "militia-pair",
-        "name": "Two militia sparring partners",
-        "enemies": [["thug-or-militia", "thug-or-militia"]],
+        "name": "Two pit fighters looking for a spar",
+        "enemies": [["pit-fighter", "pit-fighter"]],
         "fee": 5,
         "prize": 15,
         "toTheDeath": false
@@ -13,7 +13,7 @@
       {
         "id": "pit-hounds",
         "name": "The pit hounds",
-        "enemies": [["small-pack-predator", "small-pack-predator", "small-pack-predator"]],
+        "enemies": [["warbreed-hound", "warbreed-hound", "warbreed-hound"]],
         "fee": 10,
         "prize": 40,
         "toTheDeath": true
@@ -26,7 +26,7 @@
       {
         "id": "veterans",
         "name": "The garrison veterans",
-        "enemies": [["veteran-soldier", "veteran-soldier"], ["skilled-veteran"]],
+        "enemies": [["garrison-veteran", "garrison-veteran"], ["garrison-sergeant"]],
         "fee": 15,
         "prize": 50,
         "toTheDeath": false
@@ -34,7 +34,7 @@
       {
         "id": "caged-horror",
         "name": "The caged horror",
-        "enemies": [["predator-large-vicious"]],
+        "enemies": [["barrow-ravager"]],
         "fee": 25,
         "prize": 150,
         "toTheDeath": true
@@ -55,7 +55,7 @@
       {
         "id": "hill-champion",
         "name": "The hill champion",
-        "enemies": [["barbarian-fighter"]],
+        "enemies": [["orc-pit-champion"]],
         "fee": 5,
         "prize": 20,
         "toTheDeath": false

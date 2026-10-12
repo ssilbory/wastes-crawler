@@ -17,7 +17,7 @@ function wilds(): World {
       const table = data.content.encounterTables.find((t) => t.id === map.tableAt({ col, row }));
       if (
         !map.siteAt({ col, row }) &&
-        table?.entries.some((e) => e.groups.some((g) => g.monster === 'herd-beast'))
+        table?.entries.some((e) => e.groups.some((g) => g.monster === 'wild-aurochs'))
       ) {
         w.position = { col, row };
         return w;
@@ -32,16 +32,24 @@ describe('the companions panel view (1.5.4)', () => {
     const views = companionsView(w, data);
     expect(views.map((v) => v.name)).toEqual(['Snag']);
     expect(views[0]).toMatchObject({ companion: null, bindBlocked: null, canHeal: false });
-    expect(views[0]?.beasts).toContainEqual({ id: 'herd-beast', name: 'Herd Beast', hitDice: 2 });
+    expect(views[0]?.beasts).toContainEqual({
+      id: 'wild-aurochs',
+      name: 'Wild Aurochs',
+      hitDice: 2,
+    });
   });
 
   it('shows where the companion is, and whether it can be tended', () => {
     const w = wilds();
     const id = member(w, 'Snag').id;
-    bindCompanion(w, data, id, 'herd-beast', 'Bramble');
+    bindCompanion(w, data, id, 'wild-aurochs', 'Bramble');
     w.encounter = null;
     const here = companionsView(w, data)[0];
-    expect(here?.companion).toMatchObject({ name: 'Bramble', kind: 'Herd Beast', where: 'party' });
+    expect(here?.companion).toMatchObject({
+      name: 'Bramble',
+      kind: 'Wild Aurochs',
+      where: 'party',
+    });
     expect(here?.bindBlocked).toBe('Snag already has a companion; release it first.');
     const n = w.npcs[0];
     if (n) n.hp = 1;
