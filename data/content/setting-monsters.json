@@ -310,5 +310,107 @@
     "name": "Dead God Titan",
     "base": "legendary-god-titan",
     "description": "A titan from the age before the Fall, still stirring under the Grey Sea. Its footsteps are the only warning the coast towns get."
+  },
+  {
+    "id": "grave-robber",
+    "name": "Grave Robber",
+    "base": "thug-or-militia",
+    "description": "A digger who works the barrows and roadside graves by lantern light. Grave goods sell; the dead do not complain, or did not used to."
+  },
+  {
+    "id": "claim-jumper",
+    "name": "Claim Jumper",
+    "base": "thug-or-militia",
+    "description": "A scavenger who moved into an abandoned dig and means to keep it. The old machines leave them alone, mostly."
+  },
+  {
+    "id": "pit-fighter",
+    "name": "Pit Fighter",
+    "base": "thug-or-militia",
+    "description": "A settlement brawler who spars in the pit for a meal and a cheer. Hits hard, then helps you up."
+  },
+  {
+    "id": "garrison-veteran",
+    "name": "Garrison Veteran",
+    "base": "veteran-soldier",
+    "description": "An orc or goblin who stood a wall in the civil wars and lived. Fights for coin now, and still salutes by habit."
+  },
+  {
+    "id": "garrison-sergeant",
+    "name": "Garrison Sergeant",
+    "base": "skilled-veteran",
+    "description": "A scarred sergeant who kept a garrison alive when its lieutenant fled. Teaches with the flat of the blade."
+  },
+  {
+    "id": "orc-pit-champion",
+    "name": "Orc Pit Champion",
+    "base": "barbarian-fighter",
+    "description": "The arena's favorite, an orc built for the old wars and spending that strength on applause instead."
+  },
+  {
+    "id": "ember-chaplain",
+    "name": "Ember Chaplain",
+    "base": "petty-mage",
+    "description": "A Faithful chaplain who learned a few hedge spells in the old army and preaches the Dark Lord's return between them."
+  },
+  {
+    "id": "refugee",
+    "name": "Refugee",
+    "base": "peaceful-human",
+    "description": "A family of the dark races on the road with everything they own on their backs. They want news, water, and to be left alone."
+  },
+  {
+    "id": "wild-aurochs",
+    "name": "Wild Aurochs",
+    "base": "herd-beast",
+    "description": "A shaggy aurochs from the wild herds that graze the ruins. Skittish, but a patient hand can gentle one to the saddle."
+  },
+  {
+    "id": "briar-stoat",
+    "name": "Briar Stoat",
+    "base": "predator-small-vicious",
+    "description": "A crafter's ratter gone wild, the size of a dog and mostly teeth. They hunt the thickets in packs."
+  },
+  {
+    "id": "barrow-rat",
+    "name": "Barrow Rat",
+    "base": "predator-small-vicious",
+    "description": "A rat the size of a goblin, fat on grave offerings and anything that falls asleep in the dark."
+  },
+  {
+    "id": "wild-tusker",
+    "name": "Wild Tusker",
+    "base": "vicious-large-herbivore",
+    "description": "A war boar's feral get, bred for the charge and loose in the woods since its masters died."
+  },
+  {
+    "id": "beastman-hexer",
+    "name": "Beastman Hexer",
+    "base": "tribal-shaman",
+    "description": "A beastman who picked up a few hexes from a dead crafter's notes. Its troop trusts it more than they trust any officer."
+  },
+  {
+    "id": "crag-stalker",
+    "name": "Crag Stalker",
+    "base": "apex-predator",
+    "description": "A flesh-crafted mountain hunter built to pick off sentries on the high passes. It still watches the roads."
+  },
+  {
+    "id": "ridge-ravager",
+    "name": "Ridge Ravager",
+    "base": "predator-large-vicious",
+    "description": "A long-limbed predator loosed in the broken country during the civil wars. It runs down anything slower than a horse."
+  },
+  {
+    "id": "barrow-midges",
+    "name": "Barrow Midges",
+    "base": "unnatural-swarm",
+    "description": "A whining cloud of grave-born midges that drink from anything warm enough to bleed."
+  },
+  {
+    "id": "grave-mold",
+    "name": "Grave Mold",
+    "base": "slime-or-ooze",
+    "description": "A creeping mold that eats burial cloth first and the buried second, and is not fussy about the order."
   }
 ]
