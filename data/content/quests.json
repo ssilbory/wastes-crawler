@@ -106,7 +106,7 @@
         },
         "enemies": [
           ["beastman-trooper", "beastman-trooper", "predator-beastman", "predator-beastman"],
-          ["tribal-shaman"]
+          ["beastman-hexer"]
         ],
         "text": "Drive the beastmen out of the watchtower."
       }
@@ -269,7 +269,7 @@
           "row": 10
         },
         "enemies": [
-          ["thug-or-militia", "thug-or-militia", "thug-or-militia", "paladin", "paladin", "paladin"]
+          ["grave-robber", "grave-robber", "grave-robber", "paladin", "paladin", "paladin"]
         ],
         "text": "Stop the corpse-thieves at the graves at 21,10."
       }

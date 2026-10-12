@@ -235,7 +235,7 @@ describe('town arenas', () => {
     expect(member(w, 'Grukk')).toMatchObject({ dead: false, frail: true });
     expect(w.purse).toBe(510);
     expect(w.log.at(-1)).toContain(
-      'The party wins Two militia sparring partners and takes 15 crowns.',
+      'The party wins Two pit fighters looking for a spar and takes 15 crowns.',
     );
     settleBout(w, data, start.fight, start.bout, { ...result, outcome: 'enemy' });
     expect(w.log.at(-1)).toContain('The party yields.');

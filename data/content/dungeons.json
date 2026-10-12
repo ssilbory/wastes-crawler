@@ -140,7 +140,7 @@
               "y": 0
             },
             "captive": "grave-digger",
-            "guards": [["thug-or-militia", "thug-or-militia"]],
+            "guards": [["grave-robber", "grave-robber"]],
             "text": "Two grave robbers are binding a struggling grave-digger."
           }
         ],

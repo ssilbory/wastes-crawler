@@ -59,9 +59,9 @@
     "vault": {
       "guards": [
         [
-          "thug-or-militia",
-          "thug-or-militia",
-          "thug-or-militia",
+          "claim-jumper",
+          "claim-jumper",
+          "claim-jumper",
           "clockwork-soldier",
           "clockwork-soldier",
           "stone-golem"
@@ -267,13 +267,7 @@
     ],
     "vault": {
       "guards": [
-        [
-          "thug-or-militia",
-          "thug-or-militia",
-          "paladin-champion",
-          "paladin-champion",
-          "paladin-champion"
-        ]
+        ["human-raider", "human-raider", "paladin-champion", "paladin-champion", "paladin-champion"]
       ],
       "loot": [
         {
@@ -310,9 +304,9 @@
     "vault": {
       "guards": [
         [
-          "thug-or-militia",
-          "thug-or-militia",
-          "thug-or-militia",
+          "human-raider",
+          "human-raider",
+          "human-raider",
           "paladin-champion",
           "paladin-champion",
           "paladin-champion",

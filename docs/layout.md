@@ -80,7 +80,7 @@ Output of `pnpm srd:extract` from `vendor/wwn-srd/`. Fix mirror errors in `tools
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | Characters        | `peoples`, `racial-foci`, `backgrounds`, `class-options`, `traditions`, `focus-rules`, `skill-rules`, `starting-packages`, `starter-party` |
 | Magic and combat  | `combat-magic` (72 spell/art effects), `spell-rules`, `monster-combat` (89 combat profiles), `mishaps`                                     |
-| Monsters          | `monsters` (54 authored), `setting-monsters` (51 reskins of SRD monsters)                                                                  |
+| Monsters          | `monsters` (54 authored), `setting-monsters` (68 reskins of SRD monsters)                                                                  |
 | Gear and crafting | `shields`, `equipment-rules`, `components`, `crafting-rules`, `craftsmen`, `mods`                                                          |
 | World and travel  | `regions` (3 hex maps), `terrains`, `overland-rules`, `encounter-tables` (27), `coach-routes`, `coach-rules`, `mount-rules`, `groves`      |
 | Dungeons          | `dungeons` (8 hand-authored dungeons with ASCII levels), `ruins` (10 procedural ruin kinds)                                                |

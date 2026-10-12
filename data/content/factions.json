@@ -438,18 +438,18 @@
       "patrols": [
         {
           "asset": "thugs",
-          "enemies": [["thug-or-militia", "thug-or-militia", "thug-or-militia"]]
+          "enemies": [["faithful-acolyte", "faithful-acolyte", "faithful-acolyte"]]
         },
         {
           "asset": "idealistic-thugs",
           "enemies": [
-            ["thug-or-militia", "thug-or-militia", "thug-or-militia", "thug-or-militia"],
-            ["petty-mage"]
+            ["faithful-acolyte", "faithful-acolyte", "faithful-acolyte", "faithful-acolyte"],
+            ["ember-chaplain"]
           ]
         },
         {
           "asset": "armed-guards",
-          "enemies": [["thug-or-militia", "thug-or-militia"]]
+          "enemies": [["faithful-acolyte", "faithful-acolyte"]]
         }
       ]
     }

@@ -42,7 +42,7 @@
         "nature": "wary",
         "groups": [
           {
-            "monster": "herd-beast",
+            "monster": "wild-aurochs",
             "count": {
               "count": 1,
               "sides": 6,
@@ -87,7 +87,7 @@
         "nature": "wary",
         "groups": [
           {
-            "monster": "peaceful-human",
+            "monster": "refugee",
             "count": {
               "count": 1,
               "sides": 6,
@@ -173,7 +173,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "predator-small-vicious",
+            "monster": "briar-stoat",
             "count": {
               "count": 1,
               "sides": 4,
@@ -188,7 +188,7 @@
         "nature": "wary",
         "groups": [
           {
-            "monster": "vicious-large-herbivore",
+            "monster": "wild-tusker",
             "count": 1,
             "row": 0
           }
@@ -290,7 +290,7 @@
             "row": 0
           },
           {
-            "monster": "tribal-shaman",
+            "monster": "beastman-hexer",
             "count": 1,
             "row": 1
           }
@@ -387,7 +387,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "apex-predator",
+            "monster": "crag-stalker",
             "count": 1,
             "row": 0
           }
@@ -398,7 +398,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "predator-large-vicious",
+            "monster": "ridge-ravager",
             "count": 1,
             "row": 0
           }
@@ -424,7 +424,7 @@
         "nature": "wary",
         "groups": [
           {
-            "monster": "herd-beast",
+            "monster": "wild-aurochs",
             "count": {
               "count": 1,
               "sides": 6,
@@ -455,7 +455,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "unnatural-swarm",
+            "monster": "vat-swarm",
             "count": 1,
             "row": 0
           }
@@ -466,7 +466,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "predator-small-vicious",
+            "monster": "mire-gnasher",
             "count": {
               "count": 1,
               "sides": 6,
@@ -481,7 +481,7 @@
         "nature": "wary",
         "groups": [
           {
-            "monster": "herd-beast",
+            "monster": "wild-aurochs",
             "count": {
               "count": 1,
               "sides": 4,
@@ -546,7 +546,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "predator-large-vicious",
+            "monster": "ridge-ravager",
             "count": 1,
             "row": 0
           }
@@ -582,7 +582,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "predator-small-vicious",
+            "monster": "barrow-rat",
             "count": {
               "count": 1,
               "sides": 4,
@@ -612,7 +612,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "slime-or-ooze",
+            "monster": "grave-mold",
             "count": 1,
             "row": 0
           }
@@ -623,7 +623,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "unnatural-swarm",
+            "monster": "barrow-midges",
             "count": 1,
             "row": 0
           }
@@ -634,7 +634,7 @@
         "nature": "wary",
         "groups": [
           {
-            "monster": "thug-or-militia",
+            "monster": "grave-robber",
             "count": {
               "count": 1,
               "sides": 3,
@@ -669,7 +669,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "predator-small-vicious",
+            "monster": "barrow-rat",
             "count": {
               "count": 1,
               "sides": 4,
@@ -699,7 +699,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "slime-or-ooze",
+            "monster": "grave-mold",
             "count": 1,
             "row": 0
           }
@@ -710,7 +710,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "unnatural-swarm",
+            "monster": "barrow-midges",
             "count": 1,
             "row": 0
           }
@@ -721,7 +721,7 @@
         "nature": "wary",
         "groups": [
           {
-            "monster": "thug-or-militia",
+            "monster": "grave-robber",
             "count": {
               "count": 1,
               "sides": 3,
@@ -872,7 +872,7 @@
         "nature": "wary",
         "groups": [
           {
-            "monster": "peaceful-human",
+            "monster": "refugee",
             "count": {
               "count": 1,
               "sides": 4,
@@ -1304,7 +1304,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "apex-predator",
+            "monster": "crag-stalker",
             "count": 1,
             "row": 0
           }
@@ -1368,7 +1368,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "unnatural-swarm",
+            "monster": "vat-swarm",
             "count": 1,
             "row": 0
           }
@@ -1379,7 +1379,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "predator-small-vicious",
+            "monster": "mire-gnasher",
             "count": {
               "count": 1,
               "sides": 4,
@@ -2033,7 +2033,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "apex-predator",
+            "monster": "crag-stalker",
             "count": 1,
             "row": 0
           }
@@ -2571,7 +2571,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "unnatural-swarm",
+            "monster": "vat-swarm",
             "count": 1,
             "row": 0
           }
@@ -2582,7 +2582,7 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "predator-small-vicious",
+            "monster": "mire-gnasher",
             "count": {
               "count": 1,
               "sides": 4,

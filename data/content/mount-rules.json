@@ -18,7 +18,7 @@
       "riderSizes": ["small", "standard"],
       "loadRidden": 5,
       "loadUnridden": 30,
-      "tameFrom": ["herd-beast"]
+      "tameFrom": ["herd-beast", "wild-aurochs"]
     },
     {
       "id": "riding-goat",
