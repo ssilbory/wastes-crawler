@@ -66,7 +66,11 @@ test('fights a bout in the town arena for the prize', async ({ page }, testInfo)
   await start(page, 'arena-e2e');
   await page.getByRole('tab', { name: 'Arena' }).click();
   const card = page.getByRole('region', { name: 'Arena' });
-  await card.getByRole('listitem').filter({ hasText: 'Two pit fighters' }).getByRole('button').click();
+  await card
+    .getByRole('listitem')
+    .filter({ hasText: 'Two pit fighters' })
+    .getByRole('button')
+    .click();
   await page.getByRole('button', { name: 'Auto-resolve' }).click();
   await expect(page.getByRole('status')).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath('arena-bout.png'), fullPage: true });
