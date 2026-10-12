@@ -8,7 +8,7 @@ import {
   StartingPackageSchema,
 } from './equipment-content.ts';
 import { CombatMagicSchema, MonsterCombatSchema } from './combat-content.ts';
-import { ClassOptionSchema, TraditionSchema } from './magic-content.ts';
+import { ClassOptionSchema, MagicEffectsSchema, TraditionSchema } from './magic-content.ts';
 import {
   EncounterTableSchema,
   MishapSchema,
@@ -177,6 +177,7 @@ export const ContentSchemas = {
   townRules: TownRulesSchema,
   skillRules: SkillRulesSchema,
   spellRules: SpellRulesSchema,
+  magicEffects: MagicEffectsSchema,
   npcRules: NpcRulesSchema,
   mountRules: MountRulesSchema,
   captives: z.array(CaptiveSchema).min(1),

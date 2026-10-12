@@ -11,16 +11,31 @@ describe('hover descriptions', () => {
     expect(spellHint(data, 'nope')).toBe('');
   });
 
-  it('give an art its text', () => {
-    const art = data.srd.arts[0] as { id: string; text: string };
-    expect(artHint(data, art.id)).toBe(art.text);
+  it('end a spell with its in-game effect line', () => {
+    const line = data.content.magicEffects.spells['the-wind-of-the-final-repose'];
+    expect(line).toBeTruthy();
+    expect(spellHint(data, 'the-wind-of-the-final-repose').endsWith(`.\nIn game: ${line}`)).toBe(
+      true,
+    );
+  });
+
+  it('give an art its text and its in-game effect line', () => {
+    const art = data.srd.arts.find((a) => a.id === 'counter-magic') as { text: string };
+    const line = data.content.magicEffects.arts['counter-magic'];
+    expect(artHint(data, 'counter-magic')).toBe(`${art.text}\nIn game: ${line}`);
     expect(artHint(data, 'nope')).toBe('');
+  });
+
+  it('give an art the game leaves out its text alone', () => {
+    const art = data.srd.arts.find((a) => a.id === 'arcane-lexicon') as { text: string };
+    expect(artHint(data, 'arcane-lexicon')).toBe(art.text);
   });
 
   it('give a reworked art the game text in place of the SRD text', () => {
     const text = data.content.traditions.find((t) => t.id === 'healer')?.artText['purge-ailment'];
+    const line = data.content.magicEffects.arts['purge-ailment'];
     expect(text).toMatch(/Frailty/);
-    expect(artHint(data, 'purge-ailment')).toBe(text);
+    expect(artHint(data, 'purge-ailment')).toBe(`${text}\nIn game: ${line}`);
   });
 
   it('give a focus its description and its levels, up to the one held', () => {
