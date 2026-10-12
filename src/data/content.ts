@@ -17,6 +17,7 @@ import terrains from '../../data/content/terrains.json';
 import townRules from '../../data/content/town-rules.json';
 import skillRules from '../../data/content/skill-rules.json';
 import spellRules from '../../data/content/spell-rules.json';
+import magicEffects from '../../data/content/magic-effects.json';
 import npcRules from '../../data/content/npc-rules.json';
 import mountRules from '../../data/content/mount-rules.json';
 import captives from '../../data/content/captives.json';
@@ -49,6 +50,7 @@ import { equipmentReferenceErrors } from './equipment-check.ts';
 import { factionReferenceErrors } from './faction-check.ts';
 import { focusReferenceErrors } from './focus-content.ts';
 import { magicReferenceErrors } from './magic-check.ts';
+import { magicEffectErrors } from './magic-effects-check.ts';
 import { overlandReferenceErrors } from './overland-check.ts';
 import { settingReferenceErrors } from './setting-check.ts';
 import { townReferenceErrors } from './town-check.ts';
@@ -85,6 +87,7 @@ export function loadContent(): ContentData {
     townRules: ContentSchemas.townRules.parse(townRules),
     skillRules: ContentSchemas.skillRules.parse(skillRules),
     spellRules: ContentSchemas.spellRules.parse(spellRules),
+    magicEffects: ContentSchemas.magicEffects.parse(magicEffects),
     npcRules: ContentSchemas.npcRules.parse(npcRules),
     mountRules: ContentSchemas.mountRules.parse(mountRules),
     captives: ContentSchemas.captives.parse(captives),
@@ -193,6 +196,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...focusReferenceErrors(srd, content),
     ...equipmentReferenceErrors(srd, content),
     ...magicReferenceErrors(srd, content),
+    ...magicEffectErrors(srd, content),
     ...combatReferenceErrors(srd, content),
     ...factionReferenceErrors(srd, content),
     ...overlandReferenceErrors(srd, content),
