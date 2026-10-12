@@ -25,6 +25,37 @@ const inBounds = (r: Region, h: Hex) =>
 export const siteAt = (r: Region, h: Hex) =>
   r.sites.find((s) => s.col === h.col && s.row === h.row);
 
+/**
+ * A new region of one terrain, all ordinary land, with a village in the middle where a new party
+ * starts (a region needs one settlement). Size is clamped to 4–60 as for random maps. Where the
+ * fill can't be stood on, the middle hex is the first open terrain instead.
+ */
+export function blankRegion(
+  content: ContentData,
+  rng: Rng,
+  o: { id: string; name: string; width: number; height: number; fill: string },
+): Region {
+  const width = Math.min(60, Math.max(4, Math.floor(o.width)));
+  const height = Math.min(60, Math.max(4, Math.floor(o.height)));
+  const fill = content.terrains.find((t) => t.glyph === o.fill);
+  const mid = { col: Math.floor(width / 2), row: Math.floor(height / 2) };
+  const empty: Region = {
+    id: o.id,
+    name: o.name,
+    terrain: Array.from({ length: height }, () => o.fill.repeat(width)),
+    overlay: Array.from({ length: height }, () => '.'.repeat(width)),
+    sites: [],
+    start: '',
+    exits: [],
+    garrisons: [],
+    encounters: {},
+  };
+  const open = content.terrains.find((t) => t.movement === 'open');
+  const r = fill?.movement === 'impassable' && open ? paintTerrain(empty, mid, open.glyph) : empty;
+  const site = newSite(content, rng, r, mid, 'village');
+  return { ...r, sites: [site], start: site.id };
+}
+
 /** Paints a hex's terrain by glyph. */
 export const paintTerrain = (r: Region, h: Hex, glyph: string): Region =>
   inBounds(r, h) ? { ...r, terrain: putAt(r.terrain, h, glyph) } : r;

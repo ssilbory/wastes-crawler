@@ -39,10 +39,12 @@ test('binds a companion in the wilds, sends it away, and calls it back', async (
   const panel = page.getByRole('region', { name: 'Companions' });
   const snag = panel.getByRole('group', { name: 'Snag' });
   await expect(snag).toContainText('Snag has no companion.');
-  await snag.getByRole('combobox', { name: 'Beast' }).selectOption({ label: 'Herd Beast (2 HD)' });
+  await snag
+    .getByRole('combobox', { name: 'Beast' })
+    .selectOption({ label: 'Wild Aurochs (2 HD)' });
   await snag.getByRole('textbox', { name: 'Name' }).fill('Bramble');
   await snag.getByRole('button', { name: 'Bind Companion' }).click();
-  await expect(snag).toContainText('Bramble, Herd Beast (2 HD)');
+  await expect(snag).toContainText('Bramble, Wild Aurochs (2 HD)');
   await expect(snag).toContainText('with the party');
   await expect(page.getByRole('region', { name: 'NPCs' })).toContainText('companion of Snag');
   await snag.getByRole('button', { name: 'Send Bramble away' }).click();

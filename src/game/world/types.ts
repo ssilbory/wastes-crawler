@@ -15,6 +15,7 @@ import type {
   CraftsmanState,
   FactionState,
   Raising,
+  Region,
   TownLedger,
   WorldSave,
 } from '../../data/schemas/index.ts';
@@ -56,6 +57,8 @@ export type Mount = MountSave;
 
 export interface World {
   region: string;
+  /** A custom map from the map editor the world is played on, or null for the campaign. */
+  map: Region | null;
   rng: Rng;
   day: number;
   quarter: number;

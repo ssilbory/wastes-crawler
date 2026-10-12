@@ -164,3 +164,17 @@ fieldset.slots {
   gap: 4px 16px;
   margin: 0 0 10px;
 }
+
+/* The start screen's world: the campaign or a custom map. */
+fieldset.world-pick {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin: 0 0 10px;
+}
+
+fieldset.world-pick > p {
+  flex-basis: 100%;
+  margin: 0;
+}

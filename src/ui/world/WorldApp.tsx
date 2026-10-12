@@ -6,7 +6,7 @@ import { difficultySeed } from '../../game/world/difficulty.ts';
 import { encounterBattle, xpText } from '../../game/world/fight.ts';
 import { passQuarter, settleByFighting, settleByLeaving } from '../../game/world/quarter.ts';
 import { addStarterParty, removeFromRoster } from '../../game/character/roster.ts';
-import { mergeRoster, parseSave, serializeBundle } from '../../game/world/bundle.ts';
+import { mergeRoster, parseSave, savedMap, serializeBundle } from '../../game/world/bundle.ts';
 import { serializeWorld } from '../../game/world/save.ts';
 import { setDefaultAction } from '../../game/world/members.ts';
 import { slotSummary } from '../../render/save-view.ts';
@@ -15,6 +15,7 @@ import { createRng } from '../../rules/rng.ts';
 import { FightScreen } from '../arena/FightScreen.tsx';
 import { data, freshRng } from '../builder/data.ts';
 import { loadPlayable } from '../playable-store.ts';
+import type { Region } from '../../data/schemas/index.ts';
 import {
   SLOTS,
   activeSlot,
@@ -96,6 +97,8 @@ function WorldScreens(props: { track: (w: World, fresh?: boolean) => void }) {
   };
   /** Opens a slot's save, a plain world save, or a full save, whose roster joins this one. */
   const open = (text: string | null) => {
+    // A world on a custom map brings its map, and the dungeons saved on it, into the content.
+    if (text !== null) loadPlayable(savedMap(text));
     const loaded = text === null ? null : parseSave(text, data);
     if (!loaded?.ok) {
       setErrors(loaded ? loaded.errors : ['There is no saved world.']);
@@ -111,10 +114,13 @@ function WorldScreens(props: { track: (w: World, fresh?: boolean) => void }) {
     setScreen('map');
     changed(true);
   };
-  const start = (party: Recruit[], seed: string) => {
-    world.current = newWorld(data, seed.trim() ? createRng(seed.trim()) : freshRng(), party);
+  const start = (party: Recruit[], seed: string, map: Region | null) => {
+    loadPlayable(map);
+    const rng = seed.trim() ? createRng(seed.trim()) : freshRng();
+    world.current = newWorld(data, rng, party, undefined, map);
     setErrors([]);
-    setScreen('intro');
+    // The campaign's introduction names its own lands; a custom map starts on the map.
+    setScreen(map ? 'map' : 'intro');
     changed(true);
   };
 

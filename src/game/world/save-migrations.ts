@@ -206,4 +206,6 @@ export const WORLD_MIGRATIONS: Migrations = {
       benched: untried(raw.benched),
     };
   },
+  // Version 34 adds custom overland maps: older worlds are on the campaign's regions.
+  33: (raw) => ({ ...raw, schemaVersion: 34, map: null }),
 };

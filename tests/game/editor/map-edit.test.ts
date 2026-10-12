@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Dungeon, Region } from '../../../src/data/schemas/index.ts';
 import {
+  blankRegion,
   freeHex,
   mapErrors,
   paintDanger,
@@ -116,5 +117,41 @@ describe('the overland map editor', () => {
     const other = { ...lands, id: 'lands-2', terrain: ['LLL', 'LLL', 'LLL'] };
     const content = { ...data.content, regions: [...data.content.regions, other] };
     expect(mapErrors(data.srd, content, lands, [barrow])).toEqual([]);
+  });
+
+  it('makes a blank region of one terrain with a starting village in the middle', () => {
+    const r = blankRegion(data.content, rng(), {
+      id: 'wilds',
+      name: 'Wilds',
+      width: 6,
+      height: 5,
+      fill: 'f',
+    });
+    expect(r.terrain).toEqual(Array(5).fill('ffffff'));
+    expect(r.overlay).toEqual(Array(5).fill('......'));
+    expect(r.sites).toHaveLength(1);
+    expect(r.sites[0]).toMatchObject({ col: 3, row: 2, size: 'village' });
+    expect(r.start).toBe(r.sites[0]?.id);
+    expect(mapErrors(data.srd, data.content, r, [])).toEqual([]);
+  });
+
+  it('clamps a blank region’s size, and gives its village land on water', () => {
+    const r = blankRegion(data.content, rng(), {
+      id: 'sea',
+      name: 'Sea',
+      width: 1,
+      height: 99,
+      fill: 'L',
+    });
+    expect([r.terrain[0]?.length, r.terrain.length]).toEqual([4, 60]);
+    expect(r.terrain[30]).toBe('LLpL');
+    expect(mapErrors(data.srd, data.content, r, [])).toEqual([]);
+    const noLand = {
+      ...data.content,
+      terrains: data.content.terrains.filter((t) => t.movement !== 'open'),
+    };
+    expect(
+      blankRegion(noLand, rng(), { id: 'x', name: 'X', width: 4, height: 4, fill: 'L' }).terrain[2],
+    ).toBe('LLLL');
   });
 });
