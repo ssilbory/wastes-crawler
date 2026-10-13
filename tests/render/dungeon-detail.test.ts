@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   beams,
+  breach,
   flagstones,
   hash01,
   inQuad,
@@ -95,5 +96,19 @@ describe('dungeon surface detail', () => {
     const b = beams(square);
     expect(segments(b.lines)).toBe(3);
     expect(shapes(b.patches)).toBe(1);
+  });
+
+  it('tears a ragged hole through a wall, open to the floor, the same from either side', () => {
+    const hole = breach(square, '8,8,w');
+    expect(hole).toEqual(breach(square, '8,8,w'));
+    expect(hole.rim).not.toBe(breach(square, '5,8,n').rim);
+    // The wall's outline then the hole, for an even-odd clip.
+    expect(hole.clip.startsWith('M0.0,0.0L100.0,0.0L100.0,100.0L0.0,100.0Z')).toBe(true);
+    expect(hole.clip.endsWith(hole.rim)).toBe(true);
+    const ys = [...hole.rim.matchAll(/[ML][\d.]+,([\d.]+)/g)].map((m) => Number(m[1]));
+    // It reaches the floor so the party can walk it, and stops short of the ceiling.
+    expect(Math.max(...ys)).toBe(100);
+    expect(Math.min(...ys)).toBeGreaterThanOrEqual(10);
+    expect(shapes(hole.rubble)).toBe(5);
   });
 });

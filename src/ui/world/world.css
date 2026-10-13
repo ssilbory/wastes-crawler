@@ -162,6 +162,20 @@
   fill-opacity: 0.7;
 }
 
+/* A wall torn through by magic: a broken rim, and rubble at its foot. */
+.dungeon-view .panel-dug .rim {
+  fill: none;
+  stroke: #2a2420;
+  stroke-width: 1.6;
+  stroke-linejoin: miter;
+}
+
+.dungeon-view .panel-dug .rubble {
+  fill: #6e655b;
+  stroke: #1a1714;
+  stroke-width: 0.6;
+}
+
 /* A known trap: a plate set proud of the floor, its marks, and the party's chalk. */
 .dungeon-view .panel-trap polygon {
   stroke: #0d0c0b;

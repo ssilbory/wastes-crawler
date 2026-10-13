@@ -29,6 +29,7 @@ function at(x: number, y: number, facing: DungeonState['facing'], seen: string[]
   w.light.torch = 6;
   return w;
 }
+const breachOf = (w: World, key: string) => find(w, key)?.breach?.rim;
 const find2 = (panels: ReturnType<typeof sandboxView>) =>
   panels.find((p) => p.key === 'trap-2-0')?.trap;
 const find = (w: World, key: string) => dungeonView(w, data).find((p) => p.key === key);
@@ -110,6 +111,22 @@ describe('first-person dungeon view', () => {
     expect(find(at(1, 4, 'n'), 'front-1-0')?.detail).not.toEqual(first);
     // The same face from the same cell lays the same courses.
     expect(find(at(1, 3, 'n'), 'front-0-0')?.detail).toEqual(first);
+  });
+
+  it('shows a wall dug through by magic as a ragged hole, seen from either side', () => {
+    const w = at(5, 8, 'e');
+    (w.dungeon as DungeonState).dug = { 'barrow-upper': ['5,8,n', '8,8,w'] };
+    const side = find(w, 'left-0-0');
+    expect(side).toMatchObject({ kind: 'dug', frame: null, leaf: null });
+    expect(side?.breach?.rim).toMatch(/^M/);
+    expect(find(w, 'front-2-0')?.kind).toBe('dug');
+    // Up close from either side, the same edge shows the same hole.
+    const near = at(7, 8, 'e');
+    const back = at(8, 8, 'w');
+    for (const v of [near, back]) (v.dungeon as DungeonState).dug = { 'barrow-upper': ['8,8,w'] };
+    expect(breachOf(back, 'front-0-0')).toMatch(/^M/);
+    expect(breachOf(back, 'front-0-0')).toBe(breachOf(near, 'front-0-0'));
+    expect(find(at(5, 8, 'e'), 'left-0-0')?.breach).toBeNull();
   });
 
   it('flags the floor and beams the ceiling of every cell in view', () => {

@@ -73,18 +73,32 @@ export function DungeonView(props: { panels: Panel[]; light: LightView | null; l
           // A trap fades into the floor it lies on, which carries its own shadow.
           opacity={p.trap && light ? 1 - darkness(light, p.span.near) : undefined}
         >
-          {(!p.trap || p.trap.plate) && <polygon points={p.points} fill={p.fill} />}
-          {p.trap && <TrapMarks art={p.trap} />}
-          {p.detail.patches && <path class="patches" d={p.detail.patches} />}
-          {p.detail.lines && <path class="detail" d={p.detail.lines} />}
-          {p.frame && p.leaf && (
-            <>
-              <polygon class="door-frame" points={p.frame} fill={p.leaf.fill} />
-              <path class="detail" d={p.leaf.detail.lines} />
-              <path class="iron" d={p.leaf.detail.patches} />
-            </>
+          {p.breach && (
+            <clipPath id={`dv-breach-${p.key}`}>
+              <path d={p.breach.clip} clip-rule="evenodd" />
+            </clipPath>
           )}
-          {light && !p.trap && <Shadow panel={p} light={light} />}
+          <g clip-path={p.breach ? `url(#dv-breach-${p.key})` : undefined}>
+            {(!p.trap || p.trap.plate) && <polygon points={p.points} fill={p.fill} />}
+            {p.trap && <TrapMarks art={p.trap} />}
+            {p.detail.patches && <path class="patches" d={p.detail.patches} />}
+            {p.detail.lines && <path class="detail" d={p.detail.lines} />}
+            {p.frame && p.leaf && (
+              <>
+                <polygon class="door-frame" points={p.frame} fill={p.leaf.fill} />
+                <path class="detail" d={p.leaf.detail.lines} />
+                <path class="iron" d={p.leaf.detail.patches} />
+              </>
+            )}
+            {light && !p.trap && <Shadow panel={p} light={light} />}
+          </g>
+          {p.breach && (
+            // The broken rim and the rubble at its foot, dimmed with the wall they came from.
+            <g opacity={light ? 1 - darkness(light, p.span.near) : undefined}>
+              <path class="rim" d={p.breach.rim} />
+              <path class="rubble" d={p.breach.rubble} />
+            </g>
+          )}
         </g>
       ))}
       {light && <rect class="glow" width={VIEW_WIDTH} height={VIEW_HEIGHT} fill="url(#dv-glow)" />}

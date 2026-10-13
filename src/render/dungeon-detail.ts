@@ -105,3 +105,43 @@ export function beams(q: Quad): Detail {
   const patches = [shape(inset(q, 0, 1, 0, 0.12))];
   return { lines: lines.join(''), patches: patches.join('') };
 }
+
+/** A wall magic has torn through: the stone left standing, the hole's broken rim, and rubble. */
+export interface Breach {
+  /** The wall's outline and the hole together, to clip the wall with the even-odd rule. */
+  clip: string;
+  rim: string;
+  rubble: string;
+}
+
+/**
+ * A ragged hole through a wall, open to the floor so the party can walk it, its edge jagged by the
+ * hash of the edge so both sides of the wall show the same hole.
+ */
+export function breach(q: Quad, key: string): Breach {
+  const sides = 22;
+  const hole = Array.from({ length: sides }, (_, i) => {
+    const a = (2 * Math.PI * i) / sides;
+    // Alternate bites in and out, so the edge breaks like stone rather than curving.
+    const k = (i % 2 ? 0.9 : 1) + (hash01(`${key}:${i}`) - 0.5) * 0.24;
+    const u = Math.min(0.94, Math.max(0.06, 0.5 + 0.36 * k * Math.cos(a)));
+    const v = Math.min(1, Math.max(0.1, 0.62 + 0.46 * k * Math.sin(a)));
+    return inQuad(q, u, v);
+  });
+  const ring = `M${hole.map(pt).join('L')}Z`;
+  // Broken stone heaped low at the foot of the hole, spilling a little past the wall's base.
+  const rubble = [0.28, 0.4, 0.52, 0.63, 0.74].map((u, i) => {
+    const w = 0.045 + hash01(`${key}:r${i}`) * 0.03;
+    const h = 0.012 + hash01(`${key}:h${i}`) * 0.012;
+    const v = 1 + (hash01(`${key}:v${i}`) - 0.3) * 0.04;
+    const corners: [number, number][] = [
+      [u - w, v],
+      [u - w * 0.4, v - h],
+      [u + w * 0.5, v - h * 0.8],
+      [u + w, v],
+      [u + w * 0.2, v + h * 0.4],
+    ];
+    return `M${corners.map(([x, y]) => pt(inQuad(q, x, y))).join('L')}Z`;
+  });
+  return { clip: shape(q) + ring, rim: ring, rubble: rubble.join('') };
+}

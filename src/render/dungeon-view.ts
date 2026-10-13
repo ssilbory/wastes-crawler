@@ -6,17 +6,19 @@ import type { EdgeKind, LevelMap } from '../data/dungeon-map.ts';
 import type { Trap } from '../data/schemas/index.ts';
 import { levelOf } from '../game/dungeon/explore.ts';
 import { blind } from '../game/dungeon/light.ts';
-import { knownEdges } from '../game/dungeon/secrets.ts';
+import { edgeKey, knownEdges } from '../game/dungeon/secrets.ts';
 import type { GameData } from '../game/character/context.ts';
 import type { World } from '../game/world/types.ts';
 import { ahead, cellKey, turn, type Cell, type Facing } from '../rules/grid.ts';
 import {
   beams,
+  breach,
   flagstones,
   inset,
   planks,
   stonework,
   treads,
+  type Breach,
   type Detail,
   type Quad,
 } from './dungeon-detail.ts';
@@ -38,7 +40,7 @@ import { VIEW_DEPTH } from './dungeon-geometry.ts';
 
 export interface Panel {
   key: string;
-  kind: 'wall' | 'door' | 'up' | 'down' | 'trap' | 'floor' | 'ceiling';
+  kind: 'wall' | 'door' | 'dug' | 'up' | 'down' | 'trap' | 'floor' | 'ceiling';
   /** SVG polygon points. */
   points: string;
   /** A door's leaf inside the panel, or null. */
@@ -46,6 +48,8 @@ export interface Panel {
   fill: string;
   /** Stone, flagstones, or treads drawn over the panel. */
   detail: Detail;
+  /** The hole torn through a dug wall, for a wall opened by magic. */
+  breach: Breach | null;
   /** A known trap's plate, chalk, and marks, for a trap. */
   trap: TrapArt | null;
   /** The door leaf's fill and planks, for a door. */
@@ -76,14 +80,18 @@ function cellAt(at: Cell, f: Facing, depth: number, lateral: number): Cell {
   return ahead(ahead(at, f, depth), turn(f, 'right'), lateral);
 }
 
-/** A wall or door panel; `face` names the cell and side, so its stones stay put between visits. */
+/**
+ * A wall, door, or dug-through wall on the `side` edge of cell `c`. Its stones are keyed by the
+ * cell and side, so they stay put between visits; a hole by the edge, so both sides match.
+ */
 function panel(
   key: string,
-  kind: 'wall' | 'door',
+  kind: 'wall' | 'door' | 'dug',
   q: Quad,
   depth: number,
-  side: boolean,
-  face: string,
+  along: boolean,
+  c: Cell,
+  side: Facing,
 ): Panel {
   const leaf = inset(q, 0.25, 0.75, 0.2, 1);
   return {
@@ -92,11 +100,12 @@ function panel(
     points: fmt(q),
     frame: kind === 'door' ? fmt(leaf) : null,
     // A door is a wooden leaf set in a stone wall.
-    fill: shade('wall', depth, side),
-    detail: stonework(q, face),
+    fill: shade('wall', depth, along),
+    detail: stonework(q, `${cellKey(c)}:${side}`),
+    breach: kind === 'dug' ? breach(q, edgeKey(c, side)) : null,
     trap: null,
-    leaf: kind === 'door' ? { fill: shade('door', depth, side), detail: planks(leaf) } : null,
-    span: side ? alongSide(depth, q) : flatOn(depth + 1, q),
+    leaf: kind === 'door' ? { fill: shade('door', depth, along), detail: planks(leaf) } : null,
+    span: along ? alongSide(depth, q) : flatOn(depth + 1, q),
   };
 }
 
@@ -112,6 +121,7 @@ function flats(depth: number, lateral: number, c: Cell): Panel[] {
       frame: null,
       fill: shade('floor', depth, false),
       detail: flagstones(floor, cellKey(c)),
+      breach: null,
       trap: null,
       leaf: null,
       span: alongFlat(depth, floor),
@@ -123,6 +133,7 @@ function flats(depth: number, lateral: number, c: Cell): Panel[] {
       frame: null,
       fill: shade('ceiling', depth, false),
       detail: beams(ceiling),
+      breach: null,
       trap: null,
       leaf: null,
       span: alongFlat(depth, ceiling),
@@ -141,11 +152,15 @@ function trapPanel(depth: number, lateral: number, c: Cell, look: TrapLook): Pan
     frame: null,
     fill: shade('trap', depth, false),
     detail: { lines: '', patches: '' },
+    breach: null,
     trap: trapArt(floor, upright(depth + 0.5, lateral), cellKey(c), look),
     leaf: null,
     span: flatOn(depth + 0.5, plate),
   };
 }
+
+/** An edge as the view draws it: as the map has it, or a wall the party dug through. */
+type ViewEdge = EdgeKind | 'dug';
 
 /** Everything in view from the party's cell, in drawing order. */
 export function dungeonView(w: World, data: GameData): Panel[] {
@@ -159,7 +174,12 @@ export function dungeonView(w: World, data: GameData): Panel[] {
     if (!known) return null;
     return { effect: effectAt(level.traps, c), disarmed: known === 'disarmed' };
   };
-  return viewPanels(map, s.at, s.facing, knownEdges(w, data), trapLook);
+  // A wall dug through by magic shows its hole rather than vanishing.
+  const known = knownEdges(w, data);
+  const dug = new Set(s.dug[s.level] ?? []);
+  const edge = (c: Cell, side: Facing): ViewEdge =>
+    dug.has(edgeKey(c, side)) ? 'dug' : known(c, side);
+  return viewPanels(map, s.at, s.facing, edge, trapLook);
 }
 
 /** What the trap on a cell does; a T square with no trap written for it hurts. */
@@ -189,14 +209,14 @@ function viewPanels(
   map: LevelMap,
   at: Cell,
   facing: Facing,
-  edge: (c: Cell, side: Facing) => EdgeKind,
+  edge: (c: Cell, side: Facing) => ViewEdge,
   trapLook: (c: Cell) => TrapLook | null,
 ): Panel[] {
   const left = turn(facing, 'left');
   const right = turn(facing, 'right');
   const kindOf = (c: Cell, side: Facing) => {
     const e = edge(c, side);
-    return e === 'open' ? null : e === 'door' ? 'door' : 'wall';
+    return e === 'open' ? null : e === 'door' || e === 'dug' ? e : 'wall';
   };
   const panels: Panel[] = [];
   for (let depth = VIEW_DEPTH - 1; depth >= 0; depth--) {
@@ -222,6 +242,7 @@ function viewPanels(
         frame: null,
         fill: shade(cell, depth, false),
         detail: treads(q),
+        breach: null,
         trap: null,
         leaf: null,
         span: flatOn(depth + 0.5, q),
@@ -229,10 +250,9 @@ function viewPanels(
     }
     for (const { lateral, c } of cells) {
       const kind = kindOf(c, facing);
-      const face = `${cellKey(c)}:${facing}`;
       if (kind)
         panels.push(
-          panel(`front-${depth}-${lateral}`, kind, front(depth, lateral), depth, false, face),
+          panel(`front-${depth}-${lateral}`, kind, front(depth, lateral), depth, false, c, facing),
         );
     }
     for (const { lateral, c } of cells) {
@@ -245,7 +265,8 @@ function viewPanels(
             sideWall(depth, 2 * lateral - 1),
             depth,
             true,
-            `${cellKey(c)}:${left}`,
+            c,
+            left,
           ),
         );
       const r = lateral >= 0 ? kindOf(c, right) : null;
@@ -257,7 +278,8 @@ function viewPanels(
             sideWall(depth, 2 * lateral + 1),
             depth,
             true,
-            `${cellKey(c)}:${right}`,
+            c,
+            right,
           ),
         );
     }
