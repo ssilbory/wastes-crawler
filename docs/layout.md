@@ -138,7 +138,7 @@ Entry: `src/main.ts` → `src/ui/Shell.tsx`, which routes by URL hash: `#/world`
 
 ### src/render/ (pure, read-only view data)
 
-One `*-view.ts` per screen or panel that turns game state into text or drawing data: dungeon first-person view (with `dungeon-geometry.ts` for its planes and quads, `dungeon-detail.ts` for procedural stone and wood, `trap-art.ts` for known traps, and `dungeon-light.ts` for the light's tint and falloff) and automap, hex map (with `hex-art.ts` for terrain glyphs, roads, rivers, and the hour's tint), map editor hexes, level editor grid, arena, town, quests, factions, setting, inventory, stash, gear, attack lines, casting, class picker, describe (hover text), level-up summary, alerts, save slots, settings, plus panel data for antidote, companions, crafting, formation, forms, form-details, greenwood, healer, light, necromancy, purge, sorcery, bestiary.
+One `*-view.ts` per screen or panel that turns game state into text or drawing data: dungeon first-person view (with `dungeon-geometry.ts` for its planes and quads, `dungeon-detail.ts` for procedural stone and wood, `trap-art.ts` for known traps, and `dungeon-light.ts` for the light's tint and falloff) and automap, hex map (with `hex-art.ts` for terrain glyphs, roads, rivers, and the hour's tint, and `hex-water.ts` for shorelines and bridges), map editor hexes, level editor grid, arena, town, quests, factions, setting, inventory, stash, gear, attack lines, casting, class picker, describe (hover text), level-up summary, alerts, save slots, settings, plus panel data for antidote, companions, crafting, formation, forms, form-details, greenwood, healer, light, necromancy, purge, sorcery, bestiary.
 
 ### src/ui/ (Preact components and CSS)
 

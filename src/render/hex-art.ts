@@ -84,12 +84,19 @@ const SLOTS: Record<string, { at: [number, number][]; size: number; jitter: numb
   ford: { at: [[0, 0]], size: 0.7, jitter: 0 },
 };
 
+/** Hexes of water: rivers, the fords across them, and lakes. */
+export const WATER = new Set(['river', 'ford', 'lake']);
+
 /** The glyphs for a known hex, or none for one under fog or of a terrain with no glyph. */
 export function glyphsFor(cell: HexCell, size: number): Glyph[] {
   const slots = cell.terrain ? SLOTS[cell.terrain] : undefined;
   if (!cell.terrain || !slots) return [];
-  // A town, dungeon, or grove keeps the middle of its hex clear for its icon.
-  const busy = cell.site !== null || cell.dungeon !== null || cell.grove !== null;
+  // A town, dungeon, grove, or bridge keeps the middle of its hex clear for its icon.
+  const busy =
+    cell.site !== null ||
+    cell.dungeon !== null ||
+    cell.grove !== null ||
+    (cell.road && WATER.has(cell.terrain));
   return slots.at
     .filter(([dx, dy]) => !busy || Math.hypot(dx, dy) > 0.3)
     .map(([dx, dy], i) => {
@@ -108,8 +115,9 @@ const fmt = (n: number) => n.toFixed(1);
 
 /**
  * A course through linked hexes: in each hex, a curve from the edge it enters by to the edge it
- * leaves by, bending through the hex centre, so a run of hexes draws one smooth line. A hex
- * linked once ends at its centre, and one linked to nothing draws a dot, so it still shows.
+ * leaves by, bending through the hex centre, so a run of hexes draws one smooth line. At an end
+ * or a crossroads each way runs straight to the centre, and a hex linked to nothing draws a dot,
+ * so it still shows.
  */
 function joins(cells: HexCell[], on: (c: HexCell) => boolean, to: (c: HexCell) => boolean) {
   const byKey = new Map(cells.map((c) => [c.key, c]));
@@ -121,10 +129,10 @@ function joins(cells: HexCell[], on: (c: HexCell) => boolean, to: (c: HexCell) =
       .map((n) => `${fmt((c.cx + n.cx) / 2)},${fmt((c.cy + n.cy) / 2)}`);
     const centre = `${fmt(c.cx)},${fmt(c.cy)}`;
     if (edges.length === 0) parts.push(`M${centre}h0.1`);
-    if (edges.length === 1) parts.push(`M${centre}L${edges[0] as string}`);
-    for (let i = 0; i < edges.length; i++)
-      for (let j = i + 1; j < edges.length; j++)
-        parts.push(`M${edges[i] as string}Q${centre} ${edges[j] as string}`);
+    else if (edges.length === 2)
+      parts.push(`M${edges[0] as string}Q${centre} ${edges[1] as string}`);
+    // An end, or a crossroads: each way runs straight in to the centre.
+    else for (const e of edges) parts.push(`M${centre}L${e}`);
   }
   return parts.join('');
 }
@@ -134,8 +142,6 @@ export function roadPath(cells: HexCell[]): string {
   const road = (c: HexCell) => c.road;
   return joins(cells, road, (n) => n.road || n.site !== null);
 }
-
-const WATER = new Set(['river', 'ford', 'lake']);
 
 /** A river's course through known river and ford hexes, joining lakes beside it. */
 export function riverPath(cells: HexCell[]): string {

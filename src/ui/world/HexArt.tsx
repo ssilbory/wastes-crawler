@@ -86,6 +86,21 @@ export function HexArtDefs() {
         <path class="flag" d="M-0.45,-0.95H0.85L0.45,-0.55L0.85,-0.15H-0.45Z" />
         <ellipse class="foot" cx="-0.45" cy="0.92" rx="0.4" ry="0.12" />
       </symbol>
+      <symbol id="hi-bridge" viewBox="-1 -1 2 2">
+        <path class="deck" d="M-0.95,-0.24H0.95V0.24H-0.95Z" />
+        <path class="planks" d="M-0.6,-0.24V0.24M-0.25,-0.24V0.24M0.1,-0.24V0.24M0.45,-0.24V0.24" />
+        <path class="rail" d="M-1,-0.32H1M-1,0.32H1" />
+      </symbol>
+      <symbol id="hi-compass" viewBox="-1 -1 2 2">
+        <circle class="ring" cx="0" cy="0.2" r="0.55" />
+        <path class="point dark" d="M0,-0.5L0.13,0.2H-0.13Z" />
+        <path class="point light" d="M0,0.9L-0.13,0.2H0.13Z" />
+        <path class="point light" d="M-0.7,0.2L0,0.07V0.33Z" />
+        <path class="point dark" d="M0.7,0.2L0,0.33V0.07Z" />
+        <text class="north" x="0" y="-0.56" text-anchor="middle">
+          N
+        </text>
+      </symbol>
     </defs>
   );
 }

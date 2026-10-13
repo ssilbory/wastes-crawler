@@ -56,6 +56,8 @@ describe('overland glyphs', () => {
     expect(glyphsFor(cell(2, 2, { terrain: 'lake', site: 'Rubblegate' }), SIZE)).toEqual([]);
     expect(glyphsFor(cell(2, 2, { terrain: 'ford', dungeon: 'Barrow' }), SIZE)).toEqual([]);
     expect(glyphsFor(cell(2, 2, { terrain: 'ford', grove: 'Grove' }), SIZE)).toEqual([]);
+    // A road over a ford takes a bridge, so its stepping stones give way.
+    expect(glyphsFor(cell(2, 2, { terrain: 'ford', road: true }), SIZE)).toEqual([]);
     // Glyphs set off-centre stay: a mountain hex loses its middle peak and keeps the other.
     expect(glyphsFor(cell(2, 2, { terrain: 'mountains' }), SIZE)).toHaveLength(2);
     expect(glyphsFor(cell(2, 2, { terrain: 'mountains', site: 'Keep' }), SIZE)).toHaveLength(1);
@@ -74,6 +76,19 @@ describe('roads and rivers', () => {
     expect(segments(d)).toBe(3);
     const mid = cells[1] as HexCell;
     expect(d).toContain(`Q${mid.cx.toFixed(1)},${mid.cy.toFixed(1)} `);
+  });
+
+  it('runs each way straight to the centre at a crossroads', () => {
+    const hub = cell(2, 2, { road: true });
+    const ways = [
+      cell(2, 1, { road: true }),
+      cell(1, 2, { road: true }),
+      cell(3, 2, { road: true }),
+    ];
+    const d = roadPath([hub, ...ways]);
+    const centre = `M${hub.cx.toFixed(1)},${hub.cy.toFixed(1)}L`;
+    expect(d.split(centre).length - 1).toBe(3);
+    expect(d).not.toContain(`Q${hub.cx.toFixed(1)}`);
   });
 
   it('runs a road on into a town beside it, and dots a road hex with no road beside it', () => {

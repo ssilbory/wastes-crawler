@@ -66,5 +66,10 @@ read.
 | Theme, CSS | `src/ui/world/hex-map.css` | Parchment and ink colours. Hexes seen but not visited take a pale wash                                                                                                                                                    |
 
 Every terrain in `data/content/terrains.json` has a glyph, and the map editor uses the same map.
-Still open for V2: a bridge where a road crosses a river, coastline and shore edges between land
-and water, and a compass and scale bar.
+
+Added after the first pass (`src/render/hex-water.ts`): an ink shoreline with a pale wash of
+shallows on every edge between known water and known dry land; a plank bridge, laid along the
+road, wherever a road crosses a river or ford; a compass rose in the map's corner. Crossroads now
+run each road straight into the hex centre instead of curving every pair. Still open: a scale bar
+(the SRD's hex is six miles: vendor/wwn-srd/2.0 The Rules of the Game/2.12.0 Wilderness
+Exploration and Expeditions.md).

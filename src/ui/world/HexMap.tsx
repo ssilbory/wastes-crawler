@@ -1,5 +1,6 @@
 import { glyphsFor, riverPath, roadPath, type DayTint } from '../../render/hex-art.ts';
 import type { HexCell } from '../../render/hex-view.ts';
+import { bridges, shores } from '../../render/hex-water.ts';
 import { HexArtDefs } from './HexArt.tsx';
 
 const SIZE = 18;
@@ -30,8 +31,8 @@ function Icon(props: {
 
 /**
  * The overland map as an inked chart on parchment (docs/presentation-plan.md, V2), drawn in
- * layers: terrain and its glyphs, rivers and roads, the light of the hour, the fog of the unknown
- * with soft edges about what the party knows, then one
+ * layers: terrain and its glyphs, shores, rivers, roads and bridges, the light of the hour, the fog of the unknown
+ * with soft edges about what the party knows, a compass rose, then one
  * group per hex with its icons, which takes the clicks; clicking a hex, even under fog, picks it as
  * the destination. With `onDrag`, moving over hexes with the button held picks them too, for
  * painting in the map editor.
@@ -48,6 +49,7 @@ export function HexMap(props: {
 }) {
   const { onDrag, cells, tint } = props;
   const known = cells.filter((c) => c.terrain);
+  const shore = shores(cells, SIZE);
   return (
     <svg
       class="hex-map"
@@ -75,8 +77,22 @@ export function HexMap(props: {
           </g>
         ))}
       </g>
+      <path class="shallows" d={shore.shallows} />
+      <path class="shore" d={shore.line} />
       <path class="river" d={riverPath(cells)} />
       <path class="road" d={roadPath(cells)} />
+      {bridges(cells).map((b) => (
+        <use
+          key={b.key}
+          class="bridge"
+          href="#hi-bridge"
+          x={-SIZE * 0.6}
+          y={-SIZE * 0.6}
+          width={SIZE * 1.2}
+          height={SIZE * 1.2}
+          transform={`translate(${b.x} ${b.y}) rotate(${b.angle})`}
+        />
+      ))}
       {tint && tint.opacity > 0 && (
         <rect
           class="day-tint"
@@ -104,6 +120,14 @@ export function HexMap(props: {
           />
         </>
       )}
+      <use
+        class="compass"
+        href="#hi-compass"
+        x={props.width - SIZE * 3.2}
+        y={SIZE * 0.6}
+        width={SIZE * 2.6}
+        height={SIZE * 2.6}
+      />
       {cells.map((c) => (
         <g
           key={c.key}
