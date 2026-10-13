@@ -6,14 +6,16 @@ import {
   step,
   takeStairs,
   turnParty,
-  type Step,
 } from '../../game/dungeon/explore.ts';
 import { describeDate } from '../../game/world/calendar.ts';
 import type { World } from '../../game/world/types.ts';
-import { automap, FACING_NAMES, MAP_CELL } from '../../render/automap-view.ts';
+import { automap, FACING_NAMES } from '../../render/automap-view.ts';
+import { Automap } from './Automap.tsx';
 import { dungeonView } from '../../render/dungeon-view.ts';
 import { lightView } from '../../render/dungeon-light.ts';
 import { DungeonView } from './DungeonView.tsx';
+import { encounterPortrait } from '../../render/encounter-portrait.ts';
+import { motionOf, type Motion, type PartyMove as Move } from '../../render/dungeon-motion.ts';
 import { data } from '../builder/data.ts';
 import { PartyPanel } from './PartyPanel.tsx';
 import { HealerPanel } from './HealerPanel.tsx';
@@ -46,8 +48,6 @@ import { actionForKey } from '../../game/settings.ts';
 import { getSettings } from '../settings-store.ts';
 import { play } from '../sound.ts';
 
-type Move = { step: Step } | { turn: 'left' | 'right' | 'around' };
-
 /** What each remappable action does here; Search is handled with the other actions. */
 const MOVES: Record<Exclude<KeyAction, 'search'>, Move> = {
   forward: { step: 'forward' },
@@ -71,16 +71,14 @@ export function DungeonScreen(props: {
   const w = props.world;
   const s = w.dungeon as NonNullable<World['dungeon']>;
   const [bump, setBump] = useState<string | null>(null);
+  // The view's motion after each move, numbered so the same motion twice plays twice.
+  const [motion, setMotion] = useState<{ kind: Motion; n: number } | null>(null);
   const move = (m: Move) => {
     if (!w.dungeon) return;
-    if ('step' in m) {
-      const r = step(w, data, m.step);
-      setBump(r.ok ? null : r.reason);
-      play(r.ok ? 'step' : 'bump');
-    } else {
-      const r = turnParty(w, data, m.turn);
-      setBump(r.ok ? null : r.reason);
-    }
+    const r = 'step' in m ? step(w, data, m.step) : turnParty(w, data, m.turn);
+    setBump(r.ok ? null : r.reason);
+    if ('step' in m) play(r.ok ? 'step' : 'bump');
+    setMotion({ kind: motionOf(m, r.ok), n: (motion?.n ?? 0) + 1 });
     props.onChange();
   };
   // Re-listened in the same commit as each render, so keys pressed between renders aren't lost.
@@ -135,6 +133,9 @@ export function DungeonScreen(props: {
         <div class="world-left">
           <div class="dungeon-main">
             <DungeonView
+              key={motion?.n ?? 0}
+              motion={motion?.kind ?? null}
+              foes={w.encounter ? encounterPortrait(data, w.encounter.enemies) : []}
               panels={dungeonView(w, data)}
               light={lightView(w, data)}
               label="Dungeon view"
@@ -231,38 +232,7 @@ export function DungeonScreen(props: {
           {map && (
             <section class="panel" aria-label="Automap">
               <h3>Map</h3>
-              <svg
-                class="automap"
-                viewBox={`-2 -2 ${map.width + 4} ${map.height + 4}`}
-                role="img"
-                aria-label={`Map of ${level.name}`}
-              >
-                {map.cells.map((c) => (
-                  <rect
-                    key={c.key}
-                    class={`seen ${c.kind}`}
-                    x={c.x * MAP_CELL}
-                    y={c.y * MAP_CELL}
-                    width={MAP_CELL}
-                    height={MAP_CELL}
-                  />
-                ))}
-                {map.lines.map((l) => (
-                  <line key={l.key} class={l.kind} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} />
-                ))}
-                {map.sensed.map((c) => (
-                  <circle
-                    key={c.key}
-                    class="sensed"
-                    cx={(c.x + 0.5) * MAP_CELL}
-                    cy={(c.y + 0.5) * MAP_CELL}
-                    r={MAP_CELL * 0.25}
-                  >
-                    <title>A working of magic</title>
-                  </circle>
-                ))}
-                <polygon class="party" points={map.party} />
-              </svg>
+              <Automap map={map} label={`Map of ${level.name}`} />
             </section>
           )}
           {!w.encounter && onSafeSquare(w, data) && (

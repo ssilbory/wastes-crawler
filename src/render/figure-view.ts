@@ -35,6 +35,16 @@ function monsterFigure(data: GameData, c: Combatant, id: string | null): FigureV
   return { kind: 'monster', shape, large: c.tags.has('large') };
 }
 
+/** A monster's figure by its id alone, as an encounter not yet fought shows it. */
+export function monsterFigureOf(data: GameData, id: string): FigureView {
+  const entry = data.content.monsterCombat.find((m) => m.id === id);
+  return {
+    kind: 'monster',
+    shape: entry?.figure ?? 'beast',
+    large: entry?.tags.includes('large') ?? false,
+  };
+}
+
 export function figureOf(data: GameData, c: Combatant): FigureView {
   if (c.kind === 'monster') return monsterFigure(data, c, c.monster ?? c.summoned?.monster ?? null);
   const ch = c.character;

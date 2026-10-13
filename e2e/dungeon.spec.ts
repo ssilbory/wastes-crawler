@@ -100,6 +100,15 @@ test('enters the barrow from the hex map, walks both levels, and climbs out', as
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
     'The party climbs out of The Old Barrow.',
   );
+
+  // Going back down, the party still has its map (docs/rules-adaptation.md, Charts).
+  await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
+  await expect(bar).toContainText('The Upper Barrow, facing north');
+  // The day's notices can pop up over the map; they're not what this checks.
+  await expect(page.getByRole('img', { name: 'Map of The Upper Barrow' })).toHaveScreenshot(
+    'barrow-upper-map-again.png',
+    { mask: [page.locator('.toasts')] },
+  );
 });
 
 // Phase 8a: exploration turns, light, wandering encounters, camping, and darkness.

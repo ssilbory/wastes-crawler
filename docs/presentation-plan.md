@@ -117,3 +117,14 @@ Each with Sam's ruling in `docs/rules-adaptation.md` (Formation rules) before co
 | Swapping            | `act` in `src/game/combat/actions.ts`, `moveChoices` in `commands.ts`    | Change slot now offers allies' slots too: "trade places with Grukk", for the mover's action alone. Works on a downed ally, to pull a fallen front-liner back                                                  |
 | Fighting Withdrawal | none                                                                     | Stepping back out of melee draws no free attack, so the SRD's Fighting Withdrawal has no use. Noted on the Moving rows ruling                                                                                 |
 | Holding             | `holdTurn` in `src/game/combat/round.ts`, `holdChoices` in `commands.ts` | Hold: pick anyone still to act this round, and the turn comes again right after theirs. Once a round; On Turn actions aren't taken twice. Monsters and default actions never hold, so `pnpm sim` is unchanged |
+
+## V4: dungeon (first slice)
+
+| Piece    | Where                                                                       | What it does                                                                                                                                                                                      |
+| -------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Legend   | `automapLegend` in `src/render/automap-view.ts`, `src/ui/world/Automap.tsx` | Under the automap, a scale of up to five cell-long blocks in feet (10-foot cells, Turns in `rules-adaptation.md`) and a compass: the map is drawn north up                                        |
+| Motion   | `src/render/dungeon-motion.ts`, `DungeonView.tsx`, `world.css`              | The view grows on a step forward, shrinks on a step back, slides on a sidestep, swings on a turn, and shakes when a wall stops the party. The light stays put. Off under `prefers-reduced-motion` |
+| Portrait | `src/render/encounter-portrait.ts`, `DungeonView.tsx`                       | A pending encounter's foes stand in the corridor ahead as the fight screen's silhouettes, dark against the torchlight, each row further back smaller and dimmer. Pitch dark shows none            |
+| Charts   | `src/game/dungeon/chart.ts`, `World.charted` (save version 35)              | Not presentation, asked for while this was built: the party keeps its map of a dungeon between visits (Sam's call, `rules-adaptation.md`, Charts). A changed layout starts a fresh map            |
+
+Still to come in V4: furniture (rubble, bones, altars, fountains, braziers) as a level-format field and in the editor.

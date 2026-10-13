@@ -60,6 +60,8 @@ describe('High Magic travel spells (Sam’s calls)', () => {
     expect(castersOf(w, SIGIL)).toEqual([f]);
     expect(sigilEscape(w, data, f.id)).toEqual({ ok: true });
     expect([w.dungeon, w.light.lit, f.spellsCast, w.position]).toEqual([null, null, 1, at]);
+    // The party keeps its map of the way it came (Charts).
+    expect(w.charted['old-barrow']?.seen['barrow-upper']).not.toHaveLength(0);
     expect(w.log.at(-1)).toContain('Fizzwick speaks the sigil');
     expect(sigilEscape(w, data, f.id)).toEqual({
       ok: false,

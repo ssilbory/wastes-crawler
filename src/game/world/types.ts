@@ -2,6 +2,7 @@
 import type {
   Character,
   CoachTrip,
+  DungeonChart,
   DungeonState,
   Light,
   DefaultPreset,
@@ -84,6 +85,8 @@ export interface World {
   arenaDay: number | null;
   quests: Record<string, QuestState>;
   dungeon: DungeonState | null;
+  /** The party's maps of dungeons it has left, by dungeon id (dungeon/chart.ts). */
+  charted: Record<string, DungeonChart>;
   light: Omit<Light, 'torch' | 'lantern'> & { torch: ResourceDie; lantern: ResourceDie };
   rescues: string[];
   raising: Raising;

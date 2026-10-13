@@ -115,6 +115,8 @@ describe('a fallen party', () => {
       quarter: 0,
     });
     expect(member(w, 'Snag').dead).toBe(true);
+    // Falling on the surface charts nothing.
+    expect(w.charted).toEqual({});
     w.lastTown = 'atlantis';
     expect(() => wipe(w, data)).toThrow('unknown town atlantis');
   });

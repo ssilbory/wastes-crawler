@@ -6,18 +6,25 @@ import type { FigureView } from '../../render/figure-view.ts';
  * take the slot's colour to carve details out of it.
  */
 export function Figure(props: { figure: FigureView; down: boolean }) {
-  const { parts, transform } = drawFigure(props.figure, props.down);
   return (
     <svg class="figure" viewBox="0 0 48 48" aria-hidden="true">
-      <g transform={transform}>
-        {parts.map((p, i) =>
-          p.kind === 'fill' ? (
-            <path key={i} class="fill" d={p.d} />
-          ) : (
-            <path key={i} class={p.kind} d={p.d} stroke-width={p.width} />
-          ),
-        )}
-      </g>
+      <FigureParts figure={props.figure} down={props.down} />
     </svg>
+  );
+}
+
+/** A figure's paths in its 48 by 48 box, for drawing inside another SVG. */
+export function FigureParts(props: { figure: FigureView; down: boolean }) {
+  const { parts, transform } = drawFigure(props.figure, props.down);
+  return (
+    <g transform={transform}>
+      {parts.map((p, i) =>
+        p.kind === 'fill' ? (
+          <path key={i} class="fill" d={p.d} />
+        ) : (
+          <path key={i} class={p.kind} d={p.d} stroke-width={p.width} />
+        ),
+      )}
+    </g>
   );
 }

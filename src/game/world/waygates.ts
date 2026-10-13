@@ -7,6 +7,7 @@ import { distance, hexKey, type Hex } from '../../rules/hex.ts';
 import type { Site } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
 import { douse } from '../dungeon/light.ts';
+import { chartDungeon } from '../dungeon/chart.ts';
 import { emit } from './bus.ts';
 import { cannotCast, spendCast } from './casting.ts';
 import { hexesToAvoid } from './groves.ts';
@@ -41,6 +42,7 @@ export function sigilEscape(w: World, data: GameData, memberId: string): TownRes
   const m = caster(w, data, memberId, SIGIL);
   if (typeof m === 'string') return no(m);
   spendCast(data, m, SIGIL);
+  chartDungeon(w, data);
   w.dungeon = null;
   douse(w);
   note(w, `${m.character.name} speaks the sigil, and the party stands outside under the sky.`);
