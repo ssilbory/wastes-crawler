@@ -186,6 +186,23 @@ test('searches out the secret closet and works on a known trap', async ({ page }
   await expect(log).toContainText(/(disarms|can't work out|fumbles) the dart trap/);
 });
 
+// Presentation V1: a wall dug through by magic shows a ragged hole, not a gap, and can be walked.
+test('shows a wall dug through by magic as a ragged hole', async ({ page }) => {
+  await startAtBarrow(page);
+  await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
+  await edit(
+    page,
+    `save.encounter = null;
+     Object.assign(save.dungeon, { at: { x: 5, y: 8 }, facing: 'e' });
+     save.dungeon.dug = { 'barrow-upper': ['5,8,n', '8,8,w'] };`,
+  );
+  const view = page.getByRole('img', { name: 'Dungeon view' });
+  await expect(view).toHaveScreenshot('barrow-breach.png');
+  await keys(page, 'a');
+  await page.getByRole('button', { name: 'Forward' }).click();
+  await expect(page.locator('.bump')).toHaveText(' ');
+});
+
 test('shows a notice on picking up a quest item', async ({ page }) => {
   await startAtBarrow(page);
   await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();

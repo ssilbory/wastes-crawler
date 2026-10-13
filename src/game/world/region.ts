@@ -86,12 +86,20 @@ export function seenHexes(map: RegionMap, visited: ReadonlySet<string>): Set<str
 }
 
 /** Cheapest hike-point costs from `from` through known hexes, stopping once `goal` is settled. */
+/**
+ * A hike planner's nudge toward roads (Sam's call, docs/rules-adaptation.md, Overland travel: Route):
+ * each step off a road costs this much more, too little ever to outweigh a hike point. A region is
+ * at most 32 by 24 hexes, so even a route through every hex off-road adds under one point.
+ */
+export const OFF_ROAD = 1 / 1024;
+
 function explore(
   map: RegionMap,
   from: Hex,
   known: ReadonlySet<string>,
   avoid: ReadonlySet<string>,
   goal?: string,
+  preferRoads = false,
 ): { best: Map<string, number>; prev: Map<string, Hex> } {
   const best = new Map<string, number>([[hexKey(from), 0]]);
   const prev = new Map<string, Hex>();
@@ -106,7 +114,7 @@ function explore(
       const step = map.costOf(n);
       const nKey = hexKey(n);
       if (step === null || !known.has(nKey) || avoid.has(nKey)) continue;
-      const next = cost + step;
+      const next = cost + step + (preferRoads && map.dangerAt(n) !== 'road' ? OFF_ROAD : 0);
       if (next < (best.get(nKey) ?? Infinity)) {
         best.set(nKey, next);
         prev.set(nKey, hex);
@@ -127,7 +135,8 @@ function trace(prev: ReadonlyMap<string, Hex>, from: Hex, to: Hex): Hex[] {
 
 /**
  * The cheapest route by hike points through hexes the party knows (seen), ending at `to` and
- * going around the hexes in `avoid`. Returns the hexes after `from`, or null if there's no route.
+ * going around the hexes in `avoid`. With `preferRoads`, of routes that cost the same it takes the
+ * one with the most road. Returns the hexes after `from`, or null if there's no route.
  */
 export function findPath(
   map: RegionMap,
@@ -135,17 +144,19 @@ export function findPath(
   to: Hex,
   known: ReadonlySet<string>,
   avoid: ReadonlySet<string> = new Set(),
+  preferRoads = false,
 ): Hex[] | null {
   const goal = hexKey(to);
   if (!known.has(goal) || map.costOf(to) === null) return null;
-  const { prev } = explore(map, from, known, avoid, goal);
+  const { prev } = explore(map, from, known, avoid, goal, preferRoads);
   return prev.has(goal) ? trace(prev, from, to) : null;
 }
 
 /**
- * A route toward `to`: findPath's once `to` is known; while it's unexplored, the route to the
- * reachable known hex nearest it, cheapest on ties, so fog never gives its terrain away. Null if
- * that gets the party no closer than it is.
+ * The hike planner's route toward `to`: findPath's once `to` is known; while it's unexplored, the
+ * route to the reachable known hex nearest it, cheapest on ties, so fog never gives its terrain
+ * away. Of routes that cost the same, it keeps to roads. Null if that gets the party no closer
+ * than it is.
  */
 export function pathToward(
   map: RegionMap,
@@ -154,8 +165,8 @@ export function pathToward(
   known: ReadonlySet<string>,
   avoid: ReadonlySet<string> = new Set(),
 ): Hex[] | null {
-  if (known.has(hexKey(to))) return findPath(map, from, to, known, avoid);
-  const { best, prev } = explore(map, from, known, avoid);
+  if (known.has(hexKey(to))) return findPath(map, from, to, known, avoid, true);
+  const { best, prev } = explore(map, from, known, avoid, undefined, true);
   let goal = from;
   let near = distance(from, to);
   let goalCost = 0;

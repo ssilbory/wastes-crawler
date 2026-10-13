@@ -100,7 +100,8 @@ describe('hiking', () => {
     const w = at(world(), 3, 8);
     w.destination = { col: 8, row: 8 };
     hike(w, data, 'm-2', false);
-    expect(w.position).toEqual({ col: 5, row: 7 });
+    // As cheap as cutting across the plain, so it keeps to the road on row 8.
+    expect(w.position).toEqual({ col: 5, row: 8 });
     expect(w.destination).toEqual({ col: 8, row: 8 });
     // The lake at 6,4 shows once the party stands beside it.
     at(w, 6, 7);

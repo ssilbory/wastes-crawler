@@ -8,6 +8,7 @@ import { hexCells, mapPixels } from '../../render/hex-view.ts';
 import { crowns, lootText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { HEX_SIZE, HexMap } from './HexMap.tsx';
+import { dayTint } from '../../render/hex-art.ts';
 import { PartyPanel } from './PartyPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
 import { FactionsPanel } from './FactionsPanel.tsx';
@@ -116,6 +117,7 @@ export function MapScreen(props: {
               )}
               width={width}
               height={height}
+              tint={dayTint(w.quarter)}
               onPick={(col, row) => {
                 if (!w.encounter && !w.coach && setDestination(w, data, { col, row }))
                   props.onChange();

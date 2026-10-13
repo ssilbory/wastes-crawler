@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import type { DungeonState } from '../../src/data/schemas/index.ts';
 import type { World } from '../../src/game/world/types.ts';
 import { automap } from '../../src/render/automap-view.ts';
-import { dungeonView, shade } from '../../src/render/dungeon-view.ts';
+import { levelOf } from '../../src/game/dungeon/explore.ts';
+import { dungeonView, sandboxView, shade } from '../../src/render/dungeon-view.ts';
 import { lightText, turnText } from '../../src/render/light-view.ts';
 import { data, world } from '../game/world/helpers.ts';
 
@@ -28,6 +29,9 @@ function at(x: number, y: number, facing: DungeonState['facing'], seen: string[]
   w.light.torch = 6;
   return w;
 }
+const breachOf = (w: World, key: string) => find(w, key)?.breach?.rim;
+const find2 = (panels: ReturnType<typeof sandboxView>) =>
+  panels.find((p) => p.key === 'trap-2-0')?.trap;
 const find = (w: World, key: string) => dungeonView(w, data).find((p) => p.key === key);
 
 describe('first-person dungeon view', () => {
@@ -72,15 +76,83 @@ describe('first-person dungeon view', () => {
 
   it('keeps to the level at its edges', () => {
     const corner = dungeonView(at(0, 9, 'w'), data);
-    expect(corner.map((p) => p.key)).toEqual(['front-0-1', 'front-0-0', 'left-0-0']);
+    expect(corner.map((p) => p.key)).toEqual([
+      'floor-0-1',
+      'ceiling-0-1',
+      'floor-0-0',
+      'ceiling-0-0',
+      'front-0-1',
+      'front-0-0',
+      'left-0-0',
+    ]);
   });
 
-  it('shades by distance and face, never darker than the floor of the scale', () => {
-    expect(shade('wall', 0, false)).toBe('hsl(32 10% 60%)');
-    expect(shade('wall', 1, true)).toBe('hsl(32 10% 35%)');
-    expect(shade('door', 0, false)).toBe('hsl(28 42% 52%)');
-    expect(shade('down', 0, false)).toBe('hsl(42 30% 46%)');
-    expect(shade('wall', 10, false)).toBe('hsl(32 10% 8%)');
+  it('shades by face with a gentle step for distance, never darker than the floor of the scale', () => {
+    expect(shade('wall', 0, false)).toBe('hsl(32 10% 58%)');
+    expect(shade('wall', 1, true)).toBe('hsl(32 10% 43%)');
+    expect(shade('door', 0, false)).toBe('hsl(26 38% 40%)');
+    expect(shade('floor', 0, false)).toBe('hsl(30 14% 38%)');
+    expect(shade('ceiling', 0, false)).toBe('hsl(220 6% 26%)');
+    expect(shade('down', 0, false)).toBe('hsl(42 30% 44%)');
+    expect(shade('wall', 10, false)).toBe('hsl(32 10% 20%)');
+  });
+
+  it('sets a wooden leaf in a stone wall for a door, and stone on every wall', () => {
+    const door = find(at(1, 3, 'n'), 'front-0-0');
+    expect(door?.fill).toBe(shade('wall', 0, false));
+    expect(door?.leaf?.fill).toBe(shade('door', 0, false));
+    expect(door?.leaf?.detail.lines).toMatch(/^M/);
+    expect(door?.detail.lines).toMatch(/^M/);
+    expect(find(at(1, 3, 'n'), 'right-0-0')?.leaf).toBeNull();
+  });
+
+  it('keeps a wall’s stones where they were when the party comes back', () => {
+    const first = find(at(1, 3, 'n'), 'front-0-0')?.detail;
+    expect(find(at(1, 4, 'n'), 'front-1-0')?.detail).not.toEqual(first);
+    // The same face from the same cell lays the same courses.
+    expect(find(at(1, 3, 'n'), 'front-0-0')?.detail).toEqual(first);
+  });
+
+  it('shows a wall dug through by magic as a ragged hole, seen from either side', () => {
+    const w = at(5, 8, 'e');
+    (w.dungeon as DungeonState).dug = { 'barrow-upper': ['5,8,n', '8,8,w'] };
+    const side = find(w, 'left-0-0');
+    expect(side).toMatchObject({ kind: 'dug', frame: null, leaf: null });
+    expect(side?.breach?.rim).toMatch(/^M/);
+    expect(find(w, 'front-2-0')?.kind).toBe('dug');
+    // Up close from either side, the same edge shows the same hole.
+    const near = at(7, 8, 'e');
+    const back = at(8, 8, 'w');
+    for (const v of [near, back]) (v.dungeon as DungeonState).dug = { 'barrow-upper': ['8,8,w'] };
+    expect(breachOf(back, 'front-0-0')).toMatch(/^M/);
+    expect(breachOf(back, 'front-0-0')).toBe(breachOf(near, 'front-0-0'));
+    expect(find(at(5, 8, 'e'), 'left-0-0')?.breach).toBeNull();
+  });
+
+  it('flags the floor and beams the ceiling of every cell in view', () => {
+    const w = at(1, 8, 'e');
+    expect(find(w, 'floor-0-0')).toMatchObject({ kind: 'floor', fill: shade('floor', 0, false) });
+    expect(find(w, 'ceiling-0-0')).toMatchObject({
+      kind: 'ceiling',
+      fill: shade('ceiling', 0, false),
+    });
+    expect(find(w, 'floor-0-0')?.detail.lines).toMatch(/^M/);
+  });
+
+  it('spans each panel from the party, for the light to fade along', () => {
+    const w = at(1, 8, 'e');
+    // A face square to the view sits on one plane.
+    expect(find(w, 'front-1-0')?.span).toMatchObject({ near: 2, far: 2 });
+    // A side wall and a floor run from their near edge to their far one.
+    const left = find(at(1, 3, 'n'), 'left-0-0')?.span;
+    expect(left).toMatchObject({ near: 0, far: 1, from: [0, 120], to: [80, 120] });
+    expect(find(w, 'floor-0-0')?.span).toMatchObject({
+      near: 0,
+      far: 1,
+      from: [160, 240],
+      to: [160, 180],
+    });
+    expect(find(w, 'ceiling-0-0')?.span).toMatchObject({ from: [160, 0], to: [160, 60] });
   });
 });
 
@@ -152,15 +224,29 @@ describe('found secrets and known traps', () => {
     expect(automap(w, data)?.lines.find((l) => l.key === '64,16,64,32')?.kind).toBe('door');
   });
 
-  it('shows a trap only once the party knows of it, and not once disarmed', () => {
+  it('shows a trap once the party knows of it, and keeps it in view once disarmed', () => {
     const w = at(4, 8, 'n', ['4,6']);
     expect(find(w, 'trap-2-0')).toBeUndefined();
     expect(automap(w, data)?.cells[0]?.kind).toBe('floor');
     (w.dungeon as DungeonState).traps = { 'barrow-upper': { '4,6': 'noticed' } };
-    expect(find(w, 'trap-2-0')).toMatchObject({ kind: 'trap', fill: shade('trap', 2, false) });
+    const armed = find(w, 'trap-2-0');
+    expect(armed).toMatchObject({ kind: 'trap', fill: shade('trap', 2, false) });
+    // The barrow's trap hurts: a plate with spike holes, nothing wedged.
+    expect(armed?.trap).toMatchObject({ plate: true, wedge: '' });
+    expect(armed?.trap?.holes).toMatch(/^M/);
     expect(automap(w, data)?.cells[0]?.kind).toBe('trap');
     (w.dungeon as DungeonState).traps = { 'barrow-upper': { '4,6': 'disarmed' } };
-    expect(find(w, 'trap-2-0')).toBeUndefined();
-    expect(shade('trap', 0, false)).toBe('hsl(2 60% 48%)');
+    expect(find(w, 'trap-2-0')?.trap?.wedge).toMatch(/^M/);
+    expect(shade('trap', 0, false)).toBe('hsl(34 12% 42%)');
+  });
+
+  it('shows the test walk every trap armed, by the level’s traps or as a plate without them', () => {
+    const { map, level } = levelOf(data, 'old-barrow', 'barrow-upper');
+    const alarm = level.traps.map((t) => ({ ...t, effect: { kind: 'alarm' as const } }));
+    expect(find2(sandboxView(map, { x: 4, y: 8 }, 'n', alarm))).toMatchObject({ plate: false });
+    expect(find2(sandboxView(map, { x: 4, y: 8 }, 'n'))).toMatchObject({
+      plate: true,
+      wedge: '',
+    });
   });
 });

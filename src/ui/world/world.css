@@ -118,11 +118,11 @@
 }
 
 .dungeon-view .ceiling {
-  fill: #1a1b20;
+  fill: #0b0b0d;
 }
 
 .dungeon-view .floor {
-  fill: #2e2924;
+  fill: #0d0c0b;
 }
 
 .dungeon-view polygon {
@@ -131,8 +131,139 @@
   stroke-linejoin: round;
 }
 
-.dungeon-view .door-frame {
-  fill: #2a1d12;
+.dungeon-view .panel-floor polygon,
+.dungeon-view .panel-ceiling polygon {
+  stroke: none;
+}
+
+/* Procedural stone, flagstones, planks, and treads (docs/presentation-plan.md, V1). */
+.dungeon-view .detail {
+  fill: none;
+  stroke: #0d0c0b;
+  stroke-width: 0.7;
+  stroke-opacity: 0.55;
+  stroke-linecap: round;
+}
+
+.dungeon-view .patches {
+  fill: #0d0c0b;
+  fill-opacity: 0.16;
+  stroke: none;
+}
+
+.dungeon-view .panel-ceiling .detail {
+  stroke: #6b6056;
+  stroke-width: 0.9;
+  stroke-opacity: 0.6;
+}
+
+.dungeon-view .panel-ceiling .patches {
+  fill: #4a4038;
+  fill-opacity: 0.7;
+}
+
+/* A wall torn through by magic: a broken rim, and rubble at its foot. */
+.dungeon-view .panel-dug .rim {
+  fill: none;
+  stroke: #2a2420;
+  stroke-width: 1.6;
+  stroke-linejoin: miter;
+}
+
+.dungeon-view .panel-dug .rubble {
+  fill: #6e655b;
+  stroke: #1a1714;
+  stroke-width: 0.6;
+}
+
+/* A known trap: a plate set proud of the floor, its marks, and the party's chalk. */
+.dungeon-view .panel-trap polygon {
+  stroke: #0d0c0b;
+  stroke-width: 1.4;
+}
+
+.dungeon-view .panel-trap .holes {
+  fill: #0d0c0b;
+  stroke: none;
+}
+
+.dungeon-view .panel-trap .wire {
+  fill: none;
+  stroke: #c9b07a;
+  stroke-width: 1.1;
+  stroke-linecap: round;
+}
+
+.dungeon-view .panel-trap .stain.poison {
+  fill: #5f8a3a;
+  fill-opacity: 0.55;
+}
+
+.dungeon-view .panel-trap .stain.disease {
+  fill: #3e3a1c;
+  fill-opacity: 0.75;
+}
+
+.dungeon-view .panel-trap .wedge {
+  fill: #7a5232;
+  stroke: #0d0c0b;
+  stroke-width: 0.5;
+}
+
+.dungeon-view .panel-trap .chalk {
+  fill: none;
+  stroke: #e8e4d8;
+  stroke-width: 1.1;
+  stroke-opacity: 0.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 5 1.5;
+}
+
+.dungeon-view .iron {
+  fill: #2b2a2c;
+  stroke: #0d0c0b;
+  stroke-width: 0.5;
+}
+
+.dungeon-view .shadow {
+  stroke: none;
+}
+
+.dungeon-view .glow {
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* A torch breathes: the dark leans in and draws back. Screenshots freeze it. */
+.dungeon-view.flicker .shadow,
+.dungeon-view.flicker .glow {
+  animation: torch-flicker 2.3s ease-in-out infinite alternate;
+}
+
+@keyframes torch-flicker {
+  0% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 0.88;
+  }
+  55% {
+    opacity: 0.97;
+  }
+  80% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0.93;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dungeon-view.flicker .shadow,
+  .dungeon-view.flicker .glow {
+    animation: none;
+  }
 }
 
 .dungeon .bump {

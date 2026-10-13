@@ -10,7 +10,9 @@ import {
   type WalkStep,
 } from '../../game/dungeon/sandbox.ts';
 import { actionForKey } from '../../game/settings.ts';
-import { sandboxView, VIEW_HEIGHT, VIEW_WIDTH } from '../../render/dungeon-view.ts';
+import { sandboxView } from '../../render/dungeon-view.ts';
+import { walkLight } from '../../render/dungeon-light.ts';
+import { DungeonView } from '../world/DungeonView.tsx';
 import { getSettings } from '../settings-store.ts';
 
 /** The editor's test walk: the edited geometry in first person, with the dungeon keys. */
@@ -70,22 +72,20 @@ export function WalkPanel(props: {
         </button>
       ) : (
         <>
-          <svg
-            class="dungeon-view"
-            viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}
-            role="img"
-            aria-label="Test walk view"
-          >
-            <rect class="ceiling" width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
-            <rect class="floor" y={VIEW_HEIGHT / 2} width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
-            {map &&
-              sandboxView(map, walk.at, walk.facing).map((p) => (
-                <g key={p.key} class={`panel-${p.kind}`}>
-                  <polygon points={p.points} fill={p.fill} />
-                  {p.frame && <polygon class="door-frame" points={p.frame} />}
-                </g>
-              ))}
-          </svg>
+          <DungeonView
+            panels={
+              map
+                ? sandboxView(
+                    map,
+                    walk.at,
+                    walk.facing,
+                    edited.levels.find((l) => l.id === walk.level)?.traps,
+                  )
+                : []
+            }
+            light={walkLight()}
+            label="Test walk view"
+          />
           <p class="bump" aria-live="polite">
             {bump ?? ' '}
           </p>
