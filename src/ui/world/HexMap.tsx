@@ -1,12 +1,40 @@
+import { glyphsFor, riverPath, roadPath, type DayTint } from '../../render/hex-art.ts';
 import type { HexCell } from '../../render/hex-view.ts';
+import { HexArtDefs } from './HexArt.tsx';
 
 const SIZE = 18;
 
 export const HEX_SIZE = SIZE;
 
+/** An icon symbol centred on a hex, `scale` hex radii across. */
+function Icon(props: {
+  cell: HexCell;
+  symbol: string;
+  class: string;
+  scale: number;
+  dx?: number;
+  dy?: number;
+}) {
+  const s = SIZE * props.scale;
+  return (
+    <use
+      class={props.class}
+      href={`#${props.symbol}`}
+      x={props.cell.cx - s / 2 + (props.dx ?? 0) * SIZE}
+      y={props.cell.cy - s / 2 + (props.dy ?? 0) * SIZE}
+      width={s}
+      height={s}
+    />
+  );
+}
+
 /**
- * The overland map as SVG; clicking a hex, even under fog, picks it as the destination. With
- * `onDrag`, moving over hexes with the button held picks them too, for painting in the map editor.
+ * The overland map as an inked chart on parchment (docs/presentation-plan.md, V2), drawn in
+ * layers: terrain and its glyphs, rivers and roads, the light of the hour, the fog of the unknown
+ * with soft edges about what the party knows, then one
+ * group per hex with its icons, which takes the clicks; clicking a hex, even under fog, picks it as
+ * the destination. With `onDrag`, moving over hexes with the button held picks them too, for
+ * painting in the map editor.
  */
 export function HexMap(props: {
   cells: HexCell[];
@@ -15,8 +43,11 @@ export function HexMap(props: {
   onPick: (col: number, row: number) => void;
   onDrag?: (col: number, row: number) => void;
   label?: string;
+  /** The light of the quarter of the day, over the land but under the icons. */
+  tint?: DayTint;
 }) {
-  const { onDrag } = props;
+  const { onDrag, cells, tint } = props;
+  const known = cells.filter((c) => c.terrain);
   return (
     <svg
       class="hex-map"
@@ -24,7 +55,56 @@ export function HexMap(props: {
       role="img"
       aria-label={props.label ?? 'Overland map'}
     >
-      {props.cells.map((c) => (
+      <HexArtDefs />
+      <rect class="paper" width={props.width} height={props.height} fill="url(#hm-paper)" />
+      <g class="ground">
+        {known.map((c) => (
+          <g key={c.key} class={`t-${c.terrain}${c.visited ? '' : ' unvisited'}`}>
+            <polygon points={c.points} />
+            {glyphsFor(c, SIZE).map((g, i) => (
+              <use
+                key={i}
+                href={`#${g.symbol}`}
+                x={g.x - g.size / 2}
+                y={g.y - g.size / 2}
+                width={g.size}
+                height={g.size}
+              />
+            ))}
+            {!c.visited && <polygon class="wash" points={c.points} />}
+          </g>
+        ))}
+      </g>
+      <path class="river" d={riverPath(cells)} />
+      <path class="road" d={roadPath(cells)} />
+      {tint && tint.opacity > 0 && (
+        <rect
+          class="day-tint"
+          width={props.width}
+          height={props.height}
+          fill={tint.color}
+          fill-opacity={tint.opacity}
+        />
+      )}
+      {known.length < cells.length && (
+        <>
+          <mask id="hm-fog-mask">
+            <rect width={props.width} height={props.height} fill="#fff" />
+            <g filter="url(#hm-fog)">
+              {known.map((c) => (
+                <polygon key={c.key} points={c.points} fill="#000" />
+              ))}
+            </g>
+          </mask>
+          <rect
+            class="fog-layer"
+            width={props.width}
+            height={props.height}
+            mask="url(#hm-fog-mask)"
+          />
+        </>
+      )}
+      {cells.map((c) => (
         <g
           key={c.key}
           class={[
@@ -44,44 +124,54 @@ export function HexMap(props: {
           }
         >
           <title>{c.label}</title>
-          <polygon points={c.points} />
-          {c.road && <circle class="road" cx={c.cx} cy={c.cy} r={SIZE * 0.18} />}
+          <polygon class="hit" points={c.points} />
           {c.site && (
             <>
-              <rect
-                class="site"
-                x={c.cx - SIZE * 0.35}
-                y={c.cy - SIZE * 0.35}
-                width={SIZE * 0.7}
-                height={SIZE * 0.7}
-              />
-              <text class="site-name" x={c.cx} y={c.cy - SIZE * 0.55}>
+              <Icon cell={c} symbol="hi-town" class="site" scale={0.95} />
+              <text class="site-name" x={c.cx} y={c.cy - SIZE * 0.62}>
                 {c.site}
               </text>
             </>
           )}
           {c.dungeon && (
-            <polygon
+            <use
               class="dungeon"
-              points={`${c.cx - SIZE * 0.4},${c.cy - SIZE * 0.3} ${c.cx + SIZE * 0.4},${c.cy - SIZE * 0.3} ${c.cx},${c.cy + SIZE * 0.4}`}
+              href="#hi-dungeon"
+              x={c.cx - SIZE * 0.4}
+              y={c.cy - SIZE * 0.4}
+              width={SIZE * 0.8}
+              height={SIZE * 0.8}
             >
               <title>{c.dungeon}</title>
-            </polygon>
+            </use>
           )}
           {c.grove && (
-            <circle class="grove" cx={c.cx} cy={c.cy + SIZE * 0.2} r={SIZE * 0.3}>
+            <use
+              class="grove"
+              href="#hi-grove"
+              x={c.cx - SIZE * 0.4}
+              y={c.cy - SIZE * 0.2}
+              width={SIZE * 0.8}
+              height={SIZE * 0.8}
+            >
               <title>{c.grove}</title>
-            </circle>
+            </use>
           )}
           {c.exit && (
-            <polygon
+            <use
               class="exit"
-              points={`${c.cx + SIZE * 0.5},${c.cy} ${c.cx - SIZE * 0.2},${c.cy - SIZE * 0.4} ${c.cx - SIZE * 0.2},${c.cy + SIZE * 0.4}`}
+              href="#hi-exit"
+              x={c.cx - SIZE * 0.35}
+              y={c.cy - SIZE * 0.45}
+              width={SIZE * 0.8}
+              height={SIZE * 0.8}
             >
               <title>{c.exit}</title>
-            </polygon>
+            </use>
           )}
-          {c.party && <circle class="party" cx={c.cx} cy={c.cy} r={SIZE * 0.45} />}
+          {c.party && (
+            <Icon cell={c} symbol="hi-party" class="party" scale={1.05} dx={0.45} dy={-0.1} />
+          )}
         </g>
       ))}
     </svg>

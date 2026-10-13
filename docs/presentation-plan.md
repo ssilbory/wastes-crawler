@@ -52,3 +52,19 @@ read.
 | Traps        | `src/render/trap-art.ts`                            | A known trap: a pressure plate with spike holes (damage), needle holes and a green stain (poison), or spilled filth (disease); a tripwire wall to wall at ankle height (alarm). The party's chalk ring circles each one. A disarmed trap stays in view, its plate wedged or its wire cut and its chalk struck through |
 | Drawing      | `src/ui/world/DungeonView.tsx`                      | One SVG for the game and the editor's test walk: each panel with its detail and its shadow, then the light's tint glowing up from the party                                                                                                                                                                           |
 | Flicker, CSS | `src/ui/world/world.css`                            | Torch flicker keyframes on the shadows and tint, off under `prefers-reduced-motion`                                                                                                                                                                                                                                   |
+
+## V2: overland map (first pass done)
+
+| Piece      | Where                      | What it does                                                                                                                                                                                                              |
+| ---------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Glyphs     | `src/render/hex-art.ts`    | Where each terrain's glyphs sit in a known hex, nudged by a hash of the hex: grass tufts, trees, pines, hills, peaks, reeds, mesas, ripples, stepping stones. A hex with a town, dungeon, or grove keeps its middle clear |
+| Roads      | same                       | One curve per hex from the edge a road enters by to the edge it leaves by, so a run of road hexes reads as one line, running on into the towns beside it                                                                  |
+| Rivers     | same                       | The same through river and ford hexes, joining lakes beside them                                                                                                                                                          |
+| Hour       | same                       | A tint for the quarter of the day: warm morning, clear day, red evening, dark night                                                                                                                                       |
+| Symbols    | `src/ui/world/HexArt.tsx`  | The glyphs and the icons (town, dungeon mouth, grove, signpost, party banner) as SVG symbols                                                                                                                              |
+| Drawing    | `src/ui/world/HexMap.tsx`  | Layers: parchment, terrain washes and glyphs, rivers and roads, the hour's tint, fog as a dark sheet with soft-edged holes over what the party knows, then one clickable group per hex with its icons and outlines        |
+| Theme, CSS | `src/ui/world/hex-map.css` | Parchment and ink colours. Hexes seen but not visited take a pale wash                                                                                                                                                    |
+
+Every terrain in `data/content/terrains.json` has a glyph, and the map editor uses the same map.
+Still open for V2: a bridge where a road crosses a river, coastline and shore edges between land
+and water, and a compass and scale bar.
