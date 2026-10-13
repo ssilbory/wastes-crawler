@@ -23,7 +23,7 @@ export function SpectatorScreen(props: {
 }) {
   const [session, setSession] = useState<Session>(() => ({
     battle: startBattle(props.setup),
-    changes: { logFrom: 0, ids: new Set() },
+    changes: { logFrom: 0, ids: new Set(), floats: new Map() },
     result: null,
   }));
   const [playing, setPlaying] = useState(false);
@@ -85,7 +85,13 @@ export function SpectatorScreen(props: {
         </p>
       )}
       <div class="fight-main">
-        <Field far={sideView(b, 'enemy')} near={sideView(b, 'party')} changedIds={changes.ids} />
+        <Field
+          far={sideView(b, 'enemy')}
+          near={sideView(b, 'party')}
+          changedIds={changes.ids}
+          floats={changes.floats}
+          batchKey={changes.logFrom}
+        />
         <div class="fight-side">
           <BattleLog lines={b.log ?? []} from={changes.logFrom} />
         </div>

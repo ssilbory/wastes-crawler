@@ -14,6 +14,7 @@ import { monsterAction } from '../../game/combat/ai.ts';
 import { answersCall } from '../../game/combat/companions.ts';
 import { defaultAction } from '../../game/combat/defaults.ts';
 import type { Action, Battle, Combatant } from '../../game/combat/types.ts';
+import { floats, type Float } from '../../render/fight-fx.ts';
 import { createRng } from '../../rules/rng.ts';
 import { data, freshRng } from '../builder/data.ts';
 
@@ -61,6 +62,8 @@ export interface Changes {
   logFrom: number;
   /** Combatants whose HP or status changed. */
   ids: Set<string>;
+  /** The numbers to float over each slot. */
+  floats: Map<string, Float[]>;
 }
 
 const snapshot = (b: Battle) => new Map(b.combatants.map((c) => [c.id, `${c.hp}:${c.status}`]));
@@ -71,14 +74,19 @@ export function batch(
   run: () => void,
 ): { changes: Changes; result: BattleResult | null } {
   const before = snapshot(b);
+  const hpBefore = new Map(b.combatants.map((c) => [c.id, c.hp]));
   const logFrom = b.log?.length ?? 0;
+  const eventsFrom = b.events?.length ?? 0;
   run();
   const after = snapshot(b);
   const ids = new Set([...after].filter(([id, v]) => before.get(id) !== v).map(([id]) => id));
   // A win waits while healing magic could still save someone, or mend the wounded, so the
   // player can choose.
   const done = b.outcome !== null && !awaitsRescue(b) && !awaitsMending(b);
-  return { changes: { logFrom, ids }, result: done ? concludeBattle(b) : null };
+  return {
+    changes: { logFrom, ids, floats: floats(b, eventsFrom, hpBefore) },
+    result: done ? concludeBattle(b) : null,
+  };
 }
 
 /** PCs take commands, and a companion answering its master's Mind Call (1.5.4). */

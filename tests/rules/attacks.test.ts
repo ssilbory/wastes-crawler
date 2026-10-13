@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { attackRoll, hitDamage, shockDamage, type ShockContext } from '../../src/rules/attacks.ts';
+import {
+  attackRoll,
+  hitChance,
+  hitDamage,
+  shockDamage,
+  type ShockContext,
+} from '../../src/rules/attacks.ts';
+import { createRng } from '../../src/rules/rng.ts';
 import { scriptedRng } from '../helpers/scripted-rng.ts';
 
 const open: ShockContext = { targetAc: 13, shieldNegates: false, immune: false };
@@ -80,5 +87,48 @@ describe('hitDamage', () => {
     expect(
       hitDamage(scriptedRng([1]), { ...sword, attributeModifier: -2, shock: null }, open).total,
     ).toBe(0);
+  });
+});
+
+describe('hitChance (2.4.5, Advantage / disadvantage)', () => {
+  const base = { attackBonus: 0, attributeModifier: 0, skill: 0, targetAc: 11 };
+
+  it('counts the d20 faces that reach the AC', () => {
+    expect(hitChance(base)).toBe(0.5);
+    expect(hitChance({ ...base, attackBonus: 2, attributeModifier: 1, modifier: -1 })).toBe(0.6);
+    expect(hitChance({ ...base, targetAc: 20 })).toBe(0.05);
+    // No natural 20 rule: out of reach is a sure miss, in reach of a 1 a sure hit.
+    expect(hitChance({ ...base, targetAc: 21 })).toBe(0);
+    expect(hitChance({ ...base, targetAc: 1 })).toBe(1);
+    expect(hitChance({ ...base, targetAc: -5 })).toBe(1);
+  });
+
+  it('takes the untrained penalty without even level-0', () => {
+    expect(hitChance({ ...base, skill: null })).toBe(0.4);
+  });
+
+  it('adds or takes away a d6 for each step', () => {
+    // d20 + d6 >= 21 needs the sum of 21 or more: 21 of the 120 outcomes.
+    expect(hitChance({ ...base, targetAc: 21, steps: 1 })).toBeCloseTo(21 / 120, 10);
+    // d20 - d6 >= 20: only a 20 less a 0, which never happens.
+    expect(hitChance({ ...base, targetAc: 20, steps: -1 })).toBe(0);
+    const plain = hitChance(base);
+    const up = hitChance({ ...base, steps: 1 });
+    const upTwo = hitChance({ ...base, steps: 2 });
+    const down = hitChance({ ...base, steps: -1 });
+    expect(up).toBeCloseTo(0.5 + 3.5 / 20, 10);
+    expect(down).toBeCloseTo(0.5 - 3.5 / 20, 10);
+    expect(upTwo).toBeGreaterThan(up);
+    expect(plain).toBe(0.5);
+  });
+
+  it('matches the rolls over every face', () => {
+    // attackRoll and hitChance agree across a sweep of seeded rolls.
+    const rng = createRng('odds');
+    const input = { ...base, attackBonus: 1, targetAc: 15, steps: -1 };
+    let hits = 0;
+    const n = 20000;
+    for (let i = 0; i < n; i++) if (attackRoll(rng, input).hit) hits++;
+    expect(hits / n).toBeCloseTo(hitChance(input), 2);
   });
 });

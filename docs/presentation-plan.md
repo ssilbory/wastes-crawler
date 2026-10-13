@@ -76,3 +76,18 @@ run each road straight into the hex centre instead of curving every pair. A scal
 Not presentation, but found while drawing roads: the hike planner now keeps to roads when a road
 costs no more hike points than the way across country (Sam's call, docs/rules-adaptation.md,
 Overland travel: Route).
+
+## V3: combat presentation (first slice)
+
+| Piece      | Where                                                    | What it does                                                                                                                                                                                                         |
+| ---------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hit chance | `src/rules/attacks.ts` (`hitChance`)                     | The exact chance of a hit: the d20 plus or minus a d6 per step of advantage, against the AC. Rolls nothing                                                                                                           |
+| Same roll  | `src/game/combat/attack.ts` (`attackInput`)              | The attack and the odds build their roll from one function, so the odds can't drift from the roll. `pnpm sim` output is unchanged                                                                                    |
+| Odds       | `src/render/fight-odds.ts`                               | Chance to hit, a hit's damage range (never under its Shock), and the Shock a miss still deals, with God Wills It, Flame Without End, Red Harvest, Smite the Wicked, and Call of the Tomb. Resistances aren't counted |
+| Blows      | `Battle.events` (`src/game/combat/types.ts`)             | Each weapon blow as a hit, Shock, miss, or a blow turned aside (shield, ward, Master of Bones, a Rider's guard), kept only when the battle keeps a log                                                               |
+| Numbers    | `src/render/fight-fx.ts`                                 | Numbers that float up off each slot after a batch of turns: each blow, and any other change in HP (spells, healing). Up to four a slot, and a flash: struck, healed, or missed                                       |
+| Turn order | same, and `src/ui/arena/TurnStrip.tsx`                   | The turns left this round, in order, whose turn it is first, then the next round                                                                                                                                     |
+| Drawing    | `src/ui/arena/Field.tsx`, `CommandMenu.tsx`, `fight.css` | The odds sit under each target in the menu and on the field, and in the target's accessible name. Without motion, the numbers stay put until the next batch                                                          |
+
+Still to come in V3: silhouettes by monster type and by people and class, reach lines, and log
+filters by side.

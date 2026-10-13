@@ -1,4 +1,5 @@
 import type { SideView, SlotView } from '../../render/arena-view.ts';
+import { flash, type Float } from '../../render/fight-fx.ts';
 
 interface FieldProps {
   /** The far side, drawn on top with its front row nearest the middle. */
@@ -11,6 +12,11 @@ interface FieldProps {
   targetIds?: ReadonlySet<string>;
   /** Slots changed by the last batch of turns. */
   changedIds?: ReadonlySet<string>;
+  /** Numbers to float up off each slot from the last batch, and that batch's key. */
+  floats?: ReadonlyMap<string, Float[]>;
+  batchKey?: number;
+  /** A line under each target's name, such as the odds of the attack chosen. */
+  notes?: ReadonlyMap<string, string>;
   onPick?: (id: string) => void;
   /** Only the near side: no foes to draw, as when tending a trap's fallen. */
   nearOnly?: boolean;
@@ -21,6 +27,9 @@ function Slot(props: {
   active: boolean;
   target: boolean;
   changed: boolean;
+  floats: Float[] | undefined;
+  batchKey: number;
+  note: string | undefined;
   onPick?: ((id: string) => void) | undefined;
 }) {
   const { slot } = props;
@@ -35,9 +44,21 @@ function Slot(props: {
   ]
     .filter(Boolean)
     .join(' ');
+  const hit = flash(props.floats);
   const body = (
     <>
+      {hit && (
+        // Keyed by the batch, so each batch plays its flash and numbers afresh.
+        <span class={`fx ${hit}`} key={props.batchKey} aria-hidden="true">
+          {props.floats?.map((f, i) => (
+            <span key={i} class={`float ${f.kind}`} style={{ animationDelay: `${i * 0.25}s` }}>
+              {f.text}
+            </span>
+          ))}
+        </span>
+      )}
       <span class="slot-name">{slot.label}</span>
+      {props.note && <span class="odds">{props.note}</span>}
       <span class="hp-bar" aria-hidden="true">
         <span style={{ width: `${slot.hpPercent}%` }} />
       </span>
@@ -60,7 +81,7 @@ function Slot(props: {
       type="button"
       class={classes}
       data-slot={slot.id}
-      aria-label={`Target ${slot.label}`}
+      aria-label={`Target ${slot.label}${props.note ? `, ${props.note}` : ''}`}
       onClick={() => props.onPick?.(slot.id)}
     >
       {body}
@@ -95,6 +116,9 @@ function Side(props: SideProps) {
                   active={s !== null && s.id === props.activeId}
                   target={s !== null && (props.targetIds?.has(s.id) ?? false)}
                   changed={s !== null && (props.changedIds?.has(s.id) ?? false)}
+                  floats={s ? props.floats?.get(s.id) : undefined}
+                  batchKey={props.batchKey ?? 0}
+                  note={s && props.targetIds?.has(s.id) ? props.notes?.get(s.id) : undefined}
                   onPick={props.onPick}
                 />
               );

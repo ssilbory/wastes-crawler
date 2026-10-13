@@ -201,6 +201,7 @@ export function createBattle(s: BattleSetup): Battle {
     mended: false,
     damageBonus: { party: 0, enemy: 0 },
     log: s.log ? [] : null,
+    events: s.log ? [] : null,
     outcome: null,
   };
   const active = party.filter(canAct);

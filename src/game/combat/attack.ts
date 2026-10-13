@@ -4,16 +4,22 @@
 // (1.5.18), and creature resistances and on-hit effects (specials.ts).
 import { venom } from './forms.ts';
 import { netSteps } from '../../rules/advantage.ts';
-import { attackRoll, hitDamage, shockDamage, type ShockContext } from '../../rules/attacks.ts';
+import {
+  attackRoll,
+  hitDamage,
+  shockDamage,
+  type AttackInput,
+  type ShockContext,
+} from '../../rules/attacks.ts';
 import { crossWall, cutVines, mantleCut, subdue } from './conditions.ts';
 import { effectiveAc, harm, save, say } from './damage.ts';
 import { afterHit, resisted } from './specials.ts';
 import { negatesUndead } from './reactions.ts';
 import { attackSteps, canAct, hitModifier, rangedModifier } from './targeting.ts';
-import type { Attack, Battle, Combatant } from './types.ts';
+import type { Attack, Battle, BattleEvent, Combatant } from './types.ts';
 import { knowsWeakSpot, provoke } from './companions.ts';
 
-function shockContext(target: Combatant, attack: Attack): ShockContext {
+export function shockContext(target: Combatant, attack: Attack): ShockContext {
   return {
     targetAc: effectiveAc(target),
     shieldNegates: false,
@@ -26,6 +32,35 @@ function shockContext(target: Combatant, attack: Attack): ShockContext {
   };
 }
 
+/**
+ * The roll an attack makes against a target, with `bonus` added to hit (Smite the Wicked, Red
+ * Harvest). The fight screen's odds read the same input, so they match the roll.
+ */
+export function attackInput(
+  b: Battle,
+  actor: Combatant,
+  attack: Attack,
+  target: Combatant,
+  bonus: number,
+): AttackInput {
+  return {
+    attackBonus: attack.hit + bonus,
+    attributeModifier: 0,
+    skill: 0,
+    modifier: rangedModifier(b, actor, attack) + hitModifier(b, actor),
+    steps: netSteps([attackSteps(b, actor, target, attack.mode)]),
+    targetAc: effectiveAc(target),
+  };
+}
+
+const record = (
+  b: Battle,
+  kind: BattleEvent['kind'],
+  actor: Combatant,
+  target: Combatant,
+  amount = 0,
+) => b.events?.push({ kind, actor: actor.id, target: target.id, amount });
+
 /** Shock on a miss; a shield soaks the first Shock its bearer would take each round. */
 function missShock(b: Battle, attacker: Combatant, target: Combatant, attack: Attack): void {
   const blessed = b.damageBonus[attacker.side];
@@ -34,15 +69,18 @@ function missShock(b: Battle, attacker: Combatant, target: Combatant, attack: At
       ? shockDamage(attack.shock, 0, blessed, shockContext(target, attack))
       : 0;
   if (amount === 0) {
+    record(b, 'miss', attacker, target);
     say(b, `${attacker.name} misses ${target.name}.`);
     return;
   }
   if (target.shield && !target.shieldUsed) {
     target.shieldUsed = true;
+    record(b, 'turned', attacker, target);
     say(b, `${target.name}'s shield turns ${attacker.name}'s blow.`);
     return;
   }
   const dealt = resisted(target, attack, amount);
+  record(b, 'shock', attacker, target, dealt);
   // The Phantasmal Eidolon's Shock can't kill either (4.4.0).
   if (subdue(b, attacker, target, dealt)) return;
   say(b, `${attacker.name} misses ${target.name} but deals ${dealt} Shock.`);
@@ -69,22 +107,22 @@ export function resolveAttack(
   // Red Harvest's +4 is spent on the next hit roll (Phase 15).
   const harvest = actor.nextHitBonus;
   actor.nextHitBonus = 0;
-  const roll = attackRoll(b.rng, {
-    attackBonus: attack.hit + (boost?.hit ?? 0) + harvest,
-    attributeModifier: 0,
-    skill: 0,
-    modifier: rangedModifier(b, actor, attack) + hitModifier(b, actor),
-    steps: netSteps([attackSteps(b, actor, target, attack.mode)]),
-    targetAc: effectiveAc(target),
-  });
+  const roll = attackRoll(
+    b.rng,
+    attackInput(b, actor, attack, target, (boost?.hit ?? 0) + harvest),
+  );
   // Call of the Tomb: every blow lands on the doomed, for the most its dice can do (4.6.0).
   const doomed = target.doomedUntil >= b.round;
   if (!roll.hit && !doomed) {
     missShock(b, actor, target, attack);
     return;
   }
-  if (negatesUndead(b, actor, target)) return;
+  if (negatesUndead(b, actor, target)) {
+    record(b, 'turned', actor, target);
+    return;
+  }
   if (target.wardRounds > 0 && !save(b, actor, 'physical').success) {
+    record(b, 'turned', actor, target);
     say(b, `${actor.name}'s blow slides off the ward around ${target.name}.`);
     return;
   }
@@ -126,10 +164,12 @@ export function resolveAttack(
   const rider = target.steedGuard ? b.combatants.find((c) => c.id === target.rider) : undefined;
   if (rider && canAct(rider) && target.status === 'active' && blow >= target.hp) {
     target.steedGuard = false;
+    record(b, 'turned', actor, target);
     say(b, `${rider.name} turns ${target.name} aside from ${actor.name}'s blow.`);
     return;
   }
   const damage = blow + venom(b, actor, attack, target);
+  record(b, 'hit', actor, target, damage);
   if (subdue(b, actor, target, damage)) return;
   say(b, `${actor.name} hits ${target.name} with ${attack.name} for ${damage}.`);
   harm(b, target, damage);
