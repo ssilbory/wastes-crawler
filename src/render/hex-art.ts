@@ -163,3 +163,37 @@ const TINTS: DayTint[] = [
 ];
 
 export const dayTint = (quarter: number): DayTint => TINTS[quarter] as DayTint;
+
+/** SRD 2.12.0: a standard hex is six miles across (vendor/wwn-srd/2.0 The Rules of the Game/
+ * 2.12.0 Wilderness Exploration and Expeditions.md). */
+export const HEX_MILES = 6;
+
+/** A scale bar: its ink, alternating light and dark hex-long blocks, and its label. */
+export interface ScaleBar {
+  x: number;
+  y: number;
+  /** One block per hex, from left to right. */
+  blocks: { x: number; width: number; dark: boolean }[];
+  height: number;
+  label: string;
+}
+
+/**
+ * A bar `hexes` long in the map's bottom left corner, one block per hex measured centre to centre,
+ * labelled in miles.
+ */
+export function scaleBar(mapHeight: number, size: number, hexes = 5): ScaleBar {
+  const step = size * Math.sqrt(3);
+  const x = size * 0.8;
+  return {
+    x,
+    y: mapHeight - size * 0.9,
+    blocks: Array.from({ length: hexes }, (_, i) => ({
+      x: x + i * step,
+      width: step,
+      dark: i % 2 === 0,
+    })),
+    height: size * 0.22,
+    label: `${hexes * HEX_MILES} miles`,
+  };
+}

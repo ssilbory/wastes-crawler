@@ -70,6 +70,9 @@ Every terrain in `data/content/terrains.json` has a glyph, and the map editor us
 Added after the first pass (`src/render/hex-water.ts`): an ink shoreline with a pale wash of
 shallows on every edge between known water and known dry land; a plank bridge, laid along the
 road, wherever a road crosses a river or ford; a compass rose in the map's corner. Crossroads now
-run each road straight into the hex centre instead of curving every pair. Still open: a scale bar
-(the SRD's hex is six miles: vendor/wwn-srd/2.0 The Rules of the Game/2.12.0 Wilderness
-Exploration and Expeditions.md).
+run each road straight into the hex centre instead of curving every pair. A scale bar sits in the bottom left: five hex-long blocks, 30 miles at the SRD's six-mile hex
+(vendor/wwn-srd/2.0 The Rules of the Game/2.12.0 Wilderness Exploration and Expeditions.md).
+
+Not presentation, but found while drawing roads: the hike planner now keeps to roads when a road
+costs no more hike points than the way across country (Sam's call, docs/rules-adaptation.md,
+Overland travel: Route).

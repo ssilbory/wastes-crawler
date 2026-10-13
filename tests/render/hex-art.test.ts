@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { dayTint, glyphsFor, riverPath, roadPath } from '../../src/render/hex-art.ts';
+import {
+  dayTint,
+  glyphsFor,
+  HEX_MILES,
+  riverPath,
+  roadPath,
+  scaleBar,
+} from '../../src/render/hex-art.ts';
 import { hexCenter, hexPoints, type HexCell } from '../../src/render/hex-view.ts';
 
 const SIZE = 18;
@@ -118,5 +125,21 @@ describe('the light of the hour', () => {
     expect(dayTint(0).opacity).toBeGreaterThan(0);
     expect(dayTint(2).opacity).toBeGreaterThan(dayTint(0).opacity);
     expect(dayTint(3).opacity).toBeGreaterThan(dayTint(2).opacity);
+  });
+});
+
+describe('the scale bar', () => {
+  it('measures six-mile hexes, centre to centre, in alternating blocks', () => {
+    const bar = scaleBar(400, SIZE);
+    expect(HEX_MILES).toBe(6);
+    expect(bar.label).toBe('30 miles');
+    expect(bar.blocks).toHaveLength(5);
+    expect(bar.blocks.map((b) => b.dark)).toEqual([true, false, true, false, true]);
+    // Each block spans the distance between two neighbouring hex centres.
+    const step = hexCenter({ col: 0, row: 1 }, SIZE).y - hexCenter({ col: 0, row: 0 }, SIZE).y;
+    expect(bar.blocks[0]?.width).toBeCloseTo(step);
+    expect(bar.blocks[1]?.x).toBeCloseTo(bar.x + step);
+    expect(bar.y).toBeLessThan(400);
+    expect(scaleBar(400, SIZE, 2).label).toBe('12 miles');
   });
 });

@@ -173,6 +173,36 @@
   stroke-width: 0.1;
 }
 
+/* The scale bar in the map's corner: one block per six-mile hex. */
+.hex-map .scale-bar {
+  pointer-events: none;
+}
+
+.hex-map .scale-bar .backing {
+  fill: #efe3c2;
+  fill-opacity: 0.8;
+  stroke: #3a2f22;
+  stroke-width: 0.5;
+  rx: 2px;
+}
+
+.hex-map .scale-bar .dark {
+  fill: #3a2f22;
+}
+
+.hex-map .scale-bar .light {
+  fill: #efe3c2;
+  stroke: #3a2f22;
+  stroke-width: 0.6;
+}
+
+.hex-map .scale-bar text {
+  font-family: var(--font-body);
+  font-size: 7px;
+  font-weight: 600;
+  fill: #3a2f22;
+}
+
 /* The compass rose in the map's corner. */
 .hex-map .compass {
   pointer-events: none;

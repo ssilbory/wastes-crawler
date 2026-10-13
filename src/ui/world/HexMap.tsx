@@ -1,4 +1,11 @@
-import { glyphsFor, riverPath, roadPath, type DayTint } from '../../render/hex-art.ts';
+import {
+  glyphsFor,
+  riverPath,
+  roadPath,
+  scaleBar,
+  type DayTint,
+  type ScaleBar,
+} from '../../render/hex-art.ts';
 import type { HexCell } from '../../render/hex-view.ts';
 import { bridges, shores } from '../../render/hex-water.ts';
 import { HexArtDefs } from './HexArt.tsx';
@@ -29,10 +36,43 @@ function Icon(props: {
   );
 }
 
+/** The scale bar in the map's corner: alternating hex-long blocks and the distance they cover. */
+function ScaleBarMark(props: { bar: ScaleBar }) {
+  const { bar } = props;
+  const end = bar.blocks.at(-1) as ScaleBar['blocks'][number];
+  return (
+    <g class="scale-bar">
+      <rect
+        class="backing"
+        x={bar.x - 4}
+        y={bar.y - 13}
+        width={end.x + end.width - bar.x + 8}
+        height={bar.height + 17}
+      />
+      {bar.blocks.map((b) => (
+        <rect
+          key={b.x}
+          class={b.dark ? 'dark' : 'light'}
+          x={b.x}
+          y={bar.y}
+          width={b.width}
+          height={bar.height}
+        />
+      ))}
+      <text x={bar.x} y={bar.y - 3}>
+        0
+      </text>
+      <text x={end.x + end.width} y={bar.y - 3} text-anchor="end">
+        {bar.label}
+      </text>
+    </g>
+  );
+}
+
 /**
  * The overland map as an inked chart on parchment (docs/presentation-plan.md, V2), drawn in
  * layers: terrain and its glyphs, shores, rivers, roads and bridges, the light of the hour, the fog of the unknown
- * with soft edges about what the party knows, a compass rose, then one
+ * with soft edges about what the party knows, a scale bar and a compass rose, then one
  * group per hex with its icons, which takes the clicks; clicking a hex, even under fog, picks it as
  * the destination. With `onDrag`, moving over hexes with the button held picks them too, for
  * painting in the map editor.
@@ -120,6 +160,7 @@ export function HexMap(props: {
           />
         </>
       )}
+      <ScaleBarMark bar={scaleBar(props.height, SIZE)} />
       <use
         class="compass"
         href="#hi-compass"
