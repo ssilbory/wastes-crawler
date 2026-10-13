@@ -61,6 +61,15 @@ function dungeonErrors(d: Dungeon, content: ContentData): string[] {
       if (sp.kind === 'teleporter' && !onFloor(sp.to.level, sp.to.at))
         errors.push(`${lw}: teleporter at ${sp.at.x},${sp.at.y} goes to a cell that isn't there`);
     }
+    // Furniture dresses plain floor, one piece a cell, clear of stairs, traps, and people.
+    const dressed = new Set<string>();
+    for (const f of level.furniture ?? []) {
+      const at = `${lw}: ${f.kind} at ${f.at.x},${f.at.y}`;
+      if (!map.inBounds(f.at) || map.cell(f.at) !== 'floor')
+        errors.push(`${at} is not on plain floor`);
+      else if (dressed.has(`${f.at.x},${f.at.y}`)) errors.push(`${at} shares its cell`);
+      dressed.add(`${f.at.x},${f.at.y}`);
+    }
     for (const c of level.safe)
       if (!map.inBounds(c))
         errors.push(`${where}/${level.id}: safe square ${c.x},${c.y} is off the level`);

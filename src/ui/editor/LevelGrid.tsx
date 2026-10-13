@@ -1,6 +1,15 @@
-import type { DungeonLevel } from '../../data/schemas/index.ts';
+import type { DungeonLevel, Furniture } from '../../data/schemas/index.ts';
 import type { Cell } from '../../rules/grid.ts';
 import { EDIT_CELL, type EditorGrid, type GridEdge } from '../../render/level-editor-view.ts';
+
+/** Short marks for furniture in a cell's corner. */
+const FURNITURE_MARKS: Record<Furniture['kind'], string> = {
+  rubble: 'ru',
+  bones: 'bo',
+  altar: 'al',
+  fountain: 'fo',
+  brazier: 'br',
+};
 
 /** The level being edited as SVG: cells and edges to click, glyphs, and the test walker. */
 export function LevelGrid(props: {
@@ -65,6 +74,17 @@ export function LevelGrid(props: {
           y2={e.y2}
           onClick={() => props.onEdge(e)}
         />
+      ))}
+      {(level.furniture ?? []).map((f) => (
+        <text
+          key={`f-${f.at.x},${f.at.y}`}
+          class="furniture-mark"
+          x={(f.at.x + 0.08) * EDIT_CELL}
+          y={(f.at.y + 0.32) * EDIT_CELL}
+        >
+          {FURNITURE_MARKS[f.kind]}
+          <title>{f.kind}</title>
+        </text>
       ))}
       {entry && (
         <circle

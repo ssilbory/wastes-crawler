@@ -221,3 +221,10 @@
 .editor-side .notice {
   color: var(--ok);
 }
+
+/* Furniture's mark in its cell's corner (docs/presentation-plan.md, V4). */
+.editor-grid .furniture-mark {
+  font-size: 7px;
+  fill: #c9a25a;
+  pointer-events: none;
+}

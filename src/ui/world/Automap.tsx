@@ -5,6 +5,7 @@ import {
   type Automap as AutomapData,
   type AutomapLegend,
 } from '../../render/automap-view.ts';
+import { furnitureParts } from '../../render/furniture-art.ts';
 
 /**
  * The dungeon automap: the cells seen on this level, their walls and doors, magic sensed, and the
@@ -44,6 +45,27 @@ export function Automap(props: { map: AutomapData; label: string }) {
         >
           <title>A working of magic</title>
         </circle>
+      ))}
+      {map.furniture.map((f) => (
+        <svg
+          key={f.key}
+          class={`furniture ${f.kind}`}
+          x={f.x * MAP_CELL + 2}
+          y={f.y * MAP_CELL + 2}
+          width={MAP_CELL - 4}
+          height={MAP_CELL - 4}
+          viewBox="0 0 48 48"
+        >
+          <title>{f.kind}</title>
+          {furnitureParts(f.kind).map((p, i) => (
+            <path
+              key={i}
+              class={p.kind}
+              d={p.d}
+              stroke-width={p.kind === 'fill' ? undefined : p.width}
+            />
+          ))}
+        </svg>
       ))}
       <polygon class="party" points={map.party} />
       <g class="legend">

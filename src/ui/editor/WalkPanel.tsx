@@ -80,6 +80,7 @@ export function WalkPanel(props: {
                     walk.at,
                     walk.facing,
                     edited.levels.find((l) => l.id === walk.level)?.traps,
+                    edited.levels.find((l) => l.id === walk.level)?.furniture,
                   )
                 : []
             }

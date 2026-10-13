@@ -4,6 +4,7 @@ import {
   cellDetails,
   paintCell,
   setCaptive,
+  setFurniture,
   setGarrison,
   setNpcKind,
   setSafe,
@@ -46,6 +47,7 @@ describe('cell details in the level editor (Phase 17)', () => {
       trap: null,
       captive: null,
       garrison: null,
+      furniture: null,
       safe: false,
     });
     const trapped = paintCell(data.content, barrow, upper, spot, 'trap');
@@ -146,6 +148,43 @@ describe('cell details in the level editor (Phase 17)', () => {
     };
     expect(() => paintCell(noCaptives, barrow, upper, spot, 'npc')).toThrow(
       'the content has no held captive to copy',
+    );
+  });
+});
+
+describe('furniture (docs/presentation-plan.md, V4)', () => {
+  it('sets, replaces, and clears what stands on a floor cell', () => {
+    const one = setFurniture(barrow, upper, spot, 'altar');
+    expect(cellDetails(one, upper, spot).furniture).toBe('altar');
+    const two = setFurniture(one, upper, spot, 'fountain');
+    expect(two.levels[0]?.furniture?.filter((f) => f.at.x === spot.x && f.at.y === spot.y)).toEqual(
+      [{ at: spot, kind: 'fountain' }],
+    );
+    expect(cellDetails(setFurniture(two, upper, spot, null), upper, spot).furniture).toBeNull();
+    expect(editorErrors(data.content, two, data.srd)).toEqual([]);
+  });
+
+  it('goes when the cell is painted as anything but floor, and stays on floor', () => {
+    const dressed = setFurniture(barrow, upper, spot, 'bones');
+    const painted = (kind: 'trap' | 'floor') =>
+      cellDetails(paintCell(data.content, dressed, upper, spot, kind), upper, spot).furniture;
+    expect(painted('trap')).toBeNull();
+    expect(painted('floor')).toBe('bones');
+    // A level with none gains no list by being painted.
+    const plain = {
+      ...barrow,
+      levels: barrow.levels.map((l) => {
+        const copy = { ...l };
+        delete copy.furniture;
+        return copy;
+      }),
+    };
+    expect(paintCell(data.content, plain, upper, spot, 'trap').levels[0]).not.toHaveProperty(
+      'furniture',
+    );
+    // And one is started when the first piece goes on it.
+    expect(cellDetails(setFurniture(plain, upper, spot, 'rubble'), upper, spot).furniture).toBe(
+      'rubble',
     );
   });
 });

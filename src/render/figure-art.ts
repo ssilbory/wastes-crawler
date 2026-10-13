@@ -13,6 +13,8 @@ export interface Part {
   kind: 'fill' | 'line' | 'cut';
   d: string;
   width?: number;
+  /** A part in its own colour: fire, or water (furniture-art.ts). */
+  tone?: 'flame' | 'water';
 }
 
 export type PersonView = Extract<FigureView, { kind: 'person' }>;

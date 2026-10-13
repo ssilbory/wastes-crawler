@@ -560,3 +560,42 @@
   stroke-opacity: 0.7;
   stroke-linecap: round;
 }
+
+/* Furniture (src/render/furniture-art.ts): stone in the panel's shade, cut lines in shadow, flames
+   and water in their own colours. */
+.dungeon-view .furniture .cut {
+  fill: none;
+  stroke: #0b0907;
+  stroke-opacity: 0.6;
+  stroke-linecap: round;
+}
+
+.dungeon-view .furniture .line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dungeon-view .furniture .flame {
+  fill: #ffb347;
+  filter: drop-shadow(0 0 1.5px #ff7a1a);
+}
+
+.dungeon-view .furniture .line.water {
+  stroke: #8fb8d8;
+  stroke-opacity: 0.8;
+}
+
+.automap .furniture .fill {
+  fill: #b8ad98;
+}
+
+.automap .furniture .line {
+  fill: none;
+  stroke: #b8ad98;
+}
+
+.automap .furniture .cut {
+  fill: none;
+  stroke: #4d463e;
+}

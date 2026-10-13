@@ -18,8 +18,6 @@ import {
   planks,
   stonework,
   treads,
-  type Breach,
-  type Detail,
   type Quad,
 } from './dungeon-detail.ts';
 import {
@@ -31,49 +29,16 @@ import {
   front,
   sideWall,
   upright,
-  type Span,
 } from './dungeon-geometry.ts';
-import { PLATE, trapArt, type TrapArt, type TrapEffect, type TrapLook } from './trap-art.ts';
+import { PLATE, trapArt, type TrapEffect, type TrapLook } from './trap-art.ts';
+import type { Furniture } from '../data/schemas/index.ts';
+import { furnitureOf, furniturePanel, type FurnitureAt } from './dungeon-furniture.ts';
+import { shade, type Panel } from './dungeon-panel.ts';
+
+export { shade, type Panel } from './dungeon-panel.ts';
 
 export { VIEW_DEPTH, VIEW_HEIGHT, VIEW_WIDTH } from './dungeon-geometry.ts';
 import { VIEW_DEPTH } from './dungeon-geometry.ts';
-
-export interface Panel {
-  key: string;
-  kind: 'wall' | 'door' | 'dug' | 'up' | 'down' | 'trap' | 'floor' | 'ceiling';
-  /** SVG polygon points. */
-  points: string;
-  /** A door's leaf inside the panel, or null. */
-  frame: string | null;
-  fill: string;
-  /** Stone, flagstones, or treads drawn over the panel. */
-  detail: Detail;
-  /** The hole torn through a dug wall, for a wall opened by magic. */
-  breach: Breach | null;
-  /** A known trap's plate, chalk, and marks, for a trap. */
-  trap: TrapArt | null;
-  /** The door leaf's fill and planks, for a door. */
-  leaf: { fill: string; detail: Detail } | null;
-  /**
-   * How far the panel runs from the party, in view planes (0 is the party's own cell edge), and
-   * the midpoints of its near and far edges, so the light can fade along it.
-   */
-  span: Span;
-}
-
-/**
- * Surface shading: side walls darker than walls faced head on, and a gentle step darker with
- * distance. The light's falloff (dungeon-light.ts) does the rest, so this never reaches black.
- */
-export function shade(kind: Panel['kind'], depth: number, side: boolean): string {
-  const light = Math.max(20, (side ? 48 : 58) - depth * 5);
-  if (kind === 'trap') return `hsl(34 12% ${light - 16}%)`;
-  if (kind === 'door') return `hsl(26 38% ${light - 18}%)`;
-  if (kind === 'wall') return `hsl(32 10% ${light}%)`;
-  if (kind === 'floor') return `hsl(30 14% ${light - 20}%)`;
-  if (kind === 'ceiling') return `hsl(220 6% ${light - 32}%)`;
-  return `hsl(42 30% ${light - 14}%)`;
-}
 
 /** The cell `depth` ahead and `lateral` to the right (negative: left) of the party. */
 function cellAt(at: Cell, f: Facing, depth: number, lateral: number): Cell {
@@ -179,7 +144,7 @@ export function dungeonView(w: World, data: GameData): Panel[] {
   const dug = new Set(s.dug[s.level] ?? []);
   const edge = (c: Cell, side: Facing): ViewEdge =>
     dug.has(edgeKey(c, side)) ? 'dug' : known(c, side);
-  return viewPanels(map, s.at, s.facing, edge, trapLook);
+  return viewPanels(map, s.at, s.facing, edge, trapLook, furnitureOf(level.furniture));
 }
 
 /** What the trap on a cell does; a T square with no trap written for it hurts. */
@@ -193,15 +158,20 @@ export function sandboxView(
   at: Cell,
   facing: Facing,
   traps: readonly Trap[] = [],
+  furniture: readonly Furniture[] = [],
 ): Panel[] {
   const edge = (c: Cell, side: Facing): EdgeKind => {
     const e = map.edge(c, side);
     return e === 'secret' ? 'door' : e;
   };
-  return viewPanels(map, at, facing, edge, (c) => ({
-    effect: effectAt(traps, c),
-    disarmed: false,
-  }));
+  return viewPanels(
+    map,
+    at,
+    facing,
+    edge,
+    (c) => ({ effect: effectAt(traps, c), disarmed: false }),
+    furnitureOf(furniture),
+  );
 }
 
 /** The panels seen from a cell, given which edges look like what and which traps show. */
@@ -211,6 +181,7 @@ function viewPanels(
   facing: Facing,
   edge: (c: Cell, side: Facing) => ViewEdge,
   trapLook: (c: Cell) => TrapLook | null,
+  furnitureAt: FurnitureAt,
 ): Panel[] {
   const left = turn(facing, 'left');
   const right = turn(facing, 'right');
@@ -254,6 +225,12 @@ function viewPanels(
         panels.push(
           panel(`front-${depth}-${lateral}`, kind, front(depth, lateral), depth, false, c, facing),
         );
+    }
+    // Furniture stands mid-cell: in front of the cell's far wall, behind nearer side walls. What
+    // stands in the party's own cell is underfoot, out of the view.
+    for (const { lateral, c } of depth > 0 ? cells : []) {
+      const kind = furnitureAt(c);
+      if (kind) panels.push(furniturePanel(kind, depth, lateral));
     }
     for (const { lateral, c } of cells) {
       const l = lateral <= 0 ? kindOf(c, left) : null;
