@@ -45,11 +45,13 @@ test('enters the Sunken Chapel, and finds the same ruin after a reload', async (
     (key) => JSON.parse(localStorage.getItem(key) as string).ruins['sunken-chapel'].seed,
     WORLD_KEY,
   );
-  const map = await page.getByRole('img', { name: 'Dungeon view' }).screenshot();
+  // The torch flickers: freeze it, so the two shots compare the ruin, not the flame.
+  const still = { animations: 'disabled' } as const;
+  const map = await page.getByRole('img', { name: 'Dungeon view' }).screenshot(still);
   await page.reload();
   await page.getByRole('button', { name: 'Continue journey' }).click();
   await expect(bar).toContainText('The Sunken Chapel, level 1');
-  expect(await page.getByRole('img', { name: 'Dungeon view' }).screenshot()).toEqual(map);
+  expect(await page.getByRole('img', { name: 'Dungeon view' }).screenshot(still)).toEqual(map);
   const again = await page.evaluate(
     (key) => JSON.parse(localStorage.getItem(key) as string).ruins['sunken-chapel'].seed,
     WORLD_KEY,

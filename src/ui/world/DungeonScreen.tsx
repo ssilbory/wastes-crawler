@@ -11,7 +11,9 @@ import {
 import { describeDate } from '../../game/world/calendar.ts';
 import type { World } from '../../game/world/types.ts';
 import { automap, FACING_NAMES, MAP_CELL } from '../../render/automap-view.ts';
-import { dungeonView, VIEW_HEIGHT, VIEW_WIDTH } from '../../render/dungeon-view.ts';
+import { dungeonView } from '../../render/dungeon-view.ts';
+import { lightView } from '../../render/dungeon-light.ts';
+import { DungeonView } from './DungeonView.tsx';
 import { data } from '../builder/data.ts';
 import { PartyPanel } from './PartyPanel.tsx';
 import { HealerPanel } from './HealerPanel.tsx';
@@ -31,7 +33,6 @@ import { JournalPanel } from './JournalPanel.tsx';
 import { PopOut } from './PopOut.tsx';
 import { CampPanel } from './CampPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
-import { blind } from '../../game/dungeon/light.ts';
 import { onSafeSquare } from '../../game/dungeon/time.ts';
 import { search } from '../../game/dungeon/secrets.ts';
 import { burrow, burrowers } from '../../game/dungeon/burrow.ts';
@@ -133,26 +134,11 @@ export function DungeonScreen(props: {
       <div class="world-main">
         <div class="world-left">
           <div class="dungeon-main">
-            <svg
-              class={blind(w, data) ? 'dungeon-view dark' : 'dungeon-view'}
-              viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}
-              role="img"
-              aria-label="Dungeon view"
-            >
-              <rect class="ceiling" width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
-              <rect class="floor" y={VIEW_HEIGHT / 2} width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
-              {dungeonView(w, data).map((p) => (
-                <g key={p.key} class={`panel-${p.kind}`}>
-                  <polygon points={p.points} fill={p.fill} />
-                  {p.frame && <polygon class="door-frame" points={p.frame} />}
-                </g>
-              ))}
-              {blind(w, data) && (
-                <text class="pitch-dark" x={VIEW_WIDTH / 2} y={VIEW_HEIGHT / 2}>
-                  Pitch dark
-                </text>
-              )}
-            </svg>
+            <DungeonView
+              panels={dungeonView(w, data)}
+              light={lightView(w, data)}
+              label="Dungeon view"
+            />
             <div class="dungeon-controls">
               <p class="bump" aria-live="polite">
                 {bump ?? ' '}

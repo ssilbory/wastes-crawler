@@ -145,7 +145,7 @@ The game layer is this state machine. Each box is a mode with its own command se
 
 `-` and `|` are walls, a space is open, `d` is a door, `s` is a secret door, `<` is stairs up, and `T` and `N` are a trap and an NPC.
 
-**First-person view.** Canvas 2D draws the corridor from the grid, far to near, three to four cells deep: side walls, front walls, doors, and floor features as trapezoids. Encounters show a portrait panel. Textures are an optional later upgrade.
+**First-person view.** Canvas 2D draws the corridor from the grid, far to near, three to four cells deep: side walls, front walls, doors, and floor features as trapezoids. Encounters show a portrait panel. Textures are an optional later upgrade. How the game looks from here on is planned in docs/presentation-plan.md.
 
 **Minimap.** An automap of visited cells and seen edges, with fog for the rest. Darkness, spinners, and anti-map squares can suppress or mislead it.
 
