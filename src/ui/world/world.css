@@ -402,3 +402,161 @@
 .inventory input[type='number'] {
   width: 4rem;
 }
+
+/* The automap's legend (docs/presentation-plan.md, V4): scale bar and compass under the map. */
+.automap .legend text {
+  fill: #b8ad98;
+  font-size: 7px;
+  font-family: var(--font-body);
+}
+
+.automap .legend rect.dark {
+  fill: #e8e1d2;
+}
+
+.automap .legend rect.light {
+  fill: #5a5248;
+}
+
+.automap .compass .needle {
+  fill: var(--error);
+}
+
+.automap .compass .tail {
+  fill: #b8ad98;
+}
+
+/* The view's motion after a move (src/render/dungeon-motion.ts). The scene moves inside the frame
+   while the light stays put, as a torch carried along would. */
+.dungeon-view > .scene {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  animation: 170ms ease-out both;
+}
+
+.dungeon-view.move-forward > .scene {
+  animation-name: dv-forward;
+}
+
+.dungeon-view.move-back > .scene {
+  animation-name: dv-back;
+}
+
+.dungeon-view.move-left > .scene {
+  animation-name: dv-left;
+}
+
+.dungeon-view.move-right > .scene {
+  animation-name: dv-right;
+}
+
+.dungeon-view.move-turn-left > .scene {
+  animation-name: dv-turn-left;
+  animation-duration: 220ms;
+}
+
+.dungeon-view.move-turn-right > .scene {
+  animation-name: dv-turn-right;
+  animation-duration: 220ms;
+}
+
+.dungeon-view.move-turn-around > .scene {
+  animation-name: dv-turn-around;
+  animation-duration: 260ms;
+}
+
+.dungeon-view.move-bump > .scene {
+  animation-name: dv-bump;
+  animation-duration: 200ms;
+}
+
+@keyframes dv-forward {
+  from {
+    transform: scale(0.84);
+    opacity: 0.55;
+  }
+}
+
+@keyframes dv-back {
+  from {
+    transform: scale(1.18);
+    opacity: 0.55;
+  }
+}
+
+@keyframes dv-left {
+  from {
+    transform: translateX(-14%);
+    opacity: 0.6;
+  }
+}
+
+@keyframes dv-right {
+  from {
+    transform: translateX(14%);
+    opacity: 0.6;
+  }
+}
+
+@keyframes dv-turn-left {
+  from {
+    transform: translateX(-45%) scaleX(0.7);
+    opacity: 0.3;
+  }
+}
+
+@keyframes dv-turn-right {
+  from {
+    transform: translateX(45%) scaleX(0.7);
+    opacity: 0.3;
+  }
+}
+
+@keyframes dv-turn-around {
+  from {
+    transform: scaleX(0.1);
+    opacity: 0.2;
+  }
+}
+
+@keyframes dv-bump {
+  25% {
+    transform: translateX(-1.5%);
+  }
+  50% {
+    transform: translateX(1.5%);
+  }
+  75% {
+    transform: translateX(-0.8%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dungeon-view > .scene {
+    animation: none !important;
+  }
+}
+
+/* An encounter's foes in the corridor ahead (src/render/encounter-portrait.ts): dark shapes with
+   the light catching their edges and their eyes. */
+.dungeon-view .foe .fill {
+  fill: #0d0907;
+  stroke: #d9a76a;
+  stroke-width: 0.45;
+  stroke-opacity: 0.55;
+  paint-order: stroke;
+}
+
+.dungeon-view .foe .line {
+  fill: none;
+  stroke: #0d0907;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dungeon-view .foe .cut {
+  fill: none;
+  stroke: #e0b27a;
+  stroke-opacity: 0.7;
+  stroke-linecap: round;
+}

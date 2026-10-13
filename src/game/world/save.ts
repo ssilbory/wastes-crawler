@@ -48,6 +48,7 @@ export function serializeWorld(w: World): string {
     arenaDay: w.arenaDay,
     quests: w.quests,
     dungeon: w.dungeon,
+    charted: w.charted,
     light: w.light,
     rescues: w.rescues,
     raising: w.raising,
@@ -161,6 +162,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
     arenaDay: s.arenaDay,
     quests: s.quests,
     dungeon: s.dungeon,
+    charted: s.charted,
     light: {
       ...s.light,
       torch: s.light.torch as ResourceDie,

@@ -1,6 +1,9 @@
 import { darkness, type LightView } from '../../render/dungeon-light.ts';
 import { VIEW_HEIGHT, VIEW_WIDTH, type Panel } from '../../render/dungeon-view.ts';
 import type { TrapArt } from '../../render/trap-art.ts';
+import type { Motion } from '../../render/dungeon-motion.ts';
+import type { PortraitFigure } from '../../render/encounter-portrait.ts';
+import { FigureParts } from '../arena/Figure.tsx';
 
 const DARK = '#050404';
 
@@ -45,11 +48,24 @@ function TrapMarks(props: { art: TrapArt }) {
  * them, a falloff into the dark toward the vanishing point and the colour the light casts
  * (docs/presentation-plan.md, V1). With no light, the view is pitch dark.
  */
-export function DungeonView(props: { panels: Panel[]; light: LightView | null; label: string }) {
+export function DungeonView(props: {
+  panels: Panel[];
+  light: LightView | null;
+  label: string;
+  /** How the view moves in after the party's last move (src/render/dungeon-motion.ts). */
+  motion?: Motion | null;
+  /** A pending encounter's foes, standing ahead (src/render/encounter-portrait.ts). */
+  foes?: PortraitFigure[];
+}) {
   const { light } = props;
   return (
     <svg
-      class={['dungeon-view', light ? '' : 'dark', light?.flicker ? 'flicker' : '']
+      class={[
+        'dungeon-view',
+        light ? '' : 'dark',
+        light?.flicker ? 'flicker' : '',
+        props.motion ? `move-${props.motion}` : '',
+      ]
         .filter(Boolean)
         .join(' ')}
       viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}
@@ -64,43 +80,60 @@ export function DungeonView(props: { panels: Panel[]; light: LightView | null; l
           </radialGradient>
         </defs>
       )}
-      <rect class="ceiling" width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
-      <rect class="floor" y={VIEW_HEIGHT / 2} width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
-      {props.panels.map((p) => (
-        <g
-          key={p.key}
-          class={`panel-${p.kind}`}
-          // A trap fades into the floor it lies on, which carries its own shadow.
-          opacity={p.trap && light ? 1 - darkness(light, p.span.near) : undefined}
-        >
-          {p.breach && (
-            <clipPath id={`dv-breach-${p.key}`}>
-              <path d={p.breach.clip} clip-rule="evenodd" />
-            </clipPath>
-          )}
-          <g clip-path={p.breach ? `url(#dv-breach-${p.key})` : undefined}>
-            {(!p.trap || p.trap.plate) && <polygon points={p.points} fill={p.fill} />}
-            {p.trap && <TrapMarks art={p.trap} />}
-            {p.detail.patches && <path class="patches" d={p.detail.patches} />}
-            {p.detail.lines && <path class="detail" d={p.detail.lines} />}
-            {p.frame && p.leaf && (
-              <>
-                <polygon class="door-frame" points={p.frame} fill={p.leaf.fill} />
-                <path class="detail" d={p.leaf.detail.lines} />
-                <path class="iron" d={p.leaf.detail.patches} />
-              </>
+      <g class="scene">
+        <rect class="ceiling" width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
+        <rect class="floor" y={VIEW_HEIGHT / 2} width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
+        {props.panels.map((p) => (
+          <g
+            key={p.key}
+            class={`panel-${p.kind}`}
+            // A trap fades into the floor it lies on, which carries its own shadow.
+            opacity={p.trap && light ? 1 - darkness(light, p.span.near) : undefined}
+          >
+            {p.breach && (
+              <clipPath id={`dv-breach-${p.key}`}>
+                <path d={p.breach.clip} clip-rule="evenodd" />
+              </clipPath>
             )}
-            {light && !p.trap && <Shadow panel={p} light={light} />}
-          </g>
-          {p.breach && (
-            // The broken rim and the rubble at its foot, dimmed with the wall they came from.
-            <g opacity={light ? 1 - darkness(light, p.span.near) : undefined}>
-              <path class="rim" d={p.breach.rim} />
-              <path class="rubble" d={p.breach.rubble} />
+            <g clip-path={p.breach ? `url(#dv-breach-${p.key})` : undefined}>
+              {(!p.trap || p.trap.plate) && <polygon points={p.points} fill={p.fill} />}
+              {p.trap && <TrapMarks art={p.trap} />}
+              {p.detail.patches && <path class="patches" d={p.detail.patches} />}
+              {p.detail.lines && <path class="detail" d={p.detail.lines} />}
+              {p.frame && p.leaf && (
+                <>
+                  <polygon class="door-frame" points={p.frame} fill={p.leaf.fill} />
+                  <path class="detail" d={p.leaf.detail.lines} />
+                  <path class="iron" d={p.leaf.detail.patches} />
+                </>
+              )}
+              {light && !p.trap && <Shadow panel={p} light={light} />}
             </g>
-          )}
-        </g>
-      ))}
+            {p.breach && (
+              // The broken rim and the rubble at its foot, dimmed with the wall they came from.
+              <g opacity={light ? 1 - darkness(light, p.span.near) : undefined}>
+                <path class="rim" d={p.breach.rim} />
+                <path class="rubble" d={p.breach.rubble} />
+              </g>
+            )}
+          </g>
+        ))}
+        {light &&
+          props.foes?.map((f) => (
+            <svg
+              key={f.key}
+              class="foe"
+              x={f.x}
+              y={f.y}
+              width={f.size}
+              height={f.size}
+              viewBox="0 0 48 48"
+              opacity={1 - darkness(light, f.depth)}
+            >
+              <FigureParts figure={f.figure} down={false} />
+            </svg>
+          ))}
+      </g>
       {light && <rect class="glow" width={VIEW_WIDTH} height={VIEW_HEIGHT} fill="url(#dv-glow)" />}
       {!light && (
         <text class="pitch-dark" x={VIEW_WIDTH / 2} y={VIEW_HEIGHT / 2}>

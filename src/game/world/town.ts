@@ -8,6 +8,7 @@ import type { GameData } from '../character/context.ts';
 import { note } from './members.ts';
 import { regionMap } from './region.ts';
 import { emit } from './bus.ts';
+import { chartDungeon } from '../dungeon/chart.ts';
 import { enterRegion } from './crossing.ts';
 import { raidedCost } from './raids.ts';
 import { arriveNpcs } from './rescue.ts';
@@ -105,6 +106,8 @@ export function wipe(w: World, data: GameData): void {
   enterRegion(w, region.id, town);
   w.encounter = null;
   w.coach = null;
+  // The fallen still remember the way they came (Charts).
+  chartDungeon(w, data);
   w.dungeon = null;
   w.light.lit = null;
   w.day += 1;

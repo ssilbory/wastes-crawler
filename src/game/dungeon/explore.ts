@@ -12,6 +12,7 @@ import { endQuarter } from '../world/quarter.ts';
 import { emit } from '../world/bus.ts';
 import { ruinDungeon } from './generate.ts';
 import { openRuin, ruinHere } from './ruins.ts';
+import { chartDungeon, recall } from './chart.ts';
 import { douse, drawKits, blind, kindle } from './light.ts';
 import { glimpse, knownEdges } from './secrets.ts';
 import { arriveOn, onSpecial } from './specials.ts';
@@ -110,21 +111,23 @@ export function enterDungeon(w: World, data: GameData): TownResult {
   if (w.coach) return no('The party is on a coach.');
   const d = dungeonHere(w, data) ?? openRuin(w, data, ruin as Ruin);
   w.destination = null;
+  // The party's map from its last visit, if the layout still matches (Charts).
+  const known = recall(w, d);
   w.dungeon = {
     dungeon: d.id,
     level: d.entry.level,
     at: d.entry.at,
     facing: d.entry.facing,
-    seen: {},
+    seen: known.seen,
     turn: 0,
     steps: 0,
-    found: {},
+    found: known.found,
     dug: {},
-    glimpsed: {},
-    traps: {},
+    glimpsed: known.glimpsed,
+    traps: known.traps,
     read: {},
     sight: null,
-    sensed: {},
+    sensed: known.sensed,
   };
   note(w, `The party ${goesDown(data, d.id) ? 'goes down into' : 'enters'} ${d.name}.`);
   drawKits(w);
@@ -193,6 +196,7 @@ export function takeStairs(w: World, data: GameData): TownResult {
   if ('surface' in link.to) {
     const name = dungeonOf(data, s.dungeon).name;
     note(w, `The party ${goesDown(data, s.dungeon) ? 'climbs out of' : 'leaves'} ${name}.`);
+    chartDungeon(w, data);
     w.dungeon = null;
     douse(w);
   } else {

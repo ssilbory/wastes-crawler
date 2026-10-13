@@ -61,6 +61,7 @@ export function newWorld(
     arenaDay: null,
     quests: {},
     dungeon: null,
+    charted: {},
     light: { ...NO_LIGHT },
     rescues: [],
     raising: { offer: null, accepted: null },

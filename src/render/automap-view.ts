@@ -110,3 +110,39 @@ export function automap(w: World, data: GameData, size = MAP_CELL): Automap | nu
     party: arrow(s.at.x, s.at.y, s.facing, size),
   };
 }
+
+/** A dungeon cell is 10 feet across (docs/rules-adaptation.md, Dungeon exploration: Turns). */
+export const CELL_FEET = 10;
+
+/** Height of the strip under the map that holds its scale and compass. */
+export const LEGEND_HEIGHT = 22;
+
+/**
+ * The automap's legend, in the strip under the map (docs/presentation-plan.md, V4): a scale bar of
+ * alternating cell-long blocks, up to five, labelled in feet, and a compass rose at the right. The
+ * map is always drawn north up.
+ */
+export interface AutomapLegend {
+  blocks: { x: number; width: number; dark: boolean }[];
+  /** Where the bar sits, and its label. */
+  y: number;
+  label: string;
+  compass: { x: number; y: number };
+}
+
+export function automapLegend(
+  map: Pick<Automap, 'width' | 'height'>,
+  size = MAP_CELL,
+): AutomapLegend {
+  const cells = Math.max(1, Math.min(5, Math.floor(map.width / size) - 3));
+  return {
+    blocks: Array.from({ length: cells }, (_, i) => ({
+      x: i * size,
+      width: size,
+      dark: i % 2 === 0,
+    })),
+    y: map.height + 12,
+    label: `${cells * CELL_FEET} feet`,
+    compass: { x: map.width - 8, y: map.height + LEGEND_HEIGHT / 2 + 1 },
+  };
+}

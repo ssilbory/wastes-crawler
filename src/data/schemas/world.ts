@@ -7,7 +7,7 @@ import { FactionStateSchema } from './faction-content.ts';
 import { RegionSchema } from './overland-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 34;
+export const WORLD_SCHEMA_VERSION = 35;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -255,6 +255,21 @@ export const DungeonStateSchema = z.strictObject({
 });
 export type DungeonState = z.infer<typeof DungeonStateSchema>;
 
+/**
+ * What the party knows of a dungeon it has left, kept for its next visit (docs/rules-adaptation.md,
+ * Dungeon exploration: Charts), with a fingerprint of the layout it was made on.
+ */
+export const DungeonChartSchema = DungeonStateSchema.pick({
+  seen: true,
+  found: true,
+  glimpsed: true,
+  sensed: true,
+}).extend({
+  layout: z.string().min(1),
+  traps: z.record(IdSchema, z.record(z.string(), z.literal('noticed'))),
+});
+export type DungeonChart = z.infer<typeof DungeonChartSchema>;
+
 const ResourceDieSchema = z.union([0, 4, 6, 8, 10, 12].map((n) => z.literal(n)));
 
 /** The party's light (docs/rules-adaptation.md, Resource dice and Dungeon exploration). */
@@ -322,6 +337,8 @@ export const WorldSaveSchema = z.strictObject({
   quests: z.record(IdSchema, QuestStateSchema),
   /** The party's place in a dungeon, or null on the surface. */
   dungeon: DungeonStateSchema.nullable(),
+  /** The party's maps of dungeons it has left, by dungeon id. */
+  charted: z.record(IdSchema, DungeonChartSchema),
   light: LightSchema,
   /** Dungeon captives freed, as "dungeon/level/x,y": each rescue happens once per world. */
   rescues: z.array(z.string()),
