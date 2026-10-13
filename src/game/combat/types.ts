@@ -253,7 +253,10 @@ export type Action =
   | { kind: 'breath'; row: number }
   | { kind: 'total-defense' }
   | { kind: 'stabilize'; target: string }
+  /** Into an empty slot, or trading places with the ally in it (docs/rules-adaptation.md, Swapping). */
   | { kind: 'move'; row: number; column: number }
+  /** Hold the turn until right after the named combatant's (Holding); see holdTurn. */
+  | { kind: 'hold'; after: string }
   | { kind: 'gear'; item: number; location: 'readied' | 'stowed' }
   /** Spend the Main Action trying to throw off the Torment of Tumefaction. */
   | { kind: 'shake-off' }
@@ -297,6 +300,8 @@ export interface Battle {
   partyFirst: boolean;
   /** Ids still to act this round, in turn order. */
   queue: string[];
+  /** Those who have held their turn this round (docs/rules-adaptation.md, Holding). */
+  heldThisRound: Set<string>;
   /** The combatant whose turn has started and awaits a command, if any. */
   turnBegun: string | null;
   /** Monster rows (`side:group`) that have taken their first loss and rolled for it. */

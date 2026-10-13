@@ -25,7 +25,8 @@ export function defaultAction(
     case 'defend':
       return { kind: 'total-defense' };
     case 'repeat':
-      return last && isLegal(b, actor, last) ? last : partyAction(b, actor);
+      // Default actions never hold (docs/rules-adaptation.md, Holding).
+      return last && last.kind !== 'hold' && isLegal(b, actor, last) ? last : partyAction(b, actor);
     case 'auto':
       return partyAction(b, actor);
   }

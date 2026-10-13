@@ -185,8 +185,10 @@ describe('the battle loop (SRD 2.4.1–2.4.2)', () => {
     expect(who(b, 'Snag').totalDefense).toBe(true);
     act(b, fizz, { kind: 'move', row: 1, column: 3 });
     expect([fizz.row, fizz.column]).toEqual([1, 3]);
+    // Into an ally's slot is a swap (docs/rules-adaptation.md, Swapping).
     act(b, fizz, { kind: 'move', row: 0, column: 0 });
-    expect([fizz.row, fizz.column]).toEqual([1, 3]);
+    expect([fizz.row, fizz.column]).toEqual([0, 0]);
+    expect([who(b, 'Snag').row, who(b, 'Snag').column]).toEqual([1, 3]);
     act(b, thug, { kind: 'move', row: 1, column: 0 });
     expect(thug.row).toBe(0);
     act(b, fizz, { kind: 'attack', attack: 9, target: thug.id });

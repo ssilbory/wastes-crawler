@@ -7,7 +7,7 @@ import { afterMove } from './gear.ts';
 import type { CombatMagic } from '../../data/schemas/index.ts';
 import { ROW_SLOTS } from '../../rules/formation.ts';
 import { canUse, magicName } from './spells.ts';
-import { isUp, targets } from './targeting.ts';
+import { canAct, isUp, targets } from './targeting.ts';
 import type { Action, Battle, Combatant } from './types.ts';
 import { inSlot } from './mounted.ts';
 import { bindTargets, canHowl } from './companions.ts';
@@ -161,20 +161,34 @@ function companionCommands(b: Battle, actor: Combatant): Command[] {
   return commands;
 }
 
+/** Every other slot in the formation: empty ones, and allies to trade places with (Swapping). */
 function moveChoices(b: Battle, actor: Combatant): Choice[] {
   if (b.layout[actor.side] !== 'formation') return [];
-  const taken = (row: number, column: number) =>
-    b.combatants.some(
+  const occupant = (row: number, column: number) =>
+    b.combatants.find(
       (c) => c.side === actor.side && inSlot(c) && c.row === row && c.column === column,
     );
   return [0, 1].flatMap((row) =>
-    Array.from({ length: ROW_SLOTS }, (_, column) => column)
-      .filter((column) => !taken(row, column))
-      .map((column) => ({
-        label: `${ROW_NAMES[row] as string} row, slot ${column + 1}`,
-        action: { kind: 'move' as const, row, column },
-      })),
+    Array.from({ length: ROW_SLOTS }, (_, column) => column).flatMap((column): Choice[] => {
+      const ally = occupant(row, column);
+      if (ally === actor) return [];
+      const slot = `${ROW_NAMES[row] as string} row, slot ${column + 1}`;
+      const action = { kind: 'move' as const, row, column };
+      return ally
+        ? [{ label: `${slot}: trade places with ${ally.name}`, targetId: ally.id, action }]
+        : [{ label: slot, action }];
+    }),
   );
+}
+
+/** Hold the turn until after anyone still to act this round, once a round (Holding). */
+function holdChoices(b: Battle, actor: Combatant): Choice[] {
+  if (b.queue[0] !== actor.id || b.heldThisRound.has(actor.id)) return [];
+  return b.queue.slice(1).flatMap((id): Choice[] => {
+    const c = b.combatants.find((x) => x.id === id);
+    if (!c || !canAct(c)) return [];
+    return [{ label: `After ${describe(c)}`, targetId: c.id, action: { kind: 'hold', after: id } }];
+  });
 }
 
 export function commandsFor(b: Battle, actor: Combatant): Command[] {
@@ -243,6 +257,9 @@ export function commandsFor(b: Battle, actor: Combatant): Command[] {
   const moves = moveChoices(b, actor);
   if (moves.length > 0)
     commands.push({ key: 'move', group: 'move', label: 'Change slot', choices: moves });
+  const holds = holdChoices(b, actor);
+  if (holds.length > 0)
+    commands.push({ key: 'hold', group: 'wait', label: 'Hold', choices: holds });
   commands.push(one('wait', 'wait', 'Wait', { kind: 'wait' }));
   return commands;
 }
