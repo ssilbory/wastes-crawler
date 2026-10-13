@@ -9,6 +9,10 @@
       "str": -2
     },
     "size": "small",
+    "look": {
+      "body": "small",
+      "head": "ears"
+    },
     "signatureFoci": ["warren-born", "scrounger"],
     "racialFocusPicks": [
       "alert",
@@ -30,6 +34,10 @@
       "cha": -2
     },
     "size": "standard",
+    "look": {
+      "body": "standard",
+      "head": "tusks"
+    },
     "signatureFoci": ["war-bred", "iron-gut"],
     "racialFocusPicks": [
       "die-hard",
@@ -51,6 +59,10 @@
       "str": -2
     },
     "size": "standard",
+    "look": {
+      "body": "standard",
+      "head": "ears"
+    },
     "signatureFoci": ["elder-sight"],
     "racialFocusPicks": [
       "deadeye",
@@ -71,6 +83,10 @@
       "str": 1
     },
     "size": "large",
+    "look": {
+      "body": "centaur",
+      "head": "plain"
+    },
     "signatureFoci": ["four-legged"],
     "racialFocusPicks": [
       "alert",
@@ -136,6 +152,10 @@
       "int": -2
     },
     "size": "standard",
+    "look": {
+      "body": "standard",
+      "head": "horns"
+    },
     "signatureFoci": ["feral-hardiness"],
     "racialFocusPicks": [
       "die-hard",
@@ -188,6 +208,10 @@
       "str": -2
     },
     "size": "small",
+    "look": {
+      "body": "small",
+      "head": "beard"
+    },
     "signatureFoci": ["hidden-lore"],
     "racialFocusPicks": [
       "artisan",

@@ -7,7 +7,8 @@
       "count": 1,
       "sides": 4
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "figure": "commoner"
   },
   {
     "id": "thug-or-militia",
@@ -17,7 +18,8 @@
       "count": 1,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "figure": "soldier"
   },
   {
     "id": "barbarian-fighter",
@@ -27,7 +29,8 @@
       "count": 1,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "figure": "brute"
   },
   {
     "id": "veteran-soldier",
@@ -37,7 +40,8 @@
       "count": 1,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "figure": "soldier"
   },
   {
     "id": "skilled-veteran",
@@ -47,7 +51,8 @@
       "count": 2,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "figure": "soldier"
   },
   {
     "id": "elites-or-special-guards",
@@ -57,7 +62,8 @@
       "count": 3,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "figure": "soldier"
   },
   {
     "id": "knight-or-minor-hero",
@@ -67,7 +73,8 @@
       "count": 4,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "figure": "soldier"
   },
   {
     "id": "warrior-baron",
@@ -77,7 +84,8 @@
       "count": 6,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "figure": "soldier"
   },
   {
     "id": "barbarian-warlord",
@@ -87,7 +95,8 @@
       "count": 8,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "figure": "brute"
   },
   {
     "id": "mighty-general",
@@ -97,7 +106,8 @@
       "count": 8,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "figure": "soldier"
   },
   {
     "id": "major-hero",
@@ -107,7 +117,8 @@
       "count": 10,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "figure": "soldier"
   },
   {
     "id": "great-warrior-king",
@@ -117,7 +128,8 @@
       "count": 12,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "figure": "soldier"
   },
   {
     "id": "petty-mage",
@@ -128,6 +140,7 @@
       "sides": 6
     },
     "mind": "sapient",
+    "figure": "caster",
     "caster": {
       "tradition": "high-mage",
       "slots": "full-high-mage-arts-and-spells",
@@ -144,6 +157,7 @@
       "sides": 6
     },
     "mind": "sapient",
+    "figure": "caster",
     "caster": {
       "tradition": "elementalist",
       "slots": "full-elementalist-arts-and-spells",
@@ -160,6 +174,7 @@
       "sides": 6
     },
     "mind": "sapient",
+    "figure": "caster",
     "caster": {
       "tradition": "high-mage",
       "slots": "full-high-mage-arts-and-spells",
@@ -180,6 +195,7 @@
       "sides": 6
     },
     "mind": "sapient",
+    "figure": "caster",
     "caster": {
       "tradition": "high-mage",
       "slots": "full-high-mage-arts-and-spells",
@@ -200,6 +216,7 @@
       "sides": 6
     },
     "mind": "sapient",
+    "figure": "caster",
     "caster": {
       "tradition": "high-mage",
       "slots": "full-high-mage-arts-and-spells",
@@ -214,32 +231,38 @@
   {
     "id": "small-pack-predator",
     "tags": [],
-    "mind": "animal"
+    "mind": "animal",
+    "figure": "beast"
   },
   {
     "id": "large-solitary-predator",
     "tags": ["large"],
-    "mind": "animal"
+    "mind": "animal",
+    "figure": "great-beast"
   },
   {
     "id": "apex-predator",
     "tags": ["large"],
-    "mind": "animal"
+    "mind": "animal",
+    "figure": "great-beast"
   },
   {
     "id": "herd-beast",
     "tags": [],
-    "mind": "animal"
+    "mind": "animal",
+    "figure": "grazer"
   },
   {
     "id": "vicious-large-herbivore",
     "tags": ["large"],
-    "mind": "animal"
+    "mind": "animal",
+    "figure": "grazer"
   },
   {
     "id": "elephantine-grazer",
     "tags": ["reach", "large"],
-    "mind": "animal"
+    "mind": "animal",
+    "figure": "grazer"
   },
   {
     "id": "automaton-humanlike",
@@ -249,7 +272,8 @@
       "count": 1,
       "sides": 6
     },
-    "mind": "mindless"
+    "mind": "mindless",
+    "figure": "automaton"
   },
   {
     "id": "automaton-laborer",
@@ -258,7 +282,8 @@
       "count": 1,
       "sides": 6
     },
-    "mind": "mindless"
+    "mind": "mindless",
+    "figure": "automaton"
   },
   {
     "id": "automaton-military",
@@ -267,7 +292,8 @@
       "count": 2,
       "sides": 6
     },
-    "mind": "mindless"
+    "mind": "mindless",
+    "figure": "automaton"
   },
   {
     "id": "automaton-warbot",
@@ -276,52 +302,62 @@
       "count": 5,
       "sides": 6
     },
-    "mind": "mindless"
+    "mind": "mindless",
+    "figure": "automaton"
   },
   {
     "id": "slime-or-ooze",
     "tags": ["unliving"],
-    "mind": "mindless"
+    "mind": "mindless",
+    "figure": "ooze"
   },
   {
     "id": "predator-small-vicious",
     "tags": [],
-    "mind": "monster"
+    "mind": "monster",
+    "figure": "beast"
   },
   {
     "id": "predator-large-vicious",
     "tags": ["large"],
-    "mind": "monster"
+    "mind": "monster",
+    "figure": "great-beast"
   },
   {
     "id": "predator-hulking",
     "tags": ["reach", "large"],
-    "mind": "monster"
+    "mind": "monster",
+    "figure": "great-beast"
   },
   {
     "id": "predator-hellbeast",
     "tags": ["large"],
-    "mind": "monster"
+    "mind": "monster",
+    "figure": "great-beast"
   },
   {
     "id": "unnatural-swarm",
     "tags": ["flying"],
-    "mind": "mindless"
+    "mind": "mindless",
+    "figure": "swarm"
   },
   {
     "id": "terrible-warbeast",
     "tags": ["reach", "large"],
-    "mind": "monster"
+    "mind": "monster",
+    "figure": "great-beast"
   },
   {
     "id": "legendary-god-titan",
     "tags": ["reach", "large"],
-    "mind": "monster"
+    "mind": "monster",
+    "figure": "giant"
   },
   {
     "id": "vorpal-hare",
     "tags": [],
-    "mind": "monster"
+    "mind": "monster",
+    "figure": "beast"
   },
   {
     "id": "grave-wyrm",
@@ -331,6 +367,7 @@
       "sides": 6
     },
     "mind": "monster",
+    "figure": "wyrm",
     "routine": [
       {
         "name": "Claw",
@@ -383,6 +420,7 @@
     "id": "gnawing-dead",
     "tags": ["unliving", "undead"],
     "mind": "mindless",
+    "figure": "walking-dead",
     "routine": [
       {
         "name": "Claw",
@@ -412,6 +450,7 @@
     "id": "colossus-bear",
     "tags": ["large"],
     "mind": "animal",
+    "figure": "great-beast",
     "routine": [
       {
         "name": "Claw",
@@ -436,12 +475,14 @@
   {
     "id": "giant-ant",
     "tags": [],
-    "mind": "animal"
+    "mind": "animal",
+    "figure": "crawler"
   },
   {
     "id": "cave-bear",
     "tags": ["large"],
     "mind": "animal",
+    "figure": "great-beast",
     "routine": [
       {
         "name": "Claw",
@@ -471,6 +512,7 @@
       "sides": 6
     },
     "mind": "monster",
+    "figure": "wyrm",
     "routine": [
       {
         "name": "Lion's bite",
@@ -520,7 +562,8 @@
       "count": 2,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "figure": "brute"
   },
   {
     "id": "hill-giant",
@@ -529,7 +572,8 @@
       "count": 6,
       "sides": 6
     },
-    "mind": "sapient"
+    "mind": "sapient",
+    "figure": "giant"
   },
   {
     "id": "manticore",
@@ -539,6 +583,7 @@
       "sides": 6
     },
     "mind": "monster",
+    "figure": "winged",
     "routine": [
       {
         "name": "Claw",
@@ -575,6 +620,7 @@
     "id": "giant-scorpion",
     "tags": [],
     "mind": "animal",
+    "figure": "crawler",
     "routine": [
       {
         "name": "Claw",
@@ -604,6 +650,7 @@
     "id": "giant-rattlesnake",
     "tags": [],
     "mind": "animal",
+    "figure": "serpent",
     "routine": [
       {
         "name": "Bite",
@@ -624,6 +671,7 @@
     "id": "giant-black-widow",
     "tags": [],
     "mind": "animal",
+    "figure": "crawler",
     "routine": [
       {
         "name": "Bite",
@@ -644,6 +692,7 @@
     "id": "unicorn",
     "tags": ["large"],
     "mind": "monster",
+    "figure": "grazer",
     "routine": [
       {
         "name": "Hoof",
@@ -669,6 +718,7 @@
     "id": "alicorn",
     "tags": ["large"],
     "mind": "monster",
+    "figure": "grazer",
     "routine": [
       {
         "name": "Hoof",
@@ -699,6 +749,7 @@
       "sides": 6
     },
     "mind": "sapient",
+    "figure": "soldier",
     "onHit": {
       "kind": "drain",
       "dice": {
@@ -712,6 +763,7 @@
     "id": "zombie",
     "tags": ["unliving", "slow", "undead"],
     "mind": "mindless",
+    "figure": "walking-dead",
     "resist": {
       "blunt": "half",
       "missiles": "one"
@@ -721,6 +773,7 @@
     "id": "raised-zombie",
     "tags": ["unliving", "undead"],
     "mind": "mindless",
+    "figure": "walking-dead",
     "resist": {
       "blunt": "half"
     }
@@ -729,6 +782,7 @@
     "id": "raised-skeleton",
     "tags": ["unliving", "undead"],
     "mind": "mindless",
+    "figure": "walking-dead",
     "resist": {
       "edged": "half"
     }
@@ -736,22 +790,26 @@
   {
     "id": "grave-knight",
     "tags": ["unliving", "undead", "humanoid"],
-    "mind": "sapient"
+    "mind": "sapient",
+    "figure": "soldier"
   },
   {
     "id": "mushroom-sporeling",
     "tags": ["plant"],
-    "mind": "monster"
+    "mind": "monster",
+    "figure": "fungus"
   },
   {
     "id": "mushroom-warrior",
     "tags": ["plant"],
-    "mind": "monster"
+    "mind": "monster",
+    "figure": "fungus"
   },
   {
     "id": "mushroom-spore-shaman",
     "tags": ["plant"],
     "mind": "monster",
+    "figure": "fungus",
     "routine": [
       {
         "name": "Spore lash",
@@ -775,12 +833,14 @@
   {
     "id": "mushroom-king",
     "tags": ["plant", "large"],
-    "mind": "monster"
+    "mind": "monster",
+    "figure": "fungus"
   },
   {
     "id": "walking-sapling",
     "tags": ["plant", "slow"],
     "mind": "monster",
+    "figure": "tree",
     "resist": {
       "missiles": "one"
     }
@@ -789,6 +849,7 @@
     "id": "walking-tree",
     "tags": ["plant", "large", "slow"],
     "mind": "monster",
+    "figure": "tree",
     "resist": {
       "missiles": "one"
     }
@@ -797,6 +858,7 @@
     "id": "swamp-thing",
     "tags": ["plant"],
     "mind": "monster",
+    "figure": "tree",
     "resist": {
       "blunt": "half"
     }
@@ -804,23 +866,27 @@
   {
     "id": "wood-golem",
     "tags": ["plant", "unliving"],
-    "mind": "mindless"
+    "mind": "mindless",
+    "figure": "tree"
   },
   {
     "id": "phantasmal-eidolon",
     "tags": [],
     "mind": "monster",
+    "figure": "spirit",
     "nonLethal": true
   },
   {
     "id": "elemental-guardian",
     "tags": [],
-    "mind": "monster"
+    "mind": "monster",
+    "figure": "spirit"
   },
   {
     "id": "aurochs",
     "tags": ["large"],
     "mind": "animal",
+    "figure": "grazer",
     "routine": [
       {
         "name": "Trample",
@@ -837,6 +903,7 @@
     "id": "bison",
     "tags": ["large"],
     "mind": "animal",
+    "figure": "grazer",
     "routine": [
       {
         "name": "Trample",
@@ -853,6 +920,7 @@
     "id": "dire-wolf",
     "tags": [],
     "mind": "animal",
+    "figure": "beast",
     "routine": [
       {
         "name": "Bite",
@@ -869,6 +937,7 @@
     "id": "giant-fly",
     "tags": [],
     "mind": "animal",
+    "figure": "swarm",
     "routine": [
       {
         "name": "Bite",
@@ -885,6 +954,7 @@
     "id": "ghoul",
     "tags": ["undead"],
     "mind": "monster",
+    "figure": "walking-dead",
     "routine": [
       {
         "name": "Claw",
@@ -926,6 +996,7 @@
     "id": "saber-toothed-tiger",
     "tags": ["large"],
     "mind": "animal",
+    "figure": "great-beast",
     "routine": [
       {
         "name": "Claw",
@@ -951,6 +1022,7 @@
     "id": "yeti",
     "tags": [],
     "mind": "animal",
+    "figure": "giant",
     "routine": [
       {
         "name": "Claw",
@@ -967,6 +1039,7 @@
     "id": "cyclops",
     "tags": ["large"],
     "mind": "monster",
+    "figure": "giant",
     "routine": [
       {
         "name": "Club",
@@ -994,6 +1067,7 @@
     "id": "gargoyle",
     "tags": ["flying"],
     "mind": "monster",
+    "figure": "winged",
     "routine": [
       {
         "name": "Claw",
@@ -1028,12 +1102,14 @@
     "id": "bone-golem",
     "tags": ["unliving"],
     "mind": "mindless",
+    "figure": "walking-dead",
     "weapon": "sword-short"
   },
   {
     "id": "giant-turtle",
     "tags": [],
     "mind": "animal",
+    "figure": "great-beast",
     "routine": [
       {
         "name": "Bite",
@@ -1050,6 +1126,7 @@
     "id": "ettin",
     "tags": ["large"],
     "mind": "monster",
+    "figure": "giant",
     "routine": [
       {
         "name": "Left Head",
@@ -1075,6 +1152,7 @@
     "id": "hell-hound",
     "tags": [],
     "mind": "monster",
+    "figure": "beast",
     "routine": [
       {
         "name": "Bite",
@@ -1102,6 +1180,7 @@
     "id": "hydra",
     "tags": ["large"],
     "mind": "monster",
+    "figure": "serpent",
     "routine": [
       {
         "name": "Heads, first four",
@@ -1127,6 +1206,7 @@
     "id": "giant-slug",
     "tags": ["large"],
     "mind": "animal",
+    "figure": "ooze",
     "routine": [
       {
         "name": "Slam",
@@ -1143,6 +1223,7 @@
     "id": "mire-drowned",
     "tags": ["unliving", "undead"],
     "mind": "mindless",
+    "figure": "walking-dead",
     "routine": [
       {
         "name": "Grasp",
@@ -1159,6 +1240,7 @@
     "id": "ash-walker",
     "tags": ["unliving", "undead"],
     "mind": "mindless",
+    "figure": "walking-dead",
     "routine": [
       {
         "name": "Slam",
@@ -1175,6 +1257,7 @@
     "id": "gallows-hulk",
     "tags": ["large", "unliving", "undead"],
     "mind": "mindless",
+    "figure": "brute",
     "routine": [
       {
         "name": "Slam",
@@ -1191,6 +1274,7 @@
     "id": "barrow-crawler",
     "tags": ["large", "unliving", "undead"],
     "mind": "mindless",
+    "figure": "crawler",
     "routine": [
       {
         "name": "Drag",
@@ -1207,6 +1291,7 @@
     "id": "mummy",
     "tags": ["undead", "unliving"],
     "mind": "mindless",
+    "figure": "walking-dead",
     "routine": [
       {
         "name": "Touch",
@@ -1227,6 +1312,7 @@
     "id": "werewolf",
     "tags": [],
     "mind": "monster",
+    "figure": "brute",
     "routine": [
       {
         "name": "Bite",
@@ -1243,6 +1329,7 @@
     "id": "lich",
     "tags": ["undead", "unliving", "humanoid"],
     "mind": "sapient",
+    "figure": "caster",
     "routine": [
       {
         "name": "Touch",
@@ -1273,6 +1360,7 @@
     "id": "mummy-lord",
     "tags": ["undead", "unliving", "humanoid"],
     "mind": "sapient",
+    "figure": "caster",
     "routine": [
       {
         "name": "Touch",
@@ -1304,6 +1392,7 @@
       "sides": 6
     },
     "mind": "sapient",
+    "figure": "caster",
     "onHit": {
       "kind": "drain",
       "dice": {

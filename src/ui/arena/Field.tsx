@@ -1,5 +1,6 @@
 import type { SideView, SlotView } from '../../render/arena-view.ts';
 import { flash, type Float } from '../../render/fight-fx.ts';
+import { Figure } from './Figure.tsx';
 
 interface FieldProps {
   /** The far side, drawn on top with its front row nearest the middle. */
@@ -45,8 +46,10 @@ function Slot(props: {
     .filter(Boolean)
     .join(' ');
   const hit = flash(props.floats);
+  const down = slot.status === 'dying' || slot.status === 'stable' || slot.status === 'dead';
   const body = (
     <>
+      {slot.figure && <Figure figure={slot.figure} down={down} />}
       {hit && (
         // Keyed by the batch, so each batch plays its flash and numbers afresh.
         <span class={`fx ${hit}`} key={props.batchKey} aria-hidden="true">

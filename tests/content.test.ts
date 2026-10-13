@@ -245,6 +245,12 @@ describe('equipment content', () => {
         ...content.equipmentRules,
         noUnskilledPenalty: ['laser'],
         numerous: { trait: 'swarming', perItem: 5 },
+        held: {
+          ...Object.fromEntries(
+            Object.entries(content.equipmentRules.held).filter(([id]) => id !== 'dagger'),
+          ),
+          laser: 'gun' as const,
+        },
       },
       focusRules: [
         {
@@ -284,6 +290,8 @@ describe('equipment content', () => {
       'shields/dagger: clashes with another item id',
       'startingPackages/shield-wall: unknown item jetpack',
       'equipmentRules: unknown weapon laser',
+      'equipmentRules/held: no shape for weapon dagger',
+      'equipmentRules/held: unknown weapon laser',
       'equipmentRules: unknown trait swarming',
       'foci/armsmaster: effect uses unknown skill fly',
       'foci/horned: effect uses unknown skill swish',
@@ -356,20 +364,28 @@ describe('combat content', () => {
         ...content.monsterCombat
           .filter((m) => !['herd-beast', 'thug-or-militia', 'giant-ant', 'zombie'].includes(m.id))
           .map((m) => ({ ...m, caster: undefined })),
-        { id: 'thug-or-militia', tags: [], mind: 'sapient' as const },
+        { id: 'thug-or-militia', tags: [], mind: 'sapient' as const, figure: 'soldier' as const },
         {
           id: 'giant-ant',
           tags: [],
           mind: 'animal' as const,
+          figure: 'beast' as const,
           routine: [{ name: 'Bite', damage: { count: 1, sides: 6, modifier: 0 }, count: 2 }],
         },
         {
           id: 'zombie',
           tags: [],
           mind: 'mindless' as const,
+          figure: 'ooze' as const,
           volley: [{ name: 'Spit', damage: { count: 1, sides: 4, modifier: 0 }, count: 1 }],
         },
-        { id: 'dragon', weapon: 'breath', tags: [], mind: 'monster' as const },
+        {
+          id: 'dragon',
+          weapon: 'breath',
+          tags: [],
+          mind: 'monster' as const,
+          figure: 'wyrm' as const,
+        },
       ],
       combatMagic: [
         { ...blast, effect: { ...blast.effect, skill: 'blasting' } },

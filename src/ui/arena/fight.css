@@ -335,3 +335,55 @@
     animation: none;
   }
 }
+
+/* Each combatant's silhouette (src/render/figure-view.ts), standing at the right of its slot
+   behind the text; the far side in the foe's colour. */
+.slot > :not(.figure, .fx) {
+  position: relative;
+}
+
+.slot:has(> .figure) {
+  min-height: 70px;
+  padding-right: 58px;
+}
+
+.figure {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  height: min(62px, calc(100% - 6px));
+  width: auto;
+  aspect-ratio: 1;
+  pointer-events: none;
+  --figure: color-mix(in srgb, var(--ink) 58%, var(--panel-sunk));
+  --cut: var(--panel-sunk);
+}
+
+.side.far .figure {
+  --figure: color-mix(in srgb, #d9826a 66%, var(--panel-sunk));
+}
+
+.figure .fill {
+  fill: var(--figure);
+}
+
+.figure .line {
+  fill: none;
+  stroke: var(--figure);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.figure .cut {
+  fill: none;
+  stroke: var(--cut);
+  stroke-linecap: round;
+}
+
+.slot-name,
+.slot-stats,
+.slot .odds {
+  text-shadow:
+    0 0 3px var(--panel-sunk),
+    0 0 2px var(--panel-sunk);
+}

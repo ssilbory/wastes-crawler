@@ -4,6 +4,7 @@ import { describe } from '../game/combat/commands.ts';
 import { inSlot } from '../game/combat/mounted.ts';
 import type { Battle, Combatant, Outcome, SideId } from '../game/combat/types.ts';
 import { ROW_SLOTS } from '../rules/formation.ts';
+import { figureOf, type FigureView } from './figure-view.ts';
 
 export interface SlotView {
   id: string;
@@ -20,6 +21,8 @@ export interface SlotView {
   gone: boolean;
   /** The war mount fighting from this slot under its rider (docs/rules-adaptation.md, Mounts). */
   mount?: SlotView;
+  /** How it is drawn (src/render/figure-view.ts); set by sideView. */
+  figure?: FigureView;
 }
 
 export interface SideView {
@@ -87,6 +90,7 @@ export function sideView(b: Battle, side: SideId): SideView {
   const members = b.combatants.filter((c) => c.side === side);
   const formation = b.layout[side] === 'formation';
   const rowCount = formation ? 2 : 3;
+  const seen = (c: Combatant): SlotView => ({ ...slotView(c), figure: figureOf(b.data, c) });
   const width = formation ? ROW_SLOTS : Math.max(1, ...members.map((c) => c.column + 1));
   const rows = Array.from({ length: rowCount }, (_, row) =>
     Array.from({ length: width }, (_, column) => {
@@ -95,7 +99,7 @@ export function sideView(b: Battle, side: SideId): SideView {
       const shown = here.find((c) => c.status === 'active' || c.status === 'asleep') ?? here[0];
       if (!shown) return null;
       const mount = members.find((c) => c.rider === shown.id);
-      return mount ? { ...slotView(shown), mount: slotView(mount) } : slotView(shown);
+      return mount ? { ...seen(shown), mount: seen(mount) } : seen(shown);
     }),
   );
   const rowNames = formation ? ['Front', 'Rear'] : ['Front', 'Second', 'Third'];

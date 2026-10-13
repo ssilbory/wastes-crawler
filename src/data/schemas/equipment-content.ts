@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { HeldSchema } from './figure-content.ts';
 import { AttributeSchema, CostSchema, DiceSchema, IdSchema } from './common.ts';
 
 const Level = z.int().min(1).max(2);
@@ -149,6 +150,8 @@ export const EquipmentRulesSchema = z.strictObject({
   numerous: z.strictObject({ trait: IdSchema, perItem: z.int().min(2) }),
   /** Weapons that strike blunt, for creatures that shrug off crushing blows (Phase 14a). */
   bluntWeapons: z.array(IdSchema),
+  /** How each SRD weapon looks in hand on the fight screen; presentation only. */
+  held: z.record(IdSchema, HeldSchema),
   /** SRD 1.7.7: 3d6 x 10 silver, paid in crowns. */
   startingCrowns: z.strictObject({ dice: DiceSchema, multiplier: z.int().min(1) }),
   /** Stowed items each loot die and each component in the party stash weighs (Party stash). */

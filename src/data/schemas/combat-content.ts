@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { AttributeSchema, DiceSchema, ElementSchema, IdSchema } from './common.ts';
 import { ElementalistEffects } from './elementalist-content.ts';
 import { HighMagicEffects } from './high-magic-content.ts';
+import { MonsterFigureSchema } from './figure-content.ts';
 import { NecromancerEffects } from './necromancer-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
@@ -80,6 +81,8 @@ export const MonsterCombatSchema = z.strictObject({
   loot: LootDiceSchema.optional(),
   /** Who can be parleyed with: people always, animals and monsters with foci, the mindless never. */
   mind: z.enum(['sapient', 'animal', 'monster', 'mindless']),
+  /** How it is drawn in a fight; presentation only. */
+  figure: MonsterFigureSchema,
   caster: MonsterCasterSchema.optional(),
   /** The effect of any hit the monster lands that its routine strike doesn't set (a drain). */
   onHit: OnHitSchema.optional(),

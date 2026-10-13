@@ -26,6 +26,11 @@ export function equipmentReferenceErrors(srd: SrdData, content: ContentData): st
   for (const id of rules.noUnskilledPenalty) {
     if (!weapons.has(id)) errors.push(`equipmentRules: unknown weapon ${id}`);
   }
+  // Every weapon has a shape in hand on the fight screen, and only weapons do.
+  for (const id of weapons)
+    if (!(id in rules.held)) errors.push(`equipmentRules/held: no shape for weapon ${id}`);
+  for (const id of Object.keys(rules.held))
+    if (!weapons.has(id)) errors.push(`equipmentRules/held: unknown weapon ${id}`);
   if (!srd['weapon-traits'].some((t) => t.id === rules.numerous.trait)) {
     errors.push(`equipmentRules: unknown trait ${rules.numerous.trait}`);
   }

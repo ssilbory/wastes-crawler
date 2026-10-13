@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { PeopleLookSchema } from './figure-content.ts';
 import { CharacterSchema } from './character.ts';
 import { AttributeSchema, IdSchema } from './common.ts';
 import {
@@ -110,6 +111,8 @@ export const PeopleSchema = z.strictObject({
   /** Added to generated scores; the result stays within 3–18. */
   attributeModifiers: Modifiers,
   size: z.enum(['small', 'standard', 'large']),
+  /** How its members are drawn in a fight; presentation only. */
+  look: PeopleLookSchema,
   /** Racial foci every member gets for free (ids in racial-foci.json). */
   signatureFoci: z.array(IdSchema),
   /** SRD foci that fill the remaining racial focus slots, up to three in all. */

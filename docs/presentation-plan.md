@@ -89,5 +89,13 @@ Overland travel: Route).
 | Turn order | same, and `src/ui/arena/TurnStrip.tsx`                   | The turns left this round, in order, whose turn it is first, then the next round                                                                                                                                     |
 | Drawing    | `src/ui/arena/Field.tsx`, `CommandMenu.tsx`, `fight.css` | The odds sit under each target in the menu and on the field, and in the target's accessible name. Without motion, the numbers stay put until the next batch                                                          |
 
-Still to come in V3: silhouettes by monster type and by people and class, reach lines, and log
-filters by side.
+Silhouettes, added next:
+
+| Piece   | Where                                                                                         | What it does                                                                                                                                                                                                                                                 |
+| ------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Data    | `figure` in `monster-combat.json`, `look` in `peoples.json`, `held` in `equipment-rules.json` | Which of 19 figures a monster is drawn as (setting monsters take their base's), a people's build and head mark, and each SRD weapon's shape in hand. Presentation only; a content check wants a shape for every weapon                                       |
+| Choice  | `src/render/figure-view.ts`                                                                   | A monster's figure from its entry (large ones drawn bigger); a character from its people's look, its armor (AC 14 or more reads as armor, else a robe for a caster or a cloak), its first weapon, and its shield; a Skinshifter in a beast's form as a beast |
+| Art     | `src/render/figure-art.ts`, `monster-art.ts`, `figure-draw.ts`                                | Path data in a 48 by 48 box: people built from parts (centaurs ride a horse body), monsters drawn whole, armed folk reusing the people's parts. Downed figures lie on their side, beasts on their back                                                       |
+| Drawing | `src/ui/arena/Figure.tsx`, `fight.css`                                                        | The silhouette at the right of each slot, in the ink colour for the near side and a rust red for the far side, with cut lines in the slot's colour carving out visors, belts, and eyes                                                                       |
+
+Still to come in V3: reach lines and log filters by side.
