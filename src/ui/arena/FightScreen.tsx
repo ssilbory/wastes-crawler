@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { DefaultPreset } from '../../data/schemas/index.ts';
-import { takeTurn, type BattleResult } from '../../game/combat/battle.ts';
+import { holdTurn, takeTurn, type BattleResult } from '../../game/combat/battle.ts';
 import { commandsFor } from '../../game/combat/commands.ts';
 import type { Action, Battle, Combatant } from '../../game/combat/types.ts';
 import { outcomeText, roundsText, sideTitles, sideView } from '../../render/arena-view.ts';
@@ -74,8 +74,12 @@ export function FightScreen(props: {
     setSession({ battle: b, actor: next, ...out });
   };
   const command = (a: Combatant, action: Action) => {
-    last.current.set(a.id, action);
-    takeTurn(b, a, () => action);
+    // Holding moves the turn later in the round instead of playing it (Holding).
+    if (action.kind === 'hold') holdTurn(b, a, action.after);
+    else {
+      last.current.set(a.id, action);
+      takeTurn(b, a, () => action);
+    }
     return nextCommand(b);
   };
   const tend = (step: () => void) =>

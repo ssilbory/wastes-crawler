@@ -32,6 +32,24 @@ export function beginRound(b: Battle): void {
   b.queue = [...turns.filter((c) => !c.actsLast), ...turns.filter((c) => c.actsLast)].map(
     (c) => c.id,
   );
+  b.heldThisRound.clear();
+}
+
+/**
+ * Holds the current actor's turn until right after `after`'s, someone still to act this round
+ * (docs/rules-adaptation.md, Holding; SRD 2.4.4 Hold An Action). Once a round; false when it
+ * can't be done.
+ */
+export function holdTurn(b: Battle, actor: Combatant, after: string): boolean {
+  const at = b.queue.indexOf(after);
+  const target = b.combatants.find((c) => c.id === after);
+  if (b.queue[0] !== actor.id || b.heldThisRound.has(actor.id) || at <= 0 || !target) return false;
+  b.queue.splice(at + 1, 0, actor.id);
+  b.queue.shift();
+  b.heldThisRound.add(actor.id);
+  b.turnBegun = null;
+  say(b, `${actor.name} holds, waiting on ${target.name}.`);
+  return true;
 }
 
 function checkEnd(b: Battle): void {
@@ -73,8 +91,8 @@ function beginTurn(b: Battle, actor: Combatant): void {
   if (b.turnBegun === actor.id) return;
   b.turnBegun = actor.id;
   actor.totalDefense = false;
-  // Wind Walking's mist can't cast (4.5.0).
-  if (!actor.misted) freeActions(b, actor);
+  // Wind Walking's mist can't cast (4.5.0). A held turn took its On Turn actions before holding.
+  if (!actor.misted && !b.heldThisRound.has(actor.id)) freeActions(b, actor);
 }
 
 /** Plays the current actor's turn: free actions, then one action (monsters: one per attack). */

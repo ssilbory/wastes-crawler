@@ -63,7 +63,9 @@ export function CommandMenu(props: CommandMenuProps) {
               ? 'a slot'
               : current.group === 'gear'
                 ? 'an item'
-                : 'a target'}
+                : current.key === 'hold'
+                  ? 'whose turn to wait for'
+                  : 'a target'}
           </p>
           {current.choices.map((ch) => {
             const odds = props.odds?.(ch.action);

@@ -107,3 +107,13 @@ Reach and log filters, last of V3:
 | Log filters | `src/render/fight-log.ts`, `BattleLog` in `Field.tsx`      | All, or one side's turns, named after the sides. Lines from between turns (deaths from wounds, the end of a round) and after the fight show only under All                                                                |
 
 Reach marks instead of drawn lines: the field is laid out as a grid of slots, so a mark on each foe in reach says the same without measuring the page.
+
+## V5: combat mechanics
+
+Each with Sam's ruling in `docs/rules-adaptation.md` (Formation rules) before code.
+
+| Ruling              | Where                                                                    | What it does                                                                                                                                                                                                  |
+| ------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Swapping            | `act` in `src/game/combat/actions.ts`, `moveChoices` in `commands.ts`    | Change slot now offers allies' slots too: "trade places with Grukk", for the mover's action alone. Works on a downed ally, to pull a fallen front-liner back                                                  |
+| Fighting Withdrawal | none                                                                     | Stepping back out of melee draws no free attack, so the SRD's Fighting Withdrawal has no use. Noted on the Moving rows ruling                                                                                 |
+| Holding             | `holdTurn` in `src/game/combat/round.ts`, `holdChoices` in `commands.ts` | Hold: pick anyone still to act this round, and the turn comes again right after theirs. Once a round; On Turn actions aren't taken twice. Monsters and default actions never hold, so `pnpm sim` is unchanged |

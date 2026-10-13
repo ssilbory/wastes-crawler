@@ -39,11 +39,16 @@ describe('the command menu (SRD 2.4.3)', () => {
     const move = commands.find((c) => c.key === 'move');
     expect(move?.label).toBe('Change slot');
     expect(move?.choices.map((c) => c.label)).toEqual([
+      'Front row, slot 2: trade places with Grukk',
       'Front row, slot 3',
       'Front row, slot 4',
+      'Rear row, slot 1: trade places with Lirael',
+      'Rear row, slot 2: trade places with Fizzwick',
       'Rear row, slot 3',
       'Rear row, slot 4',
     ]);
+    // A swap highlights the ally it trades with.
+    expect(move?.choices[0]?.targetId).toBe('pc-1');
   });
 
   it('offers to stabilize dying allies not yet tended this round', () => {

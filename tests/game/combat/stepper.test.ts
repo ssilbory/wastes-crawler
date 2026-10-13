@@ -2,12 +2,16 @@ import { describe, expect, it } from 'vitest';
 import {
   act,
   advance,
+  beginRound,
   concludeBattle,
   createBattle,
   currentActor,
+  holdTurn,
   runBattle,
   takeTurn,
 } from '../../../src/game/combat/battle.ts';
+import { commandsFor } from '../../../src/game/combat/commands.ts';
+import { defaultAction } from '../../../src/game/combat/defaults.ts';
 import { checkMorale } from '../../../src/game/combat/morale.ts';
 import { covered, exposed, targets } from '../../../src/game/combat/targeting.ts';
 import type { Attack, Battle, Controller } from '../../../src/game/combat/types.ts';
@@ -129,10 +133,10 @@ describe('monster vs monster', () => {
 });
 
 describe('moving rows', () => {
-  it('moves a PC to an empty formation slot, and refuses anything else', () => {
+  it('moves a PC to an empty formation slot, and refuses anything off the formation', () => {
     const b = standardBattle([['thug-or-militia']]);
     const lirael = who(b, 'Lirael');
-    act(b, lirael, { kind: 'move', row: 0, column: 0 });
+    act(b, lirael, { kind: 'move', row: 1, column: 0 });
     act(b, lirael, { kind: 'move', row: 2, column: 0 });
     act(b, lirael, { kind: 'move', row: 0, column: 4 });
     act(b, lirael, { kind: 'move', row: 0, column: -1 });
@@ -146,5 +150,78 @@ describe('moving rows', () => {
     const vet = who(d, 'ally-0-0');
     act(d, vet, { kind: 'move', row: 1, column: 1 });
     expect([vet.row, vet.column]).toEqual([0, 0]);
+  });
+});
+
+describe('swapping (docs/rules-adaptation.md, Swapping)', () => {
+  it('trades places with an ally, standing or down, for the mover’s action alone', () => {
+    const b = standardBattle([['thug-or-militia']]);
+    const [snag, lirael] = [who(b, 'Snag'), who(b, 'Lirael')];
+    act(b, lirael, { kind: 'move', row: 0, column: 0 });
+    expect([lirael.row, lirael.column, snag.row, snag.column]).toEqual([0, 0, 1, 0]);
+    expect(b.log?.at(-1)).toBe('Round 1: Lirael trades places with Snag.');
+    // A downed front-liner is pulled back the same way.
+    const grukk = who(b, 'Grukk');
+    grukk.status = 'dying';
+    const fizz = who(b, 'Fizzwick');
+    act(b, fizz, { kind: 'move', row: 0, column: 1 });
+    expect([fizz.row, grukk.row, grukk.column]).toEqual([0, 1, 1]);
+    expect(commandsFor(b, fizz).find((c) => c.key === 'move')?.choices).toContainEqual(
+      expect.objectContaining({ label: 'Rear row, slot 2: trade places with Grukk' }),
+    );
+  });
+});
+
+describe('holding (docs/rules-adaptation.md, Holding)', () => {
+  it('moves the turn to right after the one named, once a round', () => {
+    const b = standardBattle([['thug-or-militia', 'thug-or-militia']]);
+    const snag = who(b, 'Snag');
+    b.queue = ['pc-0', 'pc-1', 'foe-0-0', 'foe-0-1'];
+    const hold = commandsFor(b, snag).find((c) => c.key === 'hold');
+    expect(hold?.choices.map((c) => c.label)).toEqual([
+      'After Grukk',
+      'After Thug or Militia [1-1]',
+      'After Thug or Militia [1-2]',
+    ]);
+    expect(holdTurn(b, snag, 'foe-0-0')).toBe(true);
+    expect(b.queue).toEqual(['pc-1', 'foe-0-0', 'pc-0', 'foe-0-1']);
+    expect(b.log?.at(-1)).toBe('Round 1: Snag holds, waiting on Thug or Militia.');
+    // Not twice a round, not out of turn, and only for someone still to act.
+    b.queue = ['pc-0', 'foe-0-1'];
+    expect(holdTurn(b, snag, 'foe-0-1')).toBe(false);
+    expect(commandsFor(b, snag).some((c) => c.key === 'hold')).toBe(false);
+    const grukk = who(b, 'Grukk');
+    expect(holdTurn(b, grukk, 'foe-0-1')).toBe(false);
+    b.queue = ['pc-1', 'foe-0-1'];
+    expect(holdTurn(b, grukk, 'pc-1')).toBe(false);
+    expect(holdTurn(b, grukk, 'nobody')).toBe(false);
+    // A new round lets everyone hold again.
+    beginRound(b);
+    expect(b.heldThisRound.size).toBe(0);
+  });
+
+  it('skips those who can no longer act, and offers nothing to the last to act', () => {
+    const b = standardBattle([['thug-or-militia']]);
+    const snag = who(b, 'Snag');
+    b.queue = ['pc-0', 'pc-1', 'foe-0-0'];
+    who(b, 'Grukk').status = 'dying';
+    expect(commandsFor(b, snag).find((c) => c.key === 'hold')?.choices).toHaveLength(1);
+    b.queue = ['pc-0'];
+    expect(commandsFor(b, snag).some((c) => c.key === 'hold')).toBe(false);
+  });
+
+  it('takes On Turn actions once, and is never a default or wasted as an action', () => {
+    const b = standardBattle([['thug-or-militia']]);
+    const snag = who(b, 'Snag');
+    b.queue = ['pc-0', 'foe-0-0'];
+    const actor = advance(b, (c) => c.kind === 'pc');
+    expect(actor?.id).toBe('pc-0');
+    holdTurn(b, snag, 'foe-0-0');
+    const before = b.log?.length ?? 0;
+    act(b, snag, { kind: 'hold', after: 'foe-0-0' });
+    expect(b.log?.length).toBe(before);
+    expect(defaultAction(b, snag, 'repeat', { kind: 'hold', after: 'foe-0-0' }).kind).not.toBe(
+      'hold',
+    );
   });
 });

@@ -15,7 +15,15 @@ import { followRiders } from './mounted.ts';
 import type { Battle, Combatant, SideId, WaitingCompanion } from './types.ts';
 
 export { act } from './actions.ts';
-export { advance, beginRound, currentActor, MAX_ROUNDS, runRound, takeTurn } from './round.ts';
+export {
+  advance,
+  beginRound,
+  currentActor,
+  holdTurn,
+  MAX_ROUNDS,
+  runRound,
+  takeTurn,
+} from './round.ts';
 export {
   awaitsMending,
   awaitsRescue,
@@ -185,6 +193,7 @@ export function createBattle(s: BattleSetup): Battle {
     sideNames: s.sideNames ?? { party: 'the party', enemy: 'the enemy' },
     partyFirst: true,
     queue: [],
+    heldThisRound: new Set(),
     turnBegun: null,
     rowsChecked: new Set(),
     halfChecked: new Set(),

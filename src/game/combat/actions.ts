@@ -109,23 +109,31 @@ export function act(b: Battle, actor: Combatant, action: Action): void {
       if (target && target.side === actor.side) stabilize(b, actor, target);
       return;
     case 'move': {
-      const taken = b.combatants.some(
+      const partner = b.combatants.find(
         (c) =>
           c.side === actor.side && inSlot(c) && c.row === action.row && c.column === action.column,
       );
       const slot = action.row >= 0 && action.row <= 1 && action.column >= 0;
       const inFormation = b.layout[actor.side] === 'formation';
-      if (inFormation && !taken && slot && action.column < ROW_SLOTS) {
-        actor.row = action.row;
-        actor.column = action.column;
-        followRiders(b.combatants);
-        say(b, `${actor.name} moves to the ${action.row === 0 ? 'front' : 'rear'} row.`);
-      }
+      if (!inFormation || !slot || action.column >= ROW_SLOTS || partner === actor) return;
+      // Trading places with an ally, standing or down, costs only the mover's action (Swapping).
+      if (partner) [partner.row, partner.column] = [actor.row, actor.column];
+      actor.row = action.row;
+      actor.column = action.column;
+      followRiders(b.combatants);
+      say(
+        b,
+        partner
+          ? `${actor.name} trades places with ${partner.name}.`
+          : `${actor.name} moves to the ${action.row === 0 ? 'front' : 'rear'} row.`,
+      );
       return;
     }
     case 'gear':
       readyOrStow(b, actor, action.item, action.location);
       return;
+    // Holding is done by holdTurn before the turn is played; here it would only waste it.
+    case 'hold':
     case 'wait':
       return;
   }
