@@ -3,9 +3,10 @@ import type { DefaultPreset } from '../../data/schemas/index.ts';
 import { takeTurn, type BattleResult } from '../../game/combat/battle.ts';
 import { commandsFor } from '../../game/combat/commands.ts';
 import type { Action, Battle, Combatant } from '../../game/combat/types.ts';
-import { outcomeText, roundsText, sideView } from '../../render/arena-view.ts';
+import { outcomeText, roundsText, sideTitles, sideView } from '../../render/arena-view.ts';
 import { turnOrder } from '../../render/fight-fx.ts';
 import { oddsText } from '../../render/fight-odds.ts';
+import { reachOf } from '../../render/fight-reach.ts';
 import { roundDelay } from '../../game/settings.ts';
 import { data } from '../builder/data.ts';
 import { getSettings } from '../settings-store.ts';
@@ -191,6 +192,7 @@ export function FightScreen(props: {
           floats={changes.floats}
           batchKey={changes.logFrom}
           notes={notes}
+          reach={actor && !current && !result ? reachOf(b, actor) : undefined}
           onPick={pickTarget}
           nearOnly={props.aftermath ?? false}
         />
@@ -213,6 +215,8 @@ export function FightScreen(props: {
           <BattleLog
             lines={[...(b.log ?? []), ...(xpLine ? [xpLine] : [])]}
             from={changes.logFrom}
+            sides={b.logSides}
+            names={sideTitles(b)}
           />
         </div>
       </div>

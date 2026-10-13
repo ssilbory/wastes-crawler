@@ -103,10 +103,19 @@ export function sideView(b: Battle, side: SideId): SideView {
     }),
   );
   const rowNames = formation ? ['Front', 'Rear'] : ['Front', 'Second', 'Third'];
-  return { side, title: capitalize(b.sideNames[side]), rows, rowNames };
+  return { side, title: sideTitle(b, side), rows, rowNames };
 }
 
 const capitalize = (s: string) => `${s.charAt(0).toUpperCase()}${s.slice(1)}`;
+
+/** A side's name as a heading, such as "The party". */
+export const sideTitle = (b: Battle, side: SideId) => capitalize(b.sideNames[side]);
+
+/** Both sides' headings. */
+export const sideTitles = (b: Battle): Record<SideId, string> => ({
+  party: sideTitle(b, 'party'),
+  enemy: sideTitle(b, 'enemy'),
+});
 
 /** A headline for a finished battle. */
 export function outcomeText(b: Battle, outcome: Outcome): string {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'preact/hooks';
 import { runRound, type BattleResult } from '../../game/combat/battle.ts';
 import type { Battle } from '../../game/combat/types.ts';
-import { outcomeText, roundsText, sideView } from '../../render/arena-view.ts';
+import { outcomeText, roundsText, sideTitles, sideView } from '../../render/arena-view.ts';
 import { BattleLog, Field } from './Field.tsx';
 import { batch, startBattle, type Changes, type FightSetup } from './fight.ts';
 
@@ -93,7 +93,12 @@ export function SpectatorScreen(props: {
           batchKey={changes.logFrom}
         />
         <div class="fight-side">
-          <BattleLog lines={b.log ?? []} from={changes.logFrom} />
+          <BattleLog
+            lines={b.log ?? []}
+            from={changes.logFrom}
+            sides={b.logSides}
+            names={sideTitles(b)}
+          />
         </div>
       </div>
     </div>

@@ -329,6 +329,10 @@ export interface Battle {
   /** God Wills It's bonus to damage and Shock, by side (Phase 14c). */
   damageBonus: Record<SideId, number>;
   log: string[] | null;
+  /** For each log line, the side whose turn it came in; null between turns. Kept with the log. */
+  logSides: (SideId | null)[] | null;
+  /** The side whose turn is being played, or null between turns. */
+  acting: SideId | null;
   events: BattleEvent[] | null;
   outcome: Outcome | null;
 }

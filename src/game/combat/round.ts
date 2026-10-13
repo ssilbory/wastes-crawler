@@ -42,6 +42,8 @@ function checkEnd(b: Battle): void {
   if (!b.combatants.some((c) => c.side === 'enemy' && left(c))) b.outcome = 'party';
   else if (!b.combatants.some((c) => c.side === 'party' && left(c) && !c.noncombatant))
     b.outcome = 'enemy';
+  // Whatever is said once the fight is settled is no one's turn.
+  if (b.outcome) b.acting = null;
 }
 
 /**
@@ -59,6 +61,7 @@ export function currentActor(b: Battle): Combatant | null {
     b.queue.shift();
     actor.totalDefense = false;
     actor.stunned = false;
+    b.acting = actor.side;
     say(b, `${actor.name} is stunned and loses the action.`);
   }
   return null;
@@ -66,6 +69,7 @@ export function currentActor(b: Battle): Combatant | null {
 
 /** Starts the actor's turn: Total Defense ends, and On Turn free actions happen first. */
 function beginTurn(b: Battle, actor: Combatant): void {
+  b.acting = actor.side;
   if (b.turnBegun === actor.id) return;
   b.turnBegun = actor.id;
   actor.totalDefense = false;
@@ -162,6 +166,7 @@ function shiftFormation(b: Battle): void {
 }
 
 export function endOfRound(b: Battle): void {
+  b.acting = null;
   for (const c of b.combatants) {
     // Time stands still for the frozen in amber (4.4.0).
     if (c.status === 'dying' && !c.amber && b.round - c.fellRound >= MORTAL_ROUNDS) {
@@ -204,6 +209,7 @@ export function endOfRound(b: Battle): void {
 
 /** Ends the round once every turn is taken; past the round limit the fight is a draw. */
 function closeRound(b: Battle): void {
+  b.acting = null;
   checkEnd(b);
   if (b.outcome) return;
   endOfRound(b);

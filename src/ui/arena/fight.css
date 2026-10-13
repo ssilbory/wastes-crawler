@@ -387,3 +387,49 @@
     0 0 3px var(--panel-sunk),
     0 0 2px var(--panel-sunk);
 }
+
+/* Reach (src/render/fight-reach.ts): the foes the acting combatant can strike right now. */
+.reach-tag {
+  align-self: flex-start;
+  padding: 0 5px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
+.slot.reach-melee {
+  border-color: color-mix(in srgb, var(--accent) 70%, var(--bevel-lo));
+}
+
+.slot.reach-melee .reach-tag {
+  background: color-mix(in srgb, var(--accent) 28%, var(--panel-sunk));
+  color: var(--accent-hi);
+}
+
+.slot.reach-ranged {
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--gold) 60%, var(--bevel-lo));
+}
+
+.slot.reach-ranged .reach-tag {
+  background: color-mix(in srgb, var(--gold) 18%, var(--panel-sunk));
+  color: var(--gold);
+}
+
+/* The log's filters by whose turn a line came in (src/render/fight-log.ts). */
+.log-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.log-filters button {
+  padding: 2px 8px;
+  font-size: 0.8rem;
+}
+
+.log-filters button[aria-pressed='true'] {
+  border-color: var(--accent);
+  color: var(--accent-hi);
+}

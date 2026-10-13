@@ -98,4 +98,12 @@ Silhouettes, added next:
 | Art     | `src/render/figure-art.ts`, `monster-art.ts`, `figure-draw.ts`                                | Path data in a 48 by 48 box: people built from parts (centaurs ride a horse body), monsters drawn whole, armed folk reusing the people's parts. Downed figures lie on their side, beasts on their back                                                       |
 | Drawing | `src/ui/arena/Figure.tsx`, `fight.css`                                                        | The silhouette at the right of each slot, in the ink colour for the near side and a rust red for the far side, with cut lines in the slot's colour carving out visors, belts, and eyes                                                                       |
 
-Still to come in V3: reach lines and log filters by side.
+Reach and log filters, last of V3:
+
+| Piece       | Where                                                      | What it does                                                                                                                                                                                                              |
+| ----------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Reach       | `src/render/fight-reach.ts`, `Field.tsx`                   | On a turn awaiting a command, each foe the actor can strike is marked: "in reach" (solid edge) when a melee weapon gets there, "in range" (dashed) when only a missile does. Read from the same targeting the attacks use |
+| Log sides   | `Battle.acting` and `Battle.logSides` (`src/game/combat/`) | The side whose turn is playing, set when a turn begins and cleared between rounds and once the fight is settled; every log line keeps it. Nothing the rules read, and `pnpm sim` output is unchanged                      |
+| Log filters | `src/render/fight-log.ts`, `BattleLog` in `Field.tsx`      | All, or one side's turns, named after the sides. Lines from between turns (deaths from wounds, the end of a round) and after the fight show only under All                                                                |
+
+Reach marks instead of drawn lines: the field is laid out as a grid of slots, so a mark on each foe in reach says the same without measuring the page.

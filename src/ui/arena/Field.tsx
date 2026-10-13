@@ -1,5 +1,9 @@
 import type { SideView, SlotView } from '../../render/arena-view.ts';
 import { flash, type Float } from '../../render/fight-fx.ts';
+import { logLines, type LogFilter } from '../../render/fight-log.ts';
+import type { Reach } from '../../render/fight-reach.ts';
+import type { SideId } from '../../game/combat/types.ts';
+import { useState } from 'preact/hooks';
 import { Figure } from './Figure.tsx';
 
 interface FieldProps {
@@ -18,6 +22,8 @@ interface FieldProps {
   batchKey?: number;
   /** A line under each target's name, such as the odds of the attack chosen. */
   notes?: ReadonlyMap<string, string>;
+  /** The foes the acting combatant can strike, in melee or only at range. */
+  reach?: ReadonlyMap<string, Reach> | undefined;
   onPick?: (id: string) => void;
   /** Only the near side: no foes to draw, as when tending a trap's fallen. */
   nearOnly?: boolean;
@@ -31,6 +37,7 @@ function Slot(props: {
   floats: Float[] | undefined;
   batchKey: number;
   note: string | undefined;
+  reach: Reach | undefined;
   onPick?: ((id: string) => void) | undefined;
 }) {
   const { slot } = props;
@@ -42,6 +49,7 @@ function Slot(props: {
     props.active ? 'active' : '',
     props.target ? 'target' : '',
     props.changed ? 'changed' : '',
+    props.reach ? `reach-${props.reach}` : '',
   ]
     .filter(Boolean)
     .join(' ');
@@ -61,6 +69,9 @@ function Slot(props: {
         </span>
       )}
       <span class="slot-name">{slot.label}</span>
+      {props.reach && (
+        <span class="reach-tag">{props.reach === 'melee' ? 'in reach' : 'in range'}</span>
+      )}
       {props.note && <span class="odds">{props.note}</span>}
       <span class="hp-bar" aria-hidden="true">
         <span style={{ width: `${slot.hpPercent}%` }} />
@@ -122,6 +133,7 @@ function Side(props: SideProps) {
                   floats={s ? props.floats?.get(s.id) : undefined}
                   batchKey={props.batchKey ?? 0}
                   note={s && props.targetIds?.has(s.id) ? props.notes?.get(s.id) : undefined}
+                  reach={s ? props.reach?.get(s.id) : undefined}
                   onPick={props.onPick}
                 />
               );
@@ -152,16 +164,46 @@ export function Field(props: FieldProps) {
   );
 }
 
-/** The fight so far, newest line first, so it reads from the top of its scrolling box. */
-export function BattleLog(props: { lines: readonly string[]; from: number }) {
+/**
+ * The fight so far, newest line first, so it reads from the top of its scrolling box. With
+ * `sides`, it can show only the lines from one side's turns (src/render/fight-log.ts).
+ */
+export function BattleLog(props: {
+  lines: readonly string[];
+  from: number;
+  sides?: readonly (SideId | null)[] | null;
+  /** Each side's name for its filter, such as "The party". */
+  names?: Record<SideId, string>;
+}) {
+  const [filter, setFilter] = useState<LogFilter>('all');
+  const filters: [LogFilter, string][] = [
+    ['all', 'All'],
+    ['party', props.names?.party ?? 'The party'],
+    ['enemy', props.names?.enemy ?? 'The enemy'],
+  ];
   return (
     <section class="log" aria-label="Battle log">
       <h3>Log</h3>
+      {props.sides && (
+        <div class="log-filters" role="group" aria-label="Show the turns of">
+          {filters.map(([f, label]) => (
+            <button
+              key={f}
+              type="button"
+              class="secondary"
+              aria-pressed={filter === f}
+              onClick={() => setFilter(f)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
       <ol>
-        {props.lines
-          .map((line, i) => (
-            <li key={i} class={i >= props.from ? 'new' : undefined}>
-              {line}
+        {logLines(props.lines, props.sides ?? null, filter)
+          .map((l) => (
+            <li key={l.index} class={l.index >= props.from ? 'new' : undefined}>
+              {l.text}
             </li>
           ))
           .reverse()}
