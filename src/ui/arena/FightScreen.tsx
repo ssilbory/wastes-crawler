@@ -3,13 +3,17 @@ import type { DefaultPreset } from '../../data/schemas/index.ts';
 import { takeTurn, type BattleResult } from '../../game/combat/battle.ts';
 import { commandsFor } from '../../game/combat/commands.ts';
 import type { Action, Battle, Combatant } from '../../game/combat/types.ts';
-import { outcomeText, roundsText, sideView } from '../../render/arena-view.ts';
+import { outcomeText, roundsText, sideTitles, sideView } from '../../render/arena-view.ts';
+import { turnOrder } from '../../render/fight-fx.ts';
+import { oddsText } from '../../render/fight-odds.ts';
+import { reachOf } from '../../render/fight-reach.ts';
 import { roundDelay } from '../../game/settings.ts';
 import { data } from '../builder/data.ts';
 import { getSettings } from '../settings-store.ts';
 import { play } from '../sound.ts';
 import { CommandMenu } from './CommandMenu.tsx';
 import { RescuePanel } from './RescuePanel.tsx';
+import { TurnStrip } from './TurnStrip.tsx';
 import { BattleLog, Field } from './Field.tsx';
 import {
   autoResolve,
@@ -124,6 +128,13 @@ export function FightScreen(props: {
   const commands = actor && !result ? commandsFor(b, actor) : [];
   const current = commands.find((c) => c.key === selected);
   const targetIds = new Set(current?.choices.flatMap((c) => (c.targetId ? [c.targetId] : [])));
+  const odds = (action: Action) => (actor ? oddsText(b, actor, action) : null);
+  const notes = new Map(
+    current?.choices.flatMap((c) => {
+      const text = c.targetId ? odds(c.action) : null;
+      return c.targetId && text ? [[c.targetId, text] as const] : [];
+    }),
+  );
   const pickTarget = (id: string) => {
     const ch = current?.choices.find((c) => c.targetId === id);
     if (ch) choose(ch.action);
@@ -168,6 +179,9 @@ export function FightScreen(props: {
               }.`}
         </p>
       )}
+      {!b.outcome && !props.aftermath && (
+        <TurnStrip turns={turnOrder(b, actor?.id ?? null)} round={b.round} />
+      )}
       <div class="fight-main">
         <Field
           far={sideView(b, 'enemy')}
@@ -175,6 +189,10 @@ export function FightScreen(props: {
           activeId={actor?.id ?? null}
           targetIds={targetIds}
           changedIds={changes.ids}
+          floats={changes.floats}
+          batchKey={changes.logFrom}
+          notes={notes}
+          reach={actor && !current && !result ? reachOf(b, actor) : undefined}
           onPick={pickTarget}
           nearOnly={props.aftermath ?? false}
         />
@@ -187,6 +205,7 @@ export function FightScreen(props: {
               preset={p.preset(actor.id)}
               onSelect={setSelected}
               onChoose={choose}
+              odds={odds}
               onPreset={setPreset}
               onDefault={useDefault}
             />
@@ -196,6 +215,8 @@ export function FightScreen(props: {
           <BattleLog
             lines={[...(b.log ?? []), ...(xpLine ? [xpLine] : [])]}
             from={changes.logFrom}
+            sides={b.logSides}
+            names={sideTitles(b)}
           />
         </div>
       </div>

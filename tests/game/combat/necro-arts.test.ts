@@ -77,8 +77,10 @@ describe('Master of Bones', () => {
     casterOf(f).effortUsed = 0;
     f.row = 0;
     b.rng = scriptedRng([20]);
+    b.events = [];
     resolveAttack(b, zombie, zombie.attacks[0] as Attack, f);
     expect(f.hp).toBe(20);
+    expect(b.events.map((e) => e.kind)).toEqual(['turned']);
     // The grave wyrm is too strong, and the living never are turned aside.
     casterOf(f).effortUsed = 0;
     expect(negatesUndead(b, wyrm, f)).toBe(false);

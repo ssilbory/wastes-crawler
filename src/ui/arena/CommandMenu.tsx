@@ -10,6 +10,8 @@ interface CommandMenuProps {
   preset: DefaultPreset;
   onSelect: (key: string | null) => void;
   onChoose: (action: Action) => void;
+  /** The odds of an attack, shown under its target (src/render/fight-odds.ts). */
+  odds?: (action: Action) => string | null;
   onPreset: (preset: DefaultPreset) => void;
   onDefault: () => void;
 }
@@ -63,11 +65,20 @@ export function CommandMenu(props: CommandMenuProps) {
                 ? 'an item'
                 : 'a target'}
           </p>
-          {current.choices.map((ch) => (
-            <button key={ch.label} type="button" onClick={() => props.onChoose(ch.action)}>
-              {ch.label}
-            </button>
-          ))}
+          {current.choices.map((ch) => {
+            const odds = props.odds?.(ch.action);
+            return (
+              <button
+                key={ch.label}
+                type="button"
+                class={odds ? 'with-odds' : undefined}
+                onClick={() => props.onChoose(ch.action)}
+              >
+                {ch.label}
+                {odds && <span class="odds">{odds}</span>}
+              </button>
+            );
+          })}
           <button type="button" class="secondary" onClick={() => props.onSelect(null)}>
             Back
           </button>

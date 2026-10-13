@@ -76,3 +76,34 @@ run each road straight into the hex centre instead of curving every pair. A scal
 Not presentation, but found while drawing roads: the hike planner now keeps to roads when a road
 costs no more hike points than the way across country (Sam's call, docs/rules-adaptation.md,
 Overland travel: Route).
+
+## V3: combat presentation (first slice)
+
+| Piece      | Where                                                    | What it does                                                                                                                                                                                                         |
+| ---------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hit chance | `src/rules/attacks.ts` (`hitChance`)                     | The exact chance of a hit: the d20 plus or minus a d6 per step of advantage, against the AC. Rolls nothing                                                                                                           |
+| Same roll  | `src/game/combat/attack.ts` (`attackInput`)              | The attack and the odds build their roll from one function, so the odds can't drift from the roll. `pnpm sim` output is unchanged                                                                                    |
+| Odds       | `src/render/fight-odds.ts`                               | Chance to hit, a hit's damage range (never under its Shock), and the Shock a miss still deals, with God Wills It, Flame Without End, Red Harvest, Smite the Wicked, and Call of the Tomb. Resistances aren't counted |
+| Blows      | `Battle.events` (`src/game/combat/types.ts`)             | Each weapon blow as a hit, Shock, miss, or a blow turned aside (shield, ward, Master of Bones, a Rider's guard), kept only when the battle keeps a log                                                               |
+| Numbers    | `src/render/fight-fx.ts`                                 | Numbers that float up off each slot after a batch of turns: each blow, and any other change in HP (spells, healing). Up to four a slot, and a flash: struck, healed, or missed                                       |
+| Turn order | same, and `src/ui/arena/TurnStrip.tsx`                   | The turns left this round, in order, whose turn it is first, then the next round                                                                                                                                     |
+| Drawing    | `src/ui/arena/Field.tsx`, `CommandMenu.tsx`, `fight.css` | The odds sit under each target in the menu and on the field, and in the target's accessible name. Without motion, the numbers stay put until the next batch                                                          |
+
+Silhouettes, added next:
+
+| Piece   | Where                                                                                         | What it does                                                                                                                                                                                                                                                 |
+| ------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Data    | `figure` in `monster-combat.json`, `look` in `peoples.json`, `held` in `equipment-rules.json` | Which of 19 figures a monster is drawn as (setting monsters take their base's), a people's build and head mark, and each SRD weapon's shape in hand. Presentation only; a content check wants a shape for every weapon                                       |
+| Choice  | `src/render/figure-view.ts`                                                                   | A monster's figure from its entry (large ones drawn bigger); a character from its people's look, its armor (AC 14 or more reads as armor, else a robe for a caster or a cloak), its first weapon, and its shield; a Skinshifter in a beast's form as a beast |
+| Art     | `src/render/figure-art.ts`, `monster-art.ts`, `figure-draw.ts`                                | Path data in a 48 by 48 box: people built from parts (centaurs ride a horse body), monsters drawn whole, armed folk reusing the people's parts. Downed figures lie on their side, beasts on their back                                                       |
+| Drawing | `src/ui/arena/Figure.tsx`, `fight.css`                                                        | The silhouette at the right of each slot, in the ink colour for the near side and a rust red for the far side, with cut lines in the slot's colour carving out visors, belts, and eyes                                                                       |
+
+Reach and log filters, last of V3:
+
+| Piece       | Where                                                      | What it does                                                                                                                                                                                                              |
+| ----------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Reach       | `src/render/fight-reach.ts`, `Field.tsx`                   | On a turn awaiting a command, each foe the actor can strike is marked: "in reach" (solid edge) when a melee weapon gets there, "in range" (dashed) when only a missile does. Read from the same targeting the attacks use |
+| Log sides   | `Battle.acting` and `Battle.logSides` (`src/game/combat/`) | The side whose turn is playing, set when a turn begins and cleared between rounds and once the fight is settled; every log line keeps it. Nothing the rules read, and `pnpm sim` output is unchanged                      |
+| Log filters | `src/render/fight-log.ts`, `BattleLog` in `Field.tsx`      | All, or one side's turns, named after the sides. Lines from between turns (deaths from wounds, the end of a round) and after the fight show only under All                                                                |
+
+Reach marks instead of drawn lines: the field is laid out as a grid of slots, so a mark on each foe in reach says the same without measuring the page.

@@ -84,3 +84,32 @@ export function hitDamage(
   const floor = shockDamage(input.shock, input.attributeModifier, input.shockBonus ?? 0, ctx);
   return { total: Math.max(rolled, floor), dice: r.dice };
 }
+
+/**
+ * The chance an attack hits, from 0 to 1, read off the same roll as attackRoll: the d20 plus or
+ * minus a d6 per step of advantage or disadvantage (docs/rules-adaptation.md, Advantage /
+ * disadvantage), against the target's AC. Exact, not sampled, and it rolls nothing.
+ */
+export function hitChance(input: AttackInput): number {
+  const steps = input.steps ?? 0;
+  const skill = input.skill ?? UNTRAINED_ATTACK_PENALTY;
+  const need =
+    input.targetAc - input.attackBonus - input.attributeModifier - skill - (input.modifier ?? 0);
+  // The edge dice as a distribution of their signed sum.
+  let edge = new Map([[0, 1]]);
+  for (let i = 0; i < Math.abs(steps); i++) {
+    const next = new Map<number, number>();
+    for (const [sum, p] of edge)
+      for (let face = 1; face <= 6; face++) {
+        const s = sum + face * Math.sign(steps);
+        next.set(s, (next.get(s) ?? 0) + p / 6);
+      }
+    edge = next;
+  }
+  let chance = 0;
+  for (const [sum, p] of edge) {
+    const faces = 21 - Math.min(21, Math.max(1, need - sum));
+    chance += (p * faces) / 20;
+  }
+  return chance;
+}

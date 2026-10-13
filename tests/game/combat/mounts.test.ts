@@ -87,6 +87,12 @@ describe('war mounts in battle (docs/rules-adaptation.md, Mounts)', () => {
     resolveAttack(b, thug, thug.attacks[0] as Attack, tusker);
     expect(tusker).toMatchObject({ hp: 3, steedGuard: false });
     expect(b.log?.at(-1)).toContain('Grukk turns Tusker aside');
+    expect(b.events?.at(-1)).toEqual({
+      kind: 'turned',
+      actor: thug.id,
+      target: tusker.id,
+      amount: 0,
+    });
     b.rng = scriptedRng([19, 6]);
     resolveAttack(b, thug, thug.attacks[0] as Attack, tusker);
     expect(tusker.status).toBe('dead');

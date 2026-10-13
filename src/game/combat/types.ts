@@ -269,6 +269,18 @@ export type Action =
 export type Outcome = 'party' | 'enemy' | 'draw';
 
 /**
+ * One weapon blow, for the fight screen's floating numbers and flashes (docs/presentation-plan.md,
+ * V3): a hit and its damage, a miss with or without Shock, or a blow turned aside by a shield, a
+ * ward, or luck. Kept only when the battle keeps a log.
+ */
+export interface BattleEvent {
+  kind: 'hit' | 'shock' | 'miss' | 'turned';
+  actor: string;
+  target: string;
+  amount: number;
+}
+
+/**
  * How a side stands: the party's two rows of four (docs/rules-adaptation.md, Formation rules), or
  * monster rows of up to eight, which advance when the front row empties.
  */
@@ -317,6 +329,11 @@ export interface Battle {
   /** God Wills It's bonus to damage and Shock, by side (Phase 14c). */
   damageBonus: Record<SideId, number>;
   log: string[] | null;
+  /** For each log line, the side whose turn it came in; null between turns. Kept with the log. */
+  logSides: (SideId | null)[] | null;
+  /** The side whose turn is being played, or null between turns. */
+  acting: SideId | null;
+  events: BattleEvent[] | null;
   outcome: Outcome | null;
 }
 

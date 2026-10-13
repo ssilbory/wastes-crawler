@@ -9,6 +9,7 @@ function setup(faces: number[]) {
   const b = standardBattle([['thug-or-militia', 'thug-or-militia']]);
   b.rng = scriptedRng(faces);
   b.log = [];
+  b.events = [];
   const snag = who(b, 'Snag');
   const thug = who(b, 'foe-0-0');
   thug.hp = 10;
@@ -73,6 +74,37 @@ describe('resolveAttack (SRD 2.4.5–2.4.6)', () => {
     b.rng = scriptedRng([19, 6]);
     resolveAttack(b, thug, thugSpear, snag);
     expect(snag).toMatchObject({ hp: 0, status: 'dying', fellRound: 1 });
+  });
+});
+
+describe('battle events (docs/presentation-plan.md, V3)', () => {
+  it('records each blow: a hit, Shock on a miss, a clean miss, and a blow turned aside', () => {
+    const { b, snag, thug, spear, thugSpear } = setup([15, 4, 2]);
+    resolveAttack(b, snag, spear, thug);
+    thug.hp = 10;
+    resolveAttack(b, snag, spear, thug);
+    thug.ac = 15;
+    b.rng = scriptedRng([2, 1]);
+    resolveAttack(b, snag, spear, thug);
+    snag.ac = 12;
+    resolveAttack(b, thug, thugSpear, snag);
+    b.rng = scriptedRng([19, 5]);
+    snag.wardRounds = 1;
+    resolveAttack(b, thug, thugSpear, snag);
+    expect(b.events).toEqual([
+      { kind: 'hit', actor: snag.id, target: thug.id, amount: 7 },
+      { kind: 'shock', actor: snag.id, target: thug.id, amount: 5 },
+      { kind: 'miss', actor: snag.id, target: thug.id, amount: 0 },
+      { kind: 'turned', actor: thug.id, target: snag.id, amount: 0 },
+      { kind: 'turned', actor: thug.id, target: snag.id, amount: 0 },
+    ]);
+  });
+
+  it('keeps none without a log', () => {
+    const b = standardBattle([['thug-or-militia']], undefined, false);
+    expect(b.events).toBeNull();
+    resolveAttack(b, who(b, 'Snag'), who(b, 'Snag').attacks[0] as Attack, who(b, 'foe-0-0'));
+    expect(b.events).toBeNull();
   });
 });
 

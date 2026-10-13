@@ -47,6 +47,7 @@ export * from './gear.ts';
 export * from './magic.ts';
 export * from './monsters.ts';
 export * from './factions.ts';
+export * from './figure-content.ts';
 export * from './ailment-content.ts';
 export * from './faction-content.ts';
 export * from './skills.ts';
