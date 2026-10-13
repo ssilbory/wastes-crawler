@@ -1,5 +1,6 @@
 import { darkness, type LightView } from '../../render/dungeon-light.ts';
 import { VIEW_HEIGHT, VIEW_WIDTH, type Panel } from '../../render/dungeon-view.ts';
+import type { TrapArt } from '../../render/trap-art.ts';
 
 const DARK = '#050404';
 
@@ -21,6 +22,20 @@ function Shadow(props: { panel: Panel; light: LightView }) {
         <stop offset="1" stop-color={DARK} stop-opacity={far} />
       </linearGradient>
       <polygon class="shadow" points={panel.points} fill={`url(#${id})`} />
+    </>
+  );
+}
+
+/** A known trap's stain, holes, wire, wedge, and the party's chalk ring over all. */
+function TrapMarks(props: { art: TrapArt }) {
+  const { art } = props;
+  return (
+    <>
+      {art.stain && <path class={`stain ${art.stainKind ?? ''}`} d={art.stain} />}
+      {art.holes && <path class="holes" d={art.holes} />}
+      {art.wire && <path class="wire" d={art.wire} />}
+      {art.wedge && <path class="wedge" d={art.wedge} />}
+      <path class="chalk" d={art.chalk} />
     </>
   );
 }
@@ -52,8 +67,14 @@ export function DungeonView(props: { panels: Panel[]; light: LightView | null; l
       <rect class="ceiling" width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
       <rect class="floor" y={VIEW_HEIGHT / 2} width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
       {props.panels.map((p) => (
-        <g key={p.key} class={`panel-${p.kind}`}>
-          <polygon points={p.points} fill={p.fill} />
+        <g
+          key={p.key}
+          class={`panel-${p.kind}`}
+          // A trap fades into the floor it lies on, which carries its own shadow.
+          opacity={p.trap && light ? 1 - darkness(light, p.span.near) : undefined}
+        >
+          {(!p.trap || p.trap.plate) && <polygon points={p.points} fill={p.fill} />}
+          {p.trap && <TrapMarks art={p.trap} />}
           {p.detail.patches && <path class="patches" d={p.detail.patches} />}
           {p.detail.lines && <path class="detail" d={p.detail.lines} />}
           {p.frame && p.leaf && (
@@ -63,7 +84,7 @@ export function DungeonView(props: { panels: Panel[]; light: LightView | null; l
               <path class="iron" d={p.leaf.detail.patches} />
             </>
           )}
-          {light && <Shadow panel={p} light={light} />}
+          {light && !p.trap && <Shadow panel={p} light={light} />}
         </g>
       ))}
       {light && <rect class="glow" width={VIEW_WIDTH} height={VIEW_HEIGHT} fill="url(#dv-glow)" />}

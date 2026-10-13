@@ -162,6 +162,50 @@
   fill-opacity: 0.7;
 }
 
+/* A known trap: a plate set proud of the floor, its marks, and the party's chalk. */
+.dungeon-view .panel-trap polygon {
+  stroke: #0d0c0b;
+  stroke-width: 1.4;
+}
+
+.dungeon-view .panel-trap .holes {
+  fill: #0d0c0b;
+  stroke: none;
+}
+
+.dungeon-view .panel-trap .wire {
+  fill: none;
+  stroke: #c9b07a;
+  stroke-width: 1.1;
+  stroke-linecap: round;
+}
+
+.dungeon-view .panel-trap .stain.poison {
+  fill: #5f8a3a;
+  fill-opacity: 0.55;
+}
+
+.dungeon-view .panel-trap .stain.disease {
+  fill: #3e3a1c;
+  fill-opacity: 0.75;
+}
+
+.dungeon-view .panel-trap .wedge {
+  fill: #7a5232;
+  stroke: #0d0c0b;
+  stroke-width: 0.5;
+}
+
+.dungeon-view .panel-trap .chalk {
+  fill: none;
+  stroke: #e8e4d8;
+  stroke-width: 1.1;
+  stroke-opacity: 0.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 5 1.5;
+}
+
 .dungeon-view .iron {
   fill: #2b2a2c;
   stroke: #0d0c0b;

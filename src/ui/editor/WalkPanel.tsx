@@ -73,7 +73,16 @@ export function WalkPanel(props: {
       ) : (
         <>
           <DungeonView
-            panels={map ? sandboxView(map, walk.at, walk.facing) : []}
+            panels={
+              map
+                ? sandboxView(
+                    map,
+                    walk.at,
+                    walk.facing,
+                    edited.levels.find((l) => l.id === walk.level)?.traps,
+                  )
+                : []
+            }
             light={walkLight()}
             label="Test walk view"
           />

@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import type { DungeonState } from '../../src/data/schemas/index.ts';
 import type { World } from '../../src/game/world/types.ts';
 import { automap } from '../../src/render/automap-view.ts';
-import { dungeonView, shade } from '../../src/render/dungeon-view.ts';
+import { levelOf } from '../../src/game/dungeon/explore.ts';
+import { dungeonView, sandboxView, shade } from '../../src/render/dungeon-view.ts';
 import { lightText, turnText } from '../../src/render/light-view.ts';
 import { data, world } from '../game/world/helpers.ts';
 
@@ -28,6 +29,8 @@ function at(x: number, y: number, facing: DungeonState['facing'], seen: string[]
   w.light.torch = 6;
   return w;
 }
+const find2 = (panels: ReturnType<typeof sandboxView>) =>
+  panels.find((p) => p.key === 'trap-2-0')?.trap;
 const find = (w: World, key: string) => dungeonView(w, data).find((p) => p.key === key);
 
 describe('first-person dungeon view', () => {
@@ -204,15 +207,29 @@ describe('found secrets and known traps', () => {
     expect(automap(w, data)?.lines.find((l) => l.key === '64,16,64,32')?.kind).toBe('door');
   });
 
-  it('shows a trap only once the party knows of it, and not once disarmed', () => {
+  it('shows a trap once the party knows of it, and keeps it in view once disarmed', () => {
     const w = at(4, 8, 'n', ['4,6']);
     expect(find(w, 'trap-2-0')).toBeUndefined();
     expect(automap(w, data)?.cells[0]?.kind).toBe('floor');
     (w.dungeon as DungeonState).traps = { 'barrow-upper': { '4,6': 'noticed' } };
-    expect(find(w, 'trap-2-0')).toMatchObject({ kind: 'trap', fill: shade('trap', 2, false) });
+    const armed = find(w, 'trap-2-0');
+    expect(armed).toMatchObject({ kind: 'trap', fill: shade('trap', 2, false) });
+    // The barrow's trap hurts: a plate with spike holes, nothing wedged.
+    expect(armed?.trap).toMatchObject({ plate: true, wedge: '' });
+    expect(armed?.trap?.holes).toMatch(/^M/);
     expect(automap(w, data)?.cells[0]?.kind).toBe('trap');
     (w.dungeon as DungeonState).traps = { 'barrow-upper': { '4,6': 'disarmed' } };
-    expect(find(w, 'trap-2-0')).toBeUndefined();
-    expect(shade('trap', 0, false)).toBe('hsl(2 60% 46%)');
+    expect(find(w, 'trap-2-0')?.trap?.wedge).toMatch(/^M/);
+    expect(shade('trap', 0, false)).toBe('hsl(34 12% 42%)');
+  });
+
+  it('shows the test walk every trap armed, by the level’s traps or as a plate without them', () => {
+    const { map, level } = levelOf(data, 'old-barrow', 'barrow-upper');
+    const alarm = level.traps.map((t) => ({ ...t, effect: { kind: 'alarm' as const } }));
+    expect(find2(sandboxView(map, { x: 4, y: 8 }, 'n', alarm))).toMatchObject({ plate: false });
+    expect(find2(sandboxView(map, { x: 4, y: 8 }, 'n'))).toMatchObject({
+      plate: true,
+      wedge: '',
+    });
   });
 });

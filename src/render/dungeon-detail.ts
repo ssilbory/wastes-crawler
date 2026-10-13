@@ -25,9 +25,9 @@ export const inset = (q: Quad, u0: number, u1: number, v0: number, v1: number): 
 ];
 
 const pt = ([x, y]: Point) => `${x.toFixed(1)},${y.toFixed(1)}`;
-const line = (q: Quad, u0: number, v0: number, u1: number, v1: number) =>
+export const line = (q: Quad, u0: number, v0: number, u1: number, v1: number) =>
   `M${pt(inQuad(q, u0, v0))}L${pt(inQuad(q, u1, v1))}`;
-const shape = (q: Quad) => `M${pt(q[0])}L${pt(q[1])}L${pt(q[2])}L${pt(q[3])}Z`;
+export const shape = (q: Quad) => `M${pt(q[0])}L${pt(q[1])}L${pt(q[2])}L${pt(q[3])}Z`;
 
 /** A stable number from 0 to 1 for a string: FNV-1a, then scaled. */
 export function hash01(key: string): number {
