@@ -36,6 +36,33 @@
     "text": "A grave-digger is bound and gagged in the corner."
   },
   {
+    "id": "dl-merchant",
+    "name": "a captured salt trader",
+    "monster": "peaceful-human",
+    "destination": "gutterwick",
+    "reward": 60,
+    "xp": 1,
+    "text": "A bound salt trader sits among them."
+  },
+  {
+    "id": "dl-pilgrim",
+    "name": "a captured ash pilgrim",
+    "monster": "peaceful-human",
+    "destination": "cinderhold",
+    "reward": 40,
+    "xp": 1,
+    "text": "An ash pilgrim is tied to a tree behind them."
+  },
+  {
+    "id": "dl-scholar",
+    "name": "a captured lamp-keeper",
+    "monster": "peaceful-human",
+    "destination": "lanternfall",
+    "reward": 80,
+    "xp": 1,
+    "text": "A lamp-keeper in torn robes is held at spear-point."
+  },
+  {
     "id": "chained-deserter",
     "name": "a chained beastman deserter",
     "monster": "peaceful-human",

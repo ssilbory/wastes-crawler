@@ -2,10 +2,10 @@ import { useState } from 'preact/hooks';
 import { firstAid, healers } from '../../game/world/first-aid.ts';
 import { dismiss } from '../../game/world/hire.ts';
 import { captiveOf, MAX_NPCS, typeOf } from '../../game/world/npcs.ts';
-import { regionMap } from '../../game/world/region.ts';
 import type { TownResult } from '../../game/world/services.ts';
 import type { Npc, World } from '../../game/world/types.ts';
 import { shareText } from '../../game/world/wording.ts';
+import { townName } from '../../render/quest-view.ts';
 import { data } from '../builder/data.ts';
 
 function escortTo(questId: string): string {
@@ -35,7 +35,7 @@ function role(w: World, n: Npc): string {
   if (n.kind === 'pack') return 'pack beast';
   if (t) return `${t.name}, ${shareText(t.share)}${n.owed > 0 ? `, owed ${n.owed} crowns` : ''}`;
   const to = n.kind === 'captive' ? captiveOf(data, n.type).destination : escortTo(n.type);
-  const town = regionMap(data, w.region).sites.find((s) => s.id === to)?.name ?? to;
+  const town = townName(data, to);
   return `${n.kind === 'captive' ? 'rescued' : 'escorted'}, bound for ${town}`;
 }
 

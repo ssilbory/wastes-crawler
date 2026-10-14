@@ -1,7 +1,10 @@
 import { allMonsters } from './monsters.ts';
 import type { ContentData, SrdData } from './schemas/index.ts';
 
-/** Hirelings and captives use real monsters, captives head for real towns, tables name real captives. */
+/**
+ * Hirelings and captives use real monsters, captives head for real towns, tables name real
+ * captives, and a region's tables hold only captives bound within it.
+ */
 export function npcReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const errors: string[] = [];
   const monsters = new Set(allMonsters(srd, content).map((m) => m.id));
@@ -30,6 +33,18 @@ export function npcReferenceErrors(srd: SrdData, content: ContentData): string[]
     for (const e of t.entries) {
       if (e.captive !== undefined && !captives.has(e.captive))
         errors.push(`encounterTables/${t.id}: unknown captive ${e.captive}`);
+    }
+  }
+  // No one is bound for another region (Sam's call): a region's own tables hold its captives only.
+  const home = new Map(content.captives.map((c) => [c.id, c.destination]));
+  for (const r of content.regions) {
+    const ours = new Set(r.sites.map((s) => s.id));
+    for (const id of new Set(Object.values(r.encounters))) {
+      for (const e of content.encounterTables.find((t) => t.id === id)?.entries ?? []) {
+        const to = e.captive === undefined ? undefined : home.get(e.captive);
+        if (to !== undefined && !ours.has(to))
+          errors.push(`encounterTables/${id}: captive ${e.captive} is bound outside ${r.id}`);
+      }
     }
   }
   return errors;
