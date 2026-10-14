@@ -7,6 +7,7 @@ import type { GameData } from '../game/character/context.ts';
 import type { World } from '../game/world/types.ts';
 import { FACINGS, type Facing } from '../rules/grid.ts';
 import type { CellKind } from '../data/dungeon-map.ts';
+import type { Furniture } from '../data/schemas/index.ts';
 
 export const MAP_CELL = 16;
 
@@ -33,6 +34,8 @@ export interface Automap {
   lines: AutomapLine[];
   /** Magical squares sensed with Apprehending the Arcane Form. */
   sensed: { key: string; x: number; y: number }[];
+  /** Furniture on cells the party has seen (docs/presentation-plan.md, V4). */
+  furniture: { key: string; x: number; y: number; kind: Furniture['kind'] }[];
   /** The party's arrow as SVG polygon points. */
   party: string;
 }
@@ -80,7 +83,8 @@ function arrow(x: number, y: number, f: Facing, size: number): string {
 export function automap(w: World, data: GameData, size = MAP_CELL): Automap | null {
   const s = w.dungeon;
   if (!s) return null;
-  const { map } = levelOf(data, s.dungeon, s.level);
+  const { level, map } = levelOf(data, s.dungeon, s.level);
+  const seen = new Set(s.seen[s.level] ?? []);
   const edge = knownEdges(w, data);
   const cells: AutomapCell[] = [];
   const lines = new Map<string, AutomapLine>();
@@ -108,6 +112,9 @@ export function automap(w: World, data: GameData, size = MAP_CELL): Automap | nu
       return { key, x, y };
     }),
     party: arrow(s.at.x, s.at.y, s.facing, size),
+    furniture: (level.furniture ?? [])
+      .filter((f) => seen.has(`${f.at.x},${f.at.y}`))
+      .map((f) => ({ key: `${f.at.x},${f.at.y}`, x: f.at.x, y: f.at.y, kind: f.kind })),
   };
 }
 

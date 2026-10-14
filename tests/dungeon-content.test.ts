@@ -77,6 +77,31 @@ describe('dungeon validation', () => {
     expect(generated.filter((e) => e.includes('hex'))).toEqual([]);
   });
 
+  it('keeps furniture on plain floor, one piece a cell', () => {
+    const barrow = content.dungeons.find((d) => d.id === 'old-barrow') as Dungeon;
+    const [upper, ...rest] = barrow.levels as [Dungeon['levels'][0], ...Dungeon['levels']];
+    const dressed: Dungeon = {
+      ...barrow,
+      levels: [
+        {
+          ...upper,
+          furniture: [
+            { at: { x: 1, y: 1 }, kind: 'altar' },
+            { at: { x: 1, y: 1 }, kind: 'bones' },
+            { at: { x: 4, y: 6 }, kind: 'rubble' },
+            { at: { x: 30, y: 1 }, kind: 'brazier' },
+          ],
+        },
+        ...rest,
+      ],
+    };
+    expect(dungeonReferenceErrors({ ...content, dungeons: [dressed] })).toEqual([
+      'dungeons/old-barrow/barrow-upper: bones at 1,1 shares its cell',
+      'dungeons/old-barrow/barrow-upper: rubble at 4,6 is not on plain floor',
+      'dungeons/old-barrow/barrow-upper: brazier at 30,1 is not on plain floor',
+    ]);
+  });
+
   const base = content.dungeons[0] as Dungeon;
   const check = (d: Dungeon) => dungeonReferenceErrors({ ...content, dungeons: [d] });
   const one = (

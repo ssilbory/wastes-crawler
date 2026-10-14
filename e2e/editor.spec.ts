@@ -50,6 +50,11 @@ test('edits, validates, test-walks, and exports a level', async ({ page }, testI
   await expect(problems).toContainText('The dungeon is valid.');
   await expect(cell.getByRole('combobox', { name: 'Kind' })).toHaveCount(0);
 
+  // Furniture dresses plain floor (docs/presentation-plan.md, V4).
+  await cell.getByRole('combobox', { name: 'Furniture' }).selectOption('altar');
+  await expect(page.locator('.editor-grid .furniture-mark', { hasText: 'al' })).toHaveCount(2);
+  await expect(problems).toContainText('The dungeon is valid.');
+
   // Walk it: west across the entry room into the wall.
   await page.getByRole('button', { name: 'Walk this level' }).click();
   const walk = page.getByRole('region', { name: 'Test walk' });
@@ -72,4 +77,5 @@ test('edits, validates, test-walks, and exports a level', async ({ page }, testI
   await (await download).saveAs(file);
   const exported = JSON.parse(readFileSync(file, 'utf8'));
   expect(exported[0].levels[0].map.join('\n')).toBe(await text.inputValue());
+  expect(exported[0].levels[0].furniture).toContainEqual({ at: { x: 0, y: 0 }, kind: 'altar' });
 });

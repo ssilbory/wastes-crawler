@@ -7,6 +7,7 @@ import type {
   ContentData,
   Dungeon,
   DungeonLevel,
+  Furniture,
   GarrisonPost,
   HeldCaptive,
   Trap,
@@ -57,6 +58,7 @@ export interface CellDetails {
   trap: Trap | null;
   captive: HeldCaptive | null;
   garrison: GarrisonPost | null;
+  furniture: Furniture['kind'] | null;
   safe: boolean;
 }
 
@@ -66,6 +68,7 @@ export function cellDetails(d: Dungeon, levelId: string, c: Cell): CellDetails {
     trap: l.traps.find(at(c)) ?? null,
     captive: l.captives.find(at(c)) ?? null,
     garrison: l.garrisons.find(at(c)) ?? null,
+    furniture: l.furniture?.find(at(c))?.kind ?? null,
     safe: l.safe.some((s) => s.x === c.x && s.y === c.y),
   };
 }
@@ -93,6 +96,8 @@ export function paintCell(
         ...(kind === 'npc' ? [captive ?? { ...captiveTemplate(content), at: c }] : []),
       ],
       garrisons: l.garrisons.filter(not(c)),
+      // Furniture stands only on plain floor.
+      ...(l.furniture && kind !== 'floor' ? { furniture: l.furniture.filter(not(c)) } : {}),
     };
   });
 }
@@ -128,6 +133,18 @@ export const setGarrison = (d: Dungeon, levelId: string, post: GarrisonPost) =>
   withLevel(d, levelId, (l) => ({
     ...l,
     garrisons: [...l.garrisons.filter(not(post.at)), post],
+  }));
+
+/** Sets what stands on a floor cell, or clears it with null (docs/presentation-plan.md, V4). */
+export const setFurniture = (
+  d: Dungeon,
+  levelId: string,
+  c: Cell,
+  kind: Furniture['kind'] | null,
+) =>
+  withLevel(d, levelId, (l) => ({
+    ...l,
+    furniture: [...(l.furniture ?? []).filter(not(c)), ...(kind ? [{ at: c, kind }] : [])],
   }));
 
 /** Makes a cell a safe camping square, or not. */

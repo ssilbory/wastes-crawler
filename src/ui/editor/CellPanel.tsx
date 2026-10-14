@@ -1,7 +1,8 @@
-import type { Dungeon } from '../../data/schemas/index.ts';
+import { FURNITURE, type Dungeon, type Furniture } from '../../data/schemas/index.ts';
 import {
   cellDetails,
   setCaptive,
+  setFurniture,
   setGarrison,
   setNpcKind,
   setSafe,
@@ -45,6 +46,25 @@ export function CellPanel(props: {
         />{' '}
         Safe to camp
       </label>
+      {kind === 'floor' && (
+        <label class="field">
+          <span>Furniture</span>
+          <select
+            value={details.furniture ?? ''}
+            onChange={(e) => {
+              const v = (e.target as HTMLSelectElement).value as Furniture['kind'] | '';
+              props.onChange(setFurniture(d, level, cell, v === '' ? null : v));
+            }}
+          >
+            <option value="">None</option>
+            {FURNITURE.map((f) => (
+              <option key={f} value={f}>
+                {f.charAt(0).toUpperCase() + f.slice(1)}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
       <EntryForm dungeon={d} level={level} cell={cell} onChange={props.onChange} />
       {(kind === 'up' || kind === 'down') && (
         <LinkForm

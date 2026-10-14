@@ -136,6 +136,14 @@ export type Special = z.infer<typeof SpecialSchema>;
  * A dungeon level as the doubled ASCII grid from docs/plan.md (Map format): cells at odd rows and
  * columns, edges between them. See docs/content-guide.md for the glyphs.
  */
+/**
+ * What stands on a floor cell to dress it (docs/presentation-plan.md, V4): drawn in the view and
+ * on the map, never read by the rules.
+ */
+export const FURNITURE = ['rubble', 'bones', 'altar', 'fountain', 'brazier'] as const;
+export const FurnitureSchema = z.strictObject({ at: CellSchema, kind: z.enum(FURNITURE) });
+export type Furniture = z.infer<typeof FurnitureSchema>;
+
 export const DungeonLevelSchema = z.strictObject({
   id: IdSchema,
   name: z.string().min(1),
@@ -155,6 +163,8 @@ export const DungeonLevelSchema = z.strictObject({
   specials: z.array(SpecialSchema),
   captives: z.array(HeldCaptiveSchema),
   garrisons: z.array(GarrisonPostSchema),
+  /** Dressing on plain floor cells, one a cell; absent means none. */
+  furniture: z.array(FurnitureSchema).optional(),
 });
 export type DungeonLevel = z.infer<typeof DungeonLevelSchema>;
 

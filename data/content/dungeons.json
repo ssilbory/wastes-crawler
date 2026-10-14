@@ -144,7 +144,44 @@
             "text": "Two grave robbers are binding a struggling grave-digger."
           }
         ],
-        "garrisons": []
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 0,
+              "y": 2
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 0
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 1
+            },
+            "kind": "altar"
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 3
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 3
+            },
+            "kind": "brazier"
+          }
+        ]
       },
       {
         "id": "barrow-lower",
@@ -271,7 +308,30 @@
           }
         ],
         "captives": [],
-        "garrisons": []
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 6,
+              "y": 2
+            },
+            "kind": "fountain"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 7
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 6
+            },
+            "kind": "bones"
+          }
+        ]
       }
     ]
   },

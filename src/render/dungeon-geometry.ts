@@ -79,3 +79,12 @@ export function flat(depth: number, lateral: number, ceiling: boolean): Quad {
     [xAt(2 * lateral - 1, near), y(near)],
   ];
 }
+
+/**
+ * A 48-unit box standing on the floor at plane k, centred on the cell `lateral` across and as wide
+ * as that cell, so anything drawn in it stands on y = 46 of the box (furniture-art.ts).
+ */
+export function standIn(k: number, lateral: number): { x: number; y: number; size: number } {
+  const size = 2 * hw(k);
+  return { x: xAt(2 * lateral, k) - size / 2, y: CY + hh(k) - (size * 46) / 48, size };
+}
