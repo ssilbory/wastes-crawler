@@ -139,3 +139,14 @@ Furniture, last of V4:
 | Content | `data/content/dungeons.json`                                                                | The Old Barrow: bones and rubble in the upper west room, an altar between braziers by the captive, a fountain, rubble, and bones below                                                                                         |
 
 `dungeon-view.ts` passed 300 lines with this, so its `Panel` type and shading moved to `dungeon-panel.ts`.
+
+## Follow-ups after V1 to V5
+
+An audit of the stages against their exit criteria, and asks since:
+
+| Item                  | Where                                                                 | What it does                                                                                                                                                                         |
+| --------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Odds for every attack | `src/game/combat/blast.ts`, `blastOdds` in `src/render/fight-odds.ts` | Elemental Blast makes an attack roll too, so it shows its odds like a weapon; its roll moved to `blast.ts` so the odds and the roll share it, and it floats a hit or a miss          |
+| Odds on hover         | `Field.tsx`, `CommandMenu.tsx`                                        | Each target's odds are also its tooltip                                                                                                                                              |
+| SRD citation          | `rules-adaptation.md`, Swapping                                       | Swapping notes that the SRD has no swap and that it builds on Run (2.4.4)                                                                                                            |
+| Map zoom (Sam's ask)  | `src/render/map-zoom.ts`, `src/ui/world/ZoomFrame.tsx`                | −, +, and Fit over the overland map and the map editor, and Ctrl with the wheel or a pinch about the pointer. Zoomed in, the map scrolls; zooming in from Fit closes in on the party |

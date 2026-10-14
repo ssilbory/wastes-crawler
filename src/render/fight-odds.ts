@@ -4,6 +4,7 @@
 // rolls or changes the battle. Resistances, wards, and walls aren't counted, so a blow can still
 // come out lower than the range.
 import { attackInput, shockContext } from '../game/combat/attack.ts';
+import { blastAttribute, blastInput } from '../game/combat/blast.ts';
 import type { Action, Battle, Combatant } from '../game/combat/types.ts';
 import { hitChance, shockDamage } from '../rules/attacks.ts';
 
@@ -53,12 +54,36 @@ export function attackOdds(b: Battle, actor: Combatant, action: AttackAction): A
   };
 }
 
+/** Elemental Blast's odds: its own roll, and dice plus the level and the attribute; no Shock. */
+export function blastOdds(
+  b: Battle,
+  actor: Combatant,
+  action: Extract<Action, { kind: 'cast' }>,
+): AttackOdds | null {
+  const m = b.data.content.combatMagic.find((x) => x.id === action.magic);
+  const target = b.combatants.find((c) => c.id === action.target);
+  if (m?.effect.kind !== 'blast' || !target || !actor.caster) return null;
+  const { level } = actor.caster;
+  const d = m.effect.damage;
+  const bonus = d.modifier + level + blastAttribute(actor, m.effect);
+  return {
+    chance: hitChance(blastInput(b, actor, m.effect, target, level)),
+    min: Math.max(0, d.count + bonus),
+    max: Math.max(0, d.count * d.sides + bonus),
+    shock: 0,
+  };
+}
+
 const percent = (p: number) => `${Math.round(p * 100)}%`;
 
 /** "55% to hit, 3–10 damage, 2 Shock on a miss", or null for an action that isn't an attack. */
 export function oddsText(b: Battle, actor: Combatant, action: Action): string | null {
-  if (action.kind !== 'attack') return null;
-  const odds = attackOdds(b, actor, action);
+  const odds =
+    action.kind === 'attack'
+      ? attackOdds(b, actor, action)
+      : action.kind === 'cast'
+        ? blastOdds(b, actor, action)
+        : null;
   if (!odds) return null;
   const damage = odds.min === odds.max ? `${odds.min}` : `${odds.min}–${odds.max}`;
   const shock = odds.shock > 0 ? `, ${odds.shock} Shock on a miss` : '';

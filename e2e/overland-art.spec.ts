@@ -50,3 +50,31 @@ test('draws the overland map as a chart, fogged beyond what the party knows', as
   await explore(page, 3);
   await expect(map).toHaveScreenshot('overland-night.png');
 });
+
+// Sam's ask: zoom in and out on the overland map.
+test('zooms in on the party, scrolls, and fits the whole map again', async ({ page }, testInfo) => {
+  await startWorld(page);
+  const zoom = page.getByRole('group', { name: 'Zoom' });
+  const frame = page.locator('.map-wrap.zoom-scroll');
+  await expect(zoom.getByRole('button', { name: 'Zoom out' })).toBeDisabled();
+  await zoom.getByRole('button', { name: 'Zoom in' }).click();
+  await zoom.getByRole('button', { name: 'Zoom in' }).click();
+  await expect(zoom).toContainText('2×');
+  await expect(frame).toHaveClass(/zoomed/);
+  // The map is now wider than its frame, and the party is still in view.
+  const wider = await frame.evaluate((el) => el.scrollWidth > el.clientWidth * 1.5);
+  expect(wider).toBe(true);
+  const party = await page.locator('.hex .party').boundingBox();
+  const box = await frame.boundingBox();
+  expect(party && box).toBeTruthy();
+  if (party && box) {
+    expect(party.x).toBeGreaterThan(box.x);
+    expect(party.x + party.width).toBeLessThan(box.x + box.width);
+  }
+  await page.screenshot({ path: testInfo.outputPath('overland-zoomed.png') });
+  // Clicking a hex still picks it as the destination.
+  await page.locator('.hex .party').click({ force: true });
+  await zoom.getByRole('button', { name: 'Fit' }).click();
+  await expect(frame).toHaveClass(/fit/);
+  await expect(zoom.getByRole('button', { name: 'Fit' })).toBeDisabled();
+});

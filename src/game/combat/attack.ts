@@ -16,7 +16,8 @@ import { effectiveAc, harm, save, say } from './damage.ts';
 import { afterHit, resisted } from './specials.ts';
 import { negatesUndead } from './reactions.ts';
 import { attackSteps, canAct, hitModifier, rangedModifier } from './targeting.ts';
-import type { Attack, Battle, BattleEvent, Combatant } from './types.ts';
+import type { Attack, Battle, Combatant } from './types.ts';
+import { recordBlow } from './log.ts';
 import { knowsWeakSpot, provoke } from './companions.ts';
 
 export function shockContext(target: Combatant, attack: Attack): ShockContext {
@@ -53,13 +54,7 @@ export function attackInput(
   };
 }
 
-const record = (
-  b: Battle,
-  kind: BattleEvent['kind'],
-  actor: Combatant,
-  target: Combatant,
-  amount = 0,
-) => b.events?.push({ kind, actor: actor.id, target: target.id, amount });
+const record = recordBlow;
 
 /** Shock on a miss; a shield soaks the first Shock its bearer would take each round. */
 function missShock(b: Battle, attacker: Combatant, target: Combatant, attack: Attack): void {

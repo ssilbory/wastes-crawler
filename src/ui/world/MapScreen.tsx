@@ -8,6 +8,7 @@ import { hexCells, mapPixels } from '../../render/hex-view.ts';
 import { crowns, lootText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { HEX_SIZE, HexMap } from './HexMap.tsx';
+import { ZoomFrame } from './ZoomFrame.tsx';
 import { dayTint } from '../../render/hex-art.ts';
 import { PartyPanel } from './PartyPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
@@ -60,11 +61,23 @@ export function MapScreen(props: {
   const choose = (p: QuarterPlan) => setPlan({ version: props.version, plan: p });
   const able = w.members.filter((m) => !m.dead && m.character.hp.current > 0);
   const { width, height } = mapPixels(map, HEX_SIZE);
+  const entrances = entrancesIn(data, w.region, w.rumors);
+  const cells = hexCells(
+    map,
+    w,
+    route(w, data),
+    HEX_SIZE,
+    questTargets(w, data),
+    entrances,
+    grovesHere(w, data),
+  );
+  // Zooming in from the whole map closes in on the party.
+  const party = cells.find((c) => c.party);
+  const partyFocus = party ? { x: party.cx / width, y: party.cy / height } : null;
   const town = map.siteAt(w.position);
   const here = town?.name ?? map.terrainAt(w.position).name;
   const way = wayDownHere(w, data);
   const road = map.exitAt(w.position);
-  const entrances = entrancesIn(data, w.region, w.rumors);
   return (
     <div class="world map-screen">
       <div class="world-bar">
@@ -104,17 +117,9 @@ export function MapScreen(props: {
       </div>
       <div class="world-main">
         <div class="world-left">
-          <div class="map-wrap">
+          <ZoomFrame class="map-wrap" focus={partyFocus}>
             <HexMap
-              cells={hexCells(
-                map,
-                w,
-                route(w, data),
-                HEX_SIZE,
-                questTargets(w, data),
-                entrances,
-                grovesHere(w, data),
-              )}
+              cells={cells}
               width={width}
               height={height}
               tint={dayTint(w.quarter)}
@@ -123,7 +128,7 @@ export function MapScreen(props: {
                   props.onChange();
               }}
             />
-          </div>
+          </ZoomFrame>
           <JournalPanel world={w} />
           {w.encounter && (
             <PopOut>

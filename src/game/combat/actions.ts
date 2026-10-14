@@ -116,7 +116,9 @@ export function act(b: Battle, actor: Combatant, action: Action): void {
       const slot = action.row >= 0 && action.row <= 1 && action.column >= 0;
       const inFormation = b.layout[actor.side] === 'formation';
       if (!inFormation || !slot || action.column >= ROW_SLOTS || partner === actor) return;
-      // Trading places with an ally, standing or down, costs only the mover's action (Swapping).
+      // Trading places with an ally, standing or down, costs only the mover's action (Swapping;
+      // the SRD has none, so it builds on Run, vendor/wwn-srd/2.0 The Rules of the Game/2.4.0
+      // Combat.md, 2.4.4).
       if (partner) [partner.row, partner.column] = [actor.row, actor.column];
       actor.row = action.row;
       actor.column = action.column;
