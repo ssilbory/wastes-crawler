@@ -149,3 +149,20 @@ test('buys a round for a rumor, and the map marks the way down', async ({ page }
   await expect(map.locator('.dungeon title', { hasText: heard })).toHaveCount(1);
   await page.screenshot({ path: testInfo.outputPath('town-rumor.png'), fullPage: true });
 });
+
+test('buys a trade-route map, and the map shows the road to the next town', async ({ page }) => {
+  await startInRubblegate(page);
+  const start = await purse(page);
+  await page.getByRole('tab', { name: 'Tavern' }).click();
+  const routes = page.getByRole('region', { name: 'Trade routes' });
+  await routes.getByRole('button', { name: /^Buy a trade-route map \(3 crowns\)$/ }).click();
+  expect(await purse(page)).toBe(start - 3);
+  await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
+    'buys a map of the road to Scrapmarch',
+  );
+  // Nothing new is left to sell here.
+  await expect(routes.getByRole('button')).toHaveCount(0);
+  await expect(routes).toContainText('The party already knows these roads.');
+  await page.getByRole('button', { name: 'Back to the map' }).click();
+  await expect(page.locator('[data-hex="20,8"]')).not.toHaveClass(/\bfog\b/);
+});
