@@ -78,3 +78,31 @@ test('zooms in on the party, scrolls, and fits the whole map again', async ({ pa
   await expect(frame).toHaveClass(/fit/);
   await expect(zoom.getByRole('button', { name: 'Fit' })).toBeDisabled();
 });
+
+// Sam's ask: minimize the column of quests and companions, and the journal shrinks with it.
+test('minimizes the side column, growing the map, and remembers it', async ({ page }) => {
+  await startWorld(page);
+  await page.evaluate((key) => {
+    const save = JSON.parse(localStorage.getItem(key) as string);
+    save.quests = { 'bandit-camp': { status: 'active', step: 0, acceptedDay: 0 } };
+    localStorage.setItem(key, JSON.stringify(save));
+  }, WORLD_KEY);
+  await page.reload();
+  await page.getByRole('button', { name: 'Continue journey' }).click();
+  const map = page.getByRole('img', { name: 'Overland map' });
+  const journal = page.getByRole('region', { name: 'Journey log' });
+  await expect(page.locator('.side-dock')).toContainText('The Raider Camp');
+  const before = { map: await map.boundingBox(), journal: await journal.boundingBox() };
+
+  await page.getByRole('button', { name: 'Minimize the side panels' }).click();
+  await expect(page.locator('.side-dock')).not.toContainText('The Raider Camp');
+  const after = { map: await map.boundingBox(), journal: await journal.boundingBox() };
+  expect(after.journal?.height ?? 0).toBeLessThan(before.journal?.height ?? 0);
+  expect(after.map?.height ?? 0).toBeGreaterThan(before.map?.height ?? 0);
+
+  // It stays minimized across a reload, and comes back on asking.
+  await page.reload();
+  await page.getByRole('button', { name: 'Continue journey' }).click();
+  await page.getByRole('button', { name: 'Show the side panels' }).click();
+  await expect(page.locator('.side-dock')).toContainText('The Raider Camp');
+});

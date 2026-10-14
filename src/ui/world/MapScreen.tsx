@@ -29,6 +29,7 @@ import { MountsPanel } from './MountsPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { PopOut } from './PopOut.tsx';
 import { QuestLog } from './QuestLog.tsx';
+import { SideDock } from './SideDock.tsx';
 import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
 import { JournalPanel } from './JournalPanel.tsx';
 import { captiveHomes, questTargets } from '../../render/quest-view.ts';
@@ -164,7 +165,7 @@ export function MapScreen(props: {
           <NpcPanel world={w} onChange={props.onChange} />
           <MountsPanel world={w} onChange={props.onChange} />
         </div>
-        <div class="dock">
+        <SideDock>
           <QuestLog world={w} onChange={props.onChange} />
           <CompanionsPanel world={w} onChange={props.onChange} />
           <SettingPanel world={w} inTown={town !== undefined} onChange={props.onChange} />
@@ -179,7 +180,7 @@ export function MapScreen(props: {
           <PurgePanel world={w} onChange={props.onChange} />
           <AntidotePanel world={w} onChange={props.onChange} />
           <FactionsPanel world={w} />
-        </div>
+        </SideDock>
       </div>
     </div>
   );
