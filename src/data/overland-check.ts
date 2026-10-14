@@ -52,6 +52,10 @@ export function overlandReferenceErrors(srd: SrdData, content: ContentData): str
     const ids = r.sites.map((s) => s.id);
     if (new Set(ids).size !== ids.length) errors.push(`${where}: duplicate site id`);
   }
+  // Saves and town services know towns by id, so no two maps share one.
+  const towns = content.regions.flatMap((r) => [...new Set(r.sites.map((s) => s.id))]);
+  for (const id of new Set(towns.filter((id, i) => towns.indexOf(id) !== i)))
+    errors.push(`regions: two maps have a town with the id ${id}`);
   errors.push(...realmErrors(content));
   const monsters = new Set(allMonsters(srd, content).map((m) => m.id));
   for (const t of content.encounterTables) {

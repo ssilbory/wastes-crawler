@@ -80,6 +80,17 @@ describe('realms (Sam’s call)', () => {
     expect(migrated.ok && migrated.world.realm).toBeNull();
   });
 
+  it('load a world begun on the Sealed Vale’s map as its realm', () => {
+    const vale = data.content.regions.find((r) => r.id === 'sealed-vale');
+    const save = JSON.parse(serializeWorld(newWorld(data, createRng('v'), party, undefined, vale)));
+    delete save.realm;
+    const loaded = parseWorld(JSON.stringify({ ...save, schemaVersion: 36 }), data);
+    expect(loaded.ok && [loaded.world.map, loaded.world.realm]).toEqual([null, 'sealed-vale']);
+    const other = JSON.parse(serializeWorld(start()));
+    const kept = parseWorld(JSON.stringify({ ...other, schemaVersion: 36 }), data);
+    expect(kept.ok && kept.world.realm).toBe('wastes');
+  });
+
   it('guard each level’s hoard with a boss, met with its own words', () => {
     const w = start();
     const d = data.content.dungeons.find((x) => x.region === realm.start);

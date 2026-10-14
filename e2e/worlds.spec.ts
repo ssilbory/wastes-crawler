@@ -65,7 +65,7 @@ test('plays the Wastes, a shipped realm of five maps', async ({ page }) => {
   await party(page);
   const world = page.getByRole('group', { name: 'World' });
   await world.getByRole('combobox', { name: 'Play on' }).selectOption({ label: 'The Wastes' });
-  await expect(world).toContainText('5 maps, no campaign story');
+  await expect(world).toContainText('Five desert maps under a dead sun');
   await page.getByRole('button', { name: /Start a new world/ }).click();
   await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Begin the journey' })).toHaveCount(0);

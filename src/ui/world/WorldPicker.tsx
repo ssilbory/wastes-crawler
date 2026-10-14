@@ -15,9 +15,9 @@ export interface WorldChoice {
 export const CAMPAIGN: WorldChoice = { map: null, realm: null };
 
 /**
- * Which world a new game is played on (Sam's calls): the campaign, a shipped realm, a world
- * shipped beside it, a map saved in the map editor, or a new random map made here and saved there.
- * Only the campaign has the campaign's story.
+ * Which world a new game is played on (Sam's calls): the campaign, a realm shipped beside it, a
+ * map saved in the map editor, or a new random map made here and saved there. Only the campaign
+ * has the campaign's story.
  */
 export function WorldPicker(props: { onChange: (choice: WorldChoice) => void }) {
   const [lib, setLib] = useState<EditorLibrary>(() => loadLibrary().library);
@@ -26,10 +26,9 @@ export function WorldPicker(props: { onChange: (choice: WorldChoice) => void }) 
   const [note, setNote] = useState<string | null>(null);
   const realms = shippedContent.realms;
   const problems = (r: Region) => worldMapErrors(data.srd, shippedContent, r);
-  const worlds = shippedContent.worlds;
   const choose = (id: string, maps = lib.regions) => {
     const realm = realms.find((r) => `realm:${r.id}` === id);
-    const map = worlds.find((w) => w.map.id === id)?.map ?? maps.find((r) => r.id === id) ?? null;
+    const map = maps.find((r) => r.id === id) ?? null;
     setChosen(realm || map ? id : '');
     props.onChange(realm ? { map: null, realm: realm.id } : { map, realm: null });
   };
@@ -37,7 +36,6 @@ export function WorldPicker(props: { onChange: (choice: WorldChoice) => void }) 
     const title = name.trim() || 'New lands';
     const id = uniqueId(slug(title, 'world'), [
       ...shippedContent.regions.map((r) => r.id),
-      ...worlds.map((w) => w.map.id),
       ...lib.regions.map((r) => r.id),
     ]);
     const map = generateRegion(shippedContent, createRng(freshRng().int(1, 999_999)), {
@@ -55,7 +53,6 @@ export function WorldPicker(props: { onChange: (choice: WorldChoice) => void }) 
     setName('');
     choose(id, next.regions);
   };
-  const world = worlds.find((w) => w.map.id === chosen);
   const map = lib.regions.find((r) => r.id === chosen);
   const realm = realms.find((r) => `realm:${r.id}` === chosen);
   const wrong = map ? problems(map) : [];
@@ -69,11 +66,6 @@ export function WorldPicker(props: { onChange: (choice: WorldChoice) => void }) 
           {realms.map((r) => (
             <option key={r.id} value={`realm:${r.id}`}>
               {r.name}
-            </option>
-          ))}
-          {worlds.map((w) => (
-            <option key={w.map.id} value={w.map.id}>
-              {w.map.name}
             </option>
           ))}
           {lib.regions.map((r) => (
@@ -95,13 +87,7 @@ export function WorldPicker(props: { onChange: (choice: WorldChoice) => void }) 
       <button type="button" onClick={create}>
         Create a new world
       </button>
-      {realm && (
-        <p class="hint">
-          {realm.text} {realm.regions.length} maps, no campaign story: no quests, factions, or
-          raids.
-        </p>
-      )}
-      {world && <p class="hint">{world.description}</p>}
+      {realm && <p class="hint">{realm.text}</p>}
       {map && (
         <p class="hint">
           {map.sites.length} towns, no campaign story: no quests, factions, or raids. Edit it in the{' '}

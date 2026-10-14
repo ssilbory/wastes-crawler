@@ -212,4 +212,9 @@ export const WORLD_MIGRATIONS: Migrations = {
   34: (raw) => ({ ...raw, schemaVersion: 35, charted: {} }),
   // Version 36 adds realms: older worlds are on the campaign or a custom map.
   35: (raw) => ({ ...raw, schemaVersion: 36, realm: null }),
+  // Version 37 ships the Sealed Vale as a realm: a world begun on its map plays as the realm.
+  36: (raw) =>
+    (raw.map as Raw | null)?.id === 'sealed-vale'
+      ? { ...raw, schemaVersion: 37, map: null, realm: 'sealed-vale' }
+      : { ...raw, schemaVersion: 37 },
 };
