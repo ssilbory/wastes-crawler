@@ -56,7 +56,7 @@ describe('dungeon entrances (docs/rules-adaptation.md, Dungeons in Phase 7)', ()
     expect(w).toMatchObject({ quarter: 1, destination: null });
     expect(w.log.slice(-4)).toEqual([
       'Day 1, morning: The party goes down into The Old Barrow.',
-      'Day 1, morning: The party takes 12 torches from its kits.',
+      'Day 1, morning: The party takes 2 torches from its kits.',
       'Day 1, morning: A torch is lit.',
       'Day 1, morning: The party reaches The Upper Barrow.',
     ]);
