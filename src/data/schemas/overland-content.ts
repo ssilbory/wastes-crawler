@@ -79,6 +79,21 @@ export const RegionSchema = z.strictObject({
 });
 export type Region = z.infer<typeof RegionSchema>;
 
+/**
+ * A realm (docs/rules-adaptation.md, Realms; Sam's call): shipped regions joined by roads, played
+ * as a world of their own without the campaign's story. A new party starts in `start`'s town.
+ */
+export const RealmSchema = z.strictObject({
+  id: IdSchema,
+  name: z.string().min(1),
+  /** The start screen's one-line pitch. */
+  text: z.string().min(1),
+  regions: z.array(IdSchema).min(1),
+  /** The region a new party sets out in. */
+  start: IdSchema,
+});
+export type Realm = z.infer<typeof RealmSchema>;
+
 export const EncounterGroupSchema = z.strictObject({
   monster: IdSchema,
   /** A fixed number, or dice. */

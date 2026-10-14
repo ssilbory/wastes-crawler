@@ -78,10 +78,13 @@ function cacheHere(w: World, data: GameData): { key: string; cache: Cache } | nu
   return cache && !w.caches.includes(key) ? { key, cache } : null;
 }
 
-/** True while the party stands over a vault whose guards are not yet beaten: a boss fight. */
-export function atGuardedVault(w: World, data: GameData): boolean {
+/**
+ * True while the party stands over a vault or a hand-placed hoard whose guards are not yet beaten:
+ * a boss fight (Sam's call: a hoard's guards are its level's boss).
+ */
+export function atGuardedHoard(w: World, data: GameData): boolean {
   const found = cacheHere(w, data);
-  return found?.cache.vault === true && !!found.cache.guards && !w.beaten.includes(found.key);
+  return !!found?.cache.guards && !w.beaten.includes(found.key);
 }
 
 function take(w: World, data: GameData, key: string, cache: Cache): void {
@@ -123,7 +126,7 @@ export function ruinsListener(w: World, data: GameData, e: WorldEvent): void {
       'hostile',
       null,
       null,
-      'Guards stand over a vault.',
+      cache.text ?? (cache.vault ? 'Guards stand over a vault.' : 'Guards stand over a hoard.'),
       where,
     );
     g.garrison = key;

@@ -12,6 +12,7 @@ import { ordersListener } from './orders.ts';
 import { questListener } from './quests.ts';
 import { raidsListener } from './raids.ts';
 import { raisingListener } from './raising.ts';
+import { isCampaign } from './region.ts';
 import { rescueListener } from '../dungeon/rescues.ts';
 import { ruinsListener } from '../dungeon/ruins.ts';
 import type { Npc, World } from './types.ts';
@@ -54,7 +55,8 @@ const LISTENERS: readonly Listener[] = [
 
 /**
  * The campaign's own story: its standing orders, raids, factions, warlord's clock, and crafter's
- * notes, all tied to the shipped towns. A world on a custom map has none of it (Sam's call).
+ * notes, all tied to the campaign's towns. A world on a custom map or a realm has none of it
+ * (Sam's call).
  */
 const CAMPAIGN: ReadonlySet<Listener> = new Set([
   ordersListener,
@@ -65,5 +67,6 @@ const CAMPAIGN: ReadonlySet<Listener> = new Set([
 ]);
 
 export function emit(w: World, data: GameData, e: WorldEvent): void {
-  for (const listen of LISTENERS) if (w.map === null || !CAMPAIGN.has(listen)) listen(w, data, e);
+  const story = isCampaign(w);
+  for (const listen of LISTENERS) if (story || !CAMPAIGN.has(listen)) listen(w, data, e);
 }

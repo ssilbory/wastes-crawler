@@ -23,7 +23,7 @@ import { emit } from './bus.ts';
 import { faithLit, inDark } from '../dungeon/light.ts';
 import { FAITH_LIGHT, userOf, vigor } from './arts.ts';
 import { onSpecial } from '../dungeon/specials.ts';
-import { atGuardedVault } from '../dungeon/ruins.ts';
+import { atGuardedHoard } from '../dungeon/ruins.ts';
 import { recordFallen } from './healer.ts';
 import { leaveCorpses } from './necromancy.ts';
 import { endPacts, pactOf } from './pacts.ts';
@@ -301,7 +301,7 @@ export function applyBattle(
     // A beast bound mid-fight is neither loot nor a corpse (1.5.4).
     const slain = unbound(fight);
     const xp = difficulty ? difficultyTier(data, difficulty).xp : 0;
-    winnings(w, data, slain, { xp, boss: fight.quest !== null || atGuardedVault(w, data) });
+    winnings(w, data, slain, { xp, boss: fight.quest !== null || atGuardedHoard(w, data) });
     leaveCorpses(w, data, slain);
     if (difficulty) award(w, data, fight, difficulty);
     if (fight.captive) freeCaptive(w, data, fight.captive);

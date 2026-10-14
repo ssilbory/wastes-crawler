@@ -46,3 +46,15 @@ test('loads a world saved in the map editor', async ({ page }) => {
   await page.reload();
   await expect(page.getByText(/Slot 1: .* · Grey Fen · /)).toBeVisible();
 });
+
+test('plays the Wastes, a shipped realm of five maps', async ({ page }) => {
+  await party(page);
+  const world = page.getByRole('group', { name: 'World' });
+  await world.getByRole('combobox', { name: 'Play on' }).selectOption({ label: 'The Wastes' });
+  await expect(world).toContainText('5 maps, no campaign story');
+  await page.getByRole('button', { name: /Start a new world/ }).click();
+  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Begin the journey' })).toHaveCount(0);
+  await page.reload();
+  await expect(page.getByText(/Slot 1: .* · The Wastes · Dustwell · /)).toBeVisible();
+});

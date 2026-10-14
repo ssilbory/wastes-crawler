@@ -16,7 +16,7 @@ import { reactionBonus } from './minds.ts';
 import { allMounted } from './mounts.ts';
 import { captiveOf, firstGuide, npcMonster } from './npcs.ts';
 import { sharedEyes } from './companion-sync.ts';
-import { regionMap } from './region.ts';
+import { isCampaign, regionMap } from './region.ts';
 import type { Member, World } from './types.ts';
 import { identify } from './bestiary.ts';
 
@@ -51,8 +51,8 @@ export function rollEnemies(w: World, data: GameData, tableId: string): Rolled {
   return {
     rows: rows.filter((r) => r.length > 0),
     nature: entry.nature,
-    // Captives are bound for the campaign's towns; a custom map's groups hold none (Sam's call).
-    captive: w.map === null ? (entry.captive ?? null) : null,
+    // Captives are bound for the campaign's towns; elsewhere groups hold none (Sam's call).
+    captive: isCampaign(w) ? (entry.captive ?? null) : null,
     ...(entry.order ? { order: entry.order } : {}),
     ...(entry.rescuers ? { rescuers: true as const } : {}),
   };

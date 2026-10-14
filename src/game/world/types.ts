@@ -60,6 +60,8 @@ export interface World {
   region: string;
   /** A custom map from the map editor the world is played on, or null for the campaign. */
   map: Region | null;
+  /** The shipped realm the world is played on, or null for the campaign or a custom map. */
+  realm: string | null;
   rng: Rng;
   day: number;
   quarter: number;

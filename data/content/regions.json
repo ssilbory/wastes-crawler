@@ -324,5 +324,533 @@
         ]
       }
     ]
+  },
+  {
+    "id": "wastes-fringe",
+    "name": "The Dust Fringe",
+    "terrain": [
+      "dddddddddddbhbbddddhhhhhdddddddd",
+      "ddddddddddddbbbddddhhhhddddddddd",
+      "ddddddddddddddddbbhhbbdddddddddd",
+      "ddddddddddddddddbbbbbdddddddbbbb",
+      "dddddddddddddddddbbbbdddddddbbbb",
+      "hdddddddddppppdddbbbbdddddddbbbb",
+      "hdddooddddpppppddbbbbdddddddbbbb",
+      "hdddddddddpppppddbbbddddddddbbbb",
+      "ddddddddddddddddddddddddpdddbbbb",
+      "dddddddddddddddddddddddppdddbbbb",
+      "dddddddddddddddddddddddpppdddbbb",
+      "bbddddbddddddddddddddddpppdddbbd",
+      "bbddddbdddddddddddddddppppdddbbb",
+      "bddddddddddddddddddddddpppddddbd",
+      "dddddddddddddddddddddddpopdodddd",
+      "ddddddddddddddddddpddddpppdddddd",
+      "ppdddddddddhhhdddphpppppppdddppp",
+      "dppppppddddhhhhhhhhhhppppppppppp",
+      "ddppppppppdhhhmmmmhhhhpppppppppp",
+      "ddpppdddddddhhhmmhhhhhhpdppppppp",
+      "ddddddddddddddhhhhhhmmhhdddddppp",
+      "dddddddddddddddhhhhhmmhhhddddddd",
+      "ddddddbdddddodddphhhmmmhhhdddddd",
+      "dddbhhhhhdddddddphhmmmhhdddddddd"
+    ],
+    "overlay": [
+      "...........!.!!.................",
+      "............!!!.................",
+      "................!!..!!..........",
+      "................!!!!!.......!!!!",
+      ".................!!!!....!!!!!!!",
+      ".....=...........!!!!....!!!!!!!",
+      "....=.==.........!!!!.....!.!!!!",
+      "........==.......!!!........!!!!",
+      ".........!==................!!!!",
+      "........!!!.==..............!!!!",
+      "........!!!...==.===.........!!!",
+      "!!....!.........=...==.......!!=",
+      "!!....!...............==.....!!=",
+      "!.......................==...=!=",
+      ".........!!!..............===.=.",
+      ".........!!!....................",
+      "..........!.....................",
+      "................................",
+      "..............!!!!..............",
+      "...............!!!..............",
+      ".........!.....!!!..!!.......!..",
+      "........!!!.....!...!!......!!!.",
+      "......!.!!!.........!!!.....!!!.",
+      "...!...............!!!.........."
+    ],
+    "sites": [
+      {
+        "id": "dustwell",
+        "name": "Dustwell",
+        "kind": "town",
+        "size": "village",
+        "col": 4,
+        "row": 6
+      },
+      {
+        "id": "cistern-rest",
+        "name": "Cistern Rest",
+        "kind": "town",
+        "size": "village",
+        "col": 16,
+        "row": 11
+      },
+      {
+        "id": "tinkers-oasis",
+        "name": "Tinker's Oasis",
+        "kind": "town",
+        "size": "village",
+        "col": 27,
+        "row": 14
+      }
+    ],
+    "start": "dustwell",
+    "exits": [
+      {
+        "name": "the road east to The Glassed Flats",
+        "col": 31,
+        "row": 11,
+        "to": {
+          "region": "wastes-glass",
+          "col": 0,
+          "row": 11
+        }
+      }
+    ],
+    "garrisons": [],
+    "encounters": {
+      "desert": "wastes-1-open",
+      "salt-flats": "wastes-1-open",
+      "plains": "wastes-1-open",
+      "dunes": "wastes-1-rough",
+      "hills": "wastes-1-rough",
+      "mountains": "wastes-1-rough",
+      "badlands": "wastes-1-rough",
+      "oasis": "wastes-1-oasis"
+    }
+  },
+  {
+    "id": "wastes-glass",
+    "name": "The Glassed Flats",
+    "terrain": [
+      "hhbddddddddddodaaaaaaaaoaaaddddd",
+      "hhbddddddddddddaaaaaaaaaaaadoddd",
+      "bbbdddddddddddddaaaaaaaaaaaddddd",
+      "bbbddddddddddddddaaaaaaaaaaddddd",
+      "bdddddddddddddddbbbbaaaaaaddddad",
+      "bdddddddddddddddbhhhaaaddddddaaa",
+      "bdddaaaddddddddahhhhaaaddddddaaa",
+      "ddddddddddddddddbhhhaaaddddddaaa",
+      "ddddddddddddddddbhhhdaaddddddaaa",
+      "dddddddddddddddbhhhhddaaaaaddaad",
+      "ddddddddddddddbhhhhhddaaaaaaaaaa",
+      "dddddddddbbbbhhhhhhhdaaaaaaaabbb",
+      "dddddddddbhhhhhhhhhhbaaaaaaaabhh",
+      "dddddddddbhhhhhhhhhhdaaaaaaaabbb",
+      "dddddddddbhhhhhhhhhhddaaaaaaaaaa",
+      "dddaaaaaaabhhhhhhhhbdddaaaaaaaaa",
+      "aaaaaadaaabbbbbbbbbddddddddaaaaa",
+      "aaaaaaaaaddbbbdddddddddddddddddd",
+      "aaaaaaaaaddddddddddddddddddddddd",
+      "aaaaaaaaaddddddddddddddddddddddd",
+      "aaaaaaaaaddddddddddddddddddddddd",
+      "aaaaaaaaddddddddddddddddddddbbhb",
+      "aaaaaaaaddddddddddddbbbdddbbbhhh",
+      "aaaaaaaaddddddddaaddbhhhhbbbhhhh"
+    ],
+    "overlay": [
+      "..!............!!!!!!!!.!!!.....",
+      "..!............!!!!!!!!!!!!.....",
+      "!!!.............!=!!!!!!!!!!....",
+      "!!!............==!==!!!!!!!!!...",
+      "!......!!!...==.!!!!==!!!!!!!.!.",
+      "!......!!!.==...!.!!!!==.....!!!",
+      "!..!!!!.!==....!....!!!.==...!!!",
+      "...!!!.==.......!...!!!...==.!!!",
+      "....!.=.........!....!!.....==!!",
+      "......=........!......!!!!!..!==",
+      "......=.......!.......!!!!!!!!!!",
+      "=.....=..!!!!........!!!!!!!!!!!",
+      "=.....=..!..........!!!!!!!!!!..",
+      "==....=..!..........!!!!!!!!!!!!",
+      "..==..=..!............!!!!!!!!!!",
+      "...!===!!!!........!...!!!!!!!!!",
+      "!!!!!!=!!!!!!!!!!!!........!!!!!",
+      "!!!!!!!!!..!!!..................",
+      "!!!!!!!!!............!..........",
+      "!!!!!!!!!...........!!!.........",
+      "!!!!!!!!!...........!!!.........",
+      "!!!!!!!!....................!!.!",
+      "!!!!!!!!............!!!...!!!...",
+      "!!!!!!!!........!!..!....!!!...."
+    ],
+    "sites": [
+      {
+        "id": "saltcross",
+        "name": "Saltcross",
+        "kind": "town",
+        "size": "village",
+        "col": 6,
+        "row": 16
+      },
+      {
+        "id": "glasswater",
+        "name": "Glasswater",
+        "kind": "town",
+        "size": "village",
+        "col": 23,
+        "row": 5
+      }
+    ],
+    "start": "saltcross",
+    "exits": [
+      {
+        "name": "the road west to The Dust Fringe",
+        "col": 0,
+        "row": 11,
+        "to": {
+          "region": "wastes-fringe",
+          "col": 31,
+          "row": 11
+        }
+      },
+      {
+        "name": "the road east to The Red Dune Sea",
+        "col": 31,
+        "row": 9,
+        "to": {
+          "region": "wastes-dunes",
+          "col": 0,
+          "row": 9
+        }
+      }
+    ],
+    "garrisons": [],
+    "encounters": {
+      "desert": "wastes-2-open",
+      "salt-flats": "wastes-2-open",
+      "plains": "wastes-2-open",
+      "dunes": "wastes-2-rough",
+      "hills": "wastes-2-rough",
+      "mountains": "wastes-2-rough",
+      "badlands": "wastes-2-rough",
+      "oasis": "wastes-2-oasis"
+    }
+  },
+  {
+    "id": "wastes-dunes",
+    "name": "The Red Dune Sea",
+    "terrain": [
+      "dddddddduuuddduuuuuuuduuuuuuuuuu",
+      "dddddddduuuuduuuuuuuuuuuuuuuuumu",
+      "dduuuuuuuuuuuuuuuuuuuuuuuuuuummm",
+      "duuuuumuuuuuuuuuuuuuuuuuuuuuummm",
+      "uuuuuumuuuuuuuuuuuuuuuuuuuuuummm",
+      "uummuuuuuuuumuuuuuuuuddddduuummm",
+      "ummmuuuuuummmuuuuddddddddduuummm",
+      "uummuuuuuummmuuuuddduddddduuummm",
+      "uummuuuuummuuuuuuddduuddddduuumm",
+      "duuuuuuuummuuuuuuuduuuddddduuumu",
+      "uuuuuuuuuummuuuuuuuuuuddddduuuuu",
+      "uuuuuuuuuddmmmdduuuuudddddduuuuu",
+      "uuuuuumudddmmmdduuuuudddddduuuuu",
+      "uuuuuuuuddddmddduuuuudddddduuuud",
+      "muuuuuuuuuuddduuuuuuuuddddduuuuu",
+      "muuuuuuuuuuddduuuuuuuuudddduuuuu",
+      "uuuuudddduudoduuuuuuuuddddduuuuu",
+      "uuuuuddddduuduuuudduuudddduuuuuu",
+      "uuuuuddodduuuuuudddddddddduuuuuu",
+      "uuuuuddddduuuuuuuddddddddduuuuuu",
+      "uuuuuuudduuuuuuuuuuuuuuddduuuuuu",
+      "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+      "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+      "uuuuuuuuuuuuuuuuuuuuuuuumuuuudoo"
+    ],
+    "overlay": [
+      "........!!!...!!!!!!!.!!!!!!!!!!",
+      "........!!!!.!!!!!!!!!!!!!!!!!!!",
+      ".!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
+      ".!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
+      "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
+      "!!!!!!!!!!!!!!!!!!!!!!....!!!!!!",
+      "!!!!!!!!!!!!!!!!!...!!!...!!!!!!",
+      "!!!!!!!!!!!!!!!!!..===!...!!!!!!",
+      "!=!!!!!!!!!!!!!!!==.!!=....!!!!!",
+      "=!==!!!!!!!!!!!==!.!!!==...!!!!!",
+      "!!!!==!!!!!!!!=!!!!!!!..==.!!!!!",
+      "!!!!!!==!..!!!=.!!!!!.....==!!!!",
+      "!!!!!!!!==.!!!=.!!!!!......!==!!",
+      "!!!!!!!!..==!==.!!!!!..!!!.!!!==",
+      "!!!!!!!!!!!==.!!!!!!!!.!!!.!!!!!",
+      "!!!!!!!!!!!==.!!!!!!!!!.!..!!!!!",
+      "!!!!!....!!.=.!!!!!!!!.....!!!!!",
+      "!!!!!.....!!.!!!!..!!!....!!!!!!",
+      "!!!!!.....!!!!!!..........!!!!!!",
+      "!!!!!.....!!!!!!!.........!!!!!!",
+      "!!!!!!!..!!!!!!!!!!!!!!...!!!!!!",
+      "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
+      "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
+      "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!..."
+    ],
+    "sites": [
+      {
+        "id": "last-palm",
+        "name": "Last Palm",
+        "kind": "town",
+        "size": "village",
+        "col": 12,
+        "row": 16
+      },
+      {
+        "id": "anchorage",
+        "name": "Anchorage",
+        "kind": "town",
+        "size": "village",
+        "col": 18,
+        "row": 8
+      }
+    ],
+    "start": "last-palm",
+    "exits": [
+      {
+        "name": "the road west to The Glassed Flats",
+        "col": 0,
+        "row": 9,
+        "to": {
+          "region": "wastes-glass",
+          "col": 31,
+          "row": 9
+        }
+      },
+      {
+        "name": "the road east to The Bonefields",
+        "col": 31,
+        "row": 13,
+        "to": {
+          "region": "wastes-bonefields",
+          "col": 0,
+          "row": 13
+        }
+      }
+    ],
+    "garrisons": [],
+    "encounters": {
+      "desert": "wastes-3-open",
+      "salt-flats": "wastes-3-open",
+      "plains": "wastes-3-open",
+      "dunes": "wastes-3-rough",
+      "hills": "wastes-3-rough",
+      "mountains": "wastes-3-rough",
+      "badlands": "wastes-3-rough",
+      "oasis": "wastes-3-oasis"
+    }
+  },
+  {
+    "id": "wastes-bonefields",
+    "name": "The Bonefields",
+    "terrain": [
+      "dddbbddbbbhmmmhddddddddddddddddd",
+      "dddbbdddbbhmmmhddddddddddddddddd",
+      "dddbbdddddhmmmbbdbbddddddddbbbdd",
+      "dddbddddddhhhhbbbbbbdddddbbbbbbb",
+      "dddddddddddbbdbbbbbbbddbhbbbbbbb",
+      "ddddhhhhhhbddbbbbbbbbbbhmhbbbbbb",
+      "dddhhhhhhhbddbbbbbbbbbbmmmhbbbbb",
+      "dddhhhhhhbbbdbbbbbbbbbbhmmhbbbbb",
+      "bbbhhhhhdbbbbbbbbbbbbbbdhdbbbbbb",
+      "bbhhhhhddbbbbbbbbbbbbbdddddbbbbb",
+      "bbhhbddddbbbbbbbbbbbbddddddbbbbb",
+      "bbbbbdddbbbbbbbbbbbbbddddddbbbbb",
+      "bbbbbdddbbbbbbbbbbbbbddddddbbbbb",
+      "dhbbbdddbbbbbbbbbbbbbdddddbbbbbb",
+      "mmhbbbbbbbbbbbbbbbbbbbbdddbbhhhh",
+      "mmhbbbbbbbbbdbbbbbbbbbbbdbhhhhmd",
+      "mmhbbbbbbbbdddbbbbbbbbhhhhhhhhhh",
+      "mmhbbbbbbbbdddbbbbbbbbhhhhhohhhh",
+      "mmhbbbbbbbbdhhbbbbbbbbbhhhhhbbbb",
+      "mmhbbbbbbbbdhdbbbbdbbbbhhhhhbbbb",
+      "mmhdbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "mmhddbbbbbbbbbbbbbbbbbbbbbbbobbb",
+      "mhddddddddbbbbbbbbbbbbbbbbobhhhh",
+      "hdddddddddbbbbbbbbbbbbbbbbbbhmmm"
+    ],
+    "overlay": [
+      ".!!!!..!!!.!!!..................",
+      ".!!!!...!!.!!!..................",
+      "..!!!......!!!!!.!!........!!!..",
+      "...!..........!!!!!!.....!!!!!!!",
+      "...........!!=!!!!!!!..!.!!!!!!!",
+      "..........!==!!!!!!!!!!.!.!!!!!!",
+      "..........!==!!!!!!!!!!!!!.!!!!!",
+      ".........==!=!!!!!!!!!!.!!.!!!!!",
+      "!!!.....=!!!=!!!!!!!!!!...!!!!!!",
+      "!!.....==!!!=!!!!!!!!!.....!!!!!",
+      "!!..!==..!!!=!!!!!!!!......!!!!!",
+      "!!!==...!!!!=!!!!!!!!......!!!!!",
+      "!==!!!..!!!!=!!!!!!!!......!!!!!",
+      "=.!!!!..!!!!=!!!!!!!!.....!!!!!!",
+      "!!.!!!!!!!!!=!!!!!!!!!!...!!....",
+      "!!!!!!!!!!!!=!!!!!!!!!!!.!....!=",
+      "!!!!!!!!!!!.==!!!!!!!!.===...==.",
+      "!!.!!!!!!!!...==!!!!!==...===...",
+      "!!.!!!!!!!!...!!==!==!!.....!!!!",
+      "!!.!!!!!!!!...!!!!=!!!!.....!!!!",
+      "!!..!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
+      "!!...!!!!!!!!!!!!!!!!!!!!!!!.!!!",
+      "!!!.......!!!!!!!!!!!!!!!!.!....",
+      "!!!.......!!!!!!!!!!!!!!!!!!.!!!"
+    ],
+    "sites": [
+      {
+        "id": "marrowgate",
+        "name": "Marrowgate",
+        "kind": "town",
+        "size": "village",
+        "col": 13,
+        "row": 4
+      },
+      {
+        "id": "ash-hollow",
+        "name": "Ash Hollow",
+        "kind": "town",
+        "size": "village",
+        "col": 18,
+        "row": 19
+      }
+    ],
+    "start": "marrowgate",
+    "exits": [
+      {
+        "name": "the road west to The Red Dune Sea",
+        "col": 0,
+        "row": 13,
+        "to": {
+          "region": "wastes-dunes",
+          "col": 31,
+          "row": 13
+        }
+      },
+      {
+        "name": "the road east to The Sunscar",
+        "col": 31,
+        "row": 15,
+        "to": {
+          "region": "wastes-sunscar",
+          "col": 0,
+          "row": 15
+        }
+      }
+    ],
+    "garrisons": [],
+    "encounters": {
+      "desert": "wastes-4-open",
+      "salt-flats": "wastes-4-open",
+      "plains": "wastes-4-open",
+      "dunes": "wastes-4-rough",
+      "hills": "wastes-4-rough",
+      "mountains": "wastes-4-rough",
+      "badlands": "wastes-4-rough",
+      "oasis": "wastes-4-oasis"
+    }
+  },
+  {
+    "id": "wastes-sunscar",
+    "name": "The Sunscar",
+    "terrain": [
+      "mmmbbbbbdbbbubbbbdudbbbdddbbbmmm",
+      "mmmbbbdddbbbbbbbduuubbbdddbbbmmb",
+      "bbbbbdddddbbbbdduuuudbbddddbbbbb",
+      "bbbbbdddduddddddudddudddbdddbbbb",
+      "ubbbbdddduddddddudodddddddddbbbb",
+      "mmbbdddddddddduuuududdddddddbbbb",
+      "mmbbddudddddduuuuuuuddddddddbbbb",
+      "mmbbdduddddddduuuuuuddddddddbbbb",
+      "uubbdduddbbdddbbduuuuddddddbbbbb",
+      "uubbddddbbbbbbbbdddduuuuuubbbbbb",
+      "udddddddbbbbbbbbbdddduuuuubbbbmb",
+      "ddddddddbbmmmdmbbbbbbbuuuuummmmm",
+      "ddddddddbbmmdddbbbbbbbuuuummmmmm",
+      "ddddddddbbbmdddbbbbbbbuuuuummmmm",
+      "bbddddddbbbbbbbbbbbdddddubbbmmmb",
+      "dbbdddddbbbbbbbdddddddddddbbbbbb",
+      "bbbbbbbbbbbbbbbdddbdddddddbbbaab",
+      "bbbbbbbbbddbuubbbbbbddddddaaaaaa",
+      "bbbbbbbbbdduuuubbbbbddddaaaaaaaa",
+      "bbbbbbbbbddduuddbbbbddddaaaaaaaa",
+      "bbbbbbbobbddbddddbbbddddddaaaaaa",
+      "bbbbbbbbbbdddddddbubdddddddaaaaa",
+      "bbbbbbbbbdddddddbuuubbddddaaaaaa",
+      "bbbbbbbbbdaddddbbuuuubbbbaaaaaaa"
+    ],
+    "overlay": [
+      "!!!!!!!!.!!!!!!!!.!.!!!...!!!!!!",
+      "!!!!!!...!!!!!!!!!!!!!!...!!!!!!",
+      "!!!!!.....!!!!!!!!!!!!!....!!!!!",
+      "!!!!!....!.....===..!!!.!...!!!!",
+      "!!!!!....!...==.!.=.........!!!!",
+      "!!!!........=.!!!!.!........!!!!",
+      "!!!!..!.....=!!!!!!!........!!!!",
+      "!!!!..!.....=.!!!!!!.....!!!!!!!",
+      "!!!!..!..!!.==!!.!!!!....!!!!!!!",
+      "!!!!....!!!!!=!!....!!!!!!!!!!!!",
+      "!.......!=!!!=!!!....!!!!!!!!!!!",
+      ".......==!==!=!!!!!!!!!!!!!!!!!!",
+      ".....==.!!!!==.!!!!!!!!!!!!!!!!!",
+      "...==...!!!!...!!!!!!!!!!!!!!!!!",
+      "!==.....!!!!!!!!!!!.....!!!!!!!!",
+      "=!!.....!!!!!!!...........!!!!!!",
+      "!!!!!!!!!!!!!!!...!..!!!..!!!!!!",
+      "!!!!!!!!!..!!!!!!!!!.!!!..!!!!!!",
+      "!!!!!!!!!..!!!!!!!!!..!.!!!!!!!!",
+      "!!!!!!!!!...!!..!!!!....!!!!!!!!",
+      "!!!!!!!.!!..!....!!!......!!!!!!",
+      "!!!!!!!!!!.......!!!.......!!!!!",
+      "!!!!!!!!!.......!!!!!!....!!!!!!",
+      "!!!!!!!!!.!....!!!!!!!!!!!!!!!!!"
+    ],
+    "sites": [
+      {
+        "id": "emberwatch",
+        "name": "Emberwatch",
+        "kind": "town",
+        "size": "village",
+        "col": 13,
+        "row": 12
+      },
+      {
+        "id": "final-well",
+        "name": "Final Well",
+        "kind": "town",
+        "size": "village",
+        "col": 18,
+        "row": 4
+      }
+    ],
+    "start": "emberwatch",
+    "exits": [
+      {
+        "name": "the road west to The Bonefields",
+        "col": 0,
+        "row": 15,
+        "to": {
+          "region": "wastes-bonefields",
+          "col": 31,
+          "row": 15
+        }
+      }
+    ],
+    "garrisons": [],
+    "encounters": {
+      "desert": "wastes-5-open",
+      "salt-flats": "wastes-5-open",
+      "plains": "wastes-5-open",
+      "dunes": "wastes-5-rough",
+      "hills": "wastes-5-rough",
+      "mountains": "wastes-5-rough",
+      "badlands": "wastes-5-rough",
+      "oasis": "wastes-5-oasis"
+    }
   }
 ]

@@ -111,6 +111,8 @@ export const SpecialSchema = z.discriminatedUnion('kind', [
     loot: z.array(LootDiceSchema).min(1),
     component: IdSchema.optional(),
     guards: z.array(z.array(IdSchema).min(1).max(8)).min(1).max(3).optional(),
+    /** What the party sees as a hoard's guards rise: the level's boss (Sam's call). */
+    text: z.string().min(1).optional(),
     vault: z.literal(true).optional(),
   }),
   /** A set of crafter's notes, found the first time the party steps here (Phase 12d). */

@@ -13,6 +13,7 @@ import encounterTables from '../../data/content/encounter-tables.json';
 import mishaps from '../../data/content/mishaps.json';
 import overlandRules from '../../data/content/overland-rules.json';
 import regions from '../../data/content/regions.json';
+import realms from '../../data/content/realms.json';
 import terrains from '../../data/content/terrains.json';
 import townRules from '../../data/content/town-rules.json';
 import skillRules from '../../data/content/skill-rules.json';
@@ -82,6 +83,7 @@ export function loadContent(): ContentData {
     combatMagic: ContentSchemas.combatMagic.parse(combatMagic),
     terrains: ContentSchemas.terrains.parse(terrains),
     regions: ContentSchemas.regions.parse(regions),
+    realms: ContentSchemas.realms.parse(realms),
     encounterTables: ContentSchemas.encounterTables.parse(encounterTables),
     mishaps: ContentSchemas.mishaps.parse(mishaps),
     overlandRules: ContentSchemas.overlandRules.parse(overlandRules),
@@ -159,6 +161,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['combatMagic', content.combatMagic],
     ['terrains', content.terrains],
     ['regions', content.regions],
+    ['realms', content.realms],
     ['encounterTables', content.encounterTables],
     ['mishaps', content.mishaps],
     ['hirelings', content.npcRules.hirelings],

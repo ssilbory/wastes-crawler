@@ -61,6 +61,18 @@
 .t-badlands polygon {
   fill: #d9a777;
 }
+.t-desert polygon {
+  fill: #e6cf98;
+}
+.t-dunes polygon {
+  fill: #e8c487;
+}
+.t-salt-flats polygon {
+  fill: #ece4cf;
+}
+.t-oasis polygon {
+  fill: #a9c08a;
+}
 .t-lake polygon {
   fill: #8fb6c6;
 }
@@ -102,6 +114,23 @@
 }
 .hex-map .glyph .mesa {
   fill: #c0835a;
+}
+.hex-map .glyph .dune {
+  fill: #d8ad6c;
+}
+.hex-map .glyph .salt {
+  stroke: #9a8f7a;
+}
+.hex-map .glyph .pebble {
+  fill: #8a7350;
+  stroke: none;
+}
+.hex-map .glyph .pool {
+  fill: #8fb6c6;
+  stroke: #3f6f8c;
+}
+.hex-map .glyph .frond {
+  stroke: #4f6f35;
 }
 .hex-map .glyph .water {
   stroke: #3f6f8c;

@@ -47,6 +47,13 @@ export function withWorldMap(data: GameData, map: Region | null): GameData {
   return { ...data, content: { ...data.content, regions } };
 }
 
+/**
+ * Whether the world plays the campaign's own story (Sam's call): not on a custom map or a realm,
+ * whose towns and roads the campaign's factions, orders, and captives know nothing of.
+ */
+export const isCampaign = (w: { map: Region | null; realm: string | null }) =>
+  w.map === null && w.realm === null;
+
 /** A region's map from its record, for regions that aren't in the content, such as an editor's. */
 export function regionMapOf(terrains: readonly Terrain[], r: Region): RegionMap {
   const glyphs = new Map(terrains.map((t) => [t.glyph, t]));

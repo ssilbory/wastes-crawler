@@ -20,6 +20,7 @@ describe('overland content', () => {
     if (!region) throw new Error('missing content');
     const broken = {
       ...content,
+      realms: [],
       regions: [
         {
           ...region,
@@ -52,6 +53,7 @@ describe('overland content', () => {
     const broken = {
       ...content,
       terrains: [...content.terrains, { ...plains, id: 'dupe', encounters: 'nowhere' }],
+      realms: [],
       regions: [
         {
           ...region,
@@ -105,6 +107,46 @@ describe('overland content', () => {
       'regions/wet/c: on impassable land',
       'encounterTables/odd: unknown monster dragon',
       'mishaps: no camp mishaps',
+    ]);
+  });
+
+  it("keeps each realm a world of its own (Sam's call)", () => {
+    const [realm] = content.realms;
+    const [campaign] = content.regions;
+    if (!realm || !campaign) throw new Error('missing content');
+    const first = content.regions.find((r) => r.id === realm.start);
+    if (!first) throw new Error('missing content');
+    const broken = {
+      ...content,
+      realms: [
+        { ...realm, regions: [...realm.regions, 'atlantis'], start: 'borderlands' },
+        { ...realm, id: 'again', regions: [realm.start] },
+      ],
+      regions: content.regions.map((r) =>
+        r.id === campaign.id
+          ? {
+              ...r,
+              exits: [
+                {
+                  ...first.exits[0],
+                  name: 'in',
+                  col: 23,
+                  row: 8,
+                  to: { region: first.id, col: 31, row: first.exits[0]?.row ?? 0 },
+                },
+              ],
+            }
+          : r,
+      ),
+    };
+    expect(overlandReferenceErrors(srd, broken)).toEqual([
+      'realms/wastes: unknown region atlantis',
+      'realms/wastes: starts outside its regions, in borderlands',
+      `realms/again: region ${realm.start} is already in wastes`,
+      'regions/borderlands: the road at 23,8 leaves its realm',
+      // Claimed by the second realm, the first map's roads east now leave it.
+      `regions/${realm.start}: the road at 31,11 leaves its realm`,
+      'regions/wastes-glass: the road at 0,11 leaves its realm',
     ]);
   });
 });

@@ -52,6 +52,7 @@ export function overlandReferenceErrors(srd: SrdData, content: ContentData): str
     const ids = r.sites.map((s) => s.id);
     if (new Set(ids).size !== ids.length) errors.push(`${where}: duplicate site id`);
   }
+  errors.push(...realmErrors(content));
   const monsters = new Set(allMonsters(srd, content).map((m) => m.id));
   for (const t of content.encounterTables) {
     for (const e of t.entries) {
@@ -73,5 +74,30 @@ export function overlandReferenceErrors(srd: SrdData, content: ContentData): str
     if (!content.mishaps.some((m) => m.table === table))
       errors.push(`mishaps: no ${table} mishaps`);
   }
+  return errors;
+}
+
+/**
+ * Realms name real regions, each in one realm only, and start in one of their own; their roads stay
+ * inside the realm, and no other region's road leads in, so a realm is a world of its own.
+ */
+function realmErrors(content: ContentData): string[] {
+  const errors: string[] = [];
+  const owner = new Map<string, string>();
+  for (const realm of content.realms) {
+    const where = `realms/${realm.id}`;
+    for (const id of realm.regions) {
+      if (!content.regions.some((r) => r.id === id)) errors.push(`${where}: unknown region ${id}`);
+      const other = owner.get(id);
+      if (other !== undefined) errors.push(`${where}: region ${id} is already in ${other}`);
+      owner.set(id, realm.id);
+    }
+    if (!realm.regions.includes(realm.start))
+      errors.push(`${where}: starts outside its regions, in ${realm.start}`);
+  }
+  for (const r of content.regions)
+    for (const e of r.exits)
+      if (owner.get(r.id) !== owner.get(e.to.region))
+        errors.push(`regions/${r.id}: the road at ${e.col},${e.row} leaves its realm`);
   return errors;
 }

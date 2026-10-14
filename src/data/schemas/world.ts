@@ -7,7 +7,7 @@ import { FactionStateSchema } from './faction-content.ts';
 import { RegionSchema } from './overland-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 35;
+export const WORLD_SCHEMA_VERSION = 36;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -296,6 +296,8 @@ export const WorldSaveSchema = z.strictObject({
    * the map editor don't change a world under way; null for the campaign's own regions.
    */
   map: RegionSchema.nullable(),
+  /** The shipped realm the world is played on, or null for the campaign or a custom map. */
+  realm: IdSchema.nullable(),
   rng: z.tuple([z.int(), z.int(), z.int(), z.int()]),
   /** Days since the world began, and the quarter: morning, day, evening, night. */
   day: z.int().min(0),

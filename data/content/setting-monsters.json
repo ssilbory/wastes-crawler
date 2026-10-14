@@ -412,5 +412,197 @@
     "name": "Grave Mold",
     "base": "slime-or-ooze",
     "description": "A creeping mold that eats burial cloth first and the buried second, and is not fussy about the order."
+  },
+  {
+    "id": "dust-raider",
+    "name": "Dust Raider",
+    "base": "thug-or-militia",
+    "description": "A wrapped and goggled scavenger who picks the dead towns clean and the living ones too."
+  },
+  {
+    "id": "scrap-picker",
+    "name": "Scrap Picker",
+    "base": "barbarian-fighter",
+    "description": "A wiry ruin-diver with a hooked bar and a sack of salvage, quick to fight for either."
+  },
+  {
+    "id": "sand-rat",
+    "name": "Sand Rat",
+    "base": "predator-small-vicious",
+    "description": "A dog-sized rat with a sand-scoured hide, bold in packs among the rubble."
+  },
+  {
+    "id": "dune-jackal",
+    "name": "Dune Jackal",
+    "base": "small-pack-predator",
+    "description": "A lean yellow jackal that trails anything that might fall."
+  },
+  {
+    "id": "raider-boss",
+    "name": "Raider Boss",
+    "base": "skilled-veteran",
+    "description": "A scarred raider who rules a gang by having outlived the rest of it."
+  },
+  {
+    "id": "dust-husk",
+    "name": "Dust Husk",
+    "base": "raised-zombie",
+    "description": "A corpse dried to leather by the sun and walked again by whatever lies under the ruins."
+  },
+  {
+    "id": "rust-sentinel",
+    "name": "Rust Sentinel",
+    "base": "automaton-humanlike",
+    "description": "An old town watchman of riveted brass, still walking its beat through streets no one walks."
+  },
+  {
+    "id": "salt-wight",
+    "name": "Salt Wight",
+    "base": "ghoul",
+    "description": "A crusted, white-eyed thing that was a salt miner once and is hungry still."
+  },
+  {
+    "id": "glass-scorpion",
+    "name": "Glass Scorpion",
+    "base": "giant-scorpion",
+    "description": "A scorpion the size of a cart, its shell fused clear where the old fire glassed the flats."
+  },
+  {
+    "id": "raider-veteran",
+    "name": "Raider Veteran",
+    "base": "veteran-soldier",
+    "description": "A raider who has crossed the flats a dozen times and buried the ones who didn't."
+  },
+  {
+    "id": "sand-shaman",
+    "name": "Sand Shaman",
+    "base": "tribal-shaman",
+    "description": "A raider seer who reads the wind and calls the dust to blind and bury."
+  },
+  {
+    "id": "salt-baron",
+    "name": "Salt Baron",
+    "base": "elites-or-special-guards",
+    "description": "A raider lord in salt-white mail who taxes every well between here and the dunes."
+  },
+  {
+    "id": "glass-golem",
+    "name": "Glass Golem",
+    "base": "automaton-military",
+    "description": "A war-engine of the old towns, its plates melted to green glass and its orders long since mad."
+  },
+  {
+    "id": "tomb-guard",
+    "name": "Tomb Guard",
+    "base": "grave-knight",
+    "description": "A dead knight of the old cities, still standing its watch over a lord who is dust."
+  },
+  {
+    "id": "sand-burrower",
+    "name": "Sand Burrower",
+    "base": "large-solitary-predator",
+    "description": "A blind, plated hunter that swims under the dunes and rises beneath its prey."
+  },
+  {
+    "id": "scarab-swarm",
+    "name": "Scarab Swarm",
+    "base": "unnatural-swarm",
+    "description": "A boiling black carpet of beetles that strips a body in a breath."
+  },
+  {
+    "id": "sun-hound",
+    "name": "Sun Hound",
+    "base": "hell-hound",
+    "description": "A hound of white fire that runs before the noon wind."
+  },
+  {
+    "id": "dune-sorcerer",
+    "name": "Dune Sorcerer",
+    "base": "skilled-sorcerer",
+    "description": "A wandering mage of the dune tribes who trades in secrets dug from buried libraries."
+  },
+  {
+    "id": "dune-khan",
+    "name": "Dune Khan",
+    "base": "warrior-baron",
+    "description": "A warlord of the deep dunes whose banners are the bleached hides of his rivals."
+  },
+  {
+    "id": "sand-elemental",
+    "name": "Sand Elemental",
+    "base": "elemental-guardian",
+    "description": "A whirling column of grit bound long ago to guard a door no one remembers."
+  },
+  {
+    "id": "dune-manticore",
+    "name": "Dune Manticore",
+    "base": "manticore",
+    "description": "A tawny manticore that nests in the toppled towers and spits its spines at travellers."
+  },
+  {
+    "id": "bone-reaver",
+    "name": "Bone Reaver",
+    "base": "predator-large-vicious",
+    "description": "A long-limbed hunter of the bonefields, plated in the ribs of what it has eaten."
+  },
+  {
+    "id": "desert-giant",
+    "name": "Desert Giant",
+    "base": "hill-giant",
+    "description": "A sun-blackened giant who herds nothing and takes what it wants."
+  },
+  {
+    "id": "bone-crawler",
+    "name": "Bone Crawler",
+    "base": "terrible-warbeast",
+    "description": "A centipede-thing of fused bone, raised in some war no one recorded."
+  },
+  {
+    "id": "sun-mage",
+    "name": "Sun Mage",
+    "base": "master-wizard",
+    "description": "A sorcerer of the burned cities, scorched hairless by the fire they still command."
+  },
+  {
+    "id": "sand-chimera",
+    "name": "Sand Chimera",
+    "base": "chimera",
+    "description": "A three-headed horror that dens in the gutted temples of the bonefields."
+  },
+  {
+    "id": "ossuary-lord",
+    "name": "Ossuary Lord",
+    "base": "barbarian-warlord",
+    "description": "A warlord who wears a crown of knucklebones and keeps a court of the dead."
+  },
+  {
+    "id": "sunscar-colossus",
+    "name": "Sunscar Colossus",
+    "base": "automaton-warbot",
+    "description": "A walking siege-engine of the old empire, cracked and smoking and still obeying."
+  },
+  {
+    "id": "glass-wyrm",
+    "name": "Glass Wyrm",
+    "base": "grave-wyrm",
+    "description": "A wyrm whose scales fused to glass in the burning; it lairs in the throne city's heart."
+  },
+  {
+    "id": "dread-sandbeast",
+    "name": "Dread Sandbeast",
+    "base": "predator-hellbeast",
+    "description": "A thing of horn and furnace-breath that the noon sun does not trouble."
+  },
+  {
+    "id": "throne-champion",
+    "name": "Throne Champion",
+    "base": "major-hero",
+    "description": "One of the Sun King's chosen, kept alive past death by oath and hatred."
+  },
+  {
+    "id": "sun-king",
+    "name": "The Sun King",
+    "base": "lich",
+    "description": "The last lord of the burned empire, who called down the fire that made the Wastes and lived through it as something else."
   }
 ]

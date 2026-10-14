@@ -23,7 +23,7 @@ const arg = (name: string, fallback: string) => {
 export const RUNS = Number(arg('runs', '200'));
 export const SEED = arg('seed', 'balance');
 export const TARGET = 0.7;
-export const MAX_LEVEL = 8;
+export const MAX_LEVEL = 10;
 const REAR = ['Lirael', 'Fizzwick'];
 
 const dir = 'tools/sim/parties/starter';
@@ -169,6 +169,17 @@ for (const d of data.content.dungeons)
         before: delveBefore(d.id, l.id).filter((s) => !('enemies' in s && s.enemies === g.enemies)),
         enemies: g.enemies,
       });
+// Hand-placed hoards: each level's boss (Sam's call), worn down by the levels above.
+for (const d of data.content.dungeons)
+  for (const l of d.levels)
+    for (const s of l.specials)
+      if (s.kind === 'cache' && s.guards)
+        fights.push({
+          name: `${d.name}, ${l.name} hoard`,
+          minLevel: questLevel(d.id),
+          before: delveBefore(d.id, l.id),
+          enemies: s.guards,
+        });
 for (const r of data.content.ruins)
   fights.push({
     name: `${r.name} vault`,

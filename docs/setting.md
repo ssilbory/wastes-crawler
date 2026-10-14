@@ -265,3 +265,9 @@ These are unanswered by design. Clues can surface in play, but the setting never
 - What would it take to command the bound orcs and goblins?
 - Do ancient beastmen exist, and if so, are they standard beastmen or something else?
 - Do bound agents really hold secret orders to avenge or restore him, and what are they?
+
+## The Wastes
+
+A second world, apart from the Dark Lands and played without their story (docs/rules-adaptation.md, The Wastes). Long ago the Sun King called down a fire to win a war, and it burned his empire to glass and sand. He lived through it as something else, and sleeps under his throne city at the far end of the desert. What is left is five days' worth of wasteland after five days' worth of wasteland: the Dust Fringe, where the old water board's pumps still stand; the Glassed Flats, salt pans fused to green glass; the Red Dune Sea, where the barges of the old caravan lines lie buried; the Bonefields, where the dead were stacked, counted, and set to guard their own bones; and the Sunscar, the throne city's burned heart.
+
+The living keep to a handful of tiny villages around the last good wells. The ruined towns between them belong to raiders, scavengers, and whatever the fire woke. Each region has one great dungeon, deeper and worse than the last, and something with a hoard on every level.

@@ -23,6 +23,7 @@ export function serializeWorld(w: World): string {
     schemaVersion: WORLD_SCHEMA_VERSION,
     region: w.region,
     map: w.map,
+    realm: w.realm,
     rng: [...w.rng.state()],
     day: w.day,
     quarter: w.quarter,
@@ -142,6 +143,8 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
   const s = parsed.data;
   if (s.map ? s.map.id !== s.region : !data.content.regions.some((r) => r.id === s.region))
     return { ok: false, errors: [`unknown region ${s.region}`] };
+  if (s.realm && !data.content.realms.some((r) => r.id === s.realm && r.regions.includes(s.region)))
+    return { ok: false, errors: [`unknown realm ${s.realm}`] };
   const errors: string[] = [];
   const party = members(s.members, data, errors);
   const benched = members(s.benched, data, errors);
@@ -149,6 +152,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
   const world = {
     region: s.region,
     map: s.map,
+    realm: s.realm,
     day: s.day,
     quarter: s.quarter,
     position: s.position,
