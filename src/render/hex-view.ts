@@ -63,11 +63,14 @@ export function hexCells(
   questHexes: readonly Hex[] = [],
   entrances: readonly (Hex & { name: string; heard?: boolean })[] = [],
   groves: readonly (Hex & { name: string })[] = [],
+  /** Hexes the party knows of without having seen them, such as a freed captive's home. */
+  revealed: readonly Hex[] = [],
 ): HexCell[] {
   const quests = new Set(questHexes.map(hexKey));
   const ways = new Map(entrances.map((e) => [hexKey(e), e]));
   const woods = new Map(groves.map((g) => [hexKey(g), g.name]));
   const seen = seenHexes(map, w.visited);
+  for (const h of revealed) seen.add(hexKey(h));
   const onRoute = new Set(routeHexes.map(hexKey));
   const cells: HexCell[] = [];
   for (let row = 0; row < map.height; row++) {

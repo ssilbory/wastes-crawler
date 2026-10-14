@@ -17,7 +17,9 @@ export function freeCaptive(w: World, data: GameData, captiveId: string): boolea
     note(w, `${name} is free, but with no room in the party goes their own way.`);
     return false;
   }
-  note(w, `${name} is free and joins the party until they reach safety.`);
+  // The party learns where they are bound, and the map shows it (render/quest-view.ts).
+  const home = data.content.regions.flatMap((r) => r.sites).find((t) => t.id === c.destination);
+  note(w, `${name} is free and joins the party until they reach ${home?.name ?? 'safety'}.`);
   return true;
 }
 

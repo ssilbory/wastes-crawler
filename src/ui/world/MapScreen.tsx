@@ -31,7 +31,7 @@ import { PopOut } from './PopOut.tsx';
 import { QuestLog } from './QuestLog.tsx';
 import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
 import { JournalPanel } from './JournalPanel.tsx';
-import { questTargets } from '../../render/quest-view.ts';
+import { captiveHomes, questTargets } from '../../render/quest-view.ts';
 import { CoachPanel } from './CoachPanel.tsx';
 import { QuarterPanel } from './QuarterPanel.tsx';
 import { typeOf } from '../../game/world/npcs.ts';
@@ -67,9 +67,11 @@ export function MapScreen(props: {
     w,
     route(w, data),
     HEX_SIZE,
-    questTargets(w, data),
+    // A freed captive's home is marked like a quest's goal, and shows through the fog.
+    [...questTargets(w, data), ...captiveHomes(w, data)],
     entrances,
     grovesHere(w, data),
+    captiveHomes(w, data),
   );
   // Zooming in from the whole map closes in on the party.
   const party = cells.find((c) => c.party);
