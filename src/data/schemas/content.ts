@@ -44,6 +44,7 @@ import { AuthoredMonsterSchema, SettingMonsterSchema } from './monsters.ts';
 import { DungeonSchema } from './dungeon-content.ts';
 import { MapGenSchema } from './map-gen-content.ts';
 import { FactionContentSchema } from './faction-content.ts';
+import { ShippedWorldSchema } from './world-content.ts';
 
 const contentBase = {
   id: IdSchema,
@@ -205,6 +206,8 @@ export const ContentSchemas = {
   raidRules: RaidRulesSchema,
   campaign: CampaignSchema,
   ruins: z.array(RuinSchema),
+  /** Worlds played on their own beside the campaign, each a map with its dungeons. */
+  worlds: z.array(ShippedWorldSchema),
   groves: z.array(GroveSchema),
   factions: FactionContentSchema,
   ailments: AilmentContentSchema,

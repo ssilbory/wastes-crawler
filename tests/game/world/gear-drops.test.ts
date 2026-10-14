@@ -61,7 +61,8 @@ describe('which foes drop gear (docs/rules-adaptation.md, Gear drops)', () => {
   });
 
   it('drops only now and then', () => {
-    const w = scripted([data.content.craftingRules.drops.chance + 1]);
+    const { chance, fine } = data.content.craftingRules.drops;
+    const w = scripted([chance + 1, fine.chance + 1]);
     const before = snapshot(w);
     expect(dropGear(w, data, ['thug-or-militia'], WIN)).toBe(0);
     expect(dropped(before, w)).toBeNull();
@@ -157,6 +158,38 @@ describe('what drops', () => {
     expect(dropped(before, w)?.entry).toMatchObject({ id: 'spear-light', quality: 'jury-rigged' });
   });
 
+  it('can leave a fine weapon at any level when nothing else drops', () => {
+    const { chance, fine } = data.content.craftingRules.drops;
+    // The ordinary roll fails, the fine roll comes, then its make, then the foe.
+    let w = scripted([chance + 1, fine.chance, 1, 0]);
+    let before = snapshot(w);
+    dropGear(w, data, ['thug-or-militia'], WIN);
+    expect(dropped(before, w)?.entry).toEqual({
+      id: 'spear-light',
+      quantity: 1,
+      location: 'stowed',
+      quality: 'mastercrafted',
+    });
+    // A +2 is of normal make, and always a weapon even from an armored foe.
+    w = scripted([chance + 1, 1, 10, 0]);
+    before = snapshot(w);
+    dropGear(w, data, ['skilled-veteran'], WIN);
+    expect(dropped(before, w)?.entry).toEqual({
+      id: 'sword-long',
+      quantity: 1,
+      location: 'stowed',
+      bonus: 2,
+    });
+    expect(w.log.at(-1)).toContain('Sword, Long +2');
+  });
+
+  it('rolls no fine weapon when the ordinary drop or boss magic comes', () => {
+    // Boss magic, foe, weapon, +1: no fine roll is drawn between them.
+    const w = scripted([1, 0, 2, 1]);
+    dropGear(w, data, ['knight-or-minor-hero'], BOSS);
+    expect(() => w.rng.int(1, 100)).toThrow('ran out of faces');
+  });
+
   it('gives a foe with no weapon of its own any priced weapon', () => {
     const w = scripted([1, 0, 1, 0]);
     const before = snapshot(w);
@@ -205,7 +238,7 @@ describe('a drop’s cost in loot dice', () => {
   });
 
   it('pays the full dice when nothing drops, or the fight is worth no XP', () => {
-    let w = scripted([100]);
+    let w = scripted([100, 100]);
     winnings(w, data, [['thug-or-militia', 'thug-or-militia']], WIN);
     expect(w.loot).toEqual([{ count: 2, sides: 6 }]);
     w = scripted([]);

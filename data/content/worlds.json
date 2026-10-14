@@ -1,0 +1,3360 @@
+[
+  {
+    "description": "A vale ringed by impassable peaks, with one town, Lastward, and the ruins of Harrowmere: its streets, three levels of sewers, and the Warden's six-floor tower, trapped and guarded on every floor. One pass leads out, held by five bound posts, each worse than the last; the outermost wants a party of 15th level. No quests, factions, or raids.",
+    "map": {
+      "id": "sealed-vale",
+      "name": "The Sealed Vale",
+      "terrain": [
+        "MMMMMMMMMMMMMMMMMMMMMMMM",
+        "MMMMMMMMMMMMMMMMMMMMMMMM",
+        "MMhhhhhhhrbbbbbbhhhMMMMM",
+        "MMhffffffrbbbbbbpphMMMMM",
+        "MMhfFFFffrbbbbbbpphMMMMM",
+        "MMhfFFFffrbbbbbbpphMMMMM",
+        "MMhfFFFffrbbbbbbpphMMMMM",
+        "MMhffffffrpppppppphMMMMM",
+        "MMhffffffrpppppppphmmmmm",
+        "MMhppppppxpppppLLphMMMMM",
+        "MMhpppppprpppppLLphMMMMM",
+        "MMhpppppprpppppppphMMMMM",
+        "MMhpppppprpssssspphMMMMM",
+        "MMhpppppprpssssspphMMMMM",
+        "MMhpppppprpssssspphMMMMM",
+        "MMhhhhhhhrhhhhhhhhhMMMMM",
+        "MMMMMMMMMMMMMMMMMMMMMMMM",
+        "MMMMMMMMMMMMMMMMMMMMMMMM"
+      ],
+      "overlay": [
+        "........................",
+        "........................",
+        "..........!!!!!!........",
+        "..........!!!!!!........",
+        "....!!!...!!!=!!........",
+        "....!!!...!!!=!!........",
+        "....!!!...!!!=!!........",
+        ".............=..........",
+        "...........========!!!!!",
+        ".........==.............",
+        ".......==...............",
+        ".....==.................",
+        "...........!!!!!........",
+        "...........!!!!!........",
+        "...........!!!!!........",
+        "........................",
+        "........................",
+        "........................"
+      ],
+      "sites": [
+        {
+          "id": "lastward",
+          "name": "Lastward",
+          "kind": "town",
+          "col": 5,
+          "row": 11,
+          "size": "town"
+        }
+      ],
+      "start": "lastward",
+      "exits": [],
+      "garrisons": [
+        {
+          "order": "hold-the-throat",
+          "col": 19,
+          "row": 8,
+          "enemies": [
+            [
+              "bound-orc-guard",
+              "bound-orc-guard",
+              "bound-orc-guard",
+              "bound-orc-guard",
+              "bound-orc-guard"
+            ],
+            ["bound-orc-captain", "bound-orc-captain"]
+          ]
+        },
+        {
+          "order": "hold-the-throat",
+          "col": 20,
+          "row": 8,
+          "enemies": [
+            [
+              "bound-lieutenant",
+              "bound-lieutenant",
+              "bound-lieutenant",
+              "war-engine",
+              "war-engine"
+            ],
+            ["beastman-hexer", "beastman-hexer"]
+          ]
+        },
+        {
+          "order": "hold-the-throat",
+          "col": 21,
+          "row": 8,
+          "enemies": [
+            [
+              "crag-stalker",
+              "crag-stalker",
+              "war-engine",
+              "war-engine",
+              "war-engine",
+              "war-engine"
+            ],
+            ["warlord", "ruinfield-sorcerer"]
+          ]
+        },
+        {
+          "order": "hold-the-throat",
+          "col": 22,
+          "row": 8,
+          "enemies": [
+            ["iron-golem", "oathbound-champion", "oathbound-champion"],
+            ["ash-mountain-wizard"]
+          ]
+        },
+        {
+          "order": "hold-the-throat",
+          "col": 23,
+          "row": 8,
+          "enemies": [
+            ["grave-wyrm", "ash-king", "iron-golem"],
+            ["old-barrow-archmage", "old-barrow-archmage", "ash-mountain-wizard"]
+          ]
+        }
+      ],
+      "encounters": {
+        "plains": "vale-plains",
+        "forest": "vale-forest",
+        "deep-forest": "vale-deep-forest",
+        "hills": "vale-hills",
+        "swamp": "vale-swamp",
+        "badlands": "vale-badlands",
+        "mountains": "vale-pass",
+        "peaks": "vale-pass"
+      }
+    },
+    "dungeons": [
+      {
+        "id": "harrowmere",
+        "name": "Harrowmere",
+        "region": "sealed-vale",
+        "entrance": {
+          "col": 13,
+          "row": 4
+        },
+        "entry": {
+          "level": "hm-streets",
+          "at": {
+            "x": 5,
+            "y": 13
+          },
+          "facing": "n"
+        },
+        "levels": [
+          {
+            "id": "hm-streets",
+            "name": "The Streets of Harrowmere",
+            "map": [
+              "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+",
+              "|                               |",
+              "+ +-+-+d+-+ +-+-+-+-+ +-+-+-+-+ +",
+              "| |   |   | |       | | | | | d |",
+              "+ + + + + + + + + + + +-+-+-+ + +",
+              "| d   |   | |       |T| | | | | |",
+              "+ + + + + + + + + + + +-+-+-+-+ +",
+              "| |   d   | |       | | | | | | |",
+              "+ + + + + + + + + + + +-+-+-+-+ +",
+              "| |   |   | |       | | | | | | |",
+              "+ +-+-+-+-+ +-+d+d+-+ +-+-+-+-+ +",
+              "|                               |",
+              "+ +d+-+-+-+ + + + + + +-+-+-+-+ +",
+              "| |   |   |           |     | | |",
+              "+ + + + + + + + + + + + + + + + +",
+              "| |   d   |T          |     s | |",
+              "+ + + + + + + + + + + + + + + + +",
+              "| |   |   |           |     | | |",
+              "+ +-+-+-+-+ + + + + + +-+d+-+-+ +",
+              "|                              T|",
+              "+ +-+d+-+-+ +-+-+-+-+ +-+-+-+-+ +",
+              "| |       | | | | | | |       | |",
+              "+ + + + + + +-+-+-+-+ + + + + + +",
+              "| |       d | | | | | d    >  d |",
+              "+ + + + + + +-+-+-+-+ + + + + + +",
+              "| |       | |   | | | |       | |",
+              "+ +-+-+-+-+ +d+-+-+-+ +-+-+-+-+ +",
+              "|          <                    |",
+              "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
+            ],
+            "links": [
+              {
+                "at": {
+                  "x": 5,
+                  "y": 13
+                },
+                "to": {
+                  "surface": true
+                }
+              },
+              {
+                "at": {
+                  "x": 13,
+                  "y": 11
+                },
+                "to": {
+                  "level": "hm-sewer-1",
+                  "at": {
+                    "x": 1,
+                    "y": 1
+                  },
+                  "facing": "s"
+                }
+              }
+            ],
+            "wander": {
+              "every": 3,
+              "table": "hm-streets"
+            },
+            "safe": [
+              {
+                "x": 3,
+                "y": 7
+              },
+              {
+                "x": 4,
+                "y": 7
+              },
+              {
+                "x": 4,
+                "y": 1
+              },
+              {
+                "x": 4,
+                "y": 2
+              },
+              {
+                "x": 6,
+                "y": 3
+              },
+              {
+                "x": 6,
+                "y": 4
+              },
+              {
+                "x": 11,
+                "y": 7
+              },
+              {
+                "x": 11,
+                "y": 8
+              },
+              {
+                "x": 14,
+                "y": 10
+              },
+              {
+                "x": 14,
+                "y": 11
+              },
+              {
+                "x": 1,
+                "y": 12
+              },
+              {
+                "x": 1,
+                "y": 11
+              },
+              {
+                "x": 14,
+                "y": 1
+              },
+              {
+                "x": 14,
+                "y": 2
+              },
+              {
+                "x": 6,
+                "y": 12
+              },
+              {
+                "x": 7,
+                "y": 12
+              }
+            ],
+            "secrets": [
+              {
+                "at": {
+                  "x": 13,
+                  "y": 7
+                },
+                "side": "e",
+                "difficulty": 9
+              }
+            ],
+            "traps": [
+              {
+                "at": {
+                  "x": 10,
+                  "y": 2
+                },
+                "name": "cellar collapse",
+                "notice": 8,
+                "disarm": {
+                  "skill": "sneak",
+                  "attributes": ["dex"],
+                  "difficulty": 9
+                },
+                "save": "evasion",
+                "element": "earth",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 2,
+                    "sides": 6,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 5,
+                  "y": 7
+                },
+                "name": "tripwire and bells",
+                "notice": 7,
+                "disarm": {
+                  "skill": "sneak",
+                  "attributes": ["dex"],
+                  "difficulty": 7
+                },
+                "save": null,
+                "effect": {
+                  "kind": "alarm"
+                }
+              },
+              {
+                "at": {
+                  "x": 15,
+                  "y": 9
+                },
+                "name": "leaning wall",
+                "notice": 9,
+                "disarm": {
+                  "skill": "sneak",
+                  "attributes": ["dex"],
+                  "difficulty": 9
+                },
+                "save": "evasion",
+                "element": "earth",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 2,
+                    "sides": 6,
+                    "modifier": 0
+                  }
+                }
+              }
+            ],
+            "specials": [
+              {
+                "kind": "message",
+                "at": {
+                  "x": 5,
+                  "y": 12
+                },
+                "text": "Harrowmere. The town drowned in ash and was never dug out. Doors hang open on every street, and something has been nesting in the houses."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 12,
+                  "y": 5
+                },
+                "text": "The Warden's Tower rises six floors over the rooftops. Its doors are bricked shut from inside. Lastward's old men say the sewers run under its cellar."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 7,
+                  "y": 2
+                },
+                "text": "A chapel of the Lady. Her statue was pulled down long ago, and the bound dead kneel where it stood."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 12,
+                  "y": 11
+                },
+                "text": "The sewer works. A grate stands open in the floor, and the stink of the tunnels comes up through it."
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 8,
+                  "y": 2
+                },
+                "loot": [
+                  {
+                    "count": 2,
+                    "sides": 6
+                  }
+                ],
+                "guards": [
+                  [
+                    "raised-skeleton",
+                    "raised-skeleton",
+                    "raised-skeleton",
+                    "raised-skeleton",
+                    "raised-skeleton",
+                    "raised-skeleton",
+                    "ghoul",
+                    "ghoul"
+                  ],
+                  ["ghoul", "ghoul", "ghoul"]
+                ]
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 3,
+                  "y": 11
+                },
+                "loot": [
+                  {
+                    "count": 2,
+                    "sides": 6
+                  }
+                ],
+                "guards": [
+                  [
+                    "human-raider",
+                    "human-raider",
+                    "human-raider",
+                    "human-raider",
+                    "human-raider",
+                    "alliance-ranger",
+                    "alliance-ranger"
+                  ],
+                  ["slaver", "slaver"]
+                ]
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 14,
+                  "y": 7
+                },
+                "loot": [
+                  {
+                    "count": 1,
+                    "sides": 8
+                  },
+                  {
+                    "count": 1,
+                    "sides": 8
+                  }
+                ]
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 13,
+                  "y": 6
+                },
+                "text": "A strongbox under the guildhall's floor, its ledger rotted to a black cake."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 1
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 6,
+                  "y": 3
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 11,
+                  "y": 7
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 14,
+                  "y": 10
+                },
+                "text": "A quiet nook, easy to watch. A safe place to rest."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 1,
+                  "y": 12
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 14,
+                  "y": 1
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 6,
+                  "y": 12
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+              }
+            ],
+            "captives": [],
+            "garrisons": [],
+            "furniture": [
+              {
+                "at": {
+                  "x": 7,
+                  "y": 7
+                },
+                "kind": "fountain"
+              },
+              {
+                "at": {
+                  "x": 6,
+                  "y": 1
+                },
+                "kind": "rubble"
+              },
+              {
+                "at": {
+                  "x": 9,
+                  "y": 1
+                },
+                "kind": "altar"
+              },
+              {
+                "at": {
+                  "x": 2,
+                  "y": 12
+                },
+                "kind": "bones"
+              },
+              {
+                "at": {
+                  "x": 12,
+                  "y": 10
+                },
+                "kind": "rubble"
+              }
+            ]
+          },
+          {
+            "id": "hm-sewer-1",
+            "name": "The Upper Sewers",
+            "map": [
+              "+-+-+-+-+-+-+-+-+-+-+-+-+",
+              "| | | | | | | | | | | | |",
+              "+-+-+-+-+-+-+-+-+-+-+-+-+",
+              "| |<                  | |",
+              "+-+ +-+-+-+ +-+-+-+-+ +-+",
+              "| | d   | | | | | | | | |",
+              "+-+ + + +-+ +-+-+-+-+ +-+",
+              "| | |   | | | | | | |T| |",
+              "+-+ +-+-+-+ +-+-+-+-+ + +",
+              "| | | | |       | | | | |",
+              "+-+ +-+-+ + + + +-+-+ + +",
+              "| |     d       | | | s |",
+              "+-+ +-+-+ + + + +-+-+ + +",
+              "| | | | |       d     | |",
+              "+-+ +-+-+ + + + +-+-+ + +",
+              "| | | | |       | | | | |",
+              "+-+ +-+-+-+-+-+-+-+-+ + +",
+              "| | | | | | | | |   | | |",
+              "+-+ +-+-+-+-+-+-+ + + +-+",
+              "| | | | | | | | |   d | |",
+              "+-+ +-+-+-+-+-+-+-+-+ +-+",
+              "| |    T              | |",
+              "+-+-+-+-+-+-+d+-+-+-+-+-+",
+              "| | | | |        >| | | |",
+              "+-+-+-+-+-+-+-+-+-+-+-+-+"
+            ],
+            "links": [
+              {
+                "at": {
+                  "x": 1,
+                  "y": 1
+                },
+                "to": {
+                  "level": "hm-streets",
+                  "at": {
+                    "x": 13,
+                    "y": 11
+                  },
+                  "facing": "w"
+                }
+              },
+              {
+                "at": {
+                  "x": 8,
+                  "y": 11
+                },
+                "to": {
+                  "level": "hm-sewer-2",
+                  "at": {
+                    "x": 8,
+                    "y": 11
+                  },
+                  "facing": "w"
+                }
+              }
+            ],
+            "wander": {
+              "every": 3,
+              "table": "hm-sewers"
+            },
+            "safe": [
+              {
+                "x": 11,
+                "y": 4
+              },
+              {
+                "x": 11,
+                "y": 5
+              },
+              {
+                "x": 2,
+                "y": 2
+              },
+              {
+                "x": 3,
+                "y": 2
+              },
+              {
+                "x": 7,
+                "y": 4
+              },
+              {
+                "x": 7,
+                "y": 5
+              },
+              {
+                "x": 8,
+                "y": 8
+              },
+              {
+                "x": 9,
+                "y": 8
+              },
+              {
+                "x": 4,
+                "y": 11
+              },
+              {
+                "x": 5,
+                "y": 11
+              }
+            ],
+            "exposure": {
+              "disease": "swamp-fever",
+              "chance": 1
+            },
+            "secrets": [
+              {
+                "at": {
+                  "x": 10,
+                  "y": 5
+                },
+                "side": "e",
+                "difficulty": 10
+              }
+            ],
+            "traps": [
+              {
+                "at": {
+                  "x": 10,
+                  "y": 3
+                },
+                "name": "rotten grating",
+                "notice": 9,
+                "disarm": {
+                  "skill": "sneak",
+                  "attributes": ["dex"],
+                  "difficulty": 9
+                },
+                "save": "evasion",
+                "element": "water",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 2,
+                    "sides": 6,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 3,
+                  "y": 10
+                },
+                "name": "filth spray",
+                "notice": 9,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 9
+                },
+                "save": "physical",
+                "element": "water",
+                "effect": {
+                  "kind": "disease",
+                  "disease": "swamp-fever"
+                }
+              }
+            ],
+            "specials": [
+              {
+                "kind": "message",
+                "at": {
+                  "x": 1,
+                  "y": 2
+                },
+                "text": "The sewers of Harrowmere: brick tunnels a man can walk upright in, and black water to the ankle."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 5,
+                  "y": 3
+                },
+                "text": "A settling cistern ahead. The drowned dead stand in it up to their waists, waiting."
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 6,
+                  "y": 6
+                },
+                "loot": [
+                  {
+                    "count": 2,
+                    "sides": 8
+                  }
+                ],
+                "guards": [
+                  [
+                    "mire-drowned",
+                    "mire-drowned",
+                    "mire-drowned",
+                    "mire-drowned",
+                    "mire-drowned",
+                    "mire-drowned",
+                    "mire-drowned",
+                    "mire-drowned"
+                  ],
+                  ["ghoul", "ghoul", "ghoul", "ghoul"]
+                ]
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 6,
+                  "y": 11
+                },
+                "loot": [
+                  {
+                    "count": 2,
+                    "sides": 8
+                  }
+                ],
+                "guards": [
+                  [
+                    "giant-rattlesnake",
+                    "giant-rattlesnake",
+                    "giant-rattlesnake",
+                    "giant-rattlesnake",
+                    "giant-rattlesnake",
+                    "giant-black-widow",
+                    "giant-black-widow"
+                  ]
+                ]
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 11,
+                  "y": 7
+                },
+                "loot": [
+                  {
+                    "count": 1,
+                    "sides": 10
+                  },
+                  {
+                    "count": 1,
+                    "sides": 8
+                  }
+                ]
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 2,
+                  "y": 2
+                },
+                "text": "A quiet nook, easy to watch. A safe place to rest."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 7,
+                  "y": 4
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 8,
+                  "y": 8
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 11
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+              }
+            ],
+            "captives": [],
+            "garrisons": [],
+            "furniture": [
+              {
+                "at": {
+                  "x": 4,
+                  "y": 4
+                },
+                "kind": "bones"
+              },
+              {
+                "at": {
+                  "x": 11,
+                  "y": 3
+                },
+                "kind": "rubble"
+              }
+            ]
+          },
+          {
+            "id": "hm-sewer-2",
+            "name": "The Outfall Tunnels",
+            "map": [
+              "+-+-+-+-+-+-+-+-+-+-+-+-+",
+              "|          >| | | | | | |",
+              "+ +-+-+-+-+-+-+-+-+-+-+-+",
+              "| | | | |   | | | | | | |",
+              "+ +-+-+-+d+-+-+-+-+-+-+-+",
+              "|      T                |",
+              "+-+-+-+-+-+-+-+d+-+-+-+ +",
+              "| | | | | | |     | | | |",
+              "+-+-+-+-+-+-+ + + +-+-+ +",
+              "| | | | | | |     | | | |",
+              "+-+-+-+-+-+-+-+s+-+-+-+ +",
+              "|            T          |",
+              "+ +-+-+-+-+-+-+-+-+d+-+-+",
+              "| d   | | | | | | |   | |",
+              "+ + + +-+-+-+-+-+-+ + +-+",
+              "| |   | | | | | | |   | |",
+              "+ +-+-+-+-+-+-+-+-+-+-+-+",
+              "|                  T    |",
+              "+-+-+-+-+d+-+-+-+-+-+d+ +",
+              "| | | |     | | | | | | |",
+              "+-+-+-+ + + +-+-+-+-+ + +",
+              "| | | |     | | | | | | |",
+              "+-+-+-+-+d+-+-+-+-+-+-+ +",
+              "|                <      |",
+              "+-+-+-+-+-+-+-+-+-+-+-+-+"
+            ],
+            "links": [
+              {
+                "at": {
+                  "x": 8,
+                  "y": 11
+                },
+                "to": {
+                  "level": "hm-sewer-1",
+                  "at": {
+                    "x": 8,
+                    "y": 11
+                  },
+                  "facing": "w"
+                }
+              },
+              {
+                "at": {
+                  "x": 5,
+                  "y": 0
+                },
+                "to": {
+                  "level": "hm-sewer-3",
+                  "at": {
+                    "x": 5,
+                    "y": 0
+                  },
+                  "facing": "s"
+                }
+              }
+            ],
+            "wander": {
+              "every": 2,
+              "table": "hm-sewers"
+            },
+            "safe": [
+              {
+                "x": 3,
+                "y": 9
+              },
+              {
+                "x": 5,
+                "y": 10
+              },
+              {
+                "x": 6,
+                "y": 3
+              },
+              {
+                "x": 6,
+                "y": 4
+              },
+              {
+                "x": 9,
+                "y": 6
+              },
+              {
+                "x": 10,
+                "y": 6
+              },
+              {
+                "x": 4,
+                "y": 1
+              },
+              {
+                "x": 5,
+                "y": 1
+              },
+              {
+                "x": 10,
+                "y": 9
+              },
+              {
+                "x": 10,
+                "y": 10
+              },
+              {
+                "x": 1,
+                "y": 6
+              },
+              {
+                "x": 1,
+                "y": 7
+              },
+              {
+                "x": 4,
+                "y": 0
+              },
+              {
+                "x": 3,
+                "y": 0
+              }
+            ],
+            "exposure": {
+              "disease": "swamp-fever",
+              "chance": 2
+            },
+            "secrets": [
+              {
+                "at": {
+                  "x": 7,
+                  "y": 4
+                },
+                "side": "s",
+                "difficulty": 11
+              }
+            ],
+            "traps": [
+              {
+                "at": {
+                  "x": 9,
+                  "y": 8
+                },
+                "name": "sluice gate",
+                "notice": 10,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 10
+                },
+                "save": "evasion",
+                "element": "water",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 3,
+                    "sides": 6,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 6,
+                  "y": 5
+                },
+                "name": "rat bells",
+                "notice": 9,
+                "disarm": {
+                  "skill": "sneak",
+                  "attributes": ["dex"],
+                  "difficulty": 9
+                },
+                "save": null,
+                "effect": {
+                  "kind": "alarm"
+                }
+              },
+              {
+                "at": {
+                  "x": 3,
+                  "y": 2
+                },
+                "name": "needle-thorn grate",
+                "notice": 10,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 10
+                },
+                "save": "physical",
+                "effect": {
+                  "kind": "poison"
+                }
+              }
+            ],
+            "specials": [
+              {
+                "kind": "message",
+                "at": {
+                  "x": 7,
+                  "y": 11
+                },
+                "text": "The tunnels double back on themselves here, falling a few feet at each turn toward the old outfalls."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 9
+                },
+                "text": "A pump room, its great wheel seized with rust. It is dry, and the door bars from inside."
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 7,
+                  "y": 3
+                },
+                "loot": [
+                  {
+                    "count": 2,
+                    "sides": 10
+                  }
+                ],
+                "guards": [
+                  [
+                    "vat-spawn",
+                    "vat-spawn",
+                    "vat-spawn",
+                    "beastman-trooper",
+                    "beastman-trooper",
+                    "beastman-trooper"
+                  ],
+                  ["flesh-crafter", "flesh-crafter"]
+                ]
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 2,
+                  "y": 0
+                },
+                "loot": [
+                  {
+                    "count": 2,
+                    "sides": 10
+                  }
+                ],
+                "guards": [
+                  [
+                    "ghoul",
+                    "ghoul",
+                    "ghoul",
+                    "ghoul",
+                    "gnawing-dead",
+                    "gnawing-dead",
+                    "gnawing-dead"
+                  ],
+                  ["barrow-midges"]
+                ]
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 8,
+                  "y": 4
+                },
+                "loot": [
+                  {
+                    "count": 1,
+                    "sides": 10
+                  },
+                  {
+                    "count": 1,
+                    "sides": 10
+                  }
+                ],
+                "component": "ooze-essence"
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 6,
+                  "y": 3
+                },
+                "text": "A quiet nook, easy to watch. A safe place to rest."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 9,
+                  "y": 6
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 1
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 10,
+                  "y": 9
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 1,
+                  "y": 6
+                },
+                "text": "A quiet nook, easy to watch. A safe place to rest."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 0
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+              }
+            ],
+            "captives": [],
+            "garrisons": [],
+            "furniture": [
+              {
+                "at": {
+                  "x": 10,
+                  "y": 11
+                },
+                "kind": "bones"
+              },
+              {
+                "at": {
+                  "x": 0,
+                  "y": 8
+                },
+                "kind": "rubble"
+              }
+            ]
+          },
+          {
+            "id": "hm-sewer-3",
+            "name": "The Warden's Cistern",
+            "map": [
+              "+-+-+-+-+-+-+-+-+-+-+-+-+",
+              "| | | | | |<| | |     | |",
+              "+-+-+-+-+-+ +-+-+ + + +-+",
+              "| | | | | |     d     | |",
+              "+-+-+-+-+-+ +-+-+-+-+-+-+",
+              "| | | | | | | | | | | | |",
+              "+-+-+-+-+-+ +-+-+-+-+-+-+",
+              "| | |               | | |",
+              "+-+-+ + + + + + + + +-+-+",
+              "| | |               | | |",
+              "+-+-+ + + + + + + + +-+-+",
+              "| | |               d   |",
+              "+-+-+ + + + + + + + +-+ +",
+              "|   d      T        | | |",
+              "+ +-+ + + + + + + + +-+ +",
+              "| | |               | d |",
+              "+ +-+ + + + + + + + + + +",
+              "| | |               | |T|",
+              "+ +-+-+-+-+-+-+-+-+-+-+ +",
+              "|T| | | | | | | | | | | |",
+              "+ +-+-+-+-+-+-+-+-+-+-+ +",
+              "| | |   | | |     d     |",
+              "+ +-+ + +-+-+ + + +-+-+-+",
+              "|       | | |  <  | | | |",
+              "+-+-+-+-+-+-+-+-+-+-+-+-+"
+            ],
+            "links": [
+              {
+                "at": {
+                  "x": 5,
+                  "y": 0
+                },
+                "to": {
+                  "level": "hm-sewer-2",
+                  "at": {
+                    "x": 5,
+                    "y": 0
+                  },
+                  "facing": "w"
+                }
+              },
+              {
+                "at": {
+                  "x": 7,
+                  "y": 11
+                },
+                "to": {
+                  "level": "hm-tower-1",
+                  "at": {
+                    "x": 0,
+                    "y": 7
+                  },
+                  "facing": "e"
+                }
+              }
+            ],
+            "wander": {
+              "every": 2,
+              "table": "hm-cistern"
+            },
+            "safe": [
+              {
+                "x": 9,
+                "y": 0
+              },
+              {
+                "x": 10,
+                "y": 0
+              },
+              {
+                "x": 6,
+                "y": 10
+              },
+              {
+                "x": 6,
+                "y": 11
+              },
+              {
+                "x": 2,
+                "y": 10
+              },
+              {
+                "x": 2,
+                "y": 11
+              },
+              {
+                "x": 10,
+                "y": 7
+              },
+              {
+                "x": 10,
+                "y": 8
+              },
+              {
+                "x": 2,
+                "y": 8
+              },
+              {
+                "x": 3,
+                "y": 8
+              },
+              {
+                "x": 8,
+                "y": 3
+              }
+            ],
+            "exposure": {
+              "disease": "swamp-fever",
+              "chance": 2
+            },
+            "secrets": [],
+            "traps": [
+              {
+                "at": {
+                  "x": 5,
+                  "y": 6
+                },
+                "name": "drowning sluice",
+                "notice": 11,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 11
+                },
+                "save": "evasion",
+                "element": "water",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 3,
+                    "sides": 6,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 0,
+                  "y": 9
+                },
+                "name": "needle sump",
+                "notice": 11,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 11
+                },
+                "save": "physical",
+                "effect": {
+                  "kind": "poison"
+                }
+              },
+              {
+                "at": {
+                  "x": 11,
+                  "y": 8
+                },
+                "name": "brick fall",
+                "notice": 11,
+                "disarm": {
+                  "skill": "sneak",
+                  "attributes": ["dex"],
+                  "difficulty": 11
+                },
+                "save": "evasion",
+                "element": "earth",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 3,
+                    "sides": 6,
+                    "modifier": 0
+                  }
+                }
+              }
+            ],
+            "specials": [
+              {
+                "kind": "message",
+                "at": {
+                  "x": 5,
+                  "y": 2
+                },
+                "text": "The Warden's Cistern: a vaulted hall of black water under the tower. Things larger than men move in it."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 9,
+                  "y": 0
+                },
+                "text": "A dry brick loft above the water line. Someone has slept here, and lately."
+              },
+              {
+                "kind": "darkness",
+                "at": {
+                  "x": 7,
+                  "y": 4
+                }
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 5,
+                  "y": 5
+                },
+                "loot": [
+                  {
+                    "count": 3,
+                    "sides": 8
+                  }
+                ],
+                "guards": [["swamp-thing", "swamp-thing", "swamp-thing", "vat-spawn", "vat-spawn"]]
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 8,
+                  "y": 10
+                },
+                "loot": [
+                  {
+                    "count": 3,
+                    "sides": 8
+                  }
+                ],
+                "guards": [
+                  ["gallows-hulk", "gallows-hulk", "gallows-hulk", "gallows-hulk", "gallows-hulk"],
+                  ["cull-horror", "cull-horror", "cull-horror"]
+                ]
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 7,
+                  "y": 10
+                },
+                "text": "A shaft climbs from here into the Warden's Tower: the only way in."
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 3,
+                  "y": 10
+                },
+                "loot": [
+                  {
+                    "count": 2,
+                    "sides": 10
+                  },
+                  {
+                    "count": 1,
+                    "sides": 12
+                  }
+                ],
+                "component": "grave-garnet"
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 6,
+                  "y": 10
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 2,
+                  "y": 10
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 10,
+                  "y": 7
+                },
+                "text": "A quiet nook, easy to watch. A safe place to rest."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 2,
+                  "y": 8
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 8,
+                  "y": 3
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+              }
+            ],
+            "captives": [],
+            "garrisons": [],
+            "furniture": [
+              {
+                "at": {
+                  "x": 3,
+                  "y": 3
+                },
+                "kind": "bones"
+              },
+              {
+                "at": {
+                  "x": 10,
+                  "y": 5
+                },
+                "kind": "rubble"
+              }
+            ]
+          },
+          {
+            "id": "hm-tower-1",
+            "name": "The Tower: Guardroom Floor",
+            "map": [
+              "+-+-+-+-+-+-+-+-+",
+              "|               |",
+              "+ +-+d+-+-+-+-+ +",
+              "| |     |<    | |",
+              "+ + + + + + + + +",
+              "| d  T  |     d |",
+              "+ + + + + + + + +",
+              "|T|     |     | |",
+              "+ +-+d+-+-+-+-+ +",
+              "| |     |     |T|",
+              "+ + + + + + + + +",
+              "| d     |     d |",
+              "+ + + + + + + + +",
+              "| |     |     | |",
+              "+ +-+-+-+-+d+-+ +",
+              "|>     T        |",
+              "+-+-+-+-+-+-+-+-+"
+            ],
+            "links": [
+              {
+                "at": {
+                  "x": 0,
+                  "y": 7
+                },
+                "to": {
+                  "level": "hm-sewer-3",
+                  "at": {
+                    "x": 7,
+                    "y": 11
+                  },
+                  "facing": "n"
+                }
+              },
+              {
+                "at": {
+                  "x": 4,
+                  "y": 1
+                },
+                "to": {
+                  "level": "hm-tower-2",
+                  "at": {
+                    "x": 4,
+                    "y": 1
+                  },
+                  "facing": "s"
+                }
+              }
+            ],
+            "wander": {
+              "every": 3,
+              "table": "hm-tower-low"
+            },
+            "safe": [
+              {
+                "x": 1,
+                "y": 1
+              },
+              {
+                "x": 2,
+                "y": 1
+              },
+              {
+                "x": 5,
+                "y": 1
+              },
+              {
+                "x": 5,
+                "y": 3
+              },
+              {
+                "x": 4,
+                "y": 6
+              },
+              {
+                "x": 6,
+                "y": 6
+              },
+              {
+                "x": 1,
+                "y": 6
+              },
+              {
+                "x": 3,
+                "y": 6
+              }
+            ],
+            "secrets": [],
+            "traps": [
+              {
+                "at": {
+                  "x": 3,
+                  "y": 7
+                },
+                "name": "scything blade",
+                "notice": 11,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 11
+                },
+                "save": "evasion",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 3,
+                    "sides": 6,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 7,
+                  "y": 4
+                },
+                "name": "murder hole",
+                "notice": 11,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 11
+                },
+                "save": "evasion",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 3,
+                    "sides": 6,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 0,
+                  "y": 3
+                },
+                "name": "gong wire",
+                "notice": 10,
+                "disarm": {
+                  "skill": "sneak",
+                  "attributes": ["dex"],
+                  "difficulty": 10
+                },
+                "save": null,
+                "effect": {
+                  "kind": "alarm"
+                }
+              },
+              {
+                "at": {
+                  "x": 2,
+                  "y": 2
+                },
+                "name": "needle latch",
+                "notice": 11,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 11
+                },
+                "save": "physical",
+                "effect": {
+                  "kind": "poison"
+                }
+              }
+            ],
+            "specials": [
+              {
+                "kind": "message",
+                "at": {
+                  "x": 1,
+                  "y": 7
+                },
+                "text": "The tower's cellar shaft opens on a guardroom floor. Arrow slits look in on every passage, and the bound still man them."
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 2,
+                  "y": 5
+                },
+                "loot": [
+                  {
+                    "count": 3,
+                    "sides": 8
+                  }
+                ],
+                "guards": [
+                  [
+                    "clockwork-soldier",
+                    "clockwork-soldier",
+                    "clockwork-soldier",
+                    "clockwork-soldier",
+                    "clockwork-soldier",
+                    "clockwork-soldier",
+                    "clockwork-soldier"
+                  ],
+                  ["clockwork-servitor", "clockwork-servitor"]
+                ]
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 5,
+                  "y": 5
+                },
+                "loot": [
+                  {
+                    "count": 3,
+                    "sides": 8
+                  }
+                ],
+                "guards": [
+                  ["hell-hound", "hell-hound", "hell-hound", "hell-hound", "hell-hound"],
+                  ["gargoyle", "gargoyle", "gargoyle"]
+                ]
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 5,
+                  "y": 1
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 6
+                },
+                "text": "A quiet nook, easy to watch. A safe place to rest."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 1,
+                  "y": 6
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+              }
+            ],
+            "captives": [],
+            "garrisons": [
+              {
+                "at": {
+                  "x": 6,
+                  "y": 2
+                },
+                "order": "spire-watch",
+                "enemies": [
+                  [
+                    "bound-orc-captain",
+                    "bound-orc-captain",
+                    "bound-orc-captain",
+                    "bound-orc-captain",
+                    "bound-orc-captain",
+                    "bound-orc-captain",
+                    "bound-lieutenant",
+                    "bound-lieutenant"
+                  ],
+                  ["beastman-hexer", "beastman-hexer", "beastman-hexer"]
+                ],
+                "text": "Orc veterans in the Warden's grey hold the stair up. \"Watchword,\" says the nearest, and lowers her blade."
+              }
+            ],
+            "furniture": [
+              {
+                "at": {
+                  "x": 5,
+                  "y": 4
+                },
+                "kind": "brazier"
+              },
+              {
+                "at": {
+                  "x": 1,
+                  "y": 4
+                },
+                "kind": "rubble"
+              }
+            ]
+          },
+          {
+            "id": "hm-tower-2",
+            "name": "The Tower: Barracks Floor",
+            "map": [
+              "+-+-+-+-+-+-+-+-+",
+              "|               |",
+              "+ +-+d+-+-+d+-+ +",
+              "| |     |>    |T|",
+              "+ + + + + + + + +",
+              "| |     d     d |",
+              "+ + + + + + + + +",
+              "| |     |     | |",
+              "+ +-+-+-+-+d+-+ +",
+              "|T|     |     | |",
+              "+ + + + + + + + +",
+              "| |     |     d |",
+              "+ + + + + + + + +",
+              "| |<    |     |T|",
+              "+ +-+d+-+-+-+-+ +",
+              "|        T      |",
+              "+-+-+-+-+-+-+-+-+"
+            ],
+            "links": [
+              {
+                "at": {
+                  "x": 4,
+                  "y": 1
+                },
+                "to": {
+                  "level": "hm-tower-1",
+                  "at": {
+                    "x": 4,
+                    "y": 1
+                  },
+                  "facing": "e"
+                }
+              },
+              {
+                "at": {
+                  "x": 1,
+                  "y": 6
+                },
+                "to": {
+                  "level": "hm-tower-3",
+                  "at": {
+                    "x": 1,
+                    "y": 6
+                  },
+                  "facing": "e"
+                }
+              }
+            ],
+            "wander": {
+              "every": 3,
+              "table": "hm-tower-low"
+            },
+            "safe": [
+              {
+                "x": 4,
+                "y": 2
+              },
+              {
+                "x": 5,
+                "y": 2
+              },
+              {
+                "x": 1,
+                "y": 4
+              },
+              {
+                "x": 1,
+                "y": 5
+              },
+              {
+                "x": 1,
+                "y": 3
+              },
+              {
+                "x": 1,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 6
+              },
+              {
+                "x": 4,
+                "y": 4
+              }
+            ],
+            "secrets": [],
+            "traps": [
+              {
+                "at": {
+                  "x": 7,
+                  "y": 1
+                },
+                "name": "pit to the floor below",
+                "notice": 12,
+                "disarm": {
+                  "skill": "sneak",
+                  "attributes": ["dex"],
+                  "difficulty": 12
+                },
+                "save": "evasion",
+                "element": "earth",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 4,
+                    "sides": 6,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 4,
+                  "y": 7
+                },
+                "name": "scything blade",
+                "notice": 12,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 12
+                },
+                "save": "evasion",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 3,
+                    "sides": 8,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 0,
+                  "y": 4
+                },
+                "name": "needle on the rail",
+                "notice": 12,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 12
+                },
+                "save": "physical",
+                "effect": {
+                  "kind": "poison"
+                }
+              },
+              {
+                "at": {
+                  "x": 7,
+                  "y": 6
+                },
+                "name": "gong wire",
+                "notice": 11,
+                "disarm": {
+                  "skill": "sneak",
+                  "attributes": ["dex"],
+                  "difficulty": 11
+                },
+                "save": null,
+                "effect": {
+                  "kind": "alarm"
+                }
+              }
+            ],
+            "specials": [
+              {
+                "kind": "message",
+                "at": {
+                  "x": 6,
+                  "y": 1
+                },
+                "text": "Bunks for a hundred, made tight. The bound sleep in shifts, as ordered."
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 2,
+                  "y": 2
+                },
+                "loot": [
+                  {
+                    "count": 3,
+                    "sides": 10
+                  }
+                ],
+                "guards": [
+                  [
+                    "grave-knight",
+                    "grave-knight",
+                    "grave-knight",
+                    "grave-knight",
+                    "grave-knight",
+                    "grave-knight",
+                    "grave-knight",
+                    "grave-knight"
+                  ],
+                  ["ash-walker", "ash-walker"]
+                ]
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 5,
+                  "y": 5
+                },
+                "loot": [
+                  {
+                    "count": 3,
+                    "sides": 10
+                  }
+                ],
+                "guards": [
+                  [
+                    "war-engine",
+                    "war-engine",
+                    "war-engine",
+                    "war-engine",
+                    "war-engine",
+                    "war-engine",
+                    "clockwork-soldier",
+                    "clockwork-soldier"
+                  ]
+                ]
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 1,
+                  "y": 4
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 1,
+                  "y": 3
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 6
+                },
+                "text": "A quiet nook, easy to watch. A safe place to rest."
+              }
+            ],
+            "captives": [],
+            "garrisons": [
+              {
+                "at": {
+                  "x": 2,
+                  "y": 6
+                },
+                "order": "spire-watch",
+                "enemies": [
+                  [
+                    "bound-lieutenant",
+                    "bound-lieutenant",
+                    "bound-lieutenant",
+                    "bound-lieutenant",
+                    "bound-lieutenant",
+                    "bound-lieutenant",
+                    "warlord"
+                  ],
+                  ["beastman-hexer", "beastman-hexer", "beastman-hexer"]
+                ],
+                "text": "Two bound lieutenants and their sergeants bar the stair. They have drilled for this every day for twenty years."
+              }
+            ],
+            "furniture": [
+              {
+                "at": {
+                  "x": 1,
+                  "y": 1
+                },
+                "kind": "bones"
+              },
+              {
+                "at": {
+                  "x": 6,
+                  "y": 4
+                },
+                "kind": "brazier"
+              }
+            ]
+          },
+          {
+            "id": "hm-tower-3",
+            "name": "The Tower: Hall of Audience",
+            "map": [
+              "+-+-+-+-+-+-+-+-+",
+              "|      T       T|",
+              "+ +-+-+d+-+-+-+ +",
+              "| |           | |",
+              "+ + + + + + + + +",
+              "| |        T  | |",
+              "+ + + + + + + + +",
+              "| |    T      dT|",
+              "+ + + + + + + + +",
+              "| |           | |",
+              "+ + + + + + + + +",
+              "| |           | |",
+              "+ +-+d+-+-+d+-+ +",
+              "| d>    |    <| |",
+              "+ +-+-+-+-+-+-+ +",
+              "|               |",
+              "+-+-+-+-+-+-+-+-+"
+            ],
+            "links": [
+              {
+                "at": {
+                  "x": 1,
+                  "y": 6
+                },
+                "to": {
+                  "level": "hm-tower-2",
+                  "at": {
+                    "x": 1,
+                    "y": 6
+                  },
+                  "facing": "e"
+                }
+              },
+              {
+                "at": {
+                  "x": 6,
+                  "y": 6
+                },
+                "to": {
+                  "level": "hm-tower-4",
+                  "at": {
+                    "x": 6,
+                    "y": 6
+                  },
+                  "facing": "w"
+                }
+              }
+            ],
+            "wander": {
+              "every": 2,
+              "table": "hm-tower-low"
+            },
+            "safe": [
+              {
+                "x": 1,
+                "y": 7
+              },
+              {
+                "x": 0,
+                "y": 6
+              },
+              {
+                "x": 4,
+                "y": 6
+              },
+              {
+                "x": 1,
+                "y": 5
+              },
+              {
+                "x": 6,
+                "y": 5
+              }
+            ],
+            "secrets": [],
+            "traps": [
+              {
+                "at": {
+                  "x": 7,
+                  "y": 0
+                },
+                "name": "pit to the floor below",
+                "notice": 13,
+                "disarm": {
+                  "skill": "sneak",
+                  "attributes": ["dex"],
+                  "difficulty": 13
+                },
+                "save": "evasion",
+                "element": "earth",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 5,
+                    "sides": 6,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 3,
+                  "y": 0
+                },
+                "name": "scything blade",
+                "notice": 13,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 13
+                },
+                "save": "evasion",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 3,
+                    "sides": 8,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 7,
+                  "y": 3
+                },
+                "name": "poisoned door pull",
+                "notice": 12,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 12
+                },
+                "save": "physical",
+                "effect": {
+                  "kind": "poison"
+                }
+              },
+              {
+                "at": {
+                  "x": 3,
+                  "y": 3
+                },
+                "name": "flame jet",
+                "notice": 13,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 13
+                },
+                "save": "evasion",
+                "element": "fire",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 4,
+                    "sides": 6,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 5,
+                  "y": 2
+                },
+                "name": "audience bell",
+                "notice": 12,
+                "disarm": {
+                  "skill": "sneak",
+                  "attributes": ["dex"],
+                  "difficulty": 12
+                },
+                "save": null,
+                "effect": {
+                  "kind": "alarm"
+                }
+              }
+            ],
+            "specials": [
+              {
+                "kind": "message",
+                "at": {
+                  "x": 2,
+                  "y": 4
+                },
+                "text": "The Warden held court here. Petitions are nailed to the pillars, the newest twenty years old."
+              },
+              {
+                "kind": "anti-magic",
+                "at": {
+                  "x": 3,
+                  "y": 2
+                }
+              },
+              {
+                "kind": "anti-magic",
+                "at": {
+                  "x": 4,
+                  "y": 2
+                }
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 1,
+                  "y": 1
+                },
+                "loot": [
+                  {
+                    "count": 4,
+                    "sides": 8
+                  }
+                ],
+                "guards": [
+                  [
+                    "manticore",
+                    "manticore",
+                    "manticore",
+                    "manticore",
+                    "manticore",
+                    "manticore",
+                    "manticore"
+                  ]
+                ]
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 6,
+                  "y": 1
+                },
+                "loot": [
+                  {
+                    "count": 4,
+                    "sides": 8
+                  }
+                ],
+                "guards": [
+                  ["mummy", "mummy", "mummy"],
+                  ["ruinfield-sorcerer", "ruinfield-sorcerer", "ruinfield-sorcerer"]
+                ]
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 6
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 1,
+                  "y": 5
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+              }
+            ],
+            "captives": [],
+            "garrisons": [
+              {
+                "at": {
+                  "x": 5,
+                  "y": 6
+                },
+                "order": "spire-watch",
+                "enemies": [
+                  [
+                    "warlord",
+                    "warlord",
+                    "bound-orc-captain",
+                    "bound-orc-captain",
+                    "bound-orc-captain"
+                  ],
+                  ["ruinfield-sorcerer", "ruinfield-sorcerer"]
+                ],
+                "text": "The Warden's marshal waits at the foot of the stair with his guard."
+              }
+            ],
+            "furniture": [
+              {
+                "at": {
+                  "x": 2,
+                  "y": 2
+                },
+                "kind": "brazier"
+              },
+              {
+                "at": {
+                  "x": 5,
+                  "y": 4
+                },
+                "kind": "brazier"
+              }
+            ]
+          },
+          {
+            "id": "hm-tower-4",
+            "name": "The Tower: The Turning Floor",
+            "map": [
+              "+-+-+-+-+-+-+-+-+",
+              "|        T      |",
+              "+ +-+d+-+-+-+-+ +",
+              "| |<    |     | |",
+              "+ + + + + + + + +",
+              "|T|     |     dT|",
+              "+ + + + + + + + +",
+              "| |     |     | |",
+              "+ +-+-+-+-+d+-+ +",
+              "| |     |     | |",
+              "+ + + + + + + + +",
+              "| d     |     d |",
+              "+ + + + + + + + +",
+              "| |     |    >| |",
+              "+ +-+-+-+-+d+-+ +",
+              "|  T       T    |",
+              "+-+-+-+-+-+-+-+-+"
+            ],
+            "links": [
+              {
+                "at": {
+                  "x": 6,
+                  "y": 6
+                },
+                "to": {
+                  "level": "hm-tower-3",
+                  "at": {
+                    "x": 6,
+                    "y": 6
+                  },
+                  "facing": "w"
+                }
+              },
+              {
+                "at": {
+                  "x": 1,
+                  "y": 1
+                },
+                "to": {
+                  "level": "hm-tower-5",
+                  "at": {
+                    "x": 1,
+                    "y": 1
+                  },
+                  "facing": "s"
+                }
+              }
+            ],
+            "wander": {
+              "every": 2,
+              "table": "hm-tower-high"
+            },
+            "safe": [
+              {
+                "x": 1,
+                "y": 5
+              },
+              {
+                "x": 2,
+                "y": 5
+              },
+              {
+                "x": 1,
+                "y": 3
+              },
+              {
+                "x": 3,
+                "y": 3
+              },
+              {
+                "x": 6,
+                "y": 1
+              },
+              {
+                "x": 4,
+                "y": 3
+              },
+              {
+                "x": 4,
+                "y": 6
+              },
+              {
+                "x": 6,
+                "y": 4
+              }
+            ],
+            "secrets": [],
+            "traps": [
+              {
+                "at": {
+                  "x": 0,
+                  "y": 2
+                },
+                "name": "pit to the floor below",
+                "notice": 14,
+                "disarm": {
+                  "skill": "sneak",
+                  "attributes": ["dex"],
+                  "difficulty": 13
+                },
+                "save": "evasion",
+                "element": "earth",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 5,
+                    "sides": 6,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 4,
+                  "y": 0
+                },
+                "name": "scything blade",
+                "notice": 14,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 13
+                },
+                "save": "evasion",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 4,
+                    "sides": 8,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 7,
+                  "y": 2
+                },
+                "name": "needle in the lock",
+                "notice": 13,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 13
+                },
+                "save": "physical",
+                "effect": {
+                  "kind": "poison"
+                }
+              },
+              {
+                "at": {
+                  "x": 5,
+                  "y": 7
+                },
+                "name": "flame jet",
+                "notice": 13,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 13
+                },
+                "save": "evasion",
+                "element": "fire",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 5,
+                    "sides": 6,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 1,
+                  "y": 7
+                },
+                "name": "tolling wire",
+                "notice": 13,
+                "disarm": {
+                  "skill": "sneak",
+                  "attributes": ["dex"],
+                  "difficulty": 13
+                },
+                "save": null,
+                "effect": {
+                  "kind": "alarm"
+                }
+              }
+            ],
+            "specials": [
+              {
+                "kind": "message",
+                "at": {
+                  "x": 7,
+                  "y": 7
+                },
+                "text": "The floor here is laid in slow-turning rings. Walk carefully."
+              },
+              {
+                "kind": "spinner",
+                "at": {
+                  "x": 3,
+                  "y": 0
+                }
+              },
+              {
+                "kind": "spinner",
+                "at": {
+                  "x": 7,
+                  "y": 5
+                }
+              },
+              {
+                "kind": "spinner",
+                "at": {
+                  "x": 0,
+                  "y": 5
+                }
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 5,
+                  "y": 2
+                },
+                "loot": [
+                  {
+                    "count": 4,
+                    "sides": 10
+                  }
+                ],
+                "guards": [
+                  [
+                    "bone-golem",
+                    "bone-golem",
+                    "bone-golem",
+                    "bone-golem",
+                    "bone-golem",
+                    "bone-golem"
+                  ]
+                ]
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 5,
+                  "y": 5
+                },
+                "loot": [
+                  {
+                    "count": 4,
+                    "sides": 10
+                  }
+                ],
+                "guards": [["chimera", "chimera", "chimera", "chimera", "chimera"]]
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 1,
+                  "y": 3
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 6,
+                  "y": 1
+                },
+                "text": "A quiet nook, easy to watch. A safe place to rest."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 6
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+              }
+            ],
+            "captives": [],
+            "garrisons": [
+              {
+                "at": {
+                  "x": 2,
+                  "y": 1
+                },
+                "order": "spire-watch",
+                "enemies": [
+                  [
+                    "hierophant",
+                    "hierophant",
+                    "bound-lieutenant",
+                    "bound-lieutenant",
+                    "bound-lieutenant",
+                    "bound-lieutenant",
+                    "bound-lieutenant"
+                  ],
+                  ["ash-mountain-wizard", "ash-mountain-wizard"]
+                ],
+                "text": "The Warden's chaplain and three lieutenants kneel at the stair. They rise as one."
+              }
+            ],
+            "furniture": [
+              {
+                "at": {
+                  "x": 4,
+                  "y": 4
+                },
+                "kind": "altar"
+              },
+              {
+                "at": {
+                  "x": 2,
+                  "y": 5
+                },
+                "kind": "bones"
+              }
+            ]
+          },
+          {
+            "id": "hm-tower-5",
+            "name": "The Tower: The Dark Floor",
+            "map": [
+              "+-+-+-+-+-+-+-+-+",
+              "|        T      |",
+              "+ +-+d+-+-+d+-+ +",
+              "| |>    |     |T|",
+              "+ + + + + + + + +",
+              "| |     d     d |",
+              "+ + + + + + + + +",
+              "| |     |     |T|",
+              "+ +-+d+-+-+-+-+ +",
+              "| |     |     | |",
+              "+ + + + + + + + +",
+              "| d     |  <  d |",
+              "+ + + + + + + + +",
+              "|T|     |     | |",
+              "+ +-+-+-+-+-+-+ +",
+              "|      T        |",
+              "+-+-+-+-+-+-+-+-+"
+            ],
+            "links": [
+              {
+                "at": {
+                  "x": 1,
+                  "y": 1
+                },
+                "to": {
+                  "level": "hm-tower-4",
+                  "at": {
+                    "x": 1,
+                    "y": 1
+                  },
+                  "facing": "s"
+                }
+              },
+              {
+                "at": {
+                  "x": 5,
+                  "y": 5
+                },
+                "to": {
+                  "level": "hm-tower-6",
+                  "at": {
+                    "x": 5,
+                    "y": 6
+                  },
+                  "facing": "w"
+                }
+              }
+            ],
+            "wander": {
+              "every": 2,
+              "table": "hm-tower-high"
+            },
+            "safe": [
+              {
+                "x": 2,
+                "y": 2
+              },
+              {
+                "x": 3,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 4
+              },
+              {
+                "x": 4,
+                "y": 6
+              },
+              {
+                "x": 4,
+                "y": 3
+              },
+              {
+                "x": 6,
+                "y": 1
+              },
+              {
+                "x": 3,
+                "y": 6
+              },
+              {
+                "x": 1,
+                "y": 6
+              }
+            ],
+            "secrets": [],
+            "traps": [
+              {
+                "at": {
+                  "x": 7,
+                  "y": 1
+                },
+                "name": "pit to the floor below",
+                "notice": 15,
+                "disarm": {
+                  "skill": "sneak",
+                  "attributes": ["dex"],
+                  "difficulty": 14
+                },
+                "save": "evasion",
+                "element": "earth",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 6,
+                    "sides": 6,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 0,
+                  "y": 6
+                },
+                "name": "scything blade",
+                "notice": 14,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 14
+                },
+                "save": "evasion",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 4,
+                    "sides": 8,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 3,
+                  "y": 7
+                },
+                "name": "needle plate",
+                "notice": 14,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 14
+                },
+                "save": "physical",
+                "effect": {
+                  "kind": "poison"
+                }
+              },
+              {
+                "at": {
+                  "x": 7,
+                  "y": 3
+                },
+                "name": "flame jet",
+                "notice": 14,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 14
+                },
+                "save": "evasion",
+                "element": "fire",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 6,
+                    "sides": 6,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 4,
+                  "y": 0
+                },
+                "name": "tolling wire",
+                "notice": 14,
+                "disarm": {
+                  "skill": "sneak",
+                  "attributes": ["dex"],
+                  "difficulty": 14
+                },
+                "save": null,
+                "effect": {
+                  "kind": "alarm"
+                }
+              }
+            ],
+            "specials": [
+              {
+                "kind": "message",
+                "at": {
+                  "x": 1,
+                  "y": 2
+                },
+                "text": "The lamps on this floor were put out on purpose, and the dark has thickened with the years."
+              },
+              {
+                "kind": "darkness",
+                "at": {
+                  "x": 0,
+                  "y": 3
+                }
+              },
+              {
+                "kind": "darkness",
+                "at": {
+                  "x": 0,
+                  "y": 4
+                }
+              },
+              {
+                "kind": "darkness",
+                "at": {
+                  "x": 7,
+                  "y": 5
+                }
+              },
+              {
+                "kind": "darkness",
+                "at": {
+                  "x": 6,
+                  "y": 7
+                }
+              },
+              {
+                "kind": "anti-map",
+                "at": {
+                  "x": 5,
+                  "y": 7
+                }
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 5,
+                  "y": 2
+                },
+                "loot": [
+                  {
+                    "count": 5,
+                    "sides": 10
+                  }
+                ],
+                "guards": [["iron-golem", "iron-golem", "war-engine", "war-engine"]]
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 2,
+                  "y": 5
+                },
+                "loot": [
+                  {
+                    "count": 5,
+                    "sides": 10
+                  }
+                ],
+                "component": "grave-garnet",
+                "guards": [["mummy-lord", "mummy-lord", "mummy-lord", "mummy", "mummy", "mummy"]]
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 4
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 3
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 3,
+                  "y": 6
+                },
+                "text": "A quiet nook, easy to watch. A safe place to rest."
+              }
+            ],
+            "captives": [],
+            "garrisons": [
+              {
+                "at": {
+                  "x": 6,
+                  "y": 5
+                },
+                "order": "spire-watch",
+                "enemies": [
+                  ["oathbound-champion", "oathbound-champion", "oathbound-champion"],
+                  ["ash-mountain-wizard"]
+                ],
+                "text": "Two champions of the old war stand before the last stair, a wizard behind them."
+              }
+            ],
+            "furniture": [
+              {
+                "at": {
+                  "x": 1,
+                  "y": 4
+                },
+                "kind": "bones"
+              },
+              {
+                "at": {
+                  "x": 4,
+                  "y": 1
+                },
+                "kind": "rubble"
+              }
+            ]
+          },
+          {
+            "id": "hm-tower-6",
+            "name": "The Tower: The Warden's Crown",
+            "map": [
+              "+-+-+-+-+-+-+-+-+",
+              "|T             T|",
+              "+ +-+-+-+-+-+-+ +",
+              "| |           | |",
+              "+ + + + + + + + +",
+              "| |           | |",
+              "+ + + + + + + + +",
+              "| |           d |",
+              "+ + + + + + + + +",
+              "| |           | |",
+              "+ + + + + + + + +",
+              "| |           | |",
+              "+ +-+-+-+-+-+-+ +",
+              "| d        >  dT|",
+              "+ +-+-+-+-+-+-+ +",
+              "|T       T      |",
+              "+-+-+-+-+-+-+-+-+"
+            ],
+            "links": [
+              {
+                "at": {
+                  "x": 5,
+                  "y": 6
+                },
+                "to": {
+                  "level": "hm-tower-5",
+                  "at": {
+                    "x": 5,
+                    "y": 5
+                  },
+                  "facing": "n"
+                }
+              }
+            ],
+            "wander": {
+              "every": 2,
+              "table": "hm-tower-high"
+            },
+            "safe": [
+              {
+                "x": 2,
+                "y": 6
+              },
+              {
+                "x": 3,
+                "y": 6
+              },
+              {
+                "x": 1,
+                "y": 5
+              },
+              {
+                "x": 6,
+                "y": 5
+              },
+              {
+                "x": 3,
+                "y": 0
+              },
+              {
+                "x": 0,
+                "y": 4
+              }
+            ],
+            "secrets": [],
+            "traps": [
+              {
+                "at": {
+                  "x": 7,
+                  "y": 6
+                },
+                "name": "scything blade",
+                "notice": 15,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 15
+                },
+                "save": "evasion",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 5,
+                    "sides": 8,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 7,
+                  "y": 0
+                },
+                "name": "pit to the floor below",
+                "notice": 15,
+                "disarm": {
+                  "skill": "sneak",
+                  "attributes": ["dex"],
+                  "difficulty": 15
+                },
+                "save": "evasion",
+                "element": "earth",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 6,
+                    "sides": 6,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 0,
+                  "y": 0
+                },
+                "name": "needle plate",
+                "notice": 15,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 15
+                },
+                "save": "physical",
+                "effect": {
+                  "kind": "poison"
+                }
+              },
+              {
+                "at": {
+                  "x": 0,
+                  "y": 7
+                },
+                "name": "flame jet",
+                "notice": 15,
+                "disarm": {
+                  "skill": "craft",
+                  "attributes": ["int", "dex"],
+                  "difficulty": 15
+                },
+                "save": "evasion",
+                "element": "fire",
+                "effect": {
+                  "kind": "damage",
+                  "dice": {
+                    "count": 6,
+                    "sides": 6,
+                    "modifier": 0
+                  }
+                }
+              },
+              {
+                "at": {
+                  "x": 4,
+                  "y": 7
+                },
+                "name": "death knell",
+                "notice": 14,
+                "disarm": {
+                  "skill": "sneak",
+                  "attributes": ["dex"],
+                  "difficulty": 14
+                },
+                "save": null,
+                "effect": {
+                  "kind": "alarm"
+                }
+              }
+            ],
+            "specials": [
+              {
+                "kind": "message",
+                "at": {
+                  "x": 6,
+                  "y": 3
+                },
+                "text": "The Warden's crown chamber. He sealed the vale on the Dark Lord's word, and twenty years on he keeps it sealed."
+              },
+              {
+                "kind": "cache",
+                "at": {
+                  "x": 3,
+                  "y": 2
+                },
+                "loot": [
+                  {
+                    "count": 6,
+                    "sides": 10
+                  },
+                  {
+                    "count": 2,
+                    "sides": 12
+                  }
+                ],
+                "component": "grave-garnet",
+                "guards": [
+                  ["master-vampire", "bone-golem", "bone-golem", "bone-golem", "bone-golem"],
+                  ["old-barrow-archmage", "old-barrow-archmage"]
+                ]
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 1,
+                  "y": 5
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 3,
+                  "y": 0
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 0,
+                  "y": 4
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+              }
+            ],
+            "captives": [],
+            "garrisons": [
+              {
+                "at": {
+                  "x": 7,
+                  "y": 3
+                },
+                "order": "spire-watch",
+                "enemies": [["oathbound-champion", "oathbound-champion", "iron-golem"]],
+                "text": "The Warden's last guard stands at his door: a champion and an iron golem."
+              },
+              {
+                "at": {
+                  "x": 5,
+                  "y": 3
+                },
+                "order": "spire-watch",
+                "enemies": [
+                  [
+                    "bound-lieutenant",
+                    "bound-lieutenant",
+                    "bound-lieutenant",
+                    "bound-lieutenant",
+                    "bound-lieutenant",
+                    "bound-lieutenant",
+                    "warlord"
+                  ],
+                  ["ash-mountain-wizard", "ash-mountain-wizard", "ash-mountain-wizard"]
+                ],
+                "text": "The Warden's household turns from the window. Their master does not."
+              }
+            ],
+            "furniture": [
+              {
+                "at": {
+                  "x": 2,
+                  "y": 1
+                },
+                "kind": "altar"
+              },
+              {
+                "at": {
+                  "x": 5,
+                  "y": 1
+                },
+                "kind": "brazier"
+              },
+              {
+                "at": {
+                  "x": 1,
+                  "y": 4
+                },
+                "kind": "bones"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

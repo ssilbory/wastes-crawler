@@ -47,6 +47,20 @@ test('loads a world saved in the map editor', async ({ page }) => {
   await expect(page.getByText(/Slot 1: .* · Grey Fen · /)).toBeVisible();
 });
 
+test('plays the Sealed Vale, a world shipped beside the campaign', async ({ page }) => {
+  await party(page);
+  const world = page.getByRole('group', { name: 'World' });
+  await world.getByRole('combobox', { name: 'Play on' }).selectOption({ label: 'The Sealed Vale' });
+  await expect(world).toContainText('ringed by impassable peaks');
+  await page.getByRole('button', { name: /Start a new world/ }).click();
+  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Begin the journey' })).toHaveCount(0);
+  await page.reload();
+  await expect(page.getByText(/Slot 1: .* · The Sealed Vale · /)).toBeVisible();
+  await page.getByRole('button', { name: 'Continue journey' }).click();
+  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+});
+
 test('plays the Wastes, a shipped realm of five maps', async ({ page }) => {
   await party(page);
   const world = page.getByRole('group', { name: 'World' });

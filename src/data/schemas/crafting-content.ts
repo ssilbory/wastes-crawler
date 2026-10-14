@@ -17,13 +17,24 @@ const Weights = z.strictObject({
 /**
  * Weapons and armor dropped by beaten humanoids (docs/rules-adaptation.md, Gear drops; Sam's
  * calls): the chance a won fight that pays XP drops one, the tier by party level, the costly
- * armors that only drop where mastercrafted gear would, and the magic chance in boss fights.
+ * armors that only drop where mastercrafted gear would, the magic chance in boss fights, and the
+ * odds of a fine weapon.
  */
 const DropsSchema = z.strictObject({
   /** Percent chance a qualifying won fight drops a weapon or suit of armor. */
   chance: z.int().min(0).max(100),
   /** Percent chance a boss fight (a quest's fixed fight or a vault's guards) drops a magic one. */
   magicChance: z.int().min(0).max(100),
+  /**
+   * A fight that drops nothing else may still leave a fine weapon: the percent chance, and the
+   * weights for mastercrafted, +1, and +2 (all of normal make but the mastercrafted one).
+   */
+  fine: z.strictObject({
+    chance: z.int().min(0).max(100),
+    weights: z
+      .strictObject({ mastercrafted: z.int().min(0), '+1': z.int().min(0), '+2': z.int().min(0) })
+      .refine((x) => x.mastercrafted + x['+1'] + x['+2'] > 0, 'a fine weight must be above 0'),
+  }),
   /** Tier weights by party level; the band with the highest minimum at or below it applies. */
   bands: z
     .array(z.strictObject({ minLevel: z.int().min(1), weights: Weights }))

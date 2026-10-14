@@ -3,6 +3,7 @@ import {
   bandAt,
   cutLoot,
   dropTier,
+  fineFind,
   pickWeighted,
   type DropBand,
 } from '../../src/rules/gear-drops.ts';
@@ -79,5 +80,23 @@ describe('cutting the loot dice for a drop', () => {
 
   it('takes nothing for a worthless item', () => {
     expect(cutLoot([{ count: 4, sides: 6 }], 0, 0.75)).toEqual([{ count: 4, sides: 6 }]);
+  });
+});
+
+describe('fine weapons (docs/rules-adaptation.md, Gear drops: Fine weapons)', () => {
+  const W = { mastercrafted: 6, '+1': 3, '+2': 1 };
+
+  it('draws mastercrafted, +1, or +2 by weight', () => {
+    expect(fineFind(scriptedRng([6]), W)).toEqual({ quality: 'mastercrafted', bonus: 0 });
+    expect(fineFind(scriptedRng([7]), W)).toEqual({ bonus: 1 });
+    expect(fineFind(scriptedRng([9]), W)).toEqual({ bonus: 1 });
+    expect(fineFind(scriptedRng([10]), W)).toEqual({ bonus: 2 });
+  });
+
+  it('never draws a zero weight', () => {
+    expect(fineFind(scriptedRng([1]), { mastercrafted: 0, '+1': 0, '+2': 1 })).toEqual({
+      bonus: 2,
+    });
+    expect(() => fineFind(scriptedRng([1]), { mastercrafted: 0, '+1': 0, '+2': 0 })).toThrow();
   });
 });

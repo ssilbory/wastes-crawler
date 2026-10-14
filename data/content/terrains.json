@@ -55,6 +55,17 @@
     "encounters": "mountains"
   },
   {
+    "id": "peaks",
+    "name": "Impassable peaks",
+    "glyph": "M",
+    "movement": "impassable",
+    "survive": 12,
+    "hunt": null,
+    "water": false,
+    "harsh": true,
+    "encounters": "mountains"
+  },
+  {
     "id": "swamp",
     "name": "Swamp",
     "glyph": "s",

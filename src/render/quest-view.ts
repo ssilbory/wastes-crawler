@@ -20,6 +20,10 @@ export function captiveHomes(w: World, data: GameData): Hex[] {
   });
 }
 
+/** A town's name from its id, in any region, so a captive's home far off still reads by name. */
+export const townName = (data: GameData, id: string): string =>
+  data.content.regions.flatMap((r) => r.sites).find((s) => s.id === id)?.name ?? id;
+
 /** Hexes on the party's map where an active quest's current step waits. */
 export function questTargets(w: World, data: GameData): Hex[] {
   return Object.entries(w.quests).flatMap(([id, st]) => {

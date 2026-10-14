@@ -20,6 +20,8 @@ describe('setting content (Phase 12b)', () => {
       'saltgate-hold',
       'archive-keep',
       'citadel-watch',
+      'hold-the-throat',
+      'spire-watch',
     ]);
     expect(content.raidRules.region).toBe('dark-lands');
   });

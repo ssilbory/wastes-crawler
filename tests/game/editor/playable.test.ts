@@ -4,7 +4,7 @@ import { newDungeon } from '../../../src/game/dungeon/dungeon-edit.ts';
 import { setCell } from '../../../src/game/dungeon/level-edit.ts';
 import { EMPTY_LIBRARY } from '../../../src/game/editor/library.ts';
 import { freeHex } from '../../../src/game/editor/map-edit.ts';
-import { playableContent } from '../../../src/game/editor/playable.ts';
+import { playableContent, worldMapErrors } from '../../../src/game/editor/playable.ts';
 import { data } from '../world/helpers.ts';
 
 const shipped = data.content;
@@ -59,5 +59,24 @@ describe('saved dungeons in the game', () => {
       broken: 'dungeons/broken/pit-1: stairs at 2,2 lead nowhere',
       twin: "dungeons/twin: the entrance is on pit's hex",
     });
+  });
+
+  it('plays a shipped world with its own dungeons, and only on that world', () => {
+    const vale = shipped.worlds[0]?.map as Region;
+    const { content, skipped } = playableContent(data.srd, shipped, EMPTY_LIBRARY, vale);
+    expect(content.regions.at(-1)).toBe(vale);
+    expect(content.dungeons.map((d) => d.id)).toContain('harrowmere');
+    expect(skipped).toEqual({});
+    const campaign = playableContent(data.srd, shipped, EMPTY_LIBRARY).content;
+    expect(campaign.dungeons.map((d) => d.id)).not.toContain('harrowmere');
+    expect(campaign.regions.map((r) => r.id)).not.toContain(vale.id);
+    expect(worldMapErrors(data.srd, shipped, vale)).toEqual([]);
+  });
+
+  it('keeps a saved map clear of a shipped world’s town ids', () => {
+    const copy = { ...region, id: 'copy', sites: shipped.worlds[0]?.map.sites ?? [] };
+    expect(worldMapErrors(data.srd, shipped, copy)).toContain(
+      'regions/copy/lastward: another map has a town with this id',
+    );
   });
 });
