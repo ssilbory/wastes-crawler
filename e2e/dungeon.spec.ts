@@ -117,7 +117,7 @@ test('fights a wanderer, camps on a safe square, and goes dark', async ({ page }
   await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
   const bar = page.locator('.world-bar');
   await expect(bar).toContainText('Turn 1, step 1 of 12');
-  await expect(bar).toContainText('Torch (d6); 11 torches spare');
+  await expect(bar).toContainText('Torch (d6); 1 torch spare');
   await page.getByRole('button', { name: 'Forward' }).click();
   await expect(bar).toContainText('Turn 1, step 2 of 12');
 
