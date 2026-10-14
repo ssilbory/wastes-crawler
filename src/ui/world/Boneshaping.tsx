@@ -4,6 +4,7 @@ import { boneshape, liftShaping, SHAPEABLE } from '../../game/world/boneshaper.t
 import type { TownResult } from '../../game/world/services.ts';
 import type { World } from '../../game/world/types.ts';
 import type { CasterView } from '../../render/necromancy-view.ts';
+import { attributeLabel } from '../../render/attribute-view.ts';
 import { data } from '../builder/data.ts';
 
 const NAMES: Record<string, string> = {
@@ -26,13 +27,14 @@ export function Boneshaping(props: {
   const [raise, setRaise] = useState<Attribute>('str');
   const [lower, setLower] = useState<Attribute>('cha');
   if (w.encounter) return null;
+  const shaped = living.find((m) => m.id === target) ?? living[0];
   const pick = (label: string, value: string, set: (v: Attribute) => void) => (
     <label>
       {label}{' '}
       <select value={value} onChange={(e) => set(e.currentTarget.value as Attribute)}>
         {SHAPEABLE.map((a) => (
           <option key={a} value={a}>
-            {NAMES[a]}
+            {shaped ? attributeLabel(data, shaped.character, a, NAMES[a] ?? a) : NAMES[a]}
           </option>
         ))}
       </select>

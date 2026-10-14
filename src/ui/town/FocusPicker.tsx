@@ -2,6 +2,8 @@ import { focusHint } from '../../render/describe-view.ts';
 import { useState } from 'preact/hooks';
 import type { Attribute, Character } from '../../data/schemas/index.ts';
 import { allowedSkills, focusInfo, type FocusChoice } from '../../game/character/foci.ts';
+import { attributeLabel } from '../../render/attribute-view.ts';
+import { focusLabel } from '../../render/focus-label.ts';
 import { ATTRIBUTE_NAMES, data, skillName } from '../builder/data.ts';
 
 const pickable = data.content.focusRules
@@ -24,6 +26,8 @@ export function focusNeeds(c: Character, choice: FocusChoice): string[] {
 /** One focus pick: the focus, then its bonus skill or attribute where it asks for one. */
 export function FocusPicker(props: {
   label: string;
+  /** Whose focus, so each focus shows the level held and an attribute its score now. */
+  character: Character;
   choice: FocusChoice;
   onChange: (choice: FocusChoice) => void;
 }) {
@@ -41,7 +45,7 @@ export function FocusPicker(props: {
           <option value="">Choose…</option>
           {pickable.map((p) => (
             <option key={p.id} value={p.id} title={focusHint(data, p.id)}>
-              {p.name}
+              {focusLabel(props.character, p, ATTRIBUTE_NAMES)}
             </option>
           ))}
         </select>
@@ -82,7 +86,7 @@ export function FocusPicker(props: {
             <option value="">Choose…</option>
             {(Object.keys(ATTRIBUTE_NAMES) as Attribute[]).map((a) => (
               <option key={a} value={a}>
-                {ATTRIBUTE_NAMES[a]}
+                {attributeLabel(data, props.character, a, ATTRIBUTE_NAMES[a])}
               </option>
             ))}
           </select>
@@ -104,7 +108,7 @@ export function FreeFocusForm(props: {
     <section class="panel" aria-label="Owed focus picks">
       <h3>Owed focus picks ({c.advancement.freeFoci})</h3>
       <p class="hint">A focus the game no longer offers was swapped for a free pick.</p>
-      <FocusPicker label="Focus" choice={choice} onChange={setChoice} />
+      <FocusPicker label="Focus" character={c} choice={choice} onChange={setChoice} />
       <button
         type="button"
         disabled={needed.length > 0}
