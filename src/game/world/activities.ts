@@ -22,6 +22,7 @@ import {
 } from './members.ts';
 import { emit } from './bus.ts';
 import { craftShift } from './crafting.ts';
+import { gatherFirewood } from './firewood.ts';
 import { memberLoad, partyLoad } from './party-load.ts';
 import { firstGuide, guideOf } from './npcs.ts';
 import { hexesToAvoid } from './groves.ts';
@@ -216,6 +217,7 @@ export function camp(
     rules.huntSteps,
     'brings in',
   );
+  if (!inTown && gatherFirewood(w, data, doing('firewood'), terrain.survive)) extraChecks += 1;
   guideFood(w, data, inTown);
   return { extraChecks, watcher: doing('watch')[0] };
 }

@@ -43,14 +43,14 @@ function carrier(w: World, data: GameData, id: string): Carrier {
   return c;
 }
 
-function takeOne(entries: InventoryEntry[], index: number): InventoryEntry[] {
+export function takeOne(entries: InventoryEntry[], index: number): InventoryEntry[] {
   const e = entries[index] as InventoryEntry;
   return e.quantity > 1
     ? entries.map((x, i) => (i === index ? { ...x, quantity: x.quantity - 1 } : x))
     : entries.filter((_, i) => i !== index);
 }
 
-function addOne(entries: InventoryEntry[], entry: InventoryEntry): InventoryEntry[] {
+export function addOne(entries: InventoryEntry[], entry: InventoryEntry): InventoryEntry[] {
   const unit = { ...entry, quantity: 1, location: 'stowed' as const };
   const same = entries.findIndex(
     (e) => e.id === unit.id && e.small === unit.small && e.barding === unit.barding,
