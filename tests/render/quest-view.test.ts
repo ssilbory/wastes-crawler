@@ -6,6 +6,7 @@ import {
   questStatus,
   questTargets,
   rewardText,
+  townName,
 } from '../../src/render/quest-view.ts';
 import { addNpc } from '../../src/game/world/npcs.ts';
 import { freeCaptive } from '../../src/game/world/rescue.ts';
@@ -86,5 +87,13 @@ describe('captives’ homes (docs/rules-adaptation.md, NPCs)', () => {
     freeCaptive(w, data, 'grey-priest');
     addNpc(w, data, 'hireling', 'porter', 'peaceful-human', 'Porter', false);
     expect(captiveHomes(w, data)).toEqual([]);
+  });
+
+  it('names a home town in any region, never by its id', () => {
+    expect(townName(data, 'eastmarch')).toBe('Scrapmarch');
+    const far = data.content.regions.find((r) => r.id !== 'borderlands')?.sites[0];
+    if (!far) throw new Error('no second region');
+    expect(townName(data, far.id)).toBe(far.name);
+    expect(townName(data, 'nowhere')).toBe('nowhere');
   });
 });

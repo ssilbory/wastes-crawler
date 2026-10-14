@@ -835,7 +835,7 @@
             "row": 0
           }
         ],
-        "captive": "merchant"
+        "captive": "dl-merchant"
       },
       {
         "weight": 2,
@@ -1038,7 +1038,7 @@
             "row": 0
           }
         ],
-        "captive": "scholar"
+        "captive": "dl-scholar"
       },
       {
         "weight": 1,
@@ -1182,7 +1182,7 @@
             "row": 1
           }
         ],
-        "captive": "pilgrim"
+        "captive": "dl-pilgrim"
       },
       {
         "weight": 2,
@@ -1454,7 +1454,7 @@
             "row": 0
           }
         ],
-        "captive": "merchant"
+        "captive": "dl-merchant"
       },
       {
         "weight": 1,
