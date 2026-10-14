@@ -8,6 +8,7 @@ import { heldTraditions } from '../../game/character/magic.ts';
 import { attackText } from '../../render/attack-view.ts';
 import { castingText } from '../../render/casting-view.ts';
 import { formDetails, formHint } from '../../render/form-details.ts';
+import { sheetAbilities, type SheetAbilities } from '../../render/sheet-abilities.ts';
 import { artHint, focusHint, spellHint } from '../../render/describe-view.ts';
 import { spellName } from './MagicStep.tsx';
 import type { Skills } from '../../game/character/skills.ts';
@@ -64,8 +65,9 @@ function SkillList(props: { skills: Skills }) {
   );
 }
 
-function Equipment(props: { equipment: EquipmentSummary }) {
+function Equipment(props: { equipment: EquipmentSummary; abilities?: SheetAbilities }) {
   const { armorClass, attacks, load } = props.equipment;
+  const extra = props.abilities ?? { armor: [], attacks: [] };
   return (
     <>
       <p>
@@ -73,10 +75,20 @@ function Equipment(props: { equipment: EquipmentSummary }) {
         {load.stowedLimit}
         {load.state === 'ok' ? '' : ` (${load.state})`}.
       </p>
+      {extra.armor.length > 0 && (
+        <ul class="skills armor">
+          {extra.armor.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+      )}
       <h3>Attacks</h3>
       <ul class="skills attacks">
         {attacks.map((a) => (
           <li key={`${a.id}-${a.mode}`}>{attackText(a)}</li>
+        ))}
+        {extra.attacks.map((line) => (
+          <li key={line}>{line}</li>
         ))}
       </ul>
     </>
@@ -153,7 +165,7 @@ export function CharacterSheet(props: { character: Character }) {
       <Saves saves={sheet.saves} />
       <h3>Skills</h3>
       <SkillList skills={c.skills} />
-      <Equipment equipment={sheet.equipment} />
+      <Equipment equipment={sheet.equipment} abilities={sheetAbilities(data, c)} />
       <h3>Inventory</h3>
       <ul class="skills">
         {c.inventory.map((e, i) => (
