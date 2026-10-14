@@ -7,7 +7,7 @@ import { FactionStateSchema } from './faction-content.ts';
 import { RegionSchema } from './overland-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 36;
+export const WORLD_SCHEMA_VERSION = 37;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 

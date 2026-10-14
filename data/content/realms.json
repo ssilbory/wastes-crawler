@@ -2,7 +2,7 @@
   {
     "id": "wastes",
     "name": "The Wastes",
-    "text": "Five desert maps under a dead sun, each harder than the last: tiny villages, ruined towns crawling with monsters, and one deep dungeon a map with a boss on every level.",
+    "text": "Five desert maps under a dead sun, each harder than the last: tiny villages, ruined towns crawling with monsters, and one deep dungeon a map with a boss on every level. No quests, factions, or raids.",
     "regions": [
       "wastes-fringe",
       "wastes-glass",
@@ -11,5 +11,12 @@
       "wastes-sunscar"
     ],
     "start": "wastes-fringe"
+  },
+  {
+    "id": "sealed-vale",
+    "name": "The Sealed Vale",
+    "text": "A vale ringed by impassable peaks, with one town, Lastward, and the ruins of Harrowmere: its streets, three levels of sewers, and the Warden's six-floor tower, trapped and guarded on every floor. One pass leads out, held by five bound posts, each worse than the last; the outermost wants a party of 15th level. No quests, factions, or raids.",
+    "regions": ["sealed-vale"],
+    "start": "sealed-vale"
   }
 ]

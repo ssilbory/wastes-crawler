@@ -852,5 +852,124 @@
       "badlands": "wastes-5-rough",
       "oasis": "wastes-5-oasis"
     }
+  },
+  {
+    "id": "sealed-vale",
+    "name": "The Sealed Vale",
+    "terrain": [
+      "MMMMMMMMMMMMMMMMMMMMMMMM",
+      "MMMMMMMMMMMMMMMMMMMMMMMM",
+      "MMhhhhhhhrbbbbbbhhhMMMMM",
+      "MMhffffffrbbbbbbpphMMMMM",
+      "MMhfFFFffrbbbbbbpphMMMMM",
+      "MMhfFFFffrbbbbbbpphMMMMM",
+      "MMhfFFFffrbbbbbbpphMMMMM",
+      "MMhffffffrpppppppphMMMMM",
+      "MMhffffffrpppppppphmmmmm",
+      "MMhppppppxpppppLLphMMMMM",
+      "MMhpppppprpppppLLphMMMMM",
+      "MMhpppppprpppppppphMMMMM",
+      "MMhpppppprpssssspphMMMMM",
+      "MMhpppppprpssssspphMMMMM",
+      "MMhpppppprpssssspphMMMMM",
+      "MMhhhhhhhrhhhhhhhhhMMMMM",
+      "MMMMMMMMMMMMMMMMMMMMMMMM",
+      "MMMMMMMMMMMMMMMMMMMMMMMM"
+    ],
+    "overlay": [
+      "........................",
+      "........................",
+      "..........!!!!!!........",
+      "..........!!!!!!........",
+      "....!!!...!!!=!!........",
+      "....!!!...!!!=!!........",
+      "....!!!...!!!=!!........",
+      ".............=..........",
+      "...........========!!!!!",
+      ".........==.............",
+      ".......==...............",
+      ".....==.................",
+      "...........!!!!!........",
+      "...........!!!!!........",
+      "...........!!!!!........",
+      "........................",
+      "........................",
+      "........................"
+    ],
+    "sites": [
+      {
+        "id": "lastward",
+        "name": "Lastward",
+        "kind": "town",
+        "col": 5,
+        "row": 11,
+        "size": "town"
+      }
+    ],
+    "start": "lastward",
+    "exits": [],
+    "garrisons": [
+      {
+        "order": "hold-the-throat",
+        "col": 19,
+        "row": 8,
+        "enemies": [
+          [
+            "bound-orc-guard",
+            "bound-orc-guard",
+            "bound-orc-guard",
+            "bound-orc-guard",
+            "bound-orc-guard"
+          ],
+          ["bound-orc-captain", "bound-orc-captain"]
+        ]
+      },
+      {
+        "order": "hold-the-throat",
+        "col": 20,
+        "row": 8,
+        "enemies": [
+          ["bound-lieutenant", "bound-lieutenant", "bound-lieutenant", "war-engine", "war-engine"],
+          ["beastman-hexer", "beastman-hexer"]
+        ]
+      },
+      {
+        "order": "hold-the-throat",
+        "col": 21,
+        "row": 8,
+        "enemies": [
+          ["crag-stalker", "crag-stalker", "war-engine", "war-engine", "war-engine", "war-engine"],
+          ["warlord", "ruinfield-sorcerer"]
+        ]
+      },
+      {
+        "order": "hold-the-throat",
+        "col": 22,
+        "row": 8,
+        "enemies": [
+          ["iron-golem", "oathbound-champion", "oathbound-champion"],
+          ["ash-mountain-wizard"]
+        ]
+      },
+      {
+        "order": "hold-the-throat",
+        "col": 23,
+        "row": 8,
+        "enemies": [
+          ["grave-wyrm", "ash-king", "iron-golem"],
+          ["old-barrow-archmage", "old-barrow-archmage", "ash-mountain-wizard"]
+        ]
+      }
+    ],
+    "encounters": {
+      "plains": "vale-plains",
+      "forest": "vale-forest",
+      "deep-forest": "vale-deep-forest",
+      "hills": "vale-hills",
+      "swamp": "vale-swamp",
+      "badlands": "vale-badlands",
+      "mountains": "vale-pass",
+      "peaks": "vale-pass"
+    }
   }
 ]

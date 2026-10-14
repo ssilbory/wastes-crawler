@@ -231,7 +231,7 @@ export function MapEditorApp() {
             />
           )}
           <GeneratePanel
-            taken={[...listed, ...shippedContent.worlds.map((w) => w.map)].map((r) => r.id)}
+            taken={listed.map((r) => r.id)}
             onRegion={(r) => {
               open(r);
               setMessage(`Made ${r.name}. Save it to keep it.`);
