@@ -34,6 +34,17 @@ export interface Rolled {
   patrol?: Patrol;
 }
 
+/**
+ * A group's captive, if their home is in the party's region (Sam's calls, docs/rules-adaptation.md,
+ * Rescues): no one is bound for another region, so a table shared across regions holds none there.
+ * Captives are bound for the campaign's towns, so a custom map's groups hold none.
+ */
+function captiveHere(w: World, data: GameData, id: string | undefined): string | null {
+  if (id === undefined || w.map !== null) return null;
+  const home = data.content.captives.find((c) => c.id === id)?.destination;
+  return regionMap(data, w.region).sites.some((s) => s.id === home) ? id : null;
+}
+
 export function rollEnemies(w: World, data: GameData, tableId: string): Rolled {
   const table = data.content.encounterTables.find((t) => t.id === tableId);
   if (!table) throw new Error(`unknown encounter table ${tableId}`);
@@ -51,8 +62,7 @@ export function rollEnemies(w: World, data: GameData, tableId: string): Rolled {
   return {
     rows: rows.filter((r) => r.length > 0),
     nature: entry.nature,
-    // Captives are bound for the campaign's towns; a custom map's groups hold none (Sam's call).
-    captive: w.map === null ? (entry.captive ?? null) : null,
+    captive: captiveHere(w, data, entry.captive),
     ...(entry.order ? { order: entry.order } : {}),
     ...(entry.rescuers ? { rescuers: true as const } : {}),
   };
