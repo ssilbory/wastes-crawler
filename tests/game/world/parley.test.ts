@@ -160,6 +160,8 @@ describe('rescues', () => {
   it('needs a free slot, and delivers captives home for crowns and XP', () => {
     const w = out([2, 2, 3, 0, 0]);
     expect(freeCaptive(w, data, 'merchant')).toBe(true);
+    // The party learns where they are bound.
+    expect(w.log.at(-1)).toContain('joins the party until they reach Scrapmarch.');
     expect(freeCaptive(w, data, 'pilgrim')).toBe(true);
     expect(freeCaptive(w, data, 'scholar')).toBe(false);
     expect(w.log.at(-1)).toContain('with no room in the party goes their own way');

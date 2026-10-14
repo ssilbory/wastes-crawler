@@ -57,6 +57,7 @@ export function LevelUpForm(props: {
         <FocusPicker
           key={i}
           label={`Focus (${slot})`}
+          character={c}
           choice={foci[i] as FocusChoice}
           onChange={(choice) => setFocus(i, choice)}
         />

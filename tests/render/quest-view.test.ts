@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { regionMap } from '../../src/game/world/region.ts';
 import { hexCells } from '../../src/render/hex-view.ts';
-import { questStatus, questTargets, rewardText } from '../../src/render/quest-view.ts';
+import {
+  captiveHomes,
+  questStatus,
+  questTargets,
+  rewardText,
+} from '../../src/render/quest-view.ts';
+import { addNpc } from '../../src/game/world/npcs.ts';
+import { freeCaptive } from '../../src/game/world/rescue.ts';
 import { questOf } from '../../src/game/world/quests.ts';
 import { data, world } from '../game/world/helpers.ts';
 
@@ -55,5 +62,29 @@ describe('quest view', () => {
       w.quests.letters = { status, step: 1, acceptedDay: 0 };
       expect(questStatus(w, data, 'letters')).toBe(text);
     }
+  });
+});
+
+describe('captives’ homes (docs/rules-adaptation.md, NPCs)', () => {
+  it('reveals and marks the home of each freed captive on the party’s map', () => {
+    const w = world();
+    expect(captiveHomes(w, data)).toEqual([]);
+    freeCaptive(w, data, 'merchant');
+    // Scrapmarch (eastmarch), far east of the starting town and unseen.
+    expect(captiveHomes(w, data)).toEqual([{ col: 20, row: 8 }]);
+    const map = regionMap(data, w.region);
+    const fogged = hexCells(map, w, [], 18).find((c) => c.key === '20,8');
+    expect(fogged).toMatchObject({ terrain: null, site: null });
+    const homes = captiveHomes(w, data);
+    const shown = hexCells(map, w, [], 18, homes, [], [], homes).find((c) => c.key === '20,8');
+    expect(shown).toMatchObject({ site: 'Scrapmarch', quest: true, visited: false });
+    expect(shown?.terrain).not.toBeNull();
+  });
+
+  it('marks none for a home in another region, nor for hirelings', () => {
+    const w = world();
+    freeCaptive(w, data, 'grey-priest');
+    addNpc(w, data, 'hireling', 'porter', 'peaceful-human', 'Porter', false);
+    expect(captiveHomes(w, data)).toEqual([]);
   });
 });

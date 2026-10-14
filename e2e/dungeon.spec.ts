@@ -315,3 +315,36 @@ test('delves to the stairs and back with fights, a trap, a camp, and a rescue', 
   await expect(page.getByRole('region', { name: 'NPCs' })).toContainText('grave-digger');
   await page.screenshot({ path: testInfo.outputPath('delve-out.png'), fullPage: true });
 });
+
+// Sam's ask: a square of magical darkness looks dark from outside, hiding what lies beyond it.
+test('shows a square of magical darkness as black', async ({ page }) => {
+  await startAtBarrow(page);
+  await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
+  await edit(
+    page,
+    `Object.assign(save.dungeon, { level: 'barrow-lower', at: { x: 6, y: 1 }, facing: 's' });`,
+  );
+  // 6,4 is dark, three cells down the passage.
+  await expect(page.getByRole('img', { name: 'Dungeon view' })).toHaveScreenshot(
+    'barrow-darkness.png',
+  );
+});
+
+// Sam's ask: who stands ahead shows in the view: a captive among their guards, and a quest's item.
+test('shows a held captive among their guards, and a quest item, in the cells ahead', async ({
+  page,
+}) => {
+  await startAtBarrow(page);
+  await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
+  const view = page.getByRole('img', { name: 'Dungeon view' });
+  await edit(page, `Object.assign(save.dungeon, { at: { x: 9, y: 0 }, facing: 'w' });`);
+  await expect(view.locator('.occupant.captive title')).toContainText('held by guards');
+  await expect(view).toHaveScreenshot('barrow-captive.png');
+  await edit(
+    page,
+    `save.quests['barrow-torc'] = { status: 'active', step: 2, acceptedDay: 0 };
+     Object.assign(save.dungeon, { at: { x: 5, y: 1 }, facing: 'n' });`,
+  );
+  await expect(view.locator('.occupant.item')).toHaveCount(1);
+  await expect(view).toHaveScreenshot('barrow-quest-item.png');
+});

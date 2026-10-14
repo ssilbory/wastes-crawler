@@ -11,6 +11,7 @@ import {
 } from '../../game/character/training.ts';
 import { levelUpMember, trainMember } from '../../game/world/training.ts';
 import type { World } from '../../game/world/types.ts';
+import { attributeLabel } from '../../render/attribute-view.ts';
 import { levelSummary } from '../../render/level-view.ts';
 import { levelLine, pointsText } from '../../render/town-view.ts';
 import { ATTRIBUTE_NAMES, className, classes, data, skillName, skills } from '../builder/data.ts';
@@ -107,7 +108,7 @@ export function TrainingTab(props: { world: World; act: Act }) {
           >
             {(Object.keys(ATTRIBUTE_NAMES) as Attribute[]).map((a) => (
               <option key={a} value={a}>
-                {ATTRIBUTE_NAMES[a]}
+                {attributeLabel(data, c, a, ATTRIBUTE_NAMES[a])}
               </option>
             ))}
           </select>

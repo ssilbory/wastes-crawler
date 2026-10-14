@@ -74,6 +74,7 @@ export function CommandMenu(props: CommandMenuProps) {
                 key={ch.label}
                 type="button"
                 class={odds ? 'with-odds' : undefined}
+                title={odds ?? undefined}
                 onClick={() => props.onChoose(ch.action)}
               >
                 {ch.label}

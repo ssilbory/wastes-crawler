@@ -5,7 +5,10 @@
 import type { EdgeKind, LevelMap } from '../data/dungeon-map.ts';
 import type { Trap } from '../data/schemas/index.ts';
 import { levelOf } from '../game/dungeon/explore.ts';
-import { blind } from '../game/dungeon/light.ts';
+import { arcaneSeer, blind } from '../game/dungeon/light.ts';
+import { seer } from '../game/world/arts.ts';
+import { darknessPanels, type DarkAt } from './dungeon-darkness.ts';
+import { occupantPanel, occupantsOf, type OccupantAt } from './dungeon-occupants.ts';
 import { edgeKey, knownEdges } from '../game/dungeon/secrets.ts';
 import type { GameData } from '../game/character/context.ts';
 import type { World } from '../game/world/types.ts';
@@ -144,7 +147,22 @@ export function dungeonView(w: World, data: GameData): Panel[] {
   const dug = new Set(s.dug[s.level] ?? []);
   const edge = (c: Cell, side: Facing): ViewEdge =>
     dug.has(edgeKey(c, side)) ? 'dug' : known(c, side);
-  return viewPanels(map, s.at, s.facing, edge, trapLook, furnitureOf(level.furniture));
+  // Those who see without light see into magical darkness too, as they do standing in it.
+  const seeing = seer(w, data) || arcaneSeer(w);
+  const darkAt: DarkAt = (c) =>
+    !seeing &&
+    level.specials.some((x) => x.kind === 'darkness' && x.at.x === c.x && x.at.y === c.y);
+  const occupants = occupantsOf(w, data);
+  return viewPanels(
+    map,
+    s.at,
+    s.facing,
+    edge,
+    trapLook,
+    furnitureOf(level.furniture),
+    darkAt,
+    (c) => occupants.get(cellKey(c)) ?? null,
+  );
 }
 
 /** What the trap on a cell does; a T square with no trap written for it hurts. */
@@ -182,6 +200,8 @@ function viewPanels(
   edge: (c: Cell, side: Facing) => ViewEdge,
   trapLook: (c: Cell) => TrapLook | null,
   furnitureAt: FurnitureAt,
+  darkAt: DarkAt = () => false,
+  occupantAt: OccupantAt = () => null,
 ): Panel[] {
   const left = turn(facing, 'left');
   const right = turn(facing, 'right');
@@ -231,6 +251,8 @@ function viewPanels(
     for (const { lateral, c } of depth > 0 ? cells : []) {
       const kind = furnitureAt(c);
       if (kind) panels.push(furniturePanel(kind, depth, lateral));
+      const who = occupantAt(c);
+      if (who) panels.push(occupantPanel(who, depth, lateral));
     }
     for (const { lateral, c } of cells) {
       const l = lateral <= 0 ? kindOf(c, left) : null;
@@ -260,6 +282,9 @@ function viewPanels(
           ),
         );
     }
+    // Magical darkness hides its cell and what lies beyond it, drawn over both.
+    for (const { lateral, c } of depth > 0 ? cells : [])
+      if (darkAt(c)) panels.push(...darknessPanels(depth, lateral));
   }
   return panels;
 }

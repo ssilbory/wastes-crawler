@@ -236,3 +236,42 @@
 .characters .sheet.final > :is(table, dl, ul, p) {
   break-inside: avoid;
 }
+
+/* The side column of quests, companions, and the like (SideDock.tsx). Its minimize button sits at
+   its top; with no panels to show it gives its room back like any empty dock. */
+.side-dock:not(.minimized):not(:has(> :not(.dock-toggle))) {
+  display: none;
+}
+
+.dock-toggle {
+  justify-self: end;
+  min-width: 30px;
+  padding: 0 8px;
+  line-height: 1.6;
+}
+
+/* Minimized: a strip with the button to bring it back, and a shorter journal, so the map grows
+   both ways. */
+@media (min-width: 1101px) {
+  .world-main:has(> .side-dock.minimized) {
+    grid-template-columns: minmax(0, 1fr) minmax(250px, 340px) 36px;
+  }
+
+  .dungeon .world-main:has(> .side-dock.minimized) {
+    grid-template-columns: minmax(0, 1fr) minmax(250px, 360px) 36px;
+  }
+}
+
+.side-dock.minimized {
+  scrollbar-gutter: auto;
+  overflow: visible;
+}
+
+.side-dock.minimized .dock-toggle {
+  justify-self: stretch;
+  padding: 6px 0;
+}
+
+.world-main:has(> .side-dock.minimized) .log {
+  height: 4.2rem;
+}

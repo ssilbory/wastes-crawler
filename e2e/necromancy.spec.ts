@@ -95,8 +95,8 @@ test('questions the dead, then reshapes a companion and lifts it', async ({ page
   await expect(panel).toContainText('Query the Skull: These dead have already spoken.');
 
   await panel.getByRole('combobox', { name: 'Shape' }).selectOption({ label: 'Snag' });
-  await panel.getByRole('combobox', { name: 'Raise' }).selectOption({ label: 'Strength' });
-  await panel.getByRole('combobox', { name: 'Lower' }).selectOption({ label: 'Constitution' });
+  await panel.getByRole('combobox', { name: 'Raise' }).selectOption('str');
+  await panel.getByRole('combobox', { name: 'Lower' }).selectOption('con');
   await panel.getByRole('button', { name: 'Reshape' }).click();
   await expect(panel).toContainText('Snag is shaped (+1 STR, −1 CON).');
   await panel.getByRole('button', { name: 'Lift the shaping from Snag' }).click();

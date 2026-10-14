@@ -97,6 +97,10 @@ test('levels up a character with XP to spend', async ({ page }, testInfo) => {
   // Nothing picked yet: the form says what it needs and holds the button back.
   await expect(form.getByRole('list', { name: 'Still needed' })).toContainText('Choose a focus.');
   await expect(form.getByRole('button', { name: 'Level up' })).toBeDisabled();
+  // Each focus shows the level already held: Snag has Alert, not Die Hard.
+  await expect(
+    form.getByRole('combobox', { name: 'Focus (any)' }).locator('option', { hasText: 'Alert' }),
+  ).toHaveText('Alert (level 1 now)');
   await form.getByRole('combobox', { name: 'Focus (any)' }).selectOption({ label: 'Die Hard' });
   await expect(form.getByRole('list', { name: 'Still needed' })).toHaveCount(0);
   await page.screenshot({ path: testInfo.outputPath('town-level-up.png'), fullPage: true });
@@ -109,6 +113,10 @@ test('levels up a character with XP to spend', async ({ page }, testInfo) => {
   await page.getByRole('combobox', { name: 'Skill' }).selectOption('lead');
   await page.getByRole('button', { name: 'Raise Lead' }).click();
   await expect(assign).toContainText('Available: 2 skill points');
+  // Each attribute to boost shows its score and modifier now.
+  const attribute = assign.getByRole('combobox', { name: 'Attribute' });
+  await attribute.selectOption('wis');
+  await expect(attribute.locator('option:checked')).toHaveText(/^Wisdom \d+ \([+-]\d\)$/);
 });
 
 test('plays the common room for the party’s lodging', async ({ page }) => {

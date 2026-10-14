@@ -16,6 +16,7 @@ import type { Hex } from '../../rules/hex.ts';
 import { data, freshRng, shippedContent } from '../builder/data.ts';
 import { download, loadLibrary, saveLibrary } from '../editor-store.ts';
 import { HexMap, HEX_SIZE } from '../world/HexMap.tsx';
+import { ZoomFrame } from '../world/ZoomFrame.tsx';
 import '../editor/editor.css';
 import '../world/hex-map.css';
 import '../world/world.css';
@@ -196,7 +197,7 @@ export function MapEditorApp() {
         ))}
       </div>
       <div class="editor-main">
-        <div class="map-scroll">
+        <ZoomFrame class="map-scroll">
           <HexMap
             cells={cells}
             width={px.width}
@@ -205,7 +206,7 @@ export function MapEditorApp() {
             onPick={(col, row) => apply({ col, row }, false)}
             onDrag={(col, row) => apply({ col, row }, true)}
           />
-        </div>
+        </ZoomFrame>
         <div class="editor-side">
           <section class="panel" aria-label="Problems">
             <h2>Problems</h2>

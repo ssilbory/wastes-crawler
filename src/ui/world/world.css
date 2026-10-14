@@ -599,3 +599,23 @@
   fill: none;
   stroke: #4d463e;
 }
+
+/* A held captive among their guards (src/render/dungeon-occupants.ts): pale against the dark foes. */
+.dungeon-view .captive .fill {
+  fill: #b9ad95;
+  stroke: #0d0907;
+  stroke-width: 0.5;
+}
+
+.dungeon-view .captive .line {
+  fill: none;
+  stroke: #b9ad95;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dungeon-view .captive .cut {
+  fill: none;
+  stroke: #3a332b;
+  stroke-linecap: round;
+}

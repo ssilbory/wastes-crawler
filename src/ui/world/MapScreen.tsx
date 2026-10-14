@@ -8,6 +8,7 @@ import { hexCells, mapPixels } from '../../render/hex-view.ts';
 import { crowns, lootText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { HEX_SIZE, HexMap } from './HexMap.tsx';
+import { ZoomFrame } from './ZoomFrame.tsx';
 import { dayTint } from '../../render/hex-art.ts';
 import { PartyPanel } from './PartyPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
@@ -28,9 +29,10 @@ import { MountsPanel } from './MountsPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { PopOut } from './PopOut.tsx';
 import { QuestLog } from './QuestLog.tsx';
+import { SideDock } from './SideDock.tsx';
 import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
 import { JournalPanel } from './JournalPanel.tsx';
-import { questTargets } from '../../render/quest-view.ts';
+import { captiveHomes, questTargets } from '../../render/quest-view.ts';
 import { CoachPanel } from './CoachPanel.tsx';
 import { QuarterPanel } from './QuarterPanel.tsx';
 import { typeOf } from '../../game/world/npcs.ts';
@@ -60,11 +62,25 @@ export function MapScreen(props: {
   const choose = (p: QuarterPlan) => setPlan({ version: props.version, plan: p });
   const able = w.members.filter((m) => !m.dead && m.character.hp.current > 0);
   const { width, height } = mapPixels(map, HEX_SIZE);
+  const entrances = entrancesIn(data, w.region, w.rumors);
+  const cells = hexCells(
+    map,
+    w,
+    route(w, data),
+    HEX_SIZE,
+    // A freed captive's home is marked like a quest's goal, and shows through the fog.
+    [...questTargets(w, data), ...captiveHomes(w, data)],
+    entrances,
+    grovesHere(w, data),
+    captiveHomes(w, data),
+  );
+  // Zooming in from the whole map closes in on the party.
+  const party = cells.find((c) => c.party);
+  const partyFocus = party ? { x: party.cx / width, y: party.cy / height } : null;
   const town = map.siteAt(w.position);
   const here = town?.name ?? map.terrainAt(w.position).name;
   const way = wayDownHere(w, data);
   const road = map.exitAt(w.position);
-  const entrances = entrancesIn(data, w.region, w.rumors);
   return (
     <div class="world map-screen">
       <div class="world-bar">
@@ -104,17 +120,9 @@ export function MapScreen(props: {
       </div>
       <div class="world-main">
         <div class="world-left">
-          <div class="map-wrap">
+          <ZoomFrame class="map-wrap" focus={partyFocus}>
             <HexMap
-              cells={hexCells(
-                map,
-                w,
-                route(w, data),
-                HEX_SIZE,
-                questTargets(w, data),
-                entrances,
-                grovesHere(w, data),
-              )}
+              cells={cells}
               width={width}
               height={height}
               tint={dayTint(w.quarter)}
@@ -123,7 +131,7 @@ export function MapScreen(props: {
                   props.onChange();
               }}
             />
-          </div>
+          </ZoomFrame>
           <JournalPanel world={w} />
           {w.encounter && (
             <PopOut>
@@ -157,7 +165,7 @@ export function MapScreen(props: {
           <NpcPanel world={w} onChange={props.onChange} />
           <MountsPanel world={w} onChange={props.onChange} />
         </div>
-        <div class="dock">
+        <SideDock>
           <QuestLog world={w} onChange={props.onChange} />
           <CompanionsPanel world={w} onChange={props.onChange} />
           <SettingPanel world={w} inTown={town !== undefined} onChange={props.onChange} />
@@ -172,7 +180,7 @@ export function MapScreen(props: {
           <PurgePanel world={w} onChange={props.onChange} />
           <AntidotePanel world={w} onChange={props.onChange} />
           <FactionsPanel world={w} />
-        </div>
+        </SideDock>
       </div>
     </div>
   );

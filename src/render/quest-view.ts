@@ -1,10 +1,24 @@
 // Text and map marks for quests. Pure reads of game state.
 import type { Dungeon, Quest } from '../data/schemas/index.ts';
 import type { GameData } from '../game/character/context.ts';
+import { captiveOf } from '../game/world/npcs.ts';
 import { currentStep, questOf } from '../game/world/quests.ts';
 import { regionMap } from '../game/world/region.ts';
 import type { World } from '../game/world/types.ts';
 import type { Hex } from '../rules/hex.ts';
+
+/**
+ * The home towns of freed captives travelling with the party, on its map (Sam's call,
+ * docs/rules-adaptation.md, NPCs): revealed through the fog, so the party knows where to take them.
+ */
+export function captiveHomes(w: World, data: GameData): Hex[] {
+  const sites = regionMap(data, w.region).sites;
+  return w.npcs.flatMap((n) => {
+    if (n.kind !== 'captive') return [];
+    const home = sites.find((s) => s.id === captiveOf(data, n.type).destination);
+    return home ? [{ col: home.col, row: home.row }] : [];
+  });
+}
 
 /** Hexes on the party's map where an active quest's current step waits. */
 export function questTargets(w: World, data: GameData): Hex[] {

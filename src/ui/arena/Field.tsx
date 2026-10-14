@@ -96,6 +96,7 @@ function Slot(props: {
       class={classes}
       data-slot={slot.id}
       aria-label={`Target ${slot.label}${props.note ? `, ${props.note}` : ''}`}
+      title={props.note}
       onClick={() => props.onPick?.(slot.id)}
     >
       {body}

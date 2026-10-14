@@ -363,3 +363,52 @@
 .hex .exit {
   pointer-events: none;
 }
+
+/* Zoom (src/ui/world/ZoomFrame.tsx): the frame holds the map's box and the zoom buttons over its
+   corner. At Fit the box is as it always was; zoomed in, it scrolls. */
+.zoom-frame {
+  position: relative;
+  min-height: 0;
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+}
+
+.zoom-scroll.fit > .zoom-content {
+  display: contents;
+}
+
+.zoom-scroll.zoomed {
+  display: block;
+  overflow: auto;
+}
+
+.zoom-scroll.zoomed > .zoom-content > .hex-map {
+  width: 100%;
+  height: auto;
+}
+
+.zoom-controls {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  border-radius: var(--radius-control);
+  background: color-mix(in srgb, var(--panel) 85%, transparent);
+  box-shadow: var(--bevel-out);
+}
+
+.zoom-controls button {
+  min-width: 28px;
+  padding: 2px 8px;
+}
+
+.zoom-level {
+  min-width: 2.6em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  font-size: 0.85rem;
+}

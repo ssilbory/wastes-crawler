@@ -2,22 +2,21 @@
 // SRD text in vendor/wwn-srd/4.0 Magic and Spellcasting/, including 4.6.0's Smite the Dead, and
 // 1.5.7/1.5.9/1.5.10 arts). Slots and Effort as in 4.2.0; strain casting from docs/rules-adaptation.md.
 import type { CombatMagic } from '../../data/schemas/index.ts';
-import { attackRoll } from '../../rules/attacks.ts';
-import { netSteps } from '../../rules/advantage.ts';
 import { roll } from '../../rules/dice.ts';
 import { strainCastCost } from '../../rules/magic.ts';
 import type { SaveType } from '../../rules/saves.ts';
 import { inTouch } from '../../rules/formation.ts';
 import { canPay, payFor } from '../../rules/spell-points.ts';
 import { addStrain } from '../../rules/strain.ts';
-import { effectiveAc, harm, save, say } from './damage.ts';
-import { attackSteps, hitModifier, isUp } from './targeting.ts';
+import { harm, save, say } from './damage.ts';
+import { isUp } from './targeting.ts';
 import { artEffect, counterSpell, retainsSpell } from './arts.ts';
 import { elementalistEffect } from './elementalist.ts';
 import { healingFails, necromancerEffect } from './necromancer.ts';
 import { bearsHealing, takeHealingStrain } from './healing-strain.ts';
 import { donorFor, sanctuaryEffect } from './sanctuary.ts';
 import { highMagicEffect, type Resists } from './high-magic.ts';
+import { blast } from './blast.ts';
 import { spellLevel } from './spell-level.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
 import { gameSpells } from '../../data/spells.ts';
@@ -205,20 +204,9 @@ export function castMagic(
         say(b, `${target.name} is enthralled and stops fighting.`);
       }
       return true;
-    case 'blast': {
-      if (!target) return true;
-      const attr = Math.max(...e.attributes.map((a) => actor.modifiers[a]));
-      const hit = attackRoll(b.rng, {
-        attackBonus: c.level,
-        attributeModifier: attr,
-        skill: actor.skills[e.skill] ?? null,
-        modifier: hitModifier(b, actor),
-        steps: netSteps([attackSteps(b, actor, target, 'ranged')]),
-        targetAc: effectiveAc(target),
-      }).hit;
-      if (hit) harm(b, target, roll(b.rng, e.damage).total + c.level + attr);
+    case 'blast':
+      if (target) blast(b, actor, e, target, c.level);
       return true;
-    }
     case 'ac-bonus': {
       // Pavis of Elements on the caster, Ward of the Turning Wind on any ally; they don't combine.
       const warded = target ?? actor;

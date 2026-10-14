@@ -30,6 +30,7 @@ import { PactPanel } from './PactPanel.tsx';
 import { SorceryPanel } from './SorceryPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { QuestLog } from './QuestLog.tsx';
+import { SideDock } from './SideDock.tsx';
 import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
 import { JournalPanel } from './JournalPanel.tsx';
 import { PopOut } from './PopOut.tsx';
@@ -241,7 +242,7 @@ export function DungeonScreen(props: {
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
         </div>
-        <div class="dock">
+        <SideDock>
           <QuestLog world={w} onChange={props.onChange} />
           <CompanionsPanel world={w} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />
@@ -253,7 +254,7 @@ export function DungeonScreen(props: {
           <HealerPanel world={w} onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />
           <AntidotePanel world={w} onChange={props.onChange} />
-        </div>
+        </SideDock>
       </div>
     </div>
   );
