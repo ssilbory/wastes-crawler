@@ -15,7 +15,7 @@ import { createRng } from '../../rules/rng.ts';
 import { FightScreen } from '../arena/FightScreen.tsx';
 import { data, freshRng } from '../builder/data.ts';
 import { loadPlayable } from '../playable-store.ts';
-import type { Region } from '../../data/schemas/index.ts';
+import { isCampaign } from '../../game/world/region.ts';
 import {
   SLOTS,
   activeSlot,
@@ -35,6 +35,7 @@ import { IntroScreen } from './IntroScreen.tsx';
 import type { PartyScreen } from './PartyButtons.tsx';
 import { PartyScreens } from './PartyScreens.tsx';
 import { StartScreen } from './StartScreen.tsx';
+import type { WorldChoice } from './WorldPicker.tsx';
 import { crossOver } from '../../game/world/crossing.ts';
 import { Toasts, useAlerts } from './Toasts.tsx';
 import { trapFallen } from '../../game/dungeon/trap-falls.ts';
@@ -114,13 +115,13 @@ function WorldScreens(props: { track: (w: World, fresh?: boolean) => void }) {
     setScreen('map');
     changed(true);
   };
-  const start = (party: Recruit[], seed: string, map: Region | null) => {
+  const start = (party: Recruit[], seed: string, { map, realm }: WorldChoice) => {
     loadPlayable(map);
     const rng = seed.trim() ? createRng(seed.trim()) : freshRng();
-    world.current = newWorld(data, rng, party, undefined, map);
+    world.current = newWorld(data, rng, party, undefined, map, realm);
     setErrors([]);
-    // The campaign's introduction names its own lands; a custom map starts on the map.
-    setScreen(map ? 'map' : 'intro');
+    // The campaign's introduction names its own lands; a custom map or a realm starts on the map.
+    setScreen(isCampaign(world.current) ? 'intro' : 'map');
     changed(true);
   };
 

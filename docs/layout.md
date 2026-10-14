@@ -77,19 +77,19 @@ Output of `pnpm srd:extract` from `vendor/wwn-srd/`. Fix mirror errors in `tools
 
 ### data/content/ (hand-authored setting content)
 
-| Area              | Files                                                                                                                                          |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| Characters        | `peoples`, `racial-foci`, `backgrounds`, `class-options`, `traditions`, `focus-rules`, `skill-rules`, `starting-packages`, `starter-party`     |
-| Magic and combat  | `combat-magic` (72 spell/art effects), `spell-rules`, `magic-effects` (in-game effect lines), `monster-combat` (89 combat profiles), `mishaps` |
-| Monsters          | `monsters` (54 authored), `setting-monsters` (68 reskins of SRD monsters)                                                                      |
-| Gear and crafting | `shields`, `equipment-rules`, `components`, `crafting-rules`, `craftsmen`, `mods`                                                              |
-| World and travel  | `regions` (3 hex maps), `terrains`, `overland-rules`, `encounter-tables` (27), `coach-routes`, `coach-rules`, `mount-rules`, `groves`          |
-| Dungeons          | `dungeons` (8 hand-authored dungeons with ASCII levels), `ruins` (10 procedural ruin kinds)                                                    |
-| Worlds            | `worlds` (worlds played on their own beside the campaign, each a map with its dungeons: the Sealed Vale and Harrowmere)                        |
-| Towns and NPCs    | `town-rules`, `arena-cards`, `npc-rules`, `captives`, `mission-givers`, `quests` (25), `authorities`                                           |
-| Setting and story | `campaign` (intro, warlord's clock, crafter's notes, Seal), `factions`, `standing-orders`, `raid-rules`, `ailments`                            |
-| App               | `settings-defaults`, `sound-cues`                                                                                                              |
-| Editors           | `map-gen` (biomes, settlement odds, and names for the map editor's random maps)                                                                |
+| Area              | Files                                                                                                                                                                                   |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Characters        | `peoples`, `racial-foci`, `backgrounds`, `class-options`, `traditions`, `focus-rules`, `skill-rules`, `starting-packages`, `starter-party`                                              |
+| Magic and combat  | `combat-magic` (72 spell/art effects), `spell-rules`, `magic-effects` (in-game effect lines), `monster-combat` (89 combat profiles), `mishaps`                                          |
+| Monsters          | `monsters` (54 authored), `setting-monsters` (68 reskins of SRD monsters)                                                                                                               |
+| Gear and crafting | `shields`, `equipment-rules`, `components`, `crafting-rules`, `craftsmen`, `mods`                                                                                                       |
+| World and travel  | `regions` (3 campaign hex maps and the Wastes' 5), `realms` (the Wastes), `terrains`, `overland-rules`, `encounter-tables` (69), `coach-routes`, `coach-rules`, `mount-rules`, `groves` |
+| Dungeons          | `dungeons` (11 campaign dungeons and the Wastes' 5, with ASCII levels), `ruins` (40 procedural ruin sites)                                                                              |
+| Worlds            | `worlds` (single-map worlds played on their own beside the campaign, each a map with its dungeons: the Sealed Vale and Harrowmere); multi-map realms are in `realms`                    |
+| Towns and NPCs    | `town-rules`, `arena-cards`, `npc-rules`, `captives`, `mission-givers`, `quests` (25), `authorities`                                                                                    |
+| Setting and story | `campaign` (intro, warlord's clock, crafter's notes, Seal), `factions`, `standing-orders`, `raid-rules`, `ailments`                                                                     |
+| App               | `settings-defaults`, `sound-cues`                                                                                                                                                       |
+| Editors           | `map-gen` (biomes, settlement odds, and names for the map editor's random maps)                                                                                                         |
 
 `data/economy-sim.json` holds the economy validator's party, delve, and fight parameters.
 

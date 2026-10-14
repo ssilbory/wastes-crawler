@@ -412,5 +412,1114 @@
       ],
       "component": "ooze-essence"
     }
+  },
+  {
+    "id": "brackwater",
+    "name": "Brackwater",
+    "kind": "city",
+    "region": "wastes-fringe",
+    "level": 1,
+    "col": 16,
+    "row": 20,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 3,
+      "table": "wastes-1-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 6
+      }
+    ],
+    "vault": {
+      "guards": [
+        [
+          "dust-raider",
+          "dust-raider",
+          "dust-raider",
+          "dust-raider",
+          "dust-raider",
+          "raider-boss",
+          "raider-boss"
+        ]
+      ],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 6
+        }
+      ]
+    }
+  },
+  {
+    "id": "hollow-market",
+    "name": "Hollow Market",
+    "kind": "city",
+    "sewer": true,
+    "region": "wastes-fringe",
+    "level": 2,
+    "col": 18,
+    "row": 4,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 3,
+      "table": "wastes-1-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 6
+      }
+    ],
+    "vault": {
+      "guards": [
+        ["rust-sentinel", "rust-sentinel", "rust-sentinel", "rust-sentinel"],
+        ["dust-husk", "dust-husk", "dust-husk", "dust-husk"]
+      ],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 6
+        }
+      ],
+      "component": "cold-iron"
+    }
+  },
+  {
+    "id": "saint-oros-rest",
+    "name": "Saint Oro's Rest",
+    "kind": "city",
+    "region": "wastes-fringe",
+    "level": 1,
+    "col": 9,
+    "row": 21,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 3,
+      "table": "wastes-1-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 6
+      }
+    ],
+    "vault": {
+      "guards": [
+        [
+          "rust-sentinel",
+          "rust-sentinel",
+          "rust-sentinel",
+          "raider-boss",
+          "raider-boss",
+          "raider-boss"
+        ],
+        ["dust-raider", "dust-raider", "dust-raider", "dust-raider"]
+      ],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 6
+        }
+      ]
+    }
+  },
+  {
+    "id": "pumpworks-ward",
+    "name": "Pumpworks Ward",
+    "kind": "city",
+    "region": "wastes-fringe",
+    "level": 2,
+    "col": 9,
+    "row": 9,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 3,
+      "table": "wastes-1-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 6
+      }
+    ],
+    "vault": {
+      "guards": [
+        [
+          "sand-rat",
+          "sand-rat",
+          "sand-rat",
+          "sand-rat",
+          "sand-rat",
+          "sand-rat",
+          "sand-rat",
+          "sand-rat"
+        ],
+        ["gnoll", "gnoll", "gnoll", "gnoll"]
+      ],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 6
+        }
+      ],
+      "component": "grave-garnet"
+    }
+  },
+  {
+    "id": "dry-quarry",
+    "name": "The Dry Quarry",
+    "kind": "delve",
+    "region": "wastes-fringe",
+    "level": 2,
+    "col": 10,
+    "row": 15,
+    "depth": 2,
+    "size": {
+      "min": 8,
+      "max": 10
+    },
+    "wander": {
+      "every": 3,
+      "table": "wastes-1-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 6
+      }
+    ],
+    "vault": {
+      "guards": [
+        [
+          "dust-raider",
+          "dust-raider",
+          "dust-raider",
+          "dust-raider",
+          "dust-raider",
+          "raider-boss",
+          "raider-boss"
+        ]
+      ],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 6
+        }
+      ]
+    }
+  },
+  {
+    "id": "signal-tower",
+    "name": "The Signal Tower",
+    "kind": "tower",
+    "region": "wastes-fringe",
+    "level": 2,
+    "col": 26,
+    "row": 5,
+    "depth": 3,
+    "size": {
+      "min": 5,
+      "max": 7
+    },
+    "wander": {
+      "every": 3,
+      "table": "wastes-1-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 6
+      }
+    ],
+    "vault": {
+      "guards": [
+        ["rust-sentinel", "rust-sentinel", "rust-sentinel", "rust-sentinel"],
+        ["dust-husk", "dust-husk", "dust-husk", "dust-husk"]
+      ],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 6
+        }
+      ],
+      "component": "cold-iron"
+    }
+  },
+  {
+    "id": "karsh-town",
+    "name": "Karsh Town",
+    "kind": "city",
+    "sewer": true,
+    "region": "wastes-glass",
+    "level": 3,
+    "col": 8,
+    "row": 5,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 3,
+      "table": "wastes-2-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 8
+      }
+    ],
+    "vault": {
+      "guards": [
+        ["salt-baron", "raider-veteran", "raider-veteran", "raider-veteran", "raider-veteran"],
+        ["sand-shaman", "sand-shaman"]
+      ],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 8
+        }
+      ],
+      "component": "beast-hide"
+    }
+  },
+  {
+    "id": "glassfall",
+    "name": "Glassfall",
+    "kind": "city",
+    "region": "wastes-glass",
+    "level": 3,
+    "col": 5,
+    "row": 20,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 3,
+      "table": "wastes-2-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 8
+      }
+    ],
+    "vault": {
+      "guards": [
+        ["salt-wight", "salt-wight", "salt-wight", "salt-wight", "salt-wight", "salt-wight"],
+        ["tomb-guard", "tomb-guard"]
+      ],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 8
+        }
+      ],
+      "component": "cold-iron"
+    }
+  },
+  {
+    "id": "whitegate",
+    "name": "Whitegate",
+    "kind": "city",
+    "region": "wastes-glass",
+    "level": 4,
+    "col": 21,
+    "row": 19,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 3,
+      "table": "wastes-2-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 8
+      }
+    ],
+    "vault": {
+      "guards": [["glass-golem", "glass-golem", "glass-golem", "glass-golem", "tomb-guard"]],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 8
+        }
+      ],
+      "component": "ooze-essence"
+    }
+  },
+  {
+    "id": "cinder-crossing",
+    "name": "Cinder Crossing",
+    "kind": "city",
+    "region": "wastes-glass",
+    "level": 4,
+    "col": 21,
+    "row": 12,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 3,
+      "table": "wastes-2-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 8
+      }
+    ],
+    "vault": {
+      "guards": [
+        [
+          "glass-scorpion",
+          "glass-scorpion",
+          "glass-scorpion",
+          "giant-black-widow",
+          "giant-black-widow"
+        ]
+      ],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 8
+        }
+      ],
+      "component": "grave-garnet"
+    }
+  },
+  {
+    "id": "salt-pits",
+    "name": "The Salt Pits",
+    "kind": "delve",
+    "region": "wastes-glass",
+    "level": 4,
+    "col": 4,
+    "row": 7,
+    "depth": 3,
+    "size": {
+      "min": 8,
+      "max": 10
+    },
+    "wander": {
+      "every": 3,
+      "table": "wastes-2-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 8
+      }
+    ],
+    "vault": {
+      "guards": [
+        ["salt-baron", "raider-veteran", "raider-veteran", "raider-veteran", "raider-veteran"],
+        ["sand-shaman", "sand-shaman"]
+      ],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 8
+        }
+      ],
+      "component": "beast-hide"
+    }
+  },
+  {
+    "id": "mirror-spire",
+    "name": "The Mirror Spire",
+    "kind": "tower",
+    "region": "wastes-glass",
+    "level": 4,
+    "col": 19,
+    "row": 4,
+    "depth": 3,
+    "size": {
+      "min": 5,
+      "max": 7
+    },
+    "wander": {
+      "every": 3,
+      "table": "wastes-2-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 8
+      }
+    ],
+    "vault": {
+      "guards": [
+        ["salt-wight", "salt-wight", "salt-wight", "salt-wight", "salt-wight", "salt-wight"],
+        ["tomb-guard", "tomb-guard"]
+      ],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 8
+        }
+      ],
+      "component": "cold-iron"
+    }
+  },
+  {
+    "id": "sunken-qasr",
+    "name": "The Sunken Qasr",
+    "kind": "city",
+    "sewer": true,
+    "region": "wastes-dunes",
+    "level": 5,
+    "col": 14,
+    "row": 19,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 2,
+      "table": "wastes-3-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 8
+      }
+    ],
+    "vault": {
+      "guards": [["dune-khan", "sun-hound", "sun-hound"], ["dune-sorcerer"]],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 8
+        }
+      ],
+      "component": "beast-hide"
+    }
+  },
+  {
+    "id": "drifted-caravanserai",
+    "name": "The Drifted Caravanserai",
+    "kind": "city",
+    "region": "wastes-dunes",
+    "level": 5,
+    "col": 21,
+    "row": 6,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 2,
+      "table": "wastes-3-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 8
+      }
+    ],
+    "vault": {
+      "guards": [
+        ["sand-elemental", "sand-elemental", "sand-elemental"],
+        ["scarab-swarm", "scarab-swarm"]
+      ],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 8
+        }
+      ],
+      "component": "cold-iron"
+    }
+  },
+  {
+    "id": "tel-amaru",
+    "name": "Tel Amaru",
+    "kind": "city",
+    "region": "wastes-dunes",
+    "level": 6,
+    "col": 24,
+    "row": 14,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 2,
+      "table": "wastes-3-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 8
+      }
+    ],
+    "vault": {
+      "guards": [["ash-walker", "ash-walker", "ash-walker", "tomb-guard"], ["dune-sorcerer"]],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 8
+        }
+      ],
+      "component": "ooze-essence"
+    }
+  },
+  {
+    "id": "barge-graveyard",
+    "name": "The Barge Graveyard",
+    "kind": "city",
+    "region": "wastes-dunes",
+    "level": 6,
+    "col": 6,
+    "row": 4,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 2,
+      "table": "wastes-3-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 8
+      }
+    ],
+    "vault": {
+      "guards": [
+        ["dune-manticore", "dune-manticore", "dune-manticore"],
+        ["sun-hound", "sun-hound", "dune-sorcerer"]
+      ],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 8
+        }
+      ],
+      "component": "grave-garnet"
+    }
+  },
+  {
+    "id": "dune-catacombs",
+    "name": "The Dune Catacombs",
+    "kind": "delve",
+    "region": "wastes-dunes",
+    "level": 6,
+    "col": 27,
+    "row": 21,
+    "depth": 3,
+    "size": {
+      "min": 8,
+      "max": 10
+    },
+    "wander": {
+      "every": 2,
+      "table": "wastes-3-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 8
+      }
+    ],
+    "vault": {
+      "guards": [["dune-khan", "sun-hound", "sun-hound"], ["dune-sorcerer"]],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 8
+        }
+      ],
+      "component": "beast-hide"
+    }
+  },
+  {
+    "id": "wind-minaret",
+    "name": "The Wind Minaret",
+    "kind": "tower",
+    "region": "wastes-dunes",
+    "level": 6,
+    "col": 2,
+    "row": 3,
+    "depth": 4,
+    "size": {
+      "min": 5,
+      "max": 7
+    },
+    "wander": {
+      "every": 2,
+      "table": "wastes-3-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 8
+      }
+    ],
+    "vault": {
+      "guards": [
+        ["sand-elemental", "sand-elemental", "sand-elemental"],
+        ["scarab-swarm", "scarab-swarm"]
+      ],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 8
+        }
+      ],
+      "component": "cold-iron"
+    }
+  },
+  {
+    "id": "charnel-town",
+    "name": "Charnel Town",
+    "kind": "city",
+    "sewer": true,
+    "region": "wastes-bonefields",
+    "level": 7,
+    "col": 9,
+    "row": 19,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 2,
+      "table": "wastes-4-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 10
+      }
+    ],
+    "vault": {
+      "guards": [["ossuary-lord", "bone-reaver", "bone-reaver"], ["sun-mage"]],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 10
+        }
+      ],
+      "component": "beast-hide"
+    }
+  },
+  {
+    "id": "gallowsgate",
+    "name": "Gallowsgate",
+    "kind": "city",
+    "region": "wastes-bonefields",
+    "level": 7,
+    "col": 16,
+    "row": 11,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 2,
+      "table": "wastes-4-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 10
+      }
+    ],
+    "vault": {
+      "guards": [
+        ["bone-golem", "bone-golem", "bone-golem", "bone-reaver", "bone-reaver"],
+        ["ash-walker", "ash-walker", "ash-walker"]
+      ],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 10
+        }
+      ],
+      "component": "cold-iron"
+    }
+  },
+  {
+    "id": "marrowmarket",
+    "name": "Marrowmarket",
+    "kind": "city",
+    "region": "wastes-bonefields",
+    "level": 8,
+    "col": 4,
+    "row": 13,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 2,
+      "table": "wastes-4-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 10
+      }
+    ],
+    "vault": {
+      "guards": [["mummy", "mummy", "mummy", "mummy"], ["sun-mage"]],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 10
+        }
+      ],
+      "component": "ooze-essence"
+    }
+  },
+  {
+    "id": "burnt-assize",
+    "name": "The Burnt Assize",
+    "kind": "city",
+    "region": "wastes-bonefields",
+    "level": 8,
+    "col": 2,
+    "row": 1,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 2,
+      "table": "wastes-4-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 10
+      }
+    ],
+    "vault": {
+      "guards": [
+        ["bone-crawler", "bone-crawler", "bone-crawler"],
+        ["bone-reaver", "bone-reaver", "bone-reaver"]
+      ],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 10
+        }
+      ],
+      "component": "grave-garnet"
+    }
+  },
+  {
+    "id": "ossuary-pits",
+    "name": "The Ossuary Pits",
+    "kind": "delve",
+    "region": "wastes-bonefields",
+    "level": 8,
+    "col": 18,
+    "row": 16,
+    "depth": 4,
+    "size": {
+      "min": 8,
+      "max": 10
+    },
+    "wander": {
+      "every": 2,
+      "table": "wastes-4-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 10
+      }
+    ],
+    "vault": {
+      "guards": [["ossuary-lord", "bone-reaver", "bone-reaver"], ["sun-mage"]],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 10
+        }
+      ],
+      "component": "beast-hide"
+    }
+  },
+  {
+    "id": "spire-of-ribs",
+    "name": "The Spire of Ribs",
+    "kind": "tower",
+    "region": "wastes-bonefields",
+    "level": 8,
+    "col": 1,
+    "row": 15,
+    "depth": 4,
+    "size": {
+      "min": 5,
+      "max": 7
+    },
+    "wander": {
+      "every": 2,
+      "table": "wastes-4-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 10
+      }
+    ],
+    "vault": {
+      "guards": [
+        ["bone-golem", "bone-golem", "bone-golem", "bone-reaver", "bone-reaver"],
+        ["ash-walker", "ash-walker", "ash-walker"]
+      ],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 10
+        }
+      ],
+      "component": "cold-iron"
+    }
+  },
+  {
+    "id": "throne-outskirts",
+    "name": "The Throne-City Outskirts",
+    "kind": "city",
+    "sewer": true,
+    "region": "wastes-sunscar",
+    "level": 9,
+    "col": 26,
+    "row": 8,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 2,
+      "table": "wastes-5-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 12
+      }
+    ],
+    "vault": {
+      "guards": [["throne-champion", "throne-champion", "mummy-lord"]],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 12
+        }
+      ],
+      "component": "beast-hide"
+    }
+  },
+  {
+    "id": "gilded-ward",
+    "name": "The Gilded Ward",
+    "kind": "city",
+    "region": "wastes-sunscar",
+    "level": 9,
+    "col": 9,
+    "row": 15,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 2,
+      "table": "wastes-5-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 12
+      }
+    ],
+    "vault": {
+      "guards": [["glass-wyrm", "dread-sandbeast"], ["mummy-lord"]],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 12
+        }
+      ],
+      "component": "cold-iron"
+    }
+  },
+  {
+    "id": "glass-cathedral",
+    "name": "The Glass Cathedral District",
+    "kind": "city",
+    "sewer": true,
+    "region": "wastes-sunscar",
+    "level": 10,
+    "col": 28,
+    "row": 17,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 2,
+      "table": "wastes-5-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 12
+      }
+    ],
+    "vault": {
+      "guards": [["sunscar-colossus", "sunscar-colossus"]],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 12
+        }
+      ],
+      "component": "ooze-essence"
+    }
+  },
+  {
+    "id": "sun-gate",
+    "name": "The Sun Gate",
+    "kind": "city",
+    "region": "wastes-sunscar",
+    "level": 10,
+    "col": 21,
+    "row": 2,
+    "depth": 1,
+    "size": {
+      "min": 12,
+      "max": 14
+    },
+    "wander": {
+      "every": 2,
+      "table": "wastes-5-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 12
+      }
+    ],
+    "vault": {
+      "guards": [["dread-sandbeast", "throne-champion"], ["mummy-lord"]],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 12
+        }
+      ],
+      "component": "grave-garnet"
+    }
+  },
+  {
+    "id": "furnace-deeps",
+    "name": "The Furnace Deeps",
+    "kind": "delve",
+    "region": "wastes-sunscar",
+    "level": 10,
+    "col": 22,
+    "row": 17,
+    "depth": 4,
+    "size": {
+      "min": 8,
+      "max": 10
+    },
+    "wander": {
+      "every": 2,
+      "table": "wastes-5-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 12
+      }
+    ],
+    "vault": {
+      "guards": [["throne-champion", "throne-champion", "mummy-lord"]],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 12
+        }
+      ],
+      "component": "beast-hide"
+    }
+  },
+  {
+    "id": "pillar-of-noon",
+    "name": "The Pillar of Noon",
+    "kind": "tower",
+    "region": "wastes-sunscar",
+    "level": 10,
+    "col": 15,
+    "row": 1,
+    "depth": 4,
+    "size": {
+      "min": 5,
+      "max": 7
+    },
+    "wander": {
+      "every": 2,
+      "table": "wastes-5-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 12
+      }
+    ],
+    "vault": {
+      "guards": [["glass-wyrm", "dread-sandbeast"], ["mummy-lord"]],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 12
+        }
+      ],
+      "component": "cold-iron"
+    }
   }
 ]

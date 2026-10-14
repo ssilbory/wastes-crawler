@@ -16,7 +16,7 @@ import { reactionBonus } from './minds.ts';
 import { allMounted } from './mounts.ts';
 import { captiveOf, firstGuide, npcMonster } from './npcs.ts';
 import { sharedEyes } from './companion-sync.ts';
-import { regionMap } from './region.ts';
+import { isCampaign, regionMap } from './region.ts';
 import type { Member, World } from './types.ts';
 import { identify } from './bestiary.ts';
 
@@ -37,10 +37,10 @@ export interface Rolled {
 /**
  * A group's captive, if their home is in the party's region (Sam's calls, docs/rules-adaptation.md,
  * Rescues): no one is bound for another region, so a table shared across regions holds none there.
- * Captives are bound for the campaign's towns, so a custom map's groups hold none.
+ * Captives are bound for the campaign's towns, so a custom map's or a realm's groups hold none.
  */
 function captiveHere(w: World, data: GameData, id: string | undefined): string | null {
-  if (id === undefined || w.map !== null) return null;
+  if (id === undefined || !isCampaign(w)) return null;
   const home = data.content.captives.find((c) => c.id === id)?.destination;
   return regionMap(data, w.region).sites.some((s) => s.id === home) ? id : null;
 }

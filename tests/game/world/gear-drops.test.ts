@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { characterSheet } from '../../../src/game/character/derived.ts';
 import type { InventoryEntry } from '../../../src/game/character/items.ts';
 import { findPeople } from '../../../src/game/character/people.ts';
-import { atGuardedVault } from '../../../src/game/dungeon/ruins.ts';
+import { atGuardedHoard } from '../../../src/game/dungeon/ruins.ts';
 import { dropGear, dropsGear } from '../../../src/game/world/gear-drops.ts';
 import { memberSheet } from '../../../src/game/world/members.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
@@ -250,7 +250,7 @@ describe('a drop’s cost in loot dice', () => {
 
 describe('boss fights and magic armor', () => {
   it('counts no vault outside a dungeon', () => {
-    expect(atGuardedVault(world(), data)).toBe(false);
+    expect(atGuardedHoard(world(), data)).toBe(false);
   });
 
   it('adds magic armor’s bonus to its AC, within the +3 cap (SRD 4.9.3, 2.8.4)', () => {

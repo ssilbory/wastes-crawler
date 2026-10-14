@@ -48,6 +48,28 @@ export function HexArtDefs() {
         <path class="mesa" d="M-0.95,0.55L-0.62,-0.2H0.5L0.88,0.55Z" />
         <path d="M-0.5,0.05h0.9M-0.2,-0.2l0.08,0.75M0.25,-0.2l-0.06,0.4" />
       </symbol>
+      <symbol id="hg-desert" viewBox="-1 -1 2 2" class="glyph">
+        <path d="M-0.75,0.3q0.2,-0.18 0.4,0t0.4,0M0.0,-0.15q0.2,-0.18 0.4,0t0.35,0" />
+        <circle class="pebble" cx="-0.15" cy="0.55" r="0.08" />
+      </symbol>
+      <symbol id="hg-dunes" viewBox="-1 -1 2 2" class="glyph">
+        <path class="dune" d="M-0.95,0.5Q-0.35,-0.55 0.25,0.1Q0.6,-0.3 0.95,0.5Z" />
+        <path d="M-0.35,-0.2Q-0.1,0.1 -0.2,0.5" />
+      </symbol>
+      <symbol id="hg-salt-flats" viewBox="-1 -1 2 2" class="glyph">
+        <path
+          class="salt"
+          d="M-0.7,0.1l0.35,-0.25l0.35,0.25l0.35,-0.25l0.35,0.25M-0.5,0.45l0.3,0.2l0.3,-0.2"
+        />
+      </symbol>
+      <symbol id="hg-oasis" viewBox="-1 -1 2 2" class="glyph">
+        <ellipse class="pool" cx="0" cy="0.55" rx="0.75" ry="0.25" />
+        <path class="trunk" d="M-0.25,0.45Q-0.3,-0.1 -0.1,-0.5M0.3,0.45Q0.35,0 0.2,-0.35" />
+        <path
+          class="frond"
+          d="M-0.1,-0.5l-0.45,0.15M-0.1,-0.5l0.4,0.1M-0.1,-0.5l-0.15,0.35M0.2,-0.35l0.4,0.15M0.2,-0.35l-0.35,0.05"
+        />
+      </symbol>
       <symbol id="hg-lake" viewBox="-1 -1 2 2" class="glyph">
         <path
           class="water"

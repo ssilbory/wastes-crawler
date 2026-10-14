@@ -5,7 +5,7 @@
 // then the fight itself, with wounds, Frailty, strain, and spent spells carried through. It
 // reports the win rate at the quest's minimum level and the lowest level that wins at least 70%
 // of the time (Sam's target is 70-85% at the minimum level). Quest guardians reinforced by the
-// warlord's clock are measured at tier 1.
+// warlord's clock are measured at tier 1. Each dungeon level's guarded hoard is its boss.
 //
 //   pnpm balance -- --runs 200 --seed balance
 import { fights, MAX_LEVEL, RUNS, SEED, TARGET, winRate, type Step } from './balance/gauntlet.ts';

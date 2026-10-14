@@ -3194,5 +3194,6365 @@
         "garrisons": []
       }
     ]
+  },
+  {
+    "id": "buried-waterworks",
+    "name": "The Buried Waterworks",
+    "region": "wastes-fringe",
+    "entrance": {
+      "col": 29,
+      "row": 21
+    },
+    "entry": {
+      "level": "buried-waterworks-1",
+      "at": {
+        "x": 5,
+        "y": 7
+      },
+      "facing": "n"
+    },
+    "levels": [
+      {
+        "id": "buried-waterworks-1",
+        "name": "The Pump House",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|>    | | | | | | | |",
+          "+-+ + +-+-+-+-+-+-+-+",
+          "| |   | | | |       |",
+          "+-+ + +-+-+-+ +-+ + +",
+          "| |   | | |   | |   |",
+          "+-+-+d+-+-+ + +-+ + +",
+          "| | |         | |   |",
+          "+-+-+ +-+-+d+-+-+s+-+",
+          "| | | | | | | | | | |",
+          "+-+-+ +-+-+ +-+-+ +-+",
+          "| | | | | | | | | | |",
+          "+-+-+ +-+-+ +-+-+ +-+",
+          "| | | | | | | | | | |",
+          "+-+-+ +-+-+d+-+-+ +-+",
+          "| | |   s  <  d d   |",
+          "+-+-+-+-+ + + +-+ + +",
+          "| | | | |     dTd   |",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 5,
+              "y": 7
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "to": {
+              "level": "buried-waterworks-2",
+              "at": {
+                "x": 0,
+                "y": 4
+              },
+              "facing": "e"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "wastes-1-deep"
+        },
+        "safe": [
+          {
+            "x": 4,
+            "y": 7
+          },
+          {
+            "x": 4,
+            "y": 8
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 3,
+              "y": 7
+            },
+            "side": "e",
+            "difficulty": 8
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 3
+            },
+            "side": "s",
+            "difficulty": 8
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 7,
+              "y": 8
+            },
+            "name": "loose grating",
+            "notice": 9,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 8
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 1,
+                "sides": 8,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 9,
+              "y": 8
+            },
+            "text": "Faded paint on the wall: FRINGE WATER BOARD. NO DRINKING FROM THE SETTLING TANKS."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 1,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 6
+              }
+            ],
+            "guards": [
+              [
+                "dust-raider",
+                "dust-raider",
+                "dust-raider",
+                "dust-raider",
+                "dust-raider",
+                "raider-boss",
+                "raider-boss"
+              ]
+            ],
+            "text": "Raider boss Krell kicks over a table of stolen tins. “That’s ours,” she says, and her gang draws steel."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 9,
+              "y": 3
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 6
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 1,
+              "y": 1
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 1,
+              "y": 2
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 2
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 2
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 1
+            },
+            "kind": "rubble"
+          }
+        ]
+      },
+      {
+        "id": "buried-waterworks-2",
+        "name": "The Settling Tanks",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | |>      | |",
+          "+-+-+-+-+-+-+ + + +-+",
+          "|       | | |     | |",
+          "+ + + + +-+-+ + + +-+",
+          "|       | | |     | |",
+          "+-+-+d+-+-+-+-+d+-+-+",
+          "| | | | | | | | | | |",
+          "+-+-+ +-+-+-+-+d+-+-+",
+          "|<      | | | |   | |",
+          "+ + + + +-+-+-+ + +-+",
+          "|             d   | |",
+          "+ + + + +-+-+-+-+ +-+",
+          "|       | | | | |T| |",
+          "+-+-+-+ +-+-+-+-+ +-+",
+          "| | | | | |       | |",
+          "+-+-+-+ +-+ + + +-+-+",
+          "| | | |   s     | | |",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 0,
+              "y": 4
+            },
+            "to": {
+              "level": "buried-waterworks-1",
+              "at": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": "e"
+            }
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 0
+            },
+            "to": {
+              "level": "buried-waterworks-3",
+              "at": {
+                "x": 6,
+                "y": 5
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "wastes-1-deep"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 5
+          },
+          {
+            "x": 0,
+            "y": 6
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 4,
+              "y": 8
+            },
+            "side": "e",
+            "difficulty": 8
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 8,
+              "y": 6
+            },
+            "name": "dart trap",
+            "notice": 9,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 8
+            },
+            "save": "evasion",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 1,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 0,
+              "y": 1
+            },
+            "text": "The tanks are dry, but the air down here is cool and smells of rust and old rain."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 6,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 6
+              }
+            ],
+            "component": "ooze-essence",
+            "guards": [
+              ["rust-sentinel", "rust-sentinel", "rust-sentinel", "rust-sentinel"],
+              ["dust-husk", "dust-husk", "dust-husk", "dust-husk"]
+            ],
+            "text": "Brass watchmen grind to life around the pump-house strongbox, and the drowned dead stand up behind them."
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 6,
+              "y": 1
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 2
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 1
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 5
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 2
+            },
+            "kind": "rubble"
+          }
+        ]
+      },
+      {
+        "id": "buried-waterworks-3",
+        "name": "The Valve Galleries",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | |     | | | |",
+          "+-+-+-+-+ + + +-+-+-+",
+          "| | | | |     | | | |",
+          "+-+-+-+-+-+-+d+-+-+-+",
+          "| | | | | | | | | | |",
+          "+-+-+-+-+-+-+ +-+-+-+",
+          "| |   s       | |   |",
+          "+-+ + +-+-+-+ +-+ + +",
+          "| |   d  T   T  |   |",
+          "+-+d+-+-+-+-+d+ + + +",
+          "|         d  <d d   |",
+          "+ + +-+-+-+ + + +-+-+",
+          "| | | | | |   | | | |",
+          "+ + +-+-+-+ +-+ +-+-+",
+          "|   | | | | | | | | |",
+          "+ + +-+-+-+ +-+s+-+-+",
+          "|   | | | |     | | |",
+          "+ +-+-+-+-+ + + +-+-+",
+          "|>| | | | |     | | |",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 6,
+              "y": 5
+            },
+            "to": {
+              "level": "buried-waterworks-2",
+              "at": {
+                "x": 5,
+                "y": 0
+              },
+              "facing": "e"
+            }
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 9
+            },
+            "to": {
+              "level": "buried-waterworks-4",
+              "at": {
+                "x": 9,
+                "y": 5
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "wastes-1-deep"
+        },
+        "safe": [
+          {
+            "x": 5,
+            "y": 5
+          },
+          {
+            "x": 5,
+            "y": 6
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 7,
+              "y": 7
+            },
+            "side": "s",
+            "difficulty": 8
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 3
+            },
+            "side": "e",
+            "difficulty": 8
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 4,
+              "y": 4
+            },
+            "name": "dart trap",
+            "notice": 9,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 8
+            },
+            "save": "evasion",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 1,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 4
+            },
+            "name": "dart trap",
+            "notice": 9,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 8
+            },
+            "save": "evasion",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 1,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 5,
+              "y": 8
+            },
+            "text": "Someone has chalked a tally of the dead beside the valve wheels. The last mark is fresh."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 0,
+              "y": 8
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 6
+              }
+            ],
+            "guards": [
+              [
+                "rust-sentinel",
+                "rust-sentinel",
+                "rust-sentinel",
+                "raider-boss",
+                "raider-boss",
+                "raider-boss"
+              ],
+              ["dust-raider", "dust-raider", "dust-raider", "dust-raider"]
+            ],
+            "text": "The Pumpmaster’s gang holds the valve room, his rust-eaten sentinels clanking at his side."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 6,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 6
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 0,
+              "y": 7
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 1,
+              "y": 7
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 9
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 9
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 1
+            },
+            "kind": "rubble"
+          }
+        ]
+      },
+      {
+        "id": "buried-waterworks-4",
+        "name": "The Rat Cistern",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | |T          s     |",
+          "+-+-+d+-+-+-+-+-+ + + +",
+          "|>d   | | | | | |     |",
+          "+-+ + +-+-+-+-+-+d+-+s+",
+          "| |   | |   d       |T|",
+          "+-+ + +-+ + +-+-+ + + +",
+          "| |     d   | | | | | |",
+          "+-+-+d+-+ + +-+-+d+ + +",
+          "| | | | |   | | |   | |",
+          "+-+-+ +-+-+-+-+-+ + + +",
+          "|     d         d  <  |",
+          "+ + + +-+-+-+-+-+-+-+ +",
+          "|     | | | | | | | | |",
+          "+ + + +-+-+-+-+-+-+-+d+",
+          "|     | | | | |       |",
+          "+-+-+-+-+-+-+-+ + + + +",
+          "| | | | | | | |       |",
+          "+-+-+-+-+-+-+-+ + + + +",
+          "| | | | | | | |       |",
+          "+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 9,
+              "y": 5
+            },
+            "to": {
+              "level": "buried-waterworks-3",
+              "at": {
+                "x": 0,
+                "y": 9
+              },
+              "facing": "n"
+            }
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 1
+            },
+            "to": {
+              "level": "buried-waterworks-5",
+              "at": {
+                "x": 2,
+                "y": 6
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-1-deep"
+        },
+        "safe": [
+          {
+            "x": 8,
+            "y": 4
+          },
+          {
+            "x": 8,
+            "y": 5
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 7,
+              "y": 0
+            },
+            "side": "e",
+            "difficulty": 8
+          },
+          {
+            "at": {
+              "x": 10,
+              "y": 1
+            },
+            "side": "s",
+            "difficulty": 8
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 2,
+              "y": 0
+            },
+            "name": "loose grating",
+            "notice": 10,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 9
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 1,
+                "sides": 8,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 10,
+              "y": 2
+            },
+            "name": "loose grating",
+            "notice": 10,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 9
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 1,
+                "sides": 8,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 10,
+              "y": 1
+            },
+            "text": "Gnawed bones carpet the cistern lip. Most are rat. Some are not."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 1,
+              "y": 1
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 6
+              }
+            ],
+            "component": "beast-hide",
+            "guards": [
+              [
+                "sand-rat",
+                "sand-rat",
+                "sand-rat",
+                "sand-rat",
+                "sand-rat",
+                "sand-rat",
+                "sand-rat",
+                "sand-rat"
+              ],
+              ["gnoll", "gnoll", "gnoll", "gnoll"]
+            ],
+            "text": "Hyena-folk feast in the cistern, and the rats that serve them pour out of the drains."
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 1,
+              "y": 2
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 1,
+              "y": 3
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 1,
+              "y": 7
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 10,
+              "y": 9
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 6
+            },
+            "kind": "rubble"
+          }
+        ]
+      },
+      {
+        "id": "buried-waterworks-5",
+        "name": "The Sealed Reservoir",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+",
+          "|     | | | |       | |",
+          "+ + + +-+-+-+ + + + +-+",
+          "|     | | | |       | |",
+          "+ + + +-+-+-+-+-+d+-+-+",
+          "|     | | | | | |T| | |",
+          "+-+ +-+-+-+-+-+-+ +-+-+",
+          "| | | | | | | | | |   |",
+          "+-+ +-+-+-+-+-+-+ + + +",
+          "| | |        T        |",
+          "+-+d+s+-+-+-+-+-+ +d+-+",
+          "| |   | | | | | | | | |",
+          "+-+ + +-+-+-+-+-+d+ +-+",
+          "| |  <d             | |",
+          "+-+d+-+-+-+-+ + + + +-+",
+          "| | | | | | |       | |",
+          "+-+d+-+-+-+-+-+-+s+-+-+",
+          "| |          T    | | |",
+          "+-+ + +-+-+-+-+-+-+-+-+",
+          "| |   | | | | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 2,
+              "y": 6
+            },
+            "to": {
+              "level": "buried-waterworks-4",
+              "at": {
+                "x": 0,
+                "y": 1
+              },
+              "facing": "e"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-1-deep"
+        },
+        "safe": [
+          {
+            "x": 1,
+            "y": 5
+          },
+          {
+            "x": 1,
+            "y": 6
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 2,
+              "y": 4
+            },
+            "side": "s",
+            "difficulty": 8
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 7
+            },
+            "side": "s",
+            "difficulty": 8
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 6,
+              "y": 4
+            },
+            "name": "loose grating",
+            "notice": 10,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 9
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 1,
+                "sides": 8,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 2
+            },
+            "name": "alarm gong",
+            "notice": 10,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 9
+            },
+            "save": null,
+            "effect": {
+              "kind": "alarm"
+            }
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 8
+            },
+            "name": "alarm gong",
+            "notice": 10,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 9
+            },
+            "save": null,
+            "effect": {
+              "kind": "alarm"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 0
+            },
+            "text": "A brass plate reads: RESERVE OF LAST RESORT. TO BE OPENED BY THE WATERWARDEN ALONE."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 6,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 4,
+                "sides": 6
+              }
+            ],
+            "component": "grave-garnet",
+            "guards": [
+              ["rust-sentinel", "rust-sentinel", "rust-sentinel", "rust-sentinel", "rust-sentinel"],
+              ["raider-boss", "raider-boss", "raider-boss", "raider-boss"]
+            ],
+            "text": "The Waterwarden, a great sentinel of green brass, wakes over the last sealed reservoir with its guard."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 8,
+              "y": 6
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 6
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 6,
+              "y": 1
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 0
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 8
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 6
+            },
+            "kind": "rubble"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "karsh-mines",
+    "name": "The Salt Mines of Karsh",
+    "region": "wastes-glass",
+    "entrance": {
+      "col": 27,
+      "row": 3
+    },
+    "entry": {
+      "level": "karsh-mines-1",
+      "at": {
+        "x": 1,
+        "y": 6
+      },
+      "facing": "e"
+    },
+    "levels": [
+      {
+        "id": "karsh-mines-1",
+        "name": "The Toll Shaft",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | |      >| |",
+          "+-+-+-+-+-+-+ + + +-+-+",
+          "|           d     | | |",
+          "+ + + + +-+-+-+d+-+-+-+",
+          "|       d          T  |",
+          "+d+-+d+-+-+-+-+ +-+-+s+",
+          "| | | | | | | | | |   |",
+          "+ +-+ +-+-+-+-+ +-+ + +",
+          "| | | | | |   d   d   |",
+          "+ +-+ +-+-+ + +-+-+-+-+",
+          "| | | | | |   | | | | |",
+          "+ +-+s+-+-+ + +-+-+-+-+",
+          "|  <  d   d   | | | | |",
+          "+-+ + +-+-+-+-+-+-+-+-+",
+          "| |   | | | | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 1,
+              "y": 6
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 0
+            },
+            "to": {
+              "level": "karsh-mines-2",
+              "at": {
+                "x": 2,
+                "y": 3
+              },
+              "facing": "e"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "wastes-2-deep"
+        },
+        "safe": [
+          {
+            "x": 1,
+            "y": 7
+          },
+          {
+            "x": 2,
+            "y": 6
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 2,
+              "y": 5
+            },
+            "side": "s",
+            "difficulty": 9
+          },
+          {
+            "at": {
+              "x": 10,
+              "y": 2
+            },
+            "side": "s",
+            "difficulty": 9
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 9,
+              "y": 2
+            },
+            "name": "needle plate",
+            "notice": 10,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 9
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 5
+            },
+            "text": "Carved over the shaft: KARSH SALT COMPANY. EVERY GRAIN COUNTED."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 8,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 8
+              }
+            ],
+            "guards": [
+              [
+                "salt-baron",
+                "raider-veteran",
+                "raider-veteran",
+                "raider-veteran",
+                "raider-veteran"
+              ],
+              ["sand-shaman", "sand-shaman"]
+            ],
+            "text": "Baron Ossek’s toll-men bar the shaft. “Every grain of salt here is taxed,” he says. “So is every breath.”"
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 1,
+              "y": 2
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 8
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 6,
+              "y": 0
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 1
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 6
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 10,
+              "y": 4
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 1
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 6
+            },
+            "kind": "rubble"
+          }
+        ]
+      },
+      {
+        "id": "karsh-mines-2",
+        "name": "The White Galleries",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | |     | | |>| | |",
+          "+-+-+-+ + + +-+-+d+-+-+",
+          "| | | |     | | |     |",
+          "+-+-+-+s+-+d+-+-+ + + +",
+          "| | | | | | | | |     |",
+          "+-+-+-+ +-+ +-+-+ + + +",
+          "| |  <d     | | |     |",
+          "+-+ + + +-+-+-+-+-+ + +",
+          "| |            T      |",
+          "+-+d+-+ +-+-+-+-+-+ +-+",
+          "| | | | | | | |     | |",
+          "+-+ +-+ +-+-+-+ + +-+-+",
+          "| | | |       s   | | |",
+          "+-+d+-+ +-+-+-+-+-+-+-+",
+          "|   | | | | | | | | | |",
+          "+ + +-+d+-+-+-+-+-+-+-+",
+          "|   d d       | | | | |",
+          "+-+ +-+ + + + +-+-+-+-+",
+          "| |   d       | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 2,
+              "y": 3
+            },
+            "to": {
+              "level": "karsh-mines-1",
+              "at": {
+                "x": 9,
+                "y": 0
+              },
+              "facing": "w"
+            }
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 0
+            },
+            "to": {
+              "level": "karsh-mines-3",
+              "at": {
+                "x": 2,
+                "y": 3
+              },
+              "facing": "e"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "wastes-2-deep"
+        },
+        "safe": [
+          {
+            "x": 1,
+            "y": 3
+          },
+          {
+            "x": 1,
+            "y": 4
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 3,
+              "y": 1
+            },
+            "side": "s",
+            "difficulty": 9
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 6
+            },
+            "side": "e",
+            "difficulty": 9
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 7,
+              "y": 4
+            },
+            "name": "salt slide",
+            "notice": 10,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 9
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 2,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 4,
+              "y": 0
+            },
+            "text": "The walls glitter. Faces seem to press out of the salt, and some of them blink."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 8,
+              "y": 1
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 8
+              }
+            ],
+            "component": "ironwood",
+            "guards": [
+              ["salt-wight", "salt-wight", "salt-wight", "salt-wight", "salt-wight", "salt-wight"],
+              ["tomb-guard", "tomb-guard"]
+            ],
+            "text": "White shapes peel off the salt walls, and a dead overseer in rusted plate raises his whip."
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 8,
+              "y": 2
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 3
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 8
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 6
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 1
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 0
+            },
+            "kind": "rubble"
+          }
+        ]
+      },
+      {
+        "id": "karsh-mines-3",
+        "name": "The Payroll Lift",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | |               | |",
+          "+-+-+ + + + +-+-+-+ +-+",
+          "| | |       | | | | | |",
+          "+-+-+-+d+-+-+-+-+-+s+-+",
+          "| | | | | | | | |   | |",
+          "+-+-+-+d+-+-+-+-+ + +-+",
+          "| | |<      | | |   | |",
+          "+-+-+ + + + +-+-+-+ +-+",
+          "| | |       | | | | | |",
+          "+-+-+ + + + +-+-+-+ +-+",
+          "| | |       | | |   | |",
+          "+-+-+-+d+-+-+-+-+ + +-+",
+          "| | | | | |    Td    >|",
+          "+-+-+-+ +-+s+-+-+ +d+-+",
+          "| | | | | |   | | | | |",
+          "+-+-+-+ +-+ + +-+ +d+-+",
+          "| | | | | |   dTd     |",
+          "+-+-+-+ +-+ + +-+ + + +",
+          "| | | |   d   d       |",
+          "+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 2,
+              "y": 3
+            },
+            "to": {
+              "level": "karsh-mines-2",
+              "at": {
+                "x": 8,
+                "y": 0
+              },
+              "facing": "s"
+            }
+          },
+          {
+            "at": {
+              "x": 10,
+              "y": 6
+            },
+            "to": {
+              "level": "karsh-mines-4",
+              "at": {
+                "x": 10,
+                "y": 2
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "wastes-2-deep"
+        },
+        "safe": [
+          {
+            "x": 2,
+            "y": 4
+          },
+          {
+            "x": 2,
+            "y": 5
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 9,
+              "y": 1
+            },
+            "side": "s",
+            "difficulty": 9
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 6
+            },
+            "side": "s",
+            "difficulty": 9
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 7,
+              "y": 6
+            },
+            "name": "tripwire bell",
+            "notice": 10,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 9
+            },
+            "save": null,
+            "effect": {
+              "kind": "alarm"
+            }
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 8
+            },
+            "name": "tripwire bell",
+            "notice": 10,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 9
+            },
+            "save": null,
+            "effect": {
+              "kind": "alarm"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 9,
+              "y": 2
+            },
+            "text": "A ledger rots on a desk, its last line written in a shaking hand: THE ENGINES WILL NOT LET US LEAVE."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 9,
+              "y": 6
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 8
+              }
+            ],
+            "guards": [["glass-golem", "glass-golem", "glass-golem", "glass-golem", "tomb-guard"]],
+            "text": "Glass engines stand at the lift, still guarding the mine’s payroll for a company that burned a century ago."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 5,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 8
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 8,
+              "y": 5
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 6
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 2
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 10,
+              "y": 8
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 8
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 7
+            },
+            "kind": "bones"
+          }
+        ]
+      },
+      {
+        "id": "karsh-mines-4",
+        "name": "The Brood Chambers",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | |       |",
+          "+-+-+-+-+-+-+-+-+ + + + +",
+          "| | | |>| | | | |     | |",
+          "+-+-+-+ +-+-+-+-+ + + + +",
+          "|       | | | | |    <| |",
+          "+ + + + +-+-+-+-+-+-+d+ +",
+          "|       | |           | |",
+          "+ +-+-+-+-+ + +-+-+-+d+s+",
+          "| | | | | |   | |       |",
+          "+ +-+-+-+-+-+-+-+ + + + +",
+          "|T| | | | | | | |       |",
+          "+d+-+-+-+-+-+-+-+ + + + +",
+          "|     | | | | | |       |",
+          "+ + + +-+-+-+-+-+-+s+ + +",
+          "|     d  T              |",
+          "+ + + +-+-+-+-+-+-+-+ +-+",
+          "|     | | | |       | | |",
+          "+-+-+-+-+-+-+ + + + + +-+",
+          "| | | | | | |         | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 10,
+              "y": 2
+            },
+            "to": {
+              "level": "karsh-mines-3",
+              "at": {
+                "x": 10,
+                "y": 6
+              },
+              "facing": "w"
+            }
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 1
+            },
+            "to": {
+              "level": "karsh-mines-5",
+              "at": {
+                "x": 10,
+                "y": 6
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-2-deep"
+        },
+        "safe": [
+          {
+            "x": 8,
+            "y": 0
+          },
+          {
+            "x": 8,
+            "y": 1
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 9,
+              "y": 6
+            },
+            "side": "s",
+            "difficulty": 9
+          },
+          {
+            "at": {
+              "x": 11,
+              "y": 3
+            },
+            "side": "s",
+            "difficulty": 9
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 4,
+              "y": 7
+            },
+            "name": "tripwire bell",
+            "notice": 11,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 10
+            },
+            "save": null,
+            "effect": {
+              "kind": "alarm"
+            }
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 5
+            },
+            "name": "tripwire bell",
+            "notice": 11,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 10
+            },
+            "save": null,
+            "effect": {
+              "kind": "alarm"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 8,
+              "y": 6
+            },
+            "text": "Shed glass carapaces crunch underfoot like broken bottles."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 3,
+              "y": 2
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 8
+              }
+            ],
+            "component": "cold-iron",
+            "guards": [
+              [
+                "glass-scorpion",
+                "glass-scorpion",
+                "glass-scorpion",
+                "giant-black-widow",
+                "giant-black-widow"
+              ]
+            ],
+            "text": "The brood chamber clicks and rustles: scorpions of fused glass, and the webs above them twitch."
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 0,
+              "y": 2
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 3
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 4
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 8
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 8
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "kind": "bones"
+          }
+        ]
+      },
+      {
+        "id": "karsh-mines-5",
+        "name": "The Crystal Throne",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | |     | |",
+          "+-+-+-+-+-+-+-+-+ + + +-+",
+          "| | |     | | | |     | |",
+          "+-+-+ + + +-+-+-+ + + +-+",
+          "| | |     | | | |     | |",
+          "+-+-+d+-+s+-+-+-+ +-+-+-+",
+          "| | | | | | | | | | | | |",
+          "+-+-+ +-+d+-+-+-+ +-+-+-+",
+          "| | | | |     d       | |",
+          "+-+-+ +-+ + + +-+ + + +-+",
+          "| | | | |     d d    <| |",
+          "+-+-+d+-+-+s+-+-+ + + +-+",
+          "| |   | | |T|         | |",
+          "+-+ + +-+-+ + +-+-+-+d+-+",
+          "| |   | | |   | | | |T| |",
+          "+-+-+d+-+-+ + +-+-+-+d+-+",
+          "| | |T    d   | | | |   |",
+          "+-+-+-+-+-+-+-+-+-+-+ + +",
+          "| | | | | | | | | | |   |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 10,
+              "y": 6
+            },
+            "to": {
+              "level": "karsh-mines-4",
+              "at": {
+                "x": 3,
+                "y": 1
+              },
+              "facing": "s"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-2-deep"
+        },
+        "safe": [
+          {
+            "x": 8,
+            "y": 5
+          },
+          {
+            "x": 8,
+            "y": 6
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 4,
+              "y": 3
+            },
+            "side": "s",
+            "difficulty": 9
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 6
+            },
+            "side": "s",
+            "difficulty": 9
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 2,
+              "y": 9
+            },
+            "name": "needle plate",
+            "notice": 11,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 10
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 7
+            },
+            "name": "needle plate",
+            "notice": 11,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 10
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          },
+          {
+            "at": {
+              "x": 10,
+              "y": 8
+            },
+            "name": "needle plate",
+            "notice": 11,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 10
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 8
+            },
+            "text": "A single vein of salt, clear as water, runs down into a hall cut like a cathedral."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 1,
+              "y": 7
+            },
+            "loot": [
+              {
+                "count": 4,
+                "sides": 8
+              }
+            ],
+            "component": "grave-garnet",
+            "guards": [
+              ["salt-baron", "salt-baron", "glass-golem", "glass-golem"],
+              ["sand-shaman", "sand-shaman"]
+            ],
+            "text": "The Salt Duke sits on a throne cut from a single crystal, two barons kneeling and his engine at his back."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 10,
+              "y": 3
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 8
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 1,
+              "y": 8
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 7
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 6
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 10,
+              "y": 9
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 2
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 3
+            },
+            "kind": "rubble"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "sunken-library",
+    "name": "The Sunken Library",
+    "region": "wastes-dunes",
+    "entrance": {
+      "col": 30,
+      "row": 8
+    },
+    "entry": {
+      "level": "sunken-library-1",
+      "at": {
+        "x": 3,
+        "y": 2
+      },
+      "facing": "e"
+    },
+    "levels": [
+      {
+        "id": "sunken-library-1",
+        "name": "The Reading Room",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | |<        d     |",
+          "+-+-+-+ + + + +-+ + + +",
+          "|   d d       s       |",
+          "+ + +-+ + + + +-+-+d+ +",
+          "|    T          | | | |",
+          "+-+-+-+-+-+-+-+ +-+d+ +",
+          "| | | | | | | | |   | |",
+          "+-+-+-+-+-+-+-+ + + + +",
+          "| |>| | | | | | |   d |",
+          "+-+d+-+-+-+-+-+ +-+d+-+",
+          "| |       | | |T| | | |",
+          "+-+ + + + +-+-+s+-+ +-+",
+          "| |       d d       | |",
+          "+-+ + + + +-+ + + + +-+",
+          "| |       | |       | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 3,
+              "y": 2
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 1,
+              "y": 6
+            },
+            "to": {
+              "level": "sunken-library-2",
+              "at": {
+                "x": 5,
+                "y": 0
+              },
+              "facing": "e"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-3-deep"
+        },
+        "safe": [
+          {
+            "x": 3,
+            "y": 3
+          },
+          {
+            "x": 3,
+            "y": 4
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "side": "e",
+            "difficulty": 10
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 7
+            },
+            "side": "s",
+            "difficulty": 10
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 7,
+              "y": 7
+            },
+            "name": "scything blade",
+            "notice": 11,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 10
+            },
+            "save": "evasion",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 2,
+                "sides": 8,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 4
+            },
+            "name": "poisoned page",
+            "notice": 11,
+            "disarm": {
+              "skill": "heal",
+              "attributes": ["int"],
+              "difficulty": 10
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 9,
+              "y": 3
+            },
+            "text": "Sand pours in a thin stream from a crack in the dome, as it must have for centuries."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 1,
+              "y": 7
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 8
+              }
+            ],
+            "guards": [["dune-khan", "sun-hound", "sun-hound"], ["dune-sorcerer"]],
+            "text": "Khan Turaq’s riders have camped in the reading room. His hounds catch fire as they rise."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 8,
+              "y": 5
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 8
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 1,
+              "y": 8
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 1,
+              "y": 9
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 9
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 9
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 4
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 8
+            },
+            "kind": "bones"
+          }
+        ]
+      },
+      {
+        "id": "sunken-library-2",
+        "name": "The Dust Stacks",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | |    <d  T  | | |",
+          "+-+-+-+ + + +-+-+ +-+-+",
+          "|   d d     | | | | | |",
+          "+ + +-+ +-+-+-+-+d+-+-+",
+          "|     | | | | | |     |",
+          "+-+-+ + +-+-+-+-+ + + +",
+          "| | | | | | | | |     |",
+          "+-+-+s+d+-+-+-+-+ +-+ +",
+          "| | |   | | | | | | | |",
+          "+-+-+ + +-+-+-+-+ +-+ +",
+          "| | |   | | | | | | | |",
+          "+-+-+-+d+-+-+-+-+ +-+ +",
+          "| | | | | | | | | | | |",
+          "+-+-+-+ +-+-+-+-+d+-+ +",
+          "|       | | | |   | | |",
+          "+ + +-+-+-+-+-+ + +-+ +",
+          "|   d         s   d  T|",
+          "+ +-+-+-+-+-+-+-+-+-+-+",
+          "|>| | | | | | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 5,
+              "y": 0
+            },
+            "to": {
+              "level": "sunken-library-1",
+              "at": {
+                "x": 1,
+                "y": 6
+              },
+              "facing": "s"
+            }
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 9
+            },
+            "to": {
+              "level": "sunken-library-3",
+              "at": {
+                "x": 9,
+                "y": 6
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-3-deep"
+        },
+        "safe": [
+          {
+            "x": 3,
+            "y": 0
+          },
+          {
+            "x": 3,
+            "y": 1
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 2,
+              "y": 3
+            },
+            "side": "s",
+            "difficulty": 10
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 8
+            },
+            "side": "e",
+            "difficulty": 10
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 7,
+              "y": 0
+            },
+            "name": "sand pit",
+            "notice": 11,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 10
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 10,
+              "y": 8
+            },
+            "name": "poisoned page",
+            "notice": 11,
+            "disarm": {
+              "skill": "heal",
+              "attributes": ["int"],
+              "difficulty": 10
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 0,
+              "y": 2
+            },
+            "text": "Every book here has crumbled to dust, except one, chained shut, which is warm to the touch."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 0,
+              "y": 8
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 8
+              }
+            ],
+            "component": "beast-hide",
+            "guards": [
+              ["sand-elemental", "sand-elemental", "sand-elemental"],
+              ["scarab-swarm", "scarab-swarm"]
+            ],
+            "text": "The dust on the floor lifts into whirling shapes, and the shelves pour out beetles."
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 0,
+              "y": 7
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 1,
+              "y": 7
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 3
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 3
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 1,
+              "y": 1
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 10,
+              "y": 2
+            },
+            "kind": "rubble"
+          }
+        ]
+      },
+      {
+        "id": "sunken-library-3",
+        "name": "The Scholars’ Cells",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+",
+          "| |>    | | | |     | |",
+          "+-+-+ + +-+-+-+ + + +-+",
+          "| | |   sT        | | |",
+          "+-+-+-+ +-+-+-+-+-+ +-+",
+          "| | | | | | | | | | | |",
+          "+-+-+-+ +-+-+-+-+-+ +-+",
+          "| | |     | | | | | | |",
+          "+-+-+ + + +-+-+-+-+d+-+",
+          "| | |     d   d       |",
+          "+-+-+ + + +-+-+ + + + +",
+          "| | |     | | |       |",
+          "+-+-+-+-+ +-+-+ + + + +",
+          "| | | | | | | |    <  |",
+          "+-+-+-+-+d+-+-+-+-+ +-+",
+          "| | |     | | | | |T| |",
+          "+-+-+ + + +-+-+-+-+d+-+",
+          "| | |        T  s     |",
+          "+-+-+-+-+-+-+-+-+ + + +",
+          "| | | | | | | | |     |",
+          "+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 9,
+              "y": 6
+            },
+            "to": {
+              "level": "sunken-library-2",
+              "at": {
+                "x": 0,
+                "y": 9
+              },
+              "facing": "n"
+            }
+          },
+          {
+            "at": {
+              "x": 1,
+              "y": 0
+            },
+            "to": {
+              "level": "sunken-library-4",
+              "at": {
+                "x": 8,
+                "y": 2
+              },
+              "facing": "s"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-3-deep"
+        },
+        "safe": [
+          {
+            "x": 7,
+            "y": 4
+          },
+          {
+            "x": 7,
+            "y": 5
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 7,
+              "y": 8
+            },
+            "side": "e",
+            "difficulty": 10
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 1
+            },
+            "side": "e",
+            "difficulty": 10
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 4,
+              "y": 1
+            },
+            "name": "poisoned page",
+            "notice": 11,
+            "disarm": {
+              "skill": "heal",
+              "attributes": ["int"],
+              "difficulty": 10
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 8
+            },
+            "name": "scything blade",
+            "notice": 11,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 10
+            },
+            "save": "evasion",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 2,
+                "sides": 8,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 7
+            },
+            "name": "sand pit",
+            "notice": 11,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 10
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 10,
+              "y": 9
+            },
+            "text": "Scratched into a cell wall: WE CAME TO READ THE FIRE’S NAME. WE SHOULD NOT HAVE."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 2,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 8
+              }
+            ],
+            "guards": [["ash-walker", "ash-walker", "ash-walker", "tomb-guard"], ["dune-sorcerer"]],
+            "text": "A librarian-sorcerer of the dune tribes has raised the old scholars to guard his finds."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 9,
+              "y": 8
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 8
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 2,
+              "y": 1
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 0
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 8
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 5
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 8
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 0
+            },
+            "kind": "bones"
+          }
+        ]
+      },
+      {
+        "id": "sunken-library-4",
+        "name": "The Fallen Atrium",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | |   | | | | | | | | |",
+          "+-+-+ + +-+-+-+-+-+-+-+-+",
+          "| | |   | |      <| | | |",
+          "+-+-+ + +-+ + + + +-+-+-+",
+          "| | |    Td       dT  | |",
+          "+-+-+-+d+ +-+-+-+-+-+ +-+",
+          "| | | | | | | | | | | | |",
+          "+-+-+-+ + +-+-+-+-+-+ +-+",
+          "| |   | |T| | | | |     |",
+          "+-+ + + + +-+-+-+-+ + + +",
+          "| |   s | | | | | |     |",
+          "+-+-+ +-+ +-+-+-+-+ + + +",
+          "| | | | |   | | |       |",
+          "+-+-+ +-+ + +-+-+ +-+-+-+",
+          "| | | | |   | | | | | | |",
+          "+-+-+d+-+ + +-+-+d+-+-+-+",
+          "| |   d d       s     | |",
+          "+-+ + +-+-+ +-+-+ + + +-+",
+          "|>    d     | | |     | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 8,
+              "y": 2
+            },
+            "to": {
+              "level": "sunken-library-3",
+              "at": {
+                "x": 1,
+                "y": 0
+              },
+              "facing": "e"
+            }
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 10
+            },
+            "to": {
+              "level": "sunken-library-5",
+              "at": {
+                "x": 6,
+                "y": 3
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-3-deep"
+        },
+        "safe": [
+          {
+            "x": 5,
+            "y": 2
+          },
+          {
+            "x": 5,
+            "y": 3
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 2,
+              "y": 6
+            },
+            "side": "e",
+            "difficulty": 10
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 9
+            },
+            "side": "e",
+            "difficulty": 10
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 4,
+              "y": 5
+            },
+            "name": "sand pit",
+            "notice": 12,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 11
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 3
+            },
+            "name": "poisoned page",
+            "notice": 12,
+            "disarm": {
+              "skill": "heal",
+              "attributes": ["int"],
+              "difficulty": 11
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 3
+            },
+            "name": "scything blade",
+            "notice": 12,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 11
+            },
+            "save": "evasion",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 2,
+                "sides": 8,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 2,
+              "y": 3
+            },
+            "text": "The atrium’s mosaic shows a king holding up the sun. Someone has gouged out his face."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 1,
+              "y": 10
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 8
+              }
+            ],
+            "component": "ooze-essence",
+            "guards": [
+              ["dune-manticore", "dune-manticore", "dune-manticore"],
+              ["sun-hound", "sun-hound", "dune-sorcerer"]
+            ],
+            "text": "Manticores nest in the collapsed atrium, among the bones of every scholar who came before."
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 1,
+              "y": 9
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 9
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 8
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 1
+            },
+            "kind": "altar"
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 5
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 1,
+              "y": 6
+            },
+            "kind": "rubble"
+          }
+        ]
+      },
+      {
+        "id": "sunken-library-5",
+        "name": "The Buried Archive",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | |   | |",
+          "+-+-+-+-+-+-+-+-+-+ + +-+",
+          "| | | | |      T  d   | |",
+          "+-+-+-+-+ + + +-+-+ + +-+",
+          "|       d    <| | |   | |",
+          "+s+-+-+-+d+d+d+-+-+-+ +-+",
+          "|     | |T| | | | | | | |",
+          "+ + + +-+ + + +-+-+-+d+-+",
+          "|      T      | | | |   |",
+          "+d+-+-+-+ +s+-+-+-+-+ + +",
+          "| | | | | |       | |   |",
+          "+ +-+-+-+ + + + + +-+-+ +",
+          "| | | | |T|       | | | |",
+          "+d+-+-+-+ + + + + +-+-+d+",
+          "|       | d       | |   |",
+          "+ + + + +-+-+-+-+-+-+ + +",
+          "|       | | | | | | |   |",
+          "+-+-+-+-+-+-+-+-+-+-+ + +",
+          "| | | | | | | | | |>d   |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "to": {
+              "level": "sunken-library-4",
+              "at": {
+                "x": 0,
+                "y": 10
+              },
+              "facing": "e"
+            }
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 10
+            },
+            "to": {
+              "level": "sunken-library-6",
+              "at": {
+                "x": 0,
+                "y": 2
+              },
+              "facing": "e"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-3-deep"
+        },
+        "safe": [
+          {
+            "x": 4,
+            "y": 2
+          },
+          {
+            "x": 4,
+            "y": 3
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 0,
+              "y": 3
+            },
+            "side": "s",
+            "difficulty": 10
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 5
+            },
+            "side": "s",
+            "difficulty": 10
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 3,
+              "y": 5
+            },
+            "name": "poisoned page",
+            "notice": 12,
+            "disarm": {
+              "skill": "heal",
+              "attributes": ["int"],
+              "difficulty": 11
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 2
+            },
+            "name": "sand pit",
+            "notice": 12,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 11
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 7
+            },
+            "name": "sand pit",
+            "notice": 12,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 11
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 4
+            },
+            "name": "sand pit",
+            "notice": 12,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 11
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 10,
+              "y": 5
+            },
+            "text": "Sand fills these halls to the knee, and something moves under it, slow and patient."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 10,
+              "y": 10
+            },
+            "loot": [
+              {
+                "count": 3,
+                "sides": 8
+              }
+            ],
+            "guards": [
+              ["sand-burrower", "sand-burrower", "sand-burrower", "mummy", "mummy"],
+              ["sand-elemental"]
+            ],
+            "text": "The archive floor heaves: burrowers rise from the sand that fills it, and a wrapped curator follows."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 7,
+              "y": 8
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 8
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 10,
+              "y": 8
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 10,
+              "y": 9
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 7
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 7
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 8
+            },
+            "kind": "altar"
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 7
+            },
+            "kind": "bones"
+          }
+        ]
+      },
+      {
+        "id": "sunken-library-6",
+        "name": "The Last Shelf",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | |   | | | | | | |",
+          "+-+-+-+-+ + +-+-+-+-+-+-+",
+          "| | | | |   | | | | | | |",
+          "+-+-+-+-+ + +-+-+-+-+-+-+",
+          "|<  | | |   dT    | | | |",
+          "+ + +-+-+d+-+-+-+s+-+-+-+",
+          "|   | | | | | |   | | | |",
+          "+ + +-+-+ +-+-+ + +-+-+-+",
+          "|   d    T        | | | |",
+          "+-+d+-+ +d+-+-+ + +-+-+-+",
+          "| | | | |   | |   | | | |",
+          "+-+d+-+ + + +-+ +d+-+-+-+",
+          "|     | |       |T| | | |",
+          "+ + + + + + +-+-+ +-+-+-+",
+          "|     | |   | | | | | | |",
+          "+-+-+-+ +-+-+-+-+ +-+-+-+",
+          "| | | |T| | | | |   | | |",
+          "+-+-+-+ +-+-+-+-+ + +-+-+",
+          "| |       | | | |   | | |",
+          "+-+ + + + +-+-+-+-+-+-+-+",
+          "| |       | | | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 0,
+              "y": 2
+            },
+            "to": {
+              "level": "sunken-library-5",
+              "at": {
+                "x": 9,
+                "y": 10
+              },
+              "facing": "e"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-3-deep"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 3
+          },
+          {
+            "x": 0,
+            "y": 4
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 8,
+              "y": 2
+            },
+            "side": "s",
+            "difficulty": 10
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 4,
+              "y": 4
+            },
+            "name": "scything blade",
+            "notice": 12,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 11
+            },
+            "save": "evasion",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 2,
+                "sides": 8,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 6
+            },
+            "name": "sand pit",
+            "notice": 12,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 11
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 8
+            },
+            "name": "scything blade",
+            "notice": 12,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 11
+            },
+            "save": "evasion",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 2,
+                "sides": 8,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 2
+            },
+            "name": "poisoned page",
+            "notice": 12,
+            "disarm": {
+              "skill": "heal",
+              "attributes": ["int"],
+              "difficulty": 11
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 4,
+              "y": 2
+            },
+            "text": "A brass placard: HERE IS KEPT WHAT MAY NOT BE COPIED. THE KEEPER ANSWERS FOR IT."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 9,
+              "y": 9
+            },
+            "loot": [
+              {
+                "count": 4,
+                "sides": 8
+              }
+            ],
+            "component": "grave-garnet",
+            "guards": [
+              ["dune-khan", "dune-khan", "sand-elemental"],
+              ["dune-sorcerer", "dune-sorcerer"]
+            ],
+            "text": "The Keeper of the Last Shelf, a dead khan bound to the archive, rises with his honour guard and his scribes."
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 8,
+              "y": 8
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 9
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 10
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 1,
+              "y": 6
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 9
+            },
+            "kind": "altar"
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 0
+            },
+            "kind": "rubble"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ossuary-halls",
+    "name": "The Ossuary Halls",
+    "region": "wastes-bonefields",
+    "entrance": {
+      "col": 1,
+      "row": 22
+    },
+    "entry": {
+      "level": "ossuary-halls-1",
+      "at": {
+        "x": 5,
+        "y": 9
+      },
+      "facing": "n"
+    },
+    "levels": [
+      {
+        "id": "ossuary-halls-1",
+        "name": "The Bone Gate",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | |   | |     | | | |",
+          "+-+-+-+ + +-+ + + +-+-+-+",
+          "| | | |   | |     | |>| |",
+          "+-+-+-+ + +-+ + + +-+d+-+",
+          "| | | |     d     | |   |",
+          "+-+-+-+-+-+-+d+-+s+-+ + +",
+          "| | | | | | | | |       |",
+          "+-+-+-+-+-+-+ +-+-+-+-+d+",
+          "| | | | | | | | | | | | |",
+          "+-+-+-+-+-+-+ +-+-+-+-+d+",
+          "| | | | | | | | | |     |",
+          "+-+-+-+-+-+-+ +-+-+ + + +",
+          "| | | | | | | | | |     |",
+          "+-+-+-+-+-+-+ +-+-+ +-+-+",
+          "| | | |     d     |T| | |",
+          "+-+-+-+ + + + +-+d+ +-+-+",
+          "| | | |     d   s       |",
+          "+-+-+-+ + + + +-+ + + + +",
+          "| | | |    < T| |       |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 5,
+              "y": 9
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 10,
+              "y": 1
+            },
+            "to": {
+              "level": "ossuary-halls-2",
+              "at": {
+                "x": 8,
+                "y": 4
+              },
+              "facing": "e"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-4-deep"
+        },
+        "safe": [
+          {
+            "x": 3,
+            "y": 7
+          },
+          {
+            "x": 3,
+            "y": 8
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 7,
+              "y": 8
+            },
+            "side": "e",
+            "difficulty": 11
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 2
+            },
+            "side": "s",
+            "difficulty": 11
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 6,
+              "y": 9
+            },
+            "name": "bone spikes",
+            "notice": 12,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 11
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 7
+            },
+            "name": "needle lock",
+            "notice": 12,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 11
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 4,
+              "y": 2
+            },
+            "text": "The arch is built of skulls, every one turned to watch whoever passes."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 10,
+              "y": 2
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 10
+              }
+            ],
+            "guards": [["ossuary-lord", "bone-reaver", "bone-reaver"], ["sun-mage"]],
+            "text": "The Ossuary Lord rattles his crown of knucklebones. “Kneel, and be counted with the rest.”"
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 6,
+              "y": 1
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 10
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 10,
+              "y": 3
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 11,
+              "y": 2
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 11,
+              "y": 5
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 10,
+              "y": 9
+            },
+            "kind": "altar"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 2
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 0
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 2
+            },
+            "kind": "rubble"
+          }
+        ]
+      },
+      {
+        "id": "ossuary-halls-2",
+        "name": "The Counting Hall",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "|     | | | | | | | |   |",
+          "+ + + +-+-+-+-+-+-+-+ + +",
+          "|     d d     | | |     |",
+          "+ + + +-+ + + +-+-+ + + +",
+          "|     | |     d    T|   |",
+          "+d+d+-+-+ + + +-+-+ +-+-+",
+          "| | | | |     d       | |",
+          "+d+ +-+-+-+ +-+-+-+ +s+-+",
+          "|     | | |T| | |<    | |",
+          "+ + + +-+-+ +-+-+ + + +-+",
+          "|     | | | | | |     | |",
+          "+ + + +-+-+d+-+-+ + + +-+",
+          "|     | |     | |     | |",
+          "+d+-+-+-+ + + +-+-+-+-+-+",
+          "|>| | | |     | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 8,
+              "y": 4
+            },
+            "to": {
+              "level": "ossuary-halls-1",
+              "at": {
+                "x": 10,
+                "y": 1
+              },
+              "facing": "s"
+            }
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 7
+            },
+            "to": {
+              "level": "ossuary-halls-3",
+              "at": {
+                "x": 1,
+                "y": 8
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-4-deep"
+        },
+        "safe": [
+          {
+            "x": 8,
+            "y": 5
+          },
+          {
+            "x": 8,
+            "y": 6
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 10,
+              "y": 3
+            },
+            "side": "s",
+            "difficulty": 11
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 9,
+              "y": 2
+            },
+            "name": "needle lock",
+            "notice": 12,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 11
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 4
+            },
+            "name": "bone spikes",
+            "notice": 12,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 11
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 5,
+              "y": 6
+            },
+            "text": "Bones are stacked by kind and size, and labelled, in a script no living scholar reads."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 0,
+              "y": 6
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 10
+              }
+            ],
+            "component": "cold-iron",
+            "guards": [
+              ["bone-golem", "bone-golem", "bone-golem", "bone-reaver", "bone-reaver"],
+              ["ash-walker", "ash-walker", "ash-walker"]
+            ],
+            "text": "Engines of stacked skulls unfold from the walls of the counting hall, and the ash-dead shamble in behind them."
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 0,
+              "y": 4
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 5
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 2
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 11,
+              "y": 1
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 6
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 1,
+              "y": 2
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 11,
+              "y": 0
+            },
+            "kind": "altar"
+          }
+        ]
+      },
+      {
+        "id": "ossuary-halls-3",
+        "name": "The Priests’ Niches",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | | |   |",
+          "+-+-+-+-+-+-+-+-+-+-+ + +",
+          "| | d          T        |",
+          "+-+ + + + +-+-+-+-+-+-+d+",
+          "| | |     d | | | | | | |",
+          "+-+ +-+-+-+ +-+-+-+-+-+ +",
+          "| | | | | | | |>d     | |",
+          "+-+ +-+-+-+d+-+-+ + + + +",
+          "| | |       | | |     d |",
+          "+-+ + + + + +-+-+ + + +-+",
+          "| |T|       | | |     | |",
+          "+-+ +s+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | | | | |",
+          "+-+ + +-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | | | | |",
+          "+-+ + +-+-+-+-+-+-+-+-+-+",
+          "|  <dT  d   | | | | | | |",
+          "+ + +-+-+ + +-+-+-+-+-+-+",
+          "|   d   d     d       | |",
+          "+-+-+-+-+-+-+-+ + + + +-+",
+          "| | | | | | | |       | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 1,
+              "y": 8
+            },
+            "to": {
+              "level": "ossuary-halls-2",
+              "at": {
+                "x": 0,
+                "y": 7
+              },
+              "facing": "n"
+            }
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 3
+            },
+            "to": {
+              "level": "ossuary-halls-4",
+              "at": {
+                "x": 5,
+                "y": 6
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-4-deep"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 8
+          },
+          {
+            "x": 0,
+            "y": 9
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 2,
+              "y": 5
+            },
+            "side": "s",
+            "difficulty": 11
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 1,
+              "y": 5
+            },
+            "name": "bone spikes",
+            "notice": 12,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 11
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 1
+            },
+            "name": "bone spikes",
+            "notice": 12,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 11
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 8
+            },
+            "name": "needle lock",
+            "notice": 12,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 11
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 10,
+              "y": 10
+            },
+            "text": "Incense still burns in one niche. No one has lit it in a thousand years."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 8,
+              "y": 3
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 10
+              }
+            ],
+            "guards": [["mummy", "mummy", "mummy", "mummy"], ["sun-mage"]],
+            "text": "The wrapped priests of the bone-court rise from their niches, and a sun mage chants them on."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 5,
+              "y": 4
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 10
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 8,
+              "y": 4
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 5
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 4
+            },
+            "kind": "altar"
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 5
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 5
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 10
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 9
+            },
+            "kind": "rubble"
+          }
+        ]
+      },
+      {
+        "id": "ossuary-halls-4",
+        "name": "The Central Well",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | | | |>| |",
+          "+-+-+-+-+-+-+-+-+-+-+-+ +-+",
+          "|     | |     s     | |   |",
+          "+ + + +-+ + + +-+ + +-+ + +",
+          "|     | |     | |    T    |",
+          "+ + + +-+ + + +-+-+-+-+-+d+",
+          "|     d       d  T        |",
+          "+-+-+-+-+-+d+d+-+-+-+-+-+ +",
+          "| | | | | |T| | | | |     |",
+          "+-+-+-+-+-+s+ +-+-+-+ + +-+",
+          "| | | | |  <  | | | |   | |",
+          "+-+-+-+-+ + + +-+-+-+ + +-+",
+          "|     | |     | | | |   | |",
+          "+ + + +-+-+-+d+-+-+-+-+-+-+",
+          "|             | | | | | | |",
+          "+ + + +-+-+-+-+-+-+-+-+-+-+",
+          "|     | | | | | | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 5,
+              "y": 6
+            },
+            "to": {
+              "level": "ossuary-halls-3",
+              "at": {
+                "x": 7,
+                "y": 3
+              },
+              "facing": "e"
+            }
+          },
+          {
+            "at": {
+              "x": 11,
+              "y": 1
+            },
+            "to": {
+              "level": "ossuary-halls-5",
+              "at": {
+                "x": 0,
+                "y": 3
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-4-deep"
+        },
+        "safe": [
+          {
+            "x": 4,
+            "y": 6
+          },
+          {
+            "x": 4,
+            "y": 7
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 5,
+              "y": 5
+            },
+            "side": "s",
+            "difficulty": 11
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 2
+            },
+            "side": "e",
+            "difficulty": 11
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 10,
+              "y": 3
+            },
+            "name": "rattling chimes",
+            "notice": 13,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 12
+            },
+            "save": null,
+            "effect": {
+              "kind": "alarm"
+            }
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 4
+            },
+            "name": "bone spikes",
+            "notice": 13,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 12
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 5
+            },
+            "name": "bone spikes",
+            "notice": 13,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 12
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 3
+            },
+            "text": "A shaft drops away into dark. Something below scrapes against its walls."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 11,
+              "y": 2
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 10
+              }
+            ],
+            "component": "ironwood",
+            "guards": [
+              ["bone-crawler", "bone-crawler", "bone-crawler"],
+              ["bone-reaver", "bone-reaver", "bone-reaver"]
+            ],
+            "text": "Something long and many-legged unwinds from the ossuary’s central well, and then another."
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 11,
+              "y": 3
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 12,
+              "y": 2
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 9
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 4
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 2
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 11,
+              "y": 7
+            },
+            "kind": "altar"
+          }
+        ]
+      },
+      {
+        "id": "ossuary-halls-5",
+        "name": "The Chained Hall",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| |    T  d     | | | | | |",
+          "+-+ +-+-+-+ + + +-+-+-+-+-+",
+          "|    T          d  Td     |",
+          "+ + +-+-+-+ + + +-+-+ + + +",
+          "| | | | | |     d   s     |",
+          "+s+ +-+-+-+-+ +-+-+-+ + + +",
+          "|<  | | | | | | | | |     |",
+          "+ + +-+-+-+-+ +-+-+-+-+-+-+",
+          "|   | | | | | | | | | | | |",
+          "+ + +-+-+-+-+d+-+-+-+-+-+-+",
+          "|           |       | | | |",
+          "+-+-+-+ + + + + + + +-+-+-+",
+          "| | | |   |T|       | | | |",
+          "+-+-+-+ +-+ + +-+-+-+-+-+-+",
+          "| | | | | | | | | | | | |>|",
+          "+-+-+-+d+-+ +d+-+-+-+-+-+d+",
+          "| | | |       | | |       |",
+          "+-+-+-+ + + + +-+-+ + + + +",
+          "| | | |           d       |",
+          "+-+-+-+ + + + +-+-+ + + + +",
+          "| | | |       | | |       |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 0,
+              "y": 3
+            },
+            "to": {
+              "level": "ossuary-halls-4",
+              "at": {
+                "x": 11,
+                "y": 1
+              },
+              "facing": "s"
+            }
+          },
+          {
+            "at": {
+              "x": 12,
+              "y": 7
+            },
+            "to": {
+              "level": "ossuary-halls-6",
+              "at": {
+                "x": 6,
+                "y": 5
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-4-deep"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 4
+          },
+          {
+            "x": 0,
+            "y": 5
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 9,
+              "y": 2
+            },
+            "side": "e",
+            "difficulty": 11
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 2
+            },
+            "side": "s",
+            "difficulty": 11
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 9,
+              "y": 1
+            },
+            "name": "rattling chimes",
+            "notice": 13,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 12
+            },
+            "save": null,
+            "effect": {
+              "kind": "alarm"
+            }
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 6
+            },
+            "name": "needle lock",
+            "notice": 13,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 12
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 1
+            },
+            "name": "bone spikes",
+            "notice": 13,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 12
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 0
+            },
+            "name": "bone spikes",
+            "notice": 13,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 12
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 7,
+              "y": 0
+            },
+            "text": "Broken chains as thick as a man’s arm hang from a pillar of skulls."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 12,
+              "y": 8
+            },
+            "loot": [
+              {
+                "count": 3,
+                "sides": 10
+              }
+            ],
+            "guards": [
+              ["sand-chimera", "sand-chimera", "bone-golem"],
+              ["mummy", "mummy", "mummy"]
+            ],
+            "text": "Chimeras chained to a pillar of skulls break their chains when they see the party."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 9,
+              "y": 5
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 10
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 9,
+              "y": 8
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 9
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 8
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 6
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 5
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 6
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 12,
+              "y": 2
+            },
+            "kind": "rubble"
+          }
+        ]
+      },
+      {
+        "id": "ossuary-halls-6",
+        "name": "The Regents’ Court",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | |     | | | |",
+          "+-+-+-+-+-+-+-+ + + +-+-+-+",
+          "| |     | | | |     | |   |",
+          "+-+ + + +-+-+-+-+-+d+-+ + +",
+          "| |     s  T       T      |",
+          "+-+-+d+ +-+-+-+-+-+ +-+ +-+",
+          "| | | | | | | | | | | | | |",
+          "+-+-+s+ +-+-+-+-+-+ +-+ +-+",
+          "| |     dT  d   | | | | | |",
+          "+-+ + + +-+-+ + +-+ +-+ +-+",
+          "| |     | | |<  d       | |",
+          "+-+ + + +-+-+ +-+-+-+-+-+-+",
+          "| |     | | | | | | | | | |",
+          "+-+-+-+-+-+-+ +-+-+-+-+-+-+",
+          "| | | | | | | | | | | | | |",
+          "+-+-+-+-+-+-+ +-+-+-+-+-+-+",
+          "| | | | | |T    d   | | | |",
+          "+-+-+-+-+-+ +-+-+ + +-+-+-+",
+          "| | | | | | | | |   | | | |",
+          "+-+-+-+-+-+ +-+-+-+-+-+-+-+",
+          "| | | | | |   | | | | | | |",
+          "+-+-+-+-+-+ + +-+-+-+-+-+-+",
+          "| | | | | |   | | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 6,
+              "y": 5
+            },
+            "to": {
+              "level": "ossuary-halls-5",
+              "at": {
+                "x": 12,
+                "y": 7
+              },
+              "facing": "s"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-4-deep"
+        },
+        "safe": [
+          {
+            "x": 6,
+            "y": 4
+          },
+          {
+            "x": 7,
+            "y": 4
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 2,
+              "y": 3
+            },
+            "side": "s",
+            "difficulty": 11
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 2
+            },
+            "side": "e",
+            "difficulty": 11
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 9,
+              "y": 2
+            },
+            "name": "bone spikes",
+            "notice": 13,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 12
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 2
+            },
+            "name": "needle lock",
+            "notice": 13,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 12
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 8
+            },
+            "name": "needle lock",
+            "notice": 13,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 12
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 4
+            },
+            "name": "needle lock",
+            "notice": 13,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 12
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 11
+            },
+            "text": "Two thrones of bone face the door. The court before them kneels, and has knelt a very long time."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 7,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 4,
+                "sides": 10
+              }
+            ],
+            "component": "grave-garnet",
+            "guards": [
+              ["ossuary-lord", "ossuary-lord", "bone-golem"],
+              ["sun-mage", "mummy"]
+            ],
+            "text": "The Bone Regent and his twin sit among their dead court, a sun mage and a wrapped priest behind the thrones."
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 7,
+              "y": 1
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 0
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 8
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 11
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 5
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 10
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 4
+            },
+            "kind": "rubble"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "sun-kings-tomb",
+    "name": "The Sun King's Tomb",
+    "region": "wastes-sunscar",
+    "entrance": {
+      "col": 3,
+      "row": 21
+    },
+    "entry": {
+      "level": "sun-kings-tomb-1",
+      "at": {
+        "x": 11,
+        "y": 9
+      },
+      "facing": "n"
+    },
+    "levels": [
+      {
+        "id": "sun-kings-tomb-1",
+        "name": "The First Gate",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "|>| | | | |     | | | | |",
+          "+d+-+-+-+-+ + + +-+-+-+-+",
+          "|         | |   | | | | |",
+          "+ + +-+-+ + +-+d+-+-+-+-+",
+          "|   s      T    | | | | |",
+          "+-+-+-+-+ + +-+-+-+-+-+-+",
+          "| | | | | | | | | | | | |",
+          "+-+-+-+-+ + +-+-+-+-+-+-+",
+          "| | | |       | | | | | |",
+          "+-+-+-+ + + + +-+-+-+-+-+",
+          "|   | |       d    T  | |",
+          "+ + +-+-+-+d+d+-+-+ + +-+",
+          "|             | | | | | |",
+          "+-+-+-+-+-+d+-+-+-+s+d+-+",
+          "| | | | |     | | |     |",
+          "+-+-+-+-+ + + +-+-+ + + +",
+          "| | | | |     | | |    <|",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 11,
+              "y": 9
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 1
+            },
+            "to": {
+              "level": "sun-kings-tomb-2",
+              "at": {
+                "x": 11,
+                "y": 6
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-5-deep"
+        },
+        "safe": [
+          {
+            "x": 9,
+            "y": 8
+          },
+          {
+            "x": 9,
+            "y": 9
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 1,
+              "y": 3
+            },
+            "side": "e",
+            "difficulty": 12
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 7
+            },
+            "side": "s",
+            "difficulty": 12
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 9,
+              "y": 6
+            },
+            "name": "warding sun",
+            "notice": 13,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 12
+            },
+            "save": "mental",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 3
+            },
+            "name": "warding sun",
+            "notice": 13,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 12
+            },
+            "save": "mental",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 6
+            },
+            "text": "The doors are melted gold, run and set like wax. The heat of the burning is still in them."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 0,
+              "y": 2
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 12
+              }
+            ],
+            "guards": [["throne-champion", "throne-champion", "mummy-lord"]],
+            "text": "The Sun King’s first gate is held by his chosen, still standing in the same ranks they burned in."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 6,
+              "y": 1
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 12
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 0,
+              "y": 3
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 1,
+              "y": 2
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 1
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 6
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 6
+            },
+            "kind": "altar"
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 8
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 9
+            },
+            "kind": "rubble"
+          }
+        ]
+      },
+      {
+        "id": "sun-kings-tomb-2",
+        "name": "The Mosaic Hall",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "|       d>| | | | | | | |",
+          "+ + + + +-+-+-+-+-+-+-+-+",
+          "|       | | | | | | | | |",
+          "+ + + + +-+-+-+-+-+-+-+-+",
+          "|       | | | | s   | | |",
+          "+-+-+d+-+-+-+-+ + + +-+-+",
+          "| | | | | | | | |   | | |",
+          "+-+-+ +-+-+-+-+ +d+-+-+-+",
+          "| | | |       |T| | | | |",
+          "+-+-+ + + + + + + +-+-+-+",
+          "|   d         | |   d   |",
+          "+ + + + + + + + +-+-+ + +",
+          "|   | |       d     s  <|",
+          "+-+-+ +d+-+-+-+ +-+-+d+d+",
+          "| | | | | | | | | | | | |",
+          "+-+-+ + +-+-+-+ +-+-+d+ +",
+          "| | | | d       | | |   |",
+          "+-+-+ +-+ + + + +-+-+ + +",
+          "| | |           d  T    |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 11,
+              "y": 6
+            },
+            "to": {
+              "level": "sun-kings-tomb-1",
+              "at": {
+                "x": 0,
+                "y": 1
+              },
+              "facing": "s"
+            }
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 0
+            },
+            "to": {
+              "level": "sun-kings-tomb-3",
+              "at": {
+                "x": 4,
+                "y": 0
+              },
+              "facing": "e"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-5-deep"
+        },
+        "safe": [
+          {
+            "x": 10,
+            "y": 5
+          },
+          {
+            "x": 10,
+            "y": 6
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 7,
+              "y": 2
+            },
+            "side": "e",
+            "difficulty": 12
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 6
+            },
+            "side": "e",
+            "difficulty": 12
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 7,
+              "y": 4
+            },
+            "name": "warding sun",
+            "notice": 13,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 12
+            },
+            "save": "mental",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 9
+            },
+            "name": "burning lens",
+            "notice": 13,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 12
+            },
+            "save": "evasion",
+            "element": "fire",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 4,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 8
+            },
+            "text": "The floor shows the world before the fire: rivers, forests, cities. It is hard to look at."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 3,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 12
+              }
+            ],
+            "component": "ooze-essence",
+            "guards": [["glass-wyrm", "dread-sandbeast"], ["mummy-lord"]],
+            "text": "The Glass Wyrm uncoils from the mosaic floor, its scales ringing like a struck bell."
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 1
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 9
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 5
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 11,
+              "y": 9
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 4
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 9
+            },
+            "kind": "rubble"
+          }
+        ]
+      },
+      {
+        "id": "sun-kings-tomb-3",
+        "name": "The Engine Halls",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | |  <d   d       | |",
+          "+-+-+-+ + +-+-+ + + + +-+",
+          "| | | |   | | |       | |",
+          "+-+-+-+ + +-+-+-+-+-+-+-+",
+          "| | | |               | |",
+          "+-+-+-+d+-+-+-+-+-+-+ +-+",
+          "|   s          T      | |",
+          "+ + +-+ +-+-+-+-+-+-+d+-+",
+          "|   | | | | | |       | |",
+          "+-+ +-+ +-+-+-+ + + + +-+",
+          "| | | | | | | |       | |",
+          "+-+d+-+ +-+-+-+d+d+-+-+-+",
+          "|   | | | | | | | | | | |",
+          "+ + +-+ +-+-+-+ +d+-+-+-+",
+          "|   | | | | | |Td       |",
+          "+d+-+-+ +-+-+-+-+ + + + +",
+          "| | | | | | | | |       |",
+          "+ +-+-+d+-+-+-+-+ +-+-+d+",
+          "|T  d       | | | | | |>|",
+          "+-+-+ + + + +-+-+ +-+-+-+",
+          "| | |       s     | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 4,
+              "y": 0
+            },
+            "to": {
+              "level": "sun-kings-tomb-2",
+              "at": {
+                "x": 4,
+                "y": 0
+              },
+              "facing": "w"
+            }
+          },
+          {
+            "at": {
+              "x": 11,
+              "y": 9
+            },
+            "to": {
+              "level": "sun-kings-tomb-4",
+              "at": {
+                "x": 6,
+                "y": 8
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-5-deep"
+        },
+        "safe": [
+          {
+            "x": 3,
+            "y": 0
+          },
+          {
+            "x": 3,
+            "y": 1
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 1,
+              "y": 3
+            },
+            "side": "e",
+            "difficulty": 12
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 10
+            },
+            "side": "e",
+            "difficulty": 12
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 0,
+              "y": 9
+            },
+            "name": "warding sun",
+            "notice": 13,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 12
+            },
+            "save": "mental",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 3
+            },
+            "name": "warding sun",
+            "notice": 13,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 12
+            },
+            "save": "mental",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 7
+            },
+            "name": "warding sun",
+            "notice": 13,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 12
+            },
+            "save": "mental",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 0,
+              "y": 7
+            },
+            "text": "The walls are scorched in the shape of great striding figures."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 11,
+              "y": 8
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 12
+              }
+            ],
+            "guards": [["sunscar-colossus", "sunscar-colossus"]],
+            "text": "Two colossi turn their smoking heads toward the party, and the walls shake with their first step."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 9,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 12
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 8,
+              "y": 7
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 8
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 6
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 10
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 9
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 9
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 1,
+              "y": 7
+            },
+            "kind": "bones"
+          }
+        ]
+      },
+      {
+        "id": "sun-kings-tomb-4",
+        "name": "The Kennels",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | |>| | | | | |   |",
+          "+-+-+-+-+-+ +-+-+-+-+-+ + +",
+          "| | |       | | | | | |   |",
+          "+-+-+ + + + +-+-+-+-+-+ + +",
+          "| | |       | |           |",
+          "+-+-+ +-+-+-+-+ + +-+-+-+d+",
+          "| | | | | | | |   | | | | |",
+          "+-+-+ +-+-+-+-+ + +-+-+-+ +",
+          "| | | | | | | |   | | | | |",
+          "+-+-+ +-+-+-+-+d+-+-+-+-+ +",
+          "|   s          T        | |",
+          "+ + + +-+-+-+-+ +-+-+-+ + +",
+          "|   s        T            |",
+          "+d+-+ +-+-+-+-+d+-+-+-+ +-+",
+          "| | | | | | |   d  T| | | |",
+          "+ +-+ +-+-+-+ + +-+ +-+ +-+",
+          "|   d   | | |<  | | | | | |",
+          "+-+-+ + +-+-+ + +-+ +-+ +-+",
+          "| | |           | |       |",
+          "+-+-+ + +-+-+-+-+-+ + + + +",
+          "| | |   | | | | | |       |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 6,
+              "y": 8
+            },
+            "to": {
+              "level": "sun-kings-tomb-3",
+              "at": {
+                "x": 11,
+                "y": 9
+              },
+              "facing": "n"
+            }
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 0
+            },
+            "to": {
+              "level": "sun-kings-tomb-5",
+              "at": {
+                "x": 11,
+                "y": 6
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-5-deep"
+        },
+        "safe": [
+          {
+            "x": 6,
+            "y": 7
+          },
+          {
+            "x": 6,
+            "y": 9
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 1,
+              "y": 5
+            },
+            "side": "e",
+            "difficulty": 12
+          },
+          {
+            "at": {
+              "x": 1,
+              "y": 6
+            },
+            "side": "e",
+            "difficulty": 12
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 7,
+              "y": 5
+            },
+            "name": "warding sun",
+            "notice": 14,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 13
+            },
+            "save": "mental",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 7
+            },
+            "name": "molten floor",
+            "notice": 14,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 13
+            },
+            "save": "evasion",
+            "element": "fire",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 8,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 6
+            },
+            "name": "warding sun",
+            "notice": 14,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 13
+            },
+            "save": "mental",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 0,
+              "y": 6
+            },
+            "text": "Iron collars hang on the walls, each one big enough to ring a man’s waist."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 5,
+              "y": 1
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 12
+              }
+            ],
+            "component": "beast-hide",
+            "guards": [["dread-sandbeast", "throne-champion"], ["mummy-lord"]],
+            "text": "The kennels of the Sun King: a furnace-breathing beast, its dead keeper, and a champion sent to fetch it."
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 2,
+              "y": 1
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 2
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 4
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 11,
+              "y": 1
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 2
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 12,
+              "y": 1
+            },
+            "kind": "altar"
+          },
+          {
+            "at": {
+              "x": 12,
+              "y": 0
+            },
+            "kind": "altar"
+          }
+        ]
+      },
+      {
+        "id": "sun-kings-tomb-5",
+        "name": "The Court of the Dead",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "|>    | | | | | | | | | | |",
+          "+-+ + +-+-+-+-+-+-+-+-+-+-+",
+          "| |   | | | | | | | | |   |",
+          "+-+-+d+-+-+-+-+-+-+-+-+ + +",
+          "| | | | | | |   | | | |   |",
+          "+-+-+ +-+-+-+ + +-+-+-+ + +",
+          "| | |T| | | |   | | | |   |",
+          "+-+-+ +-+-+-+ + +-+-+-+d+-+",
+          "| | | | | | |   | | | | | |",
+          "+-+-+ +-+-+-+-+ +-+-+-+d+-+",
+          "|     | | | | |T  d     | |",
+          "+ + + +-+-+-+-+-+-+ + + +-+",
+          "|           | | | |    <| |",
+          "+-+-+-+-+-+ +-+-+-+s+d+d+-+",
+          "| | | | |       d     |T| |",
+          "+-+-+-+-+ + + + +-+-+ + +-+",
+          "| | | | |       s     |T| |",
+          "+-+-+-+-+-+-+-+-+-+-+-+ +-+",
+          "| | | | | | | | | |       |",
+          "+-+-+-+-+-+-+-+-+-+ + + + +",
+          "| | | | | | | | | |       |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | | | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 11,
+              "y": 6
+            },
+            "to": {
+              "level": "sun-kings-tomb-4",
+              "at": {
+                "x": 5,
+                "y": 0
+              },
+              "facing": "s"
+            }
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "to": {
+              "level": "sun-kings-tomb-6",
+              "at": {
+                "x": 3,
+                "y": 2
+              },
+              "facing": "e"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-5-deep"
+        },
+        "safe": [
+          {
+            "x": 9,
+            "y": 5
+          },
+          {
+            "x": 9,
+            "y": 6
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 7,
+              "y": 8
+            },
+            "side": "e",
+            "difficulty": 12
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 6
+            },
+            "side": "s",
+            "difficulty": 12
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 2,
+              "y": 3
+            },
+            "name": "burning lens",
+            "notice": 14,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 13
+            },
+            "save": "evasion",
+            "element": "fire",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 4,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 11,
+              "y": 8
+            },
+            "name": "warding sun",
+            "notice": 14,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 13
+            },
+            "save": "mental",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 5
+            },
+            "name": "warding sun",
+            "notice": 14,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 13
+            },
+            "save": "mental",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 11,
+              "y": 7
+            },
+            "name": "burning lens",
+            "notice": 14,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 13
+            },
+            "save": "evasion",
+            "element": "fire",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 4,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 11,
+              "y": 9
+            },
+            "text": "The dead courtiers turn their heads as one as the party enters, and then turn back."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 1,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 3,
+                "sides": 12
+              }
+            ],
+            "guards": [["throne-champion", "throne-champion", "throne-champion"]],
+            "text": "The Sun King’s chosen, the last of his court, rise from their knees to bar his door."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 9,
+              "y": 9
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 12
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 1,
+              "y": 1
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 0
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 3
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 5
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 10
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 2
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 8
+            },
+            "kind": "bones"
+          }
+        ]
+      },
+      {
+        "id": "sun-kings-tomb-6",
+        "name": "The Throne of Noon",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | |       |",
+          "+-+-+-+-+-+-+-+-+-+ + + + +",
+          "| | | | | | | | | |       |",
+          "+-+-+-+-+-+-+-+-+-+ +-+-+-+",
+          "| | | |<      | | | | | | |",
+          "+-+-+-+ + + + +-+-+ +-+-+-+",
+          "|   | |       | | | | | | |",
+          "+ + +-+ +-+ +-+-+-+ +-+-+-+",
+          "|   d  T T  | | | | | | | |",
+          "+-+-+-+d+-+-+-+-+-+ +-+-+-+",
+          "| | | |       | | | | | | |",
+          "+-+-+-+ + + + +-+-+ +-+-+-+",
+          "| | |         | |     | | |",
+          "+-+-+ + + + + +-+ + + +-+-+",
+          "| | | |        Td     | | |",
+          "+-+-+ +d+-+-+-+-+ +-+-+-+-+",
+          "| | |T| | | | | | | | | | |",
+          "+-+-+ +s+-+-+-+-+ +-+-+-+-+",
+          "| | |       | | | | | | | |",
+          "+-+-+ + + + +-+-+ +-+-+-+-+",
+          "| | |       s     d       |",
+          "+-+-+-+-+-+-+-+-+ + + + + +",
+          "| | | | | | | | |         |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 3,
+              "y": 2
+            },
+            "to": {
+              "level": "sun-kings-tomb-5",
+              "at": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": "e"
+            }
+          }
+        ],
+        "wander": {
+          "every": 2,
+          "table": "wastes-5-deep"
+        },
+        "safe": [
+          {
+            "x": 3,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 2
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 3,
+              "y": 8
+            },
+            "side": "s",
+            "difficulty": 12
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 10
+            },
+            "side": "e",
+            "difficulty": 12
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 7,
+              "y": 7
+            },
+            "name": "burning lens",
+            "notice": 14,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 13
+            },
+            "save": "evasion",
+            "element": "fire",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 4,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 4
+            },
+            "name": "warding sun",
+            "notice": 14,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 13
+            },
+            "save": "mental",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 4
+            },
+            "name": "burning lens",
+            "notice": 14,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 13
+            },
+            "save": "evasion",
+            "element": "fire",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 4,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 8
+            },
+            "name": "warding sun",
+            "notice": 14,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 13
+            },
+            "save": "mental",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 10,
+              "y": 11
+            },
+            "text": "At the heart of the tomb it is as bright as midday, and the light has no source."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 12,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 4,
+                "sides": 12
+              }
+            ],
+            "component": "grave-garnet",
+            "guards": [["glass-wyrm", "throne-champion", "throne-champion"], ["sun-king"]],
+            "text": "The Sun King rises from his throne of melted gold. “I burned the world once,” he says. “I can light it again.”"
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 9,
+              "y": 0
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 1
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 10,
+              "y": 10
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 10
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 10,
+              "y": 6
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 6
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 5
+            },
+            "kind": "bones"
+          }
+        ]
+      }
+    ]
   }
 ]

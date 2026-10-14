@@ -14,6 +14,7 @@ import {
   EncounterTableSchema,
   MishapSchema,
   OverlandRulesSchema,
+  RealmSchema,
   RegionSchema,
   TerrainSchema,
 } from './overland-content.ts';
@@ -176,6 +177,8 @@ export const ContentSchemas = {
   combatMagic: z.array(CombatMagicSchema).min(1),
   terrains: z.array(TerrainSchema).min(1),
   regions: z.array(RegionSchema).min(1),
+  /** Sets of shipped regions played without the campaign's story. */
+  realms: z.array(RealmSchema),
   encounterTables: z.array(EncounterTableSchema).min(1),
   mishaps: z.array(MishapSchema).min(1),
   overlandRules: OverlandRulesSchema,

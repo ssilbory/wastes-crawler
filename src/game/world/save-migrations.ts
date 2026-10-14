@@ -210,4 +210,6 @@ export const WORLD_MIGRATIONS: Migrations = {
   33: (raw) => ({ ...raw, schemaVersion: 34, map: null }),
   // Version 35 keeps the party's dungeon maps between visits: none kept yet.
   34: (raw) => ({ ...raw, schemaVersion: 35, charted: {} }),
+  // Version 36 adds realms: older worlds are on the campaign or a custom map.
+  35: (raw) => ({ ...raw, schemaVersion: 36, realm: null }),
 };

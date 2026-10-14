@@ -123,5 +123,49 @@
     "water": true,
     "harsh": false,
     "encounters": "plains"
+  },
+  {
+    "id": "desert",
+    "name": "Desert",
+    "glyph": "d",
+    "movement": "open",
+    "survive": 12,
+    "hunt": 12,
+    "water": false,
+    "harsh": true,
+    "encounters": "badlands"
+  },
+  {
+    "id": "dunes",
+    "name": "Dune sea",
+    "glyph": "u",
+    "movement": "difficult",
+    "survive": 14,
+    "hunt": null,
+    "water": false,
+    "harsh": true,
+    "encounters": "badlands"
+  },
+  {
+    "id": "salt-flats",
+    "name": "Salt flats",
+    "glyph": "a",
+    "movement": "open",
+    "survive": 14,
+    "hunt": null,
+    "water": false,
+    "harsh": true,
+    "encounters": "badlands"
+  },
+  {
+    "id": "oasis",
+    "name": "Oasis",
+    "glyph": "o",
+    "movement": "open",
+    "survive": 8,
+    "hunt": 9,
+    "water": true,
+    "harsh": false,
+    "encounters": "plains"
   }
 ]

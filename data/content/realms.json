@@ -1,0 +1,15 @@
+[
+  {
+    "id": "wastes",
+    "name": "The Wastes",
+    "text": "Five desert maps under a dead sun, each harder than the last: tiny villages, ruined towns crawling with monsters, and one deep dungeon a map with a boss on every level.",
+    "regions": [
+      "wastes-fringe",
+      "wastes-glass",
+      "wastes-dunes",
+      "wastes-bonefields",
+      "wastes-sunscar"
+    ],
+    "start": "wastes-fringe"
+  }
+]
