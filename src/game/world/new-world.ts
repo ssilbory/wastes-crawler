@@ -53,6 +53,7 @@ export function newWorld(
     destination: null,
     visited: new Set([hexKey(start)]),
     elsewhere: {},
+    routes: {},
     rations: FULL_RATIONS,
     hikes: 0,
     camp: 'none',

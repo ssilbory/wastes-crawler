@@ -7,7 +7,7 @@ import { FactionStateSchema } from './faction-content.ts';
 import { RegionSchema } from './overland-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 37;
+export const WORLD_SCHEMA_VERSION = 38;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -307,6 +307,8 @@ export const WorldSaveSchema = z.strictObject({
   visited: z.array(z.string()),
   /** Explored hexes of the regions the party isn't in, by region (Phase 12). */
   elsewhere: z.record(IdSchema, z.array(z.string())),
+  /** Hexes shown on the trade-route maps bought, by region. */
+  routes: z.record(IdSchema, z.array(z.string())),
   rations: z.union([0, 4, 6, 8, 10, 12].map((n) => z.literal(n))),
   /** Quarters spent hiking today. */
   hikes: z.int().min(0),

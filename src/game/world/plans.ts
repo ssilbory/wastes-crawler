@@ -9,7 +9,7 @@ import { carriesFirewood, harshHere } from './firewood.ts';
 import { alive, bestAt, checkBonus } from './members.ts';
 import { firstGuide } from './npcs.ts';
 import { hexesToAvoid } from './groves.ts';
-import { pathToward, regionMap, seenHexes } from './region.ts';
+import { pathToward, regionMap, knownHexes } from './region.ts';
 import type { Activity, Member, QuarterPlan, World } from './types.ts';
 
 /** Sets a destination the party can head toward, even under fog; false if it can get no closer. */
@@ -19,8 +19,7 @@ export function setDestination(w: World, data: GameData, to: Hex | null): boolea
     return to !== null;
   }
   const map = regionMap(data, w.region);
-  if (!pathToward(map, w.position, to, seenHexes(map, w.visited), hexesToAvoid(w, data, to)))
-    return false;
+  if (!pathToward(map, w.position, to, knownHexes(map, w), hexesToAvoid(w, data, to))) return false;
   w.destination = to;
   return true;
 }
@@ -30,7 +29,7 @@ export function route(w: World, data: GameData): Hex[] {
   if (!w.destination) return [];
   const map = regionMap(data, w.region);
   const avoid = hexesToAvoid(w, data);
-  return pathToward(map, w.position, w.destination, seenHexes(map, w.visited), avoid) ?? [];
+  return pathToward(map, w.position, w.destination, knownHexes(map, w), avoid) ?? [];
 }
 
 const survivor = (m: Member) => Object.hasOwn(m.character.skills, 'survive');
