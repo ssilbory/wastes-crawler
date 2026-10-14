@@ -63,6 +63,15 @@ const SLOTS: Record<string, { at: [number, number][]; size: number; jitter: numb
     size: 0.78,
     jitter: 0.06,
   },
+  peaks: {
+    at: [
+      [-0.3, 0.06],
+      [0.04, -0.12],
+      [0.36, 0.14],
+    ],
+    size: 0.82,
+    jitter: 0.04,
+  },
   swamp: {
     at: [
       [-0.3, -0.14],

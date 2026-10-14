@@ -55,6 +55,9 @@
 .t-mountains polygon {
   fill: #bdb19e;
 }
+.t-peaks polygon {
+  fill: #9c9384;
+}
 .t-swamp polygon {
   fill: #a9b28a;
 }

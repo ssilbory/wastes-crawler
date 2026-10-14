@@ -64,4 +64,5 @@ export * from './travel-content.ts';
 export * from './quest-content.ts';
 export * from './dungeon-content.ts';
 export * from './map-gen-content.ts';
+export * from './world-content.ts';
 export * from './economy-sim.ts';

@@ -45,6 +45,7 @@ import ruins from '../../data/content/ruins.json';
 import groves from '../../data/content/groves.json';
 import factions from '../../data/content/factions.json';
 import ailments from '../../data/content/ailments.json';
+import worlds from '../../data/content/worlds.json';
 import { withSettingMonsters } from './monsters.ts';
 import { combatReferenceErrors } from './combat-check.ts';
 import { equipmentReferenceErrors } from './equipment-check.ts';
@@ -61,7 +62,12 @@ import { travelReferenceErrors } from './travel-check.ts';
 import { questReferenceErrors } from './quest-check.ts';
 import { dungeonReferenceErrors } from './dungeon-check.ts';
 import { craftingReferenceErrors } from './crafting-check.ts';
-import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.ts';
+import {
+  ContentSchemas,
+  type ContentData,
+  type ShippedWorld,
+  type SrdData,
+} from './schemas/index.ts';
 import { gameSkills, skillRuleErrors } from './skills.ts';
 import { spellRuleErrors } from './spells.ts';
 import { groveReferenceErrors } from './grove-check.ts';
@@ -113,6 +119,7 @@ export function loadContent(): ContentData {
     raidRules: ContentSchemas.raidRules.parse(raidRules),
     campaign: ContentSchemas.campaign.parse(campaign),
     ruins: ContentSchemas.ruins.parse(ruins),
+    worlds: ContentSchemas.worlds.parse(worlds),
     groves: ContentSchemas.groves.parse(groves),
     factions: ContentSchemas.factions.parse(factions),
     ailments: ContentSchemas.ailments.parse(ailments),
@@ -191,7 +198,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
       errors.push(`${name}: duplicate id ${id}`);
     }
   }
-  return [
+  const own = [
     ...errors,
     ...skillRuleErrors(srd, content),
     ...spellRuleErrors(srd, content),
@@ -213,4 +220,46 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...groveReferenceErrors(srd, content),
     ...ailmentReferenceErrors(srd, content),
   ];
+  return [...own, ...worldErrors(srd, content, own)];
+}
+
+/** A shipped world's map and dungeons put into the content, as the game plays them. */
+export function withShippedWorld(content: ContentData, world: ShippedWorld): ContentData {
+  const ids = new Set(world.dungeons.map((d) => d.id));
+  return {
+    ...content,
+    regions: [...content.regions.filter((r) => r.id !== world.map.id), world.map],
+    dungeons: [...content.dungeons.filter((d) => !ids.has(d.id)), ...world.dungeons],
+  };
+}
+
+/**
+ * Each shipped world checks as the game plays it, its map and dungeons in the content, and keeps
+ * clear of the campaign's ids: saves and town services know maps, towns, and dungeons by id.
+ */
+function worldErrors(srd: SrdData, content: ContentData, known: string[]): string[] {
+  const seen = new Set(known);
+  const errors: string[] = [];
+  const regions = new Set(content.regions.map((r) => r.id));
+  const towns = new Set(content.regions.flatMap((r) => r.sites.map((s) => s.id)));
+  const dungeons = new Set(content.dungeons.map((d) => d.id));
+  const worlds = new Set<string>();
+  for (const w of content.worlds) {
+    const where = `worlds/${w.map.id}`;
+    if (regions.has(w.map.id) || worlds.has(w.map.id)) errors.push(`${where}: the id is taken`);
+    worlds.add(w.map.id);
+    for (const s of w.map.sites)
+      if (towns.has(s.id)) errors.push(`${where}/${s.id}: a campaign town has this id`);
+    for (const d of w.dungeons) {
+      if (d.region !== w.map.id) errors.push(`${where}/${d.id}: stands on another map`);
+      if (dungeons.has(d.id)) errors.push(`${where}/${d.id}: a campaign dungeon has this id`);
+    }
+    const played = { ...withShippedWorld(content, w), worlds: [] };
+    errors.push(
+      ...contentReferenceErrors(srd, played)
+        .filter((e) => !seen.has(e))
+        .map((e) => `${where}: ${e}`),
+    );
+  }
+  return errors;
 }

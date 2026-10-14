@@ -8,8 +8,9 @@ import { data, freshRng, shippedContent } from '../builder/data.ts';
 import { loadLibrary, saveLibrary } from '../editor-store.ts';
 
 /**
- * Which world a new game is played on (Sam's calls): the campaign, a map saved in the map editor,
- * or a new random map made here and saved there. Custom maps have no campaign story.
+ * Which world a new game is played on (Sam's calls): the campaign, a world shipped beside it, a
+ * map saved in the map editor, or a new random map made here and saved there. Only the campaign
+ * has the campaign's story.
  */
 export function WorldPicker(props: { onChange: (map: Region | null) => void }) {
   const [lib, setLib] = useState<EditorLibrary>(() => loadLibrary().library);
@@ -17,8 +18,9 @@ export function WorldPicker(props: { onChange: (map: Region | null) => void }) {
   const [name, setName] = useState('');
   const [note, setNote] = useState<string | null>(null);
   const problems = (r: Region) => worldMapErrors(data.srd, shippedContent, r);
+  const worlds = shippedContent.worlds;
   const choose = (id: string, maps = lib.regions) => {
-    const map = maps.find((r) => r.id === id) ?? null;
+    const map = worlds.find((w) => w.map.id === id)?.map ?? maps.find((r) => r.id === id) ?? null;
     setChosen(map ? id : '');
     props.onChange(map);
   };
@@ -26,6 +28,7 @@ export function WorldPicker(props: { onChange: (map: Region | null) => void }) {
     const title = name.trim() || 'New lands';
     const id = uniqueId(slug(title, 'world'), [
       ...shippedContent.regions.map((r) => r.id),
+      ...worlds.map((w) => w.map.id),
       ...lib.regions.map((r) => r.id),
     ]);
     const map = generateRegion(shippedContent, createRng(freshRng().int(1, 999_999)), {
@@ -43,6 +46,7 @@ export function WorldPicker(props: { onChange: (map: Region | null) => void }) {
     setName('');
     choose(id, next.regions);
   };
+  const world = worlds.find((w) => w.map.id === chosen);
   const map = lib.regions.find((r) => r.id === chosen);
   const wrong = map ? problems(map) : [];
   return (
@@ -52,6 +56,11 @@ export function WorldPicker(props: { onChange: (map: Region | null) => void }) {
         Play on{' '}
         <select value={chosen} onChange={(e) => choose((e.target as HTMLSelectElement).value)}>
           <option value="">The campaign</option>
+          {worlds.map((w) => (
+            <option key={w.map.id} value={w.map.id}>
+              {w.map.name}
+            </option>
+          ))}
           {lib.regions.map((r) => (
             <option key={r.id} value={r.id}>
               {r.name}
@@ -71,6 +80,7 @@ export function WorldPicker(props: { onChange: (map: Region | null) => void }) {
       <button type="button" onClick={create}>
         Create a new world
       </button>
+      {world && <p class="hint">{world.description}</p>}
       {map && (
         <p class="hint">
           {map.sites.length} towns, no campaign story: no quests, factions, or raids. Edit it in the{' '}

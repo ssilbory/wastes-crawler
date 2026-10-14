@@ -67,5 +67,19 @@
     "text": "The bound of the Hollow Citadel still keep the Dark Lord's house, and let in only those who give the night's watchword.",
     "countersign": "The throne waits",
     "bluff": 14
+  },
+  {
+    "id": "hold-the-throat",
+    "name": "Hold the Throat Until Relieved",
+    "text": "The Warden sealed the vale on the Dark Lord's word, and bound troops still hold the only pass out. No one has relieved them, and no one has got past.",
+    "countersign": "The vale keeps its own",
+    "bluff": 16
+  },
+  {
+    "id": "spire-watch",
+    "name": "Keep the Warden's Tower",
+    "text": "The Warden's household and the bound who serve him keep his tower against all comers, as ordered the day the vale was sealed.",
+    "countersign": "Grey stone, grey sky",
+    "bluff": 15
   }
 ]
