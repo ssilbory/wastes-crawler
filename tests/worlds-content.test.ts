@@ -125,4 +125,33 @@ describe('the Sealed Vale', () => {
       expect(guards, l.id).toBeGreaterThanOrEqual(3);
     }
   });
+
+  it('keeps a place to rest within eight steps of every square', () => {
+    const step = { n: [0, -1], e: [1, 0], s: [0, 1], w: [-1, 0] } as const;
+    for (const l of vale.dungeons[0]?.levels ?? []) {
+      const parsed = parseLevelMap(l.map);
+      if (!parsed.ok) throw new Error(l.id);
+      const { map } = parsed;
+      const far = new Map(l.safe.map((c) => [`${c.x},${c.y}`, 0]));
+      const queue = [...l.safe];
+      while (queue.length > 0) {
+        const c = queue.shift() as { x: number; y: number };
+        const d = far.get(`${c.x},${c.y}`) as number;
+        for (const side of ['n', 'e', 's', 'w'] as const) {
+          if (map.edge(c, side) === 'wall') continue;
+          const n = { x: c.x + step[side][0], y: c.y + step[side][1] };
+          if (far.has(`${n.x},${n.y}`)) continue;
+          far.set(`${n.x},${n.y}`, d + 1);
+          queue.push(n);
+        }
+      }
+      for (let y = 0; y < map.height; y++)
+        for (let x = 0; x < map.width; x++) {
+          const open = (['n', 'e', 's', 'w'] as const).some(
+            (s) => map.edge({ x, y }, s) !== 'wall',
+          );
+          if (open) expect(far.get(`${x},${y}`) ?? 99, `${l.id} ${x},${y}`).toBeLessThanOrEqual(8);
+        }
+    }
+  });
 });

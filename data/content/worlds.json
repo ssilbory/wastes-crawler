@@ -158,8 +158,8 @@
               "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+",
               "|                               |",
               "+ +-+-+d+-+ +-+-+-+-+ +-+-+-+-+ +",
-              "| |   |   | |       | | | | | | |",
-              "+ + + + + + + + + + + +-+-+-+-+ +",
+              "| |   |   | |       | | | | | d |",
+              "+ + + + + + + + + + + +-+-+-+ + +",
               "| d   |   | |       |T| | | | | |",
               "+ + + + + + + + + + + +-+-+-+-+ +",
               "| |   d   | |       | | | | | | |",
@@ -178,10 +178,10 @@
               "+ +-+d+-+-+ +-+-+-+-+ +-+-+-+-+ +",
               "| |       | | | | | | |       | |",
               "+ + + + + + +-+-+-+-+ + + + + + +",
-              "| |       d | | | | | d    >  | |",
+              "| |       d | | | | | d    >  d |",
               "+ + + + + + +-+-+-+-+ + + + + + +",
-              "| |       | | | | | | |       | |",
-              "+ +-+-+-+-+ +-+-+-+-+ +-+-+-+-+ +",
+              "| |       | |   | | | |       | |",
+              "+ +-+-+-+-+ +d+-+-+-+ +-+-+-+-+ +",
               "|          <                    |",
               "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
             ],
@@ -222,6 +222,62 @@
               {
                 "x": 4,
                 "y": 7
+              },
+              {
+                "x": 4,
+                "y": 1
+              },
+              {
+                "x": 4,
+                "y": 2
+              },
+              {
+                "x": 6,
+                "y": 3
+              },
+              {
+                "x": 6,
+                "y": 4
+              },
+              {
+                "x": 11,
+                "y": 7
+              },
+              {
+                "x": 11,
+                "y": 8
+              },
+              {
+                "x": 14,
+                "y": 10
+              },
+              {
+                "x": 14,
+                "y": 11
+              },
+              {
+                "x": 1,
+                "y": 12
+              },
+              {
+                "x": 1,
+                "y": 11
+              },
+              {
+                "x": 14,
+                "y": 1
+              },
+              {
+                "x": 14,
+                "y": 2
+              },
+              {
+                "x": 6,
+                "y": 12
+              },
+              {
+                "x": 7,
+                "y": 12
               }
             ],
             "secrets": [
@@ -407,6 +463,62 @@
                   "y": 6
                 },
                 "text": "A strongbox under the guildhall's floor, its ledger rotted to a black cake."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 1
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 6,
+                  "y": 3
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 11,
+                  "y": 7
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 14,
+                  "y": 10
+                },
+                "text": "A quiet nook, easy to watch. A safe place to rest."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 1,
+                  "y": 12
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 14,
+                  "y": 1
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 6,
+                  "y": 12
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
               }
             ],
             "captives": [],
@@ -458,9 +570,9 @@
               "+-+-+-+-+-+-+-+-+-+-+-+-+",
               "| |<                  | |",
               "+-+ +-+-+-+ +-+-+-+-+ +-+",
-              "| | | | | | | | | | | | |",
-              "+-+ +-+-+-+ +-+-+-+-+ +-+",
-              "| | | | | | | | | | |T| |",
+              "| | d   | | | | | | | | |",
+              "+-+ + + +-+ +-+-+-+-+ +-+",
+              "| | |   | | | | | | |T| |",
               "+-+ +-+-+-+ +-+-+-+-+ + +",
               "| | | | |       | | | | |",
               "+-+ +-+-+ + + + +-+-+ + +",
@@ -470,9 +582,9 @@
               "+-+ +-+-+ + + + +-+-+ + +",
               "| | | | |       | | | | |",
               "+-+ +-+-+-+-+-+-+-+-+ + +",
-              "| | | | | | | | | | | | |",
-              "+-+ +-+-+-+-+-+-+-+-+ +-+",
-              "| | | | | | | | | | | | |",
+              "| | | | | | | | |   | | |",
+              "+-+ +-+-+-+-+-+-+ + + +-+",
+              "| | | | | | | | |   d | |",
               "+-+ +-+-+-+-+-+-+-+-+ +-+",
               "| |    T              | |",
               "+-+-+-+-+-+-+d+-+-+-+-+-+",
@@ -521,6 +633,38 @@
               {
                 "x": 11,
                 "y": 5
+              },
+              {
+                "x": 2,
+                "y": 2
+              },
+              {
+                "x": 3,
+                "y": 2
+              },
+              {
+                "x": 7,
+                "y": 4
+              },
+              {
+                "x": 7,
+                "y": 5
+              },
+              {
+                "x": 8,
+                "y": 8
+              },
+              {
+                "x": 9,
+                "y": 8
+              },
+              {
+                "x": 4,
+                "y": 11
+              },
+              {
+                "x": 5,
+                "y": 11
               }
             ],
             "exposure": {
@@ -664,6 +808,38 @@
                     "sides": 8
                   }
                 ]
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 2,
+                  "y": 2
+                },
+                "text": "A quiet nook, easy to watch. A safe place to rest."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 7,
+                  "y": 4
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 8,
+                  "y": 8
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 11
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
               }
             ],
             "captives": [],
@@ -692,8 +868,8 @@
               "+-+-+-+-+-+-+-+-+-+-+-+-+",
               "|          >| | | | | | |",
               "+ +-+-+-+-+-+-+-+-+-+-+-+",
-              "| | | | | | | | | | | | |",
-              "+ +-+-+-+-+-+-+-+-+-+-+-+",
+              "| | | | |   | | | | | | |",
+              "+ +-+-+-+d+-+-+-+-+-+-+-+",
               "|      T                |",
               "+-+-+-+-+-+-+-+d+-+-+-+ +",
               "| | | | | | |     | | | |",
@@ -701,15 +877,15 @@
               "| | | | | | |     | | | |",
               "+-+-+-+-+-+-+-+s+-+-+-+ +",
               "|            T          |",
-              "+ +-+-+-+-+-+-+-+-+-+-+-+",
-              "| | | | | | | | | | | | |",
-              "+ +-+-+-+-+-+-+-+-+-+-+-+",
-              "| | | | | | | | | | | | |",
+              "+ +-+-+-+-+-+-+-+-+d+-+-+",
+              "| d   | | | | | | |   | |",
+              "+ + + +-+-+-+-+-+-+ + +-+",
+              "| |   | | | | | | |   | |",
               "+ +-+-+-+-+-+-+-+-+-+-+-+",
               "|                  T    |",
-              "+-+-+-+-+d+-+-+-+-+-+-+ +",
+              "+-+-+-+-+d+-+-+-+-+-+d+ +",
               "| | | |     | | | | | | |",
-              "+-+-+-+ + + +-+-+-+-+-+ +",
+              "+-+-+-+ + + +-+-+-+-+ + +",
               "| | | |     | | | | | | |",
               "+-+-+-+-+d+-+-+-+-+-+-+ +",
               "|                <      |",
@@ -757,6 +933,54 @@
               {
                 "x": 5,
                 "y": 10
+              },
+              {
+                "x": 6,
+                "y": 3
+              },
+              {
+                "x": 6,
+                "y": 4
+              },
+              {
+                "x": 9,
+                "y": 6
+              },
+              {
+                "x": 10,
+                "y": 6
+              },
+              {
+                "x": 4,
+                "y": 1
+              },
+              {
+                "x": 5,
+                "y": 1
+              },
+              {
+                "x": 10,
+                "y": 9
+              },
+              {
+                "x": 10,
+                "y": 10
+              },
+              {
+                "x": 1,
+                "y": 6
+              },
+              {
+                "x": 1,
+                "y": 7
+              },
+              {
+                "x": 4,
+                "y": 0
+              },
+              {
+                "x": 3,
+                "y": 0
               }
             ],
             "exposure": {
@@ -915,6 +1139,54 @@
                   }
                 ],
                 "component": "ooze-essence"
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 6,
+                  "y": 3
+                },
+                "text": "A quiet nook, easy to watch. A safe place to rest."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 9,
+                  "y": 6
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 1
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 10,
+                  "y": 9
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 1,
+                  "y": 6
+                },
+                "text": "A quiet nook, easy to watch. A safe place to rest."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 0
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
               }
             ],
             "captives": [],
@@ -955,8 +1227,8 @@
               "+-+-+ + + + + + + + +-+ +",
               "|   d      T        | | |",
               "+ +-+ + + + + + + + +-+ +",
-              "| | |               | | |",
-              "+ +-+ + + + + + + + +-+ +",
+              "| | |               | d |",
+              "+ +-+ + + + + + + + + + +",
               "| | |               | |T|",
               "+ +-+-+-+-+-+-+-+-+-+-+ +",
               "|T| | | | | | | | | | | |",
@@ -1008,6 +1280,42 @@
               {
                 "x": 10,
                 "y": 0
+              },
+              {
+                "x": 6,
+                "y": 10
+              },
+              {
+                "x": 6,
+                "y": 11
+              },
+              {
+                "x": 2,
+                "y": 10
+              },
+              {
+                "x": 2,
+                "y": 11
+              },
+              {
+                "x": 10,
+                "y": 7
+              },
+              {
+                "x": 10,
+                "y": 8
+              },
+              {
+                "x": 2,
+                "y": 8
+              },
+              {
+                "x": 3,
+                "y": 8
+              },
+              {
+                "x": 8,
+                "y": 3
               }
             ],
             "exposure": {
@@ -1160,6 +1468,46 @@
                   }
                 ],
                 "component": "grave-garnet"
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 6,
+                  "y": 10
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 2,
+                  "y": 10
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 10,
+                  "y": 7
+                },
+                "text": "A quiet nook, easy to watch. A safe place to rest."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 2,
+                  "y": 8
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 8,
+                  "y": 3
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
               }
             ],
             "captives": [],
@@ -1245,6 +1593,30 @@
               {
                 "x": 2,
                 "y": 1
+              },
+              {
+                "x": 5,
+                "y": 1
+              },
+              {
+                "x": 5,
+                "y": 3
+              },
+              {
+                "x": 4,
+                "y": 6
+              },
+              {
+                "x": 6,
+                "y": 6
+              },
+              {
+                "x": 1,
+                "y": 6
+              },
+              {
+                "x": 3,
+                "y": 6
               }
             ],
             "secrets": [],
@@ -1378,6 +1750,30 @@
                   ["hell-hound", "hell-hound", "hell-hound", "hell-hound", "hell-hound"],
                   ["gargoyle", "gargoyle", "gargoyle"]
                 ]
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 5,
+                  "y": 1
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 6
+                },
+                "text": "A quiet nook, easy to watch. A safe place to rest."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 1,
+                  "y": 6
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
               }
             ],
             "captives": [],
@@ -1485,6 +1881,30 @@
               {
                 "x": 5,
                 "y": 2
+              },
+              {
+                "x": 1,
+                "y": 4
+              },
+              {
+                "x": 1,
+                "y": 5
+              },
+              {
+                "x": 1,
+                "y": 3
+              },
+              {
+                "x": 1,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 6
+              },
+              {
+                "x": 4,
+                "y": 4
               }
             ],
             "secrets": [],
@@ -1628,6 +2048,30 @@
                     "clockwork-soldier"
                   ]
                 ]
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 1,
+                  "y": 4
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 1,
+                  "y": 3
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 6
+                },
+                "text": "A quiet nook, easy to watch. A safe place to rest."
               }
             ],
             "captives": [],
@@ -1734,6 +2178,18 @@
               {
                 "x": 0,
                 "y": 6
+              },
+              {
+                "x": 4,
+                "y": 6
+              },
+              {
+                "x": 1,
+                "y": 5
+              },
+              {
+                "x": 6,
+                "y": 5
               }
             ],
             "secrets": [],
@@ -1904,6 +2360,22 @@
                   ["mummy", "mummy", "mummy"],
                   ["ruinfield-sorcerer", "ruinfield-sorcerer", "ruinfield-sorcerer"]
                 ]
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 6
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 1,
+                  "y": 5
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
               }
             ],
             "captives": [],
@@ -2008,6 +2480,30 @@
               {
                 "x": 2,
                 "y": 5
+              },
+              {
+                "x": 1,
+                "y": 3
+              },
+              {
+                "x": 3,
+                "y": 3
+              },
+              {
+                "x": 6,
+                "y": 1
+              },
+              {
+                "x": 4,
+                "y": 3
+              },
+              {
+                "x": 4,
+                "y": 6
+              },
+              {
+                "x": 6,
+                "y": 4
               }
             ],
             "secrets": [],
@@ -2181,6 +2677,30 @@
                   }
                 ],
                 "guards": [["chimera", "chimera", "chimera", "chimera", "chimera"]]
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 1,
+                  "y": 3
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 6,
+                  "y": 1
+                },
+                "text": "A quiet nook, easy to watch. A safe place to rest."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 6
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
               }
             ],
             "captives": [],
@@ -2287,6 +2807,30 @@
               {
                 "x": 3,
                 "y": 2
+              },
+              {
+                "x": 4,
+                "y": 4
+              },
+              {
+                "x": 4,
+                "y": 6
+              },
+              {
+                "x": 4,
+                "y": 3
+              },
+              {
+                "x": 6,
+                "y": 1
+              },
+              {
+                "x": 3,
+                "y": 6
+              },
+              {
+                "x": 1,
+                "y": 6
               }
             ],
             "secrets": [],
@@ -2466,6 +3010,30 @@
                 ],
                 "component": "grave-garnet",
                 "guards": [["mummy-lord", "mummy-lord", "mummy-lord", "mummy", "mummy", "mummy"]]
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 4
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 4,
+                  "y": 3
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 3,
+                  "y": 6
+                },
+                "text": "A quiet nook, easy to watch. A safe place to rest."
               }
             ],
             "captives": [],
@@ -2550,6 +3118,22 @@
               {
                 "x": 3,
                 "y": 6
+              },
+              {
+                "x": 1,
+                "y": 5
+              },
+              {
+                "x": 6,
+                "y": 5
+              },
+              {
+                "x": 3,
+                "y": 0
+              },
+              {
+                "x": 0,
+                "y": 4
               }
             ],
             "secrets": [],
@@ -2687,6 +3271,30 @@
                   ["master-vampire", "bone-golem", "bone-golem", "bone-golem", "bone-golem"],
                   ["old-barrow-archmage", "old-barrow-archmage"]
                 ]
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 1,
+                  "y": 5
+                },
+                "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 3,
+                  "y": 0
+                },
+                "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+              },
+              {
+                "kind": "message",
+                "at": {
+                  "x": 0,
+                  "y": 4
+                },
+                "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
               }
             ],
             "captives": [],
