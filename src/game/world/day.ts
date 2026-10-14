@@ -2,10 +2,8 @@
 // party eats from the rations die, the sleepless and the unsheltered on harsh nights suffer, any
 // condition costs 1 System Strain, and the fed, rested, and sheltered heal and recover spells.
 import { hexKey } from '../../rules/hex.ts';
-import { isHarshNight } from '../../rules/overland.ts';
 import { useResource } from '../../rules/resource-die.ts';
 import type { GameData } from '../character/context.ts';
-import { dateOf } from './calendar.ts';
 import { addMemberStrain, alive, cureFrailty, easeStrain, healNight, note } from './members.ts';
 import { npcCheck } from '../../rules/checks.ts';
 import { emit } from './bus.ts';
@@ -17,9 +15,10 @@ import { nightForTrees } from './greenwood.ts';
 import { dawnTakesSummons } from './summons.ts';
 import { wakeRevived } from './healer.ts';
 import { nightForMounts } from './mounts.ts';
+import { burnFirewood, harshHere } from './firewood.ts';
 import { firstPhysician, nightForNpcs } from './npcs.ts';
 import { regionMap } from './region.ts';
-import type { World } from './types.ts';
+import type { Member, World } from './types.ts';
 import { wipe } from './town.ts';
 
 /**
@@ -30,7 +29,6 @@ import { wipe } from './town.ts';
 export function endOfDay(w: World, data: GameData, waystation = false): boolean {
   const map = regionMap(data, w.region);
   const inTown = waystation || map.siteAt(w.position) !== undefined;
-  const { season } = dateOf(data.content.overlandRules, w.day);
   // Transubstantiation's sacred blood feeds the party in place of the rations (Phase 15).
   const fedFree = inTown || sacredBlood(w, data);
   let fed = fedFree;
@@ -43,8 +41,12 @@ export function endOfDay(w: World, data: GameData, waystation = false): boolean 
   }
   const sheltered = inTown || w.camp === 'made';
   const physician = firstPhysician(w, data);
-  // Underground there is no weather.
-  const cold = !sheltered && !w.dungeon && isHarshNight(map.terrainAt(w.position).harsh, season);
+  const harsh = !sheltered && harshHere(w, data);
+  // A fire keeps off the cold, so firewood burns only when someone would feel it.
+  const exposed = (m: Member) => !m.reviving && !physician && !immuneTo(data, m, 'cold');
+  const fire = harsh && alive(w).some(exposed) ? burnFirewood(w, data) : null;
+  if (fire) note(w, `${fire} builds a fire from a night's firewood.`);
+  const cold = harsh && !fire;
   if (physician) tendFrail(w, data, physician.name);
   // Refined Restoration: a Healer awake at night's end tends the sleepers (Phase 15).
   const care = tended(w);
@@ -53,7 +55,7 @@ export function endOfDay(w: World, data: GameData, waystation = false): boolean 
     m.hungry = !fed && !immuneTo(data, m, 'hungry');
     // Sam's call: a physician's draughts and care keep off everything but hunger.
     m.sleepless = !m.slept && !physician && !immuneTo(data, m, 'sleepless');
-    m.cold = cold && !physician && !immuneTo(data, m, 'cold');
+    m.cold = cold && exposed(m);
     const conditions = [m.hungry && 'Hungry', m.sleepless && 'Sleepless', m.cold && 'Cold'].filter(
       Boolean,
     );

@@ -22,10 +22,11 @@ import {
 } from './members.ts';
 import { emit } from './bus.ts';
 import { craftShift } from './crafting.ts';
+import { gatherFirewood } from './firewood.ts';
 import { memberLoad, partyLoad } from './party-load.ts';
 import { firstGuide, guideOf } from './npcs.ts';
 import { hexesToAvoid } from './groves.ts';
-import { pathToward, regionMap, seenHexes } from './region.ts';
+import { pathToward, regionMap, knownHexes } from './region.ts';
 import { enterTown } from './town.ts';
 import type { Activity, Member, World } from './types.ts';
 
@@ -118,7 +119,7 @@ export function hike(w: World, data: GameData, leaderId: string | null, dark: bo
   const map = regionMap(data, w.region);
   const plan = () =>
     w.destination &&
-    pathToward(map, w.position, w.destination, seenHexes(map, w.visited), hexesToAvoid(w, data));
+    pathToward(map, w.position, w.destination, knownHexes(map, w), hexesToAvoid(w, data));
   let path = plan();
   if (!path) {
     w.destination = null;
@@ -216,6 +217,7 @@ export function camp(
     rules.huntSteps,
     'brings in',
   );
+  if (!inTown && gatherFirewood(w, data, doing('firewood'), terrain.survive)) extraChecks += 1;
   guideFood(w, data, inTown);
   return { extraChecks, watcher: doing('watch')[0] };
 }

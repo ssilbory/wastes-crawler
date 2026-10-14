@@ -5,10 +5,11 @@
 import { hexKey, type Hex } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
 import { campProject } from './crafting.ts';
+import { carriesFirewood, harshHere } from './firewood.ts';
 import { alive, bestAt, checkBonus } from './members.ts';
 import { firstGuide } from './npcs.ts';
 import { hexesToAvoid } from './groves.ts';
-import { pathToward, regionMap, seenHexes } from './region.ts';
+import { pathToward, regionMap, knownHexes } from './region.ts';
 import type { Activity, Member, QuarterPlan, World } from './types.ts';
 
 /** Sets a destination the party can head toward, even under fog; false if it can get no closer. */
@@ -18,8 +19,7 @@ export function setDestination(w: World, data: GameData, to: Hex | null): boolea
     return to !== null;
   }
   const map = regionMap(data, w.region);
-  if (!pathToward(map, w.position, to, seenHexes(map, w.visited), hexesToAvoid(w, data, to)))
-    return false;
+  if (!pathToward(map, w.position, to, knownHexes(map, w), hexesToAvoid(w, data, to))) return false;
   w.destination = to;
   return true;
 }
@@ -29,7 +29,7 @@ export function route(w: World, data: GameData): Hex[] {
   if (!w.destination) return [];
   const map = regionMap(data, w.region);
   const avoid = hexesToAvoid(w, data);
-  return pathToward(map, w.position, w.destination, seenHexes(map, w.visited), avoid) ?? [];
+  return pathToward(map, w.position, w.destination, knownHexes(map, w), avoid) ?? [];
 }
 
 const survivor = (m: Member) => Object.hasOwn(m.character.skills, 'survive');
@@ -81,7 +81,11 @@ export function suggestPlan(w: World, data: GameData, prefer?: QuarterPlan['kind
   for (const m of party) set(m, m.slept ? 'rest' : 'sleep');
   if (w.quarter === 2) {
     if (w.camp !== 'made') set(leader, 'make-camp');
-    set(watch(others(party, leader)) ?? leader, 'watch');
+    const watcher = watch(others(party, leader)) ?? leader;
+    set(watcher, 'watch');
+    // On a harsh night with no wood packed, someone looks for some in case the camp fails.
+    if (w.camp !== 'made' && harshHere(w, data) && !carriesFirewood(w, data))
+      set(bestAt(data, others(free, leader, watcher), 'survive', ['wis']), 'firewood');
   } else {
     // Food comes first for those with Survival, so the watch goes to someone without it if it can.
     const rested = party.filter((m) => m.slept);

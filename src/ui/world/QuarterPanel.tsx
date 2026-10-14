@@ -7,6 +7,7 @@ const ACTIVITIES: Record<Activity, string> = {
   watch: 'Keep watch',
   forage: 'Forage',
   hunt: 'Hunt or fish',
+  firewood: 'Gather firewood',
   craft: 'Craft',
 };
 
