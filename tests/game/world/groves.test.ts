@@ -160,5 +160,7 @@ describe('groves and the roads', () => {
         ).not.toBeNull();
       }
     },
+    // A path search per hex: about 4 seconds for the Dark Lands alone, more under a full run.
+    20_000,
   );
 });

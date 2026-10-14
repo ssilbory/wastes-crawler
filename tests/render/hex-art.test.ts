@@ -68,6 +68,9 @@ describe('overland glyphs', () => {
     // Glyphs set off-centre stay: a mountain hex loses its middle peak and keeps the other.
     expect(glyphsFor(cell(2, 2, { terrain: 'mountains' }), SIZE)).toHaveLength(2);
     expect(glyphsFor(cell(2, 2, { terrain: 'mountains', site: 'Keep' }), SIZE)).toHaveLength(1);
+    // Impassable peaks crowd the hex, their middle one sitting off-centre too.
+    expect(glyphsFor(cell(2, 2, { terrain: 'peaks' }), SIZE)).toHaveLength(3);
+    expect(glyphsFor(cell(2, 2, { terrain: 'peaks', dungeon: 'Pit' }), SIZE)).toHaveLength(2);
   });
 });
 

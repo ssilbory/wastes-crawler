@@ -34,6 +34,11 @@ export function HexArtDefs() {
         <path class="shade" d="M-0.1,-0.9L0.05,0.8H0.95L0.5,-0.5L0.28,-0.2Z" />
         <path class="snow" d="M-0.33,-0.44L-0.1,-0.9L0.12,-0.46L0,-0.36L-0.12,-0.5Z" />
       </symbol>
+      <symbol id="hg-peaks" viewBox="-1 -1 2 2" class="glyph">
+        <path class="rock" d="M-0.95,0.85L-0.05,-0.95L0.95,0.85Z" />
+        <path class="shade" d="M-0.05,-0.95L0.1,0.85H0.95Z" />
+        <path class="snow" d="M-0.42,-0.1L-0.05,-0.95L0.32,-0.1L0.1,0.02L-0.05,-0.18L-0.22,0.02Z" />
+      </symbol>
       <symbol id="hg-swamp" viewBox="-1 -1 2 2" class="glyph">
         <path class="water" d="M-0.8,0.55h0.5M-0.1,0.55h0.8M-0.5,0.8h0.9" />
         <path d="M-0.35,0.45v-0.7M0,0.45v-0.95M0.32,0.45v-0.6" />
