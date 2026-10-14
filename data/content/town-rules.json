@@ -7,6 +7,7 @@
     "cureDisease": 500
   },
   "rumor": 10,
+  "routeMap": 3,
   "raisePerLevel": 125,
   "sellFraction": 0.5,
   "spendingThresholds": {

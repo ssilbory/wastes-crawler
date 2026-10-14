@@ -217,4 +217,6 @@ export const WORLD_MIGRATIONS: Migrations = {
     (raw.map as Raw | null)?.id === 'sealed-vale'
       ? { ...raw, schemaVersion: 37, map: null, realm: 'sealed-vale' }
       : { ...raw, schemaVersion: 37 },
+  // Version 38 adds trade-route maps: none bought yet.
+  37: (raw) => ({ ...raw, schemaVersion: 38, routes: {} }),
 };

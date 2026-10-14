@@ -69,6 +69,8 @@ export interface World {
   destination: Hex | null;
   visited: Set<string>;
   elsewhere: Record<string, string[]>;
+  /** Hexes shown on the trade-route maps bought, by region. */
+  routes: Record<string, string[]>;
   rations: ResourceDie;
   hikes: number;
   camp: WorldSave['camp'];

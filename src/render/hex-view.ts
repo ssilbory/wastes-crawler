@@ -1,6 +1,6 @@
 // Read-only drawing data for the overland map: flat-topped hexes in odd-q layout
 // (src/rules/hex.ts), fog over unseen hexes, sites, the party, and the planned route.
-import { seenHexes, type RegionMap } from '../game/world/region.ts';
+import { knownHexes, type RegionMap } from '../game/world/region.ts';
 import type { World } from '../game/world/types.ts';
 import { hexKey, type Hex } from '../rules/hex.ts';
 
@@ -69,7 +69,7 @@ export function hexCells(
   const quests = new Set(questHexes.map(hexKey));
   const ways = new Map(entrances.map((e) => [hexKey(e), e]));
   const woods = new Map(groves.map((g) => [hexKey(g), g.name]));
-  const seen = seenHexes(map, w.visited);
+  const seen = knownHexes(map, w);
   for (const h of revealed) seen.add(hexKey(h));
   const onRoute = new Set(routeHexes.map(hexKey));
   const cells: HexCell[] = [];

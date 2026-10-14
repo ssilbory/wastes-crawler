@@ -92,6 +92,16 @@ export function seenHexes(map: RegionMap, visited: ReadonlySet<string>): Set<str
   return seen;
 }
 
+/** Hexes the party knows in its region: those it has seen, and those on its trade-route maps. */
+export function knownHexes(
+  map: RegionMap,
+  w: { region: string; visited: ReadonlySet<string>; routes: Record<string, string[]> },
+): Set<string> {
+  const known = seenHexes(map, w.visited);
+  for (const key of w.routes[w.region] ?? []) known.add(key);
+  return known;
+}
+
 /** Cheapest hike-point costs from `from` through known hexes, stopping once `goal` is settled. */
 /**
  * A hike planner's nudge toward roads (Sam's call, docs/rules-adaptation.md, Overland travel: Route):

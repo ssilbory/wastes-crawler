@@ -5,6 +5,7 @@ import { MAX_NPCS } from '../../game/world/npcs.ts';
 import { hireBlocked, payDeadShare, refuseDeadShare } from '../../game/world/shares.ts';
 import { shareText } from '../../game/world/wording.ts';
 import { buyRumor, rumorListed, rumorsLeft } from '../../game/world/rumors.ts';
+import { buyRouteMap, routeMapListed } from '../../game/world/route-maps.ts';
 import { bench, catchUpXp, inWorld, recruit, rejoin } from '../../game/world/tavern.ts';
 import { priceHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
@@ -107,6 +108,16 @@ export function TavernTab(props: { world: World; roster: RosterEntry[]; act: Act
             Buy a round for a rumor ({priceHere(w, data, rumorListed(data))} crowns)
           </button>
         )}
+      </section>
+      <section class="panel" aria-label="Trade routes">
+        <h2>Trade routes</h2>
+        <p class="hint">
+          A carter's map of the roads from here to the next towns, and the land either side. The map
+          shows them from then on.
+        </p>
+        <button type="button" onClick={() => props.act(() => buyRouteMap(w, data))}>
+          Buy a trade-route map ({priceHere(w, data, routeMapListed(data))} crowns)
+        </button>
       </section>
       <section class="panel" aria-label="New faces">
         <h2>New faces</h2>

@@ -4,7 +4,7 @@
 import { hexKey } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
 import { note } from './members.ts';
-import { regionMap, seenHexes } from './region.ts';
+import { regionMap, knownHexes } from './region.ts';
 import type { TownResult } from './services.ts';
 import { priceHere, spend, townHere } from './town.ts';
 import type { World } from './types.ts';
@@ -29,7 +29,7 @@ export function rumorsLeft(w: World, data: GameData): Rumor[] {
       q.objectives.flatMap((o) => ('dungeon' in o ? [o.dungeon] : [])),
     ),
   );
-  const seen = seenHexes(regionMap(data, w.region), w.visited);
+  const seen = knownHexes(regionMap(data, w.region), w);
   const ways: Rumor[] = [
     ...data.content.dungeons
       .filter((d) => d.region === w.region && !questDungeons.has(d.id))
