@@ -315,3 +315,17 @@ test('delves to the stairs and back with fights, a trap, a camp, and a rescue', 
   await expect(page.getByRole('region', { name: 'NPCs' })).toContainText('grave-digger');
   await page.screenshot({ path: testInfo.outputPath('delve-out.png'), fullPage: true });
 });
+
+// Sam's ask: a square of magical darkness looks dark from outside, hiding what lies beyond it.
+test('shows a square of magical darkness as black', async ({ page }) => {
+  await startAtBarrow(page);
+  await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
+  await edit(
+    page,
+    `Object.assign(save.dungeon, { level: 'barrow-lower', at: { x: 6, y: 1 }, facing: 's' });`,
+  );
+  // 6,4 is dark, three cells down the passage.
+  await expect(page.getByRole('img', { name: 'Dungeon view' })).toHaveScreenshot(
+    'barrow-darkness.png',
+  );
+});

@@ -7,7 +7,17 @@ import type { TrapArt } from './trap-art.ts';
 
 export interface Panel {
   key: string;
-  kind: 'wall' | 'door' | 'dug' | 'up' | 'down' | 'trap' | 'floor' | 'ceiling' | 'furniture';
+  kind:
+    | 'wall'
+    | 'door'
+    | 'dug'
+    | 'up'
+    | 'down'
+    | 'trap'
+    | 'floor'
+    | 'ceiling'
+    | 'furniture'
+    | 'darkness';
   /** SVG polygon points. */
   points: string;
   /** A door's leaf inside the panel, or null. */
