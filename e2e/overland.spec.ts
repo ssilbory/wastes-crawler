@@ -122,6 +122,10 @@ test('heads toward an unexplored hex picked on the map', async ({ page }) => {
   await expect(target).toHaveClass(/\bfog\b/);
   await target.click();
   await expect(target).toHaveClass(/\bdestination\b/);
+  await expect(page.getByTestId('hex-report')).toHaveText('Unexplored (10,8).');
+  await page.locator('[data-hex="3,8"]').click();
+  await expect(page.getByTestId('hex-report')).toHaveText(/^Plains \(3,8\)\. Town: Rubblegate\./);
+  await target.click();
   await expect(page.locator('.hex.route')).not.toHaveCount(0);
   const plan = page.getByRole('region', { name: 'Quarter plan' });
   await expect(plan.getByRole('radio', { name: 'Hike' })).toHaveAttribute('aria-checked', 'true');

@@ -105,3 +105,16 @@ export function hexCells(
   }
   return cells;
 }
+
+/**
+ * What the party knows of a picked hex: "Forest (3,7). Town: Rubblegate. Dungeon: The Old Barrow.",
+ * or "Unexplored (20,8)." with any dungeon a rumor has told of.
+ */
+export function hexReport(map: RegionMap, c: HexCell): string {
+  const parts = [c.terrain ? `${map.terrainAt(c).name} (${c.key})` : `Unexplored (${c.key})`];
+  if (c.site) parts.push(`Town: ${c.site}`);
+  if (c.dungeon) parts.push(`Dungeon: ${c.dungeon}`);
+  if (c.grove) parts.push(`Grove: ${c.grove}`);
+  if (c.exit) parts.push(`Road out: ${c.exit}`);
+  return `${parts.join('. ')}.`;
+}

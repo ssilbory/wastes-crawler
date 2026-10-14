@@ -4,7 +4,7 @@ import { describeDate } from '../../game/world/calendar.ts';
 import { route, setDestination, suggestPlan } from '../../game/world/plans.ts';
 import { regionMap } from '../../game/world/region.ts';
 import { hexKey } from '../../rules/hex.ts';
-import { hexCells, mapPixels } from '../../render/hex-view.ts';
+import { hexCells, hexReport, mapPixels } from '../../render/hex-view.ts';
 import { crowns, lootText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { HEX_SIZE, HexMap } from './HexMap.tsx';
@@ -58,6 +58,7 @@ export function MapScreen(props: {
   const w = props.world;
   const map = regionMap(data, w.region);
   const [plan, setPlan] = useState<{ version: number; plan: QuarterPlan } | null>(null);
+  const [picked, setPicked] = useState<string | null>(null);
   const current = plan?.version === props.version ? plan.plan : suggestPlan(w, data);
   const choose = (p: QuarterPlan) => setPlan({ version: props.version, plan: p });
   const able = w.members.filter((m) => !m.dead && m.character.hp.current > 0);
@@ -81,6 +82,7 @@ export function MapScreen(props: {
   const here = town?.name ?? map.terrainAt(w.position).name;
   const way = wayDownHere(w, data);
   const road = map.exitAt(w.position);
+  const pickedCell = cells.find((c) => c.key === picked);
   return (
     <div class="world map-screen">
       <div class="world-bar">
@@ -127,11 +129,17 @@ export function MapScreen(props: {
               height={height}
               tint={dayTint(w.quarter)}
               onPick={(col, row) => {
+                setPicked(hexKey({ col, row }));
                 if (!w.encounter && !w.coach && setDestination(w, data, { col, row }))
                   props.onChange();
               }}
             />
           </ZoomFrame>
+          {pickedCell && (
+            <p class="hex-report" data-testid="hex-report" aria-live="polite">
+              {hexReport(map, pickedCell)}
+            </p>
+          )}
           <JournalPanel world={w} />
           {w.encounter && (
             <PopOut>

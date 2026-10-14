@@ -444,3 +444,13 @@
   color: var(--muted);
   font-size: 0.85rem;
 }
+
+/* What the party knows of the last hex clicked. */
+.hex-report {
+  margin: 0;
+  padding: 4px 10px;
+  border-radius: var(--radius-panel);
+  background: var(--panel-sunk);
+  color: var(--ink);
+  box-shadow: var(--bevel-in);
+}
