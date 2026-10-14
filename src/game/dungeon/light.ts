@@ -1,7 +1,7 @@
 // Light underground (docs/rules-adaptation.md, Resource dice and Dungeon exploration): a fresh torch
 // burns at d6 and a pint of oil fills the lantern to d12. The light in use rolls its die each
 // exploration turn and after each fight, stepping down on a 1 or 2 (src/rules/resource-die.ts).
-// A Dungeoneering Kit holds six torches, drawn once per kit per trip to town (SRD 3.2.1 leaves a
+// A Dungeoneering Kit holds one torch, drawn once per kit per trip to town (SRD 3.2.1 leaves a
 // bundle's contents to the GM: vendor/wwn-srd/3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring
 // Gear.md).
 import { useResource, type ResourceDie } from '../../rules/resource-die.ts';
@@ -13,7 +13,7 @@ import { onSpecial } from './specials.ts';
 
 export const TORCH_DIE: ResourceDie = 6;
 export const LANTERN_DIE: ResourceDie = 12;
-export const KIT_TORCHES = 6;
+export const KIT_TORCHES = 1;
 const KIT = 'dungeoneering-kit';
 
 /** How many of an item the living members carry. */
@@ -39,14 +39,18 @@ function takeOne(w: World, id: string): void {
 /** Torches the party can still light: kit torches and any bought ones. */
 export const spareTorches = (w: World) => w.light.kitTorches + carried(w, 'torch');
 
-/** On coming down, each kit not drawn on since town gives up its torches. */
+/** On coming down, each kit not drawn on since town gives up its torch. */
 export function drawKits(w: World): void {
   if (!w.light.kitsReady) return;
   const kits = carried(w, KIT);
   w.light.kitsReady = false;
   if (kits === 0) return;
   w.light.kitTorches += KIT_TORCHES * kits;
-  note(w, `The party takes ${KIT_TORCHES * kits} torches from its kits.`);
+  const n = KIT_TORCHES * kits;
+  note(
+    w,
+    `The party takes ${n} ${n === 1 ? 'torch' : 'torches'} from its ${kits === 1 ? 'kit' : 'kits'}.`,
+  );
 }
 
 /**

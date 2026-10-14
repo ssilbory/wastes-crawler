@@ -42,6 +42,25 @@ export function dropTier(rng: Rng, bands: readonly DropBand[], level: number): D
   );
 }
 
+/** Weights for each kind of fine weapon a fight that drops nothing else may still leave. */
+export type FineWeights = Record<'mastercrafted' | '+1' | '+2', number>;
+
+/** A fine weapon's make: mastercrafted (SRD 2.8.1) or a magic bonus of normal make (SRD 4.9.3). */
+export interface FineFind {
+  quality?: 'mastercrafted';
+  bonus: number;
+}
+
+/** Draws a fine weapon's make by weight. */
+export function fineFind(rng: Rng, weights: FineWeights): FineFind {
+  const kind = pickWeighted(rng, [
+    ['mastercrafted', weights.mastercrafted],
+    ['+1', weights['+1']],
+    ['+2', weights['+2']],
+  ] as const);
+  return kind === 'mastercrafted' ? { quality: kind, bonus: 0 } : { bonus: Number(kind) };
+}
+
 /** A loot die's average roll, in crowns at the loot exchange. */
 const average = (sides: number) => (sides + 1) / 2;
 

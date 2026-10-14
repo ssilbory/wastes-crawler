@@ -2,9 +2,17 @@
 // calls). Only a won fight that pays XP drops one, and only from humanoids that drop no crafting
 // components. The tier follows the party's level (vendor/wwn-srd/2.0 The Rules of the Game/2.8.0
 // Crafting and Modifying Gear.md, 2.8.1); boss fights can drop a magic one instead (4.0 Magic and
-// Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md, 4.9.3).
+// Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md, 4.9.3). A fight that drops nothing
+// else may still leave a fine weapon: mastercrafted, +1, or +2.
 import { allMonsters, baseMonster } from '../../data/monsters.ts';
-import { dropTier, pickWeighted, bandAt, type DropTier } from '../../rules/gear-drops.ts';
+import {
+  bandAt,
+  dropTier,
+  fineFind,
+  pickWeighted,
+  type DropTier,
+  type FineFind,
+} from '../../rules/gear-drops.ts';
 import type { GameData } from '../character/context.ts';
 import { fitSize, sizedLine } from '../character/gear.ts';
 import {
@@ -102,9 +110,15 @@ export function dropGear(
   if (from.length === 0) return 0;
   const rules = data.content.craftingRules.drops;
   const magic = ctx.boss && w.rng.int(1, 100) <= rules.magicChance;
-  if (!magic && w.rng.int(1, 100) > rules.chance) return 0;
+  const ordinary = magic || w.rng.int(1, 100) <= rules.chance;
+  const fine: FineFind | undefined =
+    !ordinary && w.rng.int(1, 100) <= rules.fine.chance
+      ? fineFind(w.rng, rules.fine.weights)
+      : undefined;
+  if (!ordinary && !fine) return 0;
   const level = partyLevel(w, data);
   const enemy = from[w.rng.int(0, from.length - 1)] as string;
+  if (fine) return give(w, data, weaponFor(w, data, enemy), fine.quality, fine.bonus);
   // A magic item is of normal make; the costly armors come only where mastercrafted gear could.
   const tier: DropTier = magic ? 'normal' : dropTier(w.rng, rules.bands, level);
   const late = magic
@@ -119,6 +133,17 @@ export function dropGear(
         tiers.map((t) => [t.bonus, t.weight] as const),
       )
     : 0;
+  return give(w, data, item, quality, bonus);
+}
+
+/** Hands a dropped item to the PC with the most room; its value in crowns, or 0 if left behind. */
+function give(
+  w: World,
+  data: GameData,
+  item: CatalogItem,
+  quality: Exclude<DropTier, 'normal'> | undefined,
+  bonus: number,
+): number {
   const m = keeper(w, data);
   if (!m) return 0;
   const people = findPeople(data, m.character.people) as People;

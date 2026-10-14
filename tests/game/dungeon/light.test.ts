@@ -27,20 +27,20 @@ const below = (w = world()) => {
 };
 
 describe('light underground (docs/rules-adaptation.md, Dungeon exploration)', () => {
-  it('draws six torches from each kit once per trip to town and lights one', () => {
+  it('draws one torch from each kit once per trip to town and lights one', () => {
     const w = below();
     expect(carried(w, 'dungeoneering-kit')).toBe(2);
     expect(w.light).toEqual({
       lit: 'torch',
       torch: 6,
       lantern: 0,
-      kitTorches: 11,
+      kitTorches: 1,
       kitsReady: false,
     });
-    expect(w.log.join('\n')).toContain('The party takes 12 torches from its kits.');
+    expect(w.log.join('\n')).toContain('The party takes 2 torches from its kits.');
     drawKits(w);
-    expect(w.light.kitTorches).toBe(11);
-    expect(spareTorches(w)).toBe(11);
+    expect(w.light.kitTorches).toBe(1);
+    expect(spareTorches(w)).toBe(1);
     expect(kindle(w)).toBe(true);
     expect(w.log.filter((l) => l.includes('A torch is lit.'))).toHaveLength(1);
   });
