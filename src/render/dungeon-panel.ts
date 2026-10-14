@@ -3,6 +3,7 @@
 import type { Breach, Detail } from './dungeon-detail.ts';
 import type { Span } from './dungeon-geometry.ts';
 import type { FurnitureArt } from './furniture-art.ts';
+import type { Occupant, Placed } from './dungeon-occupants.ts';
 import type { TrapArt } from './trap-art.ts';
 
 export interface Panel {
@@ -17,7 +18,8 @@ export interface Panel {
     | 'floor'
     | 'ceiling'
     | 'furniture'
-    | 'darkness';
+    | 'darkness'
+    | 'occupant';
   /** SVG polygon points. */
   points: string;
   /** A door's leaf inside the panel, or null. */
@@ -31,6 +33,8 @@ export interface Panel {
   trap: TrapArt | null;
   /** The door leaf's fill and planks, for a door. */
   leaf: { fill: string; detail: Detail } | null;
+  /** Who or what stands in a cell, for an occupant (dungeon-occupants.ts). */
+  occupant?: { kind: Occupant['kind']; title: string; pieces: Placed[] };
   /** What stands on a floor cell, for furniture (furniture-art.ts). */
   furniture?: FurnitureArt;
   /**

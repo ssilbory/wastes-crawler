@@ -4,6 +4,7 @@ import type { TrapArt } from '../../render/trap-art.ts';
 import type { Motion } from '../../render/dungeon-motion.ts';
 import type { PortraitFigure } from '../../render/encounter-portrait.ts';
 import { FigureParts } from '../arena/Figure.tsx';
+import { FurnitureShape, OccupantShape } from './DungeonProps.tsx';
 
 const DARK = '#050404';
 
@@ -25,56 +26,6 @@ function Shadow(props: { panel: Panel; light: LightView }) {
         <stop offset="1" stop-color={DARK} stop-opacity={far} />
       </linearGradient>
       <polygon class="shadow" points={panel.points} fill={`url(#${id})`} />
-    </>
-  );
-}
-
-/**
- * A piece of furniture standing in its cell, in the stone's shade and dimmed with distance like
- * the trap marks; flames and water keep their own colours.
- */
-function FurnitureShape(props: { panel: Panel; light: LightView | null }) {
-  const { panel, light } = props;
-  const art = panel.furniture as NonNullable<Panel['furniture']>;
-  const box = { x: art.x, y: art.y, width: art.size, height: art.size, viewBox: '0 0 48 48' };
-  // Fire makes its own light, so the dark doesn't dim it.
-  const flames = art.parts.filter((p) => p.tone === 'flame');
-  return (
-    <>
-      <svg
-        class={`furniture ${art.kind}`}
-        {...box}
-        opacity={light ? 1 - darkness(light, panel.span.near) : undefined}
-      >
-        <title>{art.kind}</title>
-        {art.parts
-          .filter((p) => p.tone !== 'flame')
-          .map((part, i) =>
-            part.kind === 'fill' ? (
-              <path
-                key={i}
-                class={part.tone ?? 'body'}
-                d={part.d}
-                fill={part.tone ? undefined : panel.fill}
-              />
-            ) : (
-              <path
-                key={i}
-                class={`${part.kind} ${part.tone ?? ''}`}
-                d={part.d}
-                stroke-width={part.width}
-                stroke={part.tone || part.kind === 'cut' ? undefined : panel.fill}
-              />
-            ),
-          )}
-      </svg>
-      {flames.length > 0 && (
-        <svg class="furniture" {...box}>
-          {flames.map((part, i) => (
-            <path key={i} class="flame" d={part.d} />
-          ))}
-        </svg>
-      )}
     </>
   );
 }
@@ -136,6 +87,8 @@ export function DungeonView(props: {
         {props.panels.map((p) =>
           p.furniture ? (
             <FurnitureShape key={p.key} panel={p} light={light} />
+          ) : p.occupant ? (
+            <OccupantShape key={p.key} panel={p} light={light} />
           ) : (
             <g
               key={p.key}
