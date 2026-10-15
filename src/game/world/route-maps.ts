@@ -59,7 +59,8 @@ const and = (xs: string[], last = ' and ') =>
 export function routesText(r: Pick<TradeRoutes, 'towns' | 'exits'>): string {
   const roads = r.towns.length === 1 ? 'the road' : 'the roads';
   const parts = [...(r.towns.length > 0 ? [`${roads} to ${and(r.towns)}`] : []), ...r.exits];
-  return and(parts, r.towns.length > 1 ? ', and ' : ' and ');
+  // The comma only parts "the roads to A and B" from a lone road out after it.
+  return and(parts, parts.length === 2 && r.towns.length > 1 ? ', and ' : ' and ');
 }
 
 /** The town's map and the hexes on it the party doesn't know, or why there is nothing to sell. */

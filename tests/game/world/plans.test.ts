@@ -90,7 +90,7 @@ describe('suggested plans', () => {
     const evening = suggestPlan(w, data);
     expect(evening).toEqual({
       kind: 'camp',
-      activities: { 'm-0': 'make-camp', 'm-1': 'sleep', 'm-2': 'watch', 'm-3': 'sleep' },
+      activities: { 'm-0': 'make-camp', 'm-1': 'firewood', 'm-2': 'watch', 'm-3': 'sleep' },
     });
     w.camp = 'made';
     expect(suggestPlan(w, data)).toMatchObject({ activities: { 'm-0': 'sleep' } });
