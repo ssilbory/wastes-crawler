@@ -132,6 +132,9 @@ describe('burning firewood (SRD 2.12.4)', () => {
     expect(woodOn(member(w, 'Snag').character.inventory)).toBe(0);
     expect(w.members.some((m) => m.cold)).toBe(false);
     expect(member(w, 'Grukk').character.hp.current).toBe(3);
+    expect(w.log).toContainEqual(
+      expect.stringContaining('The fire keeps off the cold, but no one recovers.'),
+    );
   });
 
   it('is kept when it would do no good', () => {
@@ -146,6 +149,18 @@ describe('burning firewood (SRD 2.12.4)', () => {
     give(member(mild, 'Snag'));
     endOfDay(mild, data);
     expect(woodOn(member(mild, 'Snag').character.inventory)).toBe(1);
+    // A mild night with nothing to eat: everyone is Hungry, so no one could rest.
+    const starving = outAt(PLAINS);
+    starving.rations = 0;
+    give(member(starving, 'Snag'));
+    endOfDay(starving, data);
+    expect(woodOn(member(starving, 'Snag').character.inventory)).toBe(1);
+    // A mild night when no one slept: everyone is Sleepless.
+    const wakeful = outAt(PLAINS);
+    for (const m of wakeful.members) m.slept = false;
+    give(member(wakeful, 'Snag'));
+    endOfDay(wakeful, data);
+    expect(woodOn(member(wakeful, 'Snag').character.inventory)).toBe(1);
     // Elemental Resilience keeps the cold off everyone.
     const hardy = outAt();
     hardy.noRecovery = true;
@@ -209,7 +224,7 @@ describe('gathering firewood (SRD 2.12.5)', () => {
     expect(camp(town, data, { [member(town, 'Snag').id]: 'firewood' }).extraChecks).toBe(0);
   });
 
-  it('is in the evening plan on a harsh night with no wood packed and no camp made', () => {
+  it('is in the evening plan outdoors whenever no wood is packed and no camp is made', () => {
     const w = outAt();
     w.quarter = 2;
     const gatherers = () =>
@@ -222,22 +237,25 @@ describe('gathering firewood (SRD 2.12.5)', () => {
     member(w, 'Snag').character.inventory.pop();
     w.camp = 'made';
     expect(gatherers()).toHaveLength(0);
+    // A mild night still wants wood, since a fire lets the party rest if the camp fails.
     w.camp = 'none';
     w.position = PLAINS;
+    expect(gatherers()).toHaveLength(1);
+    w.dungeon = {} as World['dungeon'];
     expect(gatherers()).toHaveLength(0);
   });
 
-  it('is left out of the evening plan when no one would feel the cold', () => {
+  it('is in the evening plan even when no one would feel the cold', () => {
     const plan = (w: World) =>
       Object.values((suggestPlan(w, data) as { activities: object }).activities);
     const hardy = outAt();
     hardy.quarter = 2;
     for (const m of hardy.members)
       m.character = { ...m.character, arts: [...m.character.arts, 'elemental-resilience'] };
-    expect(plan(hardy)).not.toContain('firewood');
+    expect(plan(hardy)).toContain('firewood');
     const tended = outAt();
     tended.quarter = 2;
     addNpc(tended, data, 'hireling', 'mundane-physician', 'peaceful-human', 'Doc', false);
-    expect(plan(tended)).not.toContain('firewood');
+    expect(plan(tended)).toContain('firewood');
   });
 });

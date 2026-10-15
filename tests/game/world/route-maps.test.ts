@@ -84,6 +84,10 @@ describe('trade routes', () => {
       'the roads to A and B, and the road east to X',
     );
     expect(routesText({ towns: ['A', 'B', 'C'], exits: [] })).toBe('the roads to A, B and C');
+    expect(routesText({ towns: ['A'], exits: ['x', 'y'] })).toBe('the road to A, x and y');
+    expect(routesText({ towns: ['A', 'B'], exits: ['x', 'y'] })).toBe(
+      'the roads to A and B, x and y',
+    );
     expect(routesText({ towns: [], exits: [] })).toBe('');
     expect(routesText({ towns: [], exits: ['the road east to X', 'the road west to Y'] })).toBe(
       'the road east to X and the road west to Y',
