@@ -5,7 +5,7 @@
 import { hexKey, type Hex } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
 import { campProject } from './crafting.ts';
-import { carriesFirewood, harshHere } from './firewood.ts';
+import { carriesFirewood, exposedToCold, harshHere } from './firewood.ts';
 import { alive, bestAt, checkBonus } from './members.ts';
 import { firstGuide } from './npcs.ts';
 import { hexesToAvoid } from './groves.ts';
@@ -83,8 +83,10 @@ export function suggestPlan(w: World, data: GameData, prefer?: QuarterPlan['kind
     if (w.camp !== 'made') set(leader, 'make-camp');
     const watcher = watch(others(party, leader)) ?? leader;
     set(watcher, 'watch');
-    // On a harsh night with no wood packed, someone looks for some in case the camp fails.
-    if (w.camp !== 'made' && harshHere(w, data) && !carriesFirewood(w, data))
+    // On a harsh night that would chill someone, with no wood packed, someone looks for some in
+    // case the camp fails.
+    const chilled = party.some((m) => exposedToCold(w, data, m));
+    if (w.camp !== 'made' && harshHere(w, data) && chilled && !carriesFirewood(w, data))
       set(bestAt(data, others(free, leader, watcher), 'survive', ['wis']), 'firewood');
   } else {
     // Food comes first for those with Survival, so the watch goes to someone without it if it can.
