@@ -16,7 +16,7 @@ import { Check, Step } from './Field.tsx';
 import { gameSpells } from '../../data/spells.ts';
 import { artHint, spellHint } from '../../render/describe-view.ts';
 
-const artName = (id: string) => data.srd.arts.find((a) => a.id === id)?.name ?? id;
+export const artName = (id: string) => data.srd.arts.find((a) => a.id === id)?.name ?? id;
 export const spellName = (id: string) =>
   gameSpells(data.srd, data.content).find((s) => s.id === id)?.name ?? id;
 

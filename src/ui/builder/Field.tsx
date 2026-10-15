@@ -1,5 +1,6 @@
 import type { ComponentChildren } from 'preact';
 import type { StepStatus } from '../../game/character/creation.ts';
+import { HintButton } from '../hint.tsx';
 
 export interface Option {
   value: string;
@@ -65,6 +66,7 @@ export function Check(props: {
         onChange={(e) => props.onChange((e.target as HTMLInputElement).checked)}
       />
       {props.label}
+      <HintButton name={props.label} text={props.title} />
     </label>
   );
 }

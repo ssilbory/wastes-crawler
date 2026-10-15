@@ -58,6 +58,19 @@ test.describe('on a phone', () => {
     await fitsWidth(page);
   });
 
+  test('taps ⓘ to read a spell, with its in-game line', async ({ page }) => {
+    await page.goto('/');
+    await page
+      .getByLabel('Import character file')
+      .setInputFiles('tools/sim/parties/starter/fizzwick.json');
+    const sheet = page.getByTestId('character-sheet');
+    await sheet.getByRole('button', { name: 'About The Coruscating Coffin' }).tap();
+    const dialog = page.getByRole('dialog', { name: 'The Coruscating Coffin' });
+    await expect(dialog).toContainText('In game: 1d8 per caster level to one enemy');
+    await dialog.getByRole('button', { name: 'Close' }).tap();
+    await expect(dialog).toHaveCount(0);
+  });
+
   test('plays the map, a town, and a dungeon in one column', async ({ page }) => {
     await page.goto('/#/arena');
     await page.getByLabel('Import character files').setInputFiles(starters);
@@ -102,6 +115,16 @@ test.describe('on a phone', () => {
     await expect(page.locator('.world-bar')).toContainText('step 2 of 12');
     await fitsWidth(page);
   });
+});
+
+test('keeps hover text, not ⓘ buttons, with a mouse', async ({ page }) => {
+  await page.goto('/');
+  await page
+    .getByLabel('Import character file')
+    .setInputFiles('tools/sim/parties/starter/fizzwick.json');
+  const sheet = page.getByTestId('character-sheet');
+  await expect(sheet.getByText('The Coruscating Coffin')).toHaveAttribute('title', /In game:/);
+  await expect(sheet.getByRole('button', { name: /^About / })).toHaveCount(0);
 });
 
 test('toggles full screen from the menu', async ({ page }) => {

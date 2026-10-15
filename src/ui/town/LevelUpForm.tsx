@@ -8,6 +8,7 @@ import type { FocusChoice } from '../../game/character/foci.ts';
 import { artChoices, learnableSpells } from '../../game/character/magic.ts';
 import { data } from '../builder/data.ts';
 import { FocusPicker, focusNeeds } from './FocusPicker.tsx';
+import { Hint } from '../hint.tsx';
 
 function toggle(list: string[], id: string, max: number): string[] {
   if (list.includes(id)) return list.filter((x) => x !== id);
@@ -84,9 +85,9 @@ export function LevelUpForm(props: {
                     )
                   }
                 />{' '}
-                <span class="has-hint" title={artHint(data, a.id)}>
+                <Hint name={a.name} text={artHint(data, a.id)}>
                   {a.name}
-                </span>
+                </Hint>
               </label>
             ))}
           </fieldset>
@@ -101,9 +102,9 @@ export function LevelUpForm(props: {
                 checked={spells.includes(s.id)}
                 onChange={() => setSpells(toggle(spells, s.id, plan.spells))}
               />{' '}
-              <span class="has-hint" title={spellHint(data, s.id)}>
+              <Hint name={s.name} text={spellHint(data, s.id)}>
                 {s.name} (level {s.level})
-              </span>
+              </Hint>
             </label>
           ))}
         </fieldset>

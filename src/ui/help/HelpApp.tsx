@@ -44,7 +44,8 @@ export function HelpApp() {
             Spells can save PCs from death (Prudentially Transient Abnegation of Life, The Long
             Amber Moment, Forgetting the Grave), dig through walls (The Burrower Below, Decree of
             Lithic Dissolution), and more. Read the last line of a spell's description, the one
-            starting "In game:", for how it works here.
+            starting "In game:", for how it works here: hover over the spell's name, or tap the ⓘ
+            beside it on a phone.
           </li>
           <li>
             Frailty sticks until it's removed. Someone with an okay Pray skill can pray in a town

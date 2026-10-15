@@ -2,6 +2,7 @@ import { useEffect, useState } from 'preact/hooks';
 import { AboutApp } from './about/AboutApp.tsx';
 import { AppMenu, type Route } from './AppMenu.tsx';
 import { HelpApp } from './help/HelpApp.tsx';
+import { HintSheet } from './hint.tsx';
 import { ArenaApp } from './arena/ArenaApp.tsx';
 import { App as BuilderApp } from './builder/App.tsx';
 import { EditorApp } from './editor/EditorApp.tsx';
@@ -36,6 +37,7 @@ export function Shell() {
   return (
     <>
       <AppMenu route={route} />
+      <HintSheet />
       {route === 'arena' ? (
         <ArenaApp />
       ) : route === 'world' ? (
