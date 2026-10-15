@@ -32,6 +32,12 @@ test.describe('on a phone', () => {
     await expect(page.getByRole('region', { name: 'Play anywhere' })).toContainText(
       'Add to Home Screen',
     );
+    await expect(page.getByRole('region', { name: 'Why this game' })).toContainText(
+      "The Bard's Tale",
+    );
+    await expect(page.getByRole('region', { name: 'If you like this game' })).toContainText(
+      'Forbidden Lands',
+    );
     await expect(page.getByRole('region', { name: 'Credits' })).toContainText(
       'Worlds Without Number',
     );

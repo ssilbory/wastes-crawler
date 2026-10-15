@@ -31,6 +31,42 @@ export function AboutApp() {
         <p class="hint">A hobby project: free, with no accounts, ads, or tracking.</p>
       </section>
 
+      <section class="panel" aria-label="Why this game">
+        <h2>Why this game</h2>
+        <p>
+          This is the game I imagined The Bard's Tale and Wizardry were like when I was a child. I
+          never got to play them: I lacked the hardware and the parental permission.
+        </p>
+        <p>
+          It is also a love letter to the OSR, and to games with the OSR feel like Worlds Without
+          Number and Forbidden Lands. I wish I could find players for them. The game's chassis is
+          bent and borrowed from the Worlds Without Number and Cities Without Number SRDs, and many
+          of its monsters are inspired by classic OSR monsters.
+        </p>
+      </section>
+
+      <section class="panel" aria-label="If you like this game">
+        <h2>If you like this game</h2>
+        <dl class="recommend">
+          <dt>The games that started it</dt>
+          <dd>
+            Wizardry: Proving Grounds of the Mad Overlord is excellent on Steam, and so is Wizardry
+            Variants Daphne. The Bard's Tale Trilogy is on Steam too.
+          </dd>
+          <dt>To play with friends</dt>
+          <dd>
+            Try Stars, Worlds, Cities, and Ashes Without Number, a series of excellent OSR games by
+            Kevin Crawford of Sine Nomine Publishing, one of my favorite designers. I look forward
+            to the Kickstarter for the next one, or maybe a Stars Without Number update.
+          </dd>
+          <dt>The feel on a more modern chassis</dt>
+          <dd>
+            Free League's Forbidden Lands is an excellent OSR-themed hex crawl. Their Dragonbane and
+            Symbaroum are worth a look as well.
+          </dd>
+        </dl>
+      </section>
+
       <section class="panel" aria-label="Play anywhere">
         <h2>Play on a phone or offline</h2>
         {installed() ? (
