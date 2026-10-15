@@ -4,6 +4,7 @@ import './ui/theme/theme.css';
 import './ui/theme/controls.css';
 import { h, render } from 'preact';
 import { Shell } from './ui/Shell.tsx';
+import { installed, persistStorage, registerServiceWorker, watchInstallPrompt } from './ui/pwa.ts';
 import './ui/builder/builder.css';
 import './ui/app-menu.css';
 import './ui/arena/setup.css';
@@ -16,6 +17,14 @@ import './ui/world/popups.css';
 import './ui/theme/screens.css';
 // After the shared screen rules: the builder fits its window instead of scrolling.
 import './ui/builder/wizard.css';
+// Last: phone and touch overrides of every screen's layout.
+import './ui/theme/mobile.css';
+
+watchInstallPrompt();
+registerServiceWorker();
+// An installed game asks to keep its saves; in a tab, the About page offers it instead, since
+// some browsers ask the player.
+if (installed()) void persistStorage();
 
 const root = document.querySelector<HTMLElement>('#app');
 if (root) render(h(Shell, null), root);

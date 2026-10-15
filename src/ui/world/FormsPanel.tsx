@@ -4,6 +4,7 @@ import type { TownResult } from '../../game/world/services.ts';
 import type { World } from '../../game/world/types.ts';
 import { formsView } from '../../render/forms-view.ts';
 import { data } from '../builder/data.ts';
+import { HintButton } from '../hint.tsx';
 
 /** Change Form outside a fight, for the party's Skinshifters. */
 export function FormsPanel(props: { world: World; onChange: () => void }) {
@@ -25,14 +26,16 @@ export function FormsPanel(props: { world: World; onChange: () => void }) {
             <strong>{s.name}</strong>: {s.worn ? `${s.worn} form` : 'own shape'}
           </p>
           {s.forms.map((f) => (
-            <button
-              key={f.index}
-              type="button"
-              title={f.hint}
-              onClick={() => run(() => shiftMember(w, data, s.id, f.index))}
-            >
-              Take the {f.name} form
-            </button>
+            <span key={f.index}>
+              <button
+                type="button"
+                title={f.hint}
+                onClick={() => run(() => shiftMember(w, data, s.id, f.index))}
+              >
+                Take the {f.name} form
+              </button>
+              <HintButton name={`${f.name} form`} text={f.hint} />
+            </span>
           ))}
           {s.worn && (
             <button type="button" onClick={() => run(() => shiftMember(w, data, s.id, null))}>

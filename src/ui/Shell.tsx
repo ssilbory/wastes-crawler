@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'preact/hooks';
+import { AboutApp } from './about/AboutApp.tsx';
 import { AppMenu, type Route } from './AppMenu.tsx';
+import { HelpApp } from './help/HelpApp.tsx';
+import { HintSheet } from './hint.tsx';
 import { ArenaApp } from './arena/ArenaApp.tsx';
 import { App as BuilderApp } from './builder/App.tsx';
 import { EditorApp } from './editor/EditorApp.tsx';
@@ -18,7 +21,11 @@ const routeOf = (hash: string): Route =>
           ? 'editor'
           : hash.startsWith('#/maps')
             ? 'maps'
-            : 'builder';
+            : hash.startsWith('#/help')
+              ? 'help'
+              : hash.startsWith('#/about')
+                ? 'about'
+                : 'builder';
 
 export function Shell() {
   const [route, setRoute] = useState<Route>(() => routeOf(location.hash));
@@ -30,6 +37,7 @@ export function Shell() {
   return (
     <>
       <AppMenu route={route} />
+      <HintSheet />
       {route === 'arena' ? (
         <ArenaApp />
       ) : route === 'world' ? (
@@ -40,6 +48,10 @@ export function Shell() {
         <EditorApp />
       ) : route === 'maps' ? (
         <MapEditorApp />
+      ) : route === 'help' ? (
+        <HelpApp />
+      ) : route === 'about' ? (
+        <AboutApp />
       ) : (
         <BuilderApp />
       )}

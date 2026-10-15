@@ -9,7 +9,8 @@ import { attackText } from '../../render/attack-view.ts';
 import { castingText } from '../../render/casting-view.ts';
 import { formDetails, formHint } from '../../render/form-details.ts';
 import { artHint, focusHint, spellHint } from '../../render/describe-view.ts';
-import { spellName } from './MagicStep.tsx';
+import { artName, spellName } from './MagicStep.tsx';
+import { Hint, HintButton } from '../hint.tsx';
 import type { Skills } from '../../game/character/skills.ts';
 import type { AttributeScores } from '../../rules/attributes.ts';
 import type { SaveType } from '../../rules/saves.ts';
@@ -181,9 +182,9 @@ export function CharacterSheet(props: { character: Character }) {
               {c.arts.map((id, i) => (
                 <span key={id}>
                   {i > 0 ? ', ' : ''}
-                  <span class="has-hint" title={artHint(data, id)}>
-                    {data.srd.arts.find((a) => a.id === id)?.name ?? id}
-                  </span>
+                  <Hint name={artName(id)} text={artHint(data, id)}>
+                    {artName(id)}
+                  </Hint>
                 </span>
               ))}
               .
@@ -193,9 +194,9 @@ export function CharacterSheet(props: { character: Character }) {
           <ul class="skills">
             {c.spells.known.map((id) => (
               <li key={id}>
-                <span class="has-hint" title={spellHint(data, id)}>
+                <Hint name={spellName(id)} text={spellHint(data, id)}>
                   {spellName(id)}
-                </span>
+                </Hint>
                 {c.spells.prepared.includes(id) ? ' (prepared)' : ''}
               </li>
             ))}
@@ -206,9 +207,12 @@ export function CharacterSheet(props: { character: Character }) {
       <ul class="skills">
         {c.foci.map((f) => (
           <li key={`${f.id}-${f.attribute ?? ''}`}>
-            <span class="has-hint" title={focusHint(data, f.id, f.level)}>
+            <Hint
+              name={`${focusInfo(data, f.id)?.name ?? f.id}-${f.level}`}
+              text={focusHint(data, f.id, f.level)}
+            >
               {focusInfo(data, f.id)?.name ?? f.id}-{f.level}
-            </span>
+            </Hint>
             {f.attribute ? ` (${ATTRIBUTE_NAMES[f.attribute]})` : ''}
           </li>
         ))}
@@ -229,15 +233,15 @@ function FormsDetail(props: { character: Character }) {
           <li key={`${i}-${f.name}`}>
             <strong class="has-hint" title={formHint(f)}>
               {f.name}
-            </strong>{' '}
-            ({f.shape}
+            </strong>
+            <HintButton name={f.name} text={formHint(f)} /> ({f.shape}
             {f.arts.length > 0 ? ': ' : ''}
             {f.arts.map((a, i) => (
               <span key={a.id}>
                 {i > 0 ? ', ' : ''}
-                <span class="has-hint" title={a.hint}>
+                <Hint name={a.name} text={a.hint}>
                   {a.name}
-                </span>
+                </Hint>
               </span>
             ))}
             )
