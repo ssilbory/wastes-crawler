@@ -31,7 +31,8 @@
     0 8px 24px rgb(0 0 0 / 60%);
 }
 
-.app-menu-list a {
+.app-menu-list a,
+.app-menu-list .app-menu-item {
   padding: 4px 10px;
   color: var(--ink);
   font-family: var(--font-term);
@@ -40,7 +41,19 @@
   text-decoration: none;
 }
 
-.app-menu-list a:hover {
+.app-menu-list .app-menu-item {
+  margin-top: 4px;
+  text-align: left;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.app-menu-list a:hover,
+.app-menu-list .app-menu-item:hover {
   background: var(--panel-raised);
   color: var(--accent-hi);
 }

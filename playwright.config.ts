@@ -11,6 +11,8 @@ export default defineConfig({
   use: {
     baseURL: `http://localhost:${port}`,
     acceptDownloads: true,
+    // The built game registers a service worker; only e2e/mobile.spec.ts lets it run.
+    serviceWorkers: 'block',
   },
   projects: [
     {

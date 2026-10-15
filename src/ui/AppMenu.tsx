@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
+import { fullscreenAvailable, toggleFullscreen, useFullscreen } from './fullscreen.ts';
 
-export type Route = 'builder' | 'arena' | 'world' | 'editor' | 'maps' | 'settings';
+export type Route = 'builder' | 'arena' | 'world' | 'editor' | 'maps' | 'settings' | 'about';
 
 const ROUTES: { route: Route; label: string }[] = [
   { route: 'world', label: 'Overland' },
@@ -9,12 +10,14 @@ const ROUTES: { route: Route; label: string }[] = [
   { route: 'editor', label: 'Level editor' },
   { route: 'maps', label: 'Map editor' },
   { route: 'settings', label: 'Settings' },
+  { route: 'about', label: 'About' },
 ];
 
 /** A ☰ button in the corner; the modes open in a popup instead of a bar across every page. */
 export function AppMenu(props: { route: Route }) {
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
+  const fullscreen = useFullscreen();
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -54,6 +57,18 @@ export function AppMenu(props: { route: Route }) {
               {r.label}
             </a>
           ))}
+          {fullscreenAvailable() && (
+            <button
+              type="button"
+              class="app-menu-item"
+              onClick={() => {
+                setOpen(false);
+                void toggleFullscreen();
+              }}
+            >
+              {fullscreen ? 'Leave full screen' : 'Full screen'}
+            </button>
+          )}
         </nav>
       )}
     </div>

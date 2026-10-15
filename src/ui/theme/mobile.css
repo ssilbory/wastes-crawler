@@ -1,0 +1,138 @@
+/* Phones and touch screens. Loaded last so it overrides each screen's desktop layout. On a phone
+   the world screens stop fitting the window and become one column that scrolls: the main view
+   first, then the docks (the quarter's plans sit right under the map), then the journal. */
+
+/* Touch: no double-tap zoom delay on controls, and text fields at 16px so iOS doesn't zoom the
+   page when one takes focus. */
+@media (pointer: coarse) {
+  button,
+  a,
+  select,
+  label,
+  .hex {
+    touch-action: manipulation;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: max(16px, 1rem);
+  }
+
+  .app-menu-list a,
+  .app-menu-list .app-menu-item {
+    padding: 10px 14px;
+  }
+}
+
+@media (max-width: 760px) {
+  /* The screen scrolls as a whole instead of fitting the window. */
+  .world {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .world-bar > span:not(.bar-actions) {
+    font-size: 1.05rem;
+    white-space: normal;
+  }
+
+  .world-bar .date {
+    font-size: 1.1rem;
+  }
+
+  .world-bar h1.date {
+    font-size: 1.6rem;
+  }
+
+  .world-bar .bar-actions {
+    margin-left: 0;
+  }
+
+  .world-main,
+  .world-main:has(> .side-dock.minimized),
+  .dungeon .world-main:has(> .side-dock.minimized) {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  /* The main view's column dissolves into the stage, so the journal can follow the docks. */
+  .world-left {
+    display: contents;
+  }
+
+  .world-main > .world-left > .log {
+    order: 1;
+  }
+
+  .dock {
+    overflow: visible;
+    scrollbar-gutter: auto;
+  }
+
+  .side-dock.minimized .dock-toggle {
+    justify-self: end;
+    padding: 4px 12px;
+  }
+
+  .world .log,
+  .world-main:has(> .side-dock.minimized) .log {
+    height: 12rem;
+  }
+
+  /* The overland map gets most of the screen; it scrolls inside its frame when zoomed in. */
+  .map-screen .map-wrap {
+    height: 62dvh;
+    flex: none;
+  }
+
+  /* The dungeon: the view at full width, then a thumb-sized movement pad. */
+  .dungeon-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .dungeon-view {
+    width: 100%;
+    height: auto;
+  }
+
+  .dungeon-controls {
+    gap: 8px;
+  }
+
+  .dungeon .moves {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: min(100%, 22rem);
+    gap: 6px;
+  }
+
+  .dungeon .moves button {
+    min-height: 3.2rem;
+  }
+
+  .dungeon-controls .actions {
+    width: min(100%, 22rem);
+  }
+
+  .dungeon-controls .actions button {
+    min-height: 2.8rem;
+  }
+
+  /* Formation, inventory, and characters: panels stack and the screen scrolls. */
+  .sub-screen {
+    flex: none;
+  }
+
+  .sub-screen > * {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .characters .sheet.final {
+    columns: 1;
+  }
+}

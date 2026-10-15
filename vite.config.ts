@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitest/config';
+import { serviceWorker } from './tools/pwa/service-worker.ts';
 
 export default defineConfig({
   // Relative base so the build works from any GitHub Pages project path.
@@ -6,6 +7,8 @@ export default defineConfig({
   // Preact JSX through Vite's built-in Oxc transform; @preact/preset-vite pulls in Babel, whose
   // dependencies fail the pnpm trust policy.
   oxc: { jsx: { runtime: 'automatic', importSource: 'preact' } },
+  // Writes dist/sw.js so the built game installs and plays offline (src/ui/pwa.ts).
+  plugins: [serviceWorker()],
   test: {
     include: ['tests/**/*.test.ts', 'src/**/*.test.ts'],
     coverage: {
