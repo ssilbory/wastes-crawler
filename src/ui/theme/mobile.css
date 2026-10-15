@@ -143,6 +143,17 @@
   display: none;
 }
 
+.hint-button::before {
+  content: 'ⓘ';
+}
+
+/* A checkbox with its ⓘ beside it: the button stays out of the label, so it never ticks the box. */
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
 @media (hover: none) {
   .hint-button {
     display: inline-block;

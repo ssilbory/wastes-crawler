@@ -10,7 +10,7 @@ import { castingText } from '../../render/casting-view.ts';
 import { formDetails, formHint } from '../../render/form-details.ts';
 import { artHint, focusHint, spellHint } from '../../render/describe-view.ts';
 import { artName, spellName } from './MagicStep.tsx';
-import { Hint } from '../hint.tsx';
+import { Hint, HintButton } from '../hint.tsx';
 import type { Skills } from '../../game/character/skills.ts';
 import type { AttributeScores } from '../../rules/attributes.ts';
 import type { SaveType } from '../../rules/saves.ts';
@@ -231,12 +231,10 @@ function FormsDetail(props: { character: Character }) {
       <ul class="forms">
         {forms.map((f, i) => (
           <li key={`${i}-${f.name}`}>
-            <strong>
-              <Hint name={f.name} text={formHint(f)}>
-                {f.name}
-              </Hint>
-            </strong>{' '}
-            ({f.shape}
+            <strong class="has-hint" title={formHint(f)}>
+              {f.name}
+            </strong>
+            <HintButton name={f.name} text={formHint(f)} /> ({f.shape}
             {f.arts.length > 0 ? ': ' : ''}
             {f.arts.map((a, i) => (
               <span key={a.id}>

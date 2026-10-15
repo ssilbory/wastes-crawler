@@ -1,7 +1,8 @@
 // Descriptions for touch screens. On a computer, spell, art, focus, and form names show their
 // description on hover (a title attribute). Phones have no hover, so beside each such name an ⓘ
 // button opens the same text in a sheet at the foot of the screen. The button shows only on
-// devices that can't hover (src/ui/theme/mobile.css).
+// devices that can't hover (src/ui/theme/mobile.css), which also draws its ⓘ, so the glyph never
+// joins the text of the page around it.
 import type { ComponentChildren } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 
@@ -27,14 +28,11 @@ export function HintButton(props: { name: string; text: string | undefined }) {
       class="hint-button"
       aria-label={`About ${name}`}
       onClick={(e) => {
-        // Inside a checkbox's label, the tap opens the description without ticking the box.
-        e.preventDefault();
+        // The tap opens the description and does nothing else on the screen beneath.
         e.stopPropagation();
         show({ title: name, text });
       }}
-    >
-      ⓘ
-    </button>
+    />
   );
 }
 

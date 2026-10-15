@@ -51,14 +51,14 @@ export function Step(props: { title: string; status: StepStatus; children: Compo
   );
 }
 
-/** A labeled checkbox. */
+/** A labeled checkbox; with a title, its ⓘ button sits beside the label, outside it. */
 export function Check(props: {
   label: string;
   checked: boolean;
   title?: string;
   onChange: (on: boolean) => void;
 }) {
-  return (
+  const box = (
     <label class="check" title={props.title}>
       <input
         type="checkbox"
@@ -66,7 +66,13 @@ export function Check(props: {
         onChange={(e) => props.onChange((e.target as HTMLInputElement).checked)}
       />
       {props.label}
-      <HintButton name={props.label} text={props.title} />
     </label>
+  );
+  if (!props.title) return box;
+  return (
+    <div class="check-row">
+      {box}
+      <HintButton name={props.label} text={props.title} />
+    </div>
   );
 }

@@ -8,7 +8,7 @@ import type { FocusChoice } from '../../game/character/foci.ts';
 import { artChoices, learnableSpells } from '../../game/character/magic.ts';
 import { data } from '../builder/data.ts';
 import { FocusPicker, focusNeeds } from './FocusPicker.tsx';
-import { Hint } from '../hint.tsx';
+import { HintButton } from '../hint.tsx';
 
 function toggle(list: string[], id: string, max: number): string[] {
   if (list.includes(id)) return list.filter((x) => x !== id);
@@ -71,24 +71,27 @@ export function LevelUpForm(props: {
               Arts ({p.picks} {p.tradition})
             </legend>
             {artChoices(data, p, c.arts, plan.classLevel).map((a) => (
-              <label key={a.id} class="check">
-                <input
-                  type="checkbox"
-                  checked={arts.includes(a.id)}
-                  onChange={() =>
-                    setArts(
-                      toggle(
-                        arts,
-                        a.id,
-                        plan.arts.reduce((n, x) => n + x.picks, 0),
-                      ),
-                    )
-                  }
-                />{' '}
-                <Hint name={a.name} text={artHint(data, a.id)}>
-                  {a.name}
-                </Hint>
-              </label>
+              <div key={a.id} class="check-row">
+                <label class="check">
+                  <input
+                    type="checkbox"
+                    checked={arts.includes(a.id)}
+                    onChange={() =>
+                      setArts(
+                        toggle(
+                          arts,
+                          a.id,
+                          plan.arts.reduce((n, x) => n + x.picks, 0),
+                        ),
+                      )
+                    }
+                  />{' '}
+                  <span class="has-hint" title={artHint(data, a.id)}>
+                    {a.name}
+                  </span>
+                </label>
+                <HintButton name={a.name} text={artHint(data, a.id)} />
+              </div>
             ))}
           </fieldset>
         ))}
@@ -96,16 +99,19 @@ export function LevelUpForm(props: {
         <fieldset>
           <legend>Spells ({plan.spells})</legend>
           {spellChoices.map((s) => (
-            <label key={s.id} class="check">
-              <input
-                type="checkbox"
-                checked={spells.includes(s.id)}
-                onChange={() => setSpells(toggle(spells, s.id, plan.spells))}
-              />{' '}
-              <Hint name={s.name} text={spellHint(data, s.id)}>
-                {s.name} (level {s.level})
-              </Hint>
-            </label>
+            <div key={s.id} class="check-row">
+              <label class="check">
+                <input
+                  type="checkbox"
+                  checked={spells.includes(s.id)}
+                  onChange={() => setSpells(toggle(spells, s.id, plan.spells))}
+                />{' '}
+                <span class="has-hint" title={spellHint(data, s.id)}>
+                  {s.name} (level {s.level})
+                </span>
+              </label>
+              <HintButton name={s.name} text={spellHint(data, s.id)} />
+            </div>
           ))}
         </fieldset>
       )}
