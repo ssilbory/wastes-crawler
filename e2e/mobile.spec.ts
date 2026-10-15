@@ -45,6 +45,19 @@ test.describe('on a phone', () => {
     await fitsWidth(page);
   });
 
+  test('opens Help from the menu, with the keys as set', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Menu' }).click();
+    await page.getByRole('link', { name: 'Help' }).click();
+    await expect(page.getByRole('heading', { name: 'Help', level: 1 })).toBeVisible();
+    await expect(page.getByText('It is designed that way')).toBeVisible();
+    await page.getByText('Controls', { exact: true }).click();
+    await expect(page.getByRole('row', { name: 'Forward W or ↑' })).toBeVisible();
+    await page.getByText('Gameplay', { exact: true }).click();
+    await expect(page.getByRole('heading', { name: 'Strain (stress)' })).toBeVisible();
+    await fitsWidth(page);
+  });
+
   test('plays the map, a town, and a dungeon in one column', async ({ page }) => {
     await page.goto('/#/arena');
     await page.getByLabel('Import character files').setInputFiles(starters);

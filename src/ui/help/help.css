@@ -1,0 +1,44 @@
+/* Help: the About page's column, with sections that fold, so a phone can skim the headings. */
+.help details.panel > summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.help details.panel > summary::-webkit-details-marker {
+  display: none;
+}
+
+.help details.panel > summary h2 {
+  display: inline;
+  margin: 0;
+}
+
+.help details.panel > summary::before {
+  content: '▸ ';
+  color: var(--gold);
+}
+
+.help details.panel[open] > summary::before {
+  content: '▾ ';
+}
+
+.help details.panel[open] > summary {
+  margin-bottom: 8px;
+}
+
+.help h3 {
+  margin: 14px 0 4px;
+}
+
+.help ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.help li + li {
+  margin-top: 4px;
+}
+
+.help .keys th {
+  color: var(--ink);
+}

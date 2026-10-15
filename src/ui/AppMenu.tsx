@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { fullscreenAvailable, toggleFullscreen, useFullscreen } from './fullscreen.ts';
 
-export type Route = 'builder' | 'arena' | 'world' | 'editor' | 'maps' | 'settings' | 'about';
+export type Route =
+  'builder' | 'arena' | 'world' | 'editor' | 'maps' | 'settings' | 'help' | 'about';
 
 const ROUTES: { route: Route; label: string }[] = [
   { route: 'world', label: 'Overland' },
@@ -10,6 +11,7 @@ const ROUTES: { route: Route; label: string }[] = [
   { route: 'editor', label: 'Level editor' },
   { route: 'maps', label: 'Map editor' },
   { route: 'settings', label: 'Settings' },
+  { route: 'help', label: 'Help' },
   { route: 'about', label: 'About' },
 ];
 
