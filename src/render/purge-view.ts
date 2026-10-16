@@ -33,7 +33,8 @@ export function purgeView(w: World, data: GameData): PurgeView | null {
       ...sickAllies(w, m.id, 'disease').map((x) => ({
         x,
         ailment: 'disease' as const,
-        label: findDisease(data, x.disease?.id ?? '').name,
+        // sickAllies only returns members who have a disease.
+        label: findDisease(data, (x.disease as { id: string }).id).name,
       })),
     ].map(({ x, ailment, label }) => ({ id: x.id, name: x.character.name, ailment, label }));
     if (tend.length === 0) return [];

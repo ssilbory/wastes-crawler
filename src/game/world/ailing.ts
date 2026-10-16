@@ -25,6 +25,7 @@ export const poisonProof = (m: Member) =>
 export function ailPenalty(data: GameData, m: Member): number {
   const p = data.content.ailments.poisoned.penalty;
   const sick =
-    diseaseActive(data, m) && findDisease(data, m.disease?.id ?? '').harm.kind === 'penalty';
+    diseaseActive(data, m) &&
+    findDisease(data, (m.disease as NonNullable<Member['disease']>).id).harm.kind === 'penalty';
   return (m.poisoned ? p : 0) + (sick ? p : 0);
 }

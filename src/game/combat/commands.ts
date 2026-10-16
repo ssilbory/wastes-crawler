@@ -8,7 +8,7 @@ import type { CombatMagic } from '../../data/schemas/index.ts';
 import { ROW_SLOTS } from '../../rules/formation.ts';
 import { canUse, magicName } from './spells.ts';
 import { canAct, isUp, targets } from './targeting.ts';
-import type { Action, Battle, Combatant } from './types.ts';
+import type { Action, Battle, Combatant, WaitingCompanion } from './types.ts';
 import { inSlot } from './mounted.ts';
 import { bindTargets, canHowl } from './companions.ts';
 
@@ -150,7 +150,7 @@ function companionCommands(b: Battle, actor: Combatant): Command[] {
       })),
     });
   if (canHowl(actor)) {
-    const label = `Howl for ${actor.waiting?.name ?? 'the companion'}`;
+    const label = `Howl for ${(actor.waiting as WaitingCompanion).name}`;
     commands.push({
       key: 'howl',
       group: 'magic',

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { act } from '../../../src/game/combat/actions.ts';
 import type { Battle, Combatant } from '../../../src/game/combat/types.ts';
+import { syncToughness } from '../../../src/game/world/companion-sync.ts';
 import { companionHere, companionOf } from '../../../src/game/world/companions.ts';
 import { applyBattle, encounterBattle, type WorldBattle } from '../../../src/game/world/fight.ts';
 import { addNpc, MAX_NPCS } from '../../../src/game/world/npcs.ts';
@@ -121,5 +122,82 @@ describe('a companion coming out of a fight (1.5.4)', () => {
     applyBattle(w, data, fight, won(fight), null);
     expect(companionHere(w, m.id)?.hp).toBe(4);
     expect(m.companion).toBeNull();
+  });
+});
+
+describe('a howled companion coming out of a fight (1.5.4)', () => {
+  /** Snag howls for Bramble, sent away, into a fight; returns the fight and the howled Bramble. */
+  function howled(arts: string[] = [], over: Partial<Npc> = {}) {
+    const w = world();
+    const m = ranger(w, ['howl-of-distant-summons', ...arts]);
+    m.companion = { ...bramble(w, m, over), id: 'away' };
+    w.npcs = [];
+    syncToughness(w, data, m);
+    w.encounter = encounter([['human-raider']]);
+    const fight = encounterBattle(w, data);
+    act(fight.battle, snagIn(fight.battle), { kind: 'howl' });
+    fight.battle.outcome = 'party';
+    const pet = fight.battle.combatants.find((c) => c.name === 'Bramble') as Combatant;
+    return { w, m, fight, pet };
+  }
+
+  it('fades till dawn if it was a Chosen Friend that fell', () => {
+    const { w, m, fight, pet } = howled([], { chosen: true });
+    pet.status = 'dead';
+    applyBattle(w, data, fight, won(fight), null);
+    expect(m.companion).toMatchObject({ name: 'Bramble', hp: 0 });
+    expect(w.log.some((l) => l.includes('Bramble fades away'))).toBe(true);
+  });
+
+  it('dies, taking Feral Toughness’s hit points with it, if it was any other', () => {
+    const { w, m, fight, pet } = howled(['feral-toughness']);
+    expect(m.character.hp.max).toBe(22);
+    pet.status = 'dead';
+    applyBattle(w, data, fight, won(fight), null);
+    expect(m.companion).toBeNull();
+    expect(m.toughness).toBe(0);
+    expect(m.character.hp.max).toBe(20);
+    expect(w.log.some((l) => l.includes('Bramble dies.'))).toBe(true);
+  });
+
+  it('comes back stabilized with at least 1 hit point', () => {
+    const { w, m, fight, pet } = howled();
+    Object.assign(pet, { status: 'stable', hp: 0 });
+    applyBattle(w, data, fight, won(fight), null);
+    expect(companionHere(w, m.id)?.hp).toBe(1);
+  });
+
+  it('goes back to waiting if it never reached the line', () => {
+    const { w, m, fight, pet } = howled();
+    Object.assign(pet, { status: 'out', hp: 7 });
+    applyBattle(w, data, fight, won(fight), null);
+    expect(companionHere(w, m.id)).toBeUndefined();
+    expect(m.companion).toMatchObject({ name: 'Bramble', hp: 7 });
+  });
+
+  it('is left alone when its master has no companion waiting any more', () => {
+    const { w, m, fight, pet } = howled();
+    pet.status = 'active';
+    m.companion = null;
+    applyBattle(w, data, fight, won(fight), null);
+    expect(companionOf(w, m)).toBeNull();
+  });
+});
+
+describe('a beast bound mid-fight that doesn’t make it (1.5.4)', () => {
+  it('isn’t kept if it died before the fight ended', () => {
+    const w = world();
+    const m = ranger(w);
+    w.encounter = encounter([['herd-beast', 'human-raider']]);
+    const fight = encounterBattle(w, data);
+    const b = fight.battle;
+    const beast = b.combatants.find((c) => c.monster === 'herd-beast') as Combatant;
+    beast.saves.mental = 99;
+    act(b, snagIn(b), { kind: 'bind', target: beast.id });
+    expect(beast.side).toBe('party');
+    beast.status = 'dead';
+    b.outcome = 'party';
+    applyBattle(w, data, fight, won(fight), null);
+    expect(companionOf(w, m)).toBeNull();
   });
 });

@@ -119,6 +119,12 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
       reason: 'That costs 50 crowns.',
     });
     w.purse = 1000;
+    w.loot = [{ count: 500, sides: 4 }];
+    expect(buyComponent(w, data, 'cold-iron')).toEqual({
+      ok: false,
+      reason: "The party can't carry any more; leave something from the stash first.",
+    });
+    w.loot = [];
     expect(buyComponent(w, data, 'cold-iron')).toEqual({ ok: true });
     expect(buyComponent(w, data, 'cold-iron')).toEqual({ ok: true });
     expect(w.components).toEqual({ 'cold-iron': 2 });

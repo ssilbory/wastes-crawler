@@ -56,6 +56,19 @@ describe('light underground (docs/rules-adaptation.md, Dungeon exploration)', ()
     expect(w.light).toMatchObject({ kitTorches: 0, kitsReady: false });
   });
 
+  it('names a single kit’s torch in the singular', () => {
+    const w = world();
+    for (const m of w.members)
+      m.character = {
+        ...m.character,
+        inventory: m.character.inventory.filter((e) => e.id !== 'dungeoneering-kit'),
+      };
+    give(w, 'Snag', 'dungeoneering-kit', 1);
+    drawKits(w);
+    expect(w.light.kitTorches).toBe(1);
+    expect(w.log.at(-1)).toContain('The party takes 1 torch from its kit.');
+  });
+
   it('prefers the lantern, filling it from a pint of oil', () => {
     const w = world();
     give(w, 'Snag', 'lantern', 1);

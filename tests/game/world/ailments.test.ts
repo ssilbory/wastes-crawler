@@ -2,7 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { hitModifier } from '../../../src/game/combat/targeting.ts';
 import type { Combatant } from '../../../src/game/combat/types.ts';
 import { characterSheet } from '../../../src/game/character/derived.ts';
-import { ailPenalty, diseaseActive, poisonProof } from '../../../src/game/world/ailing.ts';
+import {
+  ailPenalty,
+  diseaseActive,
+  findDisease,
+  poisonProof,
+} from '../../../src/game/world/ailing.ts';
 import {
   ailmentsBack,
   cure,
@@ -13,7 +18,7 @@ import {
 } from '../../../src/game/world/ailments.ts';
 import { endOfDay } from '../../../src/game/world/day.ts';
 import { battleFrom, partySetup } from '../../../src/game/world/fight.ts';
-import { healNight, memberCheck } from '../../../src/game/world/members.ts';
+import { healNight, memberCheck, memberSheet } from '../../../src/game/world/members.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
 import { createRng } from '../../../src/rules/rng.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
@@ -89,6 +94,16 @@ describe('the Poisoned condition', () => {
     expect(pass.w.log.at(-1)).toMatch(/sweats out the poison/);
   });
 
+  it('is harder to shake off while Broken: the save loses a d6', () => {
+    const { w, snag } = alone();
+    const target = memberSheet(data, snag).saves.physical;
+    snag.poisoned = true;
+    snag.character = { ...snag.character, strain: { ...snag.character.strain, broken: true } };
+    w.rng = scriptedRng([target, 1]);
+    nightForAilments(w, data);
+    expect(snag.poisoned).toBe(true);
+  });
+
   it('gets its night save from the day’s end, and the revived sleep through it', () => {
     const { w, snag } = alone([20]);
     snag.poisoned = true;
@@ -109,6 +124,7 @@ describe('disease', () => {
     infect(w, data, snag, 'pit-flux');
     expect(snag.disease).toEqual({ id: 'grave-rot', nights: 0, saves: 0 });
     expect(w.log.at(-1)).toMatch(/Snag has caught Grave Rot\./);
+    expect(() => findDisease(data, 'plague')).toThrow('unknown disease plague');
   });
 
   it('waits out its onset without a roll, then harms on a failed save', () => {
@@ -184,6 +200,11 @@ describe('places that sicken', () => {
     w.position = { col: 0, row: 0 };
     nightForAilments(w, sick);
     expect(snag.disease?.id).toBe('swamp-fever');
+    // A made save keeps them well.
+    const hardy = alone([1, 20]);
+    hardy.w.position = { col: 0, row: 0 };
+    nightForAilments(hardy.w, sick);
+    expect(hardy.snag.disease).toBeNull();
     // A 2 misses a 1-in-6 chance, so no one saves.
     const safe = alone([2]);
     safe.w.position = { col: 0, row: 0 };
