@@ -153,13 +153,13 @@ export function startEncounter(
   }
   // Eyes of the Beast: a Beastmaster sharing a companion's senses is surprised only if it is too.
   const eyes = steps === null || spotter ? undefined : sharedEyes(w, data);
-  if (eyes) {
+  if (eyes && steps !== null) {
     const theirs = npcCheck(w.rng, {
       skillBonus: Math.max(...rows.flat().map((id) => (findMonster(data, id) as Monster).skill)),
       difficulty: 0,
     });
     const skillBonus = npcMonster(data, eyes).skill;
-    const ours = npcCheck(w.rng, { skillBonus, difficulty: 0, steps: steps ?? 0 });
+    const ours = npcCheck(w.rng, { skillBonus, difficulty: 0, steps });
     if (pcWinsOpposed(ours.score, theirs.score)) spotter = eyes.name;
   }
   const spotted = spotter !== null;

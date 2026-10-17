@@ -34,22 +34,14 @@ import { enterDungeon } from '../../game/dungeon/explore.ts';
 import { IntroScreen } from './IntroScreen.tsx';
 import type { PartyScreen } from './PartyButtons.tsx';
 import { PartyScreens } from './PartyScreens.tsx';
-import { StartScreen } from './StartScreen.tsx';
-import type { WorldChoice } from './WorldPicker.tsx';
+import { recruits, StartScreen } from './StartScreen.tsx';
+import { download, useLaunch } from './launch.ts';
+import { CAMPAIGN, type WorldChoice } from './WorldPicker.tsx';
 import { crossOver } from '../../game/world/crossing.ts';
 import { Toasts, useAlerts } from './Toasts.tsx';
 import { trapFallen } from '../../game/dungeon/trap-falls.ts';
 import { tending, type Fight } from './tending.ts';
 import { knownFoes } from '../../render/bestiary-view.ts';
-
-function download(text: string) {
-  const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'wastes-crawler-save.json';
-  a.click();
-  URL.revokeObjectURL(url);
-}
 
 export function WorldApp() {
   // Before any screen reads the content, so saved dungeons are in it.
@@ -125,6 +117,18 @@ function WorldScreens(props: { track: (w: World, fresh?: boolean) => void }) {
     changed(true);
   };
 
+  const addStarters = () => {
+    const added = addStarterParty(roster, data);
+    saveRoster(added.entries);
+    setRoster(added.entries);
+    return added;
+  };
+  useLaunch((launch) => {
+    if (launch === 'continue') return open(loadWorldText());
+    const added = addStarters();
+    start(recruits(added.entries, added.placement), '', CAMPAIGN);
+  });
+
   const w = world.current;
   const exportSave = () => {
     if (w) download(serializeBundle(w, roster));
@@ -171,12 +175,7 @@ function WorldScreens(props: { track: (w: World, fresh?: boolean) => void }) {
         errors={errors}
         onContinue={() => open(loadWorldText())}
         onNew={start}
-        onStarters={() => {
-          const added = addStarterParty(roster, data);
-          saveRoster(added.entries);
-          setRoster(added.entries);
-          return added.placement;
-        }}
+        onStarters={() => addStarters().placement}
         onImport={(file) => void file.text().then(open)}
         onDelete={(id) => {
           const next = removeFromRoster(roster, id);

@@ -100,4 +100,13 @@ describe('furniture in the view', () => {
       { key: '0,2', x: 0, y: 2, kind: 'bones' },
     ]);
   });
+
+  it('marks no furniture on a level that has none', () => {
+    const w = at(1, 1, 'n');
+    const s = w.dungeon as DungeonState;
+    s.dungeon = 'ashgate-keep';
+    s.level = 'ashgate-ward';
+    s.seen = { 'ashgate-ward': ['1,1'] };
+    expect(automap(w, data)?.furniture).toEqual([]);
+  });
 });

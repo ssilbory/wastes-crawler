@@ -3,6 +3,10 @@ import { characterSheet } from '../../game/character/derived.ts';
 import { levelLine } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { findDisease } from '../../game/world/ailing.ts';
+import { hpLevel } from '../../render/hp-level.ts';
+import type { Character } from '../../data/schemas/index.ts';
+
+const percent = (c: Character) => Math.round((Math.max(0, c.hp.current) / c.hp.max) * 100);
 
 function tags(m: Member): string[] {
   if (m.dead) return ['dead'];
@@ -35,8 +39,8 @@ export function PartyPanel(props: { members: Member[] }) {
                   HP {c.hp.current}/{c.hp.max} · Strain {c.strain.value}/{max}
                 </span>
               </span>
-              <span class="hp-bar" aria-hidden="true">
-                <span style={{ width: `${Math.round((c.hp.current / c.hp.max) * 100)}%` }} />
+              <span class={`hp-bar ${hpLevel(percent(c))}`} aria-hidden="true">
+                <span style={{ width: `${percent(c)}%` }} />
               </span>
               <span class="slot-stats">{levelLine(data, c)}</span>
               {tags(m).length > 0 && (

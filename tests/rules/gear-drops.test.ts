@@ -31,6 +31,13 @@ describe('gear drop tiers (docs/rules-adaptation.md, Gear drops)', () => {
 
   it('falls back to the lowest band below every minimum', () => {
     expect(bandAt([{ minLevel: 3, weights: w(1, 0, 0) }], 1).minLevel).toBe(3);
+    const high = [
+      { minLevel: 6, weights: w(0, 1, 0) },
+      { minLevel: 3, weights: w(1, 0, 0) },
+      { minLevel: 9, weights: w(0, 0, 1) },
+    ];
+    expect(bandAt(high, 1).minLevel).toBe(3);
+    expect(bandAt(high, 2).minLevel).toBe(3);
   });
 
   it('draws by weight and never draws a zero weight', () => {

@@ -136,6 +136,6 @@ export function disarm(w: World, data: GameData): TownResult {
     note(w, `${hand.character.name} fumbles the ${trap.name}.`);
     spring(w, data, trap);
   } else note(w, `${hand.character.name} can't work out the ${trap.name}.`);
-  if (w.dungeon) passTurn(w, data);
+  passTurn(w, data);
   return { ok: true };
 }

@@ -68,6 +68,33 @@ describe('tavern rumors', () => {
     expect(w.rumors).toHaveLength(4);
   });
 
+  it('tell of a dungeon no quest names, with no level given', () => {
+    const w = world();
+    const barrow = data.content.dungeons.find((d) => d.region === w.region);
+    if (!barrow) throw new Error('no dungeon in the start region');
+    const cellar = {
+      ...barrow,
+      id: 'old-cellar',
+      name: 'the Old Cellar',
+      entrance: { col: 0, row: 0 },
+    };
+    const more = {
+      ...data,
+      content: { ...data.content, dungeons: [...data.content.dungeons, cellar] },
+    };
+    expect(rumorsLeft(w, more)).toContainEqual({
+      id: 'old-cellar',
+      name: 'the Old Cellar',
+      col: 0,
+      row: 0,
+      level: null,
+    });
+    w.rumors = ids(w);
+    w.rng = createRng('rumor');
+    expect(buyRumor(w, more)).toEqual({ ok: true });
+    expect(w.log.at(-1)).toMatch(/a regular tells of the Old Cellar, at 0,0\.$/);
+  });
+
   it('survive a save, and a version 26 save loads with none heard', () => {
     const w = world();
     buyRumor(w, data);

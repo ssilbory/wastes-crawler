@@ -91,6 +91,27 @@ describe('servants joining the party take the front where they can', () => {
     expect(w.members.map(at)).toEqual(before);
   });
 
+  it('can move a hireling back like a PC', () => {
+    const w = world();
+    Object.assign(member(w, 'Lirael'), { row: 0, column: 2 });
+    const hob = addNpc(w, data, 'hireling', 'guard', 'thug-or-militia', 'Hob', true);
+    if (!hob) throw new Error('no room for Hob');
+    expect(at(hob)).toEqual([0, 3]);
+    hob.hp = 1;
+    const ox = addNpc(w, data, 'beast', 'herd-beast', 'herd-beast', 'Ox', true);
+    expect(ox && at(ox)).toEqual([0, 3]);
+    expect(at(hob)).toEqual([1, 3]);
+    expect(w.log.at(-1)).toMatch(/Hob steps back for Ox\./);
+  });
+
+  it('find no slot when every formation slot is taken', () => {
+    const w = fullFront();
+    addNpc(w, data, 'hireling', 'guard', 'thug-or-militia', 'Hob', true);
+    for (const column of [1, 2, 3])
+      w.members.push({ ...member(w, 'Snag'), id: `x-${column}`, row: 1, column });
+    expect(addNpc(w, data, 'undead', 'zombie', 'zombie', 'Rotter', true)).toBeNull();
+  });
+
   it('fight marked as servants, unlike hirelings', () => {
     const w = world();
     addNpc(w, data, 'undead', 'zombie', 'zombie', 'Rotter', true);

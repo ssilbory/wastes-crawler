@@ -195,3 +195,36 @@
 .hint-sheet p {
   white-space: pre-line;
 }
+
+/* A fight on a phone: one column that scrolls as a whole, so the party is never hidden under the
+   commands, and rows with no one in them fold away. */
+@media (max-width: 760px) {
+  .arena:has(> .fight) {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .arena > .fight,
+  .fight .fight-main {
+    flex: none;
+  }
+
+  .fight .battlefield,
+  .fight .fight-side {
+    overflow: visible;
+  }
+
+  .fight .field-row:not(:has(.slot:not(.empty))) {
+    display: none;
+  }
+
+  /* Empty places can't be picked, so they give their width to the filled ones. The row's own
+     column count is set inline (src/ui/arena/Field.tsx). */
+  .fight .slot.empty {
+    display: none;
+  }
+
+  .fight .slots {
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)) !important;
+  }
+}

@@ -48,6 +48,28 @@ describe('alerts', () => {
     expect(alertsSince(strained, w, data)).toEqual([]);
   });
 
+  it('passes over the dead and anyone who joined since, and dates nothing it cannot find', () => {
+    const w = world();
+    const snag = member(w, 'Snag');
+    const before = alertSnapshot(w);
+    w.quarter += 1;
+    w.members.push({
+      ...snag,
+      id: 'newcomer',
+      character: { ...snag.character, name: 'Newcomer', strain: { value: 2, broken: false } },
+    });
+    expect(alertsSince(before, w, data)).toEqual([]);
+    w.members.pop();
+    snag.dead = true;
+    expect(alertsSince(before, w, data)).toEqual([
+      { kind: 'strain', title: 'Snag has died', text: '' },
+    ]);
+    const dead = alertSnapshot(w);
+    w.quarter += 1;
+    snag.character = { ...snag.character, strain: { value: 3, broken: false } };
+    expect(alertsSince(dead, w, data)).toEqual([]);
+  });
+
   it('tells of quests taken, moved on, done, paid, and failed', () => {
     const w = world();
     let before = alertSnapshot(w);
@@ -80,6 +102,20 @@ describe('alerts', () => {
         kind: 'quest',
         title: expect.stringMatching(/^Quest failed: /),
         text: expect.stringContaining('has failed: abandoned.'),
+      },
+    ]);
+  });
+
+  it('tells of a quest moved on a step', () => {
+    const w = world();
+    w.quests['barrow-torc'] = { status: 'active', step: 0, acceptedDay: 0 };
+    const before = alertSnapshot(w);
+    w.quests['barrow-torc'] = { status: 'active', step: 1, acceptedDay: 0 };
+    expect(alertsSince(before, w, data)).toEqual([
+      {
+        kind: 'quest',
+        title: "Quest updated: The Barrow-King's Torc",
+        text: expect.stringContaining('Destroy the golems guarding the east hall'),
       },
     ]);
   });
@@ -128,5 +164,13 @@ describe('the inn notice', () => {
         text: 'Grukk plays to a cold room. The inn still wants paying.',
       },
     ]);
+  });
+
+  it('says nothing when the journal holds no show for the night', () => {
+    const w = world();
+    const before = alertSnapshot(w);
+    w.performedDay = w.day;
+    w.log.push('Day 1, Evening: The party sleeps.');
+    expect(alertsSince(before, w, data)).toEqual([]);
   });
 });

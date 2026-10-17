@@ -97,3 +97,36 @@ describe('a message for one people (docs/rules-adaptation.md, Dungeon exploratio
     expect(w.log).toHaveLength(lines);
   });
 });
+
+describe('two plain messages on one square', () => {
+  const twice = {
+    ...data,
+    content: {
+      ...data.content,
+      dungeons: data.content.dungeons.map((d) => ({
+        ...d,
+        levels: d.levels.map((l) =>
+          l.id !== 'barrow-lower'
+            ? l
+            : {
+                ...l,
+                specials: [
+                  ...l.specials,
+                  { kind: 'message' as const, at: { x: 2, y: 1 }, text: 'A rat watches.' },
+                ],
+              },
+        ),
+      })),
+    },
+  };
+
+  it('shows both together and marks the square read once', () => {
+    const w = lower(2, 1, 'e');
+    arriveOn(w, twice);
+    expect(w.log.slice(-2).map((l) => l.replace(/^Day \d+, \w+: /, ''))).toEqual([
+      'Old bones are heaped against the wall, picked clean.',
+      'A rat watches.',
+    ]);
+    expect(state(w).read['barrow-lower']).toEqual(['2,1']);
+  });
+});

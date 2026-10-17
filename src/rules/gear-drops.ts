@@ -18,8 +18,8 @@ const TIERS: readonly DropTier[] = ['jury-rigged', 'normal', 'mastercrafted'];
 /** The band for a party level: the one with the highest minimum at or below it. */
 export function bandAt(bands: readonly DropBand[], level: number): DropBand {
   const fits = bands.filter((b) => b.minLevel <= level);
-  const pool = fits.length > 0 ? fits : [...bands].sort((a, b) => a.minLevel - b.minLevel);
-  return pool.reduce((a, b) => (b.minLevel > a.minLevel ? b : a));
+  if (fits.length === 0) return bands.reduce((a, b) => (b.minLevel < a.minLevel ? b : a));
+  return fits.reduce((a, b) => (b.minLevel > a.minLevel ? b : a));
 }
 
 /** Draws one entry by weight; zero weights never come up. */

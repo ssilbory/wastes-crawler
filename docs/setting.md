@@ -4,7 +4,7 @@ Oct 3, 2026 · @Samuel Silbory
 
 ## Premise
 
-The player runs a party of goblins, orcs, elves, gnomes and beastmen in the Dark Lands, 20 years after the Dark Lord vanished. The former slave races are digging out of the rubble and building settlements; the human paladins and rangers are now the raiders. Play splits between hex travel across the wasteland and dungeon crawls through the ruins of a 1000-year empire.
+The player runs a party of goblins, orcs, elves, gnomes, centaurs and beastmen in the Dark Lands, 20 years after the Dark Lord vanished. The former slave races are digging out of the rubble and building settlements; the human paladins and rangers are now the raiders. Play splits between hex travel across the wasteland and dungeon crawls through the ruins of a 1000-year empire.
 
 The inhabitants call their land the Dark Lands or the Continent, and many have no concept of anywhere else. What lies beyond the sea is rumor at best.
 
@@ -30,15 +30,16 @@ Orcs and goblins remain in theory bound to him, so the other races fear he could
 
 ## Peoples
 
-No PCs are human. The playable races are the Dark Lord's former slaves, and they split into two moral categories: orcs and goblins had no choice, most elves and gnomes did. The exception is the Dark Lord's best agents of any race, who were bound to his will. The outside world distrusts elves and gnomes for the wrong reasons but isn't entirely wrong, and fears orcs and goblins for reasons that are mostly no longer true. The dark races share no common identity.
+No PCs are human. The playable races are the Dark Lord's former slaves. Orcs and goblins were made bound and had no choice. Elves and gnomes were conquered peoples: some were bound, some served willingly, some served under duress, and most were simply slaves. Centaurs and beastmen were flesh-crafted troops who were rarely bound. The exception everywhere is the Dark Lord's best agents of any race, who were bound to his will. The outside world distrusts elves and gnomes for the wrong reasons but isn't entirely wrong, and fears orcs and goblins for reasons that are mostly no longer true. The dark races share no common identity.
 
-| People                 | Origin                                                                                       | Under the Dark Lord                                                                        | Today                                                                                                |
-| ---------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
-| Goblins                | Made by his flesh crafters as slaves; improved breeds replaced older ones, which were culled | Bound; could not disobey                                                                   | Not evil by nature. All remain in theory bound to his will; older goblins still carry out his orders |
-| Orcs                   | Made by his flesh crafters as slaves; improved breeds replaced older ones, which were culled | Bound; could not disobey                                                                   | Not evil by nature. All remain in theory bound to his will; older orcs still carry out his orders    |
-| Elder elves and gnomes | Homeland-born, deported; ageless                                                             | Often held high positions; served by choice to varying degrees; the best agents were bound | Only living memory of the lost homelands; often pass as younger                                      |
-| Young elves and gnomes | Born in the Dark Lands; ageless                                                              | Born into it                                                                               | No homeland. Inherit the stigma of being the Dark Lord's agents                                      |
-| Beastmen               | Flesh-crafted, born of animal mothers after 4–6 months; mature 4–6 months later              | Cheap mass-produced child soldiers; rarely bound                                           | Don't breed. Every free beastman is a deserter from some army                                        |
+| People                 | Origin                                                                                       | Under the Dark Lord                                                      | Today                                                                                                |
+| ---------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| Goblins                | Made by his flesh crafters as slaves; improved breeds replaced older ones, which were culled | Bound; could not disobey                                                 | Not evil by nature. All remain in theory bound to his will; older goblins still carry out his orders |
+| Orcs                   | Made by his flesh crafters as slaves; improved breeds replaced older ones, which were culled | Bound; could not disobey                                                 | Not evil by nature. All remain in theory bound to his will; older orcs still carry out his orders    |
+| Elder elves and gnomes | Homeland-born, deported; ageless                                                             | Bound, willing, under duress, or simply slaves; some held high positions | Only living memory of the lost homelands; often pass as younger                                      |
+| Young elves and gnomes | Born in the Dark Lands; ageless                                                              | Born into it                                                             | No homeland. Inherit the stigma of being the Dark Lord's agents                                      |
+| Beastmen               | Flesh-crafted, born of animal mothers after 4–6 months; mature 4–6 months later              | Cheap mass-produced child soldiers; rarely bound                         | Don't breed. Every free beastman is a deserter from some army                                        |
+| Centaurs               | Flesh-crafted before the beastmen; breed true                                                | Grunts; rarely bound, and not born bound like orcs and goblins           | Mostly feral tribes, now and then rounded up and pressed into some warlord's service                 |
 
 ### Elves and gnomes
 
@@ -46,7 +47,9 @@ The only large communities of elves and gnomes in the world are in the Dark Land
 
 Both races are ageless, so Elders are hard to tell from the young, and Elders often pretend to be younger than they are. They are the only living memory of the homelands.
 
-Elves and gnomes often held high positions in the Dark Lord's forces. For centuries most people assumed they were his agents, and they weren't always wrong.
+Most elves and gnomes in the Dark Lands were slaves, and for most of them, above all the young, the Dark Lands are all they have ever known. Some held high positions in the Dark Lord's forces, and for centuries most people assumed they were all his agents. They weren't always wrong.
+
+A few escaped to other parts of the world. These free elves and gnomes are distrusted wherever they live, because the Dark Lord often sent spies disguised as refugees. Some of them mount expeditions to "rescue" elves and gnomes from the Dark Lands, whether or not those elves and gnomes want to go (Threats and factions today).
 
 Service spectrum, each a source of NPCs and quests:
 
@@ -57,6 +60,7 @@ Service spectrum, each a source of NPCs and quests:
 | Opportunist   | Took the deal for status and comfort                 | Rewriting their past, or selling to warlords                        |
 | True believer | Genuinely loyal                                      | Core of any loyalist faction; know where things are buried          |
 | Saboteur      | Undermined from inside                               | Unprovable; nobody believes them                                    |
+| Slave         | Worked where they were put; the common lot           | Most of the elves and gnomes in the Dark Lands                      |
 | Agent abroad  | Spy or infiltrator in other lands                    | Stranded, or still active as a sleeper                              |
 
 Specific roles: elves as overseers, scribes and flesh-crafter assistants; gnomes as forge and machine artificers who can repair or repurpose the Dark Lord's devices. Orcs and goblins who served under elf and gnome officers remember who did so willingly.
@@ -71,11 +75,17 @@ Every beastman has a service record: an army, a unit, a commander, and a reason 
 
 Source animal as a racial option: herd (common, loyal), pack (less common), predator (rare, with an infiltrator or feral past). Free beastmen split over the crafters: seize the knowledge to make free beastmen, destroy it, or accept extinction.
 
+### Centaurs
+
+The flesh crafters made centaurs before the beastmen, as soldiers built for open ground, each line drawn from a different beast: deer, goat, lion and bison. Unlike beastmen they breed true, and unlike orcs and goblins they were not born bound to the Dark Lord's will. They were grunts, and few were ever bound.
+
+When the beastmen replaced them as troops, the centaurs fell out of favor and most went feral. They live today as tribes on the open wastes. Warlords round them up now and then and press them into service, so a centaur's people remember the press gang the way orcs remember the cull.
+
 ## The binding and standing orders
 
 All orcs and goblins remain, in theory, bound to the Dark Lord's will, and the older generation still carries out his last orders 20 years after he vanished. That is why the other races fear them: if he returns, or someone takes his place, every orc and goblin could be his again. No one knows what it would take to command them. The alliance would like to see both races die out.
 
-Beastmen were rarely bound; they were made from herd animals for loyalty instead.
+Beastmen were rarely bound; they were made from herd animals for loyalty instead. Centaurs were rarely bound either, and were never born bound.
 
 This gives orc and goblin PCs a generational wound the other races don't share: a parent may still be guarding a gate they were ordered to guard, and can't be talked off it. Elder elves and gnomes have the opposite burden: free will, memory, and regrets.
 
@@ -110,7 +120,7 @@ Command authority is the central MacGuffin: the other races fear someone could t
 
 ## Flesh-crafting and the beastman trade
 
-Flesh crafters made the orcs and goblins as the Dark Lord's slaves, and were constantly experimenting to produce a replacement for the current breed. The experiments produced several improved orc and goblin breeds, the older breeds were actively culled, and the failures were horrible monsters. That history is why orcs and goblins especially want crafters dead.
+Flesh crafters made the orcs and goblins as the Dark Lord's slaves, and the centaurs and then the beastmen as his troops. They were constantly experimenting to produce a replacement for the current breed. The experiments produced several improved orc and goblin breeds, the older breeds were actively culled, and the failures were horrible monsters. That history is why orcs and goblins especially want crafters dead.
 
 Training is the only scarce input, so a warlord's power is roughly the number of crafters they hold. Beastmen are born from animal mothers; making them takes goats or other animals, certain herbs, some arcane ability, and the training.
 
@@ -214,7 +224,7 @@ The settlements are squeezed from every side: monsters in the wilds, warlords bu
 | Bound agents                        | Humans, elves, gnomes and others; still bound, acting on their own judgment      | Sleepers, infiltrators, tragic bosses; may hold secret orders to avenge or restore him |
 | Loyalists                           | Waiting for the Dark Lord's return                                               | Cultists, recurring enemy, hunt for command authority                                  |
 
-The fanatics may treat elves and gnomes differently from orcs and goblins: "rescue" and trial instead of extermination. To an elf PC, a rescue raid is a kidnapping. The groups sent to take elves and gnomes are generally half-elves, sometimes led by a high-ranking elven patriarch in armor, both mage and warrior.
+The fanatics may treat elves and gnomes differently from orcs and goblins: "rescue" and trial instead of extermination. To an elf PC, a rescue raid is a kidnapping. The groups sent to take elves and gnomes are generally half-elves, sometimes led by a high-ranking free elven patriarch in armor, both mage and warrior.
 
 ## Content hooks
 
@@ -271,3 +281,13 @@ These are unanswered by design. Clues can surface in play, but the setting never
 A second world, apart from the Dark Lands and played without their story (docs/rules-adaptation.md, The Wastes). Long ago the Sun King called down a fire to win a war, and it burned his empire to glass and sand. He lived through it as something else, and sleeps under his throne city at the far end of the desert. What is left is five days' worth of wasteland after five days' worth of wasteland: the Dust Fringe, where the old water board's pumps still stand; the Glassed Flats, salt pans fused to green glass; the Red Dune Sea, where the barges of the old caravan lines lie buried; the Bonefields, where the dead were stacked, counted, and set to guard their own bones; and the Sunscar, the throne city's burned heart.
 
 The living keep to a handful of tiny villages around the last good wells. The ruined towns between them belong to raiders, scavengers, and whatever the fire woke. Each region has one great dungeon, deeper and worse than the last, and something with a hoard on every level.
+
+### The warlords
+
+The Wastes have no quest givers. Their story is the road: a ladder of warlords, one to each map and each harder than the last, with nothing between them and the next map but sand. Think of the old road-war tales without the engines: water and salt for money, scrap and dead men's plate for armor, beasts and sledges where the war-rigs would be.
+
+Each warlord holds a stronghold on their map and stays in it. Their warband rides the map, led by a lieutenant or one of the warlord's sons, and each map's warband is of a different people. Every warlord answers to the Sunlord: the Sun King himself, risen from under his throne city in the Sunscar, the last and worst of them.
+
+## The Sealed Vale
+
+A world of one map, played on its own (docs/rules-adaptation.md, Shipped worlds), built for one great dungeon: Harrowmere. Its story lives inside that dungeon, told on the way down through the streets, the sewers, and the Warden's Tower. The Warden sealed the vale on the Dark Lord's word and still keeps it sealed. He can be fought, or stood down with his countersign. The vale's epilogue plays when the party reaches its exit.

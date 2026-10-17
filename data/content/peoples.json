@@ -52,7 +52,7 @@
   {
     "id": "elf",
     "name": "Elf",
-    "description": "The last elves are graceful, persuasive, and slight, drifting through a land that remembers them as strangers who stayed out of the war until it was too late.",
+    "description": "Graceful, persuasive, and slight, elves were the Dark Lord's slaves for centuries. Some were bound, some served him willingly, and the rest served because they had no choice. The world still can't tell which is which.",
     "attributeModifiers": {
       "dex": 2,
       "cha": 1,
@@ -78,7 +78,7 @@
   {
     "id": "centaur",
     "name": "Centaur",
-    "description": "Centaurs carry the strength of their beast halves and range the open wastes in lineages named for the animals they resemble.",
+    "description": "Flesh-crafted grunts from before the beastmen, centaurs breed true and were never born bound. Cast off when the beastmen replaced them, they roam the open wastes in feral tribes, each lineage named for the beast it was drawn from.",
     "attributeModifiers": {
       "str": 1
     },
@@ -201,7 +201,7 @@
   {
     "id": "gnome",
     "name": "Gnome",
-    "description": "Small, wise, and endlessly curious, gnomes kept their workshops and libraries hidden through the war and are only now opening the doors.",
+    "description": "Small, wise, and endlessly curious, gnomes were taken from their fallen kingdoms to work the Dark Lord's forges and machines. Most were slaves; a few served him willingly, and the world remembers the few.",
     "attributeModifiers": {
       "int": 2,
       "wis": 1,

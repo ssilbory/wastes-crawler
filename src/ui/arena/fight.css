@@ -216,6 +216,26 @@
   font-weight: 600;
 }
 
+/* The turn being taken keeps its side's mark. */
+.turn.party.now {
+  border-left-color: var(--ok);
+}
+
+.turn.enemy.now {
+  border-left-color: var(--error);
+}
+
+/* Each side's mark is a shape as well as a colour. */
+.turn.party::before {
+  content: '▲ ';
+  color: var(--ok);
+}
+
+.turn.enemy::before {
+  content: '▼ ';
+  color: var(--error);
+}
+
 .turn.next-round {
   color: var(--muted);
   border-style: dashed;
