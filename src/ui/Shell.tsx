@@ -8,24 +8,27 @@ import { App as BuilderApp } from './builder/App.tsx';
 import { EditorApp } from './editor/EditorApp.tsx';
 import { MapEditorApp } from './map-editor/MapEditorApp.tsx';
 import { SettingsApp } from './settings/SettingsApp.tsx';
+import { TitleApp } from './title/TitleApp.tsx';
 import { WorldApp } from './world/WorldApp.tsx';
 
 const routeOf = (hash: string): Route =>
-  hash.startsWith('#/arena')
-    ? 'arena'
-    : hash.startsWith('#/world')
-      ? 'world'
-      : hash.startsWith('#/settings')
-        ? 'settings'
-        : hash.startsWith('#/editor')
-          ? 'editor'
-          : hash.startsWith('#/maps')
-            ? 'maps'
-            : hash.startsWith('#/help')
-              ? 'help'
-              : hash.startsWith('#/about')
-                ? 'about'
-                : 'builder';
+  hash.startsWith('#/builder')
+    ? 'builder'
+    : hash.startsWith('#/arena')
+      ? 'arena'
+      : hash.startsWith('#/world')
+        ? 'world'
+        : hash.startsWith('#/settings')
+          ? 'settings'
+          : hash.startsWith('#/editor')
+            ? 'editor'
+            : hash.startsWith('#/maps')
+              ? 'maps'
+              : hash.startsWith('#/help')
+                ? 'help'
+                : hash.startsWith('#/about')
+                  ? 'about'
+                  : 'title';
 
 export function Shell() {
   const [route, setRoute] = useState<Route>(() => routeOf(location.hash));
@@ -52,8 +55,10 @@ export function Shell() {
         <HelpApp />
       ) : route === 'about' ? (
         <AboutApp />
-      ) : (
+      ) : route === 'builder' ? (
         <BuilderApp />
+      ) : (
+        <TitleApp />
       )}
     </>
   );

@@ -195,3 +195,26 @@
 .hint-sheet p {
   white-space: pre-line;
 }
+
+/* A fight on a phone: one column that scrolls as a whole, so the party is never hidden under the
+   commands, and rows with no one in them fold away. */
+@media (max-width: 760px) {
+  .arena:has(> .fight) {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .arena > .fight,
+  .fight .fight-main {
+    flex: none;
+  }
+
+  .fight .battlefield,
+  .fight .fight-side {
+    overflow: visible;
+  }
+
+  .fight .field-row:not(:has(.slot:not(.empty))) {
+    display: none;
+  }
+}

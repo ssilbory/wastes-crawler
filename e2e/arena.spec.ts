@@ -87,12 +87,12 @@ test('watches a monster vs monster fight to the end', async ({ page }, testInfo)
 });
 
 test('saves a character from the builder to the arena roster', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#/builder');
   await page.getByLabel('Import character file').setInputFiles(starters[0] as string);
   await page.getByRole('button', { name: 'Save to roster' }).click();
   await expect(page.getByRole('status')).toContainText('Snag joined the arena roster.');
   await expect(page.getByRole('button', { name: 'Save to roster' })).toBeDisabled();
-  await page.getByRole('link', { name: 'Go to the arena' }).click();
+  await page.getByRole('link', { name: 'go to the arena' }).click();
   const roster = page.getByRole('region', { name: 'Roster' });
   await expect(roster.getByRole('listitem')).toHaveCount(1);
   await expect(roster).toContainText('Snag, level 1 Warrior');

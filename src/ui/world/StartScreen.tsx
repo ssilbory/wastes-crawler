@@ -2,9 +2,21 @@ import { useState } from 'preact/hooks';
 import type { RosterEntry } from '../../game/character/roster.ts';
 import { MAX_PCS, type Recruit } from '../../game/world/new-world.ts';
 import { PartySetup, type Placement } from '../arena/PartySetup.tsx';
+import { ConfirmButton } from '../confirm.tsx';
 import { RosterList } from './RosterList.tsx';
 import { CAMPAIGN, playableWorld, WorldPicker, type WorldChoice } from './WorldPicker.tsx';
 import { SLOTS, type Slot } from '../storage.ts';
+
+/** The roster's characters where the party setup placed them. */
+export function recruits(roster: RosterEntry[], placement: Placement): Recruit[] {
+  return Object.entries(placement).flatMap(([key, id]) => {
+    const entry = roster.find((e) => e.id === id);
+    const [row, column] = key.split('-').map(Number) as [number, number];
+    return entry
+      ? [{ character: entry.character, row, column, defaultAction: entry.defaultAction }]
+      : [];
+  });
+}
 
 /**
  * Starting a new world from the roster, on the campaign, a realm, or a custom map, continuing a saved one, or
@@ -28,13 +40,9 @@ export function StartScreen(props: {
   const [placement, setPlacement] = useState<Placement>({});
   const [seed, setSeed] = useState('');
   const [choice, setChoice] = useState<WorldChoice>(CAMPAIGN);
-  const party: Recruit[] = Object.entries(placement).flatMap(([key, id]) => {
-    const entry = props.roster.find((e) => e.id === id);
-    const [row, column] = key.split('-').map(Number) as [number, number];
-    return entry
-      ? [{ character: entry.character, row, column, defaultAction: entry.defaultAction }]
-      : [];
-  });
+  /** A save file waiting on a yes before it replaces the slot's save. */
+  const [pending, setPending] = useState<File | null>(null);
+  const party = recruits(props.roster, placement);
   return (
     <div class="arena">
       <header>
@@ -52,12 +60,33 @@ export function StartScreen(props: {
             onChange={(e) => {
               const input = e.target as HTMLInputElement;
               const file = input.files?.[0];
-              if (file) props.onImport(file);
+              if (file && props.hasSave) setPending(file);
+              else if (file) props.onImport(file);
               input.value = '';
             }}
           />
         </label>
       </header>
+      {pending && (
+        <p class="confirm-row" role="alert">
+          Loading {pending.name} replaces the save in slot {props.slot}.{' '}
+          <span class="confirm">
+            <button
+              type="button"
+              class="danger"
+              onClick={() => {
+                setPending(null);
+                props.onImport(pending);
+              }}
+            >
+              Replace slot {props.slot}
+            </button>
+            <button type="button" onClick={() => setPending(null)}>
+              Keep
+            </button>
+          </span>
+        </p>
+      )}
       <fieldset class="slots">
         <legend>Save slot</legend>
         {SLOTS.map((n) => (
@@ -109,15 +138,19 @@ export function StartScreen(props: {
           Use the starter party
         </button>
         {party.length > MAX_PCS && <span class="hint">A party holds {MAX_PCS} PCs.</span>}
-        <button
-          type="button"
+        <ConfirmButton
           class="create"
+          ask={props.hasSave}
+          confirm={`Replace slot ${props.slot}`}
           disabled={party.length === 0 || party.length > MAX_PCS || !playableWorld(choice)}
-          onClick={() => props.onNew(party, seed, choice)}
+          onConfirm={() => props.onNew(party, seed, choice)}
         >
           {props.hasSave ? 'Start a new world (replaces the save)' : 'Start a new world'}
-        </button>
+        </ConfirmButton>
       </div>
+      {party.length === 0 && (
+        <p class="hint">Place at least one character in the party to start a new world.</p>
+      )}
     </div>
   );
 }

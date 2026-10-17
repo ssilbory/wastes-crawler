@@ -111,7 +111,7 @@ async function build(page: Page, c: (typeof CASES)[number]) {
 for (const c of CASES) {
   const label = c.lineage ? `${c.people} (${c.lineage})` : c.people;
   test(`builds and re-imports: ${label}`, async ({ page }, testInfo) => {
-    await page.goto('/');
+    await page.goto('/#/builder');
     await build(page, c);
     const sheet = page.getByTestId('character-sheet');
     await expect(sheet).toContainText(`${label} Expert, level 1. Background: ${c.bg}.`);
@@ -133,7 +133,7 @@ for (const c of CASES) {
 test('offers only backgrounds open to the chosen people, and clears one that no longer fits', async ({
   page,
 }) => {
-  await page.goto('/');
+  await page.goto('/#/builder');
   const select = (label: string, option: string) =>
     page.getByRole('combobox', { name: label, exact: true }).selectOption({ label: option });
   const background = page.getByRole('combobox', { name: 'Background', exact: true });

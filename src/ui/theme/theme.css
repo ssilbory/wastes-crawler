@@ -167,6 +167,19 @@ hr {
   transition: width 0.3s;
 }
 
+/* Half or less, then a quarter or less (src/render/hp-level.ts). */
+.hp-bar.hurt span {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 7px, rgb(0 0 0 / 45%) 7px 8px),
+    linear-gradient(180deg, #f2cf6a, #b8892a);
+}
+
+.hp-bar.low span {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 7px, rgb(0 0 0 / 45%) 7px 8px),
+    linear-gradient(180deg, #f0806f, var(--blood));
+}
+
 /* Scrollbars, where a pane must scroll. */
 * {
   scrollbar-width: thin;

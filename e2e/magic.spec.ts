@@ -18,7 +18,7 @@ async function caster(
 ) {
   const select = (label: string, option: string) =>
     page.getByRole('combobox', { name: label, exact: true }).selectOption({ label: option });
-  await page.goto('/');
+  await page.goto('/#/builder');
   await select('People', opts.people);
   const array: [string, string][] = [
     ['Strength', '7'],
@@ -184,7 +184,7 @@ test('a Blood Knight works miracles in armor, with no spells (Phase 14c)', async
 test('a Priest of Death heals and binds the dead, but learns no raising (Phase 14d)', async ({
   page,
 }) => {
-  await page.goto('/');
+  await page.goto('/#/builder');
   await openStep(page, 'Class');
   await page
     .getByRole('combobox', { name: 'Class', exact: true })
@@ -240,7 +240,7 @@ test('a Blood Saint works miracles and heals (Phase 14d)', async ({ page }) => {
 });
 
 test('arts the game leaves out are never offered (Phase 15)', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#/builder');
   const magic = page.locator('section.step', { hasText: '6. Magic' });
   const select = async (option: string) => {
     await openStep(page, 'Class');
