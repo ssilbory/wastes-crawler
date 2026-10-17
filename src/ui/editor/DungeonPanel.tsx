@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { ConfirmButton } from '../confirm.tsx';
 import type { ContentData, Dungeon } from '../../data/schemas/index.ts';
 import {
   addLevel,
@@ -191,9 +192,12 @@ export function DungeonPanel(props: {
             Save
           </button>
           {saving.saved && (
-            <button type="button" onClick={saving.discard}>
+            <ConfirmButton
+              confirm={saving.shipped ? 'Discard it for good' : 'Delete it for good'}
+              onConfirm={saving.discard}
+            >
               {saving.shipped ? 'Discard saved copy' : 'Delete saved dungeon'}
-            </button>
+            </ConfirmButton>
           )}
         </div>
         <div class="row">

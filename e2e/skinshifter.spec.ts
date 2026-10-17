@@ -7,7 +7,7 @@ const WORLD_KEY = 'wastes-crawler.world';
 test('builds a Berserker with a Wolf form', async ({ page }) => {
   const select = (label: string, option: string) =>
     page.getByRole('combobox', { name: label, exact: true }).selectOption({ label: option });
-  await page.goto('/');
+  await page.goto('/#/builder');
   await select('People', 'Orc');
   await openStep(page, 'Attributes');
   for (const [attr, v] of [

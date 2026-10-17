@@ -61,6 +61,24 @@ button.secondary:hover:not(:disabled) {
   background: var(--panel-raised);
 }
 
+/* The second press of something that can't be undone. */
+button.danger {
+  color: #fff3ec;
+  font-weight: 600;
+  background: linear-gradient(180deg, #b23a2c, var(--blood));
+}
+
+button.danger:hover:not(:disabled) {
+  color: #fff;
+  background: linear-gradient(180deg, #c84a3a, #a03224);
+}
+
+.confirm {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
 /* Selected tabs and toggles. */
 button[role='tab'][aria-selected='true'],
 button[role='radio'][aria-checked='true'],

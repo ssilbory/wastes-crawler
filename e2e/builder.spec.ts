@@ -4,7 +4,7 @@ import { openStep } from './wizard.ts';
 // The Phase 3a exit criterion (docs/plan.md): build a Goblin Warrior in the browser, export it to
 // JSON, reload the page, and import it.
 test('builds, exports, and re-imports a Goblin Warrior', async ({ page }, testInfo) => {
-  await page.goto('/');
+  await page.goto('/#/builder');
   const select = (label: string, option: string) =>
     page.getByRole('combobox', { name: label, exact: true }).selectOption({ label: option });
 
@@ -76,7 +76,7 @@ test('builds, exports, and re-imports a Goblin Warrior', async ({ page }, testIn
 });
 
 test('shows validation errors for a bad import', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#/builder');
   await page.getByLabel('Import character file').setInputFiles({
     name: 'broken.json',
     mimeType: 'application/json',

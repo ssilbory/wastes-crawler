@@ -119,7 +119,8 @@ export function App() {
           <CharacterSheet character={character} />
           {saved && (
             <p class="saved" role="status">
-              {saved} <a href="#/arena">Go to the arena</a>
+              {saved} <a href="#/world">Take them into the Overland</a> or{' '}
+              <a href="#/arena">go to the arena</a>
             </p>
           )}
           <div class="actions">

@@ -1,0 +1,45 @@
+/* The title screen: the intro's parchment card with the ways to start stacked down it. */
+.title-card h1 {
+  font-family: var(--font-title);
+}
+
+.title-actions {
+  display: grid;
+  gap: 10px;
+  margin: 1.2rem 0;
+}
+
+.title-actions button,
+.title-actions .confirm,
+.title-actions .title-link {
+  width: 100%;
+}
+
+.title-actions button {
+  display: grid;
+  gap: 2px;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 1.1rem;
+}
+
+.title-actions .confirm button {
+  flex: 1 1 auto;
+  width: auto;
+}
+
+.title-sub {
+  font-size: 0.85rem;
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+.title-link {
+  display: block;
+  padding: 6px 2px;
+}
+
+.title-more {
+  text-align: center;
+  color: var(--muted);
+}

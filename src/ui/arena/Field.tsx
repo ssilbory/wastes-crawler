@@ -1,6 +1,7 @@
 import type { SideView, SlotView } from '../../render/arena-view.ts';
 import { flash, type Float } from '../../render/fight-fx.ts';
 import { logLines, type LogFilter } from '../../render/fight-log.ts';
+import { hpLevel } from '../../render/hp-level.ts';
 import type { Reach } from '../../render/fight-reach.ts';
 import type { SideId } from '../../game/combat/types.ts';
 import { useState } from 'preact/hooks';
@@ -73,7 +74,7 @@ function Slot(props: {
         <span class="reach-tag">{props.reach === 'melee' ? 'in reach' : 'in range'}</span>
       )}
       {props.note && <span class="odds">{props.note}</span>}
-      <span class="hp-bar" aria-hidden="true">
+      <span class={`hp-bar ${hpLevel(slot.hpPercent)}`} aria-hidden="true">
         <span style={{ width: `${slot.hpPercent}%` }} />
       </span>
       <span class="slot-stats">
