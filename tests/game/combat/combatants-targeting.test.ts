@@ -53,6 +53,15 @@ describe('pcCombatant', () => {
     });
   });
 
+  it('makes a Poisoner immune to poisons only at level 2 (1.6.0)', () => {
+    const base = starter('snag');
+    const poisoner = (level: number) =>
+      pcCombatant(data, { ...base, foci: [...base.foci, { id: 'poisoner', level }] });
+    expect(pcCombatant(data, base).poisonImmune).toBe(false);
+    expect(poisoner(1).poisonImmune).toBe(false);
+    expect(poisoner(2).poisonImmune).toBe(true);
+  });
+
   it('sets tower shields, melee Shock immunity, acts-first, and the fallen', () => {
     const base = starter('snag');
     const c = pcCombatant(data, {

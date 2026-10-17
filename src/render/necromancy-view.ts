@@ -54,13 +54,11 @@ export function necromancyView(
   const casters = w.members.flatMap((m): CasterView[] => {
     const magic = characterSheet(m.character, data).magic;
     const prepared = m.character.spells.prepared;
-    const shaped = w.members
-      .filter((t) => t.character.shaped?.by === m.character.id)
-      .map((t) => ({
-        id: t.id,
-        name: t.character.name,
-        changes: changeText(t.character.shaped?.changes ?? {}),
-      }));
+    const shaped = w.members.flatMap((t) =>
+      t.character.shaped?.by === m.character.id
+        ? [{ id: t.id, name: t.character.name, changes: changeText(t.character.shaped.changes) }]
+        : [],
+    );
     if (m.dead || !magic) return [];
     if (!SPELLS.some((s) => prepared.includes(s)) && shaped.length === 0) return [];
     const raise = prepared.includes('raise-corpse');

@@ -129,6 +129,23 @@ describe('war mounts in overland fights (docs/rules-adaptation.md, Mounts)', () 
     expect(w.log).toContain(`Day 1, morning: War Boar dies, and its load is lost.`);
   });
 
+  it('says nothing of a load when a slain mount carried none', () => {
+    const { w } = riding();
+    w.rng = scriptedThenRandom([6, 6]);
+    const fight = partyBattle(w, data, [['thug-or-militia']], true, null);
+    const c = fight.battle.combatants[fight.memberIds.length] as Battle['combatants'][number];
+    c.hp = 0;
+    applyBattle(
+      w,
+      data,
+      fight,
+      { outcome: 'draw', rounds: 1, deaths: 0, battle: fight.battle },
+      null,
+    );
+    expect(w.mounts).toEqual([]);
+    expect(w.log).toContain(`Day 1, morning: War Boar dies.`);
+  });
+
   it('keeps mounts and pack beasts when a lost fight sends the party to town', () => {
     const { w } = riding();
     w.rng = scriptedRng([4, 4]);
