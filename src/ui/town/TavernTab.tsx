@@ -57,6 +57,29 @@ export function TavernTab(props: { world: World; roster: RosterEntry[]; act: Act
           ))}
         </ul>
       </section>
+      <section class="panel" aria-label="New faces">
+        <h2>New faces</h2>
+        <p class="hint">
+          Roster characters new to this world join with {catchUpXp(w)} XP, the lowest in the world,
+          and add their crowns to the purse.
+        </p>
+        {newcomers.length === 0 && <p class="hint">Everyone in the roster is already here.</p>}
+        <ul class="tavern-list">
+          {newcomers.map((e) => (
+            <li key={e.id}>
+              <span>
+                <strong>{e.character.name}</strong>
+              </span>
+              <button
+                type="button"
+                onClick={() => props.act(() => recruit(w, data, e.character, e.defaultAction))}
+              >
+                Recruit
+              </button>
+            </li>
+          ))}
+        </ul>
+      </section>
       <section class="panel" aria-label="Hirelings">
         <h2>
           Hirelings ({w.npcs.length}/{MAX_NPCS} NPC slots)
@@ -123,29 +146,6 @@ export function TavernTab(props: { world: World; roster: RosterEntry[]; act: Act
             Buy a trade-route map ({priceHere(w, data, routeMapListed(data))} crowns)
           </button>
         )}
-      </section>
-      <section class="panel" aria-label="New faces">
-        <h2>New faces</h2>
-        <p class="hint">
-          Roster characters new to this world join with {catchUpXp(w)} XP, the lowest in the world,
-          and add their crowns to the purse.
-        </p>
-        {newcomers.length === 0 && <p class="hint">Everyone in the roster is already here.</p>}
-        <ul class="tavern-list">
-          {newcomers.map((e) => (
-            <li key={e.id}>
-              <span>
-                <strong>{e.character.name}</strong>
-              </span>
-              <button
-                type="button"
-                onClick={() => props.act(() => recruit(w, data, e.character, e.defaultAction))}
-              >
-                Recruit
-              </button>
-            </li>
-          ))}
-        </ul>
       </section>
     </>
   );

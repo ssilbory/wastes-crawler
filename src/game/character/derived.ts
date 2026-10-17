@@ -10,6 +10,7 @@ import {
   totalAttackBonus,
   type CastingLevelRow,
 } from '../../rules/progression.ts';
+import { coldFleshAc } from '../../rules/necromancer.ts';
 import { pcSaveTarget, type SaveType } from '../../rules/saves.ts';
 import { addAdjustments, ATTRIBUTES } from './attributes.ts';
 import { findProgression, progressionLookup, type GameData } from './context.ts';
@@ -113,9 +114,19 @@ function modifiersAndSaves(scores: AttributeScores, level: number, bonuses: Modi
   };
 }
 
-/** A form's and the Beastmaster arts' attacks and base AC together; the better AC stands. */
-function arted(shape: ReturnType<typeof formShape> | null, beast: ReturnType<typeof beastShape>) {
-  const acs = [shape?.innateAc, beast.innateAc].filter((x): x is number => typeof x === 'number');
+/**
+ * A form's and the Beastmaster arts' attacks and base AC together, with Cold Flesh's natural AC
+ * (vendor/wwn-srd/1.0 Character Creation/1.5.0 Class List/1.5.14 The Necromancer.md); the better
+ * AC stands.
+ */
+function arted(
+  shape: ReturnType<typeof formShape> | null,
+  beast: ReturnType<typeof beastShape>,
+  coldFlesh: number | null,
+) {
+  const acs = [shape?.innateAc, beast.innateAc, coldFlesh].filter(
+    (x): x is number => typeof x === 'number',
+  );
   const effects = [...(shape?.effects ?? []), ...beast.effects];
   return {
     ...(effects.length > 0 ? { formEffects: effects } : {}),
@@ -150,7 +161,7 @@ export function characterSheet(c: Character, data: GameData, form: number | null
       foci: c.foci,
       level,
       attackBonus,
-      ...arted(shape, beastShape(c)),
+      ...arted(shape, beastShape(c), c.arts.includes('cold-flesh') ? coldFleshAc(level) : null),
     }),
     strainMax: scores.con,
     size: people.size,
