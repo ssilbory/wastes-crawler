@@ -8092,14 +8092,567 @@
       "row": 21
     },
     "entry": {
-      "level": "sun-kings-tomb-1",
+      "level": "sunscar-throne-1",
       "at": {
-        "x": 11,
-        "y": 9
+        "x": 4,
+        "y": 8
       },
-      "facing": "n"
+      "facing": "e"
     },
     "levels": [
+      {
+        "id": "sunscar-throne-1",
+        "name": "The Throne City",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|>      | |   | |   |",
+          "+-+ + + +-+ + +-+ + +",
+          "| |     | |   | |   |",
+          "+-+-+d+-+-+d+-+-+d+-+",
+          "| | | | | | | | | | |",
+          "+-+-+ +-+-+ +-+-+ +-+",
+          "|        T         T|",
+          "+-+-+-+-+-+-+ +-+d+-+",
+          "| | | |   | | | |   |",
+          "+-+ +-+ + +-+ +-+ + +",
+          "|   | |   | | | |   |",
+          "+-+d+-+d+-+-+ +-+ + +",
+          "| |           | |   |",
+          "+-+d+-+d+-+-+ +-+-+-+",
+          "|   | | | | | | | | |",
+          "+ + +-+ +-+-+ +-+-+-+",
+          "|   | | |<    | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 4,
+              "y": 8
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "to": {
+              "level": "sunscar-throne-2",
+              "at": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": "e"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "wastes-5-deep"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 5
+          },
+          {
+            "x": 1,
+            "y": 4
+          },
+          {
+            "x": 1,
+            "y": 5
+          },
+          {
+            "x": 0,
+            "y": 7
+          },
+          {
+            "x": 0,
+            "y": 8
+          },
+          {
+            "x": 1,
+            "y": 8
+          },
+          {
+            "x": 9,
+            "y": 0
+          },
+          {
+            "x": 9,
+            "y": 1
+          }
+        ],
+        "secrets": [],
+        "traps": [
+          {
+            "at": {
+              "x": 4,
+              "y": 3
+            },
+            "name": "warding sun",
+            "notice": 13,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 12
+            },
+            "save": "mental",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 3
+            },
+            "name": "burning lens",
+            "notice": 13,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 12
+            },
+            "save": "evasion",
+            "element": "fire",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 4,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 5,
+              "y": 8
+            },
+            "text": "The Sunlord’s city, built over the Sun King’s tomb: streets of glass fused from sand, and houses of gold no one dares to strip. The air shimmers with heat."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 5
+            },
+            "text": "A water-seller’s booth, the jars smashed. His prices are still chalked up: a day’s labour for a cup, a child for a cask."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 0
+            },
+            "text": "A noble house, its doors melted shut. Through a crack you see a family of glass statues at table, caught when the Sun King first burned."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 4,
+              "y": 4
+            },
+            "text": "A shrine of the risen king. Pilgrims have left offerings of salt, scrap, and their own burnt fingers."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 0,
+              "y": 3
+            },
+            "text": "The street ends at a wall of black glass. Carved in it, fresh: THE SUN KING IS RISEN. HE WALKS. HE WILL LIGHT THE WORLD AGAIN."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 5
+            },
+            "text": "A cellar below a burnt house, cool as a well. The sun never reaches it. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 7
+            },
+            "text": "A potter’s shop, kiln long cold, the door barred from inside. The party could camp here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 8,
+              "y": 1
+            },
+            "text": "A gatehouse loft above the street, reached by a single ladder. Safe enough to sleep."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 1,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 12
+              }
+            ],
+            "guards": [
+              ["throne-champion", "throne-champion"],
+              ["sun-mage", "sun-mage"]
+            ],
+            "text": "Two champions in sun-gold plate bar the palace stair, and the mages behind them raise hands that burn white. “The Sun King is risen,” they chant. “Kneel, or be ash.”"
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 9,
+              "y": 6
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 12
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 2,
+              "y": 0
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 1
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 6
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 3
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 5
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 1
+            },
+            "kind": "rubble"
+          }
+        ]
+      },
+      {
+        "id": "sunscar-throne-2",
+        "name": "The Hall of the Sun",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|<    | |  T    | | |",
+          "+ +-+ +-+ +-+-+ +-+-+",
+          "| | | | | | | | d   |",
+          "+ +-+ +-+ +-+-+ + + +",
+          "|     | | | | | |   |",
+          "+-+ +-+-+ +-+-+ +-+-+",
+          "| | | | | | | | | | |",
+          "+-+ +-+-+ +-+-+d+-+-+",
+          "| |       d | | | | |",
+          "+-+d+-+ +-+ +-+ +-+-+",
+          "|   | | |   |  T  | |",
+          "+ + +-+ +-+-+-+ +-+-+",
+          "|   | | | | | | | | |",
+          "+-+-+-+ +-+-+-+d+-+-+",
+          "| | | | | |         |",
+          "+-+-+ +d+-+ + + + + +",
+          "| | |   | |       |>|",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "to": {
+              "level": "sunscar-throne-1",
+              "at": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": "e"
+            }
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 8
+            },
+            "to": {
+              "level": "sun-kings-tomb-1",
+              "at": {
+                "x": 11,
+                "y": 9
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "wastes-5-deep"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 5
+          },
+          {
+            "x": 0,
+            "y": 6
+          },
+          {
+            "x": 1,
+            "y": 5
+          },
+          {
+            "x": 2,
+            "y": 7
+          },
+          {
+            "x": 2,
+            "y": 8
+          },
+          {
+            "x": 3,
+            "y": 8
+          },
+          {
+            "x": 8,
+            "y": 1
+          },
+          {
+            "x": 9,
+            "y": 1
+          },
+          {
+            "x": 9,
+            "y": 2
+          }
+        ],
+        "secrets": [],
+        "traps": [
+          {
+            "at": {
+              "x": 5,
+              "y": 0
+            },
+            "name": "warding sun",
+            "notice": 13,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 12
+            },
+            "save": "mental",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 5
+            },
+            "name": "burning lens",
+            "notice": 13,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 12
+            },
+            "save": "evasion",
+            "element": "fire",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 4,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 0
+            },
+            "text": "The Sunlord’s palace. The floors are gold over glass, and through the glass you see stairs going down, and down, into the tomb beneath."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 3,
+              "y": 5
+            },
+            "text": "Heralds’ niches, each with a burnt-out torch and a scroll: the names of every town that has sent the Sunlord water this year."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 5
+            },
+            "text": "A treasury of the desert: casks of sweet water, sacks of white salt, and the plate of dead kings stacked like kindling."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 7,
+              "y": 2
+            },
+            "text": "A mural of the Sun King burning the world, with a new figure painted over it: the king risen, walking out of his own tomb."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 8,
+              "y": 5
+            },
+            "text": "Through a slit window, the Sunscar stretches white to the edge of sight. The Sunlord can see every caravan coming for a day."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 5
+            },
+            "text": "A servants’ stair, its door warped tight in the heat. Nobody uses it. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 3,
+              "y": 8
+            },
+            "text": "A cistern-room, dry, with a door that bars. The party could camp here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 8,
+              "y": 1
+            },
+            "text": "A priest’s cell, shuttered against the light. It is cool, and quiet. Safe enough to sleep."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 9,
+              "y": 7
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 12
+              }
+            ],
+            "component": "ooze-essence",
+            "warlord": "the-sunlord",
+            "guards": [["throne-champion", "throne-champion"], ["the-sunlord"]],
+            "text": "On a throne of molten glass sits the Sun King himself, risen in living flesh and crowned as the Sunlord. “My bones lie in the tomb below,” he says, “and my shade still guards them. Neither of us will let you pass.”"
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 5,
+              "y": 7
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 8
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 0
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 2
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 0
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 8
+            },
+            "kind": "altar"
+          }
+        ]
+      },
       {
         "id": "sun-kings-tomb-1",
         "name": "The First Gate",
@@ -8133,7 +8686,12 @@
               "y": 9
             },
             "to": {
-              "surface": true
+              "level": "sunscar-throne-2",
+              "at": {
+                "x": 9,
+                "y": 8
+              },
+              "facing": "n"
             }
           },
           {
@@ -9496,7 +10054,7 @@
             ],
             "component": "grave-garnet",
             "guards": [["glass-wyrm", "throne-champion", "throne-champion"], ["sun-king"]],
-            "text": "The Sun King rises from his throne of melted gold. “I burned the world once,” he says. “I can light it again.”"
+            "text": "The Sun King’s Shade rises from the throne of melted gold, the burning shadow the risen king left to keep his bones. “I burned the world once,” it says. “I can light it again.”"
           }
         ],
         "captives": [],
@@ -9548,6 +10106,2094 @@
             "at": {
               "x": 3,
               "y": 5
+            },
+            "kind": "bones"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "scrap-kings-pumpworks",
+    "name": "The Scrap King's Pumpworks",
+    "region": "wastes-fringe",
+    "entrance": {
+      "col": 22,
+      "row": 8
+    },
+    "entry": {
+      "level": "scrap-kings-pumpworks-1",
+      "at": {
+        "x": 5,
+        "y": 8
+      },
+      "facing": "n"
+    },
+    "levels": [
+      {
+        "id": "scrap-kings-pumpworks-1",
+        "name": "The Pump Yard",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|>      | | |     | |",
+          "+-+ + + +-+-+ + + +-+",
+          "| |     | | |     s |",
+          "+-+-+d+-+-+-+ +-+-+ +",
+          "| | | | | | | | | | |",
+          "+-+-+ +-+-+-+d+-+-+ +",
+          "| | |T| | | | | | | |",
+          "+-+-+ +-+-+-+ +-+-+ +",
+          "|   d       d       |",
+          "+ + +-+-+-+-+ +-+-+ +",
+          "|   | | | | | | | | |",
+          "+-+-+-+-+-+-+d+-+-+d+",
+          "| | | |       | |   |",
+          "+-+-+ + + + + +-+ + +",
+          "| | | d       | |   |",
+          "+-+-+-+ + + + +-+-+-+",
+          "| | | |    <  | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 5,
+              "y": 8
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "to": {
+              "level": "scrap-kings-pumpworks-2",
+              "at": {
+                "x": 0,
+                "y": 8
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "wastes-1-deep"
+        },
+        "safe": [
+          {
+            "x": 2,
+            "y": 6
+          },
+          {
+            "x": 2,
+            "y": 7
+          },
+          {
+            "x": 0,
+            "y": 4
+          },
+          {
+            "x": 1,
+            "y": 4
+          },
+          {
+            "x": 0,
+            "y": 5
+          },
+          {
+            "x": 1,
+            "y": 5
+          },
+          {
+            "x": 8,
+            "y": 6
+          },
+          {
+            "x": 8,
+            "y": 7
+          },
+          {
+            "x": 9,
+            "y": 6
+          }
+        ],
+        "secrets": [
+          {
+            "at": {
+              "x": 8,
+              "y": 1
+            },
+            "side": "e",
+            "difficulty": 8
+          }
+        ],
+        "traps": [
+          {
+            "at": {
+              "x": 2,
+              "y": 3
+            },
+            "name": "rusted grating",
+            "notice": 9,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 8
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 1,
+                "sides": 8,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 4,
+              "y": 7
+            },
+            "text": "The yard is a graveyard of sledges, stripped to the runners. Every scrap of iron here has been pulled off and carried inside."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 4,
+              "y": 4
+            },
+            "text": "A sign of hammered hubcaps hangs over the passage: THE KING’S WATER. ONE CUP A DAY. THIEVES HANG."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 7,
+              "y": 0
+            },
+            "text": "The great pump stands silent, its arm chained down. Under the chain someone has scratched the price of a drink: two fingers of salt."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 2,
+              "y": 2
+            },
+            "text": "Dead men’s plate is nailed to the walls here, breastplates and helms by the dozen, each one punched through."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 2,
+              "y": 7
+            },
+            "text": "A dry cupboard of a room with a bar for the door. Water-thieves hid here once; it would hide you long enough to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 4
+            },
+            "text": "Empty water drums stacked to the ceiling, and space behind them to lie down unseen. A safe place to camp."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 9,
+              "y": 6
+            },
+            "text": "A cold forge, its bellows cut away for leather. The smoke-hole draws well and nothing has come this way in days. The party could rest here."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 1,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 6
+              }
+            ],
+            "guards": [
+              ["dust-raider", "dust-raider", "dust-raider", "dust-raider", "dust-raider"],
+              ["raider-boss", "raider-boss"]
+            ],
+            "text": "The Scrap King’s guard squat on drums of hoarded water. “Every drop in here is the King’s,” their boss growls, “and so is every throat that drinks it.”"
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 9,
+              "y": 7
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 6
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 3,
+              "y": 0
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 1
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 6
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 8
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 0
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 5
+            },
+            "kind": "bones"
+          }
+        ]
+      },
+      {
+        "id": "scrap-kings-pumpworks-2",
+        "name": "The Scrap Throne",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|   | | |   |       |",
+          "+ + +-+-+ +-+ + + + +",
+          "|   | | | | |       |",
+          "+-+d+-+-+ +-+ + + + +",
+          "| | | | | | |       |",
+          "+-+ +-+-+ +-+-+-+d+-+",
+          "| |       | | | | | |",
+          "+-+ +-+-+d+-+-+-+ +-+",
+          "| | | |       | |   |",
+          "+-+ +-+ + + + +-+ + +",
+          "| | | |       | |T  |",
+          "+-+ +-+-+ + +-+-+ + +",
+          "|     | |   | | |   |",
+          "+ + + +-+-+d+-+-+ + +",
+          "|     | | |  T  d   |",
+          "+ + + +-+-+ + + +-+-+",
+          "|<    | | |     | | |",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 0,
+              "y": 8
+            },
+            "to": {
+              "level": "scrap-kings-pumpworks-1",
+              "at": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": "e"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "wastes-1-deep"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 1,
+            "y": 0
+          },
+          {
+            "x": 0,
+            "y": 1
+          },
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 4,
+            "y": 0
+          },
+          {
+            "x": 5,
+            "y": 0
+          },
+          {
+            "x": 5,
+            "y": 8
+          },
+          {
+            "x": 6,
+            "y": 8
+          }
+        ],
+        "secrets": [],
+        "traps": [
+          {
+            "at": {
+              "x": 6,
+              "y": 7
+            },
+            "name": "scrap-dart trap",
+            "notice": 9,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 8
+            },
+            "save": "evasion",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 1,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 5
+            },
+            "name": "rusted grating",
+            "notice": 9,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 8
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 1,
+                "sides": 8,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 7
+            },
+            "text": "The reservoir under the pump station, drained to the mud. Sledge-ropes hang from the rim where the King’s men haul up what water is left."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 2,
+              "y": 3
+            },
+            "text": "Tally marks on the wall, thousands of them, each a cup sold. Beside the newest a raider has drawn a man hanging."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 4,
+              "y": 4
+            },
+            "text": "A pit of scrap: wheel rims, chain, the ribs of a dead pack-lizard picked clean. The King’s smiths sort it by weight."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 9,
+              "y": 7
+            },
+            "text": "Harness for a dozen draught beasts, the beasts themselves long since eaten. A sledge stands loaded with water drums, ready to roll."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 1
+            },
+            "text": "A strongroom with its door hanging, emptied long ago. Nobody guards an empty room. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 4,
+              "y": 0
+            },
+            "text": "A dead end behind a fallen pipe, where the drip from above keeps the floor cool. The party could camp here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 5,
+              "y": 8
+            },
+            "text": "A dry cistern-bottom with one way in. Old bedrolls, and a fire ring nobody has lit in a month. Safe enough to sleep."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 6,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 6
+              }
+            ],
+            "component": "ooze-essence",
+            "warlord": "scrap-king",
+            "guards": [
+              ["dust-raider", "dust-raider", "dust-raider", "dust-raider"],
+              ["raider-boss", "raider-boss", "scrap-king"]
+            ],
+            "text": "The Scrap King rises from a throne of welded hubcaps and dead men’s plate, a pump-handle mace across his knees. “I own the water,” he says. “Come and drink.”"
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 7,
+              "y": 0
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 0
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 3
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 4
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 4
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 6
+            },
+            "kind": "rubble"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "salt-keep",
+    "name": "The Salt Keep",
+    "region": "wastes-glass",
+    "entrance": {
+      "col": 25,
+      "row": 13
+    },
+    "entry": {
+      "level": "salt-keep-1",
+      "at": {
+        "x": 4,
+        "y": 8
+      },
+      "facing": "n"
+    },
+    "levels": [
+      {
+        "id": "salt-keep-1",
+        "name": "The Salt Gate",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|     | |     | | |>|",
+          "+ + + +-+ + + +-+-+ +",
+          "|     | |     | |   |",
+          "+-+d+-+-+ +-+d+-+ + +",
+          "| | | | | | | | |   |",
+          "+-+ +-+-+ +-+ +-+-+d+",
+          "| |     d | |T| | | |",
+          "+-+-+-+-+ +-+ +-+-+ +",
+          "| | | | | | |     | |",
+          "+-+-+-+-+d+-+-+-+ + +",
+          "|     | | | | | | | |",
+          "+ + + +-+ +-+-+-+ + +",
+          "|     d       | | | |",
+          "+-+-+-+ + + + +-+d+ +",
+          "| | | |       |     |",
+          "+-+-+-+-+ + +-+ + + +",
+          "| | | | |<  | |     |",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 4,
+              "y": 8
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 0
+            },
+            "to": {
+              "level": "salt-keep-2",
+              "at": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": "e"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "wastes-2-deep"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 5
+          },
+          {
+            "x": 1,
+            "y": 5
+          },
+          {
+            "x": 0,
+            "y": 6
+          },
+          {
+            "x": 1,
+            "y": 6
+          },
+          {
+            "x": 2,
+            "y": 0
+          },
+          {
+            "x": 2,
+            "y": 1
+          },
+          {
+            "x": 7,
+            "y": 8
+          },
+          {
+            "x": 8,
+            "y": 8
+          }
+        ],
+        "secrets": [],
+        "traps": [
+          {
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "name": "salt slide",
+            "notice": 10,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 9
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 2,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 5,
+              "y": 6
+            },
+            "text": "The gate-yard of the Salt Keep. Its walls are cut from blocks of the pan itself, white and glittering, and too bright to look at in the noon sun."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 5,
+              "y": 0
+            },
+            "text": "The toll room. Scales stand on every table, and a slate on the wall gives the rate: one cup of salt a head, two a beast, ten a sledge."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 7,
+              "y": 4
+            },
+            "text": "A gnoll has gnawed the salt from the walls here down to the bare stone, and left its teeth marks in the grain."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 9,
+              "y": 4
+            },
+            "text": "Salt-cured hides stretched on frames, some of them from no beast at all. The baron pays bounty on caravan thieves by the skin."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 2,
+              "y": 6
+            },
+            "text": "A brine-cellar, cool and sealed tight against the flats. It holds nothing worth a raid now. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 1
+            },
+            "text": "A tax clerk’s office, the ledgers burned for fuel. The door still bars. The party could camp here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 8,
+              "y": 7
+            },
+            "text": "A stable for salt-sledges, the runners stacked like firewood. Dust lies undisturbed on the straw. Safe enough to sleep."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 9,
+              "y": 1
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 8
+              }
+            ],
+            "guards": [["gnoll", "gnoll", "gnoll", "gnoll"], ["salt-baron"]],
+            "text": "Gnoll pikemen yip and close ranks before the baron’s steward. “Salt for passage,” she says, “or blood for salt. The pans take either.”"
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 8
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 8,
+              "y": 2
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 0
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 3,
+              "y": 6
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 7
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 2
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 8
+            },
+            "kind": "rubble"
+          }
+        ]
+      },
+      {
+        "id": "salt-keep-2",
+        "name": "The Baron’s Scales",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|<    | |    T  | | |",
+          "+ +-+ +-+ +-+-+ +-+-+",
+          "| | | | | | | | |   |",
+          "+ +-+ +-+d+-+-+ + + +",
+          "|         | | | d   |",
+          "+-+-+-+ +-+-+-+ +-+ +",
+          "| | | | | | | | | | |",
+          "+-+-+-+ +-+-+-+-+-+-+",
+          "|     d    T    | | |",
+          "+ + + +-+ +-+-+ +-+-+",
+          "|     | | | | | | | |",
+          "+ + + +-+ +-+-+d+-+-+",
+          "|     | | | |       |",
+          "+-+-+-+-+ +-+ + + + +",
+          "| | |   d | |       |",
+          "+-+-+ + +-+-+ + + + +",
+          "| | |   | | |       |",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "to": {
+              "level": "salt-keep-1",
+              "at": {
+                "x": 9,
+                "y": 0
+              },
+              "facing": "s"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "wastes-2-deep"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 5
+          },
+          {
+            "x": 1,
+            "y": 5
+          },
+          {
+            "x": 2,
+            "y": 4
+          },
+          {
+            "x": 2,
+            "y": 7
+          },
+          {
+            "x": 2,
+            "y": 8
+          },
+          {
+            "x": 3,
+            "y": 8
+          },
+          {
+            "x": 8,
+            "y": 2
+          },
+          {
+            "x": 9,
+            "y": 1
+          },
+          {
+            "x": 9,
+            "y": 2
+          }
+        ],
+        "secrets": [],
+        "traps": [
+          {
+            "at": {
+              "x": 6,
+              "y": 0
+            },
+            "name": "needle plate",
+            "notice": 10,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 9
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 4
+            },
+            "name": "salt slide",
+            "notice": 10,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 9
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 2,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 0
+            },
+            "text": "The keep’s cellars, cut down into the salt. Every wall weeps brine, and the brine is worth more than the men who dug it."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 3,
+              "y": 3
+            },
+            "text": "A gibbet-cage hangs from the ceiling, a salt-cured smuggler inside. A board on his chest reads LIGHT WEIGHT."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 7,
+              "y": 3
+            },
+            "text": "Water jars, sealed with wax and the baron’s mark, stacked behind a grille. A guard would sell his mother for one."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 4,
+              "y": 5
+            },
+            "text": "The floor is scored with sledge tracks, all leading toward the great hall. Something heavy was dragged this way, and dragged often."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 2,
+              "y": 4
+            },
+            "text": "A barracks emptied when the baron moved his men to the hall. Cots and a cold brazier. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 3,
+              "y": 7
+            },
+            "text": "A storeroom of old pikes and broken scales, with a heavy door. The party could camp here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 8,
+              "y": 2
+            },
+            "text": "A salt-cutter’s cell, the cutter long gone. Nobody comes here; nobody has for years. Safe enough to sleep."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 9,
+              "y": 8
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 8
+              }
+            ],
+            "component": "cold-iron",
+            "warlord": "baron-vesk",
+            "guards": [
+              ["gnoll", "gnoll", "gnoll", "gnoll", "gnoll"],
+              ["salt-baron", "salt-baron", "baron-vesk"]
+            ],
+            "text": "Baron Vesk sits behind scales heaped with white salt and old teeth. “Weigh yourselves,” he says, and his hyena-men laugh."
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 6,
+              "y": 6
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 8
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 6
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 0
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 7
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 6
+            },
+            "kind": "altar"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "khans-barge",
+    "name": "The Khan's Barge",
+    "region": "wastes-dunes",
+    "entrance": {
+      "col": 16,
+      "row": 12
+    },
+    "entry": {
+      "level": "khans-barge-1",
+      "at": {
+        "x": 0,
+        "y": 4
+      },
+      "facing": "e"
+    },
+    "levels": [
+      {
+        "id": "khans-barge-1",
+        "name": "The Buried Deck",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|     | |     | | |>|",
+          "+ + + +-+ + + +-+-+ +",
+          "|     | |     | |   |",
+          "+ + + +-+ + + +-+ + +",
+          "|     | |     | |   |",
+          "+-+ +-+-+-+ +-+-+ + +",
+          "| | | | | | | | |   |",
+          "+-+d+-+-+-+d+-+-+ + +",
+          "|<           T  d   |",
+          "+-+d+-+-+-+d+-+-+ + +",
+          "| | | | | | | | |   |",
+          "+-+ +-+-+-+ +-+-+-+-+",
+          "|     | |     | | | |",
+          "+ + + +-+ + + +-+-+-+",
+          "|     | |     | | | |",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 0,
+              "y": 4
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 0
+            },
+            "to": {
+              "level": "khans-barge-2",
+              "at": {
+                "x": 8,
+                "y": 7
+              },
+              "facing": "n"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "wastes-3-deep"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 1,
+            "y": 0
+          },
+          {
+            "x": 0,
+            "y": 7
+          },
+          {
+            "x": 1,
+            "y": 7
+          },
+          {
+            "x": 4,
+            "y": 7
+          },
+          {
+            "x": 5,
+            "y": 7
+          }
+        ],
+        "secrets": [],
+        "traps": [
+          {
+            "at": {
+              "x": 6,
+              "y": 4
+            },
+            "name": "sand pit",
+            "notice": 11,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 10
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 3,
+              "y": 4
+            },
+            "text": "The deck of a sand-barge as long as a street, dug out of the dune by a hundred slaves. Its sail-masts still stand, wrapped in rags."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 5,
+              "y": 2
+            },
+            "text": "The purser’s cabin. Salt and water were the barge’s coin; the strongbox is lined with tin to keep the water sweet."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 8,
+              "y": 4
+            },
+            "text": "Drake-musk fills the bow. Claw marks run up the bulkheads where the khan’s mounts sharpen themselves."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 6
+            },
+            "text": "Bales of hide and dried meat, the barge’s trade. A rider has carved his kills into a crossbeam: men, beasts, and one sledge."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 3
+            },
+            "text": "A crew cabin, the hammocks still slung. The hatch drops shut behind you. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 5
+            },
+            "text": "The sail locker, packed with canvas. Sand has drifted over the door and hides it from the deck. The party could camp here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 5,
+              "y": 5
+            },
+            "text": "A dry hold under the deck, empty but for old rope. Nothing has nested here. Safe enough to sleep."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 9,
+              "y": 1
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 8
+              }
+            ],
+            "guards": [
+              ["sand-drake", "sand-drake", "sand-drake"],
+              ["sand-rider", "sand-rider", "sand-rider", "dune-khan"]
+            ],
+            "text": "Drakes heave up out of the sand that fills the bow, their riders swinging into the saddle, and a dune khan levels his pike at the party. “The Khan takes tribute from every ship on the sand,” he says."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 6,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 8
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 8,
+              "y": 2
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 5
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 1
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 1
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 6
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 7
+            },
+            "kind": "bones"
+          }
+        ]
+      },
+      {
+        "id": "khans-barge-2",
+        "name": "The Drake Hold",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|     | |       | | |",
+          "+ + + +-+ +-+-+ +-+-+",
+          "|     | | | | | | | |",
+          "+ + + +-+ +-+-+d+-+ +",
+          "|     | | | |     d |",
+          "+-+d+-+-+ +-+ + + +-+",
+          "| | | | | | |     | |",
+          "+-+ +-+-+ +-+d+-+-+-+",
+          "|   | |    T    | | |",
+          "+ + +-+ +-+-+-+ +-+-+",
+          "|   | | | | | | d   |",
+          "+-+d+-+d+-+-+-+ + + +",
+          "| |  T  | |   d |   |",
+          "+-+ + + +-+ + + + + +",
+          "| |     | |   | |<  |",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 8,
+              "y": 7
+            },
+            "to": {
+              "level": "khans-barge-1",
+              "at": {
+                "x": 9,
+                "y": 0
+              },
+              "facing": "s"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "wastes-3-deep"
+        },
+        "safe": [
+          {
+            "x": 5,
+            "y": 6
+          },
+          {
+            "x": 5,
+            "y": 7
+          },
+          {
+            "x": 9,
+            "y": 1
+          },
+          {
+            "x": 9,
+            "y": 2
+          },
+          {
+            "x": 0,
+            "y": 4
+          },
+          {
+            "x": 0,
+            "y": 5
+          }
+        ],
+        "secrets": [],
+        "traps": [
+          {
+            "at": {
+              "x": 5,
+              "y": 4
+            },
+            "name": "sand pit",
+            "notice": 11,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 10
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 6
+            },
+            "name": "hide-drum tripwire",
+            "notice": 11,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 10
+            },
+            "save": null,
+            "effect": {
+              "kind": "alarm"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 9,
+              "y": 6
+            },
+            "text": "The lower hold. Sand pours in through split planks and is shovelled back out by whoever the khan has chained down here this month."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 5,
+              "y": 0
+            },
+            "text": "Water casks, each branded with the khan’s hand. The empties are kept: a cask is worth as much as the water it held."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 7,
+              "y": 3
+            },
+            "text": "A galley, its oven cold. Bones of every beast the barge has met are boiled for stock and stacked for the knife-makers."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 3,
+              "y": 7
+            },
+            "text": "Drake stalls, the straw soaked dark. A rider’s saddle hangs on a peg, the leather cut from a man."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 6
+            },
+            "text": "A tack room, its door heavy oak from a forest no one living has seen. It locks from inside. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 9,
+              "y": 2
+            },
+            "text": "A lookout’s cubby, high and narrow, with sand packed against the hull outside. The party could camp here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 5
+            },
+            "text": "An old slave pen, the chains rusted through. No one is kept here now. Safe enough to sleep."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 8
+              }
+            ],
+            "component": "beast-hide",
+            "warlord": "khan-oduran",
+            "guards": [
+              ["sand-drake", "sand-drake", "sand-drake", "sand-drake"],
+              ["sand-rider", "sand-rider", "sand-rider", "khan-oduran"]
+            ],
+            "text": "Khan Oduran stands on the barge’s buried prow, his drakes hissing below. “This ship sailed the sand before your grandfathers were born,” he says. “It will sail over your bones.”"
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 1,
+              "y": 1
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 0
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 2
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 2
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 7
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 5
+            },
+            "kind": "bones"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "tallymans-ossuary",
+    "name": "The Tallyman's Ossuary",
+    "region": "wastes-bonefields",
+    "entrance": {
+      "col": 24,
+      "row": 10
+    },
+    "entry": {
+      "level": "tallymans-ossuary-1",
+      "at": {
+        "x": 5,
+        "y": 8
+      },
+      "facing": "n"
+    },
+    "levels": [
+      {
+        "id": "tallymans-ossuary-1",
+        "name": "The Counted Gate",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|>    | | |     | | |",
+          "+-+ + +-+-+ + + +-+-+",
+          "| |   | | |     | | |",
+          "+-+ + +-+-+ + + +-+ +",
+          "| |   d | |     | | |",
+          "+-+-+-+ +-+-+d+-+-+ +",
+          "| | | | | | | | | |T|",
+          "+-+-+-+ +-+-+ +-+-+ +",
+          "|   | |  T  d       |",
+          "+ + +-+-+-+-+-+ +-+ +",
+          "|   | | | | | | | | |",
+          "+-+ +-+-+-+-+-+ +-+ +",
+          "| | | | |     d | | |",
+          "+-+ +-+-+ + + +-+-+d+",
+          "| |     d     | |   |",
+          "+-+-+-+-+ + + +-+ + +",
+          "| | | | |  <  | |   |",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 5,
+              "y": 8
+            },
+            "to": {
+              "surface": true
+            }
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "to": {
+              "level": "tallymans-ossuary-2",
+              "at": {
+                "x": 0,
+                "y": 8
+              },
+              "facing": "e"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "wastes-4-deep"
+        },
+        "safe": [
+          {
+            "x": 0,
+            "y": 4
+          },
+          {
+            "x": 0,
+            "y": 5
+          },
+          {
+            "x": 1,
+            "y": 4
+          },
+          {
+            "x": 8,
+            "y": 7
+          },
+          {
+            "x": 8,
+            "y": 8
+          },
+          {
+            "x": 9,
+            "y": 1
+          },
+          {
+            "x": 9,
+            "y": 2
+          }
+        ],
+        "secrets": [],
+        "traps": [
+          {
+            "at": {
+              "x": 4,
+              "y": 4
+            },
+            "name": "bone spikes",
+            "notice": 12,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 11
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 3
+            },
+            "name": "needle lock",
+            "notice": 12,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 11
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 5,
+              "y": 7
+            },
+            "text": "The fort’s walls are skulls, stacked and mortared with ash. Every skull has a number cut into its brow, and none of the numbers repeat."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 7,
+              "y": 4
+            },
+            "text": "A pile of dead men’s plate, sorted by size. The Tallyman takes nothing from the dead but their count; the rest is left to rust."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 1
+            },
+            "text": "The scriveners’ room: slates by the hundred, every one covered in tally marks. A dry inkwell holds a salt-crust of old blood."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 3,
+              "y": 3
+            },
+            "text": "Bone-runners lean against the wall, sledges built from rib and thigh. They drag the newly dead in from the fields."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 3,
+              "y": 7
+            },
+            "text": "A bone-cutter’s workroom, shuttered. The dead walk past it without stopping. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 9,
+              "y": 7
+            },
+            "text": "A cistern-room, its water long sold, the walls sweating a little in the night. The party could camp here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 9,
+              "y": 2
+            },
+            "text": "A sentry passage that leads nowhere, walled up at the end. Nothing comes this way. Safe enough to sleep."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 1,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 10
+              }
+            ],
+            "guards": [
+              [
+                "tallied-dead",
+                "tallied-dead",
+                "tallied-dead",
+                "tallied-dead",
+                "tallied-dead",
+                "tallied-dead"
+              ],
+              ["throne-champion"]
+            ],
+            "text": "Six dead men rise in a row, each with a number cut into his brow, and a champion of the old throne steps out before them. “You have not been counted,” it says."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 5,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 10
+              }
+            ]
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 2,
+              "y": 0
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 2
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 4,
+              "y": 8
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 8
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 2
+            },
+            "kind": "altar"
+          },
+          {
+            "at": {
+              "x": 1,
+              "y": 7
+            },
+            "kind": "rubble"
+          }
+        ]
+      },
+      {
+        "id": "tallymans-ossuary-2",
+        "name": "The Ledger Hall",
+        "map": [
+          "+-+-+-+-+-+-+-+-+-+-+",
+          "|       | |         |",
+          "+ +-+-+ +-+ + + + + +",
+          "| | | | | |         |",
+          "+ +-+-+d+-+ + + + + +",
+          "| | |   | |         |",
+          "+ +-+ + +-+-+-+-+d+-+",
+          "| | |   | | | | | | |",
+          "+ +-+-+-+-+-+-+-+ +-+",
+          "| d      T    | |   |",
+          "+-+ +-+d+-+-+ +-+ + +",
+          "| | | | | | | | |T  |",
+          "+-+ +-+ +-+-+ +-+ + +",
+          "| | | |   | |   d   |",
+          "+-+ +-+ + +-+d+-+ + +",
+          "| | | |   | | | |   |",
+          "+-+ +-+-+-+-+ +-+-+-+",
+          "|<  | | | | |       |",
+          "+-+-+-+-+-+-+-+-+-+-+"
+        ],
+        "links": [
+          {
+            "at": {
+              "x": 0,
+              "y": 8
+            },
+            "to": {
+              "level": "tallymans-ossuary-1",
+              "at": {
+                "x": 0,
+                "y": 0
+              },
+              "facing": "e"
+            }
+          }
+        ],
+        "wander": {
+          "every": 3,
+          "table": "wastes-4-deep"
+        },
+        "safe": [
+          {
+            "x": 3,
+            "y": 5
+          },
+          {
+            "x": 3,
+            "y": 7
+          },
+          {
+            "x": 4,
+            "y": 7
+          },
+          {
+            "x": 3,
+            "y": 2
+          },
+          {
+            "x": 2,
+            "y": 2
+          },
+          {
+            "x": 2,
+            "y": 3
+          },
+          {
+            "x": 6,
+            "y": 7
+          },
+          {
+            "x": 8,
+            "y": 8
+          },
+          {
+            "x": 9,
+            "y": 8
+          }
+        ],
+        "secrets": [],
+        "traps": [
+          {
+            "at": {
+              "x": 4,
+              "y": 4
+            },
+            "name": "bone spikes",
+            "notice": 12,
+            "disarm": {
+              "skill": "exert",
+              "attributes": ["str", "dex"],
+              "difficulty": 11
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 5
+            },
+            "name": "needle lock",
+            "notice": 12,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 11
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
+            }
+          }
+        ],
+        "specials": [
+          {
+            "kind": "message",
+            "at": {
+              "x": 1,
+              "y": 6
+            },
+            "text": "The ossuary’s lower floor. Bones line the walls from floor to vault, each one marked: a name, a number, a debt paid."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 2,
+              "y": 4
+            },
+            "text": "A salt-trader’s scales, the pans heaped with finger bones. The Tallyman weighs the dead as other men weigh water."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 0,
+              "y": 1
+            },
+            "text": "Stacked water-skins, every one dry and cracked. Someone died of thirst sitting on a fortune, and was counted for it."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 9,
+              "y": 7
+            },
+            "text": "A rack of bone pikes and hide shields. Beside it a slate lists the living warriors of the Bonefields, half of them crossed out."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 3,
+              "y": 5
+            },
+            "text": "A charnel-niche, emptied and swept clean. Even the dead seem to avoid it. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 3,
+              "y": 2
+            },
+            "text": "A small vault with a stone door, cool and sealed. The party could camp here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 7
+            },
+            "text": "A dead-end passage behind the ledger shelves, quiet as a tomb should be. Safe enough to sleep."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 5,
+              "y": 0
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 10
+              }
+            ],
+            "component": "cold-iron",
+            "warlord": "the-tallyman",
+            "guards": [
+              [
+                "tallied-dead",
+                "tallied-dead",
+                "tallied-dead",
+                "tallied-dead",
+                "tallied-dead",
+                "tallied-dead",
+                "bone-reaver",
+                "bone-reaver"
+              ],
+              ["the-tallyman"]
+            ],
+            "text": "The Tallyman looks up from a ledger of flayed skin, his quill a sharpened finger bone. “Every soul in the Bonefields is written here,” he says. “I have saved a line for each of you.”"
+          }
+        ],
+        "captives": [],
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 7,
+              "y": 0
+            },
+            "kind": "altar"
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 1
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 2
+            },
+            "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 1,
+              "y": 2
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 6,
+              "y": 4
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 7
             },
             "kind": "bones"
           }

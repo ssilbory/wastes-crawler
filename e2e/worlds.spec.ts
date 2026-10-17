@@ -69,6 +69,9 @@ test('plays the Wastes, a shipped realm of five maps', async ({ page }) => {
   await page.getByRole('button', { name: /Start a new world/ }).click();
   await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Begin the journey' })).toHaveCount(0);
+  await expect(page.getByRole('region', { name: 'Warlords' })).toContainText(
+    "The Scrap King, The Dust Fringe: holds The Scrap King's Pumpworks",
+  );
   await page.reload();
   await expect(page.getByText(/Slot 1: .* · The Wastes · Dustwell · /)).toBeVisible();
 });
