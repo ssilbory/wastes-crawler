@@ -601,8 +601,87 @@
   },
   {
     "id": "sun-king",
-    "name": "The Sun King",
+    "name": "The Sun King's Shade",
     "base": "lich",
-    "description": "The last lord of the burned empire, who called down the fire that made the Wastes and lived through it as something else."
+    "description": "What the Sun King's fire left beneath his throne city: the last lord of the burned empire, unmade and kept, still waiting in his tomb."
+  },
+  {
+    "id": "scrap-prince",
+    "name": "Scrap Prince",
+    "base": "skilled-veteran",
+    "description": "The Scrap King's eldest, in a crown of beaten tin, who rides the Fringe taking tithes in water and blood."
+  },
+  {
+    "id": "scrap-king",
+    "name": "The Scrap King",
+    "base": "knight-or-minor-hero",
+    "description": "The lord of the Fringe's pumps, plated in road signs and old boiler iron, who sells water to the villages he has dried out."
+  },
+  {
+    "id": "gnoll-packlord",
+    "name": "Gnoll Packlord",
+    "base": "knight-or-minor-hero",
+    "description": "A grizzled hyena-headed chief who leads the Salt Baron's gnolls and is paid in the salt of the dead."
+  },
+  {
+    "id": "baron-vesk",
+    "name": "Vesk, the Salt Baron",
+    "base": "warrior-baron",
+    "description": "The Glassed Flats' warlord in salt-crusted plate, who keeps the gnolls fed and the wells taxed from his keep on the pans."
+  },
+  {
+    "id": "sand-drake",
+    "name": "Sand Drake",
+    "base": "vicious-large-herbivore",
+    "description": "A long, low lizard the size of an ox, saddled and goaded on by the rider behind it."
+  },
+  {
+    "id": "sand-rider",
+    "name": "Sand-Rider",
+    "base": "veteran-soldier",
+    "description": "A lizardfolk lancer of the Dune Khan's host, reaching over its drake's head with a long pike.",
+    "weapon": "pike"
+  },
+  {
+    "id": "khan-heir",
+    "name": "The Khan's Heir",
+    "base": "knight-or-minor-hero",
+    "description": "The Dune Khan's son, scaled and painted, who leads the sand-riders as if the dunes were already his."
+  },
+  {
+    "id": "khan-oduran",
+    "name": "Oduran, the Dune Khan",
+    "base": "barbarian-warlord",
+    "description": "The lizardfolk warlord of the Red Dune Sea, who rules from a caravan barge he dug out of the sand."
+  },
+  {
+    "id": "tallied-dead",
+    "name": "Tallied Dead",
+    "base": "gnawing-dead",
+    "description": "A corpse with its number cut into its brow, raised by the Tallyman to walk his count across the bonefields."
+  },
+  {
+    "id": "the-tallyman",
+    "name": "The Tallyman",
+    "base": "master-wizard",
+    "description": "The Bonefields' warlord, a necromancer who counts every corpse in the Wastes as his and raises the ones he needs.",
+    "caster": {
+      "tradition": "necromancer",
+      "slots": "full-necromancer-arts-and-spells",
+      "spells": ["final-death", "enfeebling-wave", "compel-flesh"],
+      "arts": ["gravesight"]
+    }
+  },
+  {
+    "id": "sunlord-herald",
+    "name": "The Sunlord's Herald",
+    "base": "major-hero",
+    "description": "A champion in gilded mail who rides before the giants and cries the Sunlord's name to every village he burns."
+  },
+  {
+    "id": "the-sunlord",
+    "name": "The Sunlord",
+    "base": "great-warrior-king",
+    "description": "The Sun King risen in his throne city, crowned in fire, whom every warlord in the Wastes answers to."
   }
 ]

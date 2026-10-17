@@ -13,6 +13,7 @@ import { dayTint } from '../../render/hex-art.ts';
 import { PartyPanel } from './PartyPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
 import { FactionsPanel } from './FactionsPanel.tsx';
+import { WarlordsPanel } from './WarlordsPanel.tsx';
 import { SettingPanel } from './SettingPanel.tsx';
 import { HealerPanel } from './HealerPanel.tsx';
 import { PurgePanel } from './PurgePanel.tsx';
@@ -180,6 +181,7 @@ export function MapScreen(props: {
           <PurgePanel world={w} onChange={props.onChange} />
           <AntidotePanel world={w} onChange={props.onChange} />
           <FactionsPanel world={w} />
+          <WarlordsPanel world={w} />
         </SideDock>
       </div>
     </div>

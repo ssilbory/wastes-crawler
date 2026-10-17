@@ -18,6 +18,7 @@ import { captiveOf, firstGuide, npcMonster } from './npcs.ts';
 import { sharedEyes } from './companion-sync.ts';
 import { isCampaign, regionMap } from './region.ts';
 import type { Member, World } from './types.ts';
+import { warbandWeights } from './warlords.ts';
 import { identify } from './bestiary.ts';
 
 const MAX_PER_ROW = 8;
@@ -50,9 +51,11 @@ export function rollEnemies(w: World, data: GameData, tableId: string): Rolled {
   if (!table) throw new Error(`unknown encounter table ${tableId}`);
   // Warlord patrols join the tables as the clock fills (Phase 12d).
   const entries = table.entries.filter((e) => (e.minClock ?? 0) <= w.clock);
-  const total = entries.reduce((sum, e) => sum + e.weight, 0);
+  // The Wastes' warlords: a fallen one's warband is gone, and their map grows quieter.
+  const weights = warbandWeights(w, data, tableId, entries);
+  const total = weights.reduce((sum, n) => sum + n, 0);
   let pick = w.rng.int(1, total);
-  const entry = entries.find((e) => (pick -= e.weight) <= 0) as (typeof entries)[0];
+  const entry = entries[weights.findIndex((n) => (pick -= n) <= 0)] as (typeof entries)[0];
   const rows: string[][] = [[], [], []];
   for (const g of entry.groups) {
     const n = typeof g.count === 'number' ? g.count : Math.max(1, roll(w.rng, g.count).total);

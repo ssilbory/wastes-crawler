@@ -19,6 +19,7 @@ import { addNpc, freshName, monsterOf, npcRoom, removeNpc } from './npcs.ts';
 import type { TownResult } from './services.ts';
 import { priceHere, spend, townHere } from './town.ts';
 import { tradePercent } from './trade.ts';
+import { spoils } from './warlords.ts';
 import type { Member, Mount, Npc, World } from './types.ts';
 
 const OK: TownResult = { ok: true };
@@ -135,7 +136,7 @@ export const mountPrice = (w: World, data: GameData, typeId: string) =>
 export function mountSellPrice(w: World, data: GameData, typeId: string): number {
   const price = mountType(data, typeId).price;
   const fraction = data.content.townRules.sellFraction;
-  return toTenths((price * fraction * (100 + tradePercent(w, data))) / 100);
+  return toTenths((price * fraction * (100 + tradePercent(w, data) + spoils(w, data))) / 100);
 }
 
 export function buyMount(w: World, data: GameData, typeId: string): TownResult {

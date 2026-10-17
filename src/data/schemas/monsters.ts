@@ -63,5 +63,7 @@ export const SettingMonsterSchema = z.strictObject({
   description: z.string().min(1),
   /** Magic of its own, in place of its base's (Sam's call: the elven patriarch). */
   caster: MonsterCasterSchema.optional(),
+  /** A weapon of its own, in place of its base's (Sam's call: the sand-riders' pikes). */
+  weapon: IdSchema.optional(),
 });
 export type SettingMonster = z.infer<typeof SettingMonsterSchema>;

@@ -3392,6 +3392,27 @@
             "row": 0
           }
         ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "dust-raider",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 2
+            },
+            "row": 0
+          },
+          {
+            "monster": "scrap-prince",
+            "count": 1,
+            "row": 1
+          }
+        ],
+        "warband": "scrap-king"
       }
     ]
   },
@@ -3462,6 +3483,27 @@
             "row": 0
           }
         ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "dust-raider",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 2
+            },
+            "row": 0
+          },
+          {
+            "monster": "scrap-prince",
+            "count": 1,
+            "row": 1
+          }
+        ],
+        "warband": "scrap-king"
       }
     ]
   },
@@ -3723,6 +3765,27 @@
             "row": 0
           }
         ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "gnoll",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 2
+            },
+            "row": 0
+          },
+          {
+            "monster": "gnoll-packlord",
+            "count": 1,
+            "row": 1
+          }
+        ],
+        "warband": "baron-vesk"
       }
     ]
   },
@@ -3793,6 +3856,27 @@
             "row": 0
           }
         ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "gnoll",
+            "count": {
+              "count": 1,
+              "sides": 4,
+              "modifier": 2
+            },
+            "row": 0
+          },
+          {
+            "monster": "gnoll-packlord",
+            "count": 1,
+            "row": 1
+          }
+        ],
+        "warband": "baron-vesk"
       }
     ]
   },
@@ -4051,6 +4135,36 @@
             "row": 0
           }
         ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "sand-drake",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 1
+            },
+            "row": 0
+          },
+          {
+            "monster": "sand-rider",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 1
+            },
+            "row": 1
+          },
+          {
+            "monster": "khan-heir",
+            "count": 1,
+            "row": 1
+          }
+        ],
+        "warband": "khan-oduran"
       }
     ]
   },
@@ -4106,6 +4220,36 @@
             "row": 0
           }
         ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "sand-drake",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 1
+            },
+            "row": 0
+          },
+          {
+            "monster": "sand-rider",
+            "count": {
+              "count": 1,
+              "sides": 3,
+              "modifier": 1
+            },
+            "row": 1
+          },
+          {
+            "monster": "khan-heir",
+            "count": 1,
+            "row": 1
+          }
+        ],
+        "warband": "khan-oduran"
       }
     ]
   },
@@ -4361,6 +4505,36 @@
             "row": 1
           }
         ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "tallied-dead",
+            "count": {
+              "count": 1,
+              "sides": 6,
+              "modifier": 2
+            },
+            "row": 0
+          },
+          {
+            "monster": "bone-reaver",
+            "count": {
+              "count": 1,
+              "sides": 2,
+              "modifier": 0
+            },
+            "row": 0
+          },
+          {
+            "monster": "throne-champion",
+            "count": 1,
+            "row": 1
+          }
+        ],
+        "warband": "the-tallyman"
       }
     ]
   },
@@ -4418,6 +4592,36 @@
             "row": 0
           }
         ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "tallied-dead",
+            "count": {
+              "count": 1,
+              "sides": 6,
+              "modifier": 2
+            },
+            "row": 0
+          },
+          {
+            "monster": "bone-reaver",
+            "count": {
+              "count": 1,
+              "sides": 2,
+              "modifier": 0
+            },
+            "row": 0
+          },
+          {
+            "monster": "throne-champion",
+            "count": 1,
+            "row": 1
+          }
+        ],
+        "warband": "the-tallyman"
       }
     ]
   },
@@ -4664,6 +4868,32 @@
             "row": 0
           }
         ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "desert-giant",
+            "count": {
+              "count": 1,
+              "sides": 2,
+              "modifier": 1
+            },
+            "row": 0
+          },
+          {
+            "monster": "ettin",
+            "count": 1,
+            "row": 0
+          },
+          {
+            "monster": "sunlord-herald",
+            "count": 1,
+            "row": 1
+          }
+        ],
+        "warband": "the-sunlord"
       }
     ]
   },
@@ -4721,6 +4951,32 @@
             "row": 0
           }
         ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "desert-giant",
+            "count": {
+              "count": 1,
+              "sides": 2,
+              "modifier": 1
+            },
+            "row": 0
+          },
+          {
+            "monster": "ettin",
+            "count": 1,
+            "row": 0
+          },
+          {
+            "monster": "sunlord-herald",
+            "count": 1,
+            "row": 1
+          }
+        ],
+        "warband": "the-sunlord"
       }
     ]
   },

@@ -15,6 +15,7 @@ import { raisingListener } from './raising.ts';
 import { isCampaign } from './region.ts';
 import { rescueListener } from '../dungeon/rescues.ts';
 import { ruinsListener } from '../dungeon/ruins.ts';
+import { warlordsListener } from './warlords.ts';
 import type { Npc, World } from './types.ts';
 
 export type WorldEvent =
@@ -51,6 +52,7 @@ const LISTENERS: readonly Listener[] = [
   notesListener,
   sharesListener,
   ruinsListener,
+  warlordsListener,
 ];
 
 /**

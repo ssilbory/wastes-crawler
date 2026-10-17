@@ -219,4 +219,6 @@ export const WORLD_MIGRATIONS: Migrations = {
       : { ...raw, schemaVersion: 37 },
   // Version 38 adds trade-route maps: none bought yet.
   37: (raw) => ({ ...raw, schemaVersion: 38, routes: {} }),
+  // Version 39 adds the Wastes' warlords: none fallen yet.
+  38: (raw) => ({ ...raw, schemaVersion: 39, warlords: [] }),
 };
