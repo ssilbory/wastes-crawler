@@ -10,7 +10,10 @@ import {
   hirelingType,
   moraleAfterFight,
   monsterOf,
+  npcMonster,
   npcRoom,
+  placeNpc,
+  removeNpc,
 } from '../../../src/game/world/npcs.ts';
 import { suggestPlan } from '../../../src/game/world/plans.ts';
 import type { Npc, World } from '../../../src/game/world/types.ts';
@@ -64,6 +67,8 @@ describe('hiring (SRD 3.3.0)', () => {
     expect(() => hirelingType(data, 'butler')).toThrow('unknown hireling butler');
     expect(() => monsterOf(data, 'dragon')).toThrow('unknown monster dragon');
     expect(() => captiveOf(data, 'prince')).toThrow('unknown captive prince');
+    const mule = { kind: 'pack', type: 'mule' } as Npc;
+    expect(() => npcMonster(data, mule)).toThrow('unknown mount mule');
   });
 
   it('places NPCs in free formation slots, falling back to the other row', () => {
@@ -84,6 +89,14 @@ describe('hiring (SRD 3.3.0)', () => {
     expect(addNpc(two, data, 'hireling', 'guard', 'thug-or-militia', 'C', true)).toBeNull();
   });
 
+  it('puts a hireling who left back in a free slot by the same rule', () => {
+    const w = town([5]);
+    hire(w, data, 'guard');
+    const aldo = removeNpc(w, 'npc-0');
+    expect(placeNpc(w, aldo, false)).toBe(true);
+    expect(w.npcs).toMatchObject([{ id: 'npc-0', name: 'Aldo', row: 1, column: 2 }]);
+  });
+
   it('dismisses anyone, but not a porter still carrying a load', () => {
     const w = town([4, 4, 2]);
     hire(w, data, 'guard');
@@ -98,6 +111,10 @@ describe('hiring (SRD 3.3.0)', () => {
     addNpc(w, data, 'captive', 'merchant', 'peaceful-human', 'Merrit', false);
     dismiss(w, data, 'npc-0');
     expect(w.log.at(-1)).toContain('The party leaves Merrit behind.');
+    w.rng = createRng('bess');
+    addNpc(w, data, 'pack', 'pack-bison', 'pack-bison', 'Bess', false);
+    dismiss(w, data, 'npc-0');
+    expect(w.log.at(-1)).toContain('Bess is set loose and wanders off into the wastes.');
     expect(() => dismiss(w, data, 'npc-9')).toThrow('no NPC npc-9');
   });
 

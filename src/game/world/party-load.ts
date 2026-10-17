@@ -93,7 +93,7 @@ function dropDie(w: World, sides: number): void {
 }
 
 function dropComponent(w: World, id: string): void {
-  const n = (w.components[id] ?? 0) - 1;
+  const n = (w.components[id] as number) - 1;
   w.components = Object.fromEntries(
     Object.entries({ ...w.components, [id]: n }).filter(([, v]) => v > 0),
   );

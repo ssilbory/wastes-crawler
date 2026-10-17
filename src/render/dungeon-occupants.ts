@@ -8,7 +8,7 @@ import type { GameData } from '../game/character/context.ts';
 import { levelOf } from '../game/dungeon/explore.ts';
 import { captiveOf } from '../game/world/npcs.ts';
 import { orderEnded } from '../game/world/orders.ts';
-import { currentStep } from '../game/world/quests.ts';
+import { currentStep, questOf } from '../game/world/quests.ts';
 import type { World } from '../game/world/types.ts';
 import { ring, type Part } from './figure-art.ts';
 import { monsterFigureOf, type FigureView } from './figure-view.ts';
@@ -26,8 +26,9 @@ export interface Occupant {
 /** The most figures one cell shows; the rest of a group stands behind them. */
 export const CELL_SHOWN = 3;
 
+// Schemas give every guard and enemy group at least one row.
 const foes = (rows: readonly string[][], data: GameData) =>
-  (rows[0] ?? [])
+  (rows[0] as string[])
     .slice(0, CELL_SHOWN)
     .map((id) => ({ figure: monsterFigureOf(data, id), foe: true }));
 
@@ -61,11 +62,10 @@ export function occupantsOf(w: World, data: GameData): Map<string, Occupant> {
   for (const [id, st] of Object.entries(w.quests)) {
     const o = st.status === 'active' ? currentStep(w, data, id) : undefined;
     if (!o || !('at' in o) || !('dungeon' in o) || `${o.dungeon}/${o.level}` !== place) continue;
-    const name = data.content.quests.find((q) => q.id === id)?.name ?? id;
+    const name = questOf(data, id).name;
     if (o.kind === 'guardian')
       out.set(cellKey(o.at), { kind: 'guardian', title: name, figures: foes(o.enemies, data) });
-    else if (o.kind === 'retrieve')
-      out.set(cellKey(o.at), { kind: 'item', title: `${o.item} (${name})`, figures: [] });
+    else out.set(cellKey(o.at), { kind: 'item', title: `${o.item} (${name})`, figures: [] });
   }
   return out;
 }

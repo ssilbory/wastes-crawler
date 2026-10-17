@@ -198,8 +198,12 @@ describe('traps (docs/rules-adaptation.md, Dungeon exploration)', () => {
     only(w, 'Grukk');
     setHp(member(w, 'Grukk'), 1);
     w.rng = scriptedThen([1, 1, 1, 6], createRng('after'));
+    const steps = state(w).steps;
     expect(step(w, data, 'forward')).toEqual({ ok: true });
     expect(trapFallen(w)).toHaveLength(1);
+    // With everyone down, the party is still underground and the step still counts.
+    expect(state(w).at).toEqual({ x: 4, y: 6 });
+    expect(state(w).steps).toBe(steps + 1);
     const d = facing();
     only(d, 'Grukk');
     d.rng = scriptedRng([6, 6]);

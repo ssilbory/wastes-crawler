@@ -40,6 +40,9 @@ describe('destinations', () => {
     Object.assign(w, { position: { col: 6, row: 7 }, visited: new Set(['6,7']) });
     expect(setDestination(w, data, { col: 6, row: 3 })).toBe(false);
     expect(w.destination).toEqual({ col: 20, row: 8 });
+    // A destination set before the party came here, hemmed in by water, has no route to draw.
+    w.destination = { col: 6, row: 3 };
+    expect(route(w, data)).toEqual([]);
   });
 });
 
@@ -125,6 +128,18 @@ describe('suggested plans', () => {
     w.quarter = 2;
     const evening = suggestPlan(w, data);
     expect(evening.kind === 'camp' && Object.values(evening.activities)).not.toContain('forage');
+  });
+
+  it('gives the night watch to a rested survivor when everyone rested has Survival', () => {
+    const w = world();
+    w.position = { col: 5, row: 9 };
+    w.camp = 'made';
+    w.quarter = 3;
+    member(w, 'Snag').slept = true;
+    expect(suggestPlan(w, data)).toEqual({
+      kind: 'camp',
+      activities: { 'm-0': 'watch', 'm-1': 'sleep', 'm-2': 'sleep', 'm-3': 'sleep' },
+    });
   });
 
   it('has a crafter with tools craft the day’s camp shifts instead of foraging or hunting', () => {

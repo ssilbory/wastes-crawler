@@ -19,33 +19,10 @@ import { addNpc, MAX_NPCS } from '../../../src/game/world/npcs.ts';
 import { regionMap } from '../../../src/game/world/region.ts';
 import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
 import { bench } from '../../../src/game/world/tavern.ts';
-import type { Member, World } from '../../../src/game/world/types.ts';
-import type { Hex } from '../../../src/rules/hex.ts';
-import { beastmaster } from '../beastmaster.ts';
 import { data, member, world } from './helpers.ts';
+import { ranger } from './helpers-ranger.ts';
 
 const fail = (reason: string) => ({ ok: false, reason });
-
-/** A wild hex of the start region whose table holds a wild aurochs (a 2 HD herd beast). */
-function herdHex(w: World): Hex {
-  const map = regionMap(data, w.region);
-  for (let row = 0; row < map.height; row++)
-    for (let col = 0; col < map.width; col++) {
-      const h = { col, row };
-      const table = data.content.encounterTables.find((t) => t.id === map.tableAt(h));
-      const herd = table?.entries.some((e) => e.groups.some((g) => g.monster === 'wild-aurochs'));
-      if (herd && !map.siteAt(h)) return h;
-    }
-  throw new Error('no hex with herd beasts');
-}
-
-/** Snag as a Ranger in the wilds, by a herd of beasts. */
-function ranger(w: World, arts: string[] = [], level = 3): Member {
-  const m = member(w, 'Snag');
-  m.character = { ...beastmaster(arts, level), id: m.character.id, hp: { max: 20, current: 20 } };
-  w.position = herdHex(w);
-  return m;
-}
 
 describe('Bind Companion (1.5.4)', () => {
   it('offers the hex’s animals of no more than the level plus one hit dice', () => {

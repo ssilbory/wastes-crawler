@@ -35,7 +35,6 @@ export function questTargets(w: World, data: GameData): Hex[] {
       const town = regionMap(data, w.region).sites.find((s) => s.id === o.to);
       return town ? [{ col: town.col, row: town.row }] : [];
     }
-    if (!('dungeon' in o)) return [];
     // A delve step marks its dungeon's entrance; content checks guarantee the dungeon.
     const d = data.content.dungeons.find((x) => x.id === o.dungeon) as Dungeon;
     return d.region === w.region ? [d.entrance] : [];
