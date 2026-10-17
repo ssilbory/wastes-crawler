@@ -80,6 +80,21 @@ describe('realms (Sam’s call)', () => {
     expect(migrated.ok && migrated.world.realm).toBeNull();
   });
 
+  it('hold the Sealed Vale’s pass with bound posts that spring, and stay down once beaten', () => {
+    const w = newWorld(data, createRng('vale'), party, undefined, null, 'sealed-vale');
+    const post = data.content.regions.find((r) => r.id === w.region)?.garrisons[0];
+    if (!post) throw new Error('no post');
+    w.position = { col: post.col, row: post.row };
+    emit(w, data, { kind: 'hex-entered' });
+    expect(w.encounter?.order).toBe(post.order);
+    const key = w.encounter?.garrison as string;
+    w.encounter = null;
+    emit(w, data, { kind: 'fight-won', quest: null, garrison: key });
+    expect(w.beaten).toContain(key);
+    emit(w, data, { kind: 'hex-entered' });
+    expect(w.encounter).toBeNull();
+  });
+
   it('load a world begun on the Sealed Vale’s map as its realm', () => {
     const vale = data.content.regions.find((r) => r.id === 'sealed-vale');
     const save = JSON.parse(serializeWorld(newWorld(data, createRng('v'), party, undefined, vale)));
@@ -107,9 +122,10 @@ describe('realms (Sam’s call)', () => {
     expect(w.encounter?.text).toContain(hoard.text);
     const key = w.encounter?.garrison as string;
     w.encounter = null;
-    w.beaten.push(key);
-    expect(atGuardedHoard(w, data)).toBe(false);
+    // The won fight itself records the hoard's guards as beaten.
     emit(w, data, { kind: 'fight-won', quest: null, garrison: key });
+    expect(w.beaten).toContain(key);
+    expect(atGuardedHoard(w, data)).toBe(false);
     expect(w.loot).toEqual(hoard.loot);
     expect(w.log.join('\n')).toContain('A cache holds');
   });

@@ -54,12 +54,12 @@ const LISTENERS: readonly Listener[] = [
 ];
 
 /**
- * The campaign's own story: its standing orders, raids, factions, warlord's clock, and crafter's
- * notes, all tied to the campaign's towns. A world on a custom map or a realm has none of it
- * (Sam's call).
+ * The campaign's own story: its raids, factions, warlord's clock, and crafter's notes, all tied to
+ * the campaign's towns. A world on a custom map or a realm has none of it (Sam's call). Standing
+ * orders run everywhere: the Sealed Vale's posts hold its pass and tower, and the same listener
+ * records every won post and hoard fight (docs/rules-adaptation.md, Shipped worlds).
  */
 const CAMPAIGN: ReadonlySet<Listener> = new Set([
-  ordersListener,
   raidsListener,
   factionsListener,
   clockListener,
