@@ -44,6 +44,7 @@ import raidRules from '../../data/content/raid-rules.json';
 import campaign from '../../data/content/campaign.json';
 import ruins from '../../data/content/ruins.json';
 import groves from '../../data/content/groves.json';
+import warlords from '../../data/content/warlords.json';
 import factions from '../../data/content/factions.json';
 import ailments from '../../data/content/ailments.json';
 import { withSettingMonsters } from './monsters.ts';
@@ -67,6 +68,7 @@ import { gameSkills, skillRuleErrors } from './skills.ts';
 import { spellRuleErrors } from './spells.ts';
 import { groveReferenceErrors } from './grove-check.ts';
 import { ailmentReferenceErrors } from './ailment-check.ts';
+import { warlordReferenceErrors } from './warlord-check.ts';
 
 export function loadContent(): ContentData {
   return withSettingMonsters({
@@ -116,6 +118,7 @@ export function loadContent(): ContentData {
     campaign: ContentSchemas.campaign.parse(campaign),
     ruins: ContentSchemas.ruins.parse(ruins),
     groves: ContentSchemas.groves.parse(groves),
+    warlords: ContentSchemas.warlords.parse(warlords),
     factions: ContentSchemas.factions.parse(factions),
     ailments: ContentSchemas.ailments.parse(ailments),
   });
@@ -215,5 +218,6 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...settingReferenceErrors(srd, content),
     ...groveReferenceErrors(srd, content),
     ...ailmentReferenceErrors(srd, content),
+    ...warlordReferenceErrors(content),
   ];
 }

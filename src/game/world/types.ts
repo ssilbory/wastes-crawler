@@ -100,6 +100,8 @@ export interface World {
   countersigns: string[];
   /** Garrison posts beaten in a fight, by key (orders.ts). */
   beaten: string[];
+  /** The Wastes warlords fallen, by id (warlords.ts). */
+  warlords: string[];
   /** The warlord's clock, crafter's notes, and the seal's fate (Phase 12d). */
   clock: number;
   notes: Record<string, 'found' | 'burned' | 'sold' | 'kept' | 'paid'>;

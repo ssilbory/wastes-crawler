@@ -122,6 +122,8 @@ export const EncounterTableSchema = z.strictObject({
         rescuers: z.literal(true).optional(),
         /** Rolled only once the warlord's clock has reached this many segments (Phase 12d). */
         minClock: z.int().min(1).optional(),
+        /** The Wastes warlord whose warband this is: struck from the table once they fall. */
+        warband: IdSchema.optional(),
       }),
     )
     .min(1),

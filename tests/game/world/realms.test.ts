@@ -55,14 +55,22 @@ describe('realms (Sam’s call)', () => {
     expect(w.region).toBe(realm.regions[1]);
   });
 
-  it('keep one dungeon a map, five or six levels deep', () => {
+  it('keep a deep dungeon and a warlord’s stronghold on each map, a hoard on every level', () => {
+    const holds = (d: (typeof data.content.dungeons)[0]) =>
+      d.levels.some((l) => l.specials.some((s) => s.kind === 'cache' && s.warlord));
     for (const id of realm.regions) {
       const here = data.content.dungeons.filter((d) => d.region === id);
-      expect(here).toHaveLength(1);
-      expect(here[0]?.levels.length).toBeGreaterThanOrEqual(5);
-      expect(here[0]?.levels.length).toBeLessThanOrEqual(6);
-      for (const l of here[0]?.levels ?? [])
-        expect(l.specials.filter((s) => s.kind === 'cache' && s.guards)).toHaveLength(1);
+      const deep = here.filter((d) => d.levels.length >= 5);
+      expect(deep).toHaveLength(1);
+      expect(here.filter(holds)).toHaveLength(1);
+      // The Sunlord's throne city is laid over the Sun King's Tomb: two levels above its six.
+      const levels = id === 'wastes-sunscar' ? [8] : [5, 6];
+      expect(levels).toContain(deep[0]?.levels.length);
+      for (const d of here) {
+        if (!deep.includes(d)) expect(d.levels).toHaveLength(2);
+        for (const l of d.levels)
+          expect(l.specials.filter((s) => s.kind === 'cache' && s.guards)).toHaveLength(1);
+      }
     }
   });
 

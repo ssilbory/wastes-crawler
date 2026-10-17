@@ -19,6 +19,7 @@ import {
   TerrainSchema,
 } from './overland-content.ts';
 import { GroveSchema } from './grove-content.ts';
+import { WarlordContentSchema } from './warlord-content.ts';
 import { AilmentContentSchema } from './ailment-content.ts';
 import { SkillRulesSchema, SpellRulesSchema } from './skill-content.ts';
 import { TownRulesSchema } from './town-content.ts';
@@ -206,6 +207,7 @@ export const ContentSchemas = {
   campaign: CampaignSchema,
   ruins: z.array(RuinSchema),
   groves: z.array(GroveSchema),
+  warlords: WarlordContentSchema,
   factions: FactionContentSchema,
   ailments: AilmentContentSchema,
   craftingRules: CraftingRulesSchema,

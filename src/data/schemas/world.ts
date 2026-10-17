@@ -7,7 +7,7 @@ import { FactionStateSchema } from './faction-content.ts';
 import { RegionSchema } from './overland-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 38;
+export const WORLD_SCHEMA_VERSION = 39;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -359,6 +359,8 @@ export const WorldSaveSchema = z.strictObject({
   ordersEnded: z.array(IdSchema),
   /** Garrison posts the party has beaten, by key (Phase 12c). */
   beaten: z.array(z.string()),
+  /** The Wastes warlords fallen (docs/rules-adaptation.md, The Wastes: A warlord falls). */
+  warlords: z.array(IdSchema),
   /** The warlord's clock, in segments (Phase 12d). */
   clock: z.int().min(0),
   /** Crafter's notes found, by set, and what became of them. */

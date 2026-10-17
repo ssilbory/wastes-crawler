@@ -15,6 +15,7 @@ import { note } from './members.ts';
 import { currentLedger, ledger, priceHere, spend, spendingThreshold, townHere } from './town.ts';
 import type { TownResult } from './services.ts';
 import { tradePercent } from './trade.ts';
+import { spoils } from './warlords.ts';
 import type { Member, World } from './types.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
@@ -94,7 +95,8 @@ export function sellPrice(w: World, data: GameData, entry: InventoryEntry): numb
   if (!item?.cost) return 0;
   const one = entryPrice(data, item, { ...entry, quantity: 1 }) / 10;
   return toTenths(
-    (one * data.content.townRules.sellFraction * (100 + tradePercent(w, data))) / 100,
+    (one * data.content.townRules.sellFraction * (100 + tradePercent(w, data) + spoils(w, data))) /
+      100,
   );
 }
 
@@ -190,13 +192,15 @@ export function exchangeLoot(
     0,
   );
   const threshold = spendingThreshold(data, town) * rules.lootThresholdFraction;
-  const paid = lootPayout(
+  const owed = lootPayout(
     currentLedger(w, data, town).looted,
     rolled,
     threshold,
     rules.lootDropRate,
   );
   ledger(w, data, town).looted += rolled;
+  // A fallen Wastes warlord's villages pay more for it (warlords.ts).
+  const paid = toTenths((owed * (100 + spoils(w, data))) / 100);
   w.purse = toTenths(w.purse + paid);
   const left = (d: LootDice) => d.count - (sold.find((s) => s.sides === d.sides)?.count ?? 0);
   w.loot = w.loot.map((d) => ({ ...d, count: left(d) })).filter((d) => d.count > 0);
