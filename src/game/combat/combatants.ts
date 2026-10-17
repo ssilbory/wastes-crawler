@@ -2,6 +2,7 @@
 // combatant starts from. SRD monsters are built in monster-combatant.ts.
 import type { Character } from '../../data/schemas/index.ts';
 import { killingBlowBonus } from '../../rules/combat.ts';
+import { coldFleshAc } from '../../rules/necromancer.ts';
 import { characterLevel } from '../../rules/progression.ts';
 import { classOption } from '../character/class-step.ts';
 import type { GameData } from '../character/context.ts';
@@ -206,7 +207,7 @@ export function pcCombatant(
     character: c,
     form,
     // Cold Flesh: Shock of 2 at most, and a natural AC of 12 plus half the level (1.5.14).
-    ...(c.arts.includes('cold-flesh') ? { shockCap: 2, acFloor: 12 + Math.floor(level / 2) } : {}),
+    ...(c.arts.includes('cold-flesh') ? { shockCap: 2, acFloor: coldFleshAc(level) } : {}),
     // Unaging and the Poisoner at level 2: immune to poisons (1.5.14, 1.6.0).
     poisonImmune:
       c.arts.includes('unaging') || c.foci.some((f) => f.id === 'poisoner' && f.level >= 2),

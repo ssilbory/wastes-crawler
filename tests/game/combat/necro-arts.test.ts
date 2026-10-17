@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Character } from '../../../src/data/schemas/index.ts';
+import { characterSheet } from '../../../src/game/character/derived.ts';
 import { resolveAttack } from '../../../src/game/combat/attack.ts';
 import { turnArts } from '../../../src/game/combat/arts.ts';
 import { createBattle } from '../../../src/game/combat/battle.ts';
@@ -62,6 +63,22 @@ describe('Cold Flesh and Unaging (1.5.14)', () => {
     afterHit(b, who(b, 'foe-0-0').attacks[0] as Attack, f);
     expect(f.hp).toBe(18);
     expect(who(b, 'Snag').shockCap).toBeNull();
+  });
+
+  it('shows Cold Flesh’s natural AC on the sheet, matching the fight', () => {
+    const cold = necro(['cold-flesh'], 4);
+    const equipment = characterSheet(cold, data).equipment;
+    expect(equipment.armorClassInput.innateAc).toBe(14);
+    expect(equipment.armorClass).toBe(effectiveAc(fizz(battle(cold))));
+    expect(characterSheet(necro([], 4), data).equipment.armorClassInput.innateAc).toBeUndefined();
+  });
+
+  it('lets better armor stand over Cold Flesh on the sheet', () => {
+    const grukk = starter('grukk');
+    const cold = { ...grukk, arts: ['cold-flesh'] };
+    expect(characterSheet(cold, data).equipment.armorClass).toBe(
+      characterSheet(grukk, data).equipment.armorClass,
+    );
   });
 });
 
