@@ -18,7 +18,9 @@ async function caster(
 ) {
   const select = (label: string, option: string) =>
     page.getByRole('combobox', { name: label, exact: true }).selectOption({ label: option });
+  // A fresh builder: going to the same hash again would leave the wizard where it was.
   await page.goto('/#/builder');
+  await page.reload();
   await select('People', opts.people);
   const array: [string, string][] = [
     ['Strength', '7'],

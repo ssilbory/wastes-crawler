@@ -217,4 +217,14 @@
   .fight .field-row:not(:has(.slot:not(.empty))) {
     display: none;
   }
+
+  /* Empty places can't be picked, so they give their width to the filled ones. The row's own
+     column count is set inline (src/ui/arena/Field.tsx). */
+  .fight .slot.empty {
+    display: none;
+  }
+
+  .fight .slots {
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)) !important;
+  }
 }
