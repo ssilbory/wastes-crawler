@@ -172,10 +172,30 @@ describe('suggested plans', () => {
     member(w, 'Lirael').slept = true;
     member(w, 'Grukk').slept = true;
     w.quarter = 3;
-    expect(suggestPlan(w, data)).toMatchObject({ activities: { 'm-1': 'watch', 'm-2': 'rest' } });
+    expect(suggestPlan(w, data)).toMatchObject({ activities: { 'm-1': 'watch', 'm-2': 'craft' } });
     // A lone crafter still keeps watch.
     member(w, 'Grukk').slept = false;
     expect(suggestPlan(w, data)).toMatchObject({ activities: { 'm-2': 'watch' } });
+  });
+
+  it('has a crafter who has slept craft the evening and night shifts instead of resting', () => {
+    const w = world();
+    w.position = { col: 5, row: 9 };
+    w.camp = 'made';
+    w.quarter = 2;
+    crafting(w, member(w, 'Snag'));
+    member(w, 'Snag').slept = true;
+    expect(suggestPlan(w, data)).toMatchObject({ activities: { 'm-0': 'craft' } });
+    // Sleep still comes first.
+    member(w, 'Snag').slept = false;
+    w.quarter = 3;
+    expect(suggestPlan(w, data)).toMatchObject({ activities: { 'm-0': 'sleep' } });
+    // Snag has Survive, but crafts rather than forages or hunts.
+    member(w, 'Snag').slept = true;
+    for (const name of ['Grukk', 'Lirael', 'Fizzwick']) member(w, name).slept = true;
+    expect(suggestPlan(w, data)).toMatchObject({ activities: { 'm-0': 'craft' } });
+    w.projects = [];
+    expect(suggestPlan(w, data)).toMatchObject({ activities: { 'm-0': 'forage' } });
   });
 
   it('takes half a day off the build for each camp quarter spent crafting', () => {

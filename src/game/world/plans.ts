@@ -1,7 +1,7 @@
 // Choosing where to go, and a sensible default plan for each quarter so a player can pass time in
 // one click: hike by day toward a destination; make camp in the evening and sleep in shifts with
 // someone always on watch (docs/rules-adaptation.md, Overland travel). A crafter with work and
-// tools crafts the day's camp shifts instead of foraging, and is spared the watch (Sam's call).
+// tools crafts every camp shift they don't sleep, and is spared the watch (Sam's call).
 import { hexKey, type Hex } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
 import { campProject } from './crafting.ts';
@@ -74,7 +74,7 @@ export function suggestPlan(w: World, data: GameData, prefer?: QuarterPlan['kind
   }
   // Evening: one makes camp, one keeps watch, the rest sleep. Night: whoever is still awake sleeps,
   // and someone already rested takes the watch. A crafter watches only if no one else can. Those
-  // with Survival who have slept go for food rather than rest (Sam's call).
+  // with Survival who have slept go for food rather than rest, and crafters craft (Sam's call).
   const watch = (list: Member[]) =>
     bestAt(data, others(list, ...crafters), 'notice', ['wis']) ??
     bestAt(data, list, 'notice', ['wis']);
@@ -96,5 +96,6 @@ export function suggestPlan(w: World, data: GameData, prefer?: QuarterPlan['kind
   const forager = bestAt(data, hunters, 'survive', ['wis']);
   set(forager, 'forage');
   set(bestAt(data, others(hunters, forager), 'survive', ['wis']), 'hunt');
+  for (const m of crafters) if (activities[m.id] === 'rest') set(m, 'craft');
   return { kind: 'camp', activities };
 }
