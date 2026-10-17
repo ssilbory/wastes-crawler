@@ -139,6 +139,19 @@ describe('picking up loot (Party stash)', () => {
     expect(w.log.slice(lines).join(' ')).not.toContain('of loot.');
   });
 
+  it('shows the whole overflow on the strongest PC when no one has any margin left', () => {
+    const w = world();
+    for (const m of w.members) if (m.character.name !== 'Snag') m.dead = true;
+    const snag = member(w, 'Snag');
+    while (margin(snag) > 0) {
+      const wood = { id: 'firewood-one-nights-fire', quantity: 1, location: 'stowed' as const };
+      snag.character = { ...snag.character, inventory: [...snag.character.inventory, wood] };
+    }
+    expect(room(snag)).toBeLessThan(0);
+    w.loot = [{ count: 3, sides: 4 }];
+    expect(partyLoad(w, data)).toEqual({ weight: 3, shares: { [snag.id]: 3 }, overflow: 3 });
+  });
+
   it('tells whether one more component fits', () => {
     expect(roomFor(world(), data, 'beast-hide')).toBe(true);
     expect(roomFor(nearlyFull(0), data, 'beast-hide')).toBe(false);

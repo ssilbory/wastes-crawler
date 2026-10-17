@@ -96,8 +96,6 @@ function arrive(w: World, data: GameData, level: string, at: Cell, facing: Facin
   look(w, data, s);
   glimpse(w, data);
   springHere(w, data);
-  // A trap at the landing may have killed the party; the wipe has already moved the clock on.
-  if (!w.dungeon) return;
   emit(w, data, { kind: 'level-entered' });
   emit(w, data, { kind: 'cell-entered' });
 }
@@ -133,7 +131,6 @@ export function enterDungeon(w: World, data: GameData): TownResult {
   drawKits(w);
   kindle(w);
   arrive(w, data, d.entry.level, d.entry.at, d.entry.facing);
-  if (!w.dungeon) return { ok: true };
   endQuarter(w, data);
   return { ok: true };
 }
@@ -161,8 +158,6 @@ export function step(w: World, data: GameData, dir: Step, stepIn = false): TownR
   look(w, data, s);
   glimpse(w, data);
   springHere(w, data);
-  // A trap may have killed the party.
-  if (!w.dungeon) return { ok: true };
   if (s.level !== from) emit(w, data, { kind: 'level-entered' });
   emit(w, data, { kind: 'cell-entered' });
   countStep(w, data);
@@ -199,10 +194,7 @@ export function takeStairs(w: World, data: GameData): TownResult {
     chartDungeon(w, data);
     w.dungeon = null;
     douse(w);
-  } else {
-    arrive(w, data, link.to.level, link.to.at, link.to.facing);
-    if (!w.dungeon) return { ok: true };
-  }
+  } else arrive(w, data, link.to.level, link.to.at, link.to.facing);
   endQuarter(w, data);
   return { ok: true };
 }

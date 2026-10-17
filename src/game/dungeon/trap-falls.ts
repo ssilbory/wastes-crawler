@@ -29,7 +29,7 @@ export function tendingBattle(w: World, data: GameData): WorldBattle {
   const battle = battleFrom(data, w.rng, setup, true);
   battle.outcome = 'party';
   // No one rolls initiative over the fallen.
-  if (battle.log) battle.log.length = 0;
+  (battle.log as string[]).length = 0;
   party.forEach((m, i) => {
     if (m.character.hp.current > 0) return;
     const c = battle.combatants[i] as Combatant;
