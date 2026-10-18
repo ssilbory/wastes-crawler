@@ -11,7 +11,7 @@ import {
   pickComponents,
   removeComponents,
 } from '../../../src/game/world/components.ts';
-import { workOn } from '../../../src/game/world/crafting.ts';
+import { campProject, craftShift, workOn } from '../../../src/game/world/crafting.ts';
 import { capacity, maintain, upkeepNeed } from '../../../src/game/world/maintenance.ts';
 import {
   canMod,
@@ -43,6 +43,14 @@ const SPEAR = 0;
 const spear = (w: World) => snag(w).character.inventory[SPEAR] as InventoryEntry;
 const withSkills = (m: Member, skills: Record<string, number>, foci = m.character.foci) => {
   m.character = { ...m.character, skills, foci };
+};
+const withTools = (m: Member) => {
+  const tools = {
+    id: data.content.craftingRules.tools.id,
+    quantity: 1,
+    location: 'stowed' as const,
+  };
+  m.character = { ...m.character, inventory: [...m.character.inventory, tools] };
 };
 const finish = (w: World) => {
   while (w.projects.length > 0) workOn(w, data, w.projects[0] as World['projects'][0]);
@@ -165,13 +173,18 @@ describe('building mods (SRD 2.8.2)', () => {
       ok: false,
       reason: 'Fizzwick is already making something.',
     });
-    // Not in camp: mods need the workshop.
+    // In camp a made camp alone does nothing; a crafter's shift with tools works half a day.
     w.position = { col: 4, row: 8 };
     w.camp = 'made';
     emit(w, data, { kind: 'day-passed' });
     expect(w.projects[0]?.daysLeft).toBe(11);
+    withTools(fizz(w));
+    craftShift(w, data, fizz(w));
+    craftShift(w, data, fizz(w));
+    expect(w.projects[0]?.daysLeft).toBe(10);
+    expect(w.log.at(-1)).toContain('Fizzwick works on Thirsting Blade for the Spear, Light.');
     w.position = { col: 3, row: 8 };
-    for (let i = 0; i < 11; i++) workDay(w, data);
+    for (let i = 0; i < 10; i++) workDay(w, data);
     expect(w.projects).toEqual([]);
     expect(spear(w).mods).toEqual([
       { id: 'thirsting-blade', components: ['ooze-essence', 'grave-garnet'] },
@@ -262,6 +275,22 @@ describe('building mods (SRD 2.8.2)', () => {
     finish(w);
     expect(spear(w).mods).toBeUndefined();
     expect(w.components).toEqual({ 'cold-iron': 2, 'ooze-essence': 1, 'grave-garnet': 1 });
+  });
+
+  it('strips only at the workshop, never in camp', () => {
+    const w = stocked();
+    const s = snag(w);
+    s.character = {
+      ...s.character,
+      inventory: [{ ...spear(w), mods: [{ id: 'customized', components: [] }] }],
+    };
+    startStrip(w, data, 'm-3', 'm-0', SPEAR, 'customized');
+    withTools(fizz(w));
+    w.position = { col: 4, row: 8 };
+    expect(campProject(w, data, fizz(w))).toBeNull();
+    craftShift(w, data, fizz(w));
+    expect(w.projects[0]?.daysLeft).toBe(1);
+    expect(w.log.at(-1)).toContain('Fizzwick has nothing to work on here.');
   });
 
   it('loses the work if the item is gone', () => {
