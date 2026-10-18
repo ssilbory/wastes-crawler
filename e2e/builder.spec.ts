@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
 import { importAndOpen, openStep } from './wizard.ts';
 
@@ -87,6 +88,31 @@ test('shows validation errors for a bad import', async ({ page }) => {
   });
   await expect(page.getByRole('alert')).toContainText('broken.json: ');
   await expect(page.getByRole('list', { name: 'Saved characters' })).toHaveCount(0);
+});
+
+test('imports several files at once, re-ids a duplicate, and reports a broken one', async ({
+  page,
+}) => {
+  await page.goto('/#/builder');
+  const json = (name: string, text: string) => ({
+    name,
+    mimeType: 'application/json',
+    buffer: Buffer.from(text),
+  });
+  const snag = json('snag.json', readFileSync('tools/sim/parties/starter/snag.json', 'utf8'));
+  await page
+    .getByLabel('Import character files')
+    .setInputFiles([snag, snag, json('broken.json', '{}')]);
+  await expect(page.getByRole('status')).toHaveText('Snag, Snag joined the roster.');
+  await expect(page.getByRole('alert')).toContainText('broken.json: ');
+  const list = page.getByRole('list', { name: 'Saved characters' });
+  await expect(list.getByRole('listitem')).toHaveCount(2);
+  const ids = await page.evaluate(() => {
+    const raw = localStorage.getItem('wastes-crawler.roster') ?? '{}';
+    const roster = JSON.parse(raw) as { entries: { character: { id: string } }[] };
+    return roster.entries.map((e) => e.character.id);
+  });
+  expect(new Set(ids).size).toBe(2);
 });
 
 test('saves, edits over the original, and saves a renamed copy as a new character', async ({

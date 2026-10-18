@@ -1,8 +1,9 @@
-// Editing saved characters (Sam's calls). A character made in the builder keeps its picks and
-// opens in the builder again; an unlevelled one without picks opens with what its sheet shows; a
-// levelled one can only change its name and goal. Saving under the same name overwrites it, and
-// under another name adds a new character.
+// Editing saved characters (docs/rules-adaptation.md, Editing saved characters). A character
+// made in the builder keeps its picks and opens in the builder again; an unlevelled one without
+// picks opens with what its sheet shows; a levelled one can only change its name and goal. Saving
+// under the same name overwrites it, and under another name adds a new character.
 import type { Character } from '../../data/schemas/index.ts';
+import { attributeModifier } from '../../rules/attributes.ts';
 import { characterLevel } from '../../rules/progression.ts';
 import { createRng, type Rng } from '../../rules/rng.ts';
 import { FREE_REROLLS, isStandardArray } from './attributes.ts';
@@ -22,13 +23,8 @@ const unrolled = (c: Character) => JSON.stringify({ ...c, id: '', hp: null });
 
 /** Whether the picks still build this character, ignoring its id and HP roll. */
 function buildsSame(choices: Choices, c: Character, data: GameData): boolean {
-  try {
-    const built = finishCharacter(choices, data, createRng('edit'));
-    return built.ok && unrolled(built.character) === unrolled(c);
-  } catch {
-    // Picks naming content that is gone can't be evaluated at all.
-    return false;
-  }
+  const built = finishCharacter(choices, data, createRng('edit'));
+  return built.ok && unrolled(built.character) === unrolled(c);
 }
 
 /** The builder picks a sheet shows: people, attributes, background, class, forms, name, goal. */
@@ -62,13 +58,20 @@ export function editPlan(entry: RosterEntry, data: GameData): EditPlan {
   return { kind: 'details' };
 }
 
-const con = (c: Character) =>
-  Object.values(c.attributes).reduce((sum, adjust) => sum + (adjust.con ?? 0), 0);
+/** The Constitution modifier starting HP was rolled with; foci bonuses are compared separately. */
+const conModifier = (c: Character) =>
+  attributeModifier(
+    Object.values(c.attributes).reduce((sum, adjust) => sum + (adjust.con ?? 0), 0),
+  );
 
-/** HP is kept over an edit unless the class, Constitution, or foci it was rolled from changed. */
+/**
+ * HP is kept over an edit unless what it was rolled from changed: the class's hit die, the Con
+ * modifier, or foci such as Die Hard (vendor/wwn-srd/1.0 Character Creation/1.7.0 Final Character
+ * Creation Steps.md, 1.7.1).
+ */
 const sameHpRoll = (a: Character, b: Character) =>
   a.classes.current === b.classes.current &&
-  con(a) === con(b) &&
+  conModifier(a) === conModifier(b) &&
   JSON.stringify(a.foci) === JSON.stringify(b.foci);
 
 /**

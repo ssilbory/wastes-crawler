@@ -114,7 +114,13 @@ export function StartScreen(props: {
             <a href="#/builder">Characters page</a>.
           </p>
         ) : (
-          <PartySetup entries={props.roster} placement={placement} onChange={setPlacement} />
+          <>
+            <PartySetup entries={props.roster} placement={placement} onChange={setPlacement} />
+            <p class="hint">
+              Make, import, edit, or delete characters on the{' '}
+              <a href="#/builder">Characters page</a>.
+            </p>
+          </>
         )}
       </main>
       <div class="start-row">

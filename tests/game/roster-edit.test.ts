@@ -114,6 +114,8 @@ describe('opening a saved character again', () => {
     const odd = recoverChoices({ ...snag, attributes: { ...snag.attributes, base: rolled } });
     expect(odd.attributeMethod).toEqual({ kind: 'manual', rerolls: FREE_REROLLS + 1 });
     expect(evaluateChoices(odd, data).steps.attributes).toEqual({ state: 'ok' });
+    const wolf = { name: 'Wolf', humanoid: false, arts: [] };
+    expect(recoverChoices({ ...snag, forms: [wolf] }).forms).toEqual([wolf]);
   });
 });
 
@@ -154,6 +156,12 @@ describe('saving an edited character', () => {
       foci: [null, null, { id: 'alert' }, { id: 'armsmaster' }, { id: 'die-hard' }],
     };
     expect(asEdit(original, build(hardy, 1, 0xdef)).hp).not.toEqual(original.character.hp);
+    // And a change of class; a Constitution change that keeps the modifier keeps HP.
+    const built = build(raider(), 1, 0xdef);
+    const expert = { ...built, classes: { current: 'full-expert', levels: { 'full-expert': 1 } } };
+    expect(asEdit(original, expert).hp).toEqual(built.hp);
+    const steady = { ...raider(), array: { str: 14, dex: 11, con: 12, int: 10, wis: 9, cha: 7 } };
+    expect(asEdit(original, build(steady, 1, 0xdef)).hp).toEqual(original.character.hp);
   });
 
   it('shows a build as it will save: the original under its name, else as it is', () => {
@@ -220,6 +228,16 @@ describe('saving an edited character', () => {
       ['snag', 'Snag', original.character.id],
       ['grit', 'Grit', 'char-0000012300000456'],
     ]);
+  });
+
+  it('leaves the other characters alone when overwriting one', () => {
+    const grit = build({ ...raider(), name: 'Grit' }, 2, 0x123);
+    const entries = addToRoster(roster(), grit);
+    const original = entries[0] as RosterEntry;
+    const built = saveBuilt(entries, build(raider(), 1, 0xdef), raider(), original);
+    expect(built[1]).toBe(entries[1]);
+    const renamed = saveDetails(entries, original, { name: 'Snag', goal: '' }, scriptedRng([]));
+    expect(renamed.ok && renamed.entries[1]).toBe(entries[1]);
   });
 
   it('refuses an empty or overlong name and an overlong goal', () => {
