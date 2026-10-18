@@ -92,34 +92,39 @@ describe('the starter party', () => {
   it('joins the roster once, placed in its formation slots', () => {
     const first = addStarterParty([], data);
     expect(first.entries.map((e) => e.character.name)).toEqual([
-      'Snag',
-      'Grukk',
-      'Lirael',
-      'Fizzwick',
+      'Gretar',
+      'Marsan',
+      'Wildera',
+      'Talus',
+      'Telwin',
+      'Lashana',
     ]);
+    // Those who fight stand in front, those who cast behind.
     expect(first.placement).toEqual({
-      '0-0': 'snag',
-      '0-1': 'grukk',
-      '1-0': 'lirael',
-      '1-1': 'fizzwick',
+      '0-0': 'gretar',
+      '0-1': 'marsan',
+      '0-2': 'wildera',
+      '1-0': 'talus',
+      '1-1': 'telwin',
+      '1-2': 'lashana',
     });
     // Added again, after a round trip through storage, nothing is duplicated.
     const stored = parseRoster(serializeRoster(first.entries), data).entries;
     const again = addStarterParty(stored, data);
-    expect(again.entries).toHaveLength(4);
+    expect(again.entries).toHaveLength(6);
     expect(again.placement).toEqual(first.placement);
   });
 
   it('refuses a starter that no longer imports', () => {
-    const [snag] = data.content.starterParty;
-    if (!snag) throw new Error('missing starter');
+    const [gretar] = data.content.starterParty;
+    if (!gretar) throw new Error('missing starter');
     const broken = {
       ...data,
       content: {
         ...data.content,
-        starterParty: [{ ...snag, character: { ...snag.character, people: 'dwarf' } }],
+        starterParty: [{ ...gretar, character: { ...gretar.character, people: 'dwarf' } }],
       },
     };
-    expect(() => addStarterParty([], broken)).toThrow(/^starter Snag: /);
+    expect(() => addStarterParty([], broken)).toThrow(/^starter Gretar: /);
   });
 });
