@@ -1,4 +1,5 @@
 import { devices, expect, test, type Page } from '@playwright/test';
+import { importAndOpen } from './wizard.ts';
 
 // Phones, installing, and offline play: the About page, the full-screen toggle, the web app
 // manifest and service worker, and the world screens at phone width.
@@ -25,7 +26,7 @@ test.describe('on a phone', () => {
   test.use(pixel);
 
   test('opens About from the menu, with install steps and credits', async ({ page }) => {
-    await page.goto('/#/builder');
+    await page.goto('/#/builder/new');
     await page.getByRole('button', { name: 'Menu' }).click();
     await page.getByRole('link', { name: 'About' }).click();
     await expect(page.getByRole('heading', { name: 'About', level: 1 })).toBeVisible();
@@ -46,7 +47,7 @@ test.describe('on a phone', () => {
   });
 
   test('opens Help from the menu, with the keys as set', async ({ page }) => {
-    await page.goto('/#/builder');
+    await page.goto('/#/builder/new');
     await page.getByRole('button', { name: 'Menu' }).click();
     await page.getByRole('link', { name: 'Help' }).click();
     await expect(page.getByRole('heading', { name: 'Help', level: 1 })).toBeVisible();
@@ -59,10 +60,7 @@ test.describe('on a phone', () => {
   });
 
   test('taps ⓘ to read a spell, with its in-game line', async ({ page }) => {
-    await page.goto('/#/builder');
-    await page
-      .getByLabel('Import character file')
-      .setInputFiles('tools/sim/parties/starter/fizzwick.json');
+    await importAndOpen(page, 'tools/sim/parties/starter/fizzwick.json', 'Fizzwick');
     const sheet = page.getByTestId('character-sheet');
     await sheet.getByRole('button', { name: 'About The Coruscating Coffin' }).tap();
     const dialog = page.getByRole('dialog', { name: 'The Coruscating Coffin' });
@@ -118,17 +116,14 @@ test.describe('on a phone', () => {
 });
 
 test('keeps hover text, not ⓘ buttons, with a mouse', async ({ page }) => {
-  await page.goto('/#/builder');
-  await page
-    .getByLabel('Import character file')
-    .setInputFiles('tools/sim/parties/starter/fizzwick.json');
+  await importAndOpen(page, 'tools/sim/parties/starter/fizzwick.json', 'Fizzwick');
   const sheet = page.getByTestId('character-sheet');
   await expect(sheet.getByText('The Coruscating Coffin')).toHaveAttribute('title', /In game:/);
   await expect(sheet.getByRole('button', { name: /^About / })).toHaveCount(0);
 });
 
 test('toggles full screen from the menu', async ({ page }) => {
-  await page.goto('/#/builder');
+  await page.goto('/#/builder/new');
   await page.getByRole('button', { name: 'Menu' }).click();
   await page.getByRole('button', { name: 'Full screen' }).click();
   await expect.poll(() => page.evaluate(() => !!document.fullscreenElement)).toBe(true);
@@ -138,7 +133,7 @@ test('toggles full screen from the menu', async ({ page }) => {
 });
 
 test('links a web app manifest with installable icons', async ({ page, request }) => {
-  await page.goto('/#/builder');
+  await page.goto('/#/builder/new');
   const href = await page.locator('link[rel="manifest"]').getAttribute('href');
   const manifest = await (await request.get(href as string)).json();
   expect(manifest).toMatchObject({
@@ -155,7 +150,7 @@ test.describe('offline', () => {
   test.use({ serviceWorkers: 'allow' });
 
   test('keeps playing with no connection after one visit', async ({ page, context }) => {
-    await page.goto('/#/builder');
+    await page.goto('/#/builder/new');
     await page.evaluate(async () => {
       await navigator.serviceWorker.ready;
     });

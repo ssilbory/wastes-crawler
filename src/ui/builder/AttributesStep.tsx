@@ -37,7 +37,10 @@ export function AttributesStep(props: {
   onChange: (choice: AttributeChoice) => void;
 }) {
   const { method } = props;
-  const [draft, setDraft] = useState<DraftArray>({});
+  // Reopened picks fill the array in; a fresh step starts empty.
+  const [draft, setDraft] = useState<DraftArray>(() =>
+    method.kind === 'array' && props.scores ? props.scores : {},
+  );
   const [asking, setAsking] = useState(false);
   const rerolls = method.kind === 'array' ? 0 : method.rerolls;
   const rolled = method.kind === 'roll';

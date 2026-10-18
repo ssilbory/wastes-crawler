@@ -16,8 +16,8 @@ export function HelpApp() {
         <p>Yes. It is designed that way, because that's how I play it. Some ways to soften it:</p>
         <ul>
           <li>
-            Export a character from the character builder (Export JSON), edit their stats in the
-            file (3 to 18), and import it again.
+            Export a character from the Characters page (Export), edit their stats in the file (3 to
+            18), and import it again.
           </li>
           <li>
             In the builder, choose Roll 3d6 in order. After your three free rerolls, pressing Reroll

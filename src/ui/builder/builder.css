@@ -183,3 +183,28 @@ fieldset.picks legend {
 .focus-hint {
   white-space: pre-line;
 }
+
+.character-list {
+  list-style: none;
+  margin: 12px 0;
+  padding: 0;
+}
+
+.character-list > li {
+  border-bottom: 1px solid var(--line);
+  padding: 8px 0;
+}
+
+.character-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}

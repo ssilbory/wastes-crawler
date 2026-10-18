@@ -7,3 +7,14 @@ export async function openStep(page: Page, step: string) {
     .getByRole('button', { name: step })
     .click();
 }
+
+/** Imports character files on the Characters page and opens the named character's sheet. */
+export async function importAndOpen(page: Page, files: string | string[], name: string) {
+  await page.goto('/#/builder');
+  await page.getByLabel('Import character files').setInputFiles(files);
+  await page
+    .getByRole('listitem')
+    .filter({ hasText: name })
+    .getByRole('button', { name: 'Sheet' })
+    .click();
+}

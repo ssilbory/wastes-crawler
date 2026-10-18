@@ -4,7 +4,7 @@ import { AppMenu, type Route } from './AppMenu.tsx';
 import { HelpApp } from './help/HelpApp.tsx';
 import { HintSheet } from './hint.tsx';
 import { ArenaApp } from './arena/ArenaApp.tsx';
-import { App as BuilderApp } from './builder/App.tsx';
+import { CharactersApp } from './builder/CharactersApp.tsx';
 import { EditorApp } from './editor/EditorApp.tsx';
 import { MapEditorApp } from './map-editor/MapEditorApp.tsx';
 import { SettingsApp } from './settings/SettingsApp.tsx';
@@ -56,7 +56,7 @@ export function Shell() {
       ) : route === 'about' ? (
         <AboutApp />
       ) : route === 'builder' ? (
-        <BuilderApp />
+        <CharactersApp />
       ) : (
         <TitleApp />
       )}

@@ -17,9 +17,13 @@ const TABLE_OPTIONS = [
 function AllocationChoice(props: {
   label: string;
   entry: Extract<GrowthEntry, { kind: 'attribute' }>;
+  value: Adjustments | undefined;
   onChange: (allocation: Adjustments | undefined) => void;
 }) {
-  const [parts, setParts] = useState<(Attribute | '')[]>(Array(props.entry.amount).fill(''));
+  const [parts, setParts] = useState<(Attribute | '')[]>(() => {
+    const placed = ATTRIBUTES.flatMap((a) => Array<Attribute>(props.value?.[a] ?? 0).fill(a));
+    return Array.from({ length: props.entry.amount }, (_, i) => placed[i] ?? '');
+  });
   const pool =
     props.entry.pool === 'physical'
       ? PHYSICAL
@@ -112,6 +116,7 @@ export function BackgroundRolls(props: {
               <AllocationChoice
                 label={label}
                 entry={entry}
+                value={r.allocation}
                 onChange={(allocation) => set(i, { allocation })}
               />
             ) : (

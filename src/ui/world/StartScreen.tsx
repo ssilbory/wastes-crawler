@@ -3,7 +3,6 @@ import type { RosterEntry } from '../../game/character/roster.ts';
 import { MAX_PCS, type Recruit } from '../../game/world/new-world.ts';
 import { PartySetup, type Placement } from '../arena/PartySetup.tsx';
 import { ConfirmButton } from '../confirm.tsx';
-import { RosterList } from './RosterList.tsx';
 import { CAMPAIGN, playableWorld, WorldPicker, type WorldChoice } from './WorldPicker.tsx';
 import { SLOTS, type Slot } from '../storage.ts';
 
@@ -35,7 +34,6 @@ export function StartScreen(props: {
   /** Adds the starter party to the roster and returns where its members stand. */
   onStarters: () => Placement;
   onImport: (file: File) => void;
-  onDelete: (id: string) => void;
 }) {
   const [placement, setPlacement] = useState<Placement>({});
   const [seed, setSeed] = useState('');
@@ -112,22 +110,12 @@ export function StartScreen(props: {
       <main class="arena-setup">
         {props.roster.length === 0 ? (
           <p class="hint">
-            The roster is empty. Use the starter party, make characters in the{' '}
-            <a href="#/builder">character builder</a>, or import them in the{' '}
-            <a href="#/arena">arena</a>.
+            The roster is empty. Use the starter party, or make or import characters on the{' '}
+            <a href="#/builder">Characters page</a>.
           </p>
         ) : (
           <PartySetup entries={props.roster} placement={placement} onChange={setPlacement} />
         )}
-        <RosterList
-          entries={props.roster}
-          onDelete={(id) => {
-            setPlacement(
-              Object.fromEntries(Object.entries(placement).filter(([, placed]) => placed !== id)),
-            );
-            props.onDelete(id);
-          }}
-        />
       </main>
       <div class="start-row">
         <label>

@@ -2,23 +2,23 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { Character } from '../../data/schemas/index.ts';
 import { rollAttributes } from '../../game/character/attributes.ts';
 import {
-  emptyChoices,
   evaluateChoices,
   finishCharacter,
   rollBackground,
   type Choices,
 } from '../../game/character/creation.ts';
 import { previewSheet } from '../../game/character/derived.ts';
-import { exportCharacter, importCharacter } from '../../game/character/io.ts';
 import { classOption } from '../../game/character/class-step.ts';
 import { rollStartingCrowns } from '../../game/character/gear.ts';
-import { addToRoster } from '../../game/character/roster.ts';
+import type { RosterEntry } from '../../game/character/roster.ts';
+import { asEdit, sameName } from '../../game/character/roster-edit.ts';
 import { withoutFocusSkills } from '../../game/character/foci.ts';
 import { backgroundOpenTo, findPeople } from '../../game/character/people.ts';
+import { ConfirmButton } from '../confirm.tsx';
 import { AttributesStep } from './AttributesStep.tsx';
 import { BackgroundStep } from './BackgroundStep.tsx';
-import { loadRoster, saveRoster } from '../storage.ts';
 import { data, freshRng } from './data.ts';
+import { download } from './download.ts';
 import { FociStep } from './FociStep.tsx';
 import { GearStep } from './GearStep.tsx';
 import { MagicStep } from './MagicStep.tsx';
@@ -27,24 +27,29 @@ import { PeopleStep } from './PeopleStep.tsx';
 import { CharacterSheet, PreviewSheet } from './Sheet.tsx';
 import { StepNav, WizardFooter } from './Wizard.tsx';
 
-function download(character: Character) {
-  const blob = new Blob([exportCharacter(character)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `${character.name.replace(/[^\w-]+/g, '_') || 'character'}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
+/** What saving does: over the original under its own name, else as a new character. */
+export function saveLabel(original: RosterEntry | undefined, name: string): string {
+  if (!original) return 'Save character';
+  return sameName(original.character.name, name)
+    ? `Save over ${original.character.name}`
+    : 'Save as a new character';
 }
 
-export function App() {
+/**
+ * The character builder: a new character from `initial`'s empty picks, or a saved one opened
+ * again. `onSave` is false when the character couldn't be stored.
+ */
+export function Builder(props: {
+  initial: Choices;
+  original?: RosterEntry | undefined;
+  notice?: string | undefined;
+  onSave: (character: Character, choices: Choices) => boolean;
+  onCancel: () => void;
+}) {
   const rng = useRef(freshRng());
-  const [choices, setChoices] = useState<Choices>(() => emptyChoices());
+  const [choices, setChoices] = useState<Choices>(props.initial);
   const [character, setCharacter] = useState<Character | null>(null);
-  // Starting over clears the attribute step's own picks too.
-  const [resets, setResets] = useState(0);
   const [errors, setErrors] = useState<string[]>([]);
-  const [saved, setSaved] = useState<string | null>(null);
   /** The wizard step on screen. Every step stays mounted so its own picks survive moving on. */
   const [at, setAt] = useState(0);
   const pages = useRef<HTMLDivElement>(null);
@@ -61,52 +66,31 @@ export function App() {
   const create = () => {
     const result = finishCharacter(choices, data, rng.current);
     if (result.ok) {
-      setCharacter(result.character);
-      setSaved(null);
+      setCharacter(asEdit(props.original, result.character));
       setErrors([]);
     } else setErrors(result.errors);
   };
 
-  const onImport = async (input: HTMLInputElement) => {
-    const file = input.files?.[0];
-    if (!file) return;
-    const result = importCharacter(await file.text(), data);
-    input.value = '';
-    if (result.ok) {
-      setCharacter(result.character);
-      setSaved(null);
-      setErrors([]);
-    } else setErrors(result.errors.map((e) => `${file.name}: ${e}`));
+  const save = (c: Character) => {
+    if (!props.onSave(c, choices))
+      setErrors(['Browser storage is unavailable, so the character wasn’t saved.']);
   };
 
-  const saveToRoster = (c: Character) => {
-    const next = addToRoster(loadRoster().entries, c);
-    if (saveRoster(next)) setSaved(`${c.name} joined the arena roster.`);
-    else setErrors(['Browser storage is unavailable, so the character wasn’t saved.']);
-  };
-
-  const startOver = () => {
-    setSaved(null);
-    setCharacter(null);
-    setChoices(emptyChoices());
-    setResets((n) => n + 1);
-    setErrors([]);
-    setAt(0);
-  };
-
+  const name = props.original?.character.name;
   return (
     <div class="builder">
       <header>
-        <h1>Wastes Crawler: character builder</h1>
-        <label class="import">
-          <span>Import character file</span>
-          <input
-            type="file"
-            accept="application/json,.json"
-            onChange={(e) => void onImport(e.target as HTMLInputElement)}
-          />
-        </label>
+        <h1>{name === undefined ? 'New character' : `Editing ${name}`}</h1>
+        <ConfirmButton
+          class="secondary"
+          ask={choices !== props.initial}
+          confirm="Leave without saving"
+          onConfirm={props.onCancel}
+        >
+          Back to characters
+        </ConfirmButton>
       </header>
+      {props.notice && <p class="hint">{props.notice}</p>}
       {errors.length > 0 && (
         <ul class="errors" role="alert">
           {errors.map((e) => (
@@ -117,21 +101,15 @@ export function App() {
       {character ? (
         <main class="done">
           <CharacterSheet character={character} />
-          {saved && (
-            <p class="saved" role="status">
-              {saved} <a href="#/world">Take them into the Overland</a> or{' '}
-              <a href="#/arena">go to the arena</a>
-            </p>
-          )}
           <div class="actions">
+            <button type="button" class="create" onClick={() => save(character)}>
+              {saveLabel(props.original, character.name)}
+            </button>
             <button type="button" onClick={() => download(character)}>
               Export JSON
             </button>
-            <button type="button" disabled={saved !== null} onClick={() => saveToRoster(character)}>
-              Save to roster
-            </button>
-            <button type="button" onClick={startOver}>
-              Start over
+            <button type="button" onClick={() => setCharacter(null)}>
+              Back to the steps
             </button>
           </div>
         </main>
@@ -163,7 +141,6 @@ export function App() {
               </div>
               <div class="wizard-page" hidden={at !== 1}>
                 <AttributesStep
-                  key={resets}
                   method={choices.attributeMethod}
                   scores={choices.array}
                   status={ev.steps.attributes}

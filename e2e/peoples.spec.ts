@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { openStep } from './wizard.ts';
+import { importAndOpen, openStep } from './wizard.ts';
 
 // The Phase 3b exit criterion (docs/plan.md): build a valid character of every people. Each one is
 // also exported and re-imported, so the saved file carries the people and lineage.
@@ -111,7 +111,7 @@ async function build(page: Page, c: (typeof CASES)[number]) {
 for (const c of CASES) {
   const label = c.lineage ? `${c.people} (${c.lineage})` : c.people;
   test(`builds and re-imports: ${label}`, async ({ page }, testInfo) => {
-    await page.goto('/#/builder');
+    await page.goto('/#/builder/new');
     await build(page, c);
     const sheet = page.getByTestId('character-sheet');
     await expect(sheet).toContainText(`${label} Expert, level 1. Background: ${c.bg}.`);
@@ -123,8 +123,7 @@ for (const c of CASES) {
     await page.getByRole('button', { name: 'Export JSON' }).click();
     const file = testInfo.outputPath(`${c.people}.json`);
     await (await download).saveAs(file);
-    await page.reload();
-    await page.getByLabel('Import character file').setInputFiles(file);
+    await importAndOpen(page, file, `${c.people} tester`);
     await expect(sheet).toBeVisible();
     expect(await sheet.innerText()).toBe(before);
   });
@@ -133,7 +132,7 @@ for (const c of CASES) {
 test('offers only backgrounds open to the chosen people, and clears one that no longer fits', async ({
   page,
 }) => {
-  await page.goto('/#/builder');
+  await page.goto('/#/builder/new');
   const select = (label: string, option: string) =>
     page.getByRole('combobox', { name: label, exact: true }).selectOption({ label: option });
   const background = page.getByRole('combobox', { name: 'Background', exact: true });
