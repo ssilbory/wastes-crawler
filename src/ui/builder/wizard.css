@@ -118,7 +118,7 @@
   overflow-y: auto;
 }
 
-.builder .done .sheet.final {
+.builder :is(.done, .sheet-popup) .sheet.final {
   max-width: none;
   margin: 0 0 12px;
   columns: 3 300px;
@@ -126,11 +126,11 @@
   column-rule: 1px solid var(--line);
 }
 
-.builder .done .sheet.final > :is(h2, h3) {
+.builder :is(.done, .sheet-popup) .sheet.final > :is(h2, h3) {
   break-after: avoid;
 }
 
-.builder .done .sheet.final > :is(table, dl, ul, p) {
+.builder :is(.done, .sheet-popup) .sheet.final > :is(table, dl, ul, p) {
   break-inside: avoid;
 }
 
