@@ -49,7 +49,7 @@ interface Build {
 /** Fills every step of a Warrior, in the order a player would. Defaults to a Goblin Raider. */
 async function fill(page: Page, build: Build = {}) {
   const { people = 'Goblin', array = STANDARD, learning2 = 'Exert', racial = 'Alert' } = build;
-  await page.goto('/#/builder');
+  await page.goto('/#/builder/new');
   await choose(page, 'People', people);
   await openStep(page, 'Attributes');
   for (const [attr, value] of array) await choose(page, attr, value);
@@ -94,7 +94,7 @@ async function freshSheet(browser: import('@playwright/test').Browser, build: Bu
 }
 
 test('a fresh roll after switching methods does not reopen the stats dialog', async ({ page }) => {
-  await page.goto('/#/builder');
+  await page.goto('/#/builder/new');
   await choose(page, 'People', 'Goblin');
   await openStep(page, 'Attributes');
   await page.getByRole('radio', { name: 'Roll 3d6 in order' }).check();
@@ -109,7 +109,7 @@ test('a fresh roll after switching methods does not reopen the stats dialog', as
 });
 
 test('an unfinished standard array is still there after visiting other steps', async ({ page }) => {
-  await page.goto('/#/builder');
+  await page.goto('/#/builder/new');
   await choose(page, 'People', 'Goblin');
   await openStep(page, 'Attributes');
   await choose(page, 'Strength', '14');
@@ -121,7 +121,7 @@ test('an unfinished standard array is still there after visiting other steps', a
 test('dropping a background skill clears a focus replacement that depended on it', async ({
   page,
 }) => {
-  await page.goto('/#/builder');
+  await page.goto('/#/builder/new');
   await choose(page, 'People', 'Orc');
   await openStep(page, 'Attributes');
   for (const [attr, value] of STANDARD) await choose(page, attr, value);
@@ -198,7 +198,7 @@ test('changing a background pick late matches a fresh build with that pick', asy
 test('switching to a people the background is not open to drops that background', async ({
   page,
 }) => {
-  await page.goto('/#/builder');
+  await page.goto('/#/builder/new');
   await choose(page, 'People', 'Orc');
   await openStep(page, 'Background');
   await choose(page, 'Background', 'Pit-fighter');

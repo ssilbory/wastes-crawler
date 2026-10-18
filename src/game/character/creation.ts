@@ -215,6 +215,12 @@ export function evaluateChoices(choices: Choices, data: GameData): Evaluation {
   };
 }
 
+/** A fresh saved-character id. */
+export function newCharacterId(rng: Rng): string {
+  const hex = () => rng.int(0, 0xffff_ffff).toString(16).padStart(8, '0');
+  return `char-${hex()}${hex()}`;
+}
+
 export type FinishResult = { ok: true; character: Character } | { ok: false; errors: string[] };
 
 /** Rolls starting HP (SRD 1.7.1) and assembles a saved character from complete choices. */
@@ -237,10 +243,9 @@ export function finishCharacter(choices: Choices, data: GameData, rng: Rng): Fin
     dieHard: hasDieHard(data, ev.foci),
     currentMax: 0,
   }).max;
-  const hex = () => rng.int(0, 0xffff_ffff).toString(16).padStart(8, '0');
   const character = CharacterSchema.parse({
     schemaVersion: CHARACTER_SCHEMA_VERSION,
-    id: `char-${hex()}${hex()}`,
+    id: newCharacterId(rng),
     name: choices.name.trim(),
     goal: choices.goal,
     people: choices.people,

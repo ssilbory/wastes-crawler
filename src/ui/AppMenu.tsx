@@ -7,7 +7,7 @@ export type Route =
 const ROUTES: { route: Route; label: string }[] = [
   { route: 'title', label: 'Title screen' },
   { route: 'world', label: 'Overland' },
-  { route: 'builder', label: 'Character builder' },
+  { route: 'builder', label: 'Characters' },
   { route: 'arena', label: 'Arena' },
   { route: 'editor', label: 'Level editor' },
   { route: 'maps', label: 'Map editor' },

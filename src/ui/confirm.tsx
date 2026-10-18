@@ -14,6 +14,8 @@ export function ConfirmButton(props: {
   class?: string | undefined;
   disabled?: boolean;
   title?: string | undefined;
+  /** The first button's accessible name, when its text alone is ambiguous. */
+  label?: string | undefined;
 }) {
   const [asking, setAsking] = useState(false);
   if (asking)
@@ -40,6 +42,7 @@ export function ConfirmButton(props: {
       class={props.class}
       disabled={props.disabled}
       title={props.title}
+      aria-label={props.label}
       onClick={() => (props.ask === false ? props.onConfirm() : setAsking(true))}
     >
       {props.children}

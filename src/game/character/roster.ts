@@ -1,18 +1,28 @@
 // The saved-character roster (docs/plan.md, Save/load: character saves to browser storage start
 // with the arena). Pure functions; the UI owns the storage itself.
 import {
+  ChoicesSchema,
   ROSTER_SCHEMA_VERSION,
   RosterSchema,
   type Character,
   type DefaultPreset,
 } from '../../data/schemas/index.ts';
+import type { Choices } from './choices.ts';
 import type { GameData } from './context.ts';
 import { importCharacter } from './io.ts';
+
+/** Stored builder picks, or null if there are none or they no longer fit the shape. */
+export function parseChoices(raw: unknown): Choices | null {
+  const parsed = ChoicesSchema.safeParse(raw);
+  return parsed.success ? parsed.data : null;
+}
 
 export interface RosterEntry {
   id: string;
   character: Character;
   defaultAction: DefaultPreset;
+  /** The builder's picks, for characters made in it. */
+  choices?: Choices;
 }
 
 export interface LoadedRoster {
@@ -40,8 +50,17 @@ export function parseRoster(text: string | null, data: GameData): LoadedRoster {
   const errors: string[] = [];
   for (const e of parsed.data.entries) {
     const result = importCharacter(JSON.stringify(e.character), data);
-    if (result.ok) entries.push({ ...e, character: result.character });
-    else errors.push(`${e.id}: ${result.errors.join('; ')}`);
+    if (!result.ok) {
+      errors.push(`${e.id}: ${result.errors.join('; ')}`);
+      continue;
+    }
+    const choices = parseChoices(e.choices);
+    entries.push({
+      id: e.id,
+      defaultAction: e.defaultAction,
+      character: result.character,
+      ...(choices ? { choices } : {}),
+    });
   }
   return { entries, errors };
 }
@@ -89,7 +108,11 @@ export function rosterToSave(
 }
 
 /** Adds a character under a fresh id, the name plus a counter when the name is taken. */
-export function addToRoster(entries: readonly RosterEntry[], character: Character): RosterEntry[] {
+export function addToRoster(
+  entries: readonly RosterEntry[],
+  character: Character,
+  choices?: Choices,
+): RosterEntry[] {
   const base =
     character.name
       .trim()
@@ -97,7 +120,7 @@ export function addToRoster(entries: readonly RosterEntry[], character: Characte
       .replace(/[^\w]+/g, '-') || 'character';
   let id = base;
   for (let n = 2; entries.some((e) => e.id === id); n++) id = `${base}-${n}`;
-  return [...entries, { id, character, defaultAction: 'auto' }];
+  return [...entries, { id, character, defaultAction: 'auto', ...(choices ? { choices } : {}) }];
 }
 
 export function removeFromRoster(entries: readonly RosterEntry[], id: string): RosterEntry[] {

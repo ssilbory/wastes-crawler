@@ -6,7 +6,7 @@ import { openStep } from './wizard.ts';
 test('rolls, rerolls three times, then takes the stats the player names', async ({
   page,
 }, testInfo) => {
-  await page.goto('/#/builder');
+  await page.goto('/#/builder/new');
   const select = (label: string, option: string) =>
     page.getByRole('combobox', { name: label, exact: true }).selectOption({ label: option });
   await select('People', 'Goblin');

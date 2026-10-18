@@ -41,21 +41,21 @@ test('sets out with the starter party and sorts gear on the inventory screen', a
   );
 });
 
-test('deletes a saved character from the start screen, after a confirmation', async ({ page }) => {
+test('manages characters on the Characters page, not the Overland start screen', async ({
+  page,
+}, testInfo) => {
   await page.goto('/#/world');
   await page.getByRole('button', { name: 'Use the starter party' }).click();
-  const saved = page.getByRole('region', { name: 'Saved characters' });
-  await expect(saved.getByRole('listitem')).toHaveCount(4);
-  await saved.getByRole('button', { name: 'Delete Snag' }).click();
-  await saved.getByRole('button', { name: 'Keep' }).click();
-  await expect(saved.getByRole('listitem')).toHaveCount(4);
-  await saved.getByRole('button', { name: 'Delete Snag' }).click();
-  await saved.getByRole('button', { name: 'Delete Snag for good' }).click();
-  await expect(saved.getByRole('listitem')).toHaveCount(3);
-  await expect(saved).not.toContainText('Snag');
+  await expect(page.getByRole('region', { name: 'Saved characters' })).toHaveCount(0);
+  await page.goto('/#/builder');
+  const list = page.getByRole('list', { name: 'Saved characters' });
+  await expect(list.getByRole('listitem')).toHaveCount(4);
+  await page.screenshot({ path: testInfo.outputPath('characters.png'), fullPage: true });
+  const snag = list.getByRole('listitem').filter({ hasText: 'Snag' });
+  await snag.getByRole('button', { name: 'Delete' }).click();
+  await snag.getByRole('button', { name: 'Delete Snag for good' }).click();
+  await expect(page.getByRole('status')).toHaveText('Snag is deleted.');
+  await expect(list.getByRole('listitem')).toHaveCount(3);
+  await page.goto('/#/world');
   await expect(page.getByRole('combobox', { name: 'Front row, slot 1' })).not.toHaveValue('snag');
-  await page.reload();
-  await expect(
-    page.getByRole('region', { name: 'Saved characters' }).getByRole('listitem'),
-  ).toHaveCount(3);
 });

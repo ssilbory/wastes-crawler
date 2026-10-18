@@ -5,7 +5,7 @@ import { coachQuarter } from '../../game/world/coach.ts';
 import { difficultySeed } from '../../game/world/difficulty.ts';
 import { encounterBattle, xpText } from '../../game/world/fight.ts';
 import { passQuarter, settleByFighting, settleByLeaving } from '../../game/world/quarter.ts';
-import { addStarterParty, removeFromRoster } from '../../game/character/roster.ts';
+import { addStarterParty } from '../../game/character/roster.ts';
 import { mergeRoster, parseSave, savedMap, serializeBundle } from '../../game/world/bundle.ts';
 import { serializeWorld } from '../../game/world/save.ts';
 import { setDefaultAction } from '../../game/world/members.ts';
@@ -177,11 +177,6 @@ function WorldScreens(props: { track: (w: World, fresh?: boolean) => void }) {
         onNew={start}
         onStarters={() => addStarters().placement}
         onImport={(file) => void file.text().then(open)}
-        onDelete={(id) => {
-          const next = removeFromRoster(roster, id);
-          saveRoster(next);
-          setRoster(next);
-        }}
       />
     );
   if (screen === 'intro')

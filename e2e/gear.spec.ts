@@ -5,7 +5,7 @@ import { openStep } from './wizard.ts';
 async function start(page: import('@playwright/test').Page, people: string, lineage?: string) {
   const select = (label: string, option: string) =>
     page.getByRole('combobox', { name: label, exact: true }).selectOption({ label: option });
-  await page.goto('/#/builder');
+  await page.goto('/#/builder/new');
   await select('People', people);
   if (lineage) await select('Lineage', lineage);
   const attrs = ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma'];

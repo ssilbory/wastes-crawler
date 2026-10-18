@@ -1,13 +1,12 @@
-import { expect, test } from '@playwright/test';
-import { openStep } from './wizard.ts';
+import { expect, test, type Page } from '@playwright/test';
+import { importAndOpen, openStep } from './wizard.ts';
 
-// The Phase 3a exit criterion (docs/plan.md): build a Goblin Warrior in the browser, export it to
-// JSON, reload the page, and import it.
-test('builds, exports, and re-imports a Goblin Warrior', async ({ page }, testInfo) => {
-  await page.goto('/#/builder');
-  const select = (label: string, option: string) =>
-    page.getByRole('combobox', { name: label, exact: true }).selectOption({ label: option });
+const select = (page: Page, label: string, option: string) =>
+  page.getByRole('combobox', { name: label, exact: true }).selectOption({ label: option });
 
+/** Fills in every step for Snag, a Goblin Raider Warrior, ready to create. */
+async function fillSnag(page: Page) {
+  await page.goto('/#/builder/new');
   const array = [
     ['Strength', '14'],
     ['Dexterity', '12'],
@@ -16,28 +15,34 @@ test('builds, exports, and re-imports a Goblin Warrior', async ({ page }, testIn
     ['Wisdom', '9'],
     ['Charisma', '7'],
   ];
-  await select('People', 'Goblin');
+  await select(page, 'People', 'Goblin');
   await openStep(page, 'Attributes');
-  for (const [attr, value] of array) await select(attr as string, value as string);
+  for (const [attr, value] of array) await select(page, attr as string, value as string);
 
   await openStep(page, 'Background');
-  await select('Background', 'Raider');
-  await select('Learning pick 1', 'Sneak');
-  await select('Learning pick 2', 'Exert');
+  await select(page, 'Background', 'Raider');
+  await select(page, 'Learning pick 1', 'Sneak');
+  await select(page, 'Learning pick 2', 'Exert');
   await openStep(page, 'Class');
-  await select('Class', 'Warrior');
+  await select(page, 'Class', 'Warrior');
   await openStep(page, 'Foci');
-  await select('Racial focus', 'Alert');
-  await select('Combat focus', 'Armsmaster');
-  await select('Any focus', 'Lucky');
+  await select(page, 'Racial focus', 'Alert');
+  await select(page, 'Combat focus', 'Armsmaster');
+  await select(page, 'Any focus', 'Lucky');
   await openStep(page, 'Free skill');
-  await select('Free skill', 'Notice');
+  await select(page, 'Free skill', 'Notice');
   await openStep(page, 'Gear');
   await page.getByRole('radio', { name: 'Starting package' }).check();
-  await select('Package', 'Shield Wall');
+  await select(page, 'Package', 'Shield Wall');
   await openStep(page, 'Name and goal');
   await page.getByRole('textbox', { name: 'Name', exact: true }).fill('Snag');
   await page.getByRole('textbox', { name: 'Goal', exact: true }).fill('Outlive the war-band');
+}
+
+// The Phase 3a exit criterion (docs/plan.md): build a Goblin Warrior in the browser, export it to
+// JSON, reload the page, and import it.
+test('builds, exports, and re-imports a Goblin Warrior', async ({ page }, testInfo) => {
+  await fillSnag(page);
 
   const preview = page.getByRole('complementary', { name: 'Character preview' });
   await expect(preview).toContainText('Attack bonus: +1');
@@ -68,20 +73,72 @@ test('builds, exports, and re-imports a Goblin Warrior', async ({ page }, testIn
   await (await download).saveAs(file);
   expect((await download).suggestedFilename()).toBe('Snag.json');
 
-  await page.reload();
-  await expect(sheet).toHaveCount(0);
-  await page.getByLabel('Import character file').setInputFiles(file);
+  await importAndOpen(page, file, 'Snag');
   await expect(sheet).toBeVisible();
   expect(await sheet.innerText()).toBe(before);
 });
 
 test('shows validation errors for a bad import', async ({ page }) => {
   await page.goto('/#/builder');
-  await page.getByLabel('Import character file').setInputFiles({
+  await page.getByLabel('Import character files').setInputFiles({
     name: 'broken.json',
     mimeType: 'application/json',
     buffer: Buffer.from('{"schemaVersion": 1, "name": ""}'),
   });
   await expect(page.getByRole('alert')).toContainText('broken.json: ');
-  await expect(page.getByTestId('character-sheet')).toHaveCount(0);
+  await expect(page.getByRole('list', { name: 'Saved characters' })).toHaveCount(0);
+});
+
+test('saves, edits over the original, and saves a renamed copy as a new character', async ({
+  page,
+}) => {
+  await fillSnag(page);
+  await page.getByRole('button', { name: 'Create character' }).click();
+  await page.getByRole('button', { name: 'Save character' }).click();
+  await expect(page.getByRole('status')).toHaveText('Snag joined the roster.');
+  const list = page.getByRole('list', { name: 'Saved characters' });
+  await expect(list.getByRole('listitem')).toHaveCount(1);
+
+  const row = (name: string) => list.getByRole('listitem').filter({ hasText: name });
+  await row('Snag').getByRole('button', { name: 'Edit' }).click();
+  await expect(page.getByRole('heading', { name: 'Editing Snag' })).toBeVisible();
+  // Every pick comes back, so the character can be created again at once.
+  await openStep(page, 'Name and goal');
+  await page.getByRole('textbox', { name: 'Goal', exact: true }).fill('Rule the warren');
+  await page.getByRole('button', { name: 'Create character' }).click();
+  await page.getByRole('button', { name: 'Save over Snag' }).click();
+  await expect(page.getByRole('status')).toHaveText('Snag is saved.');
+  await expect(list.getByRole('listitem')).toHaveCount(1);
+  await row('Snag').getByRole('button', { name: 'Sheet' }).click();
+  await expect(page.getByTestId('character-sheet')).toContainText('Rule the warren');
+
+  await row('Snag').getByRole('button', { name: 'Edit' }).click();
+  await openStep(page, 'Name and goal');
+  await page.getByRole('textbox', { name: 'Name', exact: true }).fill('Grit');
+  await page.getByRole('button', { name: 'Create character' }).click();
+  await page.getByRole('button', { name: 'Save as a new character' }).click();
+  await expect(page.getByRole('status')).toHaveText('Grit joined the roster.');
+  await expect(list.getByRole('listitem')).toHaveCount(2);
+
+  await page.reload();
+  await expect(list.getByRole('listitem')).toHaveCount(2);
+  await row('Grit').getByRole('button', { name: 'Delete' }).click();
+  await row('Grit').getByRole('button', { name: 'Keep' }).click();
+  await row('Grit').getByRole('button', { name: 'Delete' }).click();
+  await row('Grit').getByRole('button', { name: 'Delete Grit for good' }).click();
+  await expect(list.getByRole('listitem')).toHaveCount(1);
+  await expect(list).not.toContainText('Grit');
+});
+
+test('opens an imported character with the picks its sheet shows', async ({ page }) => {
+  await page.goto('/#/builder');
+  await page
+    .getByLabel('Import character files')
+    .setInputFiles('tools/sim/parties/starter/snag.json');
+  await page.getByRole('button', { name: 'Edit' }).click();
+  await expect(page.getByText('The builder has no picks saved for this character')).toBeVisible();
+  await openStep(page, 'Name and goal');
+  await expect(page.getByRole('textbox', { name: 'Name', exact: true })).toHaveValue('Snag');
+  await page.getByRole('button', { name: 'Back to characters' }).click();
+  await expect(page.getByRole('heading', { name: 'Characters' })).toBeVisible();
 });

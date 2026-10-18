@@ -19,10 +19,11 @@ test('starts with the starter party, then continues', async ({ page }) => {
   await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
 });
 
-test('links to the character builder', async ({ page }) => {
+test('links to the Characters page', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('link', { name: 'Make your own characters' }).click();
-  await expect(page.getByLabel('Import character file')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Characters' })).toBeVisible();
+  await expect(page.getByLabel('Import character files')).toBeVisible();
 });
 
 test('asks before a new world replaces a save', async ({ page }) => {

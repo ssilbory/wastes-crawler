@@ -33,7 +33,7 @@ const CASES = peoples.flatMap((p) =>
 async function setUp(page: Page, people: string, lineage: string | undefined) {
   const select = (label: string, option: string) =>
     page.getByRole('combobox', { name: label, exact: true }).selectOption({ label: option });
-  await page.goto('/#/builder');
+  await page.goto('/#/builder/new');
   await select('People', people);
   if (lineage) await select('Lineage', lineage);
   const array = [14, 12, 11, 10, 9, 7];

@@ -31,8 +31,8 @@ export function RosterPanel(props: {
       </label>
       {props.entries.length === 0 ? (
         <p class="hint">
-          No saved characters yet. Import character files, or make one in the{' '}
-          <a href="#/builder">character builder</a> and save it to the roster.
+          No saved characters yet. Import character files, or make one on the{' '}
+          <a href="#/builder">Characters page</a>.
         </p>
       ) : (
         <ul class="roster-list">
