@@ -109,3 +109,45 @@ test('gives a character imported twice a fresh id the second time', async ({ pag
   });
   expect(new Set(ids).size).toBe(2);
 });
+
+test('pits the party against the starter party, then the test party', async ({
+  page,
+}, testInfo) => {
+  await page.goto('/#/arena');
+  await page.getByLabel('Import character files').setInputFiles(starters);
+  const slots: [string, string][] = [
+    ['Front row, slot 1', 'Snag'],
+    ['Front row, slot 2', 'Grukk'],
+    ['Rear row, slot 1', 'Lirael'],
+    ['Rear row, slot 2', 'Fizzwick'],
+  ];
+  for (const [slot, name] of slots)
+    await page.getByRole('combobox', { name: slot }).selectOption({ label: name });
+  const opponents = page.getByRole('region', { name: 'Opponents' });
+  await opponents.getByRole('radio', { name: 'Starter party' }).check();
+  await expect(page.getByRole('region', { name: 'Enemies' })).toHaveCount(0);
+  await expect(opponents).toContainText('Front row: Gretar, Marsan, Wildera');
+  await expect(opponents).toContainText('Rear row: Talus, Telwin, Lashana');
+  await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('rivals-e2e');
+  await page.getByRole('button', { name: 'Start fight' }).click();
+
+  // Only the party's own characters wait on commands; the rivals act for themselves.
+  await expect(page.getByRole('region', { name: 'Commands' })).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath('arena-rivals.png'), fullPage: true });
+  const defaults = page.getByRole('button', { name: 'Defaults for the round' });
+  for (let i = 0; i < 100 && (await defaults.isVisible()); i++) await defaults.click();
+  await expect(result(page)).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Battle log' })).toContainText('Gretar');
+
+  // The test party wears the same names, so its members are told apart as rivals.
+  await page.getByRole('button', { name: 'New fight' }).click();
+  await page
+    .getByRole('region', { name: 'Opponents' })
+    .getByRole('radio', { name: 'Test party' })
+    .check();
+  await page.getByRole('button', { name: 'Start fight' }).click();
+  const defaultsAgain = page.getByRole('button', { name: 'Defaults for the round' });
+  for (let i = 0; i < 100 && (await defaultsAgain.isVisible()); i++) await defaultsAgain.click();
+  await expect(result(page)).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Battle log' })).toContainText('Snag (rival)');
+});

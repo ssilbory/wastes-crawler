@@ -17,6 +17,7 @@ import type { Action, Battle, Combatant } from '../../game/combat/types.ts';
 import { floats, type Float } from '../../render/fight-fx.ts';
 import { createRng } from '../../rules/rng.ts';
 import { data, freshRng } from '../builder/data.ts';
+import type { Rival } from './RivalPicker.tsx';
 
 export interface PartySlot {
   entry: RosterEntry;
@@ -25,11 +26,21 @@ export interface PartySlot {
 }
 
 export type FightSetup =
-  | { kind: 'party'; party: PartySlot[]; enemies: string[][]; seed: string }
+  | { kind: 'party'; party: PartySlot[]; enemies: string[][]; rivals: Rival[]; seed: string }
   | { kind: 'spectator'; left: string[][]; right: string[][]; seed: string };
 
 const rngFor = (seed: string) => (seed.trim() ? createRng(seed.trim()) : freshRng());
 const rows = (r: string[][]) => r.filter((row) => row.length > 0);
+
+/** Rivals named like a party member get " (rival)", so the log tells them apart. */
+function named(rivals: Rival[], party: PartySlot[]): Rival[] {
+  const taken = new Set(party.map((p) => p.entry.character.name));
+  return rivals.map((r) =>
+    taken.has(r.character.name)
+      ? { ...r, character: { ...r.character, name: `${r.character.name} (rival)` } }
+      : r,
+  );
+}
 
 export function startBattle(setup: FightSetup): Battle {
   if (setup.kind === 'party') {
@@ -42,6 +53,7 @@ export function startBattle(setup: FightSetup): Battle {
         column: p.column,
       })),
       enemies: rows(setup.enemies),
+      rivals: named(setup.rivals, setup.party),
       log: true,
     });
   }
@@ -89,8 +101,9 @@ export function batch(
   };
 }
 
-/** PCs take commands, and a companion answering its master's Mind Call (1.5.4). */
-const commanded = (b: Battle) => (c: Combatant) => c.kind === 'pc' || answersCall(b, c);
+/** The party's PCs take commands, and a companion answering its master's Mind Call (1.5.4). */
+const commanded = (b: Battle) => (c: Combatant) =>
+  (c.kind === 'pc' && c.side === 'party') || answersCall(b, c);
 
 /** Party fights: the combatant awaiting a command, after every turn that needs none. */
 export const nextCommand = (b: Battle) => advance(b, commanded(b));

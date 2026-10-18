@@ -12,7 +12,7 @@ import { say } from './damage.ts';
 import { echoes, landing, quickens, roundPasses, struggle, weakestSwing } from './conditions.ts';
 import { checkMorale } from './morale.ts';
 import { canAct, isUp, targets } from './targeting.ts';
-import type { Attack, Battle, Combatant, Controller } from './types.ts';
+import type { Attack, Battle, Combatant, Controller, SideId } from './types.ts';
 import { followRiders, inSlot } from './mounted.ts';
 import { heedCall } from './companions.ts';
 
@@ -152,10 +152,10 @@ function swingPlan(b: Battle, actor: Combatant): (number | null)[] {
   return Array<null>(actor.kind === 'monster' ? actor.attacksPerRound : 1).fill(null);
 }
 
-function formation(b: Battle): Formation {
+function formation(b: Battle, side: SideId): Formation {
   const grid: Formation = [Array(ROW_SLOTS).fill(null), Array(ROW_SLOTS).fill(null)];
   for (const c of b.combatants) {
-    if (c.side !== 'party' || !inSlot(c)) continue;
+    if (c.side !== side || !inSlot(c)) continue;
     // Non-combatants hold their slot but are never promoted to the front.
     const standing = canAct(c) && !c.noncombatant;
     // Only the downed drop back: the held, the asleep, and the frozen keep their place.
@@ -169,11 +169,11 @@ function formation(b: Battle): Formation {
 const pickAtRandom = (b: Battle) => (cols: number[]) =>
   cols[b.rng.int(0, cols.length - 1)] as number;
 
-function shiftFormation(b: Battle): void {
-  const party = b.combatants.filter((c) => c.side === 'party' && inSlot(c));
-  const at = (row: number, col: number) => party.find((c) => c.row === row && c.column === col);
+function shiftFormation(b: Battle, side: SideId): void {
+  const members = b.combatants.filter((c) => c.side === side && inSlot(c));
+  const at = (row: number, col: number) => members.find((c) => c.row === row && c.column === col);
   const rearHp = [0, 1, 2, 3].map((col) => at(1, col)?.hp ?? 0);
-  for (const move of frontDrops(formation(b), rearHp, pickAtRandom(b))) {
+  for (const move of frontDrops(formation(b, side), rearHp, pickAtRandom(b))) {
     // frontDrops only moves occupied front slots.
     const down = at(...move.from) as Combatant;
     const other = at(...move.to);
@@ -199,7 +199,8 @@ export function endOfRound(b: Battle): void {
     if (c.rootedRounds > 0) c.rootedRounds -= 1;
     if (c.flyingRounds > 0) c.flyingRounds -= 1;
   }
-  if (b.layout.party === 'formation') shiftFormation(b);
+  for (const side of ['party', 'enemy'] as const)
+    if (b.layout[side] === 'formation') shiftFormation(b, side);
   // Monster rows step up when their front row is empty. A monster held out of action (spellbound,
   // banished and due back) still holds its slot, so only the dead and the fled leave it open.
   const monsters = b.combatants.filter((c) => c.kind === 'monster' && isUp(c));

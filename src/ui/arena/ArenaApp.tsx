@@ -12,6 +12,7 @@ import { loadRoster, saveRoster } from '../storage.ts';
 import { startBattle, type FightSetup, type PartySlot } from './fight.ts';
 import { FightScreen } from './FightScreen.tsx';
 import { MonsterPicker } from './MonsterPicker.tsx';
+import { RivalPicker, rivalsFor, type Opponents } from './RivalPicker.tsx';
 import { PartySetup, type Placement } from './PartySetup.tsx';
 import { RosterPanel } from './RosterPanel.tsx';
 import { SpectatorScreen } from './SpectatorScreen.tsx';
@@ -27,6 +28,7 @@ export function ArenaApp() {
   const [mode, setMode] = useState<Mode>('party');
   const [placement, setPlacement] = useState<Placement>({});
   const [enemies, setEnemies] = useState(emptyRows);
+  const [opponents, setOpponents] = useState<Opponents>('monsters');
   const [left, setLeft] = useState(emptyRows);
   const [right, setRight] = useState(emptyRows);
   const [seed, setSeed] = useState('');
@@ -64,12 +66,14 @@ export function ArenaApp() {
   });
   const ready =
     mode === 'party'
-      ? party.length > 0 && hasMonsters(enemies)
+      ? party.length > 0 && (opponents !== 'monsters' || hasMonsters(enemies))
       : hasMonsters(left) && hasMonsters(right);
   const start = () =>
     setFight(
       mode === 'party'
-        ? { kind: 'party', party, enemies, seed }
+        ? opponents === 'monsters'
+          ? { kind: 'party', party, enemies, rivals: [], seed }
+          : { kind: 'party', party, enemies: emptyRows(), rivals: rivalsFor(opponents), seed }
         : { kind: 'spectator', left, right, seed },
     );
 
@@ -131,7 +135,10 @@ export function ArenaApp() {
               onPreset={onPreset}
             />
             <PartySetup entries={roster} placement={placement} onChange={setPlacement} />
-            <MonsterPicker title="Enemies" rows={enemies} onChange={setEnemies} />
+            <RivalPicker value={opponents} onChange={setOpponents} />
+            {opponents === 'monsters' && (
+              <MonsterPicker title="Enemies" rows={enemies} onChange={setEnemies} />
+            )}
           </>
         ) : (
           <>

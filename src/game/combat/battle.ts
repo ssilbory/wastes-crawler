@@ -89,6 +89,8 @@ export interface BattleSetup {
   mounts?: MountSetup[];
   /** Enemy rows, front first: up to three rows of up to eight monster ids. */
   enemies: string[][];
+  /** Characters on the enemy side in a formation of their own, in place of monsters (arena). */
+  rivals?: { character: Character; row: number; column: number }[];
   /** Names for the log; the party and the enemy by default. */
   sideNames?: Record<SideId, string>;
   /** The party fights without light (docs/rules-adaptation.md, Dungeon exploration). */
@@ -180,7 +182,19 @@ export function createBattle(s: BattleSetup): Battle {
     ...monsterRows(s, allies, 'party', 'ally'),
   ];
   followRiders(party);
-  const enemies = monsterRows(s, s.enemies, 'enemy', 'foe');
+  const rivals = s.rivals ?? [];
+  if (rivals.length > 2 * ROW_SLOTS) throw new Error('at most eight rivals');
+  if (rivals.length > 0 && s.enemies.some((r) => r.length > 0))
+    throw new Error('a side is either characters or monsters');
+  const enemies =
+    rivals.length > 0
+      ? rivals.map((p, i) => ({
+          ...pcCombatant(s.data, p.character, `foe-pc-${i}`),
+          side: 'enemy' as const,
+          row: p.row,
+          column: p.column,
+        }))
+      : monsterRows(s, s.enemies, 'enemy', 'foe');
   if (s.antiMagic)
     for (const c of [...party, ...enemies])
       if (c.caster) Object.assign(c.caster, { canCast: false, armorFree: [] });
@@ -189,7 +203,10 @@ export function createBattle(s: BattleSetup): Battle {
     rng: s.rng,
     round: 1,
     combatants: [...party, ...enemies],
-    layout: { party: allies.length > 0 ? 'rows' : 'formation', enemy: 'rows' },
+    layout: {
+      party: allies.length > 0 ? 'rows' : 'formation',
+      enemy: rivals.length > 0 ? 'formation' : 'rows',
+    },
     sideNames: s.sideNames ?? { party: 'the party', enemy: 'the enemy' },
     partyFirst: true,
     queue: [],
