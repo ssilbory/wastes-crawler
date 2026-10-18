@@ -1,8 +1,12 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { importCharacter } from '../../../src/game/character/io.ts';
 import { partyAction } from '../../../src/game/combat/ai.ts';
 import { createBattle, runBattle, runRound } from '../../../src/game/combat/battle.ts';
+import { harm } from '../../../src/game/combat/damage.ts';
 import { checkMorale } from '../../../src/game/combat/morale.ts';
-import type { Battle, Controller } from '../../../src/game/combat/types.ts';
+import { beginRound } from '../../../src/game/combat/round.ts';
+import type { Battle, CasterState, Controller } from '../../../src/game/combat/types.ts';
 import { createRng } from '../../../src/rules/rng.ts';
 import { data, starter, who } from './helpers.ts';
 
@@ -46,11 +50,13 @@ describe('rival characters on the enemy side (docs/rules-adaptation.md, Arena ri
     );
   });
 
-  it('fight to the end: their morale never breaks', () => {
+  it('fight to the end: half their side down, the rest still never break', () => {
     const b = rivalry();
-    for (const c of b.combatants) if (c.side === 'enemy') c.hp = 1;
+    who(b, 'Lirael').status = 'dead';
+    const fizzwick = who(b, 'Fizzwick');
+    fizzwick.hp = 1;
     for (let i = 0; i < 20; i++) checkMorale(b);
-    expect(b.combatants.filter((c) => c.side === 'enemy' && c.status === 'active')).toHaveLength(2);
+    expect(fizzwick.status).toBe('active');
   });
 
   it('drop their downed out of the front row, as the party does', () => {
@@ -62,11 +68,60 @@ describe('rival characters on the enemy side (docs/rules-adaptation.md, Arena ri
     expect(lirael.row).toBe(1);
   });
 
-  it('choose their own actions against the party, and the fight comes to an end', () => {
+  it('act first with Alert, as the party does', () => {
+    const b = rivalry();
+    who(b, 'Fizzwick').actsFirst = true;
+    beginRound(b);
+    expect(b.queue[0]).toBe('foe-pc-1');
+  });
+
+  it('choose their own actions against the party', () => {
     const b = rivalry();
     const action = partyAction(b, who(b, 'Lirael'));
-    if (action.kind === 'attack') expect(who(b, action.target).side).toBe('party');
-    const result = runBattle(b);
-    expect(['party', 'enemy']).toContain(result.outcome);
+    expect(action.kind).toBe('attack');
+    expect(action.kind === 'attack' && who(b, action.target).side).toBe('party');
+  });
+
+  it("don't raise the party's Invincible Citadel as they fall", () => {
+    const b = createBattle({
+      data,
+      rng: createRng('citadel'),
+      party: [{ character: starter('fizzwick'), row: 0, column: 0 }],
+      enemies: [],
+      rivals: [{ character: starter('grukk'), row: 0, column: 0 }],
+    });
+    const spells = ['invocation-of-the-invincible-citadel'];
+    Object.assign(who(b, 'Fizzwick').caster as CasterState, {
+      level: 9,
+      known: spells,
+      prepared: spells,
+      spellsLeft: 9,
+      canCast: true,
+    });
+    const grukk = who(b, 'Grukk');
+    harm(b, grukk, 99);
+    expect([b.escaped, grukk.status]).toEqual([false, 'dying']);
+  });
+
+  it('fight the content parties to an end: the test party against the starter party', () => {
+    const b = createBattle({
+      data,
+      rng: createRng('content-parties'),
+      party: data.content.testParty,
+      enemies: [],
+      rivals: data.content.starterParty,
+    });
+    expect(b.combatants.filter((c) => c.side === 'enemy')).toHaveLength(6);
+    expect(['party', 'enemy']).toContain(runBattle(b).outcome);
+  });
+});
+
+describe('the test party (data/content/test-party.json)', () => {
+  it('still imports, and matches the sample party the balance tools measure', () => {
+    for (const { character } of data.content.testParty) {
+      const file = `tools/sim/parties/starter/${character.name.toLowerCase()}.json`;
+      const sample = importCharacter(readFileSync(file, 'utf8'), data);
+      expect(importCharacter(JSON.stringify(character), data)).toEqual(sample);
+    }
   });
 });

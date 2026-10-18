@@ -89,7 +89,7 @@ export interface BattleSetup {
   mounts?: MountSetup[];
   /** Enemy rows, front first: up to three rows of up to eight monster ids. */
   enemies: string[][];
-  /** Characters on the enemy side in a formation of their own, in place of monsters (arena). */
+  /** Characters in place of monsters, in formation (docs/rules-adaptation.md, Arena rivals). */
   rivals?: { character: Character; row: number; column: number }[];
   /** Names for the log; the party and the enemy by default. */
   sideNames?: Record<SideId, string>;
@@ -232,13 +232,18 @@ export function createBattle(s: BattleSetup): Battle {
     events: s.log ? [] : null,
     outcome: null,
   };
-  const active = party.filter(canAct);
-  const partyRoll = sideInitiative(
-    s.rng,
-    active.length > 0 ? Math.max(...active.map((p) => p.modifiers.dex)) : 0,
-    Math.max(0, ...active.map((p) => p.initiativeBonus)),
-  );
-  b.partyFirst = partyActsFirst(partyRoll, sideInitiative(s.rng, 0));
+  // Characters roll with their best Dex and Alert; monsters roll flat.
+  const pcRoll = (side: Combatant[]) => {
+    const active = side.filter(canAct);
+    return sideInitiative(
+      s.rng,
+      active.length > 0 ? Math.max(...active.map((p) => p.modifiers.dex)) : 0,
+      Math.max(0, ...active.map((p) => p.initiativeBonus)),
+    );
+  };
+  const partyRoll = pcRoll(party);
+  const enemyRoll = rivals.length > 0 ? pcRoll(enemies) : sideInitiative(s.rng, 0);
+  b.partyFirst = partyActsFirst(partyRoll, enemyRoll);
   const winner = b.partyFirst ? b.sideNames.party : b.sideNames.enemy;
   say(b, `${winner.charAt(0).toUpperCase()}${winner.slice(1)} wins initiative.`);
   beginRound(b);

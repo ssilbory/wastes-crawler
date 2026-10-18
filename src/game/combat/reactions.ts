@@ -161,9 +161,10 @@ export function everlast(b: Battle, target: Combatant): boolean {
 /**
  * The Invincible Citadel: as a PC of the party would fall, the first ally with it prepared and a
  * spell left raises the bubble, and the party escapes the fight. Once raised, it holds. Only the
- * party's PCs fall Mortally Wounded, so only they call on it.
+ * party's PCs call on it; rivals in the arena (docs/rules-adaptation.md, Arena rivals) never do.
  */
 export function shelter(b: Battle, target: Combatant): boolean {
+  if (target.side !== 'party') return false;
   if (b.escaped) return true;
   for (const x of b.combatants) {
     const c = x.caster;

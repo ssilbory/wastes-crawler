@@ -20,13 +20,13 @@ export const MAX_ROUNDS = 100;
 
 const order = (list: Combatant[]) => [...list].sort((x, y) => x.row - y.row || x.column - y.column);
 
-/** Queues this round's turns: Alert 2 PCs first, then each side in initiative order. */
+/** Queues this round's turns: Alert 2 PCs first, rivals' too, then each side in initiative order. */
 export function beginRound(b: Battle): void {
   const pcs = order(b.combatants.filter((c) => c.side === 'party'));
   const foes = order(b.combatants.filter((c) => c.side === 'enemy'));
-  const first = pcs.filter((c) => c.actsFirst);
-  const rest = pcs.filter((c) => !c.actsFirst);
-  const sides = b.partyFirst ? [rest, foes] : [foes, rest];
+  const first = [...pcs, ...foes].filter((c) => c.actsFirst);
+  const later = (side: Combatant[]) => side.filter((c) => !c.actsFirst);
+  const sides = b.partyFirst ? [later(pcs), later(foes)] : [later(foes), later(pcs)];
   // Slow creatures, such as zombies, always act last (Phase 14a).
   const turns = [...first, ...sides.flat()];
   b.queue = [...turns.filter((c) => !c.actsLast), ...turns.filter((c) => c.actsLast)].map(
