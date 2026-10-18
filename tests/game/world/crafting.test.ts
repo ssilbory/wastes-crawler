@@ -232,13 +232,16 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
     });
   });
 
-  it('works mods only at the workshop, never in a camp shift', () => {
+  it.each([
+    ['mod', 2],
+    ['strip', 3],
+  ] as const)('leaves a %s with %d days after two camp shifts', (kind, left) => {
     const w = rich();
     tools(fizz(w));
     w.projects = [
       {
         crafter: 'm-3',
-        kind: 'mod',
+        kind,
         item: 'dagger',
         mod: 'customized',
         target: 's-1',
@@ -249,7 +252,7 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
       },
     ];
     shifts(w, fizz(w), 2);
-    expect(w.projects[0]?.daysLeft).toBe(3);
+    expect(w.projects[0]?.daysLeft).toBe(left);
   });
 
   it('sells crafting tools: 100 crowns and 3 items of encumbrance', () => {

@@ -12,7 +12,7 @@ import { findPeople } from '../character/people.ts';
 import type { WorldEvent } from './bus.ts';
 import { note } from './members.ts';
 import { daysText } from './wording.ts';
-import { completeMod } from './mods.ts';
+import { completeMod, modOf } from './mods.ts';
 import { regionMap } from './region.ts';
 import type { TownResult } from './services.ts';
 import { priceHere, spend, townHere } from './town.ts';
@@ -196,12 +196,12 @@ export const hasTools = (data: GameData, m: Member) =>
   m.character.inventory.some((e) => e.id === data.content.craftingRules.tools.id);
 
 /**
- * The gear a party member could work on in a camp shift out in the wilds: their own build, not a
- * mod (mods need the workshop), with crafting tools in their pack. Null if there is none.
+ * The work a party member could do in a camp shift out in the wilds: their own build or mod, not
+ * a strip (stripping needs the workshop), with crafting tools in their pack. Null if there is none.
  */
 export function campProject(w: World, data: GameData, m: Member): Project | null {
   if (regionMap(data, w.region).siteAt(w.position) !== undefined || w.dungeon) return null;
-  const p = w.projects.find((x) => x.crafter === m.id && x.kind === 'gear' && !x.staying);
+  const p = w.projects.find((x) => x.crafter === m.id && x.kind !== 'strip' && !x.staying);
   return p && hasTools(data, m) ? p : null;
 }
 
@@ -214,11 +214,15 @@ export function craftShift(w: World, data: GameData, m: Member): void {
     return;
   }
   workOn(w, data, p, data.content.craftingRules.shiftDays);
-  if (w.projects.includes(p)) note(w, `${name} works on the ${itemName(data, p)}.`);
+  if (w.projects.includes(p)) note(w, `${name} works on ${workName(data, p)}.`);
 }
 
-const itemName = (data: GameData, p: Project) =>
-  `${tierName(p.quality)}${(findItem(data, p.item) as Craftable).name}`;
+function workName(data: GameData, p: Project): string {
+  const item = (findItem(data, p.item) as CatalogItem).name;
+  return p.kind === 'mod'
+    ? `${modOf(data, p.mod as string).name} for the ${item}`
+    : `the ${tierName(p.quality)}${item}`;
+}
 
 /** The crafting bus listener: each day, crafters who stayed behind at a workshop work a day. */
 export function craftingListener(w: World, data: GameData, e: WorldEvent): void {

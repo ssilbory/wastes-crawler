@@ -159,6 +159,19 @@ describe('suggested plans', () => {
     expect(suggestPlan(w, data)).toMatchObject({ activities: { 'm-0': 'rest' } });
   });
 
+  it.each([
+    ['mod', 'craft'],
+    ['strip', 'forage'],
+  ] as const)('sets a crafter whose only work is a %s to %s', (kind, activity) => {
+    const w = world();
+    w.position = { col: 5, row: 9 };
+    crafting(w, member(w, 'Snag'));
+    w.projects = [
+      { ...(w.projects[0] as World['projects'][0]), kind, mod: 'customized', target: 's1' },
+    ];
+    expect(suggestPlan(w, data)).toMatchObject({ activities: { 'm-0': activity } });
+  });
+
   it('spares a crafter the watch while anyone else can keep it', () => {
     const w = world();
     w.position = { col: 5, row: 9 };
