@@ -95,3 +95,17 @@ test('takes a character from the Characters page to the arena roster', async ({ 
   await expect(roster.getByRole('listitem')).toHaveCount(1);
   await expect(roster).toContainText('Snag, level 1 Warrior');
 });
+
+test('gives a character imported twice a fresh id the second time', async ({ page }) => {
+  await page.goto('/#/arena');
+  const snag = starters[0] as string;
+  await page.getByLabel('Import character files').setInputFiles(snag);
+  await page.getByLabel('Import character files').setInputFiles(snag);
+  await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(2);
+  const ids = await page.evaluate(() => {
+    const raw = localStorage.getItem('wastes-crawler.roster') ?? '{}';
+    const roster = JSON.parse(raw) as { entries: { character: { id: string } }[] };
+    return roster.entries.map((e) => e.character.id);
+  });
+  expect(new Set(ids).size).toBe(2);
+});

@@ -156,6 +156,17 @@ describe('saving an edited character', () => {
       foci: [null, null, { id: 'alert' }, { id: 'armsmaster' }, { id: 'die-hard' }],
     };
     expect(asEdit(original, build(hardy, 1, 0xdef)).hp).not.toEqual(original.character.hp);
+    const developed = {
+      ...raider(),
+      foci: [
+        null,
+        null,
+        { id: 'alert' },
+        { id: 'armsmaster' },
+        { id: 'developed-attribute', attribute: 'con' as const },
+      ],
+    };
+    expect(asEdit(original, build(developed, 1, 0xdef)).hp).not.toEqual(original.character.hp);
     // And a change of class; a Constitution change that keeps the modifier keeps HP.
     const built = build(raider(), 1, 0xdef);
     const expert = { ...built, classes: { current: 'full-expert', levels: { 'full-expert': 1 } } };
