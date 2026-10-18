@@ -57,5 +57,8 @@ test('manages characters on the Characters page, not the Overland start screen',
   await expect(page.getByRole('status')).toHaveText('Snag is deleted.');
   await expect(list.getByRole('listitem')).toHaveCount(3);
   await page.goto('/#/world');
-  await expect(page.getByRole('combobox', { name: 'Front row, slot 1' })).not.toHaveValue('snag');
+  const slot = page.getByRole('combobox', { name: 'Front row, slot 1' });
+  await expect(slot.getByRole('option', { name: 'Grukk' })).toHaveCount(1);
+  await expect(slot.getByRole('option', { name: 'Snag' })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Characters page' })).toBeVisible();
 });
