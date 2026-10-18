@@ -235,7 +235,7 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
   it.each([
     ['mod', 2],
     ['strip', 3],
-  ] as const)('works a %s in camp shifts down to %d days, strips never', (kind, left) => {
+  ] as const)('leaves a %s with %d days after two camp shifts', (kind, left) => {
     const w = rich();
     tools(fizz(w));
     w.projects = [
