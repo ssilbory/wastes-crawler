@@ -173,7 +173,7 @@ describe('building mods (SRD 2.8.2)', () => {
       ok: false,
       reason: 'Fizzwick is already making something.',
     });
-    // In camp a made camp alone does nothing; a crafter's shift with tools works half a day.
+    // A made camp alone does nothing; a crafting shift with tools does.
     w.position = { col: 4, row: 8 };
     w.camp = 'made';
     emit(w, data, { kind: 'day-passed' });

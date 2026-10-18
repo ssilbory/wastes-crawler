@@ -1,10 +1,11 @@
 // Mods (docs/rules-adaptation.md, Crafting and modifying gear; vendor/wwn-srd/2.0 The Rules of the
 // Game/2.8.0 Crafting and Modifying Gear.md, 2.8.2). An Expert or Partial Expert with Craft-1, or
 // anyone with the Artisan focus, starts a mod on one weapon or suit of armor in a workshop town,
-// paying exact loot dice and components, and works it there or in camp shifts (Sam's calls). Building takes a week per Craft level of the
-// mod, halved because workshop work is full time, and halved again with a Craft assistant in the
-// party. Any loot dice short can be paid in crowns at their highest face (Sam's call). Stripping a
-// mod off takes a day and gives its components back.
+// paying exact loot dice and components, and works it there or in camp shifts (Sam's calls).
+// Building takes a week per Craft level of the mod, halved because workshop work is full time,
+// and halved again with a Craft assistant in the party. Any loot dice short can be paid in crowns
+// at their highest face (Sam's call). Stripping a mod off takes a day and gives its components
+// back.
 import type { Mod, Project } from '../../data/schemas/index.ts';
 import { payDice } from '../../rules/loot-dice.ts';
 import type { GameData } from '../character/context.ts';
