@@ -90,10 +90,17 @@ test('opens a sheet over the list, scrolls to its end, and closes it', async ({
   await expect(last).toBeInViewport();
 
   // Tab stays in the sheet, away from the list it covers.
-  for (let i = 0; i < 4; i++) await page.keyboard.press('Tab');
-  await expect(dialog.locator(':focus')).toHaveCount(1);
+  for (const key of ['Tab', 'Tab', 'Shift+Tab', 'Shift+Tab']) {
+    await page.keyboard.press(key);
+    await expect(dialog.getByRole('button', { name: 'Close' })).toBeFocused();
+  }
 
   await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  await expect(sheetButton).toBeFocused();
+  // A click on the dim around the sheet closes it too.
+  await sheetButton.click();
+  await page.mouse.click(4, 4);
   await expect(dialog).toHaveCount(0);
   await expect(sheetButton).toBeFocused();
   await sheetButton.click();

@@ -8,27 +8,32 @@ const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabi
  * A character's sheet over the character list, scrolling on its own. Close, Escape, or a click on
  * the dimmed list around it closes it, and focus goes back to whatever opened it.
  */
-export function SheetPopup(props: { character: Character; onClose: () => void }) {
+export function SheetPopup(props: {
+  character: Character;
+  /** Where focus goes back to on closing; whatever had focus, if not given. */
+  returnTo?: HTMLElement | null;
+  onClose: () => void;
+}) {
   const box = useRef<HTMLElement>(null);
   const close = useRef<HTMLButtonElement>(null);
   /** Whether the press began on the dim, so a drag out of the sheet doesn't close it. */
   const pressedOutside = useRef(false);
-  const { onClose } = props;
+  const { onClose, returnTo } = props;
   // Before paint, so Escape works the moment the sheet shows.
   useLayoutEffect(() => {
-    const opener = document.activeElement as HTMLElement | null;
+    const opener = returnTo ?? (document.activeElement as HTMLElement | null);
     close.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       // An ⓘ description over the sheet closes on its own first.
       if (e.key === 'Escape' && !document.querySelector('.hint-sheet')) onClose();
-      if (e.key === 'Tab') trapTab(e, box.current);
+      if (e.key === 'Tab' && !document.querySelector('.hint-sheet')) trapTab(e, box.current);
     };
     addEventListener('keydown', onKey);
     return () => {
       removeEventListener('keydown', onKey);
       opener?.focus();
     };
-  }, [onClose]);
+  }, [onClose, returnTo]);
   return (
     <div
       class="sheet-popup-backdrop"
@@ -58,7 +63,10 @@ export function SheetPopup(props: { character: Character; onClose: () => void })
 /** Keeps Tab and Shift+Tab cycling inside the popup, away from the list it covers. */
 function trapTab(e: KeyboardEvent, box: HTMLElement | null): void {
   if (!box) return;
-  const items = [...box.querySelectorAll<HTMLElement>(FOCUSABLE)];
+  // Only what can take focus: the ⓘ buttons are hidden with a mouse.
+  const items = [...box.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(
+    (el) => el.getClientRects().length > 0 && !el.hasAttribute('disabled'),
+  );
   const first = items[0];
   const last = items.at(-1);
   if (!first || !last) return;

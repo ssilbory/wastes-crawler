@@ -24,7 +24,7 @@ const order = (list: Combatant[]) => [...list].sort((x, y) => x.row - y.row || x
 export function beginRound(b: Battle): void {
   const pcs = order(b.combatants.filter((c) => c.side === 'party'));
   const foes = order(b.combatants.filter((c) => c.side === 'enemy'));
-  const first = [...pcs, ...foes].filter((c) => c.actsFirst);
+  const first = (b.partyFirst ? [...pcs, ...foes] : [...foes, ...pcs]).filter((c) => c.actsFirst);
   const later = (side: Combatant[]) => side.filter((c) => !c.actsFirst);
   const sides = b.partyFirst ? [later(pcs), later(foes)] : [later(foes), later(pcs)];
   // Slow creatures, such as zombies, always act last (Phase 14a).

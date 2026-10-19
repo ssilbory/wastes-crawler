@@ -8,6 +8,7 @@ import { checkMorale } from '../../../src/game/combat/morale.ts';
 import { beginRound } from '../../../src/game/combat/round.ts';
 import type { Battle, CasterState, Controller } from '../../../src/game/combat/types.ts';
 import { createRng } from '../../../src/rules/rng.ts';
+import { scriptedThen } from '../../helpers/scripted-rng.ts';
 import { data, starter, who } from './helpers.ts';
 
 const wait: Controller = () => ({ kind: 'wait' });
@@ -50,6 +51,28 @@ describe('rival characters on the enemy side (docs/rules-adaptation.md, Arena ri
     );
   });
 
+  it('stand one to a slot, in two rows of four', () => {
+    const rival = { character: starter('snag'), row: 0, column: 0 };
+    const setup = { data, rng: createRng('x'), party: [rival], enemies: [] };
+    const slots = [[rival, rival], [{ ...rival, row: 2 }], [{ ...rival, column: 4 }]];
+    for (const rivals of slots)
+      expect(() => createBattle({ ...setup, rivals })).toThrow(
+        'rivals stand one to a slot in two rows of four',
+      );
+  });
+
+  it('roll initiative with their best Dex, as the party does', () => {
+    // Both sides roll a 1: Grukk adds Dex +0, Lirael Dex +1, so the rivals go first.
+    const b = createBattle({
+      data,
+      rng: scriptedThen([1, 1], createRng('x')),
+      party: [{ character: starter('grukk'), row: 0, column: 0 }],
+      enemies: [],
+      rivals: [{ character: starter('lirael'), row: 0, column: 0 }],
+    });
+    expect(b.partyFirst).toBe(false);
+  });
+
   it('fight to the end: half their side down, the rest still never break', () => {
     const b = rivalry();
     who(b, 'Lirael').status = 'dead';
@@ -73,6 +96,18 @@ describe('rival characters on the enemy side (docs/rules-adaptation.md, Arena ri
     who(b, 'Fizzwick').actsFirst = true;
     beginRound(b);
     expect(b.queue[0]).toBe('foe-pc-1');
+    // With Alert on both sides, the side that won initiative goes first.
+    who(b, 'Snag').actsFirst = true;
+    for (const [partyFirst, lead] of [
+      [false, 'foe-pc-1'],
+      [true, 'pc-0'],
+    ] as const) {
+      b.partyFirst = partyFirst;
+      beginRound(b);
+      expect(b.queue.slice(0, 2)).toEqual(
+        lead === 'pc-0' ? ['pc-0', 'foe-pc-1'] : ['foe-pc-1', 'pc-0'],
+      );
+    }
   });
 
   it('choose their own actions against the party', () => {

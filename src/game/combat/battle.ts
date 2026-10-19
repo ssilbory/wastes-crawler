@@ -186,6 +186,12 @@ export function createBattle(s: BattleSetup): Battle {
   if (rivals.length > 2 * ROW_SLOTS) throw new Error('at most eight rivals');
   if (rivals.length > 0 && s.enemies.some((r) => r.length > 0))
     throw new Error('a side is either characters or monsters');
+  const slots = new Set(rivals.map((p) => `${p.row}-${p.column}`));
+  if (
+    slots.size < rivals.length ||
+    rivals.some((p) => p.row < 0 || p.row > 1 || p.column < 0 || p.column >= ROW_SLOTS)
+  )
+    throw new Error('rivals stand one to a slot in two rows of four');
   const enemies =
     rivals.length > 0
       ? rivals.map((p, i) => ({

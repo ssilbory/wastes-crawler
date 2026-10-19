@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'preact/hooks';
+import { useCallback, useRef, useState } from 'preact/hooks';
 import type { RosterEntry } from '../../game/character/roster.ts';
 import { characterLevel } from '../../rules/progression.ts';
 import { ConfirmButton } from '../confirm.tsx';
@@ -14,6 +14,8 @@ export function CharacterList(props: {
 }) {
   const [open, setOpen] = useState<string | null>(null);
   const close = useCallback(() => setOpen(null), []);
+  // Some browsers don't focus a clicked button, so the popup is told where focus goes back.
+  const opener = useRef<HTMLElement | null>(null);
   const shown = props.entries.find((e) => e.id === open);
   return (
     <>
@@ -33,7 +35,10 @@ export function CharacterList(props: {
                     class="secondary"
                     aria-haspopup="dialog"
                     aria-label={`${c.name}'s sheet`}
-                    onClick={() => setOpen(e.id)}
+                    onClick={(ev) => {
+                      opener.current = ev.currentTarget;
+                      setOpen(e.id);
+                    }}
                   >
                     Sheet
                   </button>
@@ -61,7 +66,9 @@ export function CharacterList(props: {
           );
         })}
       </ul>
-      {shown && <SheetPopup character={shown.character} onClose={close} />}
+      {shown && (
+        <SheetPopup character={shown.character} returnTo={opener.current} onClose={close} />
+      )}
     </>
   );
 }
