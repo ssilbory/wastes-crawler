@@ -2,12 +2,12 @@ import { useRef, useState } from 'preact/hooks';
 import type { DefaultPreset } from '../../data/schemas/index.ts';
 import { importCharacter } from '../../game/character/io.ts';
 import {
-  addToRoster,
   removeFromRoster,
   setDefaultAction,
   type RosterEntry,
 } from '../../game/character/roster.ts';
-import { data } from '../builder/data.ts';
+import { importToRoster } from '../../game/character/roster-edit.ts';
+import { data, freshRng } from '../builder/data.ts';
 import { loadRoster, saveRoster } from '../storage.ts';
 import { startBattle, type FightSetup, type PartySlot } from './fight.ts';
 import { FightScreen } from './FightScreen.tsx';
@@ -41,10 +41,11 @@ export function ArenaApp() {
       setErrors(['Browser storage is unavailable, so the roster won’t be saved.']);
   };
   const onImport = async (files: FileList) => {
+    const rng = freshRng();
     const problems: string[] = [];
     for (const file of Array.from(files)) {
       const result = importCharacter(await file.text(), data);
-      if (result.ok) setRoster(addToRoster(rosterNow.current, result.character));
+      if (result.ok) setRoster(importToRoster(rosterNow.current, result.character, rng));
       else problems.push(...result.errors.map((e) => `${file.name}: ${e}`));
     }
     setErrors(problems);

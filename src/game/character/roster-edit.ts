@@ -1,7 +1,8 @@
-// Editing saved characters (docs/rules-adaptation.md, Editing saved characters). A character
-// made in the builder keeps its picks and opens in the builder again; an unlevelled one without
-// picks opens with what its sheet shows; a levelled one can only change its name and goal. Saving
-// under the same name overwrites it, and under another name adds a new character.
+// Editing saved characters (docs/rules-adaptation.md, Editing saved characters; HP from
+// vendor/wwn-srd/1.0 Character Creation/1.7.0 Final Character Creation Steps.md, 1.7.1). A
+// character made in the builder keeps its picks and opens in the builder again; an unlevelled one
+// without picks opens with what its sheet shows; a levelled one can only change its name and goal.
+// Saving under the same name overwrites it, and under another name adds a new character.
 import type { Character } from '../../data/schemas/index.ts';
 import { attributeModifier } from '../../rules/attributes.ts';
 import { characterLevel } from '../../rules/progression.ts';
@@ -64,11 +65,7 @@ const conModifier = (c: Character) =>
     Object.values(c.attributes).reduce((sum, adjust) => sum + (adjust.con ?? 0), 0),
   );
 
-/**
- * HP is kept over an edit unless what it was rolled from changed: the class's hit die, the Con
- * modifier, or foci such as Die Hard (vendor/wwn-srd/1.0 Character Creation/1.7.0 Final Character
- * Creation Steps.md, 1.7.1).
- */
+/** Starting HP's inputs (SRD 1.7.1): the class hit die, Con modifier, and foci like Die Hard. */
 const sameHpRoll = (a: Character, b: Character) =>
   a.classes.current === b.classes.current &&
   conModifier(a) === conModifier(b) &&
