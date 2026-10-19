@@ -137,6 +137,7 @@ test('saves, edits over the original, and saves a renamed copy as a new characte
   await expect(list.getByRole('listitem')).toHaveCount(1);
   await row('Snag').getByRole('button', { name: 'Sheet' }).click();
   await expect(page.getByTestId('character-sheet')).toContainText('Rule the warren');
+  await page.keyboard.press('Escape');
 
   await row('Snag').getByRole('button', { name: 'Edit' }).click();
   await openStep(page, 'Name and goal');

@@ -37,6 +37,7 @@ import craftsmen from '../../data/content/craftsmen.json';
 import settingsDefaults from '../../data/content/settings-defaults.json';
 import soundCues from '../../data/content/sound-cues.json';
 import starterParty from '../../data/content/starter-party.json';
+import testParty from '../../data/content/test-party.json';
 import settingMonsters from '../../data/content/setting-monsters.json';
 import standingOrders from '../../data/content/standing-orders.json';
 import authorities from '../../data/content/authorities.json';
@@ -111,6 +112,7 @@ export function loadContent(): ContentData {
     settingsDefaults: ContentSchemas.settingsDefaults.parse(settingsDefaults),
     soundCues: ContentSchemas.soundCues.parse(soundCues),
     starterParty: ContentSchemas.starterParty.parse(starterParty),
+    testParty: ContentSchemas.testParty.parse(testParty),
     settingMonsters: ContentSchemas.settingMonsters.parse(settingMonsters),
     standingOrders: ContentSchemas.standingOrders.parse(standingOrders),
     authorities: ContentSchemas.authorities.parse(authorities),

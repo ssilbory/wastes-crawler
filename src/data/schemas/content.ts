@@ -163,6 +163,18 @@ export const BackgroundSchema = z.strictObject({
 });
 export type Background = z.infer<typeof BackgroundSchema>;
 
+/** Characters in formation slots: two rows of four. */
+const PlacedPartySchema = z
+  .array(
+    z.strictObject({
+      row: z.int().min(0).max(1),
+      column: z.int().min(0).max(3),
+      character: CharacterSchema,
+    }),
+  )
+  .min(1)
+  .max(8);
+
 export const ContentSchemas = {
   peoples: z.array(PeopleSchema).min(1),
   backgrounds: z.array(BackgroundSchema).min(1),
@@ -217,16 +229,9 @@ export const ContentSchemas = {
   settingsDefaults: SettingsDefaultsSchema,
   soundCues: z.array(SoundCueSchema).min(1),
   /** The ready-made party offered when setting out with no characters of one's own. */
-  starterParty: z
-    .array(
-      z.strictObject({
-        row: z.int().min(0).max(1),
-        column: z.int().min(0).max(3),
-        character: CharacterSchema,
-      }),
-    )
-    .min(1)
-    .max(8),
+  starterParty: PlacedPartySchema,
+  /** The old starter party, kept as an arena opponent beside the starter party. */
+  testParty: PlacedPartySchema,
 } as const;
 export type ContentData = {
   [K in keyof typeof ContentSchemas]: z.infer<(typeof ContentSchemas)[K]>;

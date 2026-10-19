@@ -89,6 +89,8 @@ export interface BattleSetup {
   mounts?: MountSetup[];
   /** Enemy rows, front first: up to three rows of up to eight monster ids. */
   enemies: string[][];
+  /** Characters in place of monsters, in formation (docs/rules-adaptation.md, Arena rivals). */
+  rivals?: { character: Character; row: number; column: number }[];
   /** Names for the log; the party and the enemy by default. */
   sideNames?: Record<SideId, string>;
   /** The party fights without light (docs/rules-adaptation.md, Dungeon exploration). */
@@ -180,7 +182,25 @@ export function createBattle(s: BattleSetup): Battle {
     ...monsterRows(s, allies, 'party', 'ally'),
   ];
   followRiders(party);
-  const enemies = monsterRows(s, s.enemies, 'enemy', 'foe');
+  const rivals = s.rivals ?? [];
+  if (rivals.length > 2 * ROW_SLOTS) throw new Error('at most eight rivals');
+  if (rivals.length > 0 && s.enemies.some((r) => r.length > 0))
+    throw new Error('a side is either characters or monsters');
+  const slots = new Set(rivals.map((p) => `${p.row}-${p.column}`));
+  if (
+    slots.size < rivals.length ||
+    rivals.some((p) => p.row < 0 || p.row > 1 || p.column < 0 || p.column >= ROW_SLOTS)
+  )
+    throw new Error('rivals stand one to a slot in two rows of four');
+  const enemies =
+    rivals.length > 0
+      ? rivals.map((p, i) => ({
+          ...pcCombatant(s.data, p.character, `foe-pc-${i}`),
+          side: 'enemy' as const,
+          row: p.row,
+          column: p.column,
+        }))
+      : monsterRows(s, s.enemies, 'enemy', 'foe');
   if (s.antiMagic)
     for (const c of [...party, ...enemies])
       if (c.caster) Object.assign(c.caster, { canCast: false, armorFree: [] });
@@ -189,7 +209,10 @@ export function createBattle(s: BattleSetup): Battle {
     rng: s.rng,
     round: 1,
     combatants: [...party, ...enemies],
-    layout: { party: allies.length > 0 ? 'rows' : 'formation', enemy: 'rows' },
+    layout: {
+      party: allies.length > 0 ? 'rows' : 'formation',
+      enemy: rivals.length > 0 ? 'formation' : 'rows',
+    },
     sideNames: s.sideNames ?? { party: 'the party', enemy: 'the enemy' },
     partyFirst: true,
     queue: [],
@@ -215,13 +238,18 @@ export function createBattle(s: BattleSetup): Battle {
     events: s.log ? [] : null,
     outcome: null,
   };
-  const active = party.filter(canAct);
-  const partyRoll = sideInitiative(
-    s.rng,
-    active.length > 0 ? Math.max(...active.map((p) => p.modifiers.dex)) : 0,
-    Math.max(0, ...active.map((p) => p.initiativeBonus)),
-  );
-  b.partyFirst = partyActsFirst(partyRoll, sideInitiative(s.rng, 0));
+  // Characters roll with their best Dex and Alert; monsters roll flat.
+  const pcRoll = (side: Combatant[]) => {
+    const active = side.filter(canAct);
+    return sideInitiative(
+      s.rng,
+      active.length > 0 ? Math.max(...active.map((p) => p.modifiers.dex)) : 0,
+      Math.max(0, ...active.map((p) => p.initiativeBonus)),
+    );
+  };
+  const partyRoll = pcRoll(party);
+  const enemyRoll = rivals.length > 0 ? pcRoll(enemies) : sideInitiative(s.rng, 0);
+  b.partyFirst = partyActsFirst(partyRoll, enemyRoll);
   const winner = b.partyFirst ? b.sideNames.party : b.sideNames.enemy;
   say(b, `${winner.charAt(0).toUpperCase()}${winner.slice(1)} wins initiative.`);
   beginRound(b);

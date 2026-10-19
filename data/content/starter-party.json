@@ -4,35 +4,44 @@
     "column": 0,
     "character": {
       "schemaVersion": 7,
-      "id": "char-d94fc45abe146131",
-      "name": "Snag",
-      "goal": "",
-      "people": "goblin",
-      "background": "raider",
+      "id": "char-ed1519ad3b10a408",
+      "name": "Gretar",
+      "goal": "Kill people and make friends",
+      "people": "centaur",
+      "lineage": "bison",
+      "background": "scavenger",
       "attributes": {
         "base": {
           "str": 14,
-          "dex": 12,
-          "con": 11,
-          "int": 10,
+          "dex": 10,
+          "con": 12,
+          "int": 7,
           "wis": 9,
-          "cha": 7
+          "cha": 11
         },
         "people": {
-          "str": -2,
-          "dex": 2,
-          "int": 1
+          "str": 1,
+          "dex": -1,
+          "con": 1
         },
         "background": {},
         "advancement": {}
       },
       "foci": [
         {
-          "id": "warren-born",
+          "id": "four-legged",
           "level": 1
         },
         {
-          "id": "scrounger",
+          "id": "bulwark",
+          "level": 1
+        },
+        {
+          "id": "die-hard",
+          "level": 1
+        },
+        {
+          "id": "whirlwind-assault",
           "level": 1
         },
         {
@@ -40,11 +49,7 @@
           "level": 1
         },
         {
-          "id": "armsmaster",
-          "level": 1
-        },
-        {
-          "id": "lucky",
+          "id": "shocking-assault",
           "level": 1
         }
       ],
@@ -52,6 +57,346 @@
       "spells": {
         "known": [],
         "prepared": []
+      },
+      "inventory": [
+        {
+          "id": "spear-light",
+          "quantity": 1,
+          "location": "readied"
+        },
+        {
+          "id": "large-shield",
+          "quantity": 1,
+          "location": "worn"
+        },
+        {
+          "id": "cuirass-and-greaves",
+          "quantity": 1,
+          "location": "worn"
+        },
+        {
+          "id": "cuirass-and-greaves",
+          "quantity": 1,
+          "location": "worn",
+          "barding": true
+        },
+        {
+          "id": "dagger",
+          "quantity": 1,
+          "location": "readied"
+        },
+        {
+          "id": "dungeoneering-kit",
+          "quantity": 1,
+          "location": "stowed"
+        }
+      ],
+      "crowns": 10,
+      "skills": {
+        "survive": 1,
+        "notice": 1,
+        "sneak": 0,
+        "exert": 0,
+        "punch": 0,
+        "stab": 1
+      },
+      "classes": {
+        "current": "partial-expert-partial-warrior",
+        "levels": {
+          "partial-expert-partial-warrior": 1
+        }
+      },
+      "hp": {
+        "max": 7,
+        "current": 7
+      },
+      "xp": 0,
+      "advancement": {
+        "skillPoints": 0,
+        "quickPoints": 0,
+        "skillCredit": {}
+      },
+      "strain": {
+        "value": 0,
+        "broken": false
+      }
+    }
+  },
+  {
+    "row": 0,
+    "column": 1,
+    "character": {
+      "schemaVersion": 7,
+      "id": "char-1be99d8409680251",
+      "name": "Marsan",
+      "goal": "Create an undead army",
+      "people": "orc",
+      "background": "scavenger",
+      "attributes": {
+        "base": {
+          "str": 14,
+          "dex": 9,
+          "con": 11,
+          "int": 10,
+          "wis": 12,
+          "cha": 7
+        },
+        "people": {
+          "str": 2,
+          "con": 1,
+          "cha": -2
+        },
+        "background": {},
+        "advancement": {}
+      },
+      "foci": [
+        {
+          "id": "war-bred",
+          "level": 1
+        },
+        {
+          "id": "iron-gut",
+          "level": 1
+        },
+        {
+          "id": "die-hard",
+          "level": 1
+        },
+        {
+          "id": "shocking-assault",
+          "level": 2
+        }
+      ],
+      "arts": ["unliving-persistence"],
+      "spells": {
+        "known": ["the-coruscating-coffin", "the-long-amber-moment"],
+        "prepared": ["the-coruscating-coffin", "the-long-amber-moment"]
+      },
+      "inventory": [
+        {
+          "id": "spear-light",
+          "quantity": 1,
+          "location": "readied"
+        },
+        {
+          "id": "large-shield",
+          "quantity": 1,
+          "location": "worn"
+        },
+        {
+          "id": "cuirass-and-greaves",
+          "quantity": 1,
+          "location": "worn"
+        },
+        {
+          "id": "dagger",
+          "quantity": 1,
+          "location": "readied"
+        },
+        {
+          "id": "dungeoneering-kit",
+          "quantity": 1,
+          "location": "stowed"
+        }
+      ],
+      "crowns": 10,
+      "skills": {
+        "survive": 0,
+        "notice": 1,
+        "magic": 1,
+        "stab": 1,
+        "exert": 0
+      },
+      "classes": {
+        "current": "necromancer-partial-warrior",
+        "levels": {
+          "necromancer-partial-warrior": 1
+        }
+      },
+      "hp": {
+        "max": 8,
+        "current": 8
+      },
+      "xp": 0,
+      "advancement": {
+        "skillPoints": 0,
+        "quickPoints": 0,
+        "skillCredit": {}
+      },
+      "strain": {
+        "value": 0,
+        "broken": false
+      }
+    }
+  },
+  {
+    "row": 0,
+    "column": 2,
+    "character": {
+      "schemaVersion": 7,
+      "id": "char-ac7a5a443d474dfe",
+      "name": "Wildera",
+      "goal": "Meet new cool animal and either befriend or eat them.",
+      "people": "beastman",
+      "lineage": "herd",
+      "background": "scavenger",
+      "attributes": {
+        "base": {
+          "str": 14,
+          "dex": 11,
+          "con": 12,
+          "int": 7,
+          "wis": 9,
+          "cha": 10
+        },
+        "people": {
+          "str": 1,
+          "dex": -1,
+          "con": 3,
+          "int": -2
+        },
+        "background": {},
+        "advancement": {}
+      },
+      "foci": [
+        {
+          "id": "feral-hardiness",
+          "level": 1
+        },
+        {
+          "id": "horned",
+          "level": 1
+        },
+        {
+          "id": "herd-loyal",
+          "level": 1
+        },
+        {
+          "id": "whirlwind-assault",
+          "level": 1
+        },
+        {
+          "id": "shocking-assault",
+          "level": 1
+        }
+      ],
+      "arts": ["bind-companion", "feral-toughness"],
+      "spells": {
+        "known": [],
+        "prepared": []
+      },
+      "inventory": [
+        {
+          "id": "spear-light",
+          "quantity": 1,
+          "location": "readied"
+        },
+        {
+          "id": "large-shield",
+          "quantity": 1,
+          "location": "worn"
+        },
+        {
+          "id": "cuirass-and-greaves",
+          "quantity": 1,
+          "location": "worn"
+        },
+        {
+          "id": "dagger",
+          "quantity": 1,
+          "location": "readied"
+        },
+        {
+          "id": "dungeoneering-kit",
+          "quantity": 1,
+          "location": "stowed"
+        }
+      ],
+      "crowns": 10,
+      "skills": {
+        "survive": 1,
+        "notice": 1,
+        "animal-ken": 0,
+        "heal": 0,
+        "punch": 0,
+        "lead": 0,
+        "stab": 1
+      },
+      "classes": {
+        "current": "beastmaster-partial-warrior",
+        "levels": {
+          "beastmaster-partial-warrior": 1
+        }
+      },
+      "hp": {
+        "max": 6,
+        "current": 6
+      },
+      "xp": 0,
+      "advancement": {
+        "skillPoints": 0,
+        "quickPoints": 0,
+        "skillCredit": {}
+      },
+      "strain": {
+        "value": 0,
+        "broken": false
+      }
+    }
+  },
+  {
+    "row": 1,
+    "column": 0,
+    "character": {
+      "schemaVersion": 7,
+      "id": "char-c166f7ae6d0da759",
+      "name": "Talus",
+      "goal": "Steal Magical Stuff",
+      "people": "gnome",
+      "background": "hedge-scholar",
+      "attributes": {
+        "base": {
+          "str": 10,
+          "dex": 11,
+          "con": 9,
+          "int": 14,
+          "wis": 7,
+          "cha": 12
+        },
+        "people": {
+          "str": -2,
+          "int": 2,
+          "wis": 1
+        },
+        "background": {},
+        "advancement": {}
+      },
+      "foci": [
+        {
+          "id": "hidden-lore",
+          "level": 1
+        },
+        {
+          "id": "dealmaker",
+          "level": 1
+        },
+        {
+          "id": "specialist",
+          "level": 1
+        },
+        {
+          "id": "armored-magic",
+          "level": 1
+        },
+        {
+          "id": "die-hard",
+          "level": 1
+        }
+      ],
+      "arts": [],
+      "spells": {
+        "known": ["the-coruscating-coffin", "the-long-amber-moment"],
+        "prepared": ["the-coruscating-coffin", "the-long-amber-moment"]
       },
       "inventory": [
         {
@@ -83,21 +428,21 @@
       ],
       "crowns": 10,
       "skills": {
-        "stab": 1,
-        "sneak": 1,
-        "exert": 0,
-        "survive": 0,
-        "notice": 1
+        "know": 1,
+        "heal": 0,
+        "magic": 1,
+        "trade": 1,
+        "convince": 0
       },
       "classes": {
-        "current": "full-warrior",
+        "current": "invoker-partial-expert",
         "levels": {
-          "full-warrior": 1
+          "invoker-partial-expert": 1
         }
       },
       "hp": {
-        "max": 8,
-        "current": 8
+        "max": 6,
+        "current": 6
       },
       "xp": 0,
       "advancement": {
@@ -112,69 +457,80 @@
     }
   },
   {
-    "row": 0,
+    "row": 1,
     "column": 1,
     "character": {
       "schemaVersion": 7,
-      "id": "char-892d217a8244817b",
-      "name": "Grukk",
-      "goal": "",
-      "people": "orc",
-      "background": "pit-fighter",
+      "id": "char-a4d4d173043789f6",
+      "name": "Telwin",
+      "goal": "Become an Archmagi",
+      "people": "goblin",
+      "background": "tinker",
       "attributes": {
         "base": {
-          "str": 14,
+          "str": 11,
           "dex": 12,
-          "con": 11,
-          "int": 10,
+          "con": 10,
+          "int": 14,
           "wis": 9,
           "cha": 7
         },
         "people": {
-          "str": 2,
-          "con": 1,
-          "cha": -2
+          "str": -2,
+          "dex": 2,
+          "int": 1
         },
         "background": {},
         "advancement": {}
       },
       "foci": [
         {
-          "id": "war-bred",
+          "id": "warren-born",
           "level": 1
         },
         {
-          "id": "iron-gut",
+          "id": "scrounger",
           "level": 1
         },
         {
-          "id": "die-hard",
+          "id": "artisan",
           "level": 1
         },
         {
-          "id": "shocking-assault",
-          "level": 1
-        },
-        {
-          "id": "armsmaster",
+          "id": "armored-magic",
           "level": 1
         }
       ],
-      "arts": [],
+      "arts": ["retain-sorcery", "counter-magic"],
       "spells": {
-        "known": [],
-        "prepared": []
+        "known": [
+          "the-long-amber-moment",
+          "the-coruscating-coffin",
+          "ineluctable-shackles-of-volition",
+          "the-excellent-transpicuous-transformation"
+        ],
+        "prepared": [
+          "the-long-amber-moment",
+          "the-coruscating-coffin",
+          "ineluctable-shackles-of-volition"
+        ]
       },
       "inventory": [
         {
-          "id": "axe-war",
+          "id": "spear-light",
           "quantity": 1,
           "location": "readied"
         },
         {
-          "id": "pieced-armor",
+          "id": "large-shield",
           "quantity": 1,
           "location": "worn"
+        },
+        {
+          "id": "cuirass-and-greaves",
+          "quantity": 1,
+          "location": "worn",
+          "small": true
         },
         {
           "id": "dagger",
@@ -187,23 +543,23 @@
           "location": "stowed"
         }
       ],
-      "crowns": 15,
+      "crowns": 10,
       "skills": {
-        "punch": 1,
-        "exert": 1,
-        "notice": 0,
-        "stab": 1,
-        "heal": 0
+        "craft": 1,
+        "know": 1,
+        "magic": 1,
+        "sneak": 0,
+        "survive": 0
       },
       "classes": {
-        "current": "full-warrior",
+        "current": "full-high-mage",
         "levels": {
-          "full-warrior": 1
+          "full-high-mage": 1
         }
       },
       "hp": {
-        "max": 7,
-        "current": 7
+        "max": 4,
+        "current": 4
       },
       "xp": 0,
       "advancement": {
@@ -219,133 +575,22 @@
   },
   {
     "row": 1,
-    "column": 0,
+    "column": 2,
     "character": {
       "schemaVersion": 7,
-      "id": "char-40aca9044a9dfe62",
-      "name": "Lirael",
+      "id": "char-24b71791630a453c",
+      "name": "Lashana",
       "goal": "",
-      "people": "elf",
-      "background": "warden",
+      "people": "gnome",
+      "background": "tinker",
       "attributes": {
         "base": {
           "str": 10,
-          "dex": 14,
-          "con": 12,
-          "int": 11,
-          "wis": 9,
-          "cha": 7
-        },
-        "people": {
-          "str": -2,
-          "dex": 2,
-          "cha": 1
-        },
-        "background": {},
-        "advancement": {}
-      },
-      "foci": [
-        {
-          "id": "elder-sight",
-          "level": 1
-        },
-        {
-          "id": "deadeye",
-          "level": 1
-        },
-        {
-          "id": "cultured",
-          "level": 1
-        },
-        {
-          "id": "gifted-chirurgeon",
-          "level": 1
-        },
-        {
-          "id": "well-met",
-          "level": 1
-        }
-      ],
-      "arts": [],
-      "spells": {
-        "known": [],
-        "prepared": []
-      },
-      "inventory": [
-        {
-          "id": "bow-small",
-          "quantity": 1,
-          "location": "readied"
-        },
-        {
-          "id": "arrows-20",
-          "quantity": 1,
-          "location": "readied"
-        },
-        {
-          "id": "sword-short",
-          "quantity": 1,
-          "location": "readied"
-        },
-        {
-          "id": "linothorax",
-          "quantity": 1,
-          "location": "worn"
-        },
-        {
-          "id": "wilderness-travel-gear",
-          "quantity": 1,
-          "location": "stowed"
-        }
-      ],
-      "crowns": 10,
-      "skills": {
-        "shoot": 1,
-        "sneak": 0,
-        "heal": 1,
-        "notice": 1,
-        "convince": 0
-      },
-      "classes": {
-        "current": "full-expert",
-        "levels": {
-          "full-expert": 1
-        }
-      },
-      "hp": {
-        "max": 2,
-        "current": 2
-      },
-      "xp": 0,
-      "advancement": {
-        "skillPoints": 0,
-        "quickPoints": 0,
-        "skillCredit": {}
-      },
-      "strain": {
-        "value": 0,
-        "broken": false
-      }
-    }
-  },
-  {
-    "row": 1,
-    "column": 1,
-    "character": {
-      "schemaVersion": 7,
-      "id": "char-f07502da73f6efd3",
-      "name": "Fizzwick",
-      "goal": "",
-      "people": "gnome",
-      "background": "hedge-scholar",
-      "attributes": {
-        "base": {
-          "str": 7,
-          "dex": 12,
-          "con": 11,
+          "dex": 9,
+          "con": 7,
           "int": 14,
-          "wis": 10,
-          "cha": 9
+          "wis": 12,
+          "cha": 11
         },
         "people": {
           "str": -2,
@@ -361,11 +606,11 @@
           "level": 1
         },
         {
-          "id": "artisan",
+          "id": "specialist",
           "level": 1
         },
         {
-          "id": "polymath",
+          "id": "artisan",
           "level": 1
         },
         {
@@ -373,64 +618,37 @@
           "level": 1
         }
       ],
-      "arts": ["empowered-sorcery", "inexorable-effect"],
+      "arts": ["healing-touch", "cold-flesh", "facile-healer"],
       "spells": {
-        "known": [
-          "the-coruscating-coffin",
-          "the-wind-of-the-final-repose",
-          "damnation-of-the-sense",
-          "wardpact-invocation"
-        ],
-        "prepared": [
-          "the-coruscating-coffin",
-          "the-wind-of-the-final-repose",
-          "damnation-of-the-sense"
-        ]
+        "known": ["the-coruscating-coffin", "the-long-amber-moment"],
+        "prepared": ["the-coruscating-coffin", "the-long-amber-moment"]
       },
       "inventory": [
         {
-          "id": "staff",
-          "quantity": 1,
-          "location": "readied"
-        },
-        {
-          "id": "dagger",
-          "quantity": 1,
-          "location": "readied"
-        },
-        {
-          "id": "writing-kit",
+          "id": "crafting-tools",
           "quantity": 1,
           "location": "stowed"
-        },
-        {
-          "id": "paper-10-sheets",
-          "quantity": 1,
-          "location": "stowed"
-        },
-        {
-          "id": "backpack",
-          "quantity": 1,
-          "location": "worn"
         }
       ],
-      "crowns": 50,
+      "crowns": 0,
       "skills": {
-        "know": 1,
-        "heal": 1,
-        "notice": 1,
+        "craft": 1,
+        "convince": 1,
+        "trade": 0,
         "magic": 0,
-        "craft": 0
+        "heal": 0,
+        "know": 0,
+        "pray": 0
       },
       "classes": {
-        "current": "full-high-mage",
+        "current": "healer-partial-mage",
         "levels": {
-          "full-high-mage": 1
+          "healer-partial-mage": 1
         }
       },
       "hp": {
-        "max": 5,
-        "current": 5
+        "max": 6,
+        "current": 6
       },
       "xp": 0,
       "advancement": {
