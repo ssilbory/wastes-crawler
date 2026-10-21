@@ -23,12 +23,12 @@ test('creates a new world on the start screen and plays on it', async ({ page })
   await expect(world.getByRole('combobox', { name: 'Play on' })).toHaveValue('ash-hollows');
   await page.getByRole('button', { name: /Start a new world/ }).click();
   // No campaign introduction: straight onto the new map.
-  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Begin the journey' })).toHaveCount(0);
   await page.reload();
   await expect(page.getByText(/Slot 1: .* · Ash Hollows · /)).toBeVisible();
   await page.getByRole('button', { name: 'Continue journey' }).click();
-  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
 });
 
 test('loads a world saved in the map editor', async ({ page }) => {
@@ -42,7 +42,7 @@ test('loads a world saved in the map editor', async ({ page }) => {
   await world.getByRole('combobox', { name: 'Play on' }).selectOption({ label: 'Grey Fen' });
   await expect(world).toContainText('1 towns, no campaign story');
   await page.getByRole('button', { name: /Start a new world/ }).click();
-  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
   await page.reload();
   await expect(page.getByText(/Slot 1: .* · Grey Fen · /)).toBeVisible();
 });
@@ -53,12 +53,12 @@ test('plays the Sealed Vale, a world shipped beside the campaign', async ({ page
   await world.getByRole('combobox', { name: 'Play on' }).selectOption({ label: 'The Sealed Vale' });
   await expect(world).toContainText('ringed by impassable peaks');
   await page.getByRole('button', { name: /Start a new world/ }).click();
-  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Begin the journey' })).toHaveCount(0);
   await page.reload();
   await expect(page.getByText(/Slot 1: .* · The Sealed Vale · /)).toBeVisible();
   await page.getByRole('button', { name: 'Continue journey' }).click();
-  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
 });
 
 test('plays the Wastes, a shipped realm of five maps', async ({ page }) => {
@@ -67,7 +67,7 @@ test('plays the Wastes, a shipped realm of five maps', async ({ page }) => {
   await world.getByRole('combobox', { name: 'Play on' }).selectOption({ label: 'The Wastes' });
   await expect(world).toContainText('Five desert maps under a dead sun');
   await page.getByRole('button', { name: /Start a new world/ }).click();
-  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Begin the journey' })).toHaveCount(0);
   await expect(page.getByRole('region', { name: 'Warlords' })).toContainText(
     "The Scrap King, The Dust Fringe: holds The Scrap King's Pumpworks",

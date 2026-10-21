@@ -277,18 +277,17 @@
   pointer-events: none;
 }
 
-/* The keyboard's hex (src/ui/world/map-keys.ts), shown only while the map has keyboard focus. */
-.hex-map .map-cursor {
-  display: none;
+/* The hex the keyboard is on (src/ui/world/map-keys.ts): its face, since an outline on an svg
+   group draws nothing useful. */
+.hex:focus {
+  outline: none;
+}
+
+.hex-map .hex:focus-visible .hit {
   fill: #fff8e0;
   fill-opacity: 0.3;
   stroke: #1d1610;
   stroke-width: 2.4;
-  pointer-events: none;
-}
-
-.hex-map:focus-visible .map-cursor {
-  display: inline;
 }
 
 /* Each hex's clickable face, clear until hovered or marked. */

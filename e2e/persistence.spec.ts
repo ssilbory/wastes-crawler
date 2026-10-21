@@ -64,7 +64,7 @@ test('exports a full save and loads it back, roster and all', async ({ page }, t
   await page.reload();
   await expect(page.getByRole('group', { name: 'Save slot' })).toContainText('Slot 1: Empty');
   await page.getByLabel('Load a save file').setInputFiles(file);
-  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
   await page.goto('/#/arena');
   await expect(page.getByRole('region', { name: 'Roster' })).toContainText('Snag');
 });

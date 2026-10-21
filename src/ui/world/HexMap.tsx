@@ -11,6 +11,7 @@ import type { HexCell } from '../../render/hex-view.ts';
 import { bridges, shores } from '../../render/hex-water.ts';
 import { HexArtDefs } from './HexArt.tsx';
 import { useMapKeys } from './map-keys.ts';
+import { cursorText } from '../../render/map-cursor.ts';
 
 const SIZE = 18;
 
@@ -77,8 +78,8 @@ function ScaleBarMark(props: { bar: ScaleBar }) {
  * with soft edges about what the party knows, a scale bar and a compass rose, then one
  * group per hex with its icons, which takes the clicks; clicking a hex, even under fog, picks it as
  * the destination. With `onDrag`, moving over hexes with the button held picks them too, for
- * painting in the map editor. The keyboard picks hexes too (`useMapKeys`): Tab to the map, the
- * arrow keys, then Enter.
+ * painting in the map editor. Each hex is a button for the keyboard and screen readers
+ * (`useMapKeys`): Tab to the map, the arrow keys, then Enter.
  */
 export function HexMap(props: {
   cells: HexCell[];
@@ -101,10 +102,10 @@ export function HexMap(props: {
         ref={keys.svg}
         class="hex-map"
         viewBox={`0 0 ${props.width} ${props.height}`}
-        role="img"
+        role="group"
         aria-label={props.label ?? 'Overland map'}
         aria-describedby={hint}
-        {...keys.handlers}
+        onKeyDown={keys.onKeyDown}
       >
         <HexArtDefs />
         <rect class="paper" width={props.width} height={props.height} fill="url(#hm-paper)" />
@@ -192,6 +193,10 @@ export function HexMap(props: {
               .filter(Boolean)
               .join(' ')}
             data-hex={c.key}
+            role="button"
+            aria-label={cursorText(c)}
+            tabindex={c.key === keys.tabStop ? 0 : -1}
+            onFocus={() => keys.onFocus(c)}
             onClick={() => props.onPick(c.col, c.row)}
             onPointerEnter={
               onDrag ? (e: PointerEvent) => e.buttons === 1 && onDrag(c.col, c.row) : undefined
@@ -248,13 +253,9 @@ export function HexMap(props: {
             )}
           </g>
         ))}
-        {keys.at && <polygon class="map-cursor" points={keys.at.points} />}
       </svg>
       <p id={hint} class="sr-only">
         Arrow keys move across the map; Enter picks the hex.
-      </p>
-      <p class="sr-only" aria-live="polite">
-        {keys.text}
       </p>
     </>
   );

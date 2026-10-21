@@ -59,7 +59,7 @@ test('rests at the inn, shops, and changes the party at the tavern', async ({ pa
   await page.screenshot({ path: testInfo.outputPath('town-tavern.png'), fullPage: true });
 
   await page.getByRole('button', { name: 'Back to the map' }).click();
-  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
 });
 
 test('moves between the town tabs with the arrow keys', async ({ page }) => {
@@ -166,7 +166,7 @@ test('buys a round for a rumor, and the map marks the way down', async ({ page }
   await expect(log).toContainText('a regular tells of');
   const heard = (await log.innerText()).match(/a regular tells of (.+?), at /)?.[1] as string;
   await page.getByRole('button', { name: 'Back to the map' }).click();
-  const map = page.getByRole('img', { name: 'Overland map' });
+  const map = page.getByRole('group', { name: 'Overland map' });
   await expect(map.locator('.dungeon title', { hasText: heard })).toHaveCount(1);
   await page.screenshot({ path: testInfo.outputPath('town-rumor.png'), fullPage: true });
 });

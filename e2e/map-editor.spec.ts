@@ -11,7 +11,7 @@ test('rolls, edits, and saves an overland map with a dungeon on it', async ({ pa
   await random.getByRole('textbox', { name: 'Name' }).fill('Ember Wastes');
   await random.getByRole('textbox', { name: 'Seed' }).fill('42');
   await random.getByRole('button', { name: 'Roll a new map' }).click();
-  await expect(page.getByRole('img', { name: 'Editing Ember Wastes' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Editing Ember Wastes' })).toBeVisible();
   await expect(problems).toContainText('The map is valid.');
   await expect(page.locator('.hex .site')).toHaveCount(5);
   await page.screenshot({ path: testInfo.outputPath('map-editor.png'), fullPage: true });

@@ -8,7 +8,7 @@ test('starts with the starter party, then continues', async ({ page }) => {
   await expect(page.getByRole('button', { name: /^Continue journey/ })).toHaveCount(0);
   await page.getByRole('button', { name: /^New journey with the starter party/ }).click();
   await page.getByRole('button', { name: 'Begin the journey' }).click();
-  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
   await expect(page).toHaveURL(/#\/world$/);
 
   await page.goto('/');
@@ -16,7 +16,7 @@ test('starts with the starter party, then continues', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Replace slot 1' })).toBeVisible();
   await page.getByRole('button', { name: 'Keep' }).click();
   await page.getByRole('button', { name: /^Continue journey/ }).click();
-  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
 });
 
 test('links to the Characters page', async ({ page }) => {

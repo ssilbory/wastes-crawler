@@ -50,7 +50,7 @@ async function explore(page: Page, quarter: number) {
 
 test('draws the overland map as a chart, fogged beyond what the party knows', async ({ page }) => {
   await startWorld(page);
-  const map = page.getByRole('img', { name: 'Overland map' });
+  const map = page.getByRole('group', { name: 'Overland map' });
   await fit(page);
   await expect(map).toHaveScreenshot('overland-start.png');
   await explore(page, 1);
@@ -80,16 +80,24 @@ test('opens closed in on the hexes the party knows', async ({ page }) => {
   await partyInView(page);
 });
 
-// The overland map answers the keyboard: Tab to it, the arrow keys, then Enter.
+// Every hex is a button with one Tab stop among them: the arrow keys, then Enter.
 test('picks a destination with the keyboard', async ({ page }) => {
   await startWorld(page);
-  const map = page.getByRole('img', { name: 'Overland map' });
-  await map.focus();
+  const map = page.getByRole('group', { name: 'Overland map' });
+  const party = map.getByRole('button', { name: /the party is here/ });
+  // Only the party's hex takes Tab before anything else is picked.
+  await expect(map.locator('[tabindex="0"]')).toHaveCount(1);
+  await expect(party).toHaveAttribute('tabindex', '0');
+  const [col, row] = ((await party.getAttribute('data-hex')) ?? '').split(',').map(Number);
+  await party.focus();
   await page.keyboard.press('ArrowRight');
   await page.keyboard.press('ArrowRight');
-  await expect(page.locator('.map-cursor')).toBeVisible();
+  const target = map.locator(`[data-hex="${(col ?? 0) + 2},${row}"]`);
+  await expect(target).toBeFocused();
+  await expect(target).toHaveAttribute('tabindex', '0');
   await page.keyboard.press('Enter');
-  await expect(page.locator('.hex.destination')).toHaveCount(1);
+  await expect(target).toHaveClass(/\bdestination\b/);
+  await expect(target).toHaveAccessibleName(/destination$/);
   await expect(
     page.getByRole('region', { name: 'Quarter plan' }).getByRole('radio', { name: 'Hike' }),
   ).toBeEnabled();
@@ -128,7 +136,7 @@ test('minimizes the side column, growing the map, and remembers it', async ({ pa
   }, WORLD_KEY);
   await page.reload();
   await page.getByRole('button', { name: 'Continue journey' }).click();
-  const map = page.getByRole('img', { name: 'Overland map' });
+  const map = page.getByRole('group', { name: 'Overland map' });
   const journal = page.getByRole('region', { name: 'Journey log' });
   await expect(page.locator('.side-dock')).toContainText('The Raider Camp');
   const before = { map: await map.boundingBox(), journal: await journal.boundingBox() };

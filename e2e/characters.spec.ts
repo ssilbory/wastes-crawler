@@ -37,7 +37,7 @@ test('sets out with the starter party and sorts gear on the inventory screen', a
   await dagger.getByRole('button', { name: 'Drop for good' }).click();
   await expect(gear.getByRole('group', { name: 'Dagger' })).toHaveCount(0);
   await page.getByRole('button', { name: 'Back to the map' }).click();
-  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
     'Marsan leaves behind Dagger.',
   );

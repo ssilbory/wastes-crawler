@@ -38,10 +38,10 @@ test('wanders the overland map, fighting what it meets', async ({ page }, testIn
   const intro = page.getByRole('region', { name: 'Introduction' });
   await expect(intro.getByRole('heading', { name: 'The Dark Lands' })).toBeVisible();
   await expect(intro).toContainText('Twenty years ago he vanished.');
-  await expect(page.getByRole('img', { name: 'Overland map' })).toHaveCount(0);
+  await expect(page.getByRole('group', { name: 'Overland map' })).toHaveCount(0);
   await page.screenshot({ path: testInfo.outputPath('intro.png'), fullPage: true });
   await page.getByRole('button', { name: 'Begin the journey' }).click();
-  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
   await expect(page.locator('.world-bar')).toContainText('Rubblegate');
 
   // Walk east along the road, a hex ahead at a time, turning back at Scrapmarch.
