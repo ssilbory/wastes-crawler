@@ -151,6 +151,11 @@
   flex-direction: column;
   height: 8.5rem;
   min-height: 0;
+  padding: 8px;
+}
+
+.world .log h3 {
+  margin: 0 0 4px;
 }
 
 .world .log ol {
@@ -159,7 +164,6 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: none;
   overflow-y: auto;
   font-size: 0.9rem;
 }

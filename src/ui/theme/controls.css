@@ -12,14 +12,14 @@ button {
   padding: 5px 12px;
   border: 2px solid var(--bevel-lo);
   border-radius: var(--radius-control);
-  background: linear-gradient(180deg, #3a3026, #2a231c);
+  background: linear-gradient(180deg, var(--btn-top), var(--btn-bot));
   box-shadow: var(--bevel-out);
   line-height: 1.25;
 }
 
 button:hover:not(:disabled) {
-  background: linear-gradient(180deg, #4a3d2f, #352b22);
-  color: #fff6e2;
+  background: linear-gradient(180deg, var(--btn-hover-top), var(--btn-hover-bot));
+  color: var(--btn-hover-ink);
 }
 
 button:active:not(:disabled) {
@@ -54,7 +54,7 @@ button.secondary {
   color: var(--muted);
   background: transparent;
   box-shadow: none;
-  border-color: var(--line);
+  border-color: var(--control-line);
 }
 
 button.secondary:hover:not(:disabled) {
@@ -65,12 +65,12 @@ button.secondary:hover:not(:disabled) {
 button.danger {
   color: #fff3ec;
   font-weight: 600;
-  background: linear-gradient(180deg, #b23a2c, var(--blood));
+  background: linear-gradient(180deg, var(--danger-hi), var(--blood));
 }
 
 button.danger:hover:not(:disabled) {
   color: #fff;
-  background: linear-gradient(180deg, #c84a3a, #a03224);
+  background: linear-gradient(180deg, var(--danger-hover-top), var(--danger-hover-bot));
 }
 
 .confirm {
@@ -137,7 +137,7 @@ input[type='file']::file-selector-button {
   color: var(--ink);
   border: 2px solid var(--bevel-lo);
   border-radius: var(--radius-control);
-  background: linear-gradient(180deg, #3a3026, #2a231c);
+  background: linear-gradient(180deg, var(--btn-top), var(--btn-bot));
   box-shadow: var(--bevel-out);
   cursor: pointer;
 }

@@ -122,7 +122,7 @@
 .dungeon-controls .actions > button:first-child {
   color: var(--ink);
   font-weight: 400;
-  background: linear-gradient(180deg, #3a3026, #2a231c);
+  background: linear-gradient(180deg, var(--btn-top), var(--btn-bot));
   box-shadow: var(--bevel-out);
 }
 

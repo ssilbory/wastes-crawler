@@ -96,7 +96,7 @@
 
 .slot.down .hp-bar span,
 .slot.gone .hp-bar span {
-  background: linear-gradient(180deg, #f0806f, var(--blood));
+  background: var(--hp-low);
 }
 
 .slot.gone {
@@ -162,15 +162,16 @@
   font-size: 0.75rem;
 }
 
-.log {
+/* The battle log, on the arena's and the overland's fight screens. */
+.fight .log {
   padding: 8px;
 }
 
-.log h3 {
+.fight .log h3 {
   margin: 0 0 4px;
 }
 
-.log ol {
+.fight .log ol {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -179,7 +180,7 @@
   font-size: 0.85rem;
 }
 
-.log li.new {
+.fight .log li.new {
   color: var(--accent);
 }
 
