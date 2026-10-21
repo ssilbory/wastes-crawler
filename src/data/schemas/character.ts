@@ -85,6 +85,9 @@ export const CharacterSchema = z.strictObject({
       bonus: z.int().min(1).max(3).optional(),
       /** Days since its mods were last maintained (SRD 2.8.3). */
       upkeep: z.int().min(1).optional(),
+      /** A scroll's spell and the caster level it goes off at (SRD 4.9.1). */
+      spell: IdSchema.optional(),
+      casterLevel: z.int().min(1).optional(),
     }),
   ),
   /** Money; 1 crown = 1 silver piece, so copper prices make tenths. */

@@ -262,6 +262,8 @@ export type Action =
   | { kind: 'gear'; item: number; location: 'readied' | 'stowed' }
   /** Drink a readied potion, or give it to an ally in touch (docs/rules-adaptation.md, Potions). */
   | { kind: 'potion'; item: number; target: string }
+  /** Read a readied scroll at a target or row (docs/rules-adaptation.md, Scrolls). */
+  | { kind: 'scroll'; item: number; target?: string; row?: number }
   /** Spend the Main Action trying to throw off the Torment of Tumefaction. */
   | { kind: 'shake-off' }
   /** Spend the Main Action taking form again out of Wind Walking's mist. */

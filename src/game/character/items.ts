@@ -14,7 +14,12 @@ import type {
   Weapon,
 } from '../../data/schemas/index.ts';
 import type { GameData } from './context.ts';
+import { gameSpells, type GameSpell } from '../../data/spells.ts';
 import { upgrade } from './upgrades.ts';
+
+/** A scroll's spell; character loading keeps scrolls to game spells. */
+const spellOf = (data: GameData, id: string) =>
+  gameSpells(data.srd, data.content).find((s) => s.id === id) as GameSpell;
 
 export type CatalogItem =
   | { kind: 'weapon'; id: string; name: string; cost: Cost | null; weapon: Weapon }
@@ -23,6 +28,8 @@ export type CatalogItem =
   | { kind: 'gear'; id: string; name: string; cost: Cost; gear: Gear }
   /** A potion (docs/rules-adaptation.md, Potions): gear whose cost is its brewing cost. */
   | { kind: 'potion'; id: string; name: string; cost: Cost; gear: Gear; potion: Potion }
+  /** A scroll (Potions, scrolls, and magic devices: Scrolls): its cost is per spell level. */
+  | { kind: 'scroll'; id: string; name: string; cost: Cost; gear: Gear }
   | { kind: 'bundle'; id: string; name: string; cost: Cost; bundle: GearBundle };
 
 /** One line of a character's inventory. */
@@ -43,6 +50,9 @@ export interface InventoryEntry {
   bonus?: number | undefined;
   /** Days since its mods were last maintained (SRD 2.8.3). */
   upkeep?: number | undefined;
+  /** A scroll's spell, and the caster level it goes off at (SRD 4.9.1). */
+  spell?: string | undefined;
+  casterLevel?: number | undefined;
 }
 
 export interface InstalledMod {
@@ -94,6 +104,9 @@ export function catalog(data: GameData): CatalogItem[] {
       gear: p,
       potion: p,
     })),
+    ((g) => ({ kind: 'scroll' as const, id: g.id, name: g.name, cost: g.cost, gear: g }))(
+      data.content.scrolls.scroll,
+    ),
     ...data.srd['gear-bundles'].map((b) => ({
       kind: 'bundle' as const,
       id: b.id,
@@ -108,9 +121,9 @@ export function findItem(data: GameData, id: string): CatalogItem | undefined {
   return catalog(data).find((i) => i.id === id);
 }
 
-/** Items a shop sells: everything with a price but potions, which only alchemists sell. */
+/** Items a shop sells: everything with a price but potions, which only alchemists sell, and scrolls. */
 export function buyable(data: GameData): CatalogItem[] {
-  return catalog(data).filter((i) => i.cost !== null && i.kind !== 'potion');
+  return catalog(data).filter((i) => i.cost !== null && i.kind !== 'potion' && i.kind !== 'scroll');
 }
 
 const TENTHS = { cp: 1, sp: 10, gp: 100 } as const;
@@ -127,7 +140,9 @@ export function entryPrice(data: GameData, item: CatalogItem, entry: InventoryEn
   const tier = entry.quality ? data.content.craftingRules.quality[entry.quality].cost : 1;
   // A magic weapon or suit of armor is worth its commission besides (Sam's call).
   const magic = data.content.craftingRules.magic.tiers.find((t) => t.bonus === entry.bonus);
-  const each = tenths(item.cost) * barding * tier + (magic ? magic.commission * 10 : 0);
+  // A scroll costs its writing price for each level of its spell (SRD 4.9.1).
+  const levels = entry.spell ? spellOf(data, entry.spell).level : 1;
+  const each = tenths(item.cost) * barding * tier * levels + (magic ? magic.commission * 10 : 0);
   return Math.round(each * entry.quantity);
 }
 
@@ -155,7 +170,8 @@ export function entryEncumbrance(data: GameData, item: CatalogItem, entry: Inven
     case 'bundle':
       return q * item.bundle.encumbrance;
     case 'gear':
-    case 'potion': {
+    case 'potion':
+    case 'scroll': {
       const g = item.gear;
       if (g.weightless || g.encumbrance === null) return 0;
       if (g.freeWhenWorn && entry.location === 'worn') return 0;
@@ -166,10 +182,18 @@ export function entryEncumbrance(data: GameData, item: CatalogItem, entry: Inven
 
 /** A line's name with what sets it apart: "Pieced Armor (barding)", "Spear +1 (mastercrafted)". */
 export function lineLabel(data: GameData, e: InventoryEntry): string {
-  const name = findItem(data, e.id)?.name ?? e.id;
+  const name = e.spell
+    ? `Scroll of ${spellOf(data, e.spell).name}`
+    : (findItem(data, e.id)?.name ?? e.id);
   const mods = (e.mods ?? []).map(
     (m) => data.content.mods.find((x) => x.id === m.id)?.name ?? m.id,
   );
-  const notes = [e.quality, ...mods, e.small && 'small', e.barding && 'barding'].filter(Boolean);
+  const notes = [
+    e.quality,
+    ...mods,
+    e.small && 'small',
+    e.barding && 'barding',
+    e.casterLevel && `caster level ${e.casterLevel}`,
+  ].filter(Boolean);
   return `${name}${e.bonus ? ` +${e.bonus}` : ''}${notes.length ? ` (${notes.join(', ')})` : ''}`;
 }

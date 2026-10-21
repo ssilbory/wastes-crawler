@@ -171,8 +171,8 @@ export type QuestState = z.infer<typeof QuestStateSchema>;
 export const ProjectSchema = z.strictObject({
   /** The member doing the work; each works on one thing at a time. */
   crafter: z.string().min(1),
-  /** Building gear, installing a mod, stripping one off (Phase 10b), or brewing a potion. */
-  kind: z.enum(['gear', 'mod', 'strip', 'brew']),
+  /** Building gear, installing a mod, stripping one off (Phase 10b), brewing, or a scroll. */
+  kind: z.enum(['gear', 'mod', 'strip', 'brew', 'scribe']),
   /** The item built, or the item a mod goes on or comes off. */
   item: IdSchema,
   mod: IdSchema.optional(),
@@ -184,6 +184,8 @@ export const ProjectSchema = z.strictObject({
   small: z.literal(true).optional(),
   /** A brew's batch size (docs/rules-adaptation.md, Potions: Brewing). */
   doses: z.int().min(1).optional(),
+  /** The spell a scroll being written holds. */
+  spell: IdSchema.optional(),
   /** Days of work left; a camp shift is half a day (Sam's call). */
   daysLeft: z.number().positive().multipleOf(0.5),
   /** The town where the parts were bought. */

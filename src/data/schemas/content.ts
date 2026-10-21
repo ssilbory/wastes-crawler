@@ -32,6 +32,7 @@ import {
 } from './setting-content.ts';
 import { RuinSchema } from './ruin-content.ts';
 import { AlchemyContentSchema } from './alchemy-content.ts';
+import { ScrollContentSchema } from './scroll-content.ts';
 import {
   ComponentSchema,
   CraftingRulesSchema,
@@ -228,6 +229,7 @@ export const ContentSchemas = {
   mods: z.array(ModSchema).min(1),
   craftsmen: z.array(CraftsmanSchema),
   alchemy: AlchemyContentSchema,
+  scrolls: ScrollContentSchema,
   settingsDefaults: SettingsDefaultsSchema,
   soundCues: z.array(SoundCueSchema).min(1),
   /** The ready-made party offered when setting out with no characters of one's own. */
