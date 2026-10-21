@@ -19,6 +19,8 @@ import { HexMap, HEX_SIZE } from '../world/HexMap.tsx';
 import { ZoomFrame } from '../world/ZoomFrame.tsx';
 import '../editor/editor.css';
 import '../world/hex-map.css';
+import '../world/hex-terrain.css';
+import '../world/zoom-frame.css';
 import '../world/world.css';
 import { ConfirmButton } from '../confirm.tsx';
 import { GeneratePanel } from './GeneratePanel.tsx';
