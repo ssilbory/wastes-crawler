@@ -19,6 +19,13 @@
     font-size: max(16px, 1rem);
   }
 
+  /* Every control at least 44px tall, the size a fingertip can hit without a near miss. */
+  button,
+  select,
+  input:not([type='checkbox'], [type='radio'], [type='range'], [type='file']) {
+    min-height: 44px;
+  }
+
   .app-menu-list a,
   .app-menu-list .app-menu-item {
     padding: 10px 14px;
@@ -32,9 +39,29 @@
     overscroll-behavior: contain;
   }
 
-  .world-bar > span:not(.bar-actions) {
+  /* The readouts take one row that scrolls sideways, so the map starts high on the screen. */
+  .world-bar .bar-status {
+    display: flex;
+    flex: 1 1 100%;
+    gap: 6px;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .world-bar > span:not(.bar-actions),
+  .world-bar .bar-status > span {
+    flex: none;
     font-size: 1.05rem;
-    white-space: normal;
+  }
+
+  /* Export and Abandon fold behind More. */
+  .world-bar .bar-more-toggle {
+    display: inline-block;
+  }
+
+  .bar-more:not(.open) > .bar-more-items {
+    display: none;
   }
 
   .world-bar .date {
@@ -157,8 +184,8 @@
 @media (hover: none) {
   .hint-button {
     display: inline-block;
-    min-width: 32px;
-    min-height: 32px;
+    min-width: 44px;
+    min-height: 44px;
     margin-left: 4px;
     padding: 0 6px;
     line-height: 1;

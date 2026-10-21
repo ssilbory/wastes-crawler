@@ -28,7 +28,19 @@
   box-shadow: var(--bevel-out);
 }
 
-.world-bar > span:not(.bar-actions) {
+/* The readouts' box and the More fold (BarMore.tsx) only matter on a phone (mobile.css). */
+.bar-status,
+.bar-more,
+.bar-more-items {
+  display: contents;
+}
+
+.bar-more-toggle {
+  display: none;
+}
+
+.world-bar > span:not(.bar-actions),
+.world-bar .bar-status > span {
   padding: 1px 6px;
   font-family: var(--font-term);
   font-size: 1.2rem;

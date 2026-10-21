@@ -147,7 +147,6 @@ export function MapEditorApp() {
           <ConfirmButton
             confirm={shipped ? 'Discard it for good' : 'Delete it for good'}
             disabled={stranded.length > 0}
-            title={stranded.length > 0 ? 'Move its saved dungeons to another map first' : undefined}
             onConfirm={() => {
               const next = deleteRegion(lib, region.id);
               store(
@@ -162,6 +161,9 @@ export function MapEditorApp() {
           >
             {shipped ? 'Discard saved copy' : 'Delete map'}
           </ConfirmButton>
+        )}
+        {isSaved && stranded.length > 0 && (
+          <span class="hint">Move its saved dungeons to another map first.</span>
         )}{' '}
         <button
           type="button"

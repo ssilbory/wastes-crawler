@@ -12,6 +12,11 @@ import type { World } from '../../game/world/types.ts';
 import { companionsView, type BeastmasterView } from '../../render/companions-view.ts';
 import { data } from '../builder/data.ts';
 import { ConfirmButton } from '../confirm.tsx';
+import { HintButton } from '../hint.tsx';
+
+const CHOSEN =
+  "The only companion this Beastmaster will ever bind; it can't truly die while they live, and shares their vitality and mind.";
+const BINDING = "A quarter's work in the wilds while the party rests.";
 
 const WHERE = {
   party: 'with the party',
@@ -113,22 +118,27 @@ function Beastmaster(props: {
                   onInput={(e) => setName((e.target as HTMLInputElement).value)}
                 />
               </label>{' '}
-              <label title="The only companion this Beastmaster will ever bind; it can't truly die while they live, and shares their vitality and mind.">
-                <input
-                  type="checkbox"
-                  checked={chosen}
-                  onChange={(e) => setChosen((e.target as HTMLInputElement).checked)}
-                />{' '}
-                Chosen friend
-              </label>{' '}
+              <span class="check-row">
+                <label title={CHOSEN}>
+                  <input
+                    type="checkbox"
+                    checked={chosen}
+                    onChange={(e) => setChosen((e.target as HTMLInputElement).checked)}
+                  />{' '}
+                  Chosen friend
+                </label>
+                <HintButton name="Chosen friend" text={CHOSEN} />
+              </span>{' '}
               <button
                 type="button"
                 disabled={name.trim() === ''}
-                title="A quarter's work in the wilds while the party rests"
+                title={BINDING}
                 onClick={() => run(() => bindCompanion(w, data, v.id, pick.id, name, chosen))}
               >
                 Bind Companion
               </button>
+              <HintButton name="Bind Companion" text={BINDING} />
+              {name.trim() === '' && <p class="hint">Name the beast to bind it.</p>}
             </>
           )}
         </>

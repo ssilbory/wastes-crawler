@@ -29,6 +29,7 @@ import { CraftsmanTab } from './CraftsmanTab.tsx';
 import { ArenaTab } from './ArenaTab.tsx';
 import type { BoutStart } from '../../game/world/arena.ts';
 import { PopOut } from '../world/PopOut.tsx';
+import { BarMore } from '../world/BarMore.tsx';
 import { panelProps, Tabs } from '../tabs.tsx';
 
 const TABS = {
@@ -75,15 +76,19 @@ export function TownScreen(props: {
     <div class="world town">
       <div class="world-bar">
         <h1 class="date">{town.name}</h1>
-        <span>Purse: {crowns(w.purse)}</span>
-        <span>Loot: {lootText(w.loot)}</span>
-        {raidedText(w, town.id) && <span class="raided">{raidedText(w, town.id)}</span>}
-        {tradeText(w, data) && <span class="trade">{tradeText(w, data)}</span>}
+        <div class="bar-status">
+          <span>Purse: {crowns(w.purse)}</span>
+          <span>Loot: {lootText(w.loot)}</span>
+          {raidedText(w, town.id) && <span class="raided">{raidedText(w, town.id)}</span>}
+          {tradeText(w, data) && <span class="trade">{tradeText(w, data)}</span>}
+        </div>
         <span class="bar-actions">
           <PartyButtons onOpen={props.onOpen} />
-          <button type="button" class="secondary" onClick={props.onExport}>
-            Export save
-          </button>
+          <BarMore>
+            <button type="button" class="secondary" onClick={props.onExport}>
+              Export save
+            </button>
+          </BarMore>
           <button type="button" class="create" onClick={props.onLeave}>
             Back to the map
           </button>

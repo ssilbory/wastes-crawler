@@ -31,6 +31,7 @@ import { NecromancyPanel } from './NecromancyPanel.tsx';
 import { MountsPanel } from './MountsPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { PopOut } from './PopOut.tsx';
+import { BarMore } from './BarMore.tsx';
 import { QuestLog } from './QuestLog.tsx';
 import { SideDock } from './SideDock.tsx';
 import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
@@ -89,14 +90,16 @@ export function MapScreen(props: {
   return (
     <div class="world map-screen">
       <div class="world-bar">
-        <span class="date">{describeDate(data.content.overlandRules, w.day, w.quarter)}</span>
-        <span class="region">{map.name}</span>
-        <span>
-          {here} ({hexKey(w.position)})
-        </span>
-        <span>Rations: {w.rations === 0 ? 'none' : `d${w.rations}`}</span>
-        <span>Purse: {crowns(w.purse)}</span>
-        <span>Loot: {lootText(w.loot)}</span>
+        <div class="bar-status">
+          <span class="date">{describeDate(data.content.overlandRules, w.day, w.quarter)}</span>
+          <span class="region">{map.name}</span>
+          <span>
+            {here} ({hexKey(w.position)})
+          </span>
+          <span>Rations: {w.rations === 0 ? 'none' : `d${w.rations}`}</span>
+          <span>Purse: {crowns(w.purse)}</span>
+          <span>Loot: {lootText(w.loot)}</span>
+        </div>
         <span class="bar-actions">
           {town && !w.encounter && !w.coach && (
             <button type="button" onClick={props.onTown}>
@@ -115,12 +118,14 @@ export function MapScreen(props: {
             </button>
           )}
           <PartyButtons onOpen={props.onOpen} />
-          <button type="button" class="secondary" onClick={props.onExport}>
-            Export save
-          </button>
-          <ConfirmButton class="secondary" confirm="Delete the save" onConfirm={props.onAbandon}>
-            Abandon world
-          </ConfirmButton>
+          <BarMore>
+            <button type="button" class="secondary" onClick={props.onExport}>
+              Export save
+            </button>
+            <ConfirmButton class="secondary" confirm="Delete the save" onConfirm={props.onAbandon}>
+              Abandon world
+            </ConfirmButton>
+          </BarMore>
         </span>
       </div>
       <div class="world-main">

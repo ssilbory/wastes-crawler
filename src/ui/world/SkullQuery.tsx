@@ -40,6 +40,7 @@ export function SkullQuery(props: {
           {LABELS[k]}
         </label>
       ))}
+      {asked.length === 0 && <p class="hint">Tick a question to ask.</p>}
       <button
         type="button"
         disabled={asked.length === 0}
