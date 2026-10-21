@@ -11,6 +11,7 @@ import type { TownResult } from '../../game/world/services.ts';
 import type { World } from '../../game/world/types.ts';
 import { companionsView, type BeastmasterView } from '../../render/companions-view.ts';
 import { data } from '../builder/data.ts';
+import { ConfirmButton } from '../confirm.tsx';
 
 const WHERE = {
   party: 'with the party',
@@ -54,9 +55,12 @@ function Beastmaster(props: {
             </button>
           )}
           {!c.chosen && (
-            <button type="button" onClick={() => run(() => releaseCompanion(w, data, v.id))}>
+            <ConfirmButton
+              confirm="Release for good"
+              onConfirm={() => run(() => releaseCompanion(w, data, v.id))}
+            >
               Release {c.name}
-            </button>
+            </ConfirmButton>
           )}
           <label>
             {' '}

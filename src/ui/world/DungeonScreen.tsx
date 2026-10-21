@@ -219,7 +219,7 @@ export function DungeonScreen(props: {
           </div>
           <JournalPanel world={w} />
           {w.encounter && (
-            <PopOut>
+            <PopOut label="Encounter">
               <EncounterPanel
                 world={w}
                 onFight={props.onFight}

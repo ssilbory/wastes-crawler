@@ -293,7 +293,6 @@ function WorldScreens(props: { track: (w: World, fresh?: boolean) => void }) {
       onLeave={leave}
       onExport={exportSave}
       onAbandon={() => {
-        if (!confirm('Abandon this world? The save is deleted.')) return;
         saveWorldText(null);
         setSaves((n) => n + 1);
         world.current = null;

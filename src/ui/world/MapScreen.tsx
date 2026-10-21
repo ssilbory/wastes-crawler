@@ -7,6 +7,7 @@ import { hexKey } from '../../rules/hex.ts';
 import { hexCells, mapPixels } from '../../render/hex-view.ts';
 import { crowns, lootText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
+import { ConfirmButton } from '../confirm.tsx';
 import { HEX_SIZE, HexMap } from './HexMap.tsx';
 import { ZoomFrame } from './ZoomFrame.tsx';
 import { dayTint } from '../../render/hex-art.ts';
@@ -114,9 +115,9 @@ export function MapScreen(props: {
           <button type="button" class="secondary" onClick={props.onExport}>
             Export save
           </button>
-          <button type="button" class="secondary" onClick={props.onAbandon}>
+          <ConfirmButton class="secondary" confirm="Delete the save" onConfirm={props.onAbandon}>
             Abandon world
-          </button>
+          </ConfirmButton>
         </span>
       </div>
       <div class="world-main">
@@ -135,7 +136,7 @@ export function MapScreen(props: {
           </ZoomFrame>
           <JournalPanel world={w} />
           {w.encounter && (
-            <PopOut>
+            <PopOut label="Encounter">
               <EncounterPanel
                 world={w}
                 onFight={props.onFight}

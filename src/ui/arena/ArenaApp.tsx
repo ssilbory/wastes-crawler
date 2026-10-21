@@ -16,6 +16,7 @@ import { RivalPicker, rivalsFor, type Opponents } from './RivalPicker.tsx';
 import { PartySetup, type Placement } from './PartySetup.tsx';
 import { RosterPanel } from './RosterPanel.tsx';
 import { SpectatorScreen } from './SpectatorScreen.tsx';
+import { panelProps, Tabs } from '../tabs.tsx';
 
 type Mode = 'party' | 'spectator';
 const emptyRows = (): string[][] => [[], [], []];
@@ -104,19 +105,16 @@ export function ArenaApp() {
     <div class="arena">
       <header>
         <h1>Arena</h1>
-        <div class="tabs" role="tablist">
-          {(['party', 'spectator'] as const).map((m) => (
-            <button
-              key={m}
-              type="button"
-              role="tab"
-              aria-selected={mode === m}
-              onClick={() => setMode(m)}
-            >
-              {m === 'party' ? 'Party fight' : 'Monster vs monster'}
-            </button>
-          ))}
-        </div>
+        <Tabs
+          id="arena-mode"
+          label="Arena mode"
+          tabs={[
+            { key: 'party', label: 'Party fight' },
+            { key: 'spectator', label: 'Monster vs monster' },
+          ]}
+          selected={mode}
+          onSelect={setMode}
+        />
       </header>
       {errors.length > 0 && (
         <ul class="errors" role="alert">
@@ -125,7 +123,7 @@ export function ArenaApp() {
           ))}
         </ul>
       )}
-      <main class="arena-setup">
+      <main class="arena-setup" {...panelProps('arena-mode', mode)}>
         {mode === 'party' ? (
           <>
             <RosterPanel

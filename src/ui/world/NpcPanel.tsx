@@ -7,6 +7,7 @@ import type { Npc, World } from '../../game/world/types.ts';
 import { shareText } from '../../game/world/wording.ts';
 import { townName } from '../../render/quest-view.ts';
 import { data } from '../builder/data.ts';
+import { ConfirmButton } from '../confirm.tsx';
 
 function escortTo(questId: string): string {
   const step = data.content.quests.find((q) => q.id === questId)?.objectives[0];
@@ -76,17 +77,13 @@ export function NpcPanel(props: { world: World; onChange: () => void }) {
               {n.quitting && ' · leaving at the next town'}
               {n.inventory.length > 0 && ` · carrying ${n.inventory.length} items`}
             </span>
-            <button type="button" onClick={() => run(() => dismiss(w, data, n.id))}>
-              {n.kind === 'undead' || n.kind === 'summon'
-                ? 'Release'
-                : n.kind === 'companion'
-                  ? 'Send away'
-                  : n.kind === 'beast' || n.kind === 'pack'
-                    ? 'Set loose'
-                    : n.kind === 'tree'
-                      ? 'Let it root'
-                      : 'Dismiss'}
-            </button>
+            <ConfirmButton
+              label={`${parting(n)} ${n.name}`}
+              confirm={`${parting(n)} for good`}
+              onConfirm={() => run(() => dismiss(w, data, n.id))}
+            >
+              {parting(n)}
+            </ConfirmButton>
           </li>
         ))}
       </ul>
@@ -126,4 +123,13 @@ export function NpcPanel(props: { world: World; onChange: () => void }) {
       {message && <p class="hint">{message}</p>}
     </section>
   );
+}
+
+/** What parting with a follower is called, by what kind of follower they are. */
+function parting(n: Npc): string {
+  if (n.kind === 'undead' || n.kind === 'summon') return 'Release';
+  if (n.kind === 'companion') return 'Send away';
+  if (n.kind === 'beast' || n.kind === 'pack') return 'Set loose';
+  if (n.kind === 'tree') return 'Let it root';
+  return 'Dismiss';
 }

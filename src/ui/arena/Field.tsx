@@ -201,7 +201,8 @@ export function BattleLog(props: {
           ))}
         </div>
       )}
-      <ol>
+      {/* New turns are read out as they land; the filters only hide lines. */}
+      <ol role="log" aria-live="polite">
         {logLines(props.lines, props.sides ?? null, filter)
           .map((l) => (
             <li key={l.index} class={l.index >= props.from ? 'new' : undefined}>

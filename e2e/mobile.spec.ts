@@ -65,6 +65,12 @@ test.describe('on a phone', () => {
     await sheet.getByRole('button', { name: 'About The Coruscating Coffin' }).tap();
     const dialog = page.getByRole('dialog', { name: 'The Coruscating Coffin' });
     await expect(dialog).toContainText('In game: 1d8 per caster level to one enemy');
+    // It takes focus, and Escape hands it back to the ⓘ that opened it.
+    await expect(dialog.getByRole('button', { name: 'Close' })).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(dialog).toHaveCount(0);
+    await expect(sheet.getByRole('button', { name: 'About The Coruscating Coffin' })).toBeFocused();
+    await sheet.getByRole('button', { name: 'About The Coruscating Coffin' }).tap();
     await dialog.getByRole('button', { name: 'Close' }).tap();
     await expect(dialog).toHaveCount(0);
   });
