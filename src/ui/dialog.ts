@@ -50,7 +50,10 @@ function trapTab(e: KeyboardEvent, box: HTMLElement | null): void {
   const first = items[0];
   const last = items.at(-1);
   if (!first || !last) return;
-  const inside = box.contains(document.activeElement);
+  // The box itself (a card that took focus on opening) counts as outside: Shift+Tab from it
+  // would otherwise leave.
+  const active = document.activeElement;
+  const inside = active !== box && box.contains(active);
   if (e.shiftKey && (!inside || document.activeElement === first)) {
     e.preventDefault();
     last.focus();
