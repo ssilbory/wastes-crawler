@@ -190,6 +190,8 @@ export interface Combatant {
    * points ignored from each harm, and Wind Walking's mist.
    */
   flame: number;
+  /** Oil of Edge on the weapon for the rest of the fight (docs/rules-adaptation.md, Potions). */
+  edge: { hit: number; damage: number } | null;
   stone: number;
   misted: boolean;
   /** A Skinshifter's alternate form worn now, by index into the character's forms (1.5.15). */
@@ -258,6 +260,8 @@ export type Action =
   /** Hold the turn until right after the named combatant's (Holding); see holdTurn. */
   | { kind: 'hold'; after: string }
   | { kind: 'gear'; item: number; location: 'readied' | 'stowed' }
+  /** Drink a readied potion, or give it to an ally in touch (docs/rules-adaptation.md, Potions). */
+  | { kind: 'potion'; item: number; target: string }
   /** Spend the Main Action trying to throw off the Torment of Tumefaction. */
   | { kind: 'shake-off' }
   /** Spend the Main Action taking form again out of Wind Walking's mist. */

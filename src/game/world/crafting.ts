@@ -12,6 +12,7 @@ import { findPeople } from '../character/people.ts';
 import type { WorldEvent } from './bus.ts';
 import { note } from './members.ts';
 import { daysText } from './wording.ts';
+import { completeBrew } from './brewing.ts';
 import { completeMod, modOf } from './mods.ts';
 import { regionMap } from './region.ts';
 import type { TownResult } from './services.ts';
@@ -134,6 +135,10 @@ export function workOn(w: World, data: GameData, p: Project, days = 1): void {
   p.daysLeft = left;
   if (p.daysLeft > 0) return;
   w.projects = w.projects.filter((x) => x !== p);
+  if (p.kind === 'brew') {
+    completeBrew(w, data, p, crafter);
+    return;
+  }
   if (p.kind !== 'gear') {
     completeMod(w, data, p);
     return;
@@ -219,6 +224,7 @@ export function craftShift(w: World, data: GameData, m: Member): void {
 
 function workName(data: GameData, p: Project): string {
   const item = (findItem(data, p.item) as CatalogItem).name;
+  if (p.kind === 'brew') return `a brew of ${item}`;
   return p.kind === 'mod'
     ? `${modOf(data, p.mod as string).name} for the ${item}`
     : `the ${tierName(p.quality)}${item}`;

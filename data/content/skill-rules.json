@@ -27,6 +27,11 @@
       "id": "animal-ken",
       "name": "Animal Ken",
       "description": "Read, calm, and win over beasts: talk down a pack of predators, coax a wild animal to follow you, and keep the beasts that do in hand. A party member with Animal Ken can parley with animals, and a helpful group may send one of its beasts to follow them."
+    },
+    {
+      "id": "alchemy",
+      "name": "Alchemy",
+      "description": "Brew potions, tonics, and oils: know a reagent, distil an essence, and tell a cure from a poison. Brewing a potion takes the Alchemy skill and an Int/Alchemy check against the potion's difficulty."
     }
   ],
   "trade": {

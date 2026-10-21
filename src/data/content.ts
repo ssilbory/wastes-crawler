@@ -34,6 +34,7 @@ import craftingRules from '../../data/content/crafting-rules.json';
 import components from '../../data/content/components.json';
 import mods from '../../data/content/mods.json';
 import craftsmen from '../../data/content/craftsmen.json';
+import alchemy from '../../data/content/alchemy.json';
 import settingsDefaults from '../../data/content/settings-defaults.json';
 import soundCues from '../../data/content/sound-cues.json';
 import starterParty from '../../data/content/starter-party.json';
@@ -64,6 +65,7 @@ import { travelReferenceErrors } from './travel-check.ts';
 import { questReferenceErrors } from './quest-check.ts';
 import { dungeonReferenceErrors } from './dungeon-check.ts';
 import { craftingReferenceErrors } from './crafting-check.ts';
+import { alchemyReferenceErrors } from './alchemy-check.ts';
 import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.ts';
 import { gameSkills, skillRuleErrors } from './skills.ts';
 import { spellRuleErrors } from './spells.ts';
@@ -109,6 +111,7 @@ export function loadContent(): ContentData {
     components: ContentSchemas.components.parse(components),
     mods: ContentSchemas.mods.parse(mods),
     craftsmen: ContentSchemas.craftsmen.parse(craftsmen),
+    alchemy: ContentSchemas.alchemy.parse(alchemy),
     settingsDefaults: ContentSchemas.settingsDefaults.parse(settingsDefaults),
     soundCues: ContentSchemas.soundCues.parse(soundCues),
     starterParty: ContentSchemas.starterParty.parse(starterParty),
@@ -179,6 +182,8 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['components', content.components],
     ['mods', content.mods],
     ['craftsmen', content.craftsmen],
+    ['alchemy/potions', content.alchemy.potions],
+    ['alchemy/alchemists', content.alchemy.alchemists],
     ['settingMonsters', content.settingMonsters],
     ['standingOrders', content.standingOrders],
     ['authorities', content.authorities],
@@ -217,6 +222,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...questReferenceErrors(srd, content),
     ...dungeonReferenceErrors(content),
     ...craftingReferenceErrors(srd, content),
+    ...alchemyReferenceErrors(srd, content),
     ...settingReferenceErrors(srd, content),
     ...groveReferenceErrors(srd, content),
     ...ailmentReferenceErrors(srd, content),

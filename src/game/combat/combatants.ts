@@ -89,6 +89,7 @@ export function base(
     summoned: null,
     servant: false,
     flame: 0,
+    edge: null,
     stone: 0,
     misted: false,
     form: null,

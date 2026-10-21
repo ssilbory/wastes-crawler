@@ -45,7 +45,7 @@ export function attackInput(
   bonus: number,
 ): AttackInput {
   return {
-    attackBonus: attack.hit + bonus,
+    attackBonus: attack.hit + bonus + (actor.edge?.hit ?? 0),
     attributeModifier: 0,
     skill: 0,
     modifier: rangedModifier(b, actor, attack) + hitModifier(b, actor),
@@ -133,7 +133,7 @@ export function resolveAttack(
         dice,
         attributeModifier: 0,
         // Flame Without End adds to the hit's damage but not to Shock (4.5.0).
-        bonus: attack.damageBonus + blessed + actor.flame,
+        bonus: attack.damageBonus + blessed + actor.flame + (actor.edge?.damage ?? 0),
         shock: attack.mode === 'melee' ? attack.shock : null,
         shockBonus: blessed,
       },

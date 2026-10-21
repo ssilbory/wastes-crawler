@@ -228,7 +228,8 @@ describe('what drops', () => {
 
 describe('a drop’s cost in loot dice', () => {
   it('cuts the fight’s loot dice, leaving at least three quarters', () => {
-    const w = scripted([1, 0, 1, 2]);
+    // The last face is the potion roll (Potions: Drops): none.
+    const w = scripted([1, 0, 1, 2, 100]);
     atLevel(w, 5);
     const foes = Array<string>(8).fill('skilled-veteran');
     // Sixteen d6s; a 100-crown long sword takes all it can: a quarter of them.
@@ -238,7 +239,7 @@ describe('a drop’s cost in loot dice', () => {
   });
 
   it('pays the full dice when nothing drops, or the fight is worth no XP', () => {
-    let w = scripted([100, 100]);
+    let w = scripted([100, 100, 100]);
     winnings(w, data, [['thug-or-militia', 'thug-or-militia']], WIN);
     expect(w.loot).toEqual([{ count: 2, sides: 6 }]);
     w = scripted([]);

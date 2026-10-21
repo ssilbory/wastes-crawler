@@ -92,6 +92,8 @@ export function newWorld(
     raided: {},
     craftsmen: {},
     commissions: [],
+    alchemists: {},
+    brewOrders: [],
     corpses: null,
     fallen: null,
     performedDay: null,

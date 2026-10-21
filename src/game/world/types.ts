@@ -12,6 +12,8 @@ import type {
   PendingEncounter,
   QuestState,
   Project,
+  AlchemistState,
+  BrewOrder,
   Commission,
   CraftsmanState,
   FactionState,
@@ -121,6 +123,8 @@ export interface World {
   raided: Record<string, number>;
   craftsmen: Record<string, CraftsmanState>;
   commissions: Commission[];
+  alchemists: Record<string, AlchemistState>;
+  brewOrders: BrewOrder[];
   /** Corpses lying where the last won fight was (Phase 14b). */
   corpses: WorldSave['corpses'];
   fallen: WorldSave['fallen'];

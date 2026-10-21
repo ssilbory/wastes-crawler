@@ -126,7 +126,7 @@ function pay(b: Battle, actor: Combatant, m: CombatMagic, strain: boolean): void
 }
 
 /** Healing that revives the Mortally Wounded and adds System Strain, unless it is refused. */
-function restore(b: Battle, target: Combatant, amount: number, strain: number): void {
+export function restore(b: Battle, target: Combatant, amount: number, strain: number): void {
   if (healingFails(b, target) || !takeHealingStrain(b, target, strain)) return;
   const healed = Math.max(0, amount);
   if (target.status === 'dying' || target.status === 'stable') {

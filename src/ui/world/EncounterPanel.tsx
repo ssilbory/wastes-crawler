@@ -4,6 +4,8 @@ import { acceptBeast, beastRefusal, handlers } from '../../game/world/beasts.ts'
 import { acceptOffer, bribePrice, canParley, parley } from '../../game/world/parley.ts';
 import { bestSpeaker, type Speech } from '../../game/world/speech.ts';
 import { VANISH, vanish } from '../../game/world/sorcery.ts';
+import { drink } from '../../game/world/potions.ts';
+import { potionView, usable } from '../../render/potion-view.ts';
 import { castersOf } from '../../game/world/waygates.ts';
 import type { TownResult } from '../../game/world/services.ts';
 import type { World } from '../../game/world/types.ts';
@@ -66,6 +68,16 @@ export function EncounterPanel(props: {
               {m.character.name}: turn the party invisible and slip away
             </button>
           ))}
+        {/* In an encounter only a Shadow Draught can be used, and only before being spotted. */}
+        {usable(potionView(w, data)).map((l) => (
+          <button
+            key={`${l.holder.id}/${l.potion.id}`}
+            type="button"
+            onClick={() => run(() => drink(w, data, l.holder.id, l.potion.id, l.holder.id))}
+          >
+            {l.holder.name}: pass round a {l.potion.name} and slip away
+          </button>
+        ))}
         {e.offer && (
           <button type="button" onClick={() => run(() => acceptOffer(w, data))}>
             Take them on

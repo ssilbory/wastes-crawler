@@ -11,6 +11,7 @@ import { canAct, isUp, targets } from './targeting.ts';
 import type { Action, Battle, Combatant, WaitingCompanion } from './types.ts';
 import { inSlot } from './mounted.ts';
 import { bindTargets, canHowl } from './companions.ts';
+import { potionCommand } from './potions.ts';
 
 export type CommandGroup = 'attack' | 'magic' | 'defend' | 'aid' | 'gear' | 'move' | 'wait';
 
@@ -254,6 +255,8 @@ export function commandsFor(b: Battle, actor: Combatant): Command[] {
   });
   if (gear.length > 0)
     commands.push({ key: 'gear', group: 'gear', label: 'Ready or stow', choices: gear });
+  const potion = potionCommand(b, actor);
+  if (potion) commands.push(potion);
   const moves = moveChoices(b, actor);
   if (moves.length > 0)
     commands.push({ key: 'move', group: 'move', label: 'Change slot', choices: moves });

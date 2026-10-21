@@ -8,6 +8,7 @@ import type {
   Gear,
   GearBundle,
   ItemLocation,
+  Potion,
   Quality,
   Shield,
   Weapon,
@@ -20,6 +21,8 @@ export type CatalogItem =
   | { kind: 'armor'; id: string; name: string; cost: Cost | null; armor: Armor }
   | { kind: 'shield'; id: string; name: string; cost: Cost; shield: Shield }
   | { kind: 'gear'; id: string; name: string; cost: Cost; gear: Gear }
+  /** A potion (docs/rules-adaptation.md, Potions): gear whose cost is its brewing cost. */
+  | { kind: 'potion'; id: string; name: string; cost: Cost; gear: Gear; potion: Potion }
   | { kind: 'bundle'; id: string; name: string; cost: Cost; bundle: GearBundle };
 
 /** One line of a character's inventory. */
@@ -83,6 +86,14 @@ export function catalog(data: GameData): CatalogItem[] {
     ((g) => ({ kind: 'gear' as const, id: g.id, name: g.name, cost: g.cost, gear: g }))(
       data.content.craftingRules.tools,
     ),
+    ...data.content.alchemy.potions.map((p) => ({
+      kind: 'potion' as const,
+      id: p.id,
+      name: p.name,
+      cost: p.cost,
+      gear: p,
+      potion: p,
+    })),
     ...data.srd['gear-bundles'].map((b) => ({
       kind: 'bundle' as const,
       id: b.id,
@@ -97,9 +108,9 @@ export function findItem(data: GameData, id: string): CatalogItem | undefined {
   return catalog(data).find((i) => i.id === id);
 }
 
-/** Items a shop sells: everything with a price. */
+/** Items a shop sells: everything with a price but potions, which only alchemists sell. */
 export function buyable(data: GameData): CatalogItem[] {
-  return catalog(data).filter((i) => i.cost !== null);
+  return catalog(data).filter((i) => i.cost !== null && i.kind !== 'potion');
 }
 
 const TENTHS = { cp: 1, sp: 10, gp: 100 } as const;
@@ -143,7 +154,8 @@ export function entryEncumbrance(data: GameData, item: CatalogItem, entry: Inven
       return q * item.shield.encumbrance;
     case 'bundle':
       return q * item.bundle.encumbrance;
-    case 'gear': {
+    case 'gear':
+    case 'potion': {
       const g = item.gear;
       if (g.weightless || g.encumbrance === null) return 0;
       if (g.freeWhenWorn && entry.location === 'worn') return 0;

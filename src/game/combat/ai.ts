@@ -6,6 +6,7 @@ import { shiftAction } from './forms.ts';
 import type { Dice } from '../../data/schemas/index.ts';
 import { rollDie } from '../../rules/dice.ts';
 import { breathRow } from './specials.ts';
+import { potionAction } from './potions.ts';
 import { canUse, combatMagic } from './spells.ts';
 import { canAct, flying, inMelee, isUp, targets } from './targeting.ts';
 import type { Action, Attack, Battle, Combatant } from './types.ts';
@@ -168,6 +169,18 @@ function noncombatantAction(b: Battle, actor: Combatant): Action {
   return first ? { kind: 'stabilize', target: first.id } : { kind: 'wait' };
 }
 
+/** Whether a standing ally's healing magic can reach the target now. */
+const healerFor = (b: Battle, target: Combatant) =>
+  b.combatants.some(
+    (c) =>
+      c.side === target.side &&
+      canAct(c) &&
+      HEALING.some((id) => {
+        const m = combatMagic(b, id);
+        return m !== undefined && canUse(b, c, m, false, target.id);
+      }),
+  );
+
 export function partyAction(b: Battle, actor: Combatant): Action {
   // A misted ally stays out of harm's way while badly hurt (Phase 18b).
   if (actor.misted) return actor.hp * 2 <= actor.maxHp ? { kind: 'wait' } : { kind: 'end-mist' };
@@ -177,6 +190,8 @@ export function partyAction(b: Battle, actor: Combatant): Action {
     (m) => m && canUse(b, actor, m, false, first?.id),
   );
   if (first && healing) return { kind: 'cast', magic: healing.id, target: first.id };
+  const potion = potionAction(b, actor, first, healerFor(b, actor));
+  if (potion) return potion;
   // Under Sanctified Ward, only heal, tend, or defend (Phase 15).
   if (actor.sanctified)
     return (

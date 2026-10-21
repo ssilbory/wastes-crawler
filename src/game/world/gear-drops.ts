@@ -85,7 +85,7 @@ function itemFrom(w: World, data: GameData, id: string, late: boolean): CatalogI
 }
 
 /** The living, conscious PC with the most spare Stowed room. */
-function keeper(w: World, data: GameData): Member | undefined {
+export function keeper(w: World, data: GameData): Member | undefined {
   const room = (m: Member) => {
     const l = memberSheet(data, m).equipment.load;
     return l.stowedLimit - l.stowed;

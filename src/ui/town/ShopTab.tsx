@@ -26,6 +26,7 @@ const KINDS: Record<CatalogItem['kind'], string> = {
   armor: 'Armor',
   shield: 'Shields',
   gear: 'Gear',
+  potion: 'Potions',
   bundle: 'Bundles',
 };
 const CARRIER: Record<Carrier['kind'], string> = {
