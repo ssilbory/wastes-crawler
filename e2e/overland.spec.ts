@@ -50,8 +50,14 @@ test('wanders the overland map, fighting what it meets', async ({ page }, testIn
   for (let i = 0; i < 300 && fights < 2; i++) {
     const encounter = page.getByRole('region', { name: 'Encounter' });
     if (await encounter.isVisible()) {
-      // The card takes focus, so Tab starts on its choices.
-      await expect(page.getByRole('dialog', { name: 'Encounter' })).toBeFocused();
+      // The card takes focus, so Tab starts on its choices, and Tab stays inside it either way.
+      const card = page.getByRole('dialog', { name: 'Encounter' });
+      await expect(card).toBeFocused();
+      const inCard = () => card.evaluate((el) => el.contains(document.activeElement));
+      await page.keyboard.press('Shift+Tab');
+      expect(await inCard()).toBe(true);
+      for (let t = 0; t < 12; t++) await page.keyboard.press('Tab');
+      expect(await inCard()).toBe(true);
       await encounter.getByRole('button', { name: /^(Fight|Attack them)$/ }).click();
       await page.getByRole('button', { name: 'Auto-resolve' }).click();
       await expect(page.getByRole('status')).toBeVisible();
