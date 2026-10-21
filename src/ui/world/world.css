@@ -17,8 +17,17 @@
 
 .roles {
   display: grid;
-  gap: 6px;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 6px 10px;
   margin: 8px 0;
+}
+
+/* Each name and its choice share the panel's two columns, so the choices line up. */
+.roles > label {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
 }
 
 .party-panel ul {

@@ -23,6 +23,13 @@ async function startWorld(page: Page) {
   await page.getByRole('button', { name: 'Begin the journey' }).click();
 }
 
+/** Shows the whole map: it opens closed in on what the party knows. */
+async function fit(page: Page) {
+  const button = page.getByRole('group', { name: 'Zoom' }).getByRole('button', { name: 'Fit' });
+  if (await button.isEnabled()) await button.click();
+  await expect(page.locator('.map-wrap.zoom-scroll')).toHaveClass(/fit/);
+}
+
 /** Marks a band of hexes visited and sets the quarter, through the autosave. */
 async function explore(page: Page, quarter: number) {
   await page.evaluate(
@@ -44,11 +51,48 @@ async function explore(page: Page, quarter: number) {
 test('draws the overland map as a chart, fogged beyond what the party knows', async ({ page }) => {
   await startWorld(page);
   const map = page.getByRole('img', { name: 'Overland map' });
+  await fit(page);
   await expect(map).toHaveScreenshot('overland-start.png');
   await explore(page, 1);
+  await fit(page);
   await expect(map).toHaveScreenshot('overland-day.png');
   await explore(page, 3);
+  await fit(page);
   await expect(map).toHaveScreenshot('overland-night.png');
+});
+
+/** Whether the party's banner lies inside the map's frame, left to right. */
+async function partyInView(page: Page) {
+  const party = await page.locator('.hex .party').boundingBox();
+  const box = await page.locator('.map-wrap.zoom-scroll').boundingBox();
+  expect(party && box).toBeTruthy();
+  if (party && box) {
+    expect(party.x).toBeGreaterThan(box.x);
+    expect(party.x + party.width).toBeLessThan(box.x + box.width);
+  }
+}
+
+test('opens closed in on the hexes the party knows', async ({ page }) => {
+  await startWorld(page);
+  const zoom = page.getByRole('group', { name: 'Zoom' });
+  await expect(page.locator('.map-wrap.zoom-scroll')).toHaveClass(/zoomed/);
+  await expect(zoom.getByRole('button', { name: 'Zoom out' })).toBeEnabled();
+  await partyInView(page);
+});
+
+// The overland map answers the keyboard: Tab to it, the arrow keys, then Enter.
+test('picks a destination with the keyboard', async ({ page }) => {
+  await startWorld(page);
+  const map = page.getByRole('img', { name: 'Overland map' });
+  await map.focus();
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('ArrowRight');
+  await expect(page.locator('.map-cursor')).toBeVisible();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.hex.destination')).toHaveCount(1);
+  await expect(
+    page.getByRole('region', { name: 'Quarter plan' }).getByRole('radio', { name: 'Hike' }),
+  ).toBeEnabled();
 });
 
 // Sam's ask: zoom in and out on the overland map.
@@ -56,6 +100,7 @@ test('zooms in on the party, scrolls, and fits the whole map again', async ({ pa
   await startWorld(page);
   const zoom = page.getByRole('group', { name: 'Zoom' });
   const frame = page.locator('.map-wrap.zoom-scroll');
+  await fit(page);
   await expect(zoom.getByRole('button', { name: 'Zoom out' })).toBeDisabled();
   await zoom.getByRole('button', { name: 'Zoom in' }).click();
   await zoom.getByRole('button', { name: 'Zoom in' }).click();
@@ -64,13 +109,7 @@ test('zooms in on the party, scrolls, and fits the whole map again', async ({ pa
   // The map is now wider than its frame, and the party is still in view.
   const wider = await frame.evaluate((el) => el.scrollWidth > el.clientWidth * 1.5);
   expect(wider).toBe(true);
-  const party = await page.locator('.hex .party').boundingBox();
-  const box = await frame.boundingBox();
-  expect(party && box).toBeTruthy();
-  if (party && box) {
-    expect(party.x).toBeGreaterThan(box.x);
-    expect(party.x + party.width).toBeLessThan(box.x + box.width);
-  }
+  await partyInView(page);
   await page.screenshot({ path: testInfo.outputPath('overland-zoomed.png') });
   // Clicking a hex still picks it as the destination.
   await page.locator('.hex .party').click({ force: true });

@@ -65,7 +65,7 @@ test('wanders the overland map, fighting what it meets', async ({ page }, testIn
     if (col >= 20) east = false;
     if (col <= 3) east = true;
     await page.locator(`[data-hex="${east ? col + 1 : col - 1},8"]`).click();
-    await page.getByRole('button', { name: /^(Hike|Camp)$/ }).click();
+    await page.getByRole('button', { name: /^(Hike|Camp) for the quarter$/ }).click();
   }
   expect(fights).toBe(2);
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText('The party');
@@ -102,7 +102,7 @@ test('camps for the night with the suggested watches and shelter', async ({ page
       await page.getByRole('button', { name: 'Auto-resolve' }).click();
       await page.getByRole('button', { name: 'Back to the map' }).click();
     }
-    await page.getByRole('button', { name: /^(Hike|Camp)$/ }).click();
+    await page.getByRole('button', { name: /^(Hike|Camp) for the quarter$/ }).click();
   }
   await expect(page.locator('.world-bar .date')).toContainText(
     /^(morning|day|evening|night), 2 Seedtime/i,
@@ -127,6 +127,6 @@ test('heads toward an unexplored hex picked on the map', async ({ page }) => {
   await expect(page.locator('.hex.route')).not.toHaveCount(0);
   const plan = page.getByRole('region', { name: 'Quarter plan' });
   await expect(plan.getByRole('radio', { name: 'Hike' })).toHaveAttribute('aria-checked', 'true');
-  await page.getByRole('button', { name: 'Hike' }).click();
+  await page.getByRole('button', { name: 'Hike for the quarter' }).click();
   await expect(page.locator('.world-bar')).not.toContainText('Rubblegate');
 });

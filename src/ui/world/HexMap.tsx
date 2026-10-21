@@ -1,3 +1,4 @@
+import { useId } from 'preact/hooks';
 import {
   glyphsFor,
   riverPath,
@@ -9,6 +10,7 @@ import {
 import type { HexCell } from '../../render/hex-view.ts';
 import { bridges, shores } from '../../render/hex-water.ts';
 import { HexArtDefs } from './HexArt.tsx';
+import { useMapKeys } from './map-keys.ts';
 
 const SIZE = 18;
 
@@ -75,7 +77,8 @@ function ScaleBarMark(props: { bar: ScaleBar }) {
  * with soft edges about what the party knows, a scale bar and a compass rose, then one
  * group per hex with its icons, which takes the clicks; clicking a hex, even under fog, picks it as
  * the destination. With `onDrag`, moving over hexes with the button held picks them too, for
- * painting in the map editor.
+ * painting in the map editor. The keyboard picks hexes too (`useMapKeys`): Tab to the map, the
+ * arrow keys, then Enter.
  */
 export function HexMap(props: {
   cells: HexCell[];
@@ -90,155 +93,169 @@ export function HexMap(props: {
   const { onDrag, cells, tint } = props;
   const known = cells.filter((c) => c.terrain);
   const shore = shores(cells, SIZE);
+  const keys = useMapKeys(cells, props.onPick);
+  const hint = useId();
   return (
-    <svg
-      class="hex-map"
-      viewBox={`0 0 ${props.width} ${props.height}`}
-      role="img"
-      aria-label={props.label ?? 'Overland map'}
-    >
-      <HexArtDefs />
-      <rect class="paper" width={props.width} height={props.height} fill="url(#hm-paper)" />
-      <g class="ground">
-        {known.map((c) => (
-          <g key={c.key} class={`t-${c.terrain}${c.visited ? '' : ' unvisited'}`}>
-            <polygon points={c.points} />
-            {glyphsFor(c, SIZE).map((g, i) => (
-              <use
-                key={i}
-                href={`#${g.symbol}`}
-                x={g.x - g.size / 2}
-                y={g.y - g.size / 2}
-                width={g.size}
-                height={g.size}
-              />
-            ))}
-            {!c.visited && <polygon class="wash" points={c.points} />}
-          </g>
-        ))}
-      </g>
-      <path class="shallows" d={shore.shallows} />
-      <path class="shore" d={shore.line} />
-      <path class="river" d={riverPath(cells)} />
-      <path class="road" d={roadPath(cells)} />
-      {bridges(cells).map((b) => (
-        <use
-          key={b.key}
-          class="bridge"
-          href="#hi-bridge"
-          x={-SIZE * 0.6}
-          y={-SIZE * 0.6}
-          width={SIZE * 1.2}
-          height={SIZE * 1.2}
-          transform={`translate(${b.x} ${b.y}) rotate(${b.angle})`}
-        />
-      ))}
-      {tint && tint.opacity > 0 && (
-        <rect
-          class="day-tint"
-          width={props.width}
-          height={props.height}
-          fill={tint.color}
-          fill-opacity={tint.opacity}
-        />
-      )}
-      {known.length < cells.length && (
-        <>
-          <mask id="hm-fog-mask">
-            <rect width={props.width} height={props.height} fill="#fff" />
-            <g filter="url(#hm-fog)">
-              {known.map((c) => (
-                <polygon key={c.key} points={c.points} fill="#000" />
+    <>
+      <svg
+        ref={keys.svg}
+        class="hex-map"
+        viewBox={`0 0 ${props.width} ${props.height}`}
+        role="img"
+        aria-label={props.label ?? 'Overland map'}
+        aria-describedby={hint}
+        {...keys.handlers}
+      >
+        <HexArtDefs />
+        <rect class="paper" width={props.width} height={props.height} fill="url(#hm-paper)" />
+        <g class="ground">
+          {known.map((c) => (
+            <g key={c.key} class={`t-${c.terrain}${c.visited ? '' : ' unvisited'}`}>
+              <polygon points={c.points} />
+              {glyphsFor(c, SIZE).map((g, i) => (
+                <use
+                  key={i}
+                  href={`#${g.symbol}`}
+                  x={g.x - g.size / 2}
+                  y={g.y - g.size / 2}
+                  width={g.size}
+                  height={g.size}
+                />
               ))}
+              {!c.visited && <polygon class="wash" points={c.points} />}
             </g>
-          </mask>
+          ))}
+        </g>
+        <path class="shallows" d={shore.shallows} />
+        <path class="shore" d={shore.line} />
+        <path class="river" d={riverPath(cells)} />
+        <path class="road" d={roadPath(cells)} />
+        {bridges(cells).map((b) => (
+          <use
+            key={b.key}
+            class="bridge"
+            href="#hi-bridge"
+            x={-SIZE * 0.6}
+            y={-SIZE * 0.6}
+            width={SIZE * 1.2}
+            height={SIZE * 1.2}
+            transform={`translate(${b.x} ${b.y}) rotate(${b.angle})`}
+          />
+        ))}
+        {tint && tint.opacity > 0 && (
           <rect
-            class="fog-layer"
+            class="day-tint"
             width={props.width}
             height={props.height}
-            mask="url(#hm-fog-mask)"
+            fill={tint.color}
+            fill-opacity={tint.opacity}
           />
-        </>
-      )}
-      <ScaleBarMark bar={scaleBar(props.height, SIZE)} />
-      <use
-        class="compass"
-        href="#hi-compass"
-        x={props.width - SIZE * 3.2}
-        y={SIZE * 0.6}
-        width={SIZE * 2.6}
-        height={SIZE * 2.6}
-      />
-      {cells.map((c) => (
-        <g
-          key={c.key}
-          class={[
-            'hex',
-            c.terrain ? `t-${c.terrain}` : 'fog',
-            c.visited ? 'visited' : '',
-            c.route ? 'route' : '',
-            c.destination ? 'destination' : '',
-            c.quest ? 'quest' : '',
-          ]
-            .filter(Boolean)
-            .join(' ')}
-          data-hex={c.key}
-          onClick={() => props.onPick(c.col, c.row)}
-          onPointerEnter={
-            onDrag ? (e: PointerEvent) => e.buttons === 1 && onDrag(c.col, c.row) : undefined
-          }
-        >
-          <title>{c.label}</title>
-          <polygon class="hit" points={c.points} />
-          {c.site && (
-            <>
-              <Icon cell={c} symbol="hi-town" class="site" scale={0.95} />
-              <text class="site-name" x={c.cx} y={c.cy - SIZE * 0.62}>
-                {c.site}
-              </text>
-            </>
-          )}
-          {c.dungeon && (
-            <use
-              class="dungeon"
-              href="#hi-dungeon"
-              x={c.cx - SIZE * 0.4}
-              y={c.cy - SIZE * 0.4}
-              width={SIZE * 0.8}
-              height={SIZE * 0.8}
-            >
-              <title>{c.dungeon}</title>
-            </use>
-          )}
-          {c.grove && (
-            <use
-              class="grove"
-              href="#hi-grove"
-              x={c.cx - SIZE * 0.4}
-              y={c.cy - SIZE * 0.2}
-              width={SIZE * 0.8}
-              height={SIZE * 0.8}
-            >
-              <title>{c.grove}</title>
-            </use>
-          )}
-          {c.exit && (
-            <use
-              class="exit"
-              href="#hi-exit"
-              x={c.cx - SIZE * 0.35}
-              y={c.cy - SIZE * 0.45}
-              width={SIZE * 0.8}
-              height={SIZE * 0.8}
-            >
-              <title>{c.exit}</title>
-            </use>
-          )}
-          {c.party && (
-            <Icon cell={c} symbol="hi-party" class="party" scale={1.05} dx={0.45} dy={-0.1} />
-          )}
-        </g>
-      ))}
-    </svg>
+        )}
+        {known.length < cells.length && (
+          <>
+            <mask id="hm-fog-mask">
+              <rect width={props.width} height={props.height} fill="#fff" />
+              <g filter="url(#hm-fog)">
+                {known.map((c) => (
+                  <polygon key={c.key} points={c.points} fill="#000" />
+                ))}
+              </g>
+            </mask>
+            <rect
+              class="fog-layer"
+              width={props.width}
+              height={props.height}
+              mask="url(#hm-fog-mask)"
+            />
+          </>
+        )}
+        <ScaleBarMark bar={scaleBar(props.height, SIZE)} />
+        <use
+          class="compass"
+          href="#hi-compass"
+          x={props.width - SIZE * 3.2}
+          y={SIZE * 0.6}
+          width={SIZE * 2.6}
+          height={SIZE * 2.6}
+        />
+        {cells.map((c) => (
+          <g
+            key={c.key}
+            class={[
+              'hex',
+              c.terrain ? `t-${c.terrain}` : 'fog',
+              c.visited ? 'visited' : '',
+              c.route ? 'route' : '',
+              c.destination ? 'destination' : '',
+              c.quest ? 'quest' : '',
+            ]
+              .filter(Boolean)
+              .join(' ')}
+            data-hex={c.key}
+            onClick={() => props.onPick(c.col, c.row)}
+            onPointerEnter={
+              onDrag ? (e: PointerEvent) => e.buttons === 1 && onDrag(c.col, c.row) : undefined
+            }
+          >
+            <title>{c.label}</title>
+            <polygon class="hit" points={c.points} />
+            {c.site && (
+              <>
+                <Icon cell={c} symbol="hi-town" class="site" scale={0.95} />
+                <text class="site-name" x={c.cx} y={c.cy - SIZE * 0.62}>
+                  {c.site}
+                </text>
+              </>
+            )}
+            {c.dungeon && (
+              <use
+                class="dungeon"
+                href="#hi-dungeon"
+                x={c.cx - SIZE * 0.4}
+                y={c.cy - SIZE * 0.4}
+                width={SIZE * 0.8}
+                height={SIZE * 0.8}
+              >
+                <title>{c.dungeon}</title>
+              </use>
+            )}
+            {c.grove && (
+              <use
+                class="grove"
+                href="#hi-grove"
+                x={c.cx - SIZE * 0.4}
+                y={c.cy - SIZE * 0.2}
+                width={SIZE * 0.8}
+                height={SIZE * 0.8}
+              >
+                <title>{c.grove}</title>
+              </use>
+            )}
+            {c.exit && (
+              <use
+                class="exit"
+                href="#hi-exit"
+                x={c.cx - SIZE * 0.35}
+                y={c.cy - SIZE * 0.45}
+                width={SIZE * 0.8}
+                height={SIZE * 0.8}
+              >
+                <title>{c.exit}</title>
+              </use>
+            )}
+            {c.party && (
+              <Icon cell={c} symbol="hi-party" class="party" scale={1.05} dx={0.45} dy={-0.1} />
+            )}
+          </g>
+        ))}
+        {keys.at && <polygon class="map-cursor" points={keys.at.points} />}
+      </svg>
+      <p id={hint} class="sr-only">
+        Arrow keys move across the map; Enter picks the hex.
+      </p>
+      <p class="sr-only" aria-live="polite">
+        {keys.text}
+      </p>
+    </>
   );
 }

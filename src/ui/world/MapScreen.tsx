@@ -10,6 +10,7 @@ import { data } from '../builder/data.ts';
 import { ConfirmButton } from '../confirm.tsx';
 import { HEX_SIZE, HexMap } from './HexMap.tsx';
 import { ZoomFrame } from './ZoomFrame.tsx';
+import { knownBounds } from '../../render/map-zoom.ts';
 import { dayTint } from '../../render/hex-art.ts';
 import { PartyPanel } from './PartyPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
@@ -79,6 +80,8 @@ export function MapScreen(props: {
   // Zooming in from the whole map closes in on the party.
   const party = cells.find((c) => c.party);
   const partyFocus = party ? { x: party.cx / width, y: party.cy / height } : null;
+  // It opens on what the party knows, with a few hexes of fog about it, not the whole chart.
+  const known = knownBounds(cells, { width, height }, HEX_SIZE * 3);
   const town = map.siteAt(w.position);
   const here = town?.name ?? map.terrainAt(w.position).name;
   const way = wayDownHere(w, data);
@@ -122,7 +125,7 @@ export function MapScreen(props: {
       </div>
       <div class="world-main">
         <div class="world-left">
-          <ZoomFrame class="map-wrap" focus={partyFocus}>
+          <ZoomFrame class="map-wrap" focus={partyFocus} start={known} size={{ width, height }}>
             <HexMap
               cells={cells}
               width={width}
