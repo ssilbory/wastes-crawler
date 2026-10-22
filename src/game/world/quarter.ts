@@ -10,6 +10,7 @@ import { fightTurns, passTurn } from '../dungeon/time.ts';
 import { leaveEncounter, maybeEncounter } from './encounters.ts';
 import type { Difficulty } from './difficulty.ts';
 import { VIGOR_QUARTER, vigor } from './arts.ts';
+import { MASTERS_VIGOR_QUARTER, mastersVigor } from './vowed-arts.ts';
 import { applyBattle, type WorldBattle } from './fight.ts';
 import { alive } from './members.ts';
 import type { QuarterPlan, World } from './types.ts';
@@ -20,6 +21,7 @@ export function isDarkNow(w: World, data: GameData): boolean {
 
 export function endQuarter(w: World, data: GameData): void {
   vigor(w, data, VIGOR_QUARTER);
+  mastersVigor(w, data, MASTERS_VIGOR_QUARTER);
   if (w.quarter < 3) {
     w.quarter += 1;
     return;

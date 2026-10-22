@@ -1148,6 +1148,222 @@
     ]
   },
   {
+    "id": "vowed-arts-and-unarmed-abilities",
+    "name": "Vowed Arts and Unarmed Abilities",
+    "sources": [
+      {
+        "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+        "heading": "Vowed Arts and Unarmed Abilities"
+      }
+    ],
+    "levels": [
+      {
+        "level": 1,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "punch": {
+          "hit": 0,
+          "damage": {
+            "count": 1,
+            "sides": 6,
+            "modifier": 0
+          },
+          "shock": {
+            "damage": 1,
+            "maxAc": 15
+          }
+        },
+        "spellsPrepared": 0,
+        "arts": [
+          "unarmed-might",
+          "martial-style",
+          "unarmored-defense"
+        ],
+        "anyArts": 1
+      },
+      {
+        "level": 2,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "punch": {
+          "hit": 1,
+          "damage": {
+            "count": 1,
+            "sides": 6,
+            "modifier": 0
+          },
+          "shock": {
+            "damage": 2,
+            "maxAc": 15
+          }
+        },
+        "spellsPrepared": 0,
+        "arts": [],
+        "anyArts": 1
+      },
+      {
+        "level": 3,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "punch": {
+          "hit": 1,
+          "damage": {
+            "count": 1,
+            "sides": 8,
+            "modifier": 0
+          },
+          "shock": {
+            "damage": 2,
+            "maxAc": 15
+          }
+        },
+        "spellsPrepared": 0,
+        "arts": [],
+        "anyArts": 0
+      },
+      {
+        "level": 4,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "punch": {
+          "hit": 2,
+          "damage": {
+            "count": 1,
+            "sides": 8,
+            "modifier": 0
+          },
+          "shock": {
+            "damage": 2,
+            "maxAc": 15
+          }
+        },
+        "spellsPrepared": 0,
+        "arts": [],
+        "anyArts": 1
+      },
+      {
+        "level": 5,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "punch": {
+          "hit": 2,
+          "damage": {
+            "count": 1,
+            "sides": 10,
+            "modifier": 0
+          },
+          "shock": {
+            "damage": 2,
+            "maxAc": 15
+          }
+        },
+        "spellsPrepared": 0,
+        "arts": [],
+        "anyArts": 1
+      },
+      {
+        "level": 6,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "punch": {
+          "hit": 3,
+          "damage": {
+            "count": 1,
+            "sides": 10,
+            "modifier": 0
+          },
+          "shock": {
+            "damage": 3,
+            "maxAc": 15
+          }
+        },
+        "spellsPrepared": 0,
+        "arts": [],
+        "anyArts": 1
+      },
+      {
+        "level": 7,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "punch": {
+          "hit": 3,
+          "damage": {
+            "count": 1,
+            "sides": 10,
+            "modifier": 1
+          },
+          "shock": {
+            "damage": 3,
+            "maxAc": 15
+          }
+        },
+        "spellsPrepared": 0,
+        "arts": [],
+        "anyArts": 0
+      },
+      {
+        "level": 8,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "punch": {
+          "hit": 4,
+          "damage": {
+            "count": 1,
+            "sides": 10,
+            "modifier": 1
+          },
+          "shock": {
+            "damage": 3,
+            "maxAc": 15
+          }
+        },
+        "spellsPrepared": 0,
+        "arts": [],
+        "anyArts": 1
+      },
+      {
+        "level": 9,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "punch": {
+          "hit": 4,
+          "damage": {
+            "count": 1,
+            "sides": 10,
+            "modifier": 2
+          },
+          "shock": {
+            "damage": 4,
+            "maxAc": 15
+          }
+        },
+        "spellsPrepared": 0,
+        "arts": [],
+        "anyArts": 0
+      },
+      {
+        "level": 10,
+        "maxSpellLevel": 0,
+        "spellsCast": 0,
+        "punch": {
+          "hit": 5,
+          "damage": {
+            "count": 1,
+            "sides": 10,
+            "modifier": 3
+          },
+          "shock": {
+            "damage": 4,
+            "maxAc": 15
+          }
+        },
+        "spellsPrepared": 0,
+        "arts": [],
+        "anyArts": 1
+      }
+    ]
+  },
+  {
     "id": "dual-partial-spellcasters",
     "name": "Dual Partial Spellcasters",
     "sources": [

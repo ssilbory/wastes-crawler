@@ -98,10 +98,13 @@ export interface Loadout {
   formAc?: number | null;
 }
 
-const effectsOf = (data: GameData, l: Loadout) => [
-  ...activeEffects(data, l.foci),
-  ...(l.formEffects ?? []),
-];
+const effectsOf = (data: GameData, l: Loadout) => {
+  const all = [...activeEffects(data, l.foci), ...(l.formEffects ?? [])];
+  // Unarmed Might replaces Unarmed Combatant's punch (1.5.17.1).
+  return all.some((e) => e.kind === 'vowed-punch')
+    ? all.filter((e) => e.kind !== 'unarmed-damage')
+    : all;
+};
 
 export function loadoutArmorClass(data: GameData, l: Loadout): number {
   return armorClass(loadoutArmorClassInput(data, l));
@@ -209,6 +212,11 @@ function attackLine(
     }
     if (e.kind === 'shock-bonus') shockExtra += e.amount;
     if (e.kind === 'shock-ignores-ac') ignoresAc = true;
+    if (e.kind === 'vowed-punch' && src.addsPunch) {
+      hit += e.hit;
+      damage = e.damage;
+      shock = { ...e.shock };
+    }
     if (e.kind === 'unarmed-damage' && src.addsPunch) {
       // The schema gives one die per Punch level 0-4, and skills never exceed 4.
       const level = Math.min(punch ?? 0, 4);

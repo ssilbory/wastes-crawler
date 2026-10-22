@@ -7,7 +7,15 @@ import { armorClass } from '../../rules/armor-class.ts';
 import { rollSave, type SaveResult, type SaveType } from '../../rules/saves.ts';
 import { covered, isUp } from './targeting.ts';
 import { say } from './log.ts';
-import { abnegate, everlast, keepsDying, redHarvest, shelter, vitalFurnace } from './reactions.ts';
+import {
+  abnegate,
+  breathesAgain,
+  everlast,
+  keepsDying,
+  redHarvest,
+  shelter,
+  vitalFurnace,
+} from './reactions.ts';
 import type { Battle, Combatant } from './types.ts';
 import { vitalHold } from './companions.ts';
 
@@ -95,6 +103,8 @@ function downed(b: Battle, target: Combatant, before: number): void {
     target.hp = 1;
     return;
   }
+  // Revivifying Breath, for all the Vowed's Effort left (1.5.17).
+  if (breathesAgain(b, target)) return;
   fall(b, target);
 }
 

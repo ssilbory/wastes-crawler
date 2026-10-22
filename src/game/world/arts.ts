@@ -21,6 +21,8 @@ export const SIGHT_ARTS = [
   'healers-eye',
   // The Beastmaster's Savage Senses (1.5.4).
   'savage-senses',
+  // The Vowed's Inward Eye (1.5.17).
+  'the-inward-eye',
 ];
 export const FAITH_LIGHT = 'the-light-of-faith';
 

@@ -110,6 +110,7 @@ export function base(
     canBind: false,
     waiting: null,
     beastWard: false,
+    mobJustice: false,
     provoked: false,
   };
 }
