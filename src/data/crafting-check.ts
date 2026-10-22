@@ -19,6 +19,9 @@ export function craftingReferenceErrors(srd: SrdData, content: ContentData): str
   for (const t of content.craftingRules.magic.tiers)
     for (const need of t.components)
       if (!types.has(need.type)) errors.push(`craftingRules: no component is ${need.type}`);
+  for (const a of content.forging.abilities)
+    for (const need of a.components)
+      if (!types.has(need.type)) errors.push(`forging/${a.id}: no component is ${need.type}`);
   const tools = content.craftingRules.tools.id;
   if (
     [...srd.gear, ...srd['gear-bundles'], ...srd.weapons, ...srd.armor].some((x) => x.id === tools)

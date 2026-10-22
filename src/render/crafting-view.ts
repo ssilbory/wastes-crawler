@@ -4,6 +4,7 @@ import { gameSpells, type GameSpell } from '../data/spells.ts';
 import type { GameData } from '../game/character/context.ts';
 import { findItem, type CatalogItem } from '../game/character/items.ts';
 import { daysText, tierName } from '../game/world/crafting.ts';
+import { forgedName } from '../game/world/forging.ts';
 import type { Member, World } from '../game/world/types.ts';
 
 /** "Snag: mastercrafted Spear, 3 days left, at the workshop in Rubblegate". */
@@ -24,6 +25,21 @@ export function projectText(w: World, data: GameData, p: Project): string {
           ? `brewing ${p.doses as number} × ${item}`
           : p.kind === 'scribe'
             ? `writing a scroll of ${(gameSpells(data.srd, data.content).find((s) => s.id === p.spell) as GameSpell).name}`
-            : `${tierName(p.quality)}${item}${p.small ? ' (small)' : ''}`;
+            : p.kind === 'device'
+              ? `making a ${item}`
+              : p.kind === 'forge'
+                ? forgeText(data, p)
+                : `${tierName(p.quality)}${item}${p.small ? ' (small)' : ''}`;
+  if (p.failed)
+    return `${crafter.character.name}: ${work}, failed; start over or go on with a flaw`;
   return `${crafter.character.name}: ${work}, ${days}${where}`;
+}
+
+/** "forging a +2 Long Sword (Flaming), unbalanced". */
+function forgeText(data: GameData, p: Project): string {
+  const flaws = (p.flaws ?? []).map(
+    (id) => (data.content.forging.flaws.find((f) => f.id === id) as { name: string }).name,
+  );
+  const name = forgedName(data, p.item, p.ability);
+  return `forging a +${p.bonus as number} ${name}${p.small ? ' (small)' : ''}${flaws.length ? `, ${flaws.join(', ')}` : ''}`;
 }

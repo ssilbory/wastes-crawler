@@ -1,5 +1,6 @@
 // Battle state for the combat engine. The engine mutates a Battle it owns; callers get it back
 // from runBattle or step through it round by round.
+import type { AbilityEffect } from '../../data/schemas/index.ts';
 import type { ArmorClassInput } from '../../rules/armor-class.ts';
 import type {
   Attribute,
@@ -37,6 +38,8 @@ export interface Attack {
   blunt: boolean;
   /** Poison or paralysis on a hit (Phase 14a). */
   onHit: OnHit | null;
+  /** A magic weapon's special ability (SRD 4.9.3). */
+  magic: AbilityEffect | null;
 }
 
 export interface CasterState {
@@ -262,8 +265,8 @@ export type Action =
   | { kind: 'gear'; item: number; location: 'readied' | 'stowed' }
   /** Drink a readied potion, or give it to an ally in touch (docs/rules-adaptation.md, Potions). */
   | { kind: 'potion'; item: number; target: string }
-  /** Read a readied scroll at a target or row (docs/rules-adaptation.md, Scrolls). */
-  | { kind: 'scroll'; item: number; target?: string; row?: number }
+  /** Use a readied scroll, wand, or staff's spell at a target or row (Scrolls; Devices). */
+  | { kind: 'invoke'; item: number; spell: string; target?: string; row?: number }
   /** Spend the Main Action trying to throw off the Torment of Tumefaction. */
   | { kind: 'shake-off' }
   /** Spend the Main Action taking form again out of Wind Walking's mist. */

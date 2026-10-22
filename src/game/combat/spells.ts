@@ -1,6 +1,7 @@
 // Spells and arts in combat, from data/content/combat-magic.json (each entry's mechanics follow its
 // SRD text in vendor/wwn-srd/4.0 Magic and Spellcasting/, including 4.6.0's Smite the Dead, and
 // 1.5.7/1.5.9/1.5.10 arts). Slots and Effort as in 4.2.0; strain casting from docs/rules-adaptation.md.
+import { spellWard } from '../character/rods.ts';
 import type { CombatMagic } from '../../data/schemas/index.ts';
 import { roll } from '../../rules/dice.ts';
 import { strainCastCost } from '../../rules/magic.ts';
@@ -96,8 +97,10 @@ function enemySave(
   actor: Combatant,
   target: Combatant,
   type: SaveType,
-  modifier = 0,
+  base = 0,
 ): boolean {
+  // Warding armor and a Readied Rod of Warding help against spells (Devices; Abilities).
+  const modifier = base + spellWard(b.data, target.character);
   let ok = save(b, target, type, modifier).success;
   const c = actor.caster as CasterState;
   // Master of Bones: the undead save twice and take the worse (1.5.14).

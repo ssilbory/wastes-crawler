@@ -155,6 +155,8 @@ export interface AttackLine {
   damageBonus: number;
   /** Melee only; a null maxAc applies whatever the target's AC. */
   shock: ShockRating | null;
+  /** The weapon's special ability (SRD 4.9.3), if it has one. */
+  ability?: string;
 }
 
 type Source = Pick<Weapon, 'id' | 'name' | 'damage' | 'shock' | 'attributes'> & {
@@ -164,6 +166,7 @@ type Source = Pick<Weapon, 'id' | 'name' | 'damage' | 'shock' | 'attributes'> & 
   damageExtra?: number;
   /** Unarmed and natural attacks, which some focus effects leave out. */
   unarmed: boolean;
+  ability?: string | undefined;
   /** Fixed skill for natural and unarmed attacks. */
   skill?: string;
 };
@@ -218,7 +221,16 @@ function attackLine(
   }
   if (shock)
     shock = { damage: shock.damage + attr + shockExtra, maxAc: ignoresAc ? null : shock.maxAc };
-  return { id: src.id, name: src.name, mode, hit, damage, damageBonus, shock };
+  return {
+    id: src.id,
+    name: src.name,
+    mode,
+    hit,
+    damage,
+    damageBonus,
+    shock,
+    ...(src.ability ? { ability: src.ability } : {}),
+  };
 }
 
 /** One line per readied weapon and mode, plus natural weapons and an unarmed attack. */
@@ -233,10 +245,11 @@ export function loadoutAttacks(data: GameData, l: Loadout): AttackLine[] {
     if (seen.has(weapon.id)) continue;
     seen.add(weapon.id);
     // Of several readied lines of one weapon, the character fights with the best.
-    const best = readied
+    const bestLine = readied
       .filter((r) => r.weapon.id === weapon.id)
-      .map((r) => upgrade(data, r.entry))
-      .reduce((a, b) => (b.hit + b.damage > a.hit + a.damage ? b : a));
+      .map((r) => ({ up: upgrade(data, r.entry), ability: r.entry.ability }))
+      .reduce((a, b) => (b.up.hit + b.up.damage > a.up.hit + a.up.damage ? b : a));
+    const best = bestLine.up;
     sources.push([
       {
         ...weapon,
@@ -244,6 +257,7 @@ export function loadoutAttacks(data: GameData, l: Loadout): AttackLine[] {
         unarmed: weapon.damageAddsSkill,
         hitBonus: best.hit,
         damageExtra: best.damage,
+        ability: bestLine.ability,
       },
       modesOf(weapon),
     ]);

@@ -10,6 +10,7 @@ import { alive, awake, note } from '../world/members.ts';
 import type { Member, World } from '../world/types.ts';
 import type { GameData } from '../character/context.ts';
 import { onSpecial } from './specials.ts';
+import { bearsRod } from '../character/rods.ts';
 
 export const TORCH_DIE: ResourceDie = 6;
 export const LANTERN_DIE: ResourceDie = 12;
@@ -98,10 +99,19 @@ export const faithLit = (w: World, data: GameData) =>
   !onSpecial(w, data, 'darkness') &&
   userOf(w, data, FAITH_LIGHT) !== undefined;
 
+/**
+ * A Readied Rod of Light lights the party underground, unless magical darkness swallows it
+ * (Potions, scrolls, and magic devices: Devices).
+ */
+export const rodLit = (w: World, data: GameData) =>
+  w.dungeon !== null &&
+  !onSpecial(w, data, 'darkness') &&
+  alive(w).some((m) => awake(m) && bearsRod(data, m.character, 'light'));
+
 /** The light burns through one turn or one fight; a spent light is replaced if possible. */
 export function burn(w: World, data: GameData): void {
   const l = w.light;
-  if (!l.lit || faithLit(w, data)) return;
+  if (!l.lit || faithLit(w, data) || rodLit(w, data)) return;
   const source = l.lit;
   const { die } = useResource(w.rng, l[source]);
   l[source] = die;
@@ -114,7 +124,8 @@ export function burn(w: World, data: GameData): void {
 /** Underground with nothing burning and no Light of Faith, or on a square of magical darkness. */
 export const inDark = (w: World, data: GameData) =>
   w.dungeon !== null &&
-  ((w.light.lit === null && !faithLit(w, data)) || onSpecial(w, data, 'darkness'));
+  ((w.light.lit === null && !faithLit(w, data) && !rodLit(w, data)) ||
+    onSpecial(w, data, 'darkness'));
 
 /**
  * Apprehending the Arcane Form still lets its caster see: they are awake and the sight hasn't faded

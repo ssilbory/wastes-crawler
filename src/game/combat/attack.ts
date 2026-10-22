@@ -14,6 +14,7 @@ import {
 import { crossWall, cutVines, mantleCut, subdue } from './conditions.ts';
 import { effectiveAc, harm, save, say } from './damage.ts';
 import { afterHit, resisted } from './specials.ts';
+import { abilityDamage, drink } from './weapon-abilities.ts';
 import { negatesUndead } from './reactions.ts';
 import { attackSteps, canAct, hitModifier, rangedModifier } from './targeting.ts';
 import type { Attack, Battle, Combatant } from './types.ts';
@@ -163,10 +164,11 @@ export function resolveAttack(
     say(b, `${rider.name} turns ${target.name} aside from ${actor.name}'s blow.`);
     return;
   }
-  const damage = blow + venom(b, actor, attack, target);
+  const damage = blow + venom(b, actor, attack, target) + abilityDamage(b, attack, target);
   record(b, 'hit', actor, target, damage);
   if (subdue(b, actor, target, damage)) return;
   say(b, `${actor.name} hits ${target.name} with ${attack.name} for ${damage}.`);
   harm(b, target, damage);
+  drink(b, actor, attack, target);
   afterHit(b, attack, target);
 }

@@ -21,7 +21,7 @@ export function workDay(w: World, data: GameData): TownResult {
   const town = townHere(w, data);
   if (!workshopHere(w, data)) return no(`${town.name} has no workshop.`);
   const working = w.projects.filter(
-    (p) => !p.staying && w.members.some((m) => m.id === p.crafter && !m.dead),
+    (p) => !p.staying && !p.failed && w.members.some((m) => m.id === p.crafter && !m.dead),
   );
   if (working.length === 0) return no('No one in the party has work under way.');
   const listed = rent(w, data, 1);
@@ -38,7 +38,7 @@ export function stayToWork(w: World, data: GameData, crafterId: string): TownRes
   if (w.encounter) return no('Settle the encounter first.');
   const town = townHere(w, data);
   if (!workshopHere(w, data)) return no(`${town.name} has no workshop.`);
-  const p = w.projects.find((x) => x.crafter === crafterId && !x.staying);
+  const p = w.projects.find((x) => x.crafter === crafterId && !x.staying && !x.failed);
   const m = w.members.find((x) => x.id === crafterId);
   if (!p || !m) throw new Error(`${crafterId} has no work to stay for`);
   if (!w.members.some((x) => x !== m && !x.dead))

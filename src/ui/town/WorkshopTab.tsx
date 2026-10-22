@@ -23,6 +23,9 @@ import { data } from '../builder/data.ts';
 import { BrewPanel } from './BrewPanel.tsx';
 import { ModsPanel } from './ModsPanel.tsx';
 import { ScribePanel } from './ScribePanel.tsx';
+import { EnchantPanel } from './EnchantPanel.tsx';
+import { ForgePanel } from './ForgePanel.tsx';
+import { goOnFlawed, restartForge } from '../../game/world/forging.ts';
 import type { Act } from './TownScreen.tsx';
 
 const items = craftable(data);
@@ -67,7 +70,23 @@ export function WorkshopTab(props: { world: World; act: Act }) {
           {w.projects.map((p) => (
             <li key={p.crafter}>
               {projectText(w, data, p)}{' '}
-              {shop && !p.staying && w.members.some((x) => x.id === p.crafter) && (
+              {p.failed && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => props.act(() => restartForge(w, data, p.crafter))}
+                  >
+                    Start over
+                  </button>{' '}
+                  <button
+                    type="button"
+                    onClick={() => props.act(() => goOnFlawed(w, data, p.crafter))}
+                  >
+                    Go on with a flaw
+                  </button>{' '}
+                </>
+              )}
+              {shop && !p.staying && !p.failed && w.members.some((x) => x.id === p.crafter) && (
                 <button
                   type="button"
                   onClick={() => props.act(() => stayToWork(w, data, p.crafter))}
@@ -166,6 +185,8 @@ export function WorkshopTab(props: { world: World; act: Act }) {
       </section>
       <BrewPanel world={w} act={props.act} />
       <ScribePanel world={w} act={props.act} />
+      <EnchantPanel world={w} act={props.act} />
+      <ForgePanel world={w} act={props.act} />
       <ModsPanel world={w} act={props.act} />
     </>
   );

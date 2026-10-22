@@ -15,6 +15,8 @@ import { note } from './members.ts';
 import { daysText } from './wording.ts';
 import { completeBrew } from './brewing.ts';
 import { completeScroll } from './scribing.ts';
+import { completeDevice } from './enchanting.ts';
+import { completeForge, forgedName } from './forging.ts';
 import { completeMod, modOf } from './mods.ts';
 import { regionMap } from './region.ts';
 import type { TownResult } from './services.ts';
@@ -132,6 +134,8 @@ export function startProject(
  * crafter so they keep pace with those out fighting; the finished item goes to the crafter's pack.
  */
 export function workOn(w: World, data: GameData, p: Project, days = 1): void {
+  // A failed forging waits on its smith to start over or go on with a flaw.
+  if (p.failed) return;
   const crafter = anyone(w, p.crafter);
   const left = Math.max(0, p.daysLeft - days);
   // XP comes in half points, so a half day's shift pays when the day it starts is done.
@@ -147,6 +151,14 @@ export function workOn(w: World, data: GameData, p: Project, days = 1): void {
   }
   if (p.kind === 'scribe') {
     completeScroll(w, data, p, crafter);
+    return;
+  }
+  if (p.kind === 'device') {
+    completeDevice(w, data, p, crafter);
+    return;
+  }
+  if (p.kind === 'forge') {
+    completeForge(w, data, p, crafter);
     return;
   }
   if (p.kind !== 'gear') {
@@ -216,7 +228,9 @@ export const hasTools = (data: GameData, m: Member) =>
  */
 export function campProject(w: World, data: GameData, m: Member): Project | null {
   if (regionMap(data, w.region).siteAt(w.position) !== undefined || w.dungeon) return null;
-  const p = w.projects.find((x) => x.crafter === m.id && x.kind !== 'strip' && !x.staying);
+  const p = w.projects.find(
+    (x) => x.crafter === m.id && x.kind !== 'strip' && !x.staying && !x.failed,
+  );
   return p && hasTools(data, m) ? p : null;
 }
 
@@ -236,6 +250,8 @@ function workName(data: GameData, p: Project): string {
   const item = (findItem(data, p.item) as CatalogItem).name;
   if (p.kind === 'brew') return `a brew of ${item}`;
   if (p.kind === 'scribe') return `a scroll of ${spellName(data, p.spell as string)}`;
+  if (p.kind === 'device') return `the ${item}`;
+  if (p.kind === 'forge') return `the +${p.bonus as number} ${forgedName(data, p.item, p.ability)}`;
   return p.kind === 'mod'
     ? `${modOf(data, p.mod as string).name} for the ${item}`
     : `the ${tierName(p.quality)}${item}`;

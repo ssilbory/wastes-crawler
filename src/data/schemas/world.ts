@@ -171,8 +171,8 @@ export type QuestState = z.infer<typeof QuestStateSchema>;
 export const ProjectSchema = z.strictObject({
   /** The member doing the work; each works on one thing at a time. */
   crafter: z.string().min(1),
-  /** Building gear, installing a mod, stripping one off (Phase 10b), brewing, or a scroll. */
-  kind: z.enum(['gear', 'mod', 'strip', 'brew', 'scribe']),
+  /** Gear, a mod or stripping one (Phase 10b), a brew, a scroll, a device, or forged magic. */
+  kind: z.enum(['gear', 'mod', 'strip', 'brew', 'scribe', 'device', 'forge']),
   /** The item built, or the item a mod goes on or comes off. */
   item: IdSchema,
   mod: IdSchema.optional(),
@@ -184,8 +184,18 @@ export const ProjectSchema = z.strictObject({
   small: z.literal(true).optional(),
   /** A brew's batch size (docs/rules-adaptation.md, Potions: Brewing). */
   doses: z.int().min(1).optional(),
-  /** The spell a scroll being written holds. */
+  /** The spell a scroll being written holds, or the spells a wand or staff will. */
   spell: IdSchema.optional(),
+  spells: z.array(IdSchema).min(1).optional(),
+  /**
+   * A forging's bonus, ability, and the flaws taken going on after failures; its first attempt's
+   * days; and whether it has just failed, waiting to be started over or gone on with a flaw.
+   */
+  bonus: z.int().min(1).max(3).optional(),
+  ability: IdSchema.optional(),
+  flaws: z.array(IdSchema).min(1).optional(),
+  days: z.int().min(1).optional(),
+  failed: z.literal(true).optional(),
   /** Days of work left; a camp shift is half a day (Sam's call). */
   daysLeft: z.number().positive().multipleOf(0.5),
   /** The town where the parts were bought. */
@@ -211,6 +221,8 @@ export const CommissionSchema = z.strictObject({
   /** The weapon or suit of armor (the field predates magic armor). */
   weapon: IdSchema,
   bonus: z.int().min(1).max(3),
+  /** A special ability asked for besides (SRD 4.9.3). */
+  ability: IdSchema.optional(),
   readyDay: z.int().min(0),
 });
 export type Commission = z.infer<typeof CommissionSchema>;

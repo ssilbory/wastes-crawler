@@ -15,6 +15,10 @@ function sameKind(a: InventoryEntry, b: InventoryEntry): boolean {
       e.upkeep ?? 0,
       e.spell ?? null,
       e.casterLevel ?? 0,
+      e.spells ?? [],
+      e.charges ?? 0,
+      e.ability ?? null,
+      e.flaws ?? [],
       (e.mods ?? []).map((m) => [m.id, [...m.components].sort(), m.free === true]),
     ]);
   return kind(a) === kind(b);

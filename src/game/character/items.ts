@@ -5,6 +5,7 @@
 import type {
   Armor,
   Cost,
+  Device,
   Gear,
   GearBundle,
   ItemLocation,
@@ -14,12 +15,9 @@ import type {
   Weapon,
 } from '../../data/schemas/index.ts';
 import type { GameData } from './context.ts';
-import { gameSpells, type GameSpell } from '../../data/spells.ts';
+import { abilityOf, flawsOf } from './abilities.ts';
+import { heldSpell, heldSpells } from './spell-items.ts';
 import { upgrade } from './upgrades.ts';
-
-/** A scroll's spell; character loading keeps scrolls to game spells. */
-const spellOf = (data: GameData, id: string) =>
-  gameSpells(data.srd, data.content).find((s) => s.id === id) as GameSpell;
 
 export type CatalogItem =
   | { kind: 'weapon'; id: string; name: string; cost: Cost | null; weapon: Weapon }
@@ -30,6 +28,8 @@ export type CatalogItem =
   | { kind: 'potion'; id: string; name: string; cost: Cost; gear: Gear; potion: Potion }
   /** A scroll (Potions, scrolls, and magic devices: Scrolls): its cost is per spell level. */
   | { kind: 'scroll'; id: string; name: string; cost: Cost; gear: Gear }
+  /** A wand, staff, or rod (Devices): a wand's or staff's cost is per spell level held. */
+  | { kind: 'device'; id: string; name: string; cost: Cost; gear: Gear; device: Device }
   | { kind: 'bundle'; id: string; name: string; cost: Cost; bundle: GearBundle };
 
 /** One line of a character's inventory. */
@@ -53,6 +53,12 @@ export interface InventoryEntry {
   /** A scroll's spell, and the caster level it goes off at (SRD 4.9.1). */
   spell?: string | undefined;
   casterLevel?: number | undefined;
+  /** A wand's or staff's spells and charges left (SRD 4.9.4). */
+  spells?: string[] | undefined;
+  charges?: number | undefined;
+  /** A magic weapon's or armor's special ability, and flaws left by a forging (SRD 4.9.3, 4.10.0). */
+  ability?: string | undefined;
+  flaws?: string[] | undefined;
 }
 
 export interface InstalledMod {
@@ -107,6 +113,14 @@ export function catalog(data: GameData): CatalogItem[] {
     ((g) => ({ kind: 'scroll' as const, id: g.id, name: g.name, cost: g.cost, gear: g }))(
       data.content.scrolls.scroll,
     ),
+    ...data.content.devices.devices.map((d) => ({
+      kind: 'device' as const,
+      id: d.id,
+      name: d.name,
+      cost: d.cost,
+      gear: d,
+      device: d,
+    })),
     ...data.srd['gear-bundles'].map((b) => ({
       kind: 'bundle' as const,
       id: b.id,
@@ -123,7 +137,9 @@ export function findItem(data: GameData, id: string): CatalogItem | undefined {
 
 /** Items a shop sells: everything with a price but potions, which only alchemists sell, and scrolls. */
 export function buyable(data: GameData): CatalogItem[] {
-  return catalog(data).filter((i) => i.cost !== null && i.kind !== 'potion' && i.kind !== 'scroll');
+  return catalog(data).filter(
+    (i) => i.cost !== null && i.kind !== 'potion' && i.kind !== 'scroll' && i.kind !== 'device',
+  );
 }
 
 const TENTHS = { cp: 1, sp: 10, gp: 100 } as const;
@@ -141,8 +157,14 @@ export function entryPrice(data: GameData, item: CatalogItem, entry: InventoryEn
   // A magic weapon or suit of armor is worth its commission besides (Sam's call).
   const magic = data.content.craftingRules.magic.tiers.find((t) => t.bonus === entry.bonus);
   // A scroll costs its writing price for each level of its spell (SRD 4.9.1).
-  const levels = entry.spell ? spellOf(data, entry.spell).level : 1;
-  const each = tenths(item.cost) * barding * tier * levels + (magic ? magic.commission * 10 : 0);
+  const held = heldSpells(entry);
+  const levels = held.length > 0 ? held.reduce((n, id) => n + heldSpell(data, id).level, 0) : 1;
+  // An ability is worth what it adds to a commission (Sam's call).
+  const ability = abilityOf(data, entry);
+  const each =
+    tenths(item.cost) * barding * tier * levels +
+    (magic ? magic.commission * 10 : 0) +
+    (ability ? ability.cost * 10 : 0);
   return Math.round(each * entry.quantity);
 }
 
@@ -171,7 +193,8 @@ export function entryEncumbrance(data: GameData, item: CatalogItem, entry: Inven
       return q * item.bundle.encumbrance;
     case 'gear':
     case 'potion':
-    case 'scroll': {
+    case 'scroll':
+    case 'device': {
       const g = item.gear;
       if (g.weightless || g.encumbrance === null) return 0;
       if (g.freeWhenWorn && entry.location === 'worn') return 0;
@@ -182,9 +205,9 @@ export function entryEncumbrance(data: GameData, item: CatalogItem, entry: Inven
 
 /** A line's name with what sets it apart: "Pieced Armor (barding)", "Spear +1 (mastercrafted)". */
 export function lineLabel(data: GameData, e: InventoryEntry): string {
-  const name = e.spell
-    ? `Scroll of ${spellOf(data, e.spell).name}`
-    : (findItem(data, e.id)?.name ?? e.id);
+  const held = heldSpells(e).map((id) => heldSpell(data, id).name);
+  const item = findItem(data, e.id)?.name ?? e.id;
+  const name = held.length > 0 ? `${item} of ${held.join(', ')}` : item;
   const mods = (e.mods ?? []).map(
     (m) => data.content.mods.find((x) => x.id === m.id)?.name ?? m.id,
   );
@@ -193,7 +216,10 @@ export function lineLabel(data: GameData, e: InventoryEntry): string {
     ...mods,
     e.small && 'small',
     e.barding && 'barding',
+    abilityOf(data, e)?.name,
+    ...flawsOf(data, e).map((f) => f.name),
     e.casterLevel && `caster level ${e.casterLevel}`,
+    e.charges && `${e.charges} ${e.charges === 1 ? 'charge' : 'charges'}`,
   ].filter(Boolean);
   return `${name}${e.bonus ? ` +${e.bonus}` : ''}${notes.length ? ` (${notes.join(', ')})` : ''}`;
 }
