@@ -285,5 +285,33 @@
     "replace": "a +2 bonus at level 6",
     "pdfPage": 15,
     "note": "Natural Weaponry: the mirror dropped the 2 from \"+2 bonus at level 6\" (arts/natural-weaponry). (PDF page not yet confirmed against the official PDF.)"
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+    "find": "Unarmed Might, Unarmed Style, Unified Defense, and Any One",
+    "replace": "Unarmed Might, Martial Style, Unarmored Defense, and Any One",
+    "pdfPage": 27,
+    "note": "Vowed Arts and Unarmed Abilities, level 1: the table names \"Unarmed Style\" and \"Unified Defense\", but the arts it means are Martial Style and Unarmored Defense, the three the class text says every Vowed gains at first level (1.5.17.1). (PDF page not yet confirmed against the official PDF.)"
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+    "find": "same char acter level",
+    "replace": "same character level",
+    "pdfPage": 27,
+    "note": "\"char acter\" is \"character\" in the PDF; the mirror split the word in two (arts/martial-style). (PDF page not yet confirmed against the official PDF.)"
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+    "find": "for the day to be come impervious",
+    "replace": "for the day to become impervious",
+    "pdfPage": 27,
+    "note": "\"be come\" is \"become\" in the PDF; the mirror split the word in two (arts/mob-justice). (PDF page not yet confirmed against the official PDF.)"
+  },
+  {
+    "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+    "find": "vertical and over hanging surfaces",
+    "replace": "vertical and overhanging surfaces",
+    "pdfPage": 27,
+    "note": "\"over hanging\" is \"overhanging\" in the PDF; the mirror split the word in two (arts/nimble-ascent). (PDF page not yet confirmed against the official PDF.)"
   }
 ]

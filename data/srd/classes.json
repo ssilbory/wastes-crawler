@@ -242,5 +242,24 @@
         "text": "Beastmaster Effort is calculated with Survive, and is equal to the PC’s Survive skill level plus the higher of their Wisdom or Charisma modifiers, to a minimum of one point. All Beastmasters start play with the Bind Companion art and one more of their choosing. They learn additional arts as they gain experience. Unlike some Mage traditions, Beastmasters can use their arts normally while armored."
       }
     ]
+  },
+  {
+    "id": "vowed",
+    "name": "Vowed",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+      "heading": "1.5.17 The Vowed"
+    },
+    "description": "Adepts of fist and bodily discipline, the Vowed are a partial Mage class dedicated to unarmed combat, physical training, and mental discipline.",
+    "abilities": [
+      {
+        "name": "Vowed Benefits",
+        "text": "The Vowed Class Exists Only As a Partial Mage Class, To Be Taken By An Adventurer Along With Another Partial Class. Thus, a Partial Warrior/Partial Vowed Might Be a Hardened Temple Warrior-Monk, a Partial Expert/Partial Vowed Might Be a Sage Teacher Of Religious Or Philosophical Truths, And a Partial Elementalist/Partial Vowed Might Be a Mountain Sage Who Wields The Elemental Forces Of Nature. Regardless of classes, a Vowed’s hit dice can’t be worse than 1d6 per level thanks to Martial Style.\n\nAll Vowed gain a non-combat bonus skill appropriate to their order, acquiring it at level-0, or level-1 if they already have it at level-0. Orders that focus on physical training might grant Exert, while scholarly ones might give Know, religious ones Pray, or occult sects grant Magic. You may pick whatever non-combat skill suits your order, assuming the GM finds it reasonable.\n\nVowed do not learn how to cast spells. Instead, they refine their inner powers and physical capabilities. These arts are too precise and delicate to bear the encumbrance of heavy clothing, armor, or shields, and cannot be used when so burdened. The Armored Magic Focus can mitigate this, but Vowed are all trained in effective unarmored defense techniques.\n\nAt first level, a Vowed gains the Martial Style, Unarmed Might, and Unarmored Defense arts, in addition to one more art of their choice as given on the adjacent list. Further advancement will grant additional arts."
+      },
+      {
+        "name": "Vowed Arts",
+        "text": "Vowed Effort is based on the skill they chose to represent their order’s main focus of study, whether Exert, Know, Magic, Pray, or some more esoteric skill.\n\nTheir maximum Vowed Effort is equal to this skill level plus their best attribute modifier, whatever it may be, to a minimum of one point. All Vowed automatically gain the Martial Style, Unarmed Might, and Unarmored Defense arts as part of their training."
+      }
+    ]
   }
 ]

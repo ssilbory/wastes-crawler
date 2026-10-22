@@ -239,6 +239,8 @@ export interface Combatant {
   waiting: WaitingCompanion | null;
   beastWard: boolean;
   provoked: boolean;
+  /** The Vowed's Mob Justice holding now: immune to Shock in melee with two foes or more (1.5.17). */
+  mobJustice: boolean;
 }
 
 /** A Beastmaster's companion sent away before the fight, which a howl can bring into it. */

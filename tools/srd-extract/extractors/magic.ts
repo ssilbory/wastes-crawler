@@ -114,6 +114,18 @@ const ART_SECTIONS: {
     tradition: 'beastmaster',
     automatic: false,
   },
+  {
+    file: `${CLASS_DIR}/1.5.17 The Vowed.md`,
+    heading: /^1\.5\.17\.1 Vowed Arts$/,
+    tradition: 'vowed',
+    automatic: true,
+  },
+  {
+    file: `${CLASS_DIR}/1.5.17 The Vowed.md`,
+    heading: /^Other Vowed Arts$/,
+    tradition: 'vowed',
+    automatic: false,
+  },
 ];
 
 export function extractArts(reader: SrdReader): Art[] {

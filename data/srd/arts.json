@@ -1010,5 +1010,181 @@
     "tradition": "beastmaster",
     "automatic": false,
     "text": "Commit Effort as an On Turn action. While the Effort remains committed, you can speak with any animal that has fur, feathers, scales, or skin. This art allows them to temporarily speak as if they had human intellect, though their interests, knowledge, and desires do not change."
+  },
+  {
+    "id": "martial-style",
+    "name": "Martial Style",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+      "heading": "1.5.17.1 Vowed Arts"
+    },
+    "tradition": "vowed",
+    "automatic": true,
+    "text": "Regardless of class, your hit die can’t be worse than 1d6 per level. When attacking with the Punch skill, your class hit bonus can be no worse than that of an Expert of your same character level. At third level, any attack using the Punch skill counts as a magic weapon."
+  },
+  {
+    "id": "unarmed-might",
+    "name": "Unarmed Might",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+      "heading": "1.5.17.1 Vowed Arts"
+    },
+    "tradition": "vowed",
+    "automatic": true,
+    "text": "Your unarmed attack damage increases as you gain levels, as noted on the chart. You may add your Punch skill to the damage done by these attacks as usual, but Foci such as Unarmed Combatant that replace or improve your usual Punch damage do not apply to you."
+  },
+  {
+    "id": "unarmored-defense",
+    "name": "Unarmored Defense",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+      "heading": "1.5.17.1 Vowed Arts"
+    },
+    "tradition": "vowed",
+    "automatic": true,
+    "text": "When not wearing armor or using a shield, your base Armor Class is equal to 13 plus half your character level, rounded down."
+  },
+  {
+    "id": "brutal-counter",
+    "name": "Brutal Counter",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+      "heading": "Other Vowed Arts"
+    },
+    "tradition": "vowed",
+    "automatic": false,
+    "text": "Commit Effort For The Scene As An Instant Action After Resolving An Enemy Melee Attack Against You, Whether It Hits Or Misses. You May Make a Free Physical Attack Against Your Assailant, Using Either a Normal Attack Or Some Other Offensive Ability That takes no more than one Main Action to execute. You cannot use this art more than once per any given attack, but you may use it while performing a Total Defense."
+  },
+  {
+    "id": "faultless-awareness",
+    "name": "Faultless Awareness",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+      "heading": "Other Vowed Arts"
+    },
+    "tradition": "vowed",
+    "automatic": false,
+    "text": "Your awareness is such that you cannot be surprised, and will even wake from a sound sleep in time to respond normally to some imminent peril."
+  },
+  {
+    "id": "hurling-throw",
+    "name": "Hurling Throw",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+      "heading": "Other Vowed Arts"
+    },
+    "tradition": "vowed",
+    "automatic": false,
+    "text": "After you make a successful attack, you may Commit Effort for the scene as an Instant action. The target must make a Physical saving throw or be thrown up to ten feet in any direction, falling prone on landing and suffering the damage rolled for your attack. If the Physical save is successful, the target simply takes damage as normal. This art can be used only once per round on any given target, and the target must be no larger than an ox."
+  },
+  {
+    "id": "the-inward-eye",
+    "name": "The Inward Eye",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+      "heading": "Other Vowed Arts"
+    },
+    "tradition": "vowed",
+    "automatic": false,
+    "text": "Commit Effort as an On Turn action. For as long as it remains Committed, you are mystically aware of your surroundings with a sense equivalent to normal eyesight regardless of darkness, obscuring mists, or your actual eyes being closed or blinded."
+  },
+  {
+    "id": "leap-of-the-heavens",
+    "name": "Leap of the Heavens",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+      "heading": "Other Vowed Arts"
+    },
+    "tradition": "vowed",
+    "automatic": false,
+    "text": "Commit Effort for the scene as a Move action to leap up to your full Move action horizontally or half that vertically. You may also Commit Effort for the scene as an Instant action to negate falling damage, no matter the distance."
+  },
+  {
+    "id": "masters-vigor",
+    "name": "Master’s Vigor",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+      "heading": "Other Vowed Arts"
+    },
+    "tradition": "vowed",
+    "automatic": false,
+    "text": "Your body retains its vigor and youthful vitality to the full normal span of your life. You regain two lost hit points per hour due to your natural restorative powers."
+  },
+  {
+    "id": "mob-justice",
+    "name": "Mob Justice",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+      "heading": "Other Vowed Arts"
+    },
+    "tradition": "vowed",
+    "automatic": false,
+    "text": "As an Instant action, Commit Effort for the day to become impervious to the Make a Swarm Attack maneuver. Your assailants cannot use this maneuver against you for the rest of the scene, and you become immune to Shock as long as you remain in melee with at least two foes. Making use of this benefit disrupts any spell casting you may attempt, however, due to the violent motion required."
+  },
+  {
+    "id": "nimble-ascent",
+    "name": "Nimble Ascent",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+      "heading": "Other Vowed Arts"
+    },
+    "tradition": "vowed",
+    "automatic": false,
+    "text": "Commit Effort for the scene as an On Turn action. For the remainder of the scene you may move up vertical and overhanging surfaces and across difficult terrain at your full movement rate with no chance of slipping or falling, provided the surface is not glass-smooth or enchanted. You require only one free hand to cling to a wall or ceiling."
+  },
+  {
+    "id": "purified-body",
+    "name": "Purified Body",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+      "heading": "Other Vowed Arts"
+    },
+    "tradition": "vowed",
+    "automatic": false,
+    "text": "You may Commit Effort for the day as an Instant action to cure any disease or poison currently affecting you, or instead to negate any need for sleep, food, water, or air for the next 24 hours."
+  },
+  {
+    "id": "revivifying-breath",
+    "name": "Revivifying Breath",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+      "heading": "Other Vowed Arts"
+    },
+    "tradition": "vowed",
+    "automatic": false,
+    "text": "Commit Effort for the day as an On Turn action to heal yourself for 1d6 hit points plus your level. This healing does not increase System Strain. This ability may be used on your turn even when you are at zero hit points, but in such a case it Commits all your remaining Effort for the day. This art can be used once per scene."
+  },
+  {
+    "id": "shattering-strike",
+    "name": "Shattering Strike",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+      "heading": "Other Vowed Arts"
+    },
+    "tradition": "vowed",
+    "automatic": false,
+    "text": "Commit Effort for the day and take a full round of motionlessness to prepare. On the next round, as a Main Action, your unarmed attack can shatter a wooden door, wooden wall, or other similar object up to a depth of one foot per level and a width sufficient to allow a man-sized creature to pass through. At fourth level this ability improves to affect even a stone wall and at seventh it can affect even a metal wall or solid iron door. The blow is useless against a target that can move, but against an immobilized creature the attack does 1d12 damage per character level."
+  },
+  {
+    "id": "style-weaponry",
+    "name": "Style Weaponry",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+      "heading": "Other Vowed Arts"
+    },
+    "tradition": "vowed",
+    "automatic": false,
+    "text": "Pick three general classes of weapons, such as “swords”, “bows”, “axes”, “daggers”, or the like. When using weapons of those classes, you may use Punch for hit rolls instead of Stab or Shoot. Your Punch skill does not add to the damage done by these weapons, however, though the benefits of Martial Style apply to their hit rolls."
+  },
+  {
+    "id": "unobtrusive-step",
+    "name": "Unobtrusive Step",
+    "source": {
+      "file": "1.0 Character Creation/1.5.0 Class List/1.5.17 The Vowed.md",
+      "heading": "Other Vowed Arts"
+    },
+    "tradition": "vowed",
+    "automatic": false,
+    "text": "You not only possess a considerable skill for disguise and obfuscation, you can become extremely hard to detect. Once per scene, you may Commit Effort for the day as an Instant action to reroll a failed Sneak skill check or skill check related to impersonating someone else."
   }
 ]

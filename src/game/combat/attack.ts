@@ -1,7 +1,8 @@
 // Weapon attacks: vendor/wwn-srd/2.0 The Rules of the Game/2.4.0 Combat.md (2.4.5 attack rolls,
 // 2.4.6 damage and Shock, 2.4.4 Total Defense), shields ignoring the first Shock each round (3.4.2),
 // Wardpact Invocation and Mantle of Disjecting Dissection (4.4.0), the Warrior's Veteran's Luck
-// (1.5.18), and creature resistances and on-hit effects (specials.ts).
+// (1.5.18), creature resistances and on-hit effects (specials.ts), and the Vowed's Brutal Counter
+// and Hurling Throw (vowed.ts).
 import { venom } from './forms.ts';
 import { netSteps } from '../../rules/advantage.ts';
 import {
@@ -16,6 +17,7 @@ import { effectiveAc, harm, save, say } from './damage.ts';
 import { afterHit, resisted } from './specials.ts';
 import { abilityDamage, drink } from './weapon-abilities.ts';
 import { negatesUndead } from './reactions.ts';
+import { counterAttack, hurl } from './vowed.ts';
 import { attackSteps, canAct, hitModifier, rangedModifier } from './targeting.ts';
 import type { Attack, Battle, Combatant } from './types.ts';
 import { recordBlow } from './log.ts';
@@ -28,6 +30,7 @@ export function shockContext(target: Combatant, attack: Attack): ShockContext {
     immune:
       target.totalDefense ||
       target.sanctified ||
+      target.mobJustice ||
       (attack.mode === 'melee' && target.meleeShockImmune),
     // Cold Flesh: no more than 2 from any one Shock (Phase 15).
     cap: target.shockCap,
@@ -90,12 +93,25 @@ export interface AttackBoost {
   damage: number;
 }
 
+/** An attack, and the Vowed's Brutal Counter after it (1.5.17). */
 export function resolveAttack(
   b: Battle,
   actor: Combatant,
   attack: Attack,
   target: Combatant,
   boost: AttackBoost | null = null,
+): void {
+  strike(b, actor, attack, target, boost);
+  const back = counterAttack(b, actor, attack, target);
+  if (back) strike(b, target, back, actor, null);
+}
+
+function strike(
+  b: Battle,
+  actor: Combatant,
+  attack: Attack,
+  target: Combatant,
+  boost: AttackBoost | null,
 ): void {
   if (!crossWall(b, actor, attack, target) || !cutVines(b, actor, attack, target)) return;
   if (!mantleCut(b, actor, target, attack)) return;
@@ -171,4 +187,5 @@ export function resolveAttack(
   harm(b, target, damage);
   drink(b, actor, attack, target);
   afterHit(b, attack, target);
+  hurl(b, actor, target);
 }

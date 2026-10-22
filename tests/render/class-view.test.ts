@@ -22,6 +22,8 @@ describe('the class picker list', () => {
       'Wildshaper (Elementalist/Skinshifter)',
       'Ranger (Beastmaster/Warrior)',
       'Hunter (Beastmaster/Expert)',
+      'Monk (Vowed/Warrior)',
+      'Ascetic (Vowed/Expert)',
       'Priest of Death (Necromancer/Healer)',
       'Blood Saint (Blood Priest/Healer)',
     ]);

@@ -18,6 +18,7 @@ import type { Evaluation } from './creation.ts';
 import { loadoutSummary, type EquipmentSummary } from './equipment.ts';
 import { classOption } from './class-step.ts';
 import { beastShape } from './beast-arts.ts';
+import { vowedShape, type VowedShape } from './vowed-arts.ts';
 import { formShape } from './forms.ts';
 import { characterBonuses } from './shaping.ts';
 import { addsInt, armoredArts, castingAllowed, effortFor, spellSlots } from './magic.ts';
@@ -115,7 +116,7 @@ function modifiersAndSaves(scores: AttributeScores, level: number, bonuses: Modi
 }
 
 /**
- * A form's and the Beastmaster arts' attacks and base AC together, with Cold Flesh's natural AC
+ * A form's, the Beastmaster arts', and the Vowed arts' attacks and base AC together, with Cold Flesh's natural AC
  * (vendor/wwn-srd/1.0 Character Creation/1.5.0 Class List/1.5.14 The Necromancer.md); the better
  * AC stands.
  */
@@ -123,11 +124,12 @@ function arted(
   shape: ReturnType<typeof formShape> | null,
   beast: ReturnType<typeof beastShape>,
   coldFlesh: number | null,
+  vowed: VowedShape,
 ) {
-  const acs = [shape?.innateAc, beast.innateAc, coldFlesh].filter(
+  const acs = [shape?.innateAc, beast.innateAc, coldFlesh, vowed.innateAc].filter(
     (x): x is number => typeof x === 'number',
   );
-  const effects = [...(shape?.effects ?? []), ...beast.effects];
+  const effects = [...(shape?.effects ?? []), ...beast.effects, ...vowed.effects];
   return {
     ...(effects.length > 0 ? { formEffects: effects } : {}),
     ...(acs.length > 0 ? { formAc: Math.max(...acs) } : {}),
@@ -161,7 +163,12 @@ export function characterSheet(c: Character, data: GameData, form: number | null
       foci: c.foci,
       level,
       attackBonus,
-      ...arted(shape, beastShape(c), c.arts.includes('cold-flesh') ? coldFleshAc(level) : null),
+      ...arted(
+        shape,
+        beastShape(c),
+        c.arts.includes('cold-flesh') ? coldFleshAc(level) : null,
+        vowedShape(data, c),
+      ),
     }),
     strainMax: scores.con,
     size: people.size,
