@@ -42,6 +42,7 @@ function monsterAttack(
     twoHanded: weapon?.traits.includes('two-handed') ?? false,
     blunt: false,
     onHit: onHit ?? null,
+    magic: null,
   };
 }
 
@@ -56,6 +57,7 @@ function strikes(stat: Attack, list: Strike[], mode: Attack['mode']): Attack[] {
     damageBonus: 0,
     shock: mode === 'melee' ? stat.shock : null,
     onHit: s.onHit ?? null,
+    magic: null,
   }));
 }
 

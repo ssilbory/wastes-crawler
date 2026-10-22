@@ -37,6 +37,7 @@ import craftsmen from '../../data/content/craftsmen.json';
 import alchemy from '../../data/content/alchemy.json';
 import scrolls from '../../data/content/scrolls.json';
 import devices from '../../data/content/devices.json';
+import forging from '../../data/content/forging.json';
 import settingsDefaults from '../../data/content/settings-defaults.json';
 import soundCues from '../../data/content/sound-cues.json';
 import starterParty from '../../data/content/starter-party.json';
@@ -117,6 +118,7 @@ export function loadContent(): ContentData {
     alchemy: ContentSchemas.alchemy.parse(alchemy),
     scrolls: ContentSchemas.scrolls.parse(scrolls),
     devices: ContentSchemas.devices.parse(devices),
+    forging: ContentSchemas.forging.parse(forging),
     settingsDefaults: ContentSchemas.settingsDefaults.parse(settingsDefaults),
     soundCues: ContentSchemas.soundCues.parse(soundCues),
     starterParty: ContentSchemas.starterParty.parse(starterParty),
@@ -190,6 +192,8 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['alchemy/potions', content.alchemy.potions],
     ['alchemy/alchemists', content.alchemy.alchemists],
     ['devices', content.devices.devices],
+    ['forging/abilities', content.forging.abilities],
+    ['forging/flaws', content.forging.flaws],
     ['settingMonsters', content.settingMonsters],
     ['standingOrders', content.standingOrders],
     ['authorities', content.authorities],

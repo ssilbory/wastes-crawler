@@ -15,6 +15,7 @@ import type {
   Weapon,
 } from '../../data/schemas/index.ts';
 import type { GameData } from './context.ts';
+import { abilityOf, flawsOf } from './abilities.ts';
 import { heldSpell, heldSpells } from './spell-items.ts';
 import { upgrade } from './upgrades.ts';
 
@@ -55,6 +56,9 @@ export interface InventoryEntry {
   /** A wand's or staff's spells and charges left (SRD 4.9.4). */
   spells?: string[] | undefined;
   charges?: number | undefined;
+  /** A magic weapon's or armor's special ability, and flaws left by a forging (SRD 4.9.3, 4.10.0). */
+  ability?: string | undefined;
+  flaws?: string[] | undefined;
 }
 
 export interface InstalledMod {
@@ -155,7 +159,12 @@ export function entryPrice(data: GameData, item: CatalogItem, entry: InventoryEn
   // A scroll costs its writing price for each level of its spell (SRD 4.9.1).
   const held = heldSpells(entry);
   const levels = held.length > 0 ? held.reduce((n, id) => n + heldSpell(data, id).level, 0) : 1;
-  const each = tenths(item.cost) * barding * tier * levels + (magic ? magic.commission * 10 : 0);
+  // An ability is worth what it adds to a commission (Sam's call).
+  const ability = abilityOf(data, entry);
+  const each =
+    tenths(item.cost) * barding * tier * levels +
+    (magic ? magic.commission * 10 : 0) +
+    (ability ? ability.cost * 10 : 0);
   return Math.round(each * entry.quantity);
 }
 
@@ -207,6 +216,8 @@ export function lineLabel(data: GameData, e: InventoryEntry): string {
     ...mods,
     e.small && 'small',
     e.barding && 'barding',
+    abilityOf(data, e)?.name,
+    ...flawsOf(data, e).map((f) => f.name),
     e.casterLevel && `caster level ${e.casterLevel}`,
     e.charges && `${e.charges} ${e.charges === 1 ? 'charge' : 'charges'}`,
   ].filter(Boolean);

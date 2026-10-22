@@ -91,6 +91,9 @@ export const CharacterSchema = z.strictObject({
       /** A wand's or staff's spells and the charges left (SRD 4.9.4). */
       spells: z.array(IdSchema).min(1).optional(),
       charges: z.int().min(1).optional(),
+      /** A magic weapon's or armor's ability and a forging's flaws (SRD 4.9.3, 4.10.0). */
+      ability: IdSchema.optional(),
+      flaws: z.array(IdSchema).min(1).optional(),
     }),
   ),
   /** Money; 1 crown = 1 silver piece, so copper prices make tenths. */

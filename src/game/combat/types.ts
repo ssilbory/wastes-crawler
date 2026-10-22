@@ -1,5 +1,6 @@
 // Battle state for the combat engine. The engine mutates a Battle it owns; callers get it back
 // from runBattle or step through it round by round.
+import type { AbilityEffect } from '../../data/schemas/index.ts';
 import type { ArmorClassInput } from '../../rules/armor-class.ts';
 import type {
   Attribute,
@@ -37,6 +38,8 @@ export interface Attack {
   blunt: boolean;
   /** Poison or paralysis on a hit (Phase 14a). */
   onHit: OnHit | null;
+  /** A magic weapon's special ability (SRD 4.9.3). */
+  magic: AbilityEffect | null;
 }
 
 export interface CasterState {

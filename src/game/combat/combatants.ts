@@ -1,6 +1,6 @@
 // Combatants from saved characters, with every sheet value folded in; the defaults every
 // combatant starts from. SRD monsters are built in monster-combatant.ts.
-import type { Character } from '../../data/schemas/index.ts';
+import type { Ability, Character } from '../../data/schemas/index.ts';
 import { killingBlowBonus } from '../../rules/combat.ts';
 import { coldFleshAc } from '../../rules/necromancer.ts';
 import { characterLevel } from '../../rules/progression.ts';
@@ -155,6 +155,10 @@ export function pcCombatant(
       twoHanded: traits.includes('two-handed'),
       blunt: data.content.equipmentRules.bluntWeapons.includes(a.id),
       onHit: null,
+      // Character loading keeps abilities to real ones.
+      magic: a.ability
+        ? (data.content.forging.abilities.find((x) => x.id === a.ability) as Ability).effect
+        : null,
     };
   });
   const worn = c.inventory.filter((e) => e.location === 'worn').map((e) => findItem(data, e.id));
