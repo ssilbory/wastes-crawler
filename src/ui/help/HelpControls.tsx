@@ -32,6 +32,10 @@ export function HelpControls() {
           whole map; so do Ctrl with the mouse wheel and a trackpad pinch.
         </li>
         <li>Visit, Enter, and Take buttons appear in the bar on a town, dungeon, or road.</li>
+        <li>
+          Keys: H plans a hike and C a camp, Q plays out the quarter, and T visits the town the
+          party stands in.
+        </li>
       </ul>
 
       <h3>Dungeons</h3>
@@ -56,6 +60,10 @@ export function HelpControls() {
         <li>
           Each character's turn opens a menu of commands: Attack, Magic, Defend, Aid, Gear, Move,
           Other. Commands that need a target show the odds; pick one, or click the foe.
+        </li>
+        <li>
+          Keys: the number beside a command or target picks it, Backspace goes back, and D takes the
+          character's default action.
         </li>
         <li>
           Each character has a default action (Auto, Attack weakest, Total Defense, Repeat last

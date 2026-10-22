@@ -20,6 +20,12 @@
   margin-top: 0;
 }
 
+.arena-column {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+
 .roster-list {
   list-style: none;
   padding: 0;

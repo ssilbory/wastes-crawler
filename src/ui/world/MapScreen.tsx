@@ -32,6 +32,7 @@ import { MountsPanel } from './MountsPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { PopOut } from './PopOut.tsx';
 import { BarMore } from './BarMore.tsx';
+import { useKeys } from '../keys.ts';
 import { QuestLog } from './QuestLog.tsx';
 import { SideDock } from './SideDock.tsx';
 import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
@@ -65,6 +66,8 @@ export function MapScreen(props: {
   const current = plan?.version === props.version ? plan.plan : suggestPlan(w, data);
   const choose = (p: QuarterPlan) => setPlan({ version: props.version, plan: p });
   const able = w.members.filter((m) => !m.dead && m.character.hp.current > 0);
+  const hike = () => choose(suggestPlan(w, data, 'hike'));
+  const camp = () => choose(suggestPlan(w, data, 'camp'));
   const { width, height } = mapPixels(map, HEX_SIZE);
   const entrances = entrancesIn(data, w.region, w.rumors);
   const cells = hexCells(
@@ -87,6 +90,15 @@ export function MapScreen(props: {
   const here = town?.name ?? map.terrainAt(w.position).name;
   const way = wayDownHere(w, data);
   const road = map.exitAt(w.position);
+  // H and C pick the plan, Q plays the quarter out, T visits the town: only while the quarter's
+  // plan is on show, so never over an encounter or on a coach.
+  const planning = !w.encounter && !w.coach;
+  useKeys({
+    h: planning && w.destination !== null ? hike : undefined,
+    c: planning ? camp : undefined,
+    q: planning ? () => props.onPass(current) : undefined,
+    t: planning && town ? props.onTown : undefined,
+  });
   return (
     <div class="world map-screen">
       <div class="world-bar">
@@ -102,7 +114,7 @@ export function MapScreen(props: {
         </div>
         <span class="bar-actions">
           {town && !w.encounter && !w.coach && (
-            <button type="button" onClick={props.onTown}>
+            <button type="button" aria-keyshortcuts="T" onClick={props.onTown}>
               Visit {town.name}
             </button>
           )}
@@ -166,8 +178,8 @@ export function MapScreen(props: {
               plan={current}
               canHike={w.destination !== null}
               onPlan={choose}
-              onHike={() => choose(suggestPlan(w, data, 'hike'))}
-              onCamp={() => choose(suggestPlan(w, data, 'camp'))}
+              onHike={hike}
+              onCamp={camp}
               onPass={() => props.onPass(current)}
             />
           )}

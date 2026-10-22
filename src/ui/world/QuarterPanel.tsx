@@ -59,7 +59,7 @@ export function QuarterPanel(props: {
       <div class="quarter-head">
         <h2>This quarter</h2>
         {/* Up top so it never moves as the plan below grows or shrinks. */}
-        <button type="button" class="create" onClick={props.onPass}>
+        <button type="button" class="create" aria-keyshortcuts="Q" onClick={props.onPass}>
           {plan.kind === 'hike' ? 'Hike' : 'Camp'} for the quarter
         </button>
       </div>
@@ -68,6 +68,7 @@ export function QuarterPanel(props: {
           type="button"
           role="radio"
           aria-checked={plan.kind === 'hike'}
+          aria-keyshortcuts="H"
           disabled={!props.canHike}
           onClick={props.onHike}
         >
@@ -77,6 +78,7 @@ export function QuarterPanel(props: {
           type="button"
           role="radio"
           aria-checked={plan.kind === 'camp'}
+          aria-keyshortcuts="C"
           onClick={props.onCamp}
         >
           Camp

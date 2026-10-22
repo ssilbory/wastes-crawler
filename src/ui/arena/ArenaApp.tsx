@@ -65,10 +65,18 @@ export function ArenaApp() {
     const [row, column] = key.split('-').map(Number) as [number, number];
     return entry ? [{ entry, row, column }] : [];
   });
-  const ready =
+  /** What the fight still needs, or null when it can start. */
+  const missing =
     mode === 'party'
-      ? party.length > 0 && (opponents !== 'monsters' || hasMonsters(enemies))
-      : hasMonsters(left) && hasMonsters(right);
+      ? party.length === 0
+        ? 'Put a character in the formation to start.'
+        : opponents === 'monsters' && !hasMonsters(enemies)
+          ? 'Add a monster to the enemies to start.'
+          : null
+      : !hasMonsters(left) || !hasMonsters(right)
+        ? 'Add a monster to each side to start.'
+        : null;
+  const ready = missing === null;
   const start = () =>
     setFight(
       mode === 'party'
@@ -133,10 +141,13 @@ export function ArenaApp() {
               onPreset={onPreset}
             />
             <PartySetup entries={roster} placement={placement} onChange={setPlacement} />
-            <RivalPicker value={opponents} onChange={setOpponents} />
-            {opponents === 'monsters' && (
-              <MonsterPicker title="Enemies" rows={enemies} onChange={setEnemies} />
-            )}
+            {/* The opponents and the monsters among them share a column. */}
+            <div class="arena-column">
+              <RivalPicker value={opponents} onChange={setOpponents} />
+              {opponents === 'monsters' && (
+                <MonsterPicker title="Enemies" rows={enemies} onChange={setEnemies} />
+              )}
+            </div>
           </>
         ) : (
           <>
@@ -146,6 +157,7 @@ export function ArenaApp() {
         )}
       </main>
       <div class="start-row">
+        {missing && <span class="hint">{missing}</span>}
         <label>
           Seed (optional){' '}
           <input value={seed} onInput={(e) => setSeed((e.target as HTMLInputElement).value)} />

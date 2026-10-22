@@ -95,8 +95,16 @@ test('picks a destination with the keyboard', async ({ page }) => {
   const target = map.locator(`[data-hex="${(col ?? 0) + 2},${row}"]`);
   await expect(target).toBeFocused();
   await expect(target).toHaveAttribute('tabindex', '0');
+  // H waits for a destination; C plans a camp whenever.
+  const plan = page.getByRole('region', { name: 'Quarter plan' });
+  await page.keyboard.press('h');
+  await expect(plan.getByRole('radio', { name: 'Hike' })).toBeDisabled();
   await page.keyboard.press('Enter');
   await expect(target).toHaveClass(/\bdestination\b/);
+  await page.keyboard.press('c');
+  await expect(plan.getByRole('radio', { name: 'Camp' })).toHaveAttribute('aria-checked', 'true');
+  await page.keyboard.press('h');
+  await expect(plan.getByRole('radio', { name: 'Hike' })).toHaveAttribute('aria-checked', 'true');
   await expect(target).toHaveAccessibleName(/destination$/);
   await expect(
     page.getByRole('region', { name: 'Quarter plan' }).getByRole('radio', { name: 'Hike' }),
