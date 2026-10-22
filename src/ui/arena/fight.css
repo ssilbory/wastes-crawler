@@ -23,12 +23,6 @@
   margin-top: 12px;
 }
 
-@media (max-width: 760px) {
-  .fight-main {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
 .battlefield {
   display: grid;
   gap: 12px;
@@ -46,8 +40,10 @@
   margin: 4px 0;
 }
 
+/* One column per place in the row (--columns, set by Field.tsx); a phone refits them (mobile.css). */
 .slots {
   display: grid;
+  grid-template-columns: repeat(var(--columns, 1), minmax(0, 1fr));
   gap: 4px;
 }
 

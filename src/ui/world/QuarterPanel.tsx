@@ -47,6 +47,8 @@ export function QuarterPanel(props: {
   guides: Choice[];
   plan: QuarterPlan;
   canHike: boolean;
+  /** No quest is under way: say where to find one. */
+  noQuests?: boolean;
   onPlan: (plan: QuarterPlan) => void;
   onPass: () => void;
   onHike: () => void;
@@ -89,6 +91,9 @@ export function QuarterPanel(props: {
           Click a hex on the map to set a destination, or Tab to the map and use the arrow keys and
           Enter.
         </p>
+      )}
+      {props.noQuests && (
+        <p class="hint">No quests under way. A town's Quests tab has work on offer.</p>
       )}
       {plan.kind === 'hike' ? (
         <div class="roles">

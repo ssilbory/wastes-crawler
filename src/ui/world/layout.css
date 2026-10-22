@@ -42,9 +42,12 @@
 .world-bar > span:not(.bar-actions),
 .world-bar .bar-status > span {
   padding: 1px 6px;
-  font-family: var(--font-term);
-  font-size: 1.2rem;
-  line-height: 1.3;
+  /* The body face, like the buttons beside them (Sam's call). The line and the box keep the height
+     the terminal face had, to the 64th of a pixel, so the bar and the map under it stay put. */
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.56rem;
+  height: calc(1.56rem + 4px);
   color: var(--ink);
   background: var(--panel-sunk);
   border: 1px solid var(--bevel-lo);
@@ -54,8 +57,6 @@
 }
 
 .world-bar .date {
-  font-family: var(--font-term);
-  font-size: 1.3rem;
   font-weight: 400;
   color: var(--gold);
   text-transform: none;
@@ -92,7 +93,7 @@
   gap: 4px;
 }
 
-/* The stage: the main view on the left, two docks of panels on the right. */
+/* The stage: the main view on the left, then one dock of panels (a town has two). */
 .world-main {
   flex: 1 1 auto;
   min-height: 0;
@@ -136,8 +137,14 @@
     grid-auto-rows: minmax(0, 1fr);
   }
 
-  .world-main > .world-left {
+  /* Beside two docks the main view spans both rows; beside one, the dock takes the full height. */
+  .world-main:has(> .dock ~ .dock) > .world-left {
     grid-row: span 2;
+  }
+
+  .world-main:not(:has(> .dock ~ .dock)) {
+    grid-auto-rows: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
   }
 }
 
@@ -224,12 +231,6 @@
   overflow-y: auto;
 }
 
-@media (max-width: 760px) {
-  .sub-screen {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
 /* The character sheet spreads across the screen in columns instead of running down it. */
 .characters .sub-screen {
   grid-template-columns: minmax(0, 1fr);
@@ -251,43 +252,4 @@
 
 .characters .sheet.final > :is(table, dl, ul, p) {
   break-inside: avoid;
-}
-
-/* The side column of quests, companions, and the like (SideDock.tsx). Its minimize button sits at
-   its top; with no panels to show it gives its room back like any empty dock. */
-.side-dock:not(.minimized):not(:has(> :not(.dock-toggle))) {
-  display: none;
-}
-
-.dock-toggle {
-  justify-self: end;
-  min-width: 30px;
-  padding: 0 8px;
-  line-height: 1.6;
-}
-
-/* Minimized: a strip with the button to bring it back, and a shorter journal, so the map grows
-   both ways. */
-@media (min-width: 1101px) {
-  .world-main:has(> .side-dock.minimized) {
-    grid-template-columns: minmax(0, 1fr) minmax(250px, 340px) 36px;
-  }
-
-  .dungeon .world-main:has(> .side-dock.minimized) {
-    grid-template-columns: minmax(0, 1fr) minmax(250px, 360px) 36px;
-  }
-}
-
-.side-dock.minimized {
-  scrollbar-gutter: auto;
-  overflow: visible;
-}
-
-.side-dock.minimized .dock-toggle {
-  justify-self: stretch;
-  padding: 6px 0;
-}
-
-.world-main:has(> .side-dock.minimized) .log {
-  height: 4.2rem;
 }

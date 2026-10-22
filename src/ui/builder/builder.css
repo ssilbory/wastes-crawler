@@ -249,9 +249,3 @@ fieldset.picks legend {
   display: flex;
   justify-content: flex-end;
 }
-
-@media (max-width: 760px) {
-  .sheet-popup {
-    inset: 8px;
-  }
-}
