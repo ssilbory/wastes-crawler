@@ -2,7 +2,7 @@
 // The light itself is game state (src/game/dungeon/light.ts); this only says how it looks: its
 // tint, how many cells deep it reaches, and whether it flickers. A light's reach follows its
 // resource die, so a torch that has stepped down to d4 lights less of the corridor.
-import { blind, faithLit, inDark } from '../game/dungeon/light.ts';
+import { blind, faithLit, rodLit, inDark } from '../game/dungeon/light.ts';
 import type { GameData } from '../game/character/context.ts';
 import type { World } from '../game/world/types.ts';
 
@@ -53,7 +53,8 @@ export function lightView(w: World, data: GameData): LightView | null {
   if (!w.dungeon || blind(w, data)) return null;
   // Seeing without light (Phase 15 arts and Apprehending the Arcane Form): cold and short.
   if (inDark(w, data)) return look('sight', 2);
-  if (faithLit(w, data)) return look('faith', 3.5);
+  // Light of Faith and a Rod of Light shine alike.
+  if (faithLit(w, data) || rodLit(w, data)) return look('faith', 3.5);
   const lit = w.light.lit as 'torch' | 'lantern';
   return look(lit, dieReach(w.light[lit]));
 }

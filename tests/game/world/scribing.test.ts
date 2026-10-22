@@ -170,8 +170,8 @@ describe('scrolls as items', () => {
       { id: 'dagger', quantity: 1, location: 'stowed', casterLevel: 2 },
     ]);
     expect(bad.ok ? [] : bad.errors).toEqual([
-      'inventory: a scroll needs a known spell and caster level',
-      'inventory: a scroll needs a known spell and caster level',
+      'inventory: a scroll needs one known spell and a caster level',
+      'inventory: a scroll needs one known spell and a caster level',
       "inventory: dagger can't hold a spell",
       "inventory: dagger can't hold a spell",
     ]);

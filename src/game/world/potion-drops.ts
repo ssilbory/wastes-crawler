@@ -1,7 +1,7 @@
 // Potion drops (docs/rules-adaptation.md, Potions: Drops; Sam's calls): a won boss fight that pays
 // XP leaves a potion 30% of the time, and any other such fight against humanoids 1% of the time.
 // Three drops in ten are scrolls instead (Scrolls): a spell the party's level could cast, at its
-// level. A potion is one of the brewable potions by its recipe weight. The find goes to the PC with
+// level; and one in ten a device (Devices), any at even odds, holding such spells. A potion is one of the brewable potions by its recipe weight. The find goes to the PC with
 // the most room, or is left behind if it would leave them too heavy. It costs none of the loot dice.
 import { pickWeighted } from '../../rules/gear-drops.ts';
 import type { GameData } from '../character/context.ts';
@@ -10,6 +10,8 @@ import { putLine } from '../character/stacks.ts';
 import { partyLevel } from './difficulty.ts';
 import { keeper, type DropContext } from './gear-drops.ts';
 import { scribable } from './scribing.ts';
+import { deviceLine } from './enchanting.ts';
+import type { Device } from '../../data/schemas/index.ts';
 import { memberSheet, note } from './members.ts';
 import type { World } from './types.ts';
 
@@ -35,6 +37,31 @@ function scrollDrop(w: World, data: GameData): InventoryEntry {
   return { id: scroll, quantity: 1, location: 'stowed', spell: spell.id, casterLevel: level };
 }
 
+/** Spells for a dropped wand or staff: each one the party's level could cast, as the device allows. */
+function dropSpells(w: World, data: GameData, d: Device, max: number): string[] {
+  const dev = d.device;
+  if (dev.kind === 'rod') return [];
+  const pool = scribable(data).filter((s) => s.level <= max);
+  const count = dev.kind === 'wand' ? 1 : dev.minSpells;
+  const cap = dev.kind === 'wand' ? dev.maxSpellLevel : dev.maxLevels;
+  const spells: typeof pool = [];
+  for (let i = 0; i < count; i++) {
+    const room = cap - spells.reduce((n, s) => n + s.level, 0);
+    const left = pool.filter((s) => !spells.includes(s) && s.level <= room);
+    spells.push(left[w.rng.int(0, left.length - 1)] as (typeof left)[number]);
+  }
+  return spells.map((s) => s.id);
+}
+
+/** A device at even odds among them, at the party's level (Devices). */
+function deviceDrop(w: World, data: GameData): InventoryEntry {
+  const all = data.content.devices.devices;
+  const d = all[w.rng.int(0, all.length - 1)] as Device;
+  const level = partyLevel(w, data);
+  const max = Math.min(5, Math.ceil(level / 2));
+  return deviceLine(w, d, dropSpells(w, data, d, max), level);
+}
+
 /** A potion by recipe weight, or null when no recipe drops. */
 function potionDrop(w: World, data: GameData): InventoryEntry | null {
   const recipes = data.content.alchemy.recipes.filter(
@@ -56,8 +83,14 @@ export function dropPotion(
 ): void {
   const chance = potionChance(data, enemies, ctx);
   if (chance === 0 || w.rng.int(1, 100) > chance) return;
-  const scroll = w.rng.int(1, 100) <= data.content.scrolls.dropShare;
-  const entry = scroll ? scrollDrop(w, data) : potionDrop(w, data);
+  const kind = w.rng.int(1, 100);
+  const scrolls = data.content.scrolls.dropShare;
+  const entry =
+    kind <= scrolls
+      ? scrollDrop(w, data)
+      : kind <= scrolls + data.content.devices.dropShare
+        ? deviceDrop(w, data)
+        : potionDrop(w, data);
   if (!entry) return;
   const name = lineLabel(data, entry);
   const m = keeper(w, data);

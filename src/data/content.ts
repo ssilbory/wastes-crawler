@@ -36,6 +36,7 @@ import mods from '../../data/content/mods.json';
 import craftsmen from '../../data/content/craftsmen.json';
 import alchemy from '../../data/content/alchemy.json';
 import scrolls from '../../data/content/scrolls.json';
+import devices from '../../data/content/devices.json';
 import settingsDefaults from '../../data/content/settings-defaults.json';
 import soundCues from '../../data/content/sound-cues.json';
 import starterParty from '../../data/content/starter-party.json';
@@ -67,6 +68,7 @@ import { questReferenceErrors } from './quest-check.ts';
 import { dungeonReferenceErrors } from './dungeon-check.ts';
 import { craftingReferenceErrors } from './crafting-check.ts';
 import { alchemyReferenceErrors } from './alchemy-check.ts';
+import { deviceReferenceErrors } from './device-check.ts';
 import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.ts';
 import { gameSkills, skillRuleErrors } from './skills.ts';
 import { spellRuleErrors } from './spells.ts';
@@ -114,6 +116,7 @@ export function loadContent(): ContentData {
     craftsmen: ContentSchemas.craftsmen.parse(craftsmen),
     alchemy: ContentSchemas.alchemy.parse(alchemy),
     scrolls: ContentSchemas.scrolls.parse(scrolls),
+    devices: ContentSchemas.devices.parse(devices),
     settingsDefaults: ContentSchemas.settingsDefaults.parse(settingsDefaults),
     soundCues: ContentSchemas.soundCues.parse(soundCues),
     starterParty: ContentSchemas.starterParty.parse(starterParty),
@@ -186,6 +189,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['craftsmen', content.craftsmen],
     ['alchemy/potions', content.alchemy.potions],
     ['alchemy/alchemists', content.alchemy.alchemists],
+    ['devices', content.devices.devices],
     ['settingMonsters', content.settingMonsters],
     ['standingOrders', content.standingOrders],
     ['authorities', content.authorities],
@@ -225,6 +229,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...dungeonReferenceErrors(content),
     ...craftingReferenceErrors(srd, content),
     ...alchemyReferenceErrors(srd, content),
+    ...deviceReferenceErrors(srd, content),
     ...settingReferenceErrors(srd, content),
     ...groveReferenceErrors(srd, content),
     ...ailmentReferenceErrors(srd, content),

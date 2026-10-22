@@ -24,6 +24,8 @@ export function projectText(w: World, data: GameData, p: Project): string {
           ? `brewing ${p.doses as number} × ${item}`
           : p.kind === 'scribe'
             ? `writing a scroll of ${(gameSpells(data.srd, data.content).find((s) => s.id === p.spell) as GameSpell).name}`
-            : `${tierName(p.quality)}${item}${p.small ? ' (small)' : ''}`;
+            : p.kind === 'device'
+              ? `making a ${item}`
+              : `${tierName(p.quality)}${item}${p.small ? ' (small)' : ''}`;
   return `${crafter.character.name}: ${work}, ${days}${where}`;
 }

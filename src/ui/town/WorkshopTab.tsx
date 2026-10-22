@@ -23,6 +23,7 @@ import { data } from '../builder/data.ts';
 import { BrewPanel } from './BrewPanel.tsx';
 import { ModsPanel } from './ModsPanel.tsx';
 import { ScribePanel } from './ScribePanel.tsx';
+import { EnchantPanel } from './EnchantPanel.tsx';
 import type { Act } from './TownScreen.tsx';
 
 const items = craftable(data);
@@ -166,6 +167,7 @@ export function WorkshopTab(props: { world: World; act: Act }) {
       </section>
       <BrewPanel world={w} act={props.act} />
       <ScribePanel world={w} act={props.act} />
+      <EnchantPanel world={w} act={props.act} />
       <ModsPanel world={w} act={props.act} />
     </>
   );

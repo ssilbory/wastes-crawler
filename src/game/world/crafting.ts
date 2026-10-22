@@ -15,6 +15,7 @@ import { note } from './members.ts';
 import { daysText } from './wording.ts';
 import { completeBrew } from './brewing.ts';
 import { completeScroll } from './scribing.ts';
+import { completeDevice } from './enchanting.ts';
 import { completeMod, modOf } from './mods.ts';
 import { regionMap } from './region.ts';
 import type { TownResult } from './services.ts';
@@ -149,6 +150,10 @@ export function workOn(w: World, data: GameData, p: Project, days = 1): void {
     completeScroll(w, data, p, crafter);
     return;
   }
+  if (p.kind === 'device') {
+    completeDevice(w, data, p, crafter);
+    return;
+  }
   if (p.kind !== 'gear') {
     completeMod(w, data, p);
     return;
@@ -236,6 +241,7 @@ function workName(data: GameData, p: Project): string {
   const item = (findItem(data, p.item) as CatalogItem).name;
   if (p.kind === 'brew') return `a brew of ${item}`;
   if (p.kind === 'scribe') return `a scroll of ${spellName(data, p.spell as string)}`;
+  if (p.kind === 'device') return `the ${item}`;
   return p.kind === 'mod'
     ? `${modOf(data, p.mod as string).name} for the ${item}`
     : `the ${tierName(p.quality)}${item}`;
