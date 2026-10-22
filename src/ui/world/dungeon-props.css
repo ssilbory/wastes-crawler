@@ -1,0 +1,71 @@
+/* Who and what stands in the dungeon view (DungeonProps.tsx, docs/presentation-plan.md, V4):
+   foes ahead, furniture, and captives. Loaded right after dungeon-view.css. */
+
+/* An encounter's foes in the corridor ahead (src/render/encounter-portrait.ts): dark shapes with
+   the light catching their edges and their eyes. */
+.dungeon-view .foe .fill {
+  fill: #0d0907;
+  stroke: #d9a76a;
+  stroke-width: 0.45;
+  stroke-opacity: 0.55;
+  paint-order: stroke;
+}
+
+.dungeon-view .foe .line {
+  fill: none;
+  stroke: #0d0907;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dungeon-view .foe .cut {
+  fill: none;
+  stroke: #e0b27a;
+  stroke-opacity: 0.7;
+  stroke-linecap: round;
+}
+
+/* Furniture (src/render/furniture-art.ts): stone in the panel's shade, cut lines in shadow, flames
+   and water in their own colours. */
+.dungeon-view .furniture .cut {
+  fill: none;
+  stroke: #0b0907;
+  stroke-opacity: 0.6;
+  stroke-linecap: round;
+}
+
+.dungeon-view .furniture .line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dungeon-view .furniture .flame {
+  fill: #ffb347;
+  filter: drop-shadow(0 0 1.5px #ff7a1a);
+}
+
+.dungeon-view .furniture .line.water {
+  stroke: #8fb8d8;
+  stroke-opacity: 0.8;
+}
+
+/* A held captive among their guards (src/render/dungeon-occupants.ts): pale against the dark foes. */
+.dungeon-view .captive .fill {
+  fill: #b9ad95;
+  stroke: #0d0907;
+  stroke-width: 0.5;
+}
+
+.dungeon-view .captive .line {
+  fill: none;
+  stroke: #b9ad95;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dungeon-view .captive .cut {
+  fill: none;
+  stroke: #3a332b;
+  stroke-linecap: round;
+}

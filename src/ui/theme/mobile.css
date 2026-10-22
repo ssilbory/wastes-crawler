@@ -1,6 +1,7 @@
-/* Phones and touch screens. Loaded last so it overrides each screen's desktop layout. On a phone
-   the world screens stop fitting the window and become one column that scrolls: the main view
-   first, then the docks (the quarter's plans sit right under the map), then the journal. */
+/* Phones and touch screens. Loaded last so it overrides each screen's desktop layout, and every
+   phone-width rule lives here, in the one 760px block below, rather than in each screen's file. On
+   a phone the world screens stop fitting the window and become one column that scrolls: the main
+   view first, then the dock (the quarter's plans sit right under the map), then the journal. */
 
 /* Touch: no double-tap zoom delay on controls, and text fields at 16px so iOS doesn't zoom the
    page when one takes focus. */
@@ -19,6 +20,13 @@
     font-size: max(16px, 1rem);
   }
 
+  /* Every control at least 44px tall, the size a fingertip can hit without a near miss. */
+  button,
+  select,
+  input:not([type='checkbox'], [type='radio'], [type='range'], [type='file']) {
+    min-height: 44px;
+  }
+
   .app-menu-list a,
   .app-menu-list .app-menu-item {
     padding: 10px 14px;
@@ -32,9 +40,31 @@
     overscroll-behavior: contain;
   }
 
-  .world-bar > span:not(.bar-actions) {
-    font-size: 1.05rem;
-    white-space: normal;
+  /* The readouts take one row that scrolls sideways, so the map starts high on the screen. */
+  .world-bar .bar-status {
+    display: flex;
+    flex: 1 1 100%;
+    gap: 6px;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .world-bar > span:not(.bar-actions),
+  .world-bar .bar-status > span {
+    flex: none;
+    font-size: 0.9rem;
+    line-height: 1.365rem;
+    height: calc(1.365rem + 4px);
+  }
+
+  /* Export and Abandon fold behind More. */
+  .world-bar .bar-more-toggle {
+    display: inline-block;
+  }
+
+  .bar-more:not(.open) > .bar-more-items {
+    display: none;
   }
 
   .world-bar .date {
@@ -49,9 +79,7 @@
     margin-left: 0;
   }
 
-  .world-main,
-  .world-main:has(> .side-dock.minimized),
-  .dungeon .world-main:has(> .side-dock.minimized) {
+  .world-main {
     flex: none;
     display: flex;
     flex-direction: column;
@@ -72,13 +100,7 @@
     scrollbar-gutter: auto;
   }
 
-  .side-dock.minimized .dock-toggle {
-    justify-self: end;
-    padding: 4px 12px;
-  }
-
-  .world .log,
-  .world-main:has(> .side-dock.minimized) .log {
+  .world .log {
     height: 12rem;
   }
 
@@ -135,70 +157,9 @@
   .characters .sheet.final {
     columns: 1;
   }
-}
 
-/* Descriptions on touch screens (src/ui/hint.tsx): an ⓘ beside each name with a description, and a
-   sheet at the foot of the screen that shows it. A mouse still gets the hover text instead. */
-.hint-button {
-  display: none;
-}
-
-.hint-button::before {
-  content: 'ⓘ';
-}
-
-/* A checkbox with its ⓘ beside it: the button stays out of the label, so it never ticks the box. */
-.check-row {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-
-@media (hover: none) {
-  .hint-button {
-    display: inline-block;
-    min-width: 32px;
-    min-height: 32px;
-    margin-left: 4px;
-    padding: 0 6px;
-    line-height: 1;
-    color: var(--gold);
-    vertical-align: middle;
-  }
-}
-
-.hint-sheet-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 40;
-  background: rgb(0 0 0 / 45%);
-}
-
-.hint-sheet {
-  position: absolute;
-  left: 8px;
-  right: 8px;
-  bottom: 8px;
-  max-width: 40rem;
-  max-height: 60dvh;
-  margin: 0 auto;
-  overflow-y: auto;
-  box-shadow:
-    var(--bevel-out),
-    0 -6px 24px rgb(0 0 0 / 60%);
-}
-
-.hint-sheet h3 {
-  margin-top: 0;
-}
-
-.hint-sheet p {
-  white-space: pre-line;
-}
-
-/* A fight on a phone: one column that scrolls as a whole, so the party is never hidden under the
-   commands, and rows with no one in them fold away. */
-@media (max-width: 760px) {
+  /* A fight on a phone: one column that scrolls as a whole, so the party is never hidden under the
+     commands, and rows with no one in them fold away. */
   .arena:has(> .fight) {
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -218,13 +179,42 @@
     display: none;
   }
 
-  /* Empty places can't be picked, so they give their width to the filled ones. The row's own
-     column count is set inline (src/ui/arena/Field.tsx). */
+  /* Empty places can't be picked, so they give their width to the filled ones, and the filled
+     ones wrap to the width instead of keeping the row's column count (fight.css). */
   .fight .slot.empty {
     display: none;
   }
 
   .fight .slots {
-    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)) !important;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  }
+
+  /* Party screens: the sheet and its panels in one column (layout.css). */
+  .sub-screen {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The fight field and its side panel in one column (fight.css). */
+  .fight-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The builder wizard: steps above the step, not beside it (wizard.css). */
+  .wizard-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* A character sheet popup takes nearly the whole screen (builder.css). */
+  .sheet-popup {
+    inset: 8px;
+  }
+
+  /* About: each install step stacks under its platform (about.css). */
+  .about .install-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .about .install-steps dd {
+    margin-bottom: 6px;
   }
 }

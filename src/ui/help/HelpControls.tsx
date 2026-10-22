@@ -19,13 +19,23 @@ export function HelpControls() {
 
       <h3>Overland map</h3>
       <ul>
-        <li>Tap or click a hex to set a destination.</li>
         <li>
-          In This quarter, choose Hike or Camp, set who does what, then press Hike ▸ or Camp ▸ to
-          play out the quarter.
+          Tap or click a hex to set a destination. With a keyboard, Tab to the map, move with the
+          arrow keys, and press Enter.
         </li>
-        <li>−, +, and Fit zoom the map; so do Ctrl with the mouse wheel and a trackpad pinch.</li>
+        <li>
+          In This quarter, choose Hike or Camp, set who does what, then press Hike for the quarter
+          or Camp for the quarter to play it out.
+        </li>
+        <li>
+          The map opens closed in on what the party knows. −, +, and Fit zoom it, Fit showing the
+          whole map; so do Ctrl with the mouse wheel and a trackpad pinch.
+        </li>
         <li>Visit, Enter, and Take buttons appear in the bar on a town, dungeon, or road.</li>
+        <li>
+          Keys: H plans a hike and C a camp, Q plays out the quarter, and T visits the town the
+          party stands in.
+        </li>
       </ul>
 
       <h3>Dungeons</h3>
@@ -50,6 +60,10 @@ export function HelpControls() {
         <li>
           Each character's turn opens a menu of commands: Attack, Magic, Defend, Aid, Gear, Move,
           Other. Commands that need a target show the odds; pick one, or click the foe.
+        </li>
+        <li>
+          Keys: the number beside a command or target picks it, Backspace goes back, and D takes the
+          character's default action.
         </li>
         <li>
           Each character has a default action (Auto, Attack weakest, Total Defense, Repeat last

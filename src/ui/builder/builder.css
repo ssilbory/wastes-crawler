@@ -214,6 +214,19 @@ fieldset.picks legend {
   overflow-y: auto;
 }
 
+/* The roster before anyone is in it (CharactersApp.tsx). */
+.empty-roster {
+  max-width: 34rem;
+  margin: 24px auto;
+}
+
+.empty-roster-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0;
+}
+
 .sheet-popup-backdrop {
   position: fixed;
   inset: 0;
@@ -235,10 +248,4 @@ fieldset.picks legend {
 .sheet-popup-bar {
   display: flex;
   justify-content: flex-end;
-}
-
-@media (max-width: 760px) {
-  .sheet-popup {
-    inset: 8px;
-  }
 }

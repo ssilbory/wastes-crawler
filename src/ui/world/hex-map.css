@@ -24,147 +24,6 @@
   pointer-events: none;
 }
 
-/* Terrain as washes of colour on parchment, each hex edged faintly in ink. */
-.hex-map .ground {
-  pointer-events: none;
-}
-
-.hex-map .ground polygon {
-  stroke: #5a462866;
-  stroke-width: 0.5;
-}
-
-.hex-map .ground .wash {
-  fill: #e9dbb4;
-  fill-opacity: 0.22;
-  stroke: none;
-}
-
-.t-plains polygon {
-  fill: #d4c58c;
-}
-.t-forest polygon {
-  fill: #b5bd7c;
-}
-.t-deep-forest polygon {
-  fill: #8fa26c;
-}
-.t-hills polygon {
-  fill: #d2b57f;
-}
-.t-mountains polygon {
-  fill: #bdb19e;
-}
-.t-peaks polygon {
-  fill: #9c9384;
-}
-.t-swamp polygon {
-  fill: #a9b28a;
-}
-.t-badlands polygon {
-  fill: #d9a777;
-}
-.t-desert polygon {
-  fill: #e6cf98;
-}
-.t-dunes polygon {
-  fill: #e8c487;
-}
-.t-salt-flats polygon {
-  fill: #ece4cf;
-}
-.t-oasis polygon {
-  fill: #a9c08a;
-}
-.t-lake polygon {
-  fill: #8fb6c6;
-}
-.t-river polygon {
-  fill: #a3c3cd;
-}
-.t-ford polygon {
-  fill: #b9d1d2;
-}
-
-/* Glyphs: ink lines with a little colour, as on a hand-drawn chart. */
-.hex-map .glyph {
-  fill: none;
-  stroke: #3a2f22;
-  stroke-width: 0.11;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  overflow: visible;
-}
-.hex-map .glyph .leaf {
-  fill: #6f8a45;
-}
-.hex-map .glyph .pine {
-  fill: #3f5d36;
-}
-.hex-map .glyph .hill {
-  fill: #c09a5e;
-}
-.hex-map .glyph .rock {
-  fill: #a49886;
-}
-.hex-map .glyph .shade {
-  fill: #7d7264;
-  stroke: none;
-}
-.hex-map .glyph .snow {
-  fill: #f6f1e4;
-  stroke-width: 0.06;
-}
-.hex-map .glyph .mesa {
-  fill: #c0835a;
-}
-.hex-map .glyph .dune {
-  fill: #d8ad6c;
-}
-.hex-map .glyph .salt {
-  stroke: #9a8f7a;
-}
-.hex-map .glyph .pebble {
-  fill: #8a7350;
-  stroke: none;
-}
-.hex-map .glyph .pool {
-  fill: #8fb6c6;
-  stroke: #3f6f8c;
-}
-.hex-map .glyph .frond {
-  stroke: #4f6f35;
-}
-.hex-map .glyph .water {
-  stroke: #3f6f8c;
-}
-.hex-map .glyph .reed {
-  stroke: #6b4a2a;
-  stroke-width: 0.2;
-}
-.hex-map .glyph .stone {
-  fill: #9c9384;
-  stroke-width: 0.06;
-}
-
-/* Where water meets land: an ink shoreline, and a paler wash of shallows just inside it. */
-.hex-map .shore {
-  fill: none;
-  stroke: #36566b;
-  stroke-width: 1.1;
-  stroke-linecap: round;
-  pointer-events: none;
-}
-
-.hex-map .shallows {
-  fill: none;
-  stroke: #d8e6e3;
-  stroke-width: 1.6;
-  stroke-opacity: 0.7;
-  stroke-linecap: round;
-  pointer-events: none;
-}
-
 /* Rivers and roads join hex to hex. */
 .hex-map .river {
   fill: none;
@@ -275,6 +134,19 @@
 .hex-map .fog-layer {
   fill: #2a2219;
   pointer-events: none;
+}
+
+/* The hex the keyboard is on (src/ui/world/map-keys.ts): its face, since an outline on an svg
+   group draws nothing useful. */
+.hex:focus {
+  outline: none;
+}
+
+.hex-map .hex:focus-visible .hit {
+  fill: #fff8e0;
+  fill-opacity: 0.3;
+  stroke: #1d1610;
+  stroke-width: 2.4;
 }
 
 /* Each hex's clickable face, clear until hovered or marked. */
@@ -394,53 +266,4 @@
 .hex .grove,
 .hex .exit {
   pointer-events: none;
-}
-
-/* Zoom (src/ui/world/ZoomFrame.tsx): the frame holds the map's box and the zoom buttons over its
-   corner. At Fit the box is as it always was; zoomed in, it scrolls. */
-.zoom-frame {
-  position: relative;
-  min-height: 0;
-  display: grid;
-  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
-}
-
-.zoom-scroll.fit > .zoom-content {
-  display: contents;
-}
-
-.zoom-scroll.zoomed {
-  display: block;
-  overflow: auto;
-}
-
-.zoom-scroll.zoomed > .zoom-content > .hex-map {
-  width: 100%;
-  height: auto;
-}
-
-.zoom-controls {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px;
-  border-radius: var(--radius-control);
-  background: color-mix(in srgb, var(--panel) 85%, transparent);
-  box-shadow: var(--bevel-out);
-}
-
-.zoom-controls button {
-  min-width: 28px;
-  padding: 2px 8px;
-}
-
-.zoom-level {
-  min-width: 2.6em;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-  color: var(--muted);
-  font-size: 0.85rem;
 }

@@ -73,7 +73,7 @@ test('bribes captors to free a captive, then brings them home', async ({ page },
     if (await page.getByRole('region', { name: 'Encounter' }).isVisible()) break;
     const log = page.getByRole('region', { name: 'Journey log' });
     if ((await log.innerText()).includes('home safe')) break;
-    await page.getByRole('button', { name: /^(Hike|Camp)$/ }).click();
+    await page.getByRole('button', { name: /^(Hike|Camp) for the quarter$/ }).click();
   }
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
     'A captured merchant is home safe',

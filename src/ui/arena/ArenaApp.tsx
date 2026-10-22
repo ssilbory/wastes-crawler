@@ -16,6 +16,7 @@ import { RivalPicker, rivalsFor, type Opponents } from './RivalPicker.tsx';
 import { PartySetup, type Placement } from './PartySetup.tsx';
 import { RosterPanel } from './RosterPanel.tsx';
 import { SpectatorScreen } from './SpectatorScreen.tsx';
+import { panelProps, Tabs } from '../tabs.tsx';
 
 type Mode = 'party' | 'spectator';
 const emptyRows = (): string[][] => [[], [], []];
@@ -64,10 +65,18 @@ export function ArenaApp() {
     const [row, column] = key.split('-').map(Number) as [number, number];
     return entry ? [{ entry, row, column }] : [];
   });
-  const ready =
+  /** What the fight still needs, or null when it can start. */
+  const missing =
     mode === 'party'
-      ? party.length > 0 && (opponents !== 'monsters' || hasMonsters(enemies))
-      : hasMonsters(left) && hasMonsters(right);
+      ? party.length === 0
+        ? 'Put a character in the formation to start.'
+        : opponents === 'monsters' && !hasMonsters(enemies)
+          ? 'Add a monster to the enemies to start.'
+          : null
+      : !hasMonsters(left) || !hasMonsters(right)
+        ? 'Add a monster to each side to start.'
+        : null;
+  const ready = missing === null;
   const start = () =>
     setFight(
       mode === 'party'
@@ -104,19 +113,16 @@ export function ArenaApp() {
     <div class="arena">
       <header>
         <h1>Arena</h1>
-        <div class="tabs" role="tablist">
-          {(['party', 'spectator'] as const).map((m) => (
-            <button
-              key={m}
-              type="button"
-              role="tab"
-              aria-selected={mode === m}
-              onClick={() => setMode(m)}
-            >
-              {m === 'party' ? 'Party fight' : 'Monster vs monster'}
-            </button>
-          ))}
-        </div>
+        <Tabs
+          id="arena-mode"
+          label="Arena mode"
+          tabs={[
+            { key: 'party', label: 'Party fight' },
+            { key: 'spectator', label: 'Monster vs monster' },
+          ]}
+          selected={mode}
+          onSelect={setMode}
+        />
       </header>
       {errors.length > 0 && (
         <ul class="errors" role="alert">
@@ -125,7 +131,7 @@ export function ArenaApp() {
           ))}
         </ul>
       )}
-      <main class="arena-setup">
+      <main class="arena-setup" {...panelProps('arena-mode', mode)}>
         {mode === 'party' ? (
           <>
             <RosterPanel
@@ -135,10 +141,13 @@ export function ArenaApp() {
               onPreset={onPreset}
             />
             <PartySetup entries={roster} placement={placement} onChange={setPlacement} />
-            <RivalPicker value={opponents} onChange={setOpponents} />
-            {opponents === 'monsters' && (
-              <MonsterPicker title="Enemies" rows={enemies} onChange={setEnemies} />
-            )}
+            {/* The opponents and the monsters among them share a column. */}
+            <div class="arena-column">
+              <RivalPicker value={opponents} onChange={setOpponents} />
+              {opponents === 'monsters' && (
+                <MonsterPicker title="Enemies" rows={enemies} onChange={setEnemies} />
+              )}
+            </div>
           </>
         ) : (
           <>
@@ -148,6 +157,7 @@ export function ArenaApp() {
         )}
       </main>
       <div class="start-row">
+        {missing && <span class="hint">{missing}</span>}
         <label>
           Seed (optional){' '}
           <input value={seed} onInput={(e) => setSeed((e.target as HTMLInputElement).value)} />

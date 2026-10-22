@@ -72,6 +72,7 @@ export function CraftsmanTab(props: { world: World; act: Act }) {
         >
           Sell loot dice to {c.name}
         </button>
+        {w.loot.length === 0 && <p class="hint">No loot dice to sell.</p>}
       </section>
       <section class="panel" aria-label="Magic gear for sale">
         <h2>Magic weapons and armor for sale</h2>

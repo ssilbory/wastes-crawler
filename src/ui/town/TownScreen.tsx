@@ -31,6 +31,8 @@ import { AlchemistTab } from './AlchemistTab.tsx';
 import { ArenaTab } from './ArenaTab.tsx';
 import type { BoutStart } from '../../game/world/arena.ts';
 import { PopOut } from '../world/PopOut.tsx';
+import { BarMore } from '../world/BarMore.tsx';
+import { panelProps, Tabs } from '../tabs.tsx';
 
 const TABS = {
   quests: 'Quests',
@@ -77,22 +79,26 @@ export function TownScreen(props: {
     <div class="world town">
       <div class="world-bar">
         <h1 class="date">{town.name}</h1>
-        <span>Purse: {crowns(w.purse)}</span>
-        <span>Loot: {lootText(w.loot)}</span>
-        {raidedText(w, town.id) && <span class="raided">{raidedText(w, town.id)}</span>}
-        {tradeText(w, data) && <span class="trade">{tradeText(w, data)}</span>}
+        <div class="bar-status">
+          <span>Purse: {crowns(w.purse)}</span>
+          <span>Loot: {lootText(w.loot)}</span>
+          {raidedText(w, town.id) && <span class="raided">{raidedText(w, town.id)}</span>}
+          {tradeText(w, data) && <span class="trade">{tradeText(w, data)}</span>}
+        </div>
         <span class="bar-actions">
           <PartyButtons onOpen={props.onOpen} />
-          <button type="button" class="secondary" onClick={props.onExport}>
-            Export save
-          </button>
+          <BarMore>
+            <button type="button" class="secondary" onClick={props.onExport}>
+              Export save
+            </button>
+          </BarMore>
           <button type="button" class="create" onClick={props.onLeave}>
             Back to the map
           </button>
         </span>
       </div>
       {w.encounter && (
-        <PopOut>
+        <PopOut label="Raid">
           <div class="raid-alarm" role="alert">
             <h2>Raid</h2>
             <p>{w.encounter.text}</p>
@@ -102,28 +108,23 @@ export function TownScreen(props: {
           </div>
         </PopOut>
       )}
-      <div class="tabs town-tabs" role="tablist" aria-label="Town">
-        {(Object.keys(TABS) as Tab[]).map((t) => (
-          <button
-            key={t}
-            type="button"
-            role="tab"
-            aria-selected={tab === t}
-            onClick={() => {
-              props.onTab(t);
-              setMessage(null);
-            }}
-          >
-            {TABS[t]}
-          </button>
-        ))}
-      </div>
+      <Tabs
+        id="town"
+        class="town-tabs"
+        label="Town"
+        tabs={(Object.keys(TABS) as Tab[]).map((t) => ({ key: t, label: TABS[t] }))}
+        selected={tab}
+        onSelect={(t) => {
+          props.onTab(t);
+          setMessage(null);
+        }}
+      />
       <p class="town-message" aria-live="polite">
         {message}
       </p>
       <div class="world-main">
         <div class="world-left">
-          <div class="town-main" role="tabpanel" aria-label={TABS[tab]}>
+          <div class="town-main" {...panelProps('town', tab)}>
             {tab === 'quests' && <QuestsTab world={w} act={act} />}
             {tab === 'services' && <ServicesTab world={w} act={act} />}
             {tab === 'shop' && <ShopTab world={w} act={act} />}

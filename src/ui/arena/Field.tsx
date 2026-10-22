@@ -120,10 +120,7 @@ function Side(props: SideProps) {
       {ordered.map(({ row, index }) => (
         <div class="field-row" key={index}>
           <span class="row-name">{props.view.rowNames[index]}</span>
-          <div
-            class="slots"
-            style={{ gridTemplateColumns: `repeat(${row.length}, minmax(0, 1fr))` }}
-          >
+          <div class="slots" style={{ '--columns': row.length }}>
             {row.map((slot, column) => {
               const one = (s: SlotView | null, key: string) => (
                 <Slot
@@ -201,7 +198,8 @@ export function BattleLog(props: {
           ))}
         </div>
       )}
-      <ol>
+      {/* New turns are read out as they land; the filters only hide lines. */}
+      <ol role="log" aria-live="polite">
         {logLines(props.lines, props.sides ?? null, filter)
           .map((l) => (
             <li key={l.index} class={l.index >= props.from ? 'new' : undefined}>

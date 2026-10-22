@@ -5,6 +5,7 @@ import type { TownResult } from '../../game/world/services.ts';
 import type { World } from '../../game/world/types.ts';
 import { inventoryView, loadText, type GearLine } from '../../render/inventory-view.ts';
 import { data } from '../builder/data.ts';
+import { ConfirmButton } from '../confirm.tsx';
 
 const PLACES: ItemLocation[] = ['worn', 'readied', 'stowed'];
 
@@ -79,7 +80,6 @@ function GearRow(props: {
 }) {
   const { line } = props;
   const [count, setCount] = useState(line.quantity);
-  const [dropping, setDropping] = useState(false);
   const n = Math.min(Math.max(1, count), line.quantity);
   return (
     <li role="group" aria-label={line.name}>
@@ -128,26 +128,13 @@ function GearRow(props: {
           ))}
         </select>
       )}
-      {dropping ? (
-        <>
-          <button
-            type="button"
-            onClick={() => {
-              setDropping(false);
-              props.onDrop(n);
-            }}
-          >
-            Drop for good
-          </button>
-          <button type="button" onClick={() => setDropping(false)}>
-            Keep
-          </button>
-        </>
-      ) : (
-        <button type="button" disabled={props.disabled} onClick={() => setDropping(true)}>
-          Drop
-        </button>
-      )}
+      <ConfirmButton
+        confirm="Drop for good"
+        disabled={props.disabled}
+        onConfirm={() => props.onDrop(n)}
+      >
+        Drop
+      </ConfirmButton>
     </li>
   );
 }

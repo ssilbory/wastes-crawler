@@ -54,7 +54,9 @@ test('raises a skeleton from the fallen and releases it', async ({ page }, testI
   const npcs = page.getByRole('region', { name: 'NPCs' });
   await expect(npcs).toContainText('Raised Skeleton undead, serving Fizzwick');
   await page.screenshot({ path: testInfo.outputPath('necromancy.png'), fullPage: true });
-  await npcs.getByRole('button', { name: 'Release' }).click();
+  // Parting with a follower asks first.
+  await npcs.getByRole('button', { name: 'Release Raised Skeleton', exact: true }).click();
+  await npcs.getByRole('button', { name: 'Release for good', exact: true }).click();
   await expect(npcs).not.toContainText('Raised Skeleton');
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
     'Raised Skeleton is released and falls still.',

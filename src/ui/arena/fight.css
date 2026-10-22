@@ -23,12 +23,6 @@
   margin-top: 12px;
 }
 
-@media (max-width: 760px) {
-  .fight-main {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
 .battlefield {
   display: grid;
   gap: 12px;
@@ -46,8 +40,10 @@
   margin: 4px 0;
 }
 
+/* One column per place in the row (--columns, set by Field.tsx); a phone refits them (mobile.css). */
 .slots {
   display: grid;
+  grid-template-columns: repeat(var(--columns, 1), minmax(0, 1fr));
   gap: 4px;
 }
 
@@ -96,7 +92,7 @@
 
 .slot.down .hp-bar span,
 .slot.gone .hp-bar span {
-  background: linear-gradient(180deg, #f0806f, var(--blood));
+  background: var(--hp-low);
 }
 
 .slot.gone {
@@ -162,15 +158,16 @@
   font-size: 0.75rem;
 }
 
-.log {
+/* The battle log, on the arena's and the overland's fight screens. */
+.fight .log {
   padding: 8px;
 }
 
-.log h3 {
+.fight .log h3 {
   margin: 0 0 4px;
 }
 
-.log ol {
+.fight .log ol {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -179,7 +176,7 @@
   font-size: 0.85rem;
 }
 
-.log li.new {
+.fight .log li.new {
   color: var(--accent);
 }
 
@@ -256,108 +253,12 @@
   gap: 1px;
 }
 
-/* A slot's flash and floating numbers after a batch of turns (src/render/fight-fx.ts). */
+/* A slot holds its flash and floating numbers after a batch of turns (fight-fx.css). */
 .slot {
   position: relative;
 }
 
-.fx {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: inherit;
-  animation: fx-flash 0.7s ease-out both;
-}
-
-.fx.struck {
-  --fx: var(--error);
-}
-
-.fx.healed {
-  --fx: var(--ok);
-}
-
-.fx.missed {
-  --fx: var(--muted);
-}
-
-@keyframes fx-flash {
-  from {
-    background: color-mix(in srgb, var(--fx) 38%, transparent);
-  }
-  to {
-    background: transparent;
-  }
-}
-
-.float {
-  position: absolute;
-  right: 6px;
-  top: 2px;
-  font-family: var(--font-term);
-  font-size: 1.35rem;
-  line-height: 1;
-  text-shadow:
-    0 1px 0 var(--bevel-lo),
-    0 0 4px var(--bg-deep);
-  animation: fx-rise 1.6s ease-out both;
-}
-
-.float.hit,
-.float.harm {
-  color: var(--error);
-}
-
-.float.shock {
-  color: var(--accent-hi);
-}
-
-.float.heal {
-  color: var(--ok);
-}
-
-.float.miss,
-.float.turned {
-  color: var(--ink);
-  font-size: 1.05rem;
-}
-
-@keyframes fx-rise {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  15% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  75% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-18px);
-  }
-}
-
-/* Without motion the numbers stay put, stacked, until the next batch. */
-@media (prefers-reduced-motion: reduce) {
-  .fx {
-    animation: none;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    padding: 2px 6px;
-  }
-
-  .float {
-    position: static;
-    animation: none;
-  }
-}
-
-/* Each combatant's silhouette (src/render/figure-view.ts), standing at the right of its slot
-   behind the text; the far side in the foe's colour. */
+/* Room at the right of a slot for its combatant's silhouette (fight-fx.css), behind the text. */
 .slot > :not(.figure, .fx) {
   position: relative;
 }
@@ -367,73 +268,12 @@
   padding-right: 58px;
 }
 
-.figure {
-  position: absolute;
-  right: 3px;
-  bottom: 3px;
-  height: min(62px, calc(100% - 6px));
-  width: auto;
-  aspect-ratio: 1;
-  pointer-events: none;
-  --figure: color-mix(in srgb, var(--ink) 58%, var(--panel-sunk));
-  --cut: var(--panel-sunk);
-}
-
-.side.far .figure {
-  --figure: color-mix(in srgb, #d9826a 66%, var(--panel-sunk));
-}
-
-.figure .fill {
-  fill: var(--figure);
-}
-
-.figure .line {
-  fill: none;
-  stroke: var(--figure);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.figure .cut {
-  fill: none;
-  stroke: var(--cut);
-  stroke-linecap: round;
-}
-
 .slot-name,
 .slot-stats,
 .slot .odds {
   text-shadow:
     0 0 3px var(--panel-sunk),
     0 0 2px var(--panel-sunk);
-}
-
-/* Reach (src/render/fight-reach.ts): the foes the acting combatant can strike right now. */
-.reach-tag {
-  align-self: flex-start;
-  padding: 0 5px;
-  border-radius: 3px;
-  font-size: 0.7rem;
-  line-height: 1.4;
-}
-
-.slot.reach-melee {
-  border-color: color-mix(in srgb, var(--accent) 70%, var(--bevel-lo));
-}
-
-.slot.reach-melee .reach-tag {
-  background: color-mix(in srgb, var(--accent) 28%, var(--panel-sunk));
-  color: var(--accent-hi);
-}
-
-.slot.reach-ranged {
-  border-style: dashed;
-  border-color: color-mix(in srgb, var(--gold) 60%, var(--bevel-lo));
-}
-
-.slot.reach-ranged .reach-tag {
-  background: color-mix(in srgb, var(--gold) 18%, var(--panel-sunk));
-  color: var(--gold);
 }
 
 /* The log's filters by whose turn a line came in (src/render/fight-log.ts). */
