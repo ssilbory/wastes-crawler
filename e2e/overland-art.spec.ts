@@ -129,6 +129,18 @@ test('zooms in on the party, scrolls, and fits the whole map again', async ({ pa
   await page.screenshot({ path: testInfo.outputPath('overland-zoomed.png') });
   // Clicking a hex still picks it as the destination.
   await page.locator('.hex .party').click({ force: true });
+  // Dragging the zoomed map scrolls it and picks no hex.
+  const box = await frame.boundingBox();
+  if (!box) throw new Error('no map frame');
+  const before = await frame.evaluate((el) => [el.scrollLeft, el.scrollTop]);
+  const destinations = await page.locator('.hex.destination').count();
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2 + 80, box.y + box.height / 2 + 40, { steps: 5 });
+  await page.mouse.up();
+  const after = await frame.evaluate((el) => [el.scrollLeft, el.scrollTop]);
+  expect(after).not.toEqual(before);
+  await expect(page.locator('.hex.destination')).toHaveCount(destinations);
   await zoom.getByRole('button', { name: 'Fit' }).click();
   await expect(frame).toHaveClass(/fit/);
   await expect(zoom.getByRole('button', { name: 'Fit' })).toBeDisabled();

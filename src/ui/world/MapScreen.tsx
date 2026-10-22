@@ -142,7 +142,7 @@ export function MapScreen(props: {
       </div>
       <div class="world-main">
         <div class="world-left">
-          <ZoomFrame class="map-wrap" focus={partyFocus} start={known} size={{ width, height }}>
+          <ZoomFrame class="map-wrap" pan focus={partyFocus} start={known} size={{ width, height }}>
             <HexMap
               cells={cells}
               width={width}

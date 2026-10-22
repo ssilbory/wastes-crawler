@@ -1,6 +1,7 @@
 import type { ComponentChildren } from 'preact';
 import { useLayoutEffect, useRef, useState } from 'preact/hooks';
 import {
+  dragScroll,
   fitZoom,
   refocus,
   stepZoom,
@@ -23,7 +24,8 @@ const boxOf = (el: HTMLElement): ScrollBox => ({
  * A map that zooms (src/render/map-zoom.ts): −, +, and Fit buttons in its corner, and Ctrl with
  * the wheel (or a trackpad pinch) about the pointer. Zoomed in, the map scrolls in its frame; at
  * Fit it is drawn as before, whole. Zooming in from Fit closes in on `focus`, such as the party.
- * With `start`, it opens as close in as shows all of that box, centred on it.
+ * With `start`, it opens as close in as shows all of that box, centred on it. With `pan`, a zoomed
+ * map drags with the mouse; a drag picks no hex. Touch already scrolls it natively.
  */
 export function ZoomFrame(props: {
   /** The class the scrolling box takes, as the map's frame had before. */
@@ -34,6 +36,8 @@ export function ZoomFrame(props: {
   start?: MapBounds | null;
   /** The map's own size, for its shape when zoomed; needed with `start`. */
   size?: { width: number; height: number };
+  /** Drag to scroll when zoomed; off where a drag means something else, as painting in the editor. */
+  pan?: boolean;
   children: ComponentChildren;
 }) {
   const [zoom, setZoom] = useState(1);
@@ -41,6 +45,10 @@ export function ZoomFrame(props: {
   const pending = useRef<{ before: ScrollBox; focus: { x: number; y: number }; centre: boolean }>(
     null,
   );
+  const drag = useRef<{ id: number; x: number; y: number; left: number; top: number }>(null);
+  const [panning, setPanning] = useState(false);
+  // Set when a drag ends, so the click the release makes picks no hex.
+  const dragged = useRef(false);
   const zoomTo = (next: number, at?: { x: number; y: number }, centre = at === undefined) => {
     const el = scroller.current;
     if (!el || next === zoom) return;
@@ -77,13 +85,54 @@ export function ZoomFrame(props: {
       y: (el.scrollTop + e.clientY - r.top) / el.scrollHeight,
     });
   };
+  const onPointerDown = (e: PointerEvent) => {
+    const el = scroller.current;
+    dragged.current = false;
+    if (!props.pan || zoom === 1 || !el || e.button !== 0 || e.pointerType === 'touch') return;
+    drag.current = {
+      id: e.pointerId,
+      x: e.clientX,
+      y: e.clientY,
+      left: el.scrollLeft,
+      top: el.scrollTop,
+    };
+  };
+  const onPointerMove = (e: PointerEvent) => {
+    const el = scroller.current;
+    const d = drag.current;
+    if (!el || !d || e.pointerId !== d.id) return;
+    const to = dragScroll(d, { x: e.clientX, y: e.clientY }, panning);
+    if (!to) return;
+    if (!panning) {
+      setPanning(true);
+      el.setPointerCapture(e.pointerId);
+    }
+    el.scrollLeft = to.left;
+    el.scrollTop = to.top;
+  };
+  const endDrag = () => {
+    dragged.current = panning;
+    drag.current = null;
+    setPanning(false);
+  };
+  const onClickCapture = (e: MouseEvent) => {
+    if (!dragged.current) return;
+    dragged.current = false;
+    e.stopPropagation();
+    e.preventDefault();
+  };
   const max = ZOOMS[ZOOMS.length - 1] as number;
   return (
     <div class="zoom-frame">
       <div
         ref={scroller}
-        class={`${props.class} zoom-scroll ${zoom === 1 ? 'fit' : 'zoomed'}`}
+        class={`${props.class} zoom-scroll ${zoom === 1 ? 'fit' : 'zoomed'}${props.pan ? ' pannable' : ''}${panning ? ' panning' : ''}`}
         onWheel={onWheel}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onClickCapture={onClickCapture}
       >
         <div class="zoom-content" style={zoom === 1 ? undefined : { width: `${zoom * 100}%` }}>
           {props.children}

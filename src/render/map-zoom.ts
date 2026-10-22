@@ -94,3 +94,22 @@ export function fitZoom(
     (bounds.x1 - bounds.x0) * z <= 1 && (bounds.y1 - bounds.y0) * z * tall <= frame.height;
   return [...ZOOMS].reverse().find(fits) ?? 1;
 }
+
+/** How far, in pixels, a press must move before it drags the map rather than clicks a hex. */
+export const PAN_SLOP = 5;
+
+/**
+ * Where to scroll while dragging a zoomed map (Sam's ask): the content follows the pointer, so
+ * the scroll moves against it. Null while the press is still within `PAN_SLOP` of where it began,
+ * so a slightly shaky click still picks its hex.
+ */
+export function dragScroll(
+  start: { x: number; y: number; left: number; top: number },
+  at: { x: number; y: number },
+  panning: boolean,
+): { left: number; top: number } | null {
+  const dx = at.x - start.x;
+  const dy = at.y - start.y;
+  if (!panning && Math.hypot(dx, dy) < PAN_SLOP) return null;
+  return { left: start.left - dx, top: start.top - dy };
+}

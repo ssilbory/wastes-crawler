@@ -29,7 +29,8 @@ export function HelpControls() {
         </li>
         <li>
           The map opens closed in on what the party knows. −, +, and Fit zoom it, Fit showing the
-          whole map; so do Ctrl with the mouse wheel and a trackpad pinch.
+          whole map; so do Ctrl with the mouse wheel and a trackpad pinch. Zoomed in, drag the map
+          to move about it.
         </li>
         <li>Visit, Enter, and Take buttons appear in the bar on a town, dungeon, or road.</li>
         <li>
