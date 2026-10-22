@@ -3,10 +3,12 @@
 // Elements, Armor of God when it beats the armor worn, God Wills It in a hard fight (Phase 14c),
 // Swift Healer (Phase 14d), and from Phase 15 the sight arts in a dark fight, Steps of Air for an
 // ally who can't reach a foe, Sanctified Ward when hurt, Swift Casting, and the arts in arts.ts;
-// and the Beastmaster's Savage Senses and Beast Ward (1.5.4).
+// the Beastmaster's Savage Senses and Beast Ward (1.5.4); and the Vowed's Inward Eye, Mob Justice,
+// and Revivifying Breath (1.5.17).
 import { enemiesOf, magicAction } from './ai.ts';
 import { acWith } from './damage.ts';
 import { turnArts } from './arts.ts';
+import { vowedTurn } from './vowed.ts';
 import { artReady, spendDay } from './reactions.ts';
 import { canUse, castMagic, combatMagic } from './spells.ts';
 import { canAct, flying, targets } from './targeting.ts';
@@ -21,6 +23,8 @@ const SIGHT = [
   'healers-eye',
   // Savage Senses (1.5.4).
   'savage-senses',
+  // The Vowed's Inward Eye (1.5.17).
+  'the-inward-eye',
 ];
 
 export function freeActions(b: Battle, actor: Combatant): void {
@@ -55,6 +59,7 @@ export function freeActions(b: Battle, actor: Combatant): void {
   });
   if (grounded) cast('steps-of-air', grounded.id);
   turnArts(b, actor);
+  vowedTurn(b, actor);
   swiftCasting(b, actor, c);
 }
 

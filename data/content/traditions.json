@@ -143,5 +143,32 @@
     "artLevels": {},
     "excludedArts": [],
     "artText": {}
+  },
+  {
+    "id": "vowed",
+    "name": "Vowed",
+    "bonusSkill": "exert",
+    "spellLists": [],
+    "effort": {
+      "skills": ["exert"],
+      "attributes": ["str", "dex", "con", "int", "wis", "cha"],
+      "base": 0,
+      "partialPenalty": false,
+      "floorOne": true
+    },
+    "armoredArts": false,
+    "artLevels": {},
+    "excludedArts": [
+      "faultless-awareness",
+      "leap-of-the-heavens",
+      "nimble-ascent",
+      "shattering-strike",
+      "style-weaponry",
+      "unobtrusive-step"
+    ],
+    "artText": {
+      "martial-style": "Your hit die can't be worse than 1d6 per level, and your Punch hit bonus no worse than an Expert's of your level. The Monk and Ascetic already have both, and nothing in the wastes shrugs off mundane fists, so this art changes nothing on your sheet.",
+      "hurling-throw": "After a hit, Commit Effort for the scene as an Instant action: the target, no larger than an ox, makes a Physical save or is thrown down and loses its next action getting up. Once a round on any given target."
+    }
   }
 ]

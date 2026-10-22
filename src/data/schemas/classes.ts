@@ -51,6 +51,14 @@ export const CastingProgressionSchema = z.strictObject({
         spellPoints: z.int().min(0).optional(),
         /** The hit bonus in a non-humanoid alternate form (the Skinshifter, 1.5.15). */
         formBonus: z.int().min(0).optional(),
+        /** Unarmed Might's punch hit bonus, damage, and Shock (the Vowed, 1.5.17). */
+        punch: z
+          .strictObject({
+            hit: z.int().min(0),
+            damage: DiceSchema,
+            shock: z.strictObject({ damage: z.int().min(1), maxAc: z.int().min(10) }),
+          })
+          .optional(),
         spellsPrepared: z.int().min(0),
         /** Named art ids gained at this level. */
         arts: z.array(IdSchema),

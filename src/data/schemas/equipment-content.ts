@@ -59,6 +59,14 @@ export const FocusEffectSchema = z.discriminatedUnion('kind', [
     /** Shock equal to the Punch skill from this level up. */
     shock: z.strictObject({ minPunch: z.int().min(0), maxAc: z.int().min(10) }),
   }),
+  /** The Vowed's Unarmed Might: the punch's damage and Shock from the class table (1.5.17). */
+  z.strictObject({
+    kind: z.literal('vowed-punch'),
+    level: Level,
+    hit: z.int().min(0),
+    damage: DiceSchema,
+    shock: z.strictObject({ damage: z.int().min(1), maxAc: z.int().min(10) }),
+  }),
   /** Base AC of `base` plus half the character level, rounded up. */
   z.strictObject({ kind: z.literal('innate-ac'), level: Level, base: z.int().min(10) }),
   z.strictObject({ kind: z.literal('natural-weapon'), level: Level, weapon: NaturalWeaponSchema }),

@@ -136,6 +136,16 @@
     "savage-senses": "Scene Effort: see in the dark, in a dark fight and underground; +2 Notice while Effort is free.",
     "shared-vitality": "Companion's hit dice rise to your level; scene Effort stabilizes it at 0 HP in a fight.",
     "swift-healing": "Day Effort, Main Action: your companion heals 1d6 per level, once a scene in a fight.",
-    "tongue-of-the-beasts": "While Effort is free, the party can parley with animals using Animal Ken."
+    "tongue-of-the-beasts": "While Effort is free, the party can parley with animals using Animal Ken.",
+    "martial-style": "Nothing more on your sheet: the Monk and Ascetic already fight unarmed as well as it promises.",
+    "unarmed-might": "Your punch deals the Vowed table's damage plus Punch, with its Shock; Unarmed Combatant doesn't apply.",
+    "unarmored-defense": "With no armor or shield, your base AC is 13 plus half your level.",
+    "brutal-counter": "Effort for the scene, after a foe's melee attack on you: a free attack back.",
+    "hurling-throw": "Effort for the scene, after a hit: the foe saves (Physical) or loses its next action.",
+    "the-inward-eye": "Effort committed: you see in darkness, and lift the -4 to hit in a dark fight.",
+    "masters-vigor": "You regain 2 lost hit points an hour: 12 each quarter of the day.",
+    "mob-justice": "Effort for the day, once a scene: immune to Shock while two or more foes are in melee with you.",
+    "purified-body": "Effort for the day: cure your own poison or disease, or shrug off Hungry and Sleepless for a day.",
+    "revivifying-breath": "Effort for the day, once a scene: heal 1d6 + level with no strain, even at 0 HP."
   }
 }

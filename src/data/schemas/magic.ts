@@ -19,6 +19,7 @@ export const ArtSchema = z.strictObject({
     'healer',
     'skinshifter',
     'beastmaster',
+    'vowed',
   ]),
   /** Arts every member of the tradition gains at first level. */
   automatic: z.boolean(),

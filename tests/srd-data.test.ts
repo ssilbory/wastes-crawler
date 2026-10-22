@@ -13,16 +13,16 @@ describe('data/srd', () => {
     expect(Object.fromEntries(Object.entries(srd).map(([k, v]) => [k, v.length]))).toEqual({
       skills: 21,
       foci: 35,
-      classes: 12,
-      progressions: 30,
-      'casting-progressions': 13,
+      classes: 13,
+      progressions: 33,
+      'casting-progressions': 14,
       'weapon-traits': 12,
       weapons: 29,
       armor: 15,
       gear: 29,
       'gear-bundles': 6,
       spells: 83,
-      arts: 92,
+      arts: 108,
       monsters: 35,
       'faction-assets': 81,
     });
@@ -159,6 +159,37 @@ describe('data/srd', () => {
     expect(arts).toHaveLength(12);
     expect(arts.find((a) => a.id === 'beast-ward')?.text).toContain('performs some hostile act');
     expect(arts.find((a) => a.id === 'natural-weaponry')?.text).toContain('a +2 bonus at level 6');
+  });
+
+  it('reads the Vowed’s tables, punch column, and arts, with the mirror’s defects mended', () => {
+    const table = srd['casting-progressions'].find(
+      (p) => p.id === 'vowed-arts-and-unarmed-abilities',
+    );
+    expect(table?.levels.map((l) => l.anyArts)).toEqual([1, 1, 0, 1, 1, 1, 0, 1, 0, 1]);
+    expect(table?.levels[0]).toMatchObject({
+      arts: ['unarmed-might', 'martial-style', 'unarmored-defense'],
+      punch: {
+        hit: 0,
+        damage: { count: 1, sides: 6, modifier: 0 },
+        shock: { damage: 1, maxAc: 15 },
+      },
+    });
+    expect(table?.levels[9]?.punch).toEqual({
+      hit: 5,
+      damage: { count: 1, sides: 10, modifier: 3 },
+      shock: { damage: 4, maxAc: 15 },
+    });
+    expect(srd.progressions.find((p) => p.id === 'partial-warrior-vowed')?.levels[9]).toMatchObject(
+      { hitDice: { count: 10, sides: 6, modifier: 20 }, attackBonus: 7 },
+    );
+    const arts = srd.arts.filter((a) => a.tradition === 'vowed');
+    expect(arts.filter((a) => a.automatic).map((a) => a.id)).toEqual([
+      'martial-style',
+      'unarmed-might',
+      'unarmored-defense',
+    ]);
+    expect(arts).toHaveLength(16);
+    expect(arts.find((a) => a.id === 'mob-justice')?.text).toContain('to become impervious');
   });
 
   it('records every copy of a shared progression table', () => {

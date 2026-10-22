@@ -21,7 +21,8 @@ const CLASS_DIR = '1.0 Character Creation/1.5.0 Class List';
 
 /**
  * The base classes, the Mage umbrella, and six Mage traditions (the Necromancer in Phase 14b, the
- * Blood Priest in 14c, the Healer in 14d, the Invoker, Skinshifter, and Beastmaster after).
+ * Blood Priest in 14c, the Healer in 14d, the Invoker, Skinshifter, and Beastmaster after), and the
+ * Vowed, a partial class of arts alone.
  */
 export const CLASS_FILES = [
   '1.5.1 The Adventurer.md',
@@ -36,7 +37,19 @@ export const CLASS_FILES = [
   '1.5.11 The Invoker.md',
   '1.5.15 The Skinshifter.md',
   '1.5.4 The Beastmaster.md',
+  '1.5.17 The Vowed.md',
 ].map((f) => `${CLASS_DIR}/${f}`);
+
+/** Unarmed Might's columns: hit bonus, damage dice, and "damage/AC" Shock (1.5.17). */
+function punchOf(row: string[], at: number, where: string) {
+  const shock = /^(\d+)\/(\d+)$/.exec(row[at + 2] ?? '');
+  if (!shock) throw new Error(`${where}: bad punch Shock "${row[at + 2]}"`);
+  return {
+    hit: parseSigned(row[at] ?? ''),
+    damage: parseDice(row[at + 1] ?? ''),
+    shock: { damage: Number(shock[1]), maxAc: Number(shock[2]) },
+  };
+}
 
 export interface ClassExtract {
   classes: ClassRecord[];
@@ -195,11 +208,12 @@ function classFromDoc(doc: MdDoc, out: ClassExtract, seen: Map<string, string>):
     } else if (
       table &&
       /Arts( Gained)?$/.test(table.header.at(-1) ?? '') &&
-      table.header.every((c) => /^(Level|Form Bonus)$|Arts( Gained)?$/.test(c))
+      table.header.every((c) => /^(Level|Form Bonus|Punch .+)$|Arts( Gained)?$/.test(c))
     ) {
       // A tradition of arts alone (the Blood Priest, the Healer, the Skinshifter with its form
-      // bonus): no spells at any level.
+      // bonus, the Vowed with its unarmed column): no spells at any level.
       const bonus = table.header.indexOf('Form Bonus');
+      const punch = table.header.indexOf('Punch Hit Bonus');
       addOnce(out.casting, seen, {
         id: slug(h.text),
         name: h.text,
@@ -210,6 +224,7 @@ function classFromDoc(doc: MdDoc, out: ClassExtract, seen: Map<string, string>):
           spellsCast: 0,
           spellsPrepared: 0,
           ...(bonus >= 0 ? { formBonus: parseSigned(r[bonus] ?? '') } : {}),
+          ...(punch >= 0 ? { punch: punchOf(r, punch, where) } : {}),
           ...parseArtsGained(r.at(-1) ?? ''),
         })),
       });

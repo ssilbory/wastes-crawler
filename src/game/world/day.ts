@@ -23,6 +23,7 @@ import { firstPhysician, nightForNpcs } from './npcs.ts';
 import { regionMap } from './region.ts';
 import type { Member, World } from './types.ts';
 import { wipe } from './town.ts';
+import { purifiedNeeds, purifyBodies } from './vowed-arts.ts';
 
 /**
  * `waystation`: a coach's night stop, with meals and shelter like a town (Phase 6d).
@@ -46,9 +47,14 @@ export function endOfDay(w: World, data: GameData, waystation = false): boolean 
   const physician = firstPhysician(w, data);
   const outdoors = !sheltered && !w.dungeon;
   const harsh = outdoors && harshHere(w, data);
-  const hungry = (m: Member) => !fed && !immuneTo(data, m, 'hungry');
+  const hungry0 = (m: Member) => !fed && !immuneTo(data, m, 'hungry');
   // Sam's call: a physician's draughts and care keep off everything but hunger.
-  const sleepless = (m: Member) => !m.slept && !physician && !immuneTo(data, m, 'sleepless');
+  const sleepless0 = (m: Member) => !m.slept && !physician && !immuneTo(data, m, 'sleepless');
+  // The Vowed's Purified Body keeps off both, and poison and disease, for Effort (1.5.17).
+  purifyBodies(w, data);
+  const spared = purifiedNeeds(w, data, (m) => !m.reviving && (hungry0(m) || sleepless0(m)));
+  const hungry = (m: Member) => hungry0(m) && !spared.has(m);
+  const sleepless = (m: Member) => sleepless0(m) && !spared.has(m);
   // A fire keeps off the cold, and lets the fed and slept rest (Sam's call), so firewood burns when
   // it would do either for someone.
   const wanted = alive(w).some(
