@@ -222,8 +222,8 @@ function EmptyRoster(props: { onNew: () => void }) {
   const slot = activeSlot();
   const saved = loadWorldText(slot) !== null;
   return (
-    <section class="panel empty-roster" aria-label="No characters yet">
-      <h2>No characters yet</h2>
+    <section class="panel empty-roster" aria-label="The roster is empty">
+      <h2>The roster is empty</h2>
       <div class="empty-roster-actions">
         <button type="button" class="create" onClick={props.onNew}>
           Make a character

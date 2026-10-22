@@ -6,19 +6,17 @@ import { questStatus } from '../../render/quest-view.ts';
 import { data } from '../builder/data.ts';
 import { ConfirmButton } from '../confirm.tsx';
 
-/** Quests under way, with their current steps; with none, where to find one. */
+/** Quests under way, with their current steps. */
 export function QuestLog(props: { world: World; onChange: () => void }) {
   const w = props.world;
   const [message, setMessage] = useState<string | null>(null);
   const open = Object.entries(w.quests).filter(
     ([, st]) => st.status === 'active' || st.status === 'ready',
   );
+  if (open.length === 0) return null;
   return (
     <section class="panel" aria-label="Quests">
       <h3>Quests</h3>
-      {open.length === 0 && (
-        <p class="hint">No quests under way. A town's Quests tab has work on offer.</p>
-      )}
       <ul class="quest-list">
         {open.map(([id]) => (
           <li key={id}>

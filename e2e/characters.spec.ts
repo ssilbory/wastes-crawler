@@ -110,7 +110,7 @@ test('opens a sheet over the list, scrolls to its end, and closes it', async ({
 
 test('offers the ways to get characters when the roster is empty', async ({ page }) => {
   await page.goto('/#/builder');
-  const empty = page.getByRole('region', { name: 'No characters yet' });
+  const empty = page.getByRole('region', { name: 'The roster is empty' });
   await expect(empty.getByRole('button', { name: 'Make a character' })).toBeVisible();
   // With no saved world there's nothing to replace, so the starter party sets out at once.
   await empty.getByRole('button', { name: 'Set out with the starter party' }).click();
