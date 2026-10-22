@@ -550,6 +550,10 @@ describe('components', () => {
       'craftingRules: no component is metal',
       'craftingRules: no component is essence',
       'craftingRules: no component is gem',
+      ...data.content.forging.abilities.flatMap((a) => [
+        `forging/${a.id}: no component is essence`,
+        `forging/${a.id}: no component is gem`,
+      ]),
     ]);
   });
 

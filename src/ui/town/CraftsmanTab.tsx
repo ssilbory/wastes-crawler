@@ -17,6 +17,7 @@ import type { World } from '../../game/world/types.ts';
 import { crowns } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import type { Act } from './TownScreen.tsx';
+import { abilitiesFor, forgeTerms, forgedName } from '../../game/world/forging.ts';
 
 const rules = data.content.craftingRules;
 const itemName = (id: string) => findItem(data, id)?.name ?? id;
@@ -30,6 +31,7 @@ export function CraftsmanTab(props: { world: World; act: Act }) {
   const [weapon, setWeapon] = useState(c?.weapons[0] ?? '');
   const sized = (id: string) => (findItem(data, id)?.kind === 'armor' ? ' (sized to fit)' : '');
   const [bonus, setBonus] = useState(1);
+  const [ability, setAbility] = useState('');
   if (!c) return <p class="hint">No craftsman works here.</p>;
   const st = craftsmanState(w, data, c);
   const m = living.find((x) => x.id === who) ?? living[0];
@@ -43,7 +45,9 @@ export function CraftsmanTab(props: { world: World; act: Act }) {
         </button>
       </section>
     );
-  const tier = rules.magic.tiers.find((t) => t.bonus === bonus) ?? rules.magic.tiers[0];
+  // An ability that doesn't fit the item chosen now falls back to none.
+  const fit = abilitiesFor(data, weapon).some((a) => a.id === ability) ? ability : '';
+  const terms = forgeTerms(data, bonus, fit || undefined);
   const jobs = w.commissions.flatMap((j, i) => (j.craftsman === c.id ? [{ j, i }] : []));
   return (
     <>
@@ -109,14 +113,28 @@ export function CraftsmanTab(props: { world: World; act: Act }) {
             ))}
           </select>
         </label>{' '}
-        <button type="button" onClick={() => props.act(() => commission(w, data, weapon, bonus))}>
-          Commission ({crowns(tier?.commission ?? 0)}, {tier?.days} days,{' '}
-          {tier?.components.map((x) => `${x.count} ${x.type}`).join(', ')})
+        <label>
+          Ability{' '}
+          <select value={fit} onChange={(e) => setAbility((e.target as HTMLSelectElement).value)}>
+            <option value="">none</option>
+            {abilitiesFor(data, weapon).map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.name}
+              </option>
+            ))}
+          </select>
+        </label>{' '}
+        <button
+          type="button"
+          onClick={() => props.act(() => commission(w, data, weapon, bonus, fit || undefined))}
+        >
+          Commission ({crowns(terms.crowns)}, {terms.days} days,{' '}
+          {terms.components.map((x) => `${x.count} ${x.type}`).join(', ')})
         </button>
         <ul>
           {jobs.map(({ j, i }) => (
             <li key={`${j.weapon}-${i}`}>
-              {itemName(j.weapon)} +{j.bonus}:{' '}
+              {forgedName(data, j.weapon, j.ability)} +{j.bonus}:{' '}
               {w.day >= j.readyDay ? (
                 <button type="button" onClick={() => props.act(() => collect(w, data, i, m.id))}>
                   Collect for {m.character.name}

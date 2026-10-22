@@ -9,6 +9,7 @@ import { focusInfo } from './foci.ts';
 import { formProblem } from './forms.ts';
 import { findItem } from './items.ts';
 import { spellLineProblem } from './spell-items.ts';
+import { abilityLineProblem } from './abilities.ts';
 import { findLineage, findPeople } from './people.ts';
 import { retire } from './retired.ts';
 import { gameSpells } from '../../data/spells.ts';
@@ -109,7 +110,9 @@ export function importCharacter(
   for (const item of c.inventory) {
     const found = findItem(data, item.id);
     if (!found) errors.push(`inventory: unknown ${item.id}`);
-    const problem = found ? spellLineProblem(data, found, item) : null;
+    const problem = found
+      ? (spellLineProblem(data, found, item) ?? abilityLineProblem(data, found, item))
+      : null;
     if (problem) errors.push(`inventory: ${problem}`);
   }
   for (const id of c.arts) {

@@ -1,0 +1,202 @@
+{
+  "skill": "magic",
+  "attributes": ["int"],
+  "magicLevel": 1,
+  "craftLevel": 1,
+  "difficulties": [10, 12, 14],
+  "abilityDifficulty": 2,
+  "assistBonus": 1,
+  "flawTime": 0.5,
+  "dropAbilityChance": 25,
+  "abilities": [
+    {
+      "id": "flaming",
+      "name": "Flaming",
+      "targets": ["weapon"],
+      "text": "Wreathed in a flame that never burns its wielder: +1d4 damage on every hit.",
+      "cost": 400,
+      "days": 30,
+      "components": [
+        {
+          "type": "essence",
+          "count": 1
+        },
+        {
+          "type": "gem",
+          "count": 1
+        }
+      ],
+      "effect": {
+        "kind": "flaming",
+        "dice": {
+          "count": 1,
+          "sides": 4,
+          "modifier": 0
+        }
+      }
+    },
+    {
+      "id": "bane-of-the-dead",
+      "name": "Bane of the Dead",
+      "targets": ["weapon"],
+      "text": "Etched with grave-wards: +1d6 damage on a hit against the undead.",
+      "cost": 300,
+      "days": 30,
+      "components": [
+        {
+          "type": "essence",
+          "count": 1
+        },
+        {
+          "type": "gem",
+          "count": 1
+        }
+      ],
+      "effect": {
+        "kind": "bane",
+        "against": "undead",
+        "dice": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 0
+        }
+      }
+    },
+    {
+      "id": "bane-of-beasts",
+      "name": "Bane of Beasts",
+      "targets": ["weapon"],
+      "text": "Blooded on a hunter's oath: +1d6 damage on a hit against beasts.",
+      "cost": 300,
+      "days": 30,
+      "components": [
+        {
+          "type": "essence",
+          "count": 1
+        },
+        {
+          "type": "gem",
+          "count": 1
+        }
+      ],
+      "effect": {
+        "kind": "bane",
+        "against": "beast",
+        "dice": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 0
+        }
+      }
+    },
+    {
+      "id": "bane-of-the-unliving",
+      "name": "Bane of the Unliving",
+      "targets": ["weapon"],
+      "text": "Keyed to break bindings: +1d6 damage on a hit against constructs and the undead.",
+      "cost": 300,
+      "days": 30,
+      "components": [
+        {
+          "type": "essence",
+          "count": 1
+        },
+        {
+          "type": "gem",
+          "count": 1
+        }
+      ],
+      "effect": {
+        "kind": "bane",
+        "against": "unliving",
+        "dice": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 0
+        }
+      }
+    },
+    {
+      "id": "vampiric",
+      "name": "Vampiric",
+      "targets": ["weapon"],
+      "text": "It drinks what it spills: 1 hit point back to the wielder for each foe it drops.",
+      "cost": 300,
+      "days": 30,
+      "components": [
+        {
+          "type": "essence",
+          "count": 1
+        },
+        {
+          "type": "gem",
+          "count": 1
+        }
+      ],
+      "effect": {
+        "kind": "vampiric",
+        "hp": 1
+      }
+    },
+    {
+      "id": "warding",
+      "name": "Warding",
+      "targets": ["armor"],
+      "text": "Lined with counter-sigils: +2 to its wearer's saves against spells.",
+      "cost": 400,
+      "days": 30,
+      "components": [
+        {
+          "type": "essence",
+          "count": 1
+        },
+        {
+          "type": "gem",
+          "count": 1
+        }
+      ],
+      "effect": {
+        "kind": "warding",
+        "bonus": 2
+      }
+    }
+  ],
+  "flaws": [
+    {
+      "id": "unbalanced",
+      "name": "unbalanced",
+      "targets": ["weapon"],
+      "text": "It pulls in the hand: -1 to hit.",
+      "weapon": {
+        "hit": -1
+      }
+    },
+    {
+      "id": "dull",
+      "name": "dull",
+      "targets": ["weapon"],
+      "text": "The magic sits badly in the edge: -1 damage.",
+      "weapon": {
+        "damage": -1
+      }
+    },
+    {
+      "id": "heavy",
+      "name": "heavy",
+      "targets": ["armor"],
+      "text": "The binding weighs on it: 1 more encumbrance.",
+      "armor": {
+        "encumbrance": 1
+      }
+    },
+    {
+      "id": "brittle",
+      "name": "brittle",
+      "targets": ["armor"],
+      "text": "It cracks where the magic took hold: -1 AC.",
+      "armor": {
+        "ac": -1
+      }
+    }
+  ]
+}

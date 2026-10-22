@@ -154,9 +154,22 @@ export function buyComponent(w: World, data: GameData, id: string): TownResult {
 }
 
 /** Puts a magic weapon or suit of armor in a member's pack, armor sized for their people. */
-export function giveMagic(data: GameData, m: Member, id: string, bonus: number): void {
+export function giveMagic(
+  data: GameData,
+  m: Member,
+  id: string,
+  bonus: number,
+  ability?: string,
+): void {
   const people = findPeople(data, m.character.people) as People;
-  const entry = sizedLine(data, { id, quantity: 1, location: 'stowed', bonus }, fitSize(people));
+  const line = {
+    id,
+    quantity: 1,
+    location: 'stowed' as const,
+    bonus,
+    ...(ability ? { ability } : {}),
+  };
+  const entry = sizedLine(data, line, fitSize(people));
   m.character = { ...m.character, inventory: [...m.character.inventory, entry] };
 }
 

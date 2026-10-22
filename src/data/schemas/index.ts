@@ -39,6 +39,7 @@ export * from './crafting-content.ts';
 export * from './alchemy-content.ts';
 export * from './scroll-content.ts';
 export * from './device-content.ts';
+export * from './forging-content.ts';
 export * from './settings.ts';
 export * from './setting-content.ts';
 export * from './ruin-content.ts';
