@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import type { World } from '../../game/world/types.ts';
+import { panelProps, Tabs } from '../tabs.tsx';
 import { CharacterSheet } from '../builder/Sheet.tsx';
 
 /** Each member's full sheet, from the map or a dungeon (Phase 17); their gear is a click away. */
@@ -15,20 +16,16 @@ export function CharacterScreen(props: {
   return (
     <div class="world characters">
       <div class="world-bar">
-        <div class="tabs" role="tablist" aria-label="Party members">
-          {w.members.map((x) => (
-            <button
-              key={x.id}
-              type="button"
-              role="tab"
-              aria-selected={x === m}
-              onClick={() => setWho(x.id)}
-            >
-              {x.character.name}
-              {x.dead ? ' (dead)' : ''}
-            </button>
-          ))}
-        </div>
+        <Tabs
+          id="character-members"
+          label="Party members"
+          tabs={w.members.map((x) => ({
+            key: x.id,
+            label: `${x.character.name}${x.dead ? ' (dead)' : ''}`,
+          }))}
+          selected={m?.id ?? ''}
+          onSelect={setWho}
+        />
         <span class="bar-actions">
           {m && (
             <button type="button" onClick={() => props.onInventory(m.id)}>
@@ -41,7 +38,7 @@ export function CharacterScreen(props: {
         </span>
       </div>
       {m && (
-        <div class="sub-screen">
+        <div class="sub-screen" {...panelProps('character-members', m.id)}>
           <CharacterSheet character={m.character} />
         </div>
       )}

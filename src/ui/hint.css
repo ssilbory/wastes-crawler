@@ -1,0 +1,58 @@
+/* Descriptions on touch screens (src/ui/hint.tsx): an ⓘ beside each name with a description, and a
+   sheet at the foot of the screen that shows it. A mouse still gets the hover text instead. */
+.hint-button {
+  display: none;
+}
+
+.hint-button::before {
+  content: 'ⓘ';
+}
+
+/* A checkbox with its ⓘ beside it: the button stays out of the label, so it never ticks the box. */
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+@media (hover: none) {
+  .hint-button {
+    display: inline-block;
+    min-width: 44px;
+    min-height: 44px;
+    margin-left: 4px;
+    padding: 0 6px;
+    line-height: 1;
+    color: var(--gold);
+    vertical-align: middle;
+  }
+}
+
+.hint-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgb(0 0 0 / 45%);
+}
+
+.hint-sheet {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  max-width: 40rem;
+  max-height: 60dvh;
+  margin: 0 auto;
+  overflow-y: auto;
+  box-shadow:
+    var(--bevel-out),
+    0 -6px 24px rgb(0 0 0 / 60%);
+}
+
+.hint-sheet h3 {
+  margin-top: 0;
+}
+
+.hint-sheet p {
+  white-space: pre-line;
+}

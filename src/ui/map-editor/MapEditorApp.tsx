@@ -19,6 +19,8 @@ import { HexMap, HEX_SIZE } from '../world/HexMap.tsx';
 import { ZoomFrame } from '../world/ZoomFrame.tsx';
 import '../editor/editor.css';
 import '../world/hex-map.css';
+import '../world/hex-terrain.css';
+import '../world/zoom-frame.css';
 import '../world/world.css';
 import { ConfirmButton } from '../confirm.tsx';
 import { GeneratePanel } from './GeneratePanel.tsx';
@@ -147,7 +149,6 @@ export function MapEditorApp() {
           <ConfirmButton
             confirm={shipped ? 'Discard it for good' : 'Delete it for good'}
             disabled={stranded.length > 0}
-            title={stranded.length > 0 ? 'Move its saved dungeons to another map first' : undefined}
             onConfirm={() => {
               const next = deleteRegion(lib, region.id);
               store(
@@ -162,6 +163,9 @@ export function MapEditorApp() {
           >
             {shipped ? 'Discard saved copy' : 'Delete map'}
           </ConfirmButton>
+        )}
+        {isSaved && stranded.length > 0 && (
+          <span class="hint">Move its saved dungeons to another map first.</span>
         )}{' '}
         <button
           type="button"

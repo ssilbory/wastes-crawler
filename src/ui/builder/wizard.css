@@ -133,9 +133,3 @@
 .builder :is(.done, .sheet-popup) .sheet.final > :is(table, dl, ul, p) {
   break-inside: avoid;
 }
-
-@media (max-width: 760px) {
-  .wizard-body {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}

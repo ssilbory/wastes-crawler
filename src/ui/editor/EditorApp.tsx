@@ -14,6 +14,8 @@ import { playableContent } from '../../game/editor/playable.ts';
 import { data, shippedContent } from '../builder/data.ts';
 import { loadLibrary, saveLibrary } from '../editor-store.ts';
 import '../world/world.css';
+import '../world/dungeon-view.css';
+import '../world/dungeon-props.css';
 import './editor.css';
 import { LevelEditor } from './LevelEditor.tsx';
 

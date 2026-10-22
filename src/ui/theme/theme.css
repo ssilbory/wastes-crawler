@@ -20,6 +20,21 @@
   --blood: #8e2a20;
   --focus: #ffd27a;
 
+  /* Controls (controls.css): the plain button's face and its hover, the second press of
+     something that can't be undone, and the edge of a borderless button, at 3:1 against every
+     panel so it reads as a control. */
+  --btn-top: #3a3026;
+  --btn-bot: #2a231c;
+  --btn-hover-top: #4a3d2f;
+  --btn-hover-bot: #352b22;
+  --btn-hover-ink: #fff6e2;
+  --danger-hi: #b23a2c;
+  --danger-hover-top: #c84a3a;
+  --danger-hover-bot: #a03224;
+  --control-line: #806a4c;
+  /* The red end of an HP bar: a quarter or less, and down. */
+  --hp-low: linear-gradient(180deg, #f0806f, var(--blood));
+
   --font-body: 'IBM Plex Sans', system-ui, sans-serif;
   --font-term: 'VT323', ui-monospace, monospace;
   --font-title: 'Jacquard 12', 'VT323', serif;
@@ -121,6 +136,16 @@ hr {
   outline-offset: 2px;
 }
 
+/* Read out by screen readers, never drawn. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* Panels: a raised plate with a dark rim and a lit top-left edge. */
 .panel,
 .step,
@@ -176,8 +201,7 @@ hr {
 
 .hp-bar.low span {
   background:
-    repeating-linear-gradient(90deg, transparent 0 7px, rgb(0 0 0 / 45%) 7px 8px),
-    linear-gradient(180deg, #f0806f, var(--blood));
+    repeating-linear-gradient(90deg, transparent 0 7px, rgb(0 0 0 / 45%) 7px 8px), var(--hp-low);
 }
 
 /* Scrollbars, where a pane must scroll. */

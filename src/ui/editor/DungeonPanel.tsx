@@ -144,18 +144,18 @@ export function DungeonPanel(props: {
             <button type="button" onClick={() => onChange(moveLevel(d, level.id, 1))}>
               Move down
             </button>
-            <button
-              type="button"
+            <ConfirmButton
+              confirm="Remove for good"
               disabled={!canRemoveLevel(d, level.id)}
-              title={canRemoveLevel(d, level.id) ? undefined : 'The entry level stays'}
-              onClick={() => {
+              onConfirm={() => {
                 const next = removeLevel(d, level.id);
                 onChange(next);
                 props.onLevel(next.entry.level);
               }}
             >
               Remove level
-            </button>
+            </ConfirmButton>
+            {!canRemoveLevel(d, level.id) && <span class="hint">The entry level stays.</span>}
           </div>
         </fieldset>
       )}

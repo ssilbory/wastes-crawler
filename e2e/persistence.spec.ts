@@ -43,7 +43,7 @@ test('keeps worlds in three slots', async ({ page }) => {
   await page.getByRole('button', { name: 'Start a new world', exact: true }).click();
   await page.getByRole('button', { name: 'Begin the journey' }).click();
   await page.locator('[data-hex="4,8"]').click();
-  await page.getByRole('button', { name: /^(Hike|Camp)$/ }).click();
+  await page.getByRole('button', { name: /^(Hike|Camp) for the quarter$/ }).click();
   await page.reload();
   await expect(slots).toContainText('Slot 1: Morning, 1 Seedtime');
   await expect(slots).toContainText('Slot 2: Day, 1 Seedtime');
@@ -64,7 +64,7 @@ test('exports a full save and loads it back, roster and all', async ({ page }, t
   await page.reload();
   await expect(page.getByRole('group', { name: 'Save slot' })).toContainText('Slot 1: Empty');
   await page.getByLabel('Load a save file').setInputFiles(file);
-  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
   await page.goto('/#/arena');
   await expect(page.getByRole('region', { name: 'Roster' })).toContainText('Snag');
 });

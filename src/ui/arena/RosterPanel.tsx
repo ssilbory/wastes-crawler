@@ -2,6 +2,7 @@ import { DEFAULT_PRESETS, type DefaultPreset } from '../../data/schemas/index.ts
 import type { RosterEntry } from '../../game/character/roster.ts';
 import { PRESET_NAMES } from '../../game/combat/defaults.ts';
 import { className } from '../builder/data.ts';
+import { ConfirmButton } from '../confirm.tsx';
 
 const level = (e: RosterEntry) =>
   Object.values(e.character.classes.levels).reduce((sum, n) => sum + n, 0);
@@ -58,14 +59,15 @@ export function RosterPanel(props: {
                   ))}
                 </select>
               </label>
-              <button
-                type="button"
+              {/* The arena's roster is the saved one: removing deletes the character. */}
+              <ConfirmButton
                 class="secondary"
-                aria-label={`Remove ${e.character.name}`}
-                onClick={() => props.onRemove(e.id)}
+                label={`Remove ${e.character.name}`}
+                confirm={`Delete ${e.character.name} for good`}
+                onConfirm={() => props.onRemove(e.id)}
               >
                 Remove
-              </button>
+              </ConfirmButton>
             </li>
           ))}
         </ul>

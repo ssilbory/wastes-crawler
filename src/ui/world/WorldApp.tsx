@@ -8,11 +8,9 @@ import { passQuarter, settleByFighting, settleByLeaving } from '../../game/world
 import { addStarterParty } from '../../game/character/roster.ts';
 import { mergeRoster, parseSave, savedMap, serializeBundle } from '../../game/world/bundle.ts';
 import { serializeWorld } from '../../game/world/save.ts';
-import { setDefaultAction } from '../../game/world/members.ts';
 import { slotSummary } from '../../render/save-view.ts';
 import type { World } from '../../game/world/types.ts';
 import { createRng } from '../../rules/rng.ts';
-import { FightScreen } from '../arena/FightScreen.tsx';
 import { data, freshRng } from '../builder/data.ts';
 import { loadPlayable } from '../playable-store.ts';
 import { isCampaign } from '../../game/world/region.ts';
@@ -41,7 +39,7 @@ import { crossOver } from '../../game/world/crossing.ts';
 import { Toasts, useAlerts } from './Toasts.tsx';
 import { trapFallen } from '../../game/dungeon/trap-falls.ts';
 import { tending, type Fight } from './tending.ts';
-import { knownFoes } from '../../render/bestiary-view.ts';
+import { WorldFight } from './WorldFight.tsx';
 
 export function WorldApp() {
   // Before any screen reads the content, so saved dungeons are in it.
@@ -181,46 +179,20 @@ function WorldScreens(props: { track: (w: World, fresh?: boolean) => void }) {
     );
   if (screen === 'intro')
     return <IntroScreen intro={data.content.campaign.intro} onBegin={() => setScreen('map')} />;
-  if (fight) {
-    const done = () => {
-      setFight(null);
-      setScreen(fight.back);
-      changed();
-    };
+  if (fight)
     return (
-      <div class="arena">
-        <FightScreen
-          createBattle={() => fight.battle.battle}
-          presets={fight.battle.memberIds.map(
-            (id) => w.members.find((m) => m.id === id)?.defaultAction ?? 'auto',
-          )}
-          onPreset={(i, preset) => {
-            const id = fight.battle.memberIds[i];
-            if (!id) return;
-            setDefaultAction(w, id, preset);
-            changed();
-          }}
-          canLeave={false}
-          xp={fight.xp}
-          aftermath={fight.aftermath ?? false}
-          known={knownFoes(w, data, fight.battle.enemies)}
-          doneLabel={
-            fight.back === 'town'
-              ? 'Back to town'
-              : w.dungeon
-                ? 'Back to the dungeon'
-                : 'Back to the map'
-          }
-          onDone={(result) => {
-            if (!result) return done();
-            if (settled.current.has(fight)) return;
-            settled.current.add(fight);
-            void Promise.resolve(fight.settle(result)).then(done);
-          }}
-        />
-      </div>
+      <WorldFight
+        world={w}
+        fight={fight}
+        settled={settled.current}
+        onChange={changed}
+        onDone={() => {
+          setFight(null);
+          setScreen(fight.back);
+          changed();
+        }}
+      />
     );
-  }
   if (screen === 'character' || screen === 'formation' || screen === 'inventory')
     return (
       <PartyScreens
@@ -293,7 +265,6 @@ function WorldScreens(props: { track: (w: World, fresh?: boolean) => void }) {
       onLeave={leave}
       onExport={exportSave}
       onAbandon={() => {
-        if (!confirm('Abandon this world? The save is deleted.')) return;
         saveWorldText(null);
         setSaves((n) => n + 1);
         world.current = null;

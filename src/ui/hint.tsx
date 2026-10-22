@@ -4,7 +4,8 @@
 // devices that can't hover (src/ui/theme/mobile.css), which also draws its ⓘ, so the glyph never
 // joins the text of the page around it.
 import type { ComponentChildren } from 'preact';
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
+import { useDialog } from './dialog.ts';
 
 interface Shown {
   title: string;
@@ -60,24 +61,40 @@ export function HintSheet() {
     listeners.add(l);
     return () => void listeners.delete(l);
   }, []);
-  useEffect(() => {
-    if (!shown) return;
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && show(null);
-    addEventListener('keydown', onKey);
-    return () => removeEventListener('keydown', onKey);
-  });
   if (!shown) return null;
+  return <HintBox title={shown.title} text={shown.text} />;
+}
+
+const hide = () => show(null);
+
+/**
+ * The open sheet: Close takes focus, Tab stays inside, and Escape, Close, or a press that begins
+ * and ends on the dim around it closes it, handing focus back to its ⓘ button.
+ */
+function HintBox(props: Shown) {
+  const box = useRef<HTMLElement>(null);
+  const close = useRef<HTMLButtonElement>(null);
+  /** Whether the press began on the dim, so a drag out of the sheet doesn't close it. */
+  const pressedOutside = useRef(false);
+  useDialog({ box, focus: close, onEscape: hide, trap: true });
   return (
-    <div class="hint-sheet-backdrop" onClick={() => show(null)}>
+    <div
+      class="hint-sheet-backdrop"
+      onMouseDown={(e) => (pressedOutside.current = e.target === e.currentTarget)}
+      onClick={(e) => {
+        if (pressedOutside.current && e.target === e.currentTarget) hide();
+      }}
+    >
       <section
+        ref={box}
         class="hint-sheet panel"
         role="dialog"
-        aria-label={shown.title}
-        onClick={(e) => e.stopPropagation()}
+        aria-modal="true"
+        aria-label={props.title}
       >
-        <h3>{shown.title}</h3>
-        <p>{shown.text}</p>
-        <button type="button" onClick={() => show(null)}>
+        <h3>{props.title}</h3>
+        <p>{props.text}</p>
+        <button type="button" ref={close} onClick={hide}>
           Close
         </button>
       </section>

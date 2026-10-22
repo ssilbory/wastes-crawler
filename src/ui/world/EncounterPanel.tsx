@@ -46,9 +46,10 @@ export function EncounterPanel(props: {
     props.onChange();
   };
   return (
-    <section class="panel encounter" aria-label="Encounter" aria-live="polite">
+    <section class="panel encounter" aria-label="Encounter">
       <h2>Encounter</h2>
-      <p>{e.text}</p>
+      {/* Only what changes is read out: the meeting's text as a parley moves it on, and a refusal. */}
+      <p aria-live="polite">{e.text}</p>
       <KnownFoes foes={knownFoes(w, data, e.enemies)} />
       <div class="actions">
         <button type="button" class="create" onClick={props.onFight}>
@@ -140,7 +141,7 @@ export function EncounterPanel(props: {
           </button>
         </div>
       )}
-      {message && <p class="hint">{message}</p>}
+      <div aria-live="polite">{message && <p class="hint">{message}</p>}</div>
     </section>
   );
 }

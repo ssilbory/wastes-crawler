@@ -96,7 +96,7 @@ test('enters the barrow from the hex map, walks both levels, and climbs out', as
 
   await keys(page, 'awwwdwwawwwwwdwwwwww');
   await page.getByRole('button', { name: 'Climb out of The Old Barrow' }).click();
-  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
     'The party climbs out of The Old Barrow.',
   );
@@ -311,7 +311,7 @@ test('delves to the stairs and back with fights, a trap, a camp, and a rescue', 
   await page.getByRole('button', { name: 'Take the stairs to The Upper Barrow' }).click();
   await go(page, 'awwwdwwawwwwwdwwwwww');
   await page.getByRole('button', { name: 'Climb out of The Old Barrow' }).click();
-  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
   await expect(page.getByRole('region', { name: 'NPCs' })).toContainText('grave-digger');
   await page.screenshot({ path: testInfo.outputPath('delve-out.png'), fullPage: true });
 });

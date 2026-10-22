@@ -151,3 +151,46 @@ test('pits the party against the starter party, then the test party', async ({
   await expect(result(page)).toBeVisible();
   await expect(page.getByRole('region', { name: 'Battle log' })).toContainText('Snag (rival)');
 });
+
+test('says what the fight still needs, and plays a turn from the keyboard', async ({ page }) => {
+  await page.goto('/#/arena');
+  const start = page.getByRole('button', { name: 'Start fight' });
+  await expect(start).toBeDisabled();
+  await expect(page.getByText('Put a character in the formation to start.')).toBeVisible();
+  await page.getByLabel('Import character files').setInputFiles(starters);
+  await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(4);
+  await page.getByRole('combobox', { name: 'Front row, slot 1' }).selectOption({ label: 'Snag' });
+  await page.getByRole('combobox', { name: 'Front row, slot 2' }).selectOption({ label: 'Grukk' });
+  await expect(page.getByText('Add a monster to the enemies to start.')).toBeVisible();
+  const enemies = page.getByRole('region', { name: 'Enemies' });
+  await addMonster(enemies, 'Thug or Militia (HD 1, AC 13)', 'front row');
+  await addMonster(enemies, 'Thug or Militia (HD 1, AC 13)', 'front row');
+  await addMonster(enemies, 'Veteran Soldier (HD 1, AC 13)', 'second row');
+  await expect(start).toBeEnabled();
+  await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('arena-keys');
+  await start.click();
+
+  const menu = page.getByRole('region', { name: 'Commands' });
+  const actor = await menu.getByRole('heading').innerText();
+  // The attack's number key opens its targets, Backspace goes back, and D takes the default.
+  const attack = menu.locator('button.cmd.attack').first();
+  const key = (await attack.getAttribute('aria-keyshortcuts')) ?? '';
+  expect(key).toMatch(/^[1-9]$/);
+  await page.keyboard.press(key);
+  await expect(menu.getByRole('button', { name: 'Back' })).toBeVisible();
+  await page.keyboard.press('Backspace');
+  await expect(menu.getByRole('button', { name: 'Back' })).toHaveCount(0);
+  await page.keyboard.press('d');
+  await expect(menu.getByRole('heading')).not.toHaveText(actor);
+});
+
+test('asks before removing a character from the saved roster', async ({ page }) => {
+  await page.goto('/#/arena');
+  await page.getByLabel('Import character files').setInputFiles(starters);
+  const roster = page.getByRole('region', { name: 'Roster' });
+  await expect(roster.getByRole('listitem')).toHaveCount(4);
+  await roster.getByRole('button', { name: 'Remove Snag' }).click();
+  await expect(roster.getByRole('listitem')).toHaveCount(4);
+  await roster.getByRole('button', { name: 'Delete Snag for good' }).click();
+  await expect(roster.getByRole('listitem')).toHaveCount(3);
+});

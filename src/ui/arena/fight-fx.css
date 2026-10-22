@@ -1,0 +1,159 @@
+/* What the fight field draws over its slots (docs/presentation-plan.md, V3): each combatant's
+   silhouette (Figure.tsx), the flash and floating numbers after a batch of turns
+   (src/render/fight-fx.ts), and the reach lines. Loaded right after fight.css. */
+
+.fx {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  animation: fx-flash 0.7s ease-out both;
+}
+
+.fx.struck {
+  --fx: var(--error);
+}
+
+.fx.healed {
+  --fx: var(--ok);
+}
+
+.fx.missed {
+  --fx: var(--muted);
+}
+
+@keyframes fx-flash {
+  from {
+    background: color-mix(in srgb, var(--fx) 38%, transparent);
+  }
+  to {
+    background: transparent;
+  }
+}
+
+.float {
+  position: absolute;
+  right: 6px;
+  top: 2px;
+  font-family: var(--font-term);
+  font-size: 1.35rem;
+  line-height: 1;
+  text-shadow:
+    0 1px 0 var(--bevel-lo),
+    0 0 4px var(--bg-deep);
+  animation: fx-rise 1.6s ease-out both;
+}
+
+.float.hit,
+.float.harm {
+  color: var(--error);
+}
+
+.float.shock {
+  color: var(--accent-hi);
+}
+
+.float.heal {
+  color: var(--ok);
+}
+
+.float.miss,
+.float.turned {
+  color: var(--ink);
+  font-size: 1.05rem;
+}
+
+@keyframes fx-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+}
+
+/* Without motion the numbers stay put, stacked, until the next batch. */
+@media (prefers-reduced-motion: reduce) {
+  .fx {
+    animation: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 2px 6px;
+  }
+
+  .float {
+    position: static;
+    animation: none;
+  }
+}
+
+.figure {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  height: min(62px, calc(100% - 6px));
+  width: auto;
+  aspect-ratio: 1;
+  pointer-events: none;
+  --figure: color-mix(in srgb, var(--ink) 58%, var(--panel-sunk));
+  --cut: var(--panel-sunk);
+}
+
+.side.far .figure {
+  --figure: color-mix(in srgb, #d9826a 66%, var(--panel-sunk));
+}
+
+.figure .fill {
+  fill: var(--figure);
+}
+
+.figure .line {
+  fill: none;
+  stroke: var(--figure);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.figure .cut {
+  fill: none;
+  stroke: var(--cut);
+  stroke-linecap: round;
+}
+
+/* Reach (src/render/fight-reach.ts): the foes the acting combatant can strike right now. */
+.reach-tag {
+  align-self: flex-start;
+  padding: 0 5px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
+.slot.reach-melee {
+  border-color: color-mix(in srgb, var(--accent) 70%, var(--bevel-lo));
+}
+
+.slot.reach-melee .reach-tag {
+  background: color-mix(in srgb, var(--accent) 28%, var(--panel-sunk));
+  color: var(--accent-hi);
+}
+
+.slot.reach-ranged {
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--gold) 60%, var(--bevel-lo));
+}
+
+.slot.reach-ranged .reach-tag {
+  background: color-mix(in srgb, var(--gold) 18%, var(--panel-sunk));
+  color: var(--gold);
+}
