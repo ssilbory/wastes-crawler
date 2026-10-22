@@ -60,8 +60,7 @@ export function QuarterPanel(props: {
         <h2>This quarter</h2>
         {/* Up top so it never moves as the plan below grows or shrinks. */}
         <button type="button" class="create" onClick={props.onPass}>
-          {plan.kind === 'hike' ? 'Hike' : 'Camp'}
-          <span aria-hidden="true"> ▸</span>
+          {plan.kind === 'hike' ? 'Hike' : 'Camp'} for the quarter
         </button>
       </div>
       <div class="tabs" role="radiogroup" aria-label="Plan">
@@ -83,7 +82,12 @@ export function QuarterPanel(props: {
           Camp
         </button>
       </div>
-      {!props.canHike && <p class="hint">Click a hex on the map to set a destination.</p>}
+      {!props.canHike && (
+        <p class="hint">
+          Click a hex on the map to set a destination, or Tab to the map and use the arrow keys and
+          Enter.
+        </p>
+      )}
       {plan.kind === 'hike' ? (
         <div class="roles">
           <MemberSelect

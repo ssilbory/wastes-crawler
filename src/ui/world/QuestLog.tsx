@@ -4,6 +4,7 @@ import { questOf } from '../../game/world/quests.ts';
 import type { World } from '../../game/world/types.ts';
 import { questStatus } from '../../render/quest-view.ts';
 import { data } from '../builder/data.ts';
+import { ConfirmButton } from '../confirm.tsx';
 
 /** Quests under way, with their current steps. */
 export function QuestLog(props: { world: World; onChange: () => void }) {
@@ -21,18 +22,18 @@ export function QuestLog(props: { world: World; onChange: () => void }) {
           <li key={id}>
             <strong>{questOf(data, id).name}</strong>
             <span>{questStatus(w, data, id)}</span>
-            <button
-              type="button"
+            <ConfirmButton
               class="secondary"
-              onClick={() => {
-                if (!confirm(`Abandon ${questOf(data, id).name}? It can't be taken again.`)) return;
+              label={`Abandon ${questOf(data, id).name}`}
+              confirm="Abandon for good"
+              onConfirm={() => {
                 const r = abandonQuest(w, data, id);
                 setMessage(r.ok ? null : r.reason);
                 props.onChange();
               }}
             >
               Abandon
-            </button>
+            </ConfirmButton>
           </li>
         ))}
       </ul>

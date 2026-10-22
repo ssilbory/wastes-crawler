@@ -34,6 +34,7 @@ import { SideDock } from './SideDock.tsx';
 import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
 import { JournalPanel } from './JournalPanel.tsx';
 import { PopOut } from './PopOut.tsx';
+import { BarMore } from './BarMore.tsx';
 import { CampPanel } from './CampPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
 import { onSafeSquare } from '../../game/dungeon/time.ts';
@@ -117,17 +118,21 @@ export function DungeonScreen(props: {
   return (
     <div class="world dungeon">
       <div class="world-bar">
-        <span class="date">{describeDate(data.content.overlandRules, w.day, w.quarter)}</span>
-        <span>
-          {level.name}, facing {FACING_NAMES[s.facing]}
-        </span>
-        <span class="turn">{turnText(w)}</span>
-        <span class="light">{lightText(w)}</span>
+        <div class="bar-status">
+          <span class="date">{describeDate(data.content.overlandRules, w.day, w.quarter)}</span>
+          <span>
+            {level.name}, facing {FACING_NAMES[s.facing]}
+          </span>
+          <span class="turn">{turnText(w)}</span>
+          <span class="light">{lightText(w)}</span>
+        </div>
         <span class="bar-actions">
           <PartyButtons onOpen={props.onOpen} />
-          <button type="button" class="secondary" onClick={props.onExport}>
-            Export save
-          </button>
+          <BarMore>
+            <button type="button" class="secondary" onClick={props.onExport}>
+              Export save
+            </button>
+          </BarMore>
         </span>
       </div>
       <div class="world-main">
@@ -219,7 +224,7 @@ export function DungeonScreen(props: {
           </div>
           <JournalPanel world={w} />
           {w.encounter && (
-            <PopOut>
+            <PopOut label="Encounter">
               <EncounterPanel
                 world={w}
                 onFight={props.onFight}

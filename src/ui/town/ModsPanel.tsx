@@ -95,6 +95,7 @@ export function ModsPanel(props: { world: World; act: Act }) {
               </button>
             ) : (
               <>
+                {modMisfit(data, line.e, mod) && <p class="hint">{modMisfit(data, line.e, mod)}</p>}
                 <button
                   type="button"
                   disabled={modMisfit(data, line.e, mod) !== null}

@@ -19,12 +19,18 @@ export function HelpControls() {
 
       <h3>Overland map</h3>
       <ul>
-        <li>Tap or click a hex to set a destination.</li>
         <li>
-          In This quarter, choose Hike or Camp, set who does what, then press Hike ▸ or Camp ▸ to
-          play out the quarter.
+          Tap or click a hex to set a destination. With a keyboard, Tab to the map, move with the
+          arrow keys, and press Enter.
         </li>
-        <li>−, +, and Fit zoom the map; so do Ctrl with the mouse wheel and a trackpad pinch.</li>
+        <li>
+          In This quarter, choose Hike or Camp, set who does what, then press Hike for the quarter
+          or Camp for the quarter to play it out.
+        </li>
+        <li>
+          The map opens closed in on what the party knows. −, +, and Fit zoom it, Fit showing the
+          whole map; so do Ctrl with the mouse wheel and a trackpad pinch.
+        </li>
         <li>Visit, Enter, and Take buttons appear in the bar on a town, dungeon, or road.</li>
       </ul>
 

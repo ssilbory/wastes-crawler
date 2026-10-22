@@ -28,7 +28,19 @@
   box-shadow: var(--bevel-out);
 }
 
-.world-bar > span:not(.bar-actions) {
+/* The readouts' box and the More fold (BarMore.tsx) only matter on a phone (mobile.css). */
+.bar-status,
+.bar-more,
+.bar-more-items {
+  display: contents;
+}
+
+.bar-more-toggle {
+  display: none;
+}
+
+.world-bar > span:not(.bar-actions),
+.world-bar .bar-status > span {
   padding: 1px 6px;
   font-family: var(--font-term);
   font-size: 1.2rem;
@@ -139,6 +151,11 @@
   flex-direction: column;
   height: 8.5rem;
   min-height: 0;
+  padding: 8px;
+}
+
+.world .log h3 {
+  margin: 0 0 4px;
 }
 
 .world .log ol {
@@ -147,7 +164,6 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: none;
   overflow-y: auto;
   font-size: 0.9rem;
 }

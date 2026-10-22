@@ -59,7 +59,28 @@ test('rests at the inn, shops, and changes the party at the tavern', async ({ pa
   await page.screenshot({ path: testInfo.outputPath('town-tavern.png'), fullPage: true });
 
   await page.getByRole('button', { name: 'Back to the map' }).click();
-  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
+});
+
+test('moves between the town tabs with the arrow keys', async ({ page }) => {
+  await startInRubblegate(page);
+  const tabs = page.getByRole('tablist', { name: 'Town' });
+  const tab = (name: string) => tabs.getByRole('tab', { name, exact: true });
+  const selected = tabs.locator('[aria-selected="true"]');
+  await selected.focus();
+  // One stop in the Tab order: only the selected tab takes it.
+  await expect(tabs.locator('[tabindex="0"]')).toHaveCount(1);
+  await page.keyboard.press('End');
+  await expect(tab('Arena')).toHaveAttribute('aria-selected', 'true');
+  await expect(tab('Arena')).toBeFocused();
+  await page.keyboard.press('ArrowRight');
+  await expect(tab('Quests')).toHaveAttribute('aria-selected', 'true');
+  await page.keyboard.press('ArrowRight');
+  await expect(tab('Inn and healer')).toBeFocused();
+  await expect(page.getByRole('tabpanel', { name: 'Inn and healer' })).toBeVisible();
+  await page.keyboard.press('ArrowLeft');
+  await page.keyboard.press('Home');
+  await expect(tab('Quests')).toHaveAttribute('aria-selected', 'true');
 });
 
 test('levels up a character with XP to spend', async ({ page }, testInfo) => {
@@ -145,7 +166,7 @@ test('buys a round for a rumor, and the map marks the way down', async ({ page }
   await expect(log).toContainText('a regular tells of');
   const heard = (await log.innerText()).match(/a regular tells of (.+?), at /)?.[1] as string;
   await page.getByRole('button', { name: 'Back to the map' }).click();
-  const map = page.getByRole('img', { name: 'Overland map' });
+  const map = page.getByRole('group', { name: 'Overland map' });
   await expect(map.locator('.dungeon title', { hasText: heard })).toHaveCount(1);
   await page.screenshot({ path: testInfo.outputPath('town-rumor.png'), fullPage: true });
 });

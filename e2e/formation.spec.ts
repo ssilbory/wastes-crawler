@@ -37,5 +37,5 @@ test('rearranges the party on the map, and the change is saved', async ({ page }
   await expect(slot('Front row, slot 1').locator('option:checked')).toHaveText('Fizzwick');
   await expect(slot('Front row, slot 3').locator('option:checked')).toHaveText('Snag');
   await page.getByRole('button', { name: 'Back to the map' }).click();
-  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
 });

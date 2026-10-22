@@ -48,3 +48,49 @@ export const viewCentre = (box: ScrollBox) => ({
   x: (box.left + box.width / 2) / box.scrollWidth,
   y: (box.top + box.height / 2) / box.scrollHeight,
 });
+
+/** A box on the map, as fractions of its width and height, 0 to 1 each way. */
+export interface MapBounds {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+}
+
+/**
+ * The box about the hexes the party knows, `margin` pixels wider each way, as fractions of the
+ * map; null when everything is known, since Fit already shows it all.
+ */
+export function knownBounds(
+  cells: readonly { cx: number; cy: number; terrain: string | null }[],
+  map: { width: number; height: number },
+  margin: number,
+): MapBounds | null {
+  const known = cells.filter((c) => c.terrain !== null);
+  if (known.length === 0 || known.length === cells.length) return null;
+  const xs = known.map((c) => c.cx);
+  const ys = known.map((c) => c.cy);
+  const clamp = (v: number) => Math.min(1, Math.max(0, v));
+  return {
+    x0: clamp((Math.min(...xs) - margin) / map.width),
+    y0: clamp((Math.min(...ys) - margin) / map.height),
+    x1: clamp((Math.max(...xs) + margin) / map.width),
+    y1: clamp((Math.max(...ys) + margin) / map.height),
+  };
+}
+
+/**
+ * The closest zoom that still shows all of `bounds` in a frame of `frame` pixels. Zoomed in, the
+ * map fills the frame's width `zoom` times over and keeps its shape, so a box shows when it is no
+ * wider than 1/zoom of the map and its height, so scaled, fits the frame's.
+ */
+export function fitZoom(
+  bounds: MapBounds,
+  frame: { width: number; height: number },
+  map: { width: number; height: number },
+): number {
+  const tall = (frame.width * map.height) / map.width;
+  const fits = (z: number) =>
+    (bounds.x1 - bounds.x0) * z <= 1 && (bounds.y1 - bounds.y0) * z * tall <= frame.height;
+  return [...ZOOMS].reverse().find(fits) ?? 1;
+}

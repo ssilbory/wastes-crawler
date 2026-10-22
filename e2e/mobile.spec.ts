@@ -16,6 +16,8 @@ async function fitsWidth(page: Page) {
       // Drawing inside an SVG is clipped to it; the SVG itself is checked.
       .filter((el) => !el.parentElement?.closest('svg'))
       .filter((el) => !el.closest('.map-wrap'))
+      // The bar's readouts scroll sideways in their own row; the row itself is checked.
+      .filter((el) => !el.parentElement?.closest('.bar-status'))
       .filter((el) => el.getBoundingClientRect().right > innerWidth + 1)
       .map((el) => `${el.tagName}.${el.getAttribute('class') ?? ''}`),
   );
@@ -65,6 +67,12 @@ test.describe('on a phone', () => {
     await sheet.getByRole('button', { name: 'About The Coruscating Coffin' }).tap();
     const dialog = page.getByRole('dialog', { name: 'The Coruscating Coffin' });
     await expect(dialog).toContainText('In game: 1d8 per caster level to one enemy');
+    // It takes focus, and Escape hands it back to the ⓘ that opened it.
+    await expect(dialog.getByRole('button', { name: 'Close' })).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(dialog).toHaveCount(0);
+    await expect(sheet.getByRole('button', { name: 'About The Coruscating Coffin' })).toBeFocused();
+    await sheet.getByRole('button', { name: 'About The Coruscating Coffin' }).tap();
     await dialog.getByRole('button', { name: 'Close' }).tap();
     await expect(dialog).toHaveCount(0);
   });
@@ -88,6 +96,26 @@ test.describe('on a phone', () => {
     const box = await map.boundingBox();
     expect(box?.width).toBeGreaterThan(300);
     await fitsWidth(page);
+
+    // The readouts take one row, and Export and Abandon wait behind More, so the map starts high.
+    const status = await page.locator('.bar-status').boundingBox();
+    expect(status?.height).toBeLessThan(60);
+    expect(box?.y).toBeLessThan(240);
+    await expect(page.getByRole('button', { name: 'Export save' })).toBeHidden();
+    await page.getByRole('button', { name: 'More' }).tap();
+    await expect(page.getByRole('button', { name: 'Export save' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Abandon world' })).toBeVisible();
+    await page.getByRole('button', { name: 'More' }).tap();
+    await expect(page.getByRole('button', { name: 'Abandon world' })).toBeHidden();
+
+    // Every control on the screen is big enough to tap.
+    const small = await page.evaluate(() =>
+      [...document.querySelectorAll<HTMLElement>('#app button, #app select')]
+        .filter((el) => el.getClientRects().length > 0)
+        .filter((el) => el.getBoundingClientRect().height < 44)
+        .map((el) => el.textContent || el.getAttribute('aria-label')),
+    );
+    expect(small).toEqual([]);
 
     await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
     await expect(page.getByRole('button', { name: 'Back to the map' })).toBeVisible();

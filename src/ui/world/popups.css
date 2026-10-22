@@ -24,6 +24,11 @@
   animation: pop-in 0.18s ease-out;
 }
 
+.pop-out-card:focus {
+  /* It takes focus only to start Tab inside it; its accent border already marks it. */
+  outline: none;
+}
+
 .pop-out-card > .panel {
   border-color: var(--accent);
   box-shadow:

@@ -38,10 +38,10 @@ test('wanders the overland map, fighting what it meets', async ({ page }, testIn
   const intro = page.getByRole('region', { name: 'Introduction' });
   await expect(intro.getByRole('heading', { name: 'The Dark Lands' })).toBeVisible();
   await expect(intro).toContainText('Twenty years ago he vanished.');
-  await expect(page.getByRole('img', { name: 'Overland map' })).toHaveCount(0);
+  await expect(page.getByRole('group', { name: 'Overland map' })).toHaveCount(0);
   await page.screenshot({ path: testInfo.outputPath('intro.png'), fullPage: true });
   await page.getByRole('button', { name: 'Begin the journey' }).click();
-  await expect(page.getByRole('img', { name: 'Overland map' })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
   await expect(page.locator('.world-bar')).toContainText('Rubblegate');
 
   // Walk east along the road, a hex ahead at a time, turning back at Scrapmarch.
@@ -50,6 +50,14 @@ test('wanders the overland map, fighting what it meets', async ({ page }, testIn
   for (let i = 0; i < 300 && fights < 2; i++) {
     const encounter = page.getByRole('region', { name: 'Encounter' });
     if (await encounter.isVisible()) {
+      // The card takes focus, so Tab starts on its choices, and Tab stays inside it either way.
+      const card = page.getByRole('dialog', { name: 'Encounter' });
+      await expect(card).toBeFocused();
+      const inCard = () => card.evaluate((el) => el.contains(document.activeElement));
+      await page.keyboard.press('Shift+Tab');
+      expect(await inCard()).toBe(true);
+      for (let t = 0; t < 12; t++) await page.keyboard.press('Tab');
+      expect(await inCard()).toBe(true);
       await encounter.getByRole('button', { name: /^(Fight|Attack them)$/ }).click();
       await page.getByRole('button', { name: 'Auto-resolve' }).click();
       await expect(page.getByRole('status')).toBeVisible();
@@ -63,7 +71,7 @@ test('wanders the overland map, fighting what it meets', async ({ page }, testIn
     if (col >= 20) east = false;
     if (col <= 3) east = true;
     await page.locator(`[data-hex="${east ? col + 1 : col - 1},8"]`).click();
-    await page.getByRole('button', { name: /^(Hike|Camp)$/ }).click();
+    await page.getByRole('button', { name: /^(Hike|Camp) for the quarter$/ }).click();
   }
   expect(fights).toBe(2);
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText('The party');
@@ -100,7 +108,7 @@ test('camps for the night with the suggested watches and shelter', async ({ page
       await page.getByRole('button', { name: 'Auto-resolve' }).click();
       await page.getByRole('button', { name: 'Back to the map' }).click();
     }
-    await page.getByRole('button', { name: /^(Hike|Camp)$/ }).click();
+    await page.getByRole('button', { name: /^(Hike|Camp) for the quarter$/ }).click();
   }
   await expect(page.locator('.world-bar .date')).toContainText(
     /^(morning|day|evening|night), 2 Seedtime/i,
@@ -125,6 +133,6 @@ test('heads toward an unexplored hex picked on the map', async ({ page }) => {
   await expect(page.locator('.hex.route')).not.toHaveCount(0);
   const plan = page.getByRole('region', { name: 'Quarter plan' });
   await expect(plan.getByRole('radio', { name: 'Hike' })).toHaveAttribute('aria-checked', 'true');
-  await page.getByRole('button', { name: 'Hike' }).click();
+  await page.getByRole('button', { name: 'Hike for the quarter' }).click();
   await expect(page.locator('.world-bar')).not.toContainText('Rubblegate');
 });
