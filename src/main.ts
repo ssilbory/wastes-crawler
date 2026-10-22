@@ -22,7 +22,9 @@ import './ui/world/popups.css';
 import './ui/theme/screens.css';
 // After the shared screen rules: the builder fits its window instead of scrolling.
 import './ui/builder/wizard.css';
-// Last: phone and touch overrides of every screen's layout.
+// The ⓘ descriptions' button and sheet (src/ui/hint.tsx), on every screen.
+import './ui/hint.css';
+// Last: phone and touch overrides of every screen's layout, all in one file.
 import './ui/theme/mobile.css';
 
 watchInstallPrompt();

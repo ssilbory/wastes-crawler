@@ -33,8 +33,7 @@ import { NpcPanel } from './NpcPanel.tsx';
 import { PopOut } from './PopOut.tsx';
 import { BarMore } from './BarMore.tsx';
 import { useKeys } from '../keys.ts';
-import { QuestLog } from './QuestLog.tsx';
-import { SideDock } from './SideDock.tsx';
+import { openQuests, QuestLog } from './QuestLog.tsx';
 import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
 import { JournalPanel } from './JournalPanel.tsx';
 import { captiveHomes, questTargets } from '../../render/quest-view.ts';
@@ -177,18 +176,18 @@ export function MapScreen(props: {
                 .map((n) => ({ id: n.id, name: n.name }))}
               plan={current}
               canHike={w.destination !== null}
+              noQuests={openQuests(w).length === 0}
               onPlan={choose}
               onHike={hike}
               onCamp={camp}
               onPass={() => props.onPass(current)}
             />
           )}
+          {/* Quests, then the party, then the panels of powers and places (Sam's call: one column). */}
+          <QuestLog world={w} onChange={props.onChange} />
           <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
           <MountsPanel world={w} onChange={props.onChange} />
-        </div>
-        <SideDock>
-          <QuestLog world={w} onChange={props.onChange} />
           <CompanionsPanel world={w} onChange={props.onChange} />
           <SettingPanel world={w} inTown={town !== undefined} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />
@@ -203,7 +202,7 @@ export function MapScreen(props: {
           <AntidotePanel world={w} onChange={props.onChange} />
           <FactionsPanel world={w} />
           <WarlordsPanel world={w} />
-        </SideDock>
+        </div>
       </div>
     </div>
   );
