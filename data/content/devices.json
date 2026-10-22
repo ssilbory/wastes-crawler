@@ -1,0 +1,133 @@
+{
+  "skill": "magic",
+  "attributes": ["int"],
+  "scribing": 1,
+  "days": 30,
+  "assistBonus": 1,
+  "wardingBonus": 1,
+  "dropShare": 10,
+  "devices": [
+    {
+      "id": "wand",
+      "name": "Wand",
+      "source": {
+        "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
+        "heading": "4.9.4 Magical Devices"
+      },
+      "cost": {
+        "amount": 100,
+        "unit": "sp"
+      },
+      "encumbrance": 1,
+      "weightless": false,
+      "freeWhenWorn": false,
+      "bundlesOfThree": false,
+      "text": "A slender rod of bone or wood holding one spell of the first or second level, cast at its maker's level, until its 2d4+2 charges are spent. It is never recharged.",
+      "difficulty": 8,
+      "device": {
+        "kind": "wand",
+        "maxSpellLevel": 2,
+        "charges": {
+          "count": 2,
+          "sides": 4,
+          "modifier": 2
+        }
+      }
+    },
+    {
+      "id": "arcane-staff",
+      "name": "Staff",
+      "source": {
+        "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
+        "heading": "4.9.4 Magical Devices"
+      },
+      "cost": {
+        "amount": 100,
+        "unit": "sp"
+      },
+      "encumbrance": 1,
+      "weightless": false,
+      "freeWhenWorn": false,
+      "bundlesOfThree": false,
+      "text": "A carved staff holding two or three spells that share 3d4 charges. Only a caster can draw on it, and it is never recharged.",
+      "difficulty": 11,
+      "device": {
+        "kind": "staff",
+        "minSpells": 2,
+        "maxSpells": 3,
+        "maxLevels": 5,
+        "charges": {
+          "count": 3,
+          "sides": 4,
+          "modifier": 0
+        }
+      }
+    },
+    {
+      "id": "rod-of-light",
+      "name": "Rod of Light",
+      "source": {
+        "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
+        "heading": "4.9.4 Magical Devices"
+      },
+      "cost": {
+        "amount": 300,
+        "unit": "sp"
+      },
+      "encumbrance": 1,
+      "weightless": false,
+      "freeWhenWorn": false,
+      "bundlesOfThree": false,
+      "text": "Readied, it sheds a steady light underground that never burns out.",
+      "difficulty": 10,
+      "device": {
+        "kind": "rod",
+        "effect": "light"
+      }
+    },
+    {
+      "id": "rod-of-mending",
+      "name": "Rod of Mending",
+      "source": {
+        "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
+        "heading": "4.9.4 Magical Devices"
+      },
+      "cost": {
+        "amount": 300,
+        "unit": "sp"
+      },
+      "encumbrance": 1,
+      "weightless": false,
+      "freeWhenWorn": false,
+      "bundlesOfThree": false,
+      "text": "Readied, it lets its bearer stabilize the Mortally Wounded with no check.",
+      "difficulty": 10,
+      "device": {
+        "kind": "rod",
+        "effect": "mending"
+      }
+    },
+    {
+      "id": "rod-of-warding",
+      "name": "Rod of Warding",
+      "source": {
+        "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
+        "heading": "4.9.4 Magical Devices"
+      },
+      "cost": {
+        "amount": 300,
+        "unit": "sp"
+      },
+      "encumbrance": 1,
+      "weightless": false,
+      "freeWhenWorn": false,
+      "bundlesOfThree": false,
+      "text": "Readied, it gives its bearer +1 to saves against spells.",
+      "difficulty": 10,
+      "device": {
+        "kind": "rod",
+        "effect": "warding"
+      }
+    }
+  ]
+}

@@ -5,6 +5,7 @@
 // The work goes on in a town's workshop, or in camp shifts out in the wilds for a crafter carrying
 // crafting tools, a portable workshop in the SRD's sense (Sam's calls).
 import type { People, Project } from '../../data/schemas/index.ts';
+import { gameSpells, type GameSpell } from '../../data/spells.ts';
 import type { GameData } from '../character/context.ts';
 import { fitSize, sizedLine, type Size } from '../character/gear.ts';
 import { entryPrice, findItem, type CatalogItem, type InventoryEntry } from '../character/items.ts';
@@ -12,6 +13,10 @@ import { findPeople } from '../character/people.ts';
 import type { WorldEvent } from './bus.ts';
 import { note } from './members.ts';
 import { daysText } from './wording.ts';
+import { completeBrew } from './brewing.ts';
+import { completeScroll } from './scribing.ts';
+import { completeDevice } from './enchanting.ts';
+import { completeForge, forgedName } from './forging.ts';
 import { completeMod, modOf } from './mods.ts';
 import { regionMap } from './region.ts';
 import type { TownResult } from './services.ts';
@@ -19,6 +24,10 @@ import { priceHere, spend, townHere } from './town.ts';
 import type { Member, World } from './types.ts';
 
 export type Tier = Project['quality'];
+
+/** A project's spell; only scrolls, which always name a game spell, have one. */
+const spellName = (data: GameData, id: string) =>
+  (gameSpells(data.srd, data.content).find((s) => s.id === id) as GameSpell).name;
 
 const peopleOf = (data: GameData, m: Member) => findPeople(data, m.character.people) as People;
 type Craftable = Extract<CatalogItem, { kind: 'weapon' | 'armor' | 'shield' | 'gear' }>;
@@ -125,6 +134,8 @@ export function startProject(
  * crafter so they keep pace with those out fighting; the finished item goes to the crafter's pack.
  */
 export function workOn(w: World, data: GameData, p: Project, days = 1): void {
+  // A failed forging waits on its smith to start over or go on with a flaw.
+  if (p.failed) return;
   const crafter = anyone(w, p.crafter);
   const left = Math.max(0, p.daysLeft - days);
   // XP comes in half points, so a half day's shift pays when the day it starts is done.
@@ -134,6 +145,22 @@ export function workOn(w: World, data: GameData, p: Project, days = 1): void {
   p.daysLeft = left;
   if (p.daysLeft > 0) return;
   w.projects = w.projects.filter((x) => x !== p);
+  if (p.kind === 'brew') {
+    completeBrew(w, data, p, crafter);
+    return;
+  }
+  if (p.kind === 'scribe') {
+    completeScroll(w, data, p, crafter);
+    return;
+  }
+  if (p.kind === 'device') {
+    completeDevice(w, data, p, crafter);
+    return;
+  }
+  if (p.kind === 'forge') {
+    completeForge(w, data, p, crafter);
+    return;
+  }
   if (p.kind !== 'gear') {
     completeMod(w, data, p);
     return;
@@ -201,7 +228,9 @@ export const hasTools = (data: GameData, m: Member) =>
  */
 export function campProject(w: World, data: GameData, m: Member): Project | null {
   if (regionMap(data, w.region).siteAt(w.position) !== undefined || w.dungeon) return null;
-  const p = w.projects.find((x) => x.crafter === m.id && x.kind !== 'strip' && !x.staying);
+  const p = w.projects.find(
+    (x) => x.crafter === m.id && x.kind !== 'strip' && !x.staying && !x.failed,
+  );
   return p && hasTools(data, m) ? p : null;
 }
 
@@ -219,6 +248,10 @@ export function craftShift(w: World, data: GameData, m: Member): void {
 
 function workName(data: GameData, p: Project): string {
   const item = (findItem(data, p.item) as CatalogItem).name;
+  if (p.kind === 'brew') return `a brew of ${item}`;
+  if (p.kind === 'scribe') return `a scroll of ${spellName(data, p.spell as string)}`;
+  if (p.kind === 'device') return `the ${item}`;
+  if (p.kind === 'forge') return `the +${p.bonus as number} ${forgedName(data, p.item, p.ability)}`;
   return p.kind === 'mod'
     ? `${modOf(data, p.mod as string).name} for the ${item}`
     : `the ${tierName(p.quality)}${item}`;

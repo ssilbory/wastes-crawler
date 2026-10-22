@@ -27,13 +27,15 @@ const beforeMounts = {
 };
 
 describe('skills and foci the game took away (docs/rules-adaptation.md, Skills)', () => {
-  it('lists the SRD skills less the removed ones, plus Animal Ken', () => {
+  it('lists the SRD skills less the removed ones, plus Animal Ken, Alchemy, and Scribing', () => {
     const ids = gameSkills(data.srd, data.content).map((s) => s.id);
     for (const gone of ['administer', 'connect', 'sail', 'work']) expect(ids).not.toContain(gone);
     // Ride is back with mounts (docs/rules-adaptation.md, Mounts).
     expect(ids).toContain('ride');
     expect(ids).toContain('animal-ken');
-    expect(ids).toHaveLength(data.srd.skills.length - 4 + 1);
+    expect(ids).toContain('alchemy');
+    expect(ids).toContain('scribing');
+    expect(ids).toHaveLength(data.srd.skills.length - 4 + 3);
   });
 
   it('turns removed skills into their replacements at the higher level', () => {

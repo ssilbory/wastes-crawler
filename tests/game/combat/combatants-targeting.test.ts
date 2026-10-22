@@ -153,6 +153,7 @@ describe('targeting (docs/rules-adaptation.md, Formation rules)', () => {
     twoHanded: false,
     blunt: false,
     onHit: null,
+    magic: null,
     ...atk,
   });
 

@@ -1,12 +1,14 @@
 // What a won fight pays: the defeated enemies' loot dice (docs/rules-adaptation.md, Loot dice),
-// their components, the butcher's cuts, and now and then a weapon or suit of armor (Gear drops),
-// which costs some of the dice; hirelings take their shares as the dice are won.
+// their components, the butcher's cuts, now and then a weapon or suit of armor (Gear drops), which
+// costs some of the dice, and now and then a potion (Potions: Drops); hirelings take their shares
+// as the dice are won.
 import { cutLoot } from '../../rules/gear-drops.ts';
 import type { GameData } from '../character/context.ts';
 import { butcher } from './butcher.ts';
 import { componentDrops } from './components.ts';
 import { dropGear, type DropContext } from './gear-drops.ts';
 import { note } from './members.ts';
+import { dropPotion } from './potion-drops.ts';
 import { accrueShares } from './npcs.ts';
 import { pickUp } from './party-load.ts';
 import { addLoot } from './shop.ts';
@@ -31,6 +33,7 @@ export function winnings(
   butcher(w, data, enemies.flat());
   // The item comes first, so the dice picked up after it feel its weight.
   const value = worth ? dropGear(w, data, enemies.flat(), worth) : 0;
+  if (worth) dropPotion(w, data, enemies.flat(), worth);
   const dice = value > 0 ? cutLoot(won, value, data.content.craftingRules.drops.lootKept) : won;
   // What the party can't carry is left behind (Party stash).
   const kept = pickUp(w, data, () => {

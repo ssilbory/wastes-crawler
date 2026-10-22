@@ -3,6 +3,7 @@
 // working mods (2.8.4), a magic weapon's bonus to hit, damage, and Shock and magic armor's to its
 // AC (4.0 Magic and Spellcasting/4.9.0, 4.9.3), no bonus above +3 (2.8.4), and an item left
 // unmaintained too long working badly (2.8.3, with Sam's penalty in place of "stops working").
+import { flawsOf } from './abilities.ts';
 import type { GameData } from './context.ts';
 import type { InventoryEntry } from './items.ts';
 
@@ -39,12 +40,20 @@ export function upgrade(data: GameData, entry: InventoryEntry): Upgrade {
   const penalty = broken ? data.content.craftingRules.upkeep.penalty : 0;
   const master = entry.quality === 'mastercrafted' ? 1 : 0;
   const magic = entry.bonus ?? 0;
+  // A forging's flaws count against the item after the cap (SRD 4.10.0).
+  const flaws = flawsOf(data, entry);
+  const flawed = (f: (x: (typeof flaws)[number]) => number | undefined) =>
+    flaws.reduce((n, x) => n + (f(x) ?? 0), 0);
   return {
-    hit: Math.min(BONUS_CAP, master + magic + sum((m) => m.weapon?.hit)) - penalty,
-    damage: Math.min(BONUS_CAP, magic + sum((m) => m.weapon?.damage)),
+    hit:
+      Math.min(BONUS_CAP, master + magic + sum((m) => m.weapon?.hit)) -
+      penalty +
+      flawed((f) => f.weapon?.hit),
+    damage:
+      Math.min(BONUS_CAP, magic + sum((m) => m.weapon?.damage)) + flawed((f) => f.weapon?.damage),
     // Only armor reads the AC, and only weapons the hit and damage, so one bonus serves both.
-    ac: Math.min(BONUS_CAP, magic + sum((m) => m.armor?.ac)) - penalty,
-    encumbrance: sum((m) => m.armor?.encumbrance),
+    ac: Math.min(BONUS_CAP, magic + sum((m) => m.armor?.ac)) - penalty + flawed((f) => f.armor?.ac),
+    encumbrance: sum((m) => m.armor?.encumbrance) + flawed((f) => f.armor?.encumbrance),
     broken,
   };
 }

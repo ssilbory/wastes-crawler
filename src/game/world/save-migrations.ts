@@ -221,4 +221,6 @@ export const WORLD_MIGRATIONS: Migrations = {
   37: (raw) => ({ ...raw, schemaVersion: 38, routes: {} }),
   // Version 39 adds the Wastes' warlords: none fallen yet.
   38: (raw) => ({ ...raw, schemaVersion: 39, warlords: [] }),
+  // Version 40 adds alchemists: none called on yet, and nothing brewing to order.
+  39: (raw) => ({ ...raw, schemaVersion: 40, alchemists: {}, brewOrders: [] }),
 };

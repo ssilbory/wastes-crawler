@@ -8,6 +8,8 @@ import { findProgression, isSkill, type GameData } from './context.ts';
 import { focusInfo } from './foci.ts';
 import { formProblem } from './forms.ts';
 import { findItem } from './items.ts';
+import { spellLineProblem } from './spell-items.ts';
+import { abilityLineProblem } from './abilities.ts';
 import { findLineage, findPeople } from './people.ts';
 import { retire } from './retired.ts';
 import { gameSpells } from '../../data/spells.ts';
@@ -106,7 +108,12 @@ export function importCharacter(
     if (!isSkill(data, skill)) errors.push(`skills: unknown ${skill}`);
   }
   for (const item of c.inventory) {
-    if (!findItem(data, item.id)) errors.push(`inventory: unknown ${item.id}`);
+    const found = findItem(data, item.id);
+    if (!found) errors.push(`inventory: unknown ${item.id}`);
+    const problem = found
+      ? (spellLineProblem(data, found, item) ?? abilityLineProblem(data, found, item))
+      : null;
+    if (problem) errors.push(`inventory: ${problem}`);
   }
   for (const id of c.arts) {
     if (!data.srd.arts.some((a) => a.id === id)) errors.push(`arts: unknown ${id}`);

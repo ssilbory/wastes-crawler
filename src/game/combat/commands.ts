@@ -4,13 +4,17 @@
 import { shiftChoices } from './forms.ts';
 import { lineLabel } from '../character/items.ts';
 import { afterMove } from './gear.ts';
-import type { CombatMagic } from '../../data/schemas/index.ts';
 import { ROW_SLOTS } from '../../rules/formation.ts';
 import { canUse, magicName } from './spells.ts';
-import { canAct, isUp, targets } from './targeting.ts';
+import { canAct, targets } from './targeting.ts';
+import { describe, magicCommand } from './magic-commands.ts';
+
+export { describe };
 import type { Action, Battle, Combatant, WaitingCompanion } from './types.ts';
 import { inSlot } from './mounted.ts';
 import { bindTargets, canHowl } from './companions.ts';
+import { potionCommand } from './potions.ts';
+import { heldMagicCommand } from './held-magic.ts';
 
 export type CommandGroup = 'attack' | 'magic' | 'defend' | 'aid' | 'gear' | 'move' | 'wait';
 
@@ -29,11 +33,6 @@ export interface Command {
   choices: Choice[];
 }
 
-/** A combatant's name, with its slot when it's a monster that may share the name. */
-export function describe(c: Combatant): string {
-  return c.kind === 'monster' ? `${c.name} [${c.row + 1}-${c.column + 1}]` : c.name;
-}
-
 const ROW_NAMES = ['Front', 'Rear'];
 
 function attackCommands(b: Battle, actor: Combatant): Command[] {
@@ -47,73 +46,6 @@ function attackCommands(b: Battle, actor: Combatant): Command[] {
     const label = attack.mode === 'thrown' ? `${attack.name} (thrown)` : attack.name;
     return [{ key: `attack:${index}`, group: 'attack' as const, label, choices }];
   });
-}
-
-/** Targets for a spell or art: combatants, row numbers, or 'all' for a whole side. */
-function magicTargets(b: Battle, actor: Combatant, m: CombatMagic): (Combatant | number | 'all')[] {
-  const foes = b.combatants.filter((c) => c.side !== actor.side && isUp(c));
-  const allies = b.combatants.filter((c) => c.side === actor.side && isUp(c));
-  switch (m.target) {
-    case 'enemies':
-    case 'allies':
-    case 'place':
-      return ['all'];
-    // Extirpate Arcana and Scorn the Fetters of Earth: anyone not dead or gone.
-    case 'any':
-      return b.combatants.filter((c) => c.status !== 'dead' && c.status !== 'fled');
-    case 'wounded-ally':
-      return b.combatants.filter(
-        (c) =>
-          c.side === actor.side &&
-          (c.status === 'dying' || c.status === 'stable' || (isUp(c) && c.hp < c.maxHp)),
-      );
-    case 'enemy':
-      return foes;
-    case 'enemy-row':
-      return [...new Set(foes.map((f) => f.row))].sort();
-    case 'ally':
-      return allies;
-    case 'ally-not-self':
-      return allies.filter((a) => a.id !== actor.id);
-    case 'self':
-      return [actor];
-    case 'none':
-      return [];
-  }
-}
-
-function magicCommand(b: Battle, actor: Combatant, m: CombatMagic): Command[] {
-  // Smite the Wicked rides on an attack instead (smiteCommands).
-  if (m.effect.kind === 'smite-wicked') return [];
-  const choices = magicTargets(b, actor, m).flatMap((t): Choice[] => {
-    if (t === 'all')
-      return canUse(b, actor, m)
-        ? [
-            {
-              label: m.target === 'place' ? 'Cast it' : 'Everyone',
-              action: { kind: 'cast', magic: m.id },
-            },
-          ]
-        : [];
-    const target = typeof t === 'number' ? undefined : t;
-    const base = target
-      ? { label: describe(target), targetId: target.id }
-      : { label: `Row ${(t as number) + 1}` };
-    const where = target ? { target: target.id } : { row: t as number };
-    if (canUse(b, actor, m, false, target?.id))
-      return [{ ...base, action: { kind: 'cast', magic: m.id, ...where } }];
-    if (m.source === 'spell' && canUse(b, actor, m, true, target?.id))
-      return [
-        {
-          ...base,
-          label: `${base.label} (strain)`,
-          action: { kind: 'cast', magic: m.id, ...where, strain: true },
-        },
-      ];
-    return [];
-  });
-  if (choices.length === 0) return [];
-  return [{ key: `magic:${m.id}`, group: 'magic', label: magicName(b, m.id), choices }];
 }
 
 /** Each attack again with Smite the Wicked, on the targets it hasn't been used on this scene. */
@@ -254,6 +186,10 @@ export function commandsFor(b: Battle, actor: Combatant): Command[] {
   });
   if (gear.length > 0)
     commands.push({ key: 'gear', group: 'gear', label: 'Ready or stow', choices: gear });
+  const potion = potionCommand(b, actor);
+  if (potion) commands.push(potion);
+  const held = heldMagicCommand(b, actor);
+  if (held) commands.push(held);
   const moves = moveChoices(b, actor);
   if (moves.length > 0)
     commands.push({ key: 'move', group: 'move', label: 'Change slot', choices: moves });

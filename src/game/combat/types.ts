@@ -1,5 +1,6 @@
 // Battle state for the combat engine. The engine mutates a Battle it owns; callers get it back
 // from runBattle or step through it round by round.
+import type { AbilityEffect } from '../../data/schemas/index.ts';
 import type { ArmorClassInput } from '../../rules/armor-class.ts';
 import type {
   Attribute,
@@ -37,6 +38,8 @@ export interface Attack {
   blunt: boolean;
   /** Poison or paralysis on a hit (Phase 14a). */
   onHit: OnHit | null;
+  /** A magic weapon's special ability (SRD 4.9.3). */
+  magic: AbilityEffect | null;
 }
 
 export interface CasterState {
@@ -190,6 +193,8 @@ export interface Combatant {
    * points ignored from each harm, and Wind Walking's mist.
    */
   flame: number;
+  /** Oil of Edge on the weapon for the rest of the fight (docs/rules-adaptation.md, Potions). */
+  edge: { hit: number; damage: number } | null;
   stone: number;
   misted: boolean;
   /** A Skinshifter's alternate form worn now, by index into the character's forms (1.5.15). */
@@ -260,6 +265,10 @@ export type Action =
   /** Hold the turn until right after the named combatant's (Holding); see holdTurn. */
   | { kind: 'hold'; after: string }
   | { kind: 'gear'; item: number; location: 'readied' | 'stowed' }
+  /** Drink a readied potion, or give it to an ally in touch (docs/rules-adaptation.md, Potions). */
+  | { kind: 'potion'; item: number; target: string }
+  /** Use a readied scroll, wand, or staff's spell at a target or row (Scrolls; Devices). */
+  | { kind: 'invoke'; item: number; spell: string; target?: string; row?: number }
   /** Spend the Main Action trying to throw off the Torment of Tumefaction. */
   | { kind: 'shake-off' }
   /** Spend the Main Action taking form again out of Wind Walking's mist. */

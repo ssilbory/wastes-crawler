@@ -31,6 +31,10 @@ import {
   StandingOrderSchema,
 } from './setting-content.ts';
 import { RuinSchema } from './ruin-content.ts';
+import { AlchemyContentSchema } from './alchemy-content.ts';
+import { ScrollContentSchema } from './scroll-content.ts';
+import { DeviceContentSchema } from './device-content.ts';
+import { ForgingContentSchema } from './forging-content.ts';
 import {
   ComponentSchema,
   CraftingRulesSchema,
@@ -226,6 +230,10 @@ export const ContentSchemas = {
   components: z.array(ComponentSchema).min(1),
   mods: z.array(ModSchema).min(1),
   craftsmen: z.array(CraftsmanSchema),
+  alchemy: AlchemyContentSchema,
+  scrolls: ScrollContentSchema,
+  devices: DeviceContentSchema,
+  forging: ForgingContentSchema,
   settingsDefaults: SettingsDefaultsSchema,
   soundCues: z.array(SoundCueSchema).min(1),
   /** The ready-made party offered when setting out with no characters of one's own. */

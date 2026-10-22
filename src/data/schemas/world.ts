@@ -6,8 +6,9 @@ import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { FactionStateSchema } from './faction-content.ts';
 import { RegionSchema } from './overland-content.ts';
 import { LootDiceSchema } from './town-content.ts';
+import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 39;
+export const WORLD_SCHEMA_VERSION = 40;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -170,8 +171,8 @@ export type QuestState = z.infer<typeof QuestStateSchema>;
 export const ProjectSchema = z.strictObject({
   /** The member doing the work; each works on one thing at a time. */
   crafter: z.string().min(1),
-  /** Building gear, installing a mod, or stripping one off (Phase 10b). */
-  kind: z.enum(['gear', 'mod', 'strip']),
+  /** Gear, a mod or stripping one (Phase 10b), a brew, a scroll, a device, or forged magic. */
+  kind: z.enum(['gear', 'mod', 'strip', 'brew', 'scribe', 'device', 'forge']),
   /** The item built, or the item a mod goes on or comes off. */
   item: IdSchema,
   mod: IdSchema.optional(),
@@ -181,6 +182,20 @@ export const ProjectSchema = z.strictObject({
   components: z.array(IdSchema).optional(),
   quality: z.enum(['jury-rigged', 'normal', 'mastercrafted']),
   small: z.literal(true).optional(),
+  /** A brew's batch size (docs/rules-adaptation.md, Potions: Brewing). */
+  doses: z.int().min(1).optional(),
+  /** The spell a scroll being written holds, or the spells a wand or staff will. */
+  spell: IdSchema.optional(),
+  spells: z.array(IdSchema).min(1).optional(),
+  /**
+   * A forging's bonus, ability, and the flaws taken going on after failures; its first attempt's
+   * days; and whether it has just failed, waiting to be started over or gone on with a flaw.
+   */
+  bonus: z.int().min(1).max(3).optional(),
+  ability: IdSchema.optional(),
+  flaws: z.array(IdSchema).min(1).optional(),
+  days: z.int().min(1).optional(),
+  failed: z.literal(true).optional(),
   /** Days of work left; a camp shift is half a day (Sam's call). */
   daysLeft: z.number().positive().multipleOf(0.5),
   /** The town where the parts were bought. */
@@ -206,6 +221,8 @@ export const CommissionSchema = z.strictObject({
   /** The weapon or suit of armor (the field predates magic armor). */
   weapon: IdSchema,
   bonus: z.int().min(1).max(3),
+  /** A special ability asked for besides (SRD 4.9.3). */
+  ability: IdSchema.optional(),
   readyDay: z.int().min(0),
 });
 export type Commission = z.infer<typeof CommissionSchema>;
@@ -399,6 +416,9 @@ export const WorldSaveSchema = z.strictObject({
   /** Each craftsman's month, by id, once the party has visited. */
   craftsmen: z.record(IdSchema, CraftsmanStateSchema),
   commissions: z.array(CommissionSchema),
+  /** Each alchemist's month, by id, once the party has visited, and potions brewing to order. */
+  alchemists: z.record(IdSchema, AlchemistStateSchema),
+  brewOrders: z.array(BrewOrderSchema),
   /**
    * Corpses left by the party's last won fight, as each one's hit dice, and where they lie: a hex
    * key above ground, or dungeon/level/cell below (Phase 14b).

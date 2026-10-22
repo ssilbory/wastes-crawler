@@ -17,6 +17,7 @@ import { raidedText } from '../../render/setting-view.ts';
 import { PartyPanel } from '../world/PartyPanel.tsx';
 import { PurgePanel } from '../world/PurgePanel.tsx';
 import { AntidotePanel } from '../world/AntidotePanel.tsx';
+import { PotionPanel } from '../world/PotionPanel.tsx';
 import { QuestsTab } from './QuestsTab.tsx';
 import { ServicesTab } from './ServicesTab.tsx';
 import { ShopTab } from './ShopTab.tsx';
@@ -26,6 +27,7 @@ import { TrainingTab } from './TrainingTab.tsx';
 import { TravelTab } from './TravelTab.tsx';
 import { WorkshopTab } from './WorkshopTab.tsx';
 import { CraftsmanTab } from './CraftsmanTab.tsx';
+import { AlchemistTab } from './AlchemistTab.tsx';
 import { ArenaTab } from './ArenaTab.tsx';
 import type { BoutStart } from '../../game/world/arena.ts';
 import { PopOut } from '../world/PopOut.tsx';
@@ -41,6 +43,7 @@ const TABS = {
   training: 'Training',
   workshop: 'Workshop',
   craftsman: 'Craftsman',
+  alchemist: 'Alchemist',
   travel: 'Coaches',
   arena: 'Arena',
 } as const;
@@ -130,6 +133,7 @@ export function TownScreen(props: {
             {tab === 'training' && <TrainingTab world={w} act={act} />}
             {tab === 'workshop' && <WorkshopTab world={w} act={act} />}
             {tab === 'craftsman' && <CraftsmanTab world={w} act={act} />}
+            {tab === 'alchemist' && <AlchemistTab world={w} act={act} />}
             {tab === 'travel' && <TravelTab world={w} act={act} onBoard={props.onLeave} />}
             {tab === 'arena' && <ArenaTab world={w} act={act} onBout={props.onBout} />}
           </div>
@@ -146,6 +150,7 @@ export function TownScreen(props: {
           <SettingPanel world={w} inTown onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />
           <AntidotePanel world={w} onChange={props.onChange} />
+          <PotionPanel world={w} onChange={props.onChange} />
           <FactionsPanel world={w} />
         </div>
       </div>

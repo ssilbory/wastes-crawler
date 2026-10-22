@@ -85,7 +85,7 @@ function itemFrom(w: World, data: GameData, id: string, late: boolean): CatalogI
 }
 
 /** The living, conscious PC with the most spare Stowed room. */
-function keeper(w: World, data: GameData): Member | undefined {
+export function keeper(w: World, data: GameData): Member | undefined {
   const room = (m: Member) => {
     const l = memberSheet(data, m).equipment.load;
     return l.stowedLimit - l.stowed;
@@ -133,7 +133,15 @@ export function dropGear(
         tiers.map((t) => [t.bonus, t.weight] as const),
       )
     : 0;
-  return give(w, data, item, quality, bonus);
+  // A quarter of magic finds carry a special ability that fits them (Abilities, Sam's call).
+  const fits = data.content.forging.abilities.filter((a) =>
+    a.targets.includes(item.kind === 'armor' ? 'armor' : 'weapon'),
+  );
+  const ability =
+    magic && w.rng.int(1, 100) <= data.content.forging.dropAbilityChance
+      ? (fits[w.rng.int(0, fits.length - 1)] as (typeof fits)[number]).id
+      : undefined;
+  return give(w, data, item, quality, bonus, ability);
 }
 
 /** Hands a dropped item to the PC with the most room; its value in crowns, or 0 if left behind. */
@@ -143,13 +151,19 @@ function give(
   item: CatalogItem,
   quality: Exclude<DropTier, 'normal'> | undefined,
   bonus: number,
+  ability?: string,
 ): number {
   const m = keeper(w, data);
   if (!m) return 0;
   const people = findPeople(data, m.character.people) as People;
   const entry = sizedLine(
     data,
-    { ...one(item.id), ...(quality ? { quality } : {}), ...(bonus ? { bonus } : {}) },
+    {
+      ...one(item.id),
+      ...(quality ? { quality } : {}),
+      ...(bonus ? { bonus } : {}),
+      ...(ability ? { ability } : {}),
+    },
     fitSize(people),
   );
   const label = lineLabel(data, entry);

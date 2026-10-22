@@ -1,0 +1,146 @@
+{
+  "skill": "alchemy",
+  "attributes": ["int"],
+  "brewDays": 7,
+  "batches": [
+    { "doses": 1, "difficulty": 0 },
+    { "doses": 2, "difficulty": 1 },
+    { "doses": 4, "difficulty": 2 }
+  ],
+  "assistBonus": 1,
+  "stockMultiplier": 4,
+  "maxStock": 4,
+  "maxDoses": 2,
+  "drops": { "boss": 30, "humanoid": 1 },
+  "potions": [
+    {
+      "id": "healing-draught",
+      "name": "Healing Draught",
+      "source": {
+        "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
+        "heading": "4.9.2 Potions"
+      },
+      "cost": { "amount": 10, "unit": "sp" },
+      "encumbrance": 1,
+      "weightless": false,
+      "freeWhenWorn": false,
+      "bundlesOfThree": true,
+      "text": "A red, bitter draught that knits flesh: 2d6 hit points and 1 System Strain. It brings back the Mortally Wounded.",
+      "effect": { "kind": "heal", "dice": { "count": 2, "sides": 6, "modifier": 0 }, "strain": 1 }
+    },
+    {
+      "id": "greater-healing",
+      "name": "Greater Healing",
+      "source": {
+        "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
+        "heading": "4.9.2 Potions"
+      },
+      "cost": { "amount": 30, "unit": "sp" },
+      "encumbrance": 1,
+      "weightless": false,
+      "freeWhenWorn": false,
+      "bundlesOfThree": true,
+      "text": "A thick, dark draught brewed twice over: 4d6 hit points and 1 System Strain. It brings back the Mortally Wounded.",
+      "effect": { "kind": "heal", "dice": { "count": 4, "sides": 6, "modifier": 0 }, "strain": 1 }
+    },
+    {
+      "id": "restorative-tonic",
+      "name": "Restorative Tonic",
+      "source": {
+        "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
+        "heading": "4.9.2 Potions"
+      },
+      "cost": { "amount": 20, "unit": "sp" },
+      "encumbrance": 1,
+      "weightless": false,
+      "freeWhenWorn": false,
+      "bundlesOfThree": true,
+      "text": "A clear tonic that settles a worn body: 1 System Strain eased, even while Hungry, Sleepless, or Cold. Out of fights only.",
+      "effect": { "kind": "ease-strain", "amount": 1 }
+    },
+    {
+      "id": "waking-tonic",
+      "name": "Waking Tonic",
+      "source": {
+        "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
+        "heading": "4.9.2 Potions"
+      },
+      "cost": { "amount": 10, "unit": "sp" },
+      "encumbrance": 1,
+      "weightless": false,
+      "freeWhenWorn": false,
+      "bundlesOfThree": true,
+      "text": "A hot, peppery tonic: the drinker is no longer Sleepless or Cold, until the conditions come again. Out of fights only.",
+      "effect": { "kind": "wake" }
+    },
+    {
+      "id": "oil-of-edge",
+      "name": "Oil of Edge",
+      "source": {
+        "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
+        "heading": "4.9.2 Potions"
+      },
+      "cost": { "amount": 20, "unit": "sp" },
+      "encumbrance": 1,
+      "weightless": false,
+      "freeWhenWorn": false,
+      "bundlesOfThree": true,
+      "text": "A silvery oil rubbed on a blade or point: +1 to hit and damage for the rest of the fight. In fights only.",
+      "effect": { "kind": "edge", "hit": 1, "damage": 1 }
+    },
+    {
+      "id": "shadow-draught",
+      "name": "Shadow Draught",
+      "source": {
+        "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
+        "heading": "4.9.2 Potions"
+      },
+      "cost": { "amount": 50, "unit": "sp" },
+      "encumbrance": 1,
+      "weightless": false,
+      "freeWhenWorn": false,
+      "bundlesOfThree": true,
+      "text": "A grey draught passed round the party: like The Excellent Transpicuous Transformation, it lets the party slip away from a group that spotted it first.",
+      "effect": { "kind": "vanish" }
+    }
+  ],
+  "recipes": [
+    { "item": "healing-draught", "difficulty": 8, "weight": 6 },
+    { "item": "greater-healing", "difficulty": 10, "weight": 2 },
+    { "item": "restorative-tonic", "difficulty": 9, "weight": 3 },
+    { "item": "waking-tonic", "difficulty": 8, "weight": 3 },
+    { "item": "oil-of-edge", "difficulty": 9, "weight": 3 },
+    { "item": "shadow-draught", "difficulty": 10, "weight": 1 },
+    { "item": "antidote", "difficulty": 8, "weight": 0 }
+  ],
+  "alchemists": [
+    {
+      "id": "alchemist-westhold",
+      "name": "Mother Vell",
+      "town": "westhold",
+      "wares": ["healing-draught", "greater-healing", "waking-tonic", "restorative-tonic"],
+      "text": "A stooped herbwife who boils roots in the back of a tannery. Her draughts taste of bark and work better than they should."
+    },
+    {
+      "id": "alchemist-eastmarch",
+      "name": "Corwin Ashby",
+      "town": "eastmarch",
+      "wares": ["healing-draught", "restorative-tonic", "oil-of-edge", "shadow-draught"],
+      "text": "A former army surgeon who brews in copper stills he salvaged from the old imperial depot."
+    },
+    {
+      "id": "alchemist-cinderhold",
+      "name": "Brakka Ashtongue",
+      "town": "cinderhold",
+      "wares": ["healing-draught", "greater-healing", "oil-of-edge", "waking-tonic"],
+      "text": "An orc brewer who learned her trade dosing a legion. She still measures by the war-cup."
+    },
+    {
+      "id": "alchemist-gutterwick",
+      "name": "Pilt Fennick",
+      "town": "gutterwick",
+      "wares": ["healing-draught", "restorative-tonic", "shadow-draught", "greater-healing"],
+      "text": "A goblin who distils things in jars he won't let anyone see into. The temple buys his tonics by the case."
+    }
+  ]
+}

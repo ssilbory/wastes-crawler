@@ -137,8 +137,8 @@ describe('what drops', () => {
   });
 
   it('can drop a magic weapon or suit of armor in a boss fight', () => {
-    // The magic roll, the foe, weapon over armor, then a +2.
-    const w = scripted([data.content.craftingRules.drops.magicChance, 0, 2, 8]);
+    // The magic roll, the foe, weapon over armor, a +2, then no ability (Abilities).
+    const w = scripted([data.content.craftingRules.drops.magicChance, 0, 2, 8, 100]);
     const before = snapshot(w);
     // The sword's 100 crowns and a +2 commission's 800.
     expect(dropGear(w, data, ['knight-or-minor-hero'], BOSS)).toBe(900);
@@ -149,6 +149,14 @@ describe('what drops', () => {
       bonus: 2,
     });
     expect(w.log.at(-1)).toContain('Sword, Long +2');
+  });
+
+  it('gives a quarter of boss magic a special ability that fits it', () => {
+    // As above, then the ability roll comes and the first weapon ability.
+    const w = scripted([1, 0, 2, 1, data.content.forging.dropAbilityChance, 0]);
+    const before = snapshot(w);
+    dropGear(w, data, ['knight-or-minor-hero'], BOSS);
+    expect(dropped(before, w)?.entry).toMatchObject({ bonus: 1, ability: 'flaming' });
   });
 
   it('falls back to the ordinary roll when a boss fight’s magic doesn’t come', () => {
@@ -184,8 +192,8 @@ describe('what drops', () => {
   });
 
   it('rolls no fine weapon when the ordinary drop or boss magic comes', () => {
-    // Boss magic, foe, weapon, +1: no fine roll is drawn between them.
-    const w = scripted([1, 0, 2, 1]);
+    // Boss magic, foe, weapon, +1, no ability: no fine roll is drawn between them.
+    const w = scripted([1, 0, 2, 1, 100]);
     dropGear(w, data, ['knight-or-minor-hero'], BOSS);
     expect(() => w.rng.int(1, 100)).toThrow('ran out of faces');
   });
@@ -228,7 +236,8 @@ describe('what drops', () => {
 
 describe('a drop’s cost in loot dice', () => {
   it('cuts the fight’s loot dice, leaving at least three quarters', () => {
-    const w = scripted([1, 0, 1, 2]);
+    // The last face is the potion roll (Potions: Drops): none.
+    const w = scripted([1, 0, 1, 2, 100]);
     atLevel(w, 5);
     const foes = Array<string>(8).fill('skilled-veteran');
     // Sixteen d6s; a 100-crown long sword takes all it can: a quarter of them.
@@ -238,7 +247,7 @@ describe('a drop’s cost in loot dice', () => {
   });
 
   it('pays the full dice when nothing drops, or the fight is worth no XP', () => {
-    let w = scripted([100, 100]);
+    let w = scripted([100, 100, 100]);
     winnings(w, data, [['thug-or-militia', 'thug-or-militia']], WIN);
     expect(w.loot).toEqual([{ count: 2, sides: 6 }]);
     w = scripted([]);

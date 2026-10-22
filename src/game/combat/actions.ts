@@ -14,17 +14,24 @@ import { canAct, targets } from './targeting.ts';
 import type { Action, Battle, CasterState, Combatant } from './types.ts';
 import { followRiders, inSlot } from './mounted.ts';
 import { bind, howl } from './companions.ts';
+import { drinkPotion } from './potions.ts';
+import { bearsRod } from '../character/rods.ts';
+import { invokeHeld } from './held-magic.ts';
 
 /** `aid`: +1 when an ally's aiding check succeeded (SRD 2.3.3). */
 export function stabilize(b: Battle, actor: Combatant, target: Combatant, aid = 0): void {
   if (target.status !== 'dying' || target.amber || b.stabilizedThisRound.has(target.id)) return;
   b.stabilizedThisRound.add(target.id);
-  const check = skillCheck(b.rng, {
-    skill: actor.skills.heal ?? null,
-    attributeModifier: actor.healModifier - actor.ailPenalty,
-    modifier: aid,
-    difficulty: stabilizeDifficulty(b.round - target.fellRound, actor.hasHealKit),
-  });
+  // A Readied Rod of Mending stabilizes with no check (Devices).
+  const mended = bearsRod(b.data, actor.character, 'mending');
+  const check = mended
+    ? { success: true }
+    : skillCheck(b.rng, {
+        skill: actor.skills.heal ?? null,
+        attributeModifier: actor.healModifier - actor.ailPenalty,
+        modifier: aid,
+        difficulty: stabilizeDifficulty(b.round - target.fellRound, actor.hasHealKit),
+      });
   if (!check.success) {
     say(b, `${actor.name} tries to stabilize ${target.name}, and fails.`);
     return;
@@ -133,6 +140,12 @@ export function act(b: Battle, actor: Combatant, action: Action): void {
     }
     case 'gear':
       readyOrStow(b, actor, action.item, action.location);
+      return;
+    case 'potion':
+      drinkPotion(b, actor, action.item, action.target);
+      return;
+    case 'invoke':
+      invokeHeld(b, actor, action);
       return;
     // Holding is done by holdTurn before the turn is played; here it would only waste it.
     case 'hold':

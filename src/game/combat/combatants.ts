@@ -1,6 +1,6 @@
 // Combatants from saved characters, with every sheet value folded in; the defaults every
 // combatant starts from. SRD monsters are built in monster-combatant.ts.
-import type { Character } from '../../data/schemas/index.ts';
+import type { Ability, Character } from '../../data/schemas/index.ts';
 import { killingBlowBonus } from '../../rules/combat.ts';
 import { coldFleshAc } from '../../rules/necromancer.ts';
 import { characterLevel } from '../../rules/progression.ts';
@@ -89,6 +89,7 @@ export function base(
     summoned: null,
     servant: false,
     flame: 0,
+    edge: null,
     stone: 0,
     misted: false,
     form: null,
@@ -116,6 +117,12 @@ export function base(
 }
 
 /** A PC with every sheet value, focus effect, and class ability folded in, in `form` if any. */
+/** The level of a character's first mage class: what their spells go off at. */
+export const casterLevelOf = (data: GameData, c: Character): number =>
+  Object.entries(c.classes.levels).find(
+    ([cls, l]) => l >= 1 && classOption(data, cls)?.mage,
+  )?.[1] ?? 0;
+
 export function pcCombatant(
   data: GameData,
   c: Character,
@@ -149,6 +156,10 @@ export function pcCombatant(
       twoHanded: traits.includes('two-handed'),
       blunt: data.content.equipmentRules.bluntWeapons.includes(a.id),
       onHit: null,
+      // Character loading keeps abilities to real ones.
+      magic: a.ability
+        ? (data.content.forging.abilities.find((x) => x.id === a.ability) as Ability).effect
+        : null,
     };
   });
   const worn = c.inventory.filter((e) => e.location === 'worn').map((e) => findItem(data, e.id));
@@ -156,10 +167,7 @@ export function pcCombatant(
   const ranged = effects.flatMap((e) => (e.kind === 'ranged-in-melee' ? [e.modifier] : []));
   const init = effects.flatMap((e) => (e.kind === 'initiative' ? [e] : []));
   const magic = sheet.magic;
-  const casterLevel =
-    Object.entries(c.classes.levels).find(
-      ([cls, l]) => l >= 1 && classOption(data, cls)?.mage,
-    )?.[1] ?? 0;
+  const casterLevel = casterLevelOf(data, c);
   return {
     ...base(id, c.name),
     side: 'party',

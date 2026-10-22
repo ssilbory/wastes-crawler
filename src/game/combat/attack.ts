@@ -15,6 +15,7 @@ import {
 import { crossWall, cutVines, mantleCut, subdue } from './conditions.ts';
 import { effectiveAc, harm, save, say } from './damage.ts';
 import { afterHit, resisted } from './specials.ts';
+import { abilityDamage, drink } from './weapon-abilities.ts';
 import { negatesUndead } from './reactions.ts';
 import { counterAttack, hurl } from './vowed.ts';
 import { attackSteps, canAct, hitModifier, rangedModifier } from './targeting.ts';
@@ -48,7 +49,7 @@ export function attackInput(
   bonus: number,
 ): AttackInput {
   return {
-    attackBonus: attack.hit + bonus,
+    attackBonus: attack.hit + bonus + (actor.edge?.hit ?? 0),
     attributeModifier: 0,
     skill: 0,
     modifier: rangedModifier(b, actor, attack) + hitModifier(b, actor),
@@ -149,7 +150,7 @@ function strike(
         dice,
         attributeModifier: 0,
         // Flame Without End adds to the hit's damage but not to Shock (4.5.0).
-        bonus: attack.damageBonus + blessed + actor.flame,
+        bonus: attack.damageBonus + blessed + actor.flame + (actor.edge?.damage ?? 0),
         shock: attack.mode === 'melee' ? attack.shock : null,
         shockBonus: blessed,
       },
@@ -179,11 +180,12 @@ function strike(
     say(b, `${rider.name} turns ${target.name} aside from ${actor.name}'s blow.`);
     return;
   }
-  const damage = blow + venom(b, actor, attack, target);
+  const damage = blow + venom(b, actor, attack, target) + abilityDamage(b, attack, target);
   record(b, 'hit', actor, target, damage);
   if (subdue(b, actor, target, damage)) return;
   say(b, `${actor.name} hits ${target.name} with ${attack.name} for ${damage}.`);
   harm(b, target, damage);
+  drink(b, actor, attack, target);
   afterHit(b, attack, target);
   hurl(b, actor, target);
 }
