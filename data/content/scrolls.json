@@ -1,0 +1,22 @@
+{
+  "skill": "scribing",
+  "attributes": ["int"],
+  "scroll": {
+    "id": "scroll",
+    "name": "Scroll",
+    "source": {
+      "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
+      "heading": "4.9.1 Scrolls"
+    },
+    "cost": { "amount": 20, "unit": "sp" },
+    "encumbrance": null,
+    "weightless": true,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
+  "days": 7,
+  "difficulty": 7,
+  "assistBonus": 1,
+  "read": { "skill": "magic", "attributes": ["int", "cha"], "difficulty": 8, "fizzle": 2 },
+  "dropShare": 30
+}

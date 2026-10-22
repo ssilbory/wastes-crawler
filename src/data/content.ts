@@ -35,6 +35,7 @@ import components from '../../data/content/components.json';
 import mods from '../../data/content/mods.json';
 import craftsmen from '../../data/content/craftsmen.json';
 import alchemy from '../../data/content/alchemy.json';
+import scrolls from '../../data/content/scrolls.json';
 import settingsDefaults from '../../data/content/settings-defaults.json';
 import soundCues from '../../data/content/sound-cues.json';
 import starterParty from '../../data/content/starter-party.json';
@@ -112,6 +113,7 @@ export function loadContent(): ContentData {
     mods: ContentSchemas.mods.parse(mods),
     craftsmen: ContentSchemas.craftsmen.parse(craftsmen),
     alchemy: ContentSchemas.alchemy.parse(alchemy),
+    scrolls: ContentSchemas.scrolls.parse(scrolls),
     settingsDefaults: ContentSchemas.settingsDefaults.parse(settingsDefaults),
     soundCues: ContentSchemas.soundCues.parse(soundCues),
     starterParty: ContentSchemas.starterParty.parse(starterParty),

@@ -32,6 +32,11 @@
       "id": "alchemy",
       "name": "Alchemy",
       "description": "Brew potions, tonics, and oils: know a reagent, distil an essence, and tell a cure from a poison. Brewing a potion takes the Alchemy skill and an Int/Alchemy check against the potion's difficulty."
+    },
+    {
+      "id": "scribing",
+      "name": "Scribing",
+      "description": "Inscribe spells into scrolls that anyone can read later: ink, sigil, and the patience to bind a spell to the page. Writing a scroll takes Scribing, a spell the scribe knows, and an Int/Scribing check."
     }
   ],
   "trade": {

@@ -1,5 +1,6 @@
 // Text for crafting under way. Pure reads of game state.
 import type { Project, Site } from '../data/schemas/index.ts';
+import { gameSpells, type GameSpell } from '../data/spells.ts';
 import type { GameData } from '../game/character/context.ts';
 import { findItem, type CatalogItem } from '../game/character/items.ts';
 import { daysText, tierName } from '../game/world/crafting.ts';
@@ -21,6 +22,8 @@ export function projectText(w: World, data: GameData, p: Project): string {
         ? `stripping ${mod} off the ${item}`
         : p.kind === 'brew'
           ? `brewing ${p.doses as number} × ${item}`
-          : `${tierName(p.quality)}${item}${p.small ? ' (small)' : ''}`;
+          : p.kind === 'scribe'
+            ? `writing a scroll of ${(gameSpells(data.srd, data.content).find((s) => s.id === p.spell) as GameSpell).name}`
+            : `${tierName(p.quality)}${item}${p.small ? ' (small)' : ''}`;
   return `${crafter.character.name}: ${work}, ${days}${where}`;
 }

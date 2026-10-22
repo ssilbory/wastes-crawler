@@ -105,8 +105,16 @@ export function importCharacter(
   for (const skill of Object.keys(c.skills)) {
     if (!isSkill(data, skill)) errors.push(`skills: unknown ${skill}`);
   }
+  const spells = gameSpells(data.srd, data.content);
   for (const item of c.inventory) {
-    if (!findItem(data, item.id)) errors.push(`inventory: unknown ${item.id}`);
+    const found = findItem(data, item.id);
+    if (!found) errors.push(`inventory: unknown ${item.id}`);
+    // A scroll holds one game spell at a caster level; nothing else holds one (SRD 4.9.1).
+    const scroll = found?.kind === 'scroll';
+    if (scroll && !(item.spell && item.casterLevel && spells.some((s) => s.id === item.spell)))
+      errors.push(`inventory: a scroll needs a known spell and caster level`);
+    if (!scroll && (item.spell || item.casterLevel))
+      errors.push(`inventory: ${item.id} can't hold a spell`);
   }
   for (const id of c.arts) {
     if (!data.srd.arts.some((a) => a.id === id)) errors.push(`arts: unknown ${id}`);
