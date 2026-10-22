@@ -259,7 +259,7 @@ export function DungeonScreen(props: {
           <PurgePanel world={w} onChange={props.onChange} />
           <AntidotePanel world={w} onChange={props.onChange} />
           <PotionPanel world={w} onChange={props.onChange} />
-        </SideDock>
+        </div>
       </div>
     </div>
   );
