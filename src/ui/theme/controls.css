@@ -158,3 +158,25 @@ details > summary {
 table {
   border-collapse: collapse;
 }
+
+/* A shortcut key beside a button's label (src/ui/keys.ts). Hidden on touch screens, which have
+   no keys to press. */
+.key-hint {
+  display: inline-block;
+  min-width: 1.3em;
+  margin-right: 6px;
+  padding: 0 3px;
+  font-family: var(--font-term);
+  font-size: 0.95rem;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--muted);
+  border: 1px solid var(--control-line);
+  border-radius: 3px;
+}
+
+@media (hover: none) {
+  .key-hint {
+    display: none;
+  }
+}

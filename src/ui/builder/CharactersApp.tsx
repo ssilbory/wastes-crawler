@@ -14,7 +14,9 @@ import {
   saveDetails,
   sameName,
 } from '../../game/character/roster-edit.ts';
-import { loadRoster, saveRoster } from '../storage.ts';
+import { ConfirmButton } from '../confirm.tsx';
+import { activeSlot, loadRoster, loadWorldText, saveRoster } from '../storage.ts';
+import { launchHash } from '../world/launch.ts';
 import { Builder } from './Builder.tsx';
 import { CharacterList } from './CharacterList.tsx';
 import { data, freshRng } from './data.ts';
@@ -189,10 +191,7 @@ export function CharactersApp() {
       {roster.errors.length > 0 && <p class="hint">Saved roster: {roster.errors.join('; ')}.</p>}
       <main>
         {entries.length === 0 ? (
-          <p class="hint">
-            No characters yet. Make one, import a character file, or set out with the starter party
-            from the title screen.
-          </p>
+          <EmptyRoster onNew={() => open('#/builder/new')} />
         ) : (
           <CharacterList
             entries={entries}
@@ -204,11 +203,42 @@ export function CharactersApp() {
             }}
           />
         )}
-        <p class="hint">
-          Take them into the <a href="#/world">Overland</a> or the <a href="#/arena">arena</a>.
-          Editing or deleting a character here leaves any saved world they travel in alone.
-        </p>
+        {entries.length > 0 && (
+          <p class="hint">
+            Take them into the <a href="#/world">Overland</a> or the <a href="#/arena">arena</a>.
+            Editing or deleting a character here leaves any saved world they travel in alone.
+          </p>
+        )}
       </main>
     </div>
+  );
+}
+
+/**
+ * The roster before anyone is in it: the three ways to get characters, as actions rather than a
+ * line of text. Setting out with the starter party asks first when it would replace a saved world.
+ */
+function EmptyRoster(props: { onNew: () => void }) {
+  const slot = activeSlot();
+  const saved = loadWorldText(slot) !== null;
+  return (
+    <section class="panel empty-roster" aria-label="No characters yet">
+      <h2>No characters yet</h2>
+      <div class="empty-roster-actions">
+        <button type="button" class="create" onClick={props.onNew}>
+          Make a character
+        </button>
+        <ConfirmButton
+          ask={saved}
+          confirm={`Replace slot ${slot}`}
+          onConfirm={() => {
+            location.hash = launchHash('starters');
+          }}
+        >
+          Set out with the starter party
+        </ConfirmButton>
+      </div>
+      <p class="hint">Or bring in characters saved before with Import character files, above.</p>
+    </section>
   );
 }
