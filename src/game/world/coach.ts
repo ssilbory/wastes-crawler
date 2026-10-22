@@ -2,6 +2,7 @@
 // paid through the town's spending threshold, travel along the road by day, nights at waystations
 // with food and shelter, and an ambush check each travel day from the terrain's encounter table.
 import { VIGOR_QUARTER, vigor } from './arts.ts';
+import { MASTERS_VIGOR_QUARTER, mastersVigor } from './vowed-arts.ts';
 import type { CoachRoute, Site } from '../../data/schemas/index.ts';
 import { hexKey, type Hex } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
@@ -89,6 +90,7 @@ function ambush(w: World, data: GameData): void {
 
 function endCoachQuarter(w: World, data: GameData): void {
   vigor(w, data, VIGOR_QUARTER);
+  mastersVigor(w, data, MASTERS_VIGOR_QUARTER);
   if (w.quarter < 3) {
     w.quarter += 1;
     return;

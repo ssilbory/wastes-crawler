@@ -2,7 +2,7 @@
 // Character Creation/1.5.0 Class List/1.5.9 The Healer.md), and from Phase 15 the Necromancer's
 // Unliving Persistence, Master of Bones, and Red Harvest (1.5.14 The Necromancer.md), and in
 // Phase 18a the High Magic spell Prudentially Transient Abnegation of Life, and in Phase 18d the
-// Invincible Citadel.
+// Invincible Citadel, and the Vowed's Revivifying Breath at zero hit points (1.5.17).
 import { roll } from '../../rules/dice.ts';
 import { canPay, payFor } from '../../rules/spell-points.ts';
 import { say } from './log.ts';
@@ -20,6 +20,8 @@ export const artReady = (c: Combatant, art: string): boolean =>
   c.caster.arts.includes(art) &&
   worksNow(c, art) &&
   c.caster.effortUsed < c.caster.effortMax;
+
+export const BREATH = 'revivifying-breath';
 
 /** Commits Effort for the day. */
 export function spendDay(c: CasterState): void {
@@ -181,4 +183,29 @@ export function shelter(b: Battle, target: Combatant): boolean {
     return true;
   }
   return false;
+}
+
+/** Revivifying Breath's 1d6 plus the level, with no System Strain (1.5.17); once a scene. */
+export function breathe(b: Battle, actor: Combatant): void {
+  const c = actor.caster as CasterState;
+  c.usedThisScene.add(BREATH);
+  const healed = roll(b.rng, { count: 1, sides: 6, modifier: c.level }).total;
+  actor.hp = Math.min(actor.maxHp, actor.hp + healed);
+  say(b, `${actor.name} breathes deep and heals ${healed}.`);
+}
+
+/**
+ * Revivifying Breath at zero hit points: as the Vowed falls, if they haven't used it this scene,
+ * it commits all their Effort left for the day and they rise healed.
+ */
+export function breathesAgain(b: Battle, target: Combatant): boolean {
+  const c = target.caster;
+  if (!c?.arts.includes(BREATH) || !worksNow(target, BREATH) || c.usedThisScene.has(BREATH))
+    return false;
+  const left = c.effortMax - c.effortUsed;
+  if (left <= 0) return false;
+  c.effortUsed += left;
+  c.effortDay += left;
+  breathe(b, target);
+  return true;
 }

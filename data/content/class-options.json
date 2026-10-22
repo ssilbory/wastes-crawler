@@ -257,6 +257,43 @@
     }
   },
   {
+    "id": "partial-warrior-vowed",
+    "name": "Monk",
+    "halves": "Vowed/Warrior",
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "vowed",
+          "partial": true,
+          "arts": "vowed-arts-and-unarmed-abilities"
+        }
+      ],
+      "slots": "vowed-arts-and-unarmed-abilities",
+      "startingSpells": 0,
+      "spellsPerLevel": 0,
+      "excludedSpells": []
+    }
+  },
+  {
+    "id": "partial-expert-vowed",
+    "name": "Ascetic",
+    "halves": "Vowed/Expert",
+    "abilities": ["quick-learner"],
+    "mage": {
+      "traditions": [
+        {
+          "tradition": "vowed",
+          "partial": true,
+          "arts": "vowed-arts-and-unarmed-abilities"
+        }
+      ],
+      "slots": "vowed-arts-and-unarmed-abilities",
+      "startingSpells": 0,
+      "spellsPerLevel": 0,
+      "excludedSpells": []
+    }
+  },
+  {
     "id": "healer-partial-mage",
     "name": "Priest of Death",
     "halves": "Necromancer/Healer",
