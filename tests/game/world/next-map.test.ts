@@ -41,7 +41,9 @@ describe('the road to the next map', () => {
     enterRegion(w, 'dark-lands', { col: 6, row: 12 });
     enterTown(w, data, 'cinderhold');
     expect(w.quests['east-road']?.status).toBe('ready');
-    expect(w.log.some((l) => l.includes('Return to Elder Gorvash for the reward.'))).toBe(true);
+    expect(
+      w.log.some((l) => l.includes('Return to Elder Gorvash in Cinderhold (6,12) for the reward.')),
+    ).toBe(true);
     const purse = w.purse;
     expect(turnInQuest(w, data, 'east-road')).toEqual({ ok: true });
     expect(w.purse).toBe(purse + 50);

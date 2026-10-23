@@ -37,7 +37,7 @@ import { useKeys } from '../keys.ts';
 import { openQuests, QuestLog } from './QuestLog.tsx';
 import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
 import { JournalPanel } from './JournalPanel.tsx';
-import { captiveHomes, questTargets } from '../../render/quest-view.ts';
+import { captiveHomes, questTargets, revealedHexes } from '../../render/quest-view.ts';
 import { CoachPanel } from './CoachPanel.tsx';
 import { QuarterPanel } from './QuarterPanel.tsx';
 import { typeOf } from '../../game/world/npcs.ts';
@@ -79,7 +79,7 @@ export function MapScreen(props: {
     [...questTargets(w, data), ...captiveHomes(w, data)],
     entrances,
     grovesHere(w, data),
-    captiveHomes(w, data),
+    revealedHexes(w, data),
   );
   // Zooming in from the whole map closes in on the party.
   const party = cells.find((c) => c.party);

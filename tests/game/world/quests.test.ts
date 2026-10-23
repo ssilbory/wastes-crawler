@@ -119,7 +119,7 @@ describe('slay and scout steps', () => {
     won(w);
     expect(w.quests['bandit-camp']?.status).toBe('ready');
     expect(w.log.join('\n')).toContain(
-      'The Raider Camp: done. Return to Reeve Halda for the reward.',
+      'The Raider Camp: done. Return to Reeve Halda in Rubblegate (3,8) for the reward.',
     );
   });
 

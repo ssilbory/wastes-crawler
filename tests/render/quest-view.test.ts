@@ -7,6 +7,7 @@ import {
   questTargets,
   rewardText,
   townName,
+  revealedHexes,
 } from '../../src/render/quest-view.ts';
 import { addNpc } from '../../src/game/world/npcs.ts';
 import { freeCaptive } from '../../src/game/world/rescue.ts';
@@ -19,15 +20,20 @@ describe('quest view', () => {
     w.quests['bandit-camp'] = { status: 'active', step: 0, acceptedDay: 0 };
     w.quests.letters = { status: 'active', step: 0, acceptedDay: 0 };
     w.quests.watchtower = { status: 'ready', step: 2, acceptedDay: 0 };
+    // The letters go to Grimcairn, where the finished watchtower is paid for too.
     expect(questTargets(w, data)).toEqual([
       { col: 6, row: 12 },
+      { col: 17, row: 4 },
       { col: 17, row: 4 },
     ]);
     const cells = hexCells(regionMap(data, w.region), w, [], 10, questTargets(w, data));
     expect(cells.find((c) => c.key === '6,12')).toMatchObject({ quest: true, terrain: null });
     expect(cells.filter((c) => c.quest)).toHaveLength(2);
     w.quests['bandit-camp'] = { status: 'active', step: 1, acceptedDay: 0 };
-    expect(questTargets(w, data)).toEqual([{ col: 17, row: 4 }]);
+    expect(questTargets(w, data)).toEqual([
+      { col: 17, row: 4 },
+      { col: 17, row: 4 },
+    ]);
   });
 
   it('marks an escort or delivery destination only while the step is under way in its region', () => {
@@ -37,7 +43,14 @@ describe('quest view', () => {
     w.region = 'dark-lands';
     expect(questTargets(w, data)).toEqual([]);
     w.region = 'borderlands';
+    // Done, it marks where it is paid for: Reeve Halda's Rubblegate.
     w.quests.surveyor = { status: 'ready', step: 1, acceptedDay: 0 };
+    expect(questTargets(w, data)).toEqual([{ col: 3, row: 8 }]);
+    w.region = 'dark-lands';
+    expect(questTargets(w, data)).toEqual([]);
+    w.region = 'borderlands';
+    // Paid, or failed, it marks nothing.
+    w.quests.surveyor = { status: 'done', step: 1, acceptedDay: 0 };
     expect(questTargets(w, data)).toEqual([]);
   });
 
@@ -56,13 +69,34 @@ describe('quest view', () => {
     w.quests.surveyor = { status: 'active', step: 1, acceptedDay: 0 };
     expect(questStatus(w, data, 'surveyor')).toBe('');
     for (const [status, text] of [
-      ['ready', 'Done: return for the reward.'],
+      ['ready', 'Done: return to Factor Imre in Scrapmarch (20,8) for the reward.'],
       ['done', 'Done.'],
       ['failed', 'Failed.'],
     ] as const) {
       w.quests.letters = { status, step: 1, acceptedDay: 0 };
       expect(questStatus(w, data, 'letters')).toBe(text);
     }
+  });
+});
+
+describe('revealed hexes (Sam’s call)', () => {
+  it('draws quest goals and rumored ways down as if the party had been there, and only those', () => {
+    const w = world();
+    expect(revealedHexes(w, data)).toEqual([]);
+    w.quests['bandit-camp'] = { status: 'active', step: 0, acceptedDay: 0 };
+    w.rumors = ['old-barrow'];
+    const shown = revealedHexes(w, data);
+    expect(shown).toEqual([
+      { col: 6, row: 12 },
+      { col: 5, row: 10 },
+    ]);
+    const map = regionMap(data, w.region);
+    const cells = hexCells(map, w, [], 10, [], [], [], shown);
+    const camp = cells.find((c) => c.key === '6,12');
+    expect(camp?.terrain).toBe(map.terrainAt({ col: 6, row: 12 }).id);
+    expect(camp?.label).not.toContain('Unexplored');
+    // A neighbor stays fogged.
+    expect(cells.find((c) => c.key === '7,12')?.terrain).toBeNull();
   });
 });
 
