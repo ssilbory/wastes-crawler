@@ -49,7 +49,7 @@ export function WalkPanel(props: {
       if ((e.target as HTMLElement | null)?.closest('input, select, textarea')) return;
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       const action = actionForKey(getSettings(), e.key);
-      if (!action || action === 'search') return;
+      if (!action || action === 'search' || action === 'stairs') return;
       e.preventDefault();
       const now = latest.current as Walk;
       if (action === 'turn-left') setWalk(walkTurn(now, 'left'));

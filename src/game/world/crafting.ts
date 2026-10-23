@@ -222,16 +222,28 @@ export function buyWorkshop(w: World, data: GameData): TownResult {
 export const hasTools = (data: GameData, m: Member) =>
   m.character.inventory.some((e) => e.id === data.content.craftingRules.tools.id);
 
+/** The tools a project is worked with in camp: a brew's or a scroll's own kit (Sam's call). */
+export const projectTools = (data: GameData, p: Pick<Project, 'kind'>): string =>
+  p.kind === 'brew'
+    ? data.content.alchemy.kit.id
+    : p.kind === 'scribe'
+      ? data.content.scrolls.kit
+      : data.content.craftingRules.tools.id;
+
+const carriesFor = (data: GameData, m: Member, p: Project) =>
+  m.character.inventory.some((e) => e.id === projectTools(data, p));
+
 /**
  * The work a party member could do in a camp shift out in the wilds: their own build or mod, not
- * a strip (stripping needs the workshop), with crafting tools in their pack. Null if there is none.
+ * a strip (stripping needs the workshop), with its tools in their pack: crafting tools, or the
+ * kit a brew or a scroll takes. Null if there is none.
  */
 export function campProject(w: World, data: GameData, m: Member): Project | null {
   if (regionMap(data, w.region).siteAt(w.position) !== undefined || w.dungeon) return null;
   const p = w.projects.find(
     (x) => x.crafter === m.id && x.kind !== 'strip' && !x.staying && !x.failed,
   );
-  return p && hasTools(data, m) ? p : null;
+  return p && carriesFor(data, m, p) ? p : null;
 }
 
 /** A camp quarter spent crafting: half a day off the build (Sam's call). */

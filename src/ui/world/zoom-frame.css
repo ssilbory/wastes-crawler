@@ -22,6 +22,15 @@
   height: auto;
 }
 
+.zoom-scroll.zoomed.pannable {
+  cursor: grab;
+}
+
+.zoom-scroll.zoomed.pannable.panning {
+  cursor: grabbing;
+  user-select: none;
+}
+
 .zoom-controls {
   position: absolute;
   top: 10px;

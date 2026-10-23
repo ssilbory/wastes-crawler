@@ -54,6 +54,20 @@ async function keys(page: Page, moves: string) {
   for (const k of moves) await page.keyboard.press(k);
 }
 
+// Sam's ask: Space enters the dungeon here and takes the stairs, and the bar shows the rations.
+test('enters with Space, shows the rations, and climbs out with Space', async ({ page }) => {
+  await startAtBarrow(page);
+  const bar = page.locator('.world-bar');
+  await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+  await page.keyboard.press(' ');
+  await expect(bar).toContainText('The Upper Barrow, facing north');
+  await expect(bar).toContainText(/Rations: (d\d+|none)/);
+  await expect(page.getByRole('button', { name: 'Climb out of The Old Barrow' })).toBeVisible();
+  await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+  await page.keyboard.press(' ');
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
+});
+
 test('enters the barrow from the hex map, walks both levels, and climbs out', async ({ page }) => {
   await startAtBarrow(page);
   await expect(page.locator('[data-hex="5,10"] .dungeon')).toBeVisible();

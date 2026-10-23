@@ -29,12 +29,13 @@ export function HelpControls() {
         </li>
         <li>
           The map opens closed in on what the party knows. −, +, and Fit zoom it, Fit showing the
-          whole map; so do Ctrl with the mouse wheel and a trackpad pinch.
+          whole map; so do Ctrl with the mouse wheel and a trackpad pinch. Zoomed in, drag the map
+          to move about it.
         </li>
         <li>Visit, Enter, and Take buttons appear in the bar on a town, dungeon, or road.</li>
         <li>
-          Keys: H plans a hike and C a camp, Q plays out the quarter, and T visits the town the
-          party stands in.
+          Keys: H plans a hike and C a camp, Q plays out the quarter, T visits the town the party
+          stands in, and Space visits that town or enters the dungeon there.
         </li>
       </ul>
 
@@ -51,8 +52,9 @@ export function HelpControls() {
         </tbody>
       </table>
       <p class="hint">
-        Search (1 turn) looks for secret doors around you; nothing is found in the dark. The map
-        draws itself as you explore. Camp only on safe squares.
+        Search (1 turn) looks for secret doors around you; nothing is found in the dark. Take the
+        stairs climbs to the next level, or out, where there are stairs. The map draws itself as you
+        explore. Camp only on safe squares.
       </p>
 
       <h3>Fights</h3>

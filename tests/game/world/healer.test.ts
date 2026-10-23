@@ -63,6 +63,7 @@ describe('the fallen (Phase 14d)', () => {
       setup: null as never,
       memberIds: [snag.id],
       npcIds: [],
+      riddenIds: [],
       mountIds: [],
       enemies: [['thug-or-militia']],
       captive: null,

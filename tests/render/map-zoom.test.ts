@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
+  dragScroll,
   fitZoom,
   knownBounds,
+  PAN_SLOP,
   refocus,
   stepZoom,
   viewCentre,
@@ -98,5 +100,20 @@ describe('map zoom', () => {
     expect(fitZoom({ x0: 0.4, y0: 0, x1: 0.5, y1: 1 }, frame, map)).toBe(1.5);
     // Too big for any zoom: Fit.
     expect(fitZoom({ x0: 0, y0: 0, x1: 1, y1: 1 }, { width: 400, height: 100 }, map)).toBe(1);
+  });
+
+  it('drags the map against the pointer, past a little slop', () => {
+    const start = { x: 100, y: 100, left: 300, top: 200 };
+    // A shaky click is not a drag.
+    expect(dragScroll(start, { x: 102, y: 103 }, false)).toBeNull();
+    expect(dragScroll(start, { x: 100, y: 100 }, false)).toBeNull();
+    // Past the slop, the scroll moves against the pointer.
+    expect(dragScroll(start, { x: 100 + PAN_SLOP, y: 100 }, false)).toEqual({
+      left: 300 - PAN_SLOP,
+      top: 200,
+    });
+    expect(dragScroll(start, { x: 60, y: 150 }, false)).toEqual({ left: 340, top: 150 });
+    // Once panning, even a small move follows.
+    expect(dragScroll(start, { x: 101, y: 99 }, true)).toEqual({ left: 299, top: 201 });
   });
 });

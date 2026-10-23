@@ -49,6 +49,8 @@ export interface NpcSetup {
   servant?: boolean;
   /** A Beastmaster's companion: its master's index in the party, and its arts' gifts (1.5.4). */
   companion?: { master: number; chosen: boolean; shared: boolean; hitDice: number };
+  /** Carries this party index, fighting from their slot (docs/rules-adaptation.md, Mounts). */
+  rider?: number;
 }
 
 /** A war mount fighting from its rider's slot (docs/rules-adaptation.md, Mounts). */
@@ -149,7 +151,9 @@ function mountCombatant(s: BattleSetup, m: MountSetup, i: number): Combatant {
 
 export function createBattle(s: BattleSetup): Battle {
   const npcs = s.npcs ?? [];
-  if (s.party.length + npcs.length > 2 * ROW_SLOTS) throw new Error('at most eight party members');
+  const slotted = npcs.filter((n) => n.rider === undefined);
+  if (s.party.length + slotted.length > 2 * ROW_SLOTS)
+    throw new Error('at most eight party members');
   const allies = s.allies ?? [];
   if (s.party.length + npcs.length > 0 && allies.length > 0) {
     throw new Error('a side is either characters or monsters');
@@ -177,6 +181,7 @@ export function createBattle(s: BattleSetup): Battle {
       healModifier: n.healer ?? 0,
       hasHealKit: n.healer !== undefined,
       servant: n.servant ?? false,
+      ...(n.rider === undefined ? {} : { rider: `pc-${n.rider}` }),
     })),
     ...(s.mounts ?? []).map((m, i) => mountCombatant(s, m, i)),
     ...monsterRows(s, allies, 'party', 'ally'),

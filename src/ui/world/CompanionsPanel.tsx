@@ -7,6 +7,7 @@ import {
   sendAway,
   swiftHealing,
 } from '../../game/world/companions.ts';
+import { rideCompanion, stepDown } from '../../game/world/companion-mounts.ts';
 import type { TownResult } from '../../game/world/services.ts';
 import type { World } from '../../game/world/types.ts';
 import { companionsView, type BeastmasterView } from '../../render/companions-view.ts';
@@ -20,6 +21,7 @@ const BINDING = "A quarter's work in the wilds while the party rests.";
 
 const WHERE = {
   party: 'with the party',
+  ridden: 'carrying its master',
   away: 'waiting to be called',
   dawn: 'back at dawn',
 } as const;
@@ -44,7 +46,17 @@ function Beastmaster(props: {
             <strong>{v.name}</strong>: {c.name}, {c.kind} ({c.hitDice} HD
             {c.chosen ? ', chosen friend' : ''}) · HP {c.hp}/{c.maxHp} · {WHERE[c.where]}
           </p>
-          {c.where === 'party' && (
+          {v.canRide && (
+            <button type="button" onClick={() => run(() => rideCompanion(w, data, v.id))}>
+              Ride {c.name}
+            </button>
+          )}
+          {c.where === 'ridden' && (
+            <button type="button" onClick={() => run(() => stepDown(w, v.id))}>
+              Get down from {c.name}
+            </button>
+          )}
+          {(c.where === 'party' || c.where === 'ridden') && (
             <button type="button" onClick={() => run(() => sendAway(w, v.id))}>
               Send {c.name} away
             </button>

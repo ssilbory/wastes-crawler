@@ -37,7 +37,7 @@ import { useKeys } from '../keys.ts';
 import { openQuests, QuestLog } from './QuestLog.tsx';
 import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
 import { JournalPanel } from './JournalPanel.tsx';
-import { captiveHomes, questTargets } from '../../render/quest-view.ts';
+import { captiveHomes, questTargets, revealedHexes } from '../../render/quest-view.ts';
 import { CoachPanel } from './CoachPanel.tsx';
 import { QuarterPanel } from './QuarterPanel.tsx';
 import { typeOf } from '../../game/world/npcs.ts';
@@ -79,7 +79,7 @@ export function MapScreen(props: {
     [...questTargets(w, data), ...captiveHomes(w, data)],
     entrances,
     grovesHere(w, data),
-    captiveHomes(w, data),
+    revealedHexes(w, data),
   );
   // Zooming in from the whole map closes in on the party.
   const party = cells.find((c) => c.party);
@@ -90,14 +90,16 @@ export function MapScreen(props: {
   const here = town?.name ?? map.terrainAt(w.position).name;
   const way = wayDownHere(w, data);
   const road = map.exitAt(w.position);
-  // H and C pick the plan, Q plays the quarter out, T visits the town: only while the quarter's
-  // plan is on show, so never over an encounter or on a coach.
+  // H and C pick the plan, Q plays the quarter out, T visits the town, and Space visits the town or
+  // goes down the way here: only while the quarter's plan is on show, so never over an encounter
+  // or on a coach.
   const planning = !w.encounter && !w.coach;
   useKeys({
     h: planning && w.destination !== null ? hike : undefined,
     c: planning ? camp : undefined,
     q: planning ? () => props.onPass(current) : undefined,
     t: planning && town ? props.onTown : undefined,
+    ' ': planning && town ? props.onTown : planning && way ? props.onEnter : undefined,
   });
   return (
     <div class="world map-screen">
@@ -114,12 +116,16 @@ export function MapScreen(props: {
         </div>
         <span class="bar-actions">
           {town && !w.encounter && !w.coach && (
-            <button type="button" aria-keyshortcuts="T" onClick={props.onTown}>
+            <button type="button" aria-keyshortcuts="T Space" onClick={props.onTown}>
               Visit {town.name}
             </button>
           )}
           {way && !w.encounter && !w.coach && (
-            <button type="button" onClick={props.onEnter}>
+            <button
+              type="button"
+              aria-keyshortcuts={town ? undefined : 'Space'}
+              onClick={props.onEnter}
+            >
               Enter {way.name}
               {way.level !== null && ` (for level ${way.level})`}
             </button>
@@ -142,7 +148,7 @@ export function MapScreen(props: {
       </div>
       <div class="world-main">
         <div class="world-left">
-          <ZoomFrame class="map-wrap" focus={partyFocus} start={known} size={{ width, height }}>
+          <ZoomFrame class="map-wrap" pan focus={partyFocus} start={known} size={{ width, height }}>
             <HexMap
               cells={cells}
               width={width}

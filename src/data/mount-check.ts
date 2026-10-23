@@ -20,6 +20,11 @@ export function mountReferenceErrors(srd: SrdData, content: ContentData): string
   const tamed = rules.mounts.flatMap((t) => t.tameFrom);
   for (const id of new Set(tamed.filter((id, i) => tamed.indexOf(id) !== i)))
     errors.push(`mountRules: ${id} tames into more than one mount`);
+  const ridden = rules.companionMounts.map((c) => c.monster);
+  for (const id of ridden)
+    if (!monsters.has(id)) errors.push(`mountRules: rides unknown companion ${id}`);
+  for (const id of new Set(ridden.filter((id, i) => ridden.indexOf(id) !== i)))
+    errors.push(`mountRules: companion ${id} listed twice`);
   if (!gameSkills(srd, content).some((s) => s.id === rules.ride.skill))
     errors.push(`mountRules/ride: unknown skill ${rules.ride.skill}`);
   return errors;

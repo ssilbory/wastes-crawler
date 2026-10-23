@@ -20,6 +20,8 @@ export function alchemyReferenceErrors(srd: SrdData, content: ContentData): stri
     content.craftingRules.tools.id,
   ]);
   for (const p of a.potions) if (taken.has(p.id)) errors.push(`alchemy/potions/${p.id}: id taken`);
+  if (taken.has(a.kit.id) || a.potions.some((p) => p.id === a.kit.id))
+    errors.push(`alchemy/kit: ${a.kit.id} is taken`);
   const brewable = new Set([...a.potions.map((p) => p.id), content.ailments.antidote.id]);
   const recipes = a.recipes.map((r) => r.item);
   for (const r of a.recipes)

@@ -41,6 +41,7 @@ export function tendingBattle(w: World, data: GameData): WorldBattle {
     setup,
     memberIds: party.map((m) => m.id),
     npcIds: npcs.map((n) => n.id),
+    riddenIds: [],
     mountIds: [],
     enemies: [],
     captive: null,

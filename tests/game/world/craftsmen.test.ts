@@ -148,7 +148,8 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
     const w = atHagen();
     expect(() => buyMagic(w, data, 5, 'm-0')).toThrow('no stock line 5');
     w.purse = 700;
-    expect(buyMagic(w, data, 0, 'm-0')).toEqual({ ok: false, reason: 'That costs 750 crowns.' });
+    // A light spear's own 5 crowns plus the +1 stock price.
+    expect(buyMagic(w, data, 0, 'm-0')).toEqual({ ok: false, reason: 'That costs 755 crowns.' });
     w.purse = 800;
     expect(buyMagic(w, data, 0, 'm-0')).toEqual({ ok: true });
     expect(member(w, 'Snag').character.inventory.at(-1)).toEqual({
@@ -174,12 +175,12 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
     w.purse = 100;
     expect(commission(w, data, 'sword-long', 1)).toEqual({
       ok: false,
-      reason: 'Hagen the Smith asks 200 crowns.',
+      reason: 'Hagen the Smith asks 300 crowns.',
     });
     w.purse = 1000;
     expect(commission(w, data, 'sword-long', 1)).toEqual({ ok: true });
     expect(w.components).toEqual({});
-    expect(w.purse).toBe(800);
+    expect(w.purse).toBe(700);
     expect(w.commissions).toEqual([
       { craftsman: 'smith-westhold', weapon: 'sword-long', bonus: 1, readyDay: 30 },
     ]);

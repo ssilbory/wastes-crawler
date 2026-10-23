@@ -106,10 +106,12 @@ export function bindCompanion(
 /** Sends the companion away from the party, freeing its slot; it can be called back. */
 export function sendAway(w: World, memberId: string): TownResult {
   const m = member(w, memberId);
-  const n = companionHere(w, m.id);
+  const n = companionHere(w, m.id) ?? (m.companion?.ridden ? m.companion : undefined);
   if (!n) return no(`${m.character.name}'s companion isn't with the party.`);
   if (w.encounter) return no('Deal with the encounter first.');
-  removeNpc(w, n.id);
+  if (m.companion !== n) removeNpc(w, n.id);
+  delete n.ridden;
+  delete n.remount;
   m.companion = n;
   note(w, `${n.name} slips away, to wait until ${m.character.name} calls.`);
   return { ok: true };
@@ -119,7 +121,7 @@ export function sendAway(w: World, memberId: string): TownResult {
 export function callCompanion(w: World, data: GameData, memberId: string): TownResult {
   const m = member(w, memberId);
   const n = m.companion;
-  if (!n) return no(`${m.character.name} has no companion waiting.`);
+  if (!n || n.ridden) return no(`${m.character.name} has no companion waiting.`);
   if (n.hp <= 0) return no(`${n.name} will return at dawn.`);
   if (!awake(m)) return no(`${m.character.name} is in no state to call.`);
   if (w.encounter) return no('Deal with the encounter first.');
@@ -147,7 +149,7 @@ export function releaseCompanion(w: World, data: GameData, memberId: string): To
 /** Swift Healing outside a fight: Effort for the day heals the companion 1d6 per level. */
 export function swiftHealing(w: World, data: GameData, memberId: string): TownResult {
   const m = member(w, memberId);
-  const n = companionHere(w, m.id);
+  const n = companionHere(w, m.id) ?? (m.companion?.ridden ? m.companion : undefined);
   if (!n) return no(`${m.character.name}'s companion isn't with the party.`);
   if (!artUsable(data, m, 'swift-healing'))
     return no(`${m.character.name} can't use Swift Healing now.`);

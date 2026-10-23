@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { AttributeSchema, IdSchema } from './common.ts';
+import { ComponentTypeSchema } from './crafting-content.ts';
 import { GearSchema } from './gear.ts';
 
 const Percent = z.int().min(0).max(100);
@@ -21,6 +22,13 @@ export const ScrollContentSchema = z.strictObject({
   difficulty: z.int().min(2),
   /** SRD 4.10.0: an apprentice adds this to the check; here, another party member with the skill. */
   assistBonus: z.int().min(0),
+  /** The party pays this share of a scroll's writing cost (Sam's call). */
+  makeFraction: z.number().positive().max(1),
+  /** The gear a scribe carries to write, and to work on a scroll in camp (Sam's call). */
+  kit: IdSchema,
+  /** Components a scroll takes for every `componentLevels` spell levels, rounded up (Sam's call). */
+  components: z.array(z.strictObject({ type: ComponentTypeSchema, count: z.int().min(1) })).min(1),
+  componentLevels: z.int().min(1),
   /** Reading one with too little Magic: the skill, attributes, and base difficulty plus level. */
   read: z.strictObject({
     skill: IdSchema,

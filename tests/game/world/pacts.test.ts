@@ -106,6 +106,7 @@ describe('Pact of Stone and Sea', () => {
       setup: null as never,
       memberIds: [],
       npcIds: [],
+      riddenIds: [],
       mountIds: [],
       enemies: [['thug-or-militia']],
       captive: null,

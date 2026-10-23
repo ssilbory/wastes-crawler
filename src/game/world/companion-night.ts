@@ -8,7 +8,7 @@ import { note } from './members.ts';
 import { placeNpc, removeNpc } from './npcs.ts';
 import type { World } from './types.ts';
 
-export function nightForCompanions(w: World, data: GameData): void {
+export function nightForCompanions(w: World, data: GameData, rested: boolean): void {
   const everyone = [...w.members, ...w.benched];
   const left = new Set<string>();
   for (const n of w.npcs.filter((x) => x.kind === 'companion')) {
@@ -23,6 +23,16 @@ export function nightForCompanions(w: World, data: GameData): void {
   for (const m of everyone) {
     const n = m.companion;
     if (!n || left.has(n.id)) continue;
+    if (n.ridden && n.hp > 0 && !m.dead && w.members.includes(m)) {
+      // Ridden, it heals as NPCs with the party do: on a fed, sheltered night (Mounts).
+      if (rested) n.hp = Math.min(n.maxHp, n.hp + (n.hitDice ?? naturalHitDice(data, n)));
+      continue;
+    }
+    // Its rider gone, a ridden companion goes off to wait (only the living are ever ridden).
+    if (n.ridden) {
+      delete n.ridden;
+      note(w, `${n.name} slips away to wait for ${m.character.name}.`);
+    }
     if (n.hp > 0) {
       n.hp = Math.min(n.maxHp, n.hp + (n.hitDice ?? naturalHitDice(data, n)));
       continue;

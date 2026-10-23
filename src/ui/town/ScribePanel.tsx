@@ -3,9 +3,12 @@ import {
   canScribe,
   scribeDifficulty,
   scribesOf,
-  scrollListed,
+  scrollCost,
+  scrollParts,
+  writingKitName,
   startScroll,
 } from '../../game/world/scribing.ts';
+import { partsText } from '../../game/world/components.ts';
 import { priceHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
 import { daysText } from '../../game/world/wording.ts';
@@ -58,13 +61,14 @@ export function ScribePanel(props: { world: World; act: Act }) {
               </label>
               <p class="hint">
                 Int/Scribing against {scribeDifficulty(data, s.id)}, +1 with another scribe in the
-                party; a failed scroll is lost.
+                party; a failed scroll is lost. Takes a {writingKitName(data)} and{' '}
+                {partsText(scrollParts(data, s.id))}.
               </p>
               <button
                 type="button"
                 onClick={() => props.act(() => startScroll(w, data, m.id, s.id))}
               >
-                Start ({crowns(priceHere(w, data, scrollListed(data, s.id)))},{' '}
+                Start ({crowns(priceHere(w, data, scrollCost(data, s.id)))},{' '}
                 {daysText(data.content.scrolls.days)})
               </button>
             </>

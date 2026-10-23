@@ -34,5 +34,15 @@ export const MountRulesSchema = z.strictObject({
   }),
   /** Added to the watcher's slip-away check when every PC rides or is a centaur. */
   slipAwayBonus: z.int().min(0),
+  /**
+   * Beasts a Beastmaster can ride as their companion, and who they carry (Sam's call): a ridden
+   * companion fights from its master's slot above ground and takes no NPC slot.
+   */
+  companionMounts: z.array(
+    z.strictObject({
+      monster: IdSchema,
+      riderSizes: z.array(z.enum(['small', 'standard'])).min(1),
+    }),
+  ),
 });
 export type MountRules = z.infer<typeof MountRulesSchema>;

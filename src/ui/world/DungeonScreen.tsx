@@ -48,10 +48,12 @@ import { lightText, turnText } from '../../render/light-view.ts';
 import type { KeyAction } from '../../data/schemas/index.ts';
 import { actionForKey } from '../../game/settings.ts';
 import { getSettings } from '../settings-store.ts';
+import { CONTROLS } from '../keys.ts';
+import { keyLabel } from '../../render/settings-view.ts';
 import { play } from '../sound.ts';
 
-/** What each remappable action does here; Search is handled with the other actions. */
-const MOVES: Record<Exclude<KeyAction, 'search'>, Move> = {
+/** What each remappable move does here; Search and the stairs are handled on their own. */
+const MOVES: Record<Exclude<KeyAction, 'search' | 'stairs'>, Move> = {
   forward: { step: 'forward' },
   back: { step: 'back' },
   'turn-left': { turn: 'left' },
@@ -88,18 +90,33 @@ export function DungeonScreen(props: {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
       if (target?.closest('input, select, textarea')) return;
+      if (document.querySelector('[aria-modal="true"]')) return;
       // Ctrl, Cmd and Alt chords belong to the browser (find, save), not the dungeon.
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       // Keys come from the settings (docs/plan.md, Phase 11: key remapping).
       const action = actionForKey(getSettings(), e.key);
       if (!action) return;
+      // Space presses a focused button, as the browser does, before it takes the stairs.
+      if (e.key === ' ' && target?.closest(CONTROLS)) return;
       e.preventDefault();
-      if (action === 'search') act(() => search(w, data));
+      if (action === 'stairs') {
+        if (stairsLabel && !w.encounter) climb();
+      } else if (action === 'search') act(() => search(w, data));
       else move(MOVES[action]);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   });
+  const climb = () => {
+    takeStairs(w, data);
+    setBump(null);
+    props.onChange();
+  };
+  /** The keys bound to an action, for screen readers, as aria-keyshortcuts names them. */
+  const keysFor = (action: KeyAction) =>
+    getSettings()
+      .keys[action].map((k) => (k === ' ' ? 'Space' : keyLabel(k)))
+      .join(' ') || undefined;
   /** Runs an action and shows why it was refused, if it was. */
   const act = (action: () => TownResult) => {
     const r = action();
@@ -125,6 +142,7 @@ export function DungeonScreen(props: {
           </span>
           <span class="turn">{turnText(w)}</span>
           <span class="light">{lightText(w)}</span>
+          <span>Rations: {w.rations === 0 ? 'none' : `d${w.rations}`}</span>
         </div>
         <span class="bar-actions">
           <PartyButtons onOpen={props.onOpen} />
@@ -209,14 +227,7 @@ export function DungeonScreen(props: {
                 </div>
               )}
               {stairsLabel && !w.encounter && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    takeStairs(w, data);
-                    setBump(null);
-                    props.onChange();
-                  }}
-                >
+                <button type="button" aria-keyshortcuts={keysFor('stairs')} onClick={climb}>
                   {stairsLabel}
                 </button>
               )}

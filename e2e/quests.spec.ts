@@ -69,7 +69,9 @@ test('takes a quest in town, finishes it on the map, and collects the reward', a
   const quests = page.getByRole('region', { name: 'Quests' });
   await expect(quests).toContainText('The Raider Camp');
   await walk(page, '6,12', async () => (await log.innerText()).includes('The Raider Camp: done.'));
-  await expect(quests).toContainText('Done: return for the reward.');
+  await expect(quests).toContainText(
+    'Done: return to Reeve Halda in Rubblegate (3,8) for the reward.',
+  );
   await page.screenshot({ path: testInfo.outputPath('quest-done.png'), fullPage: true });
 
   await walk(page, '3,8', () => page.getByRole('button', { name: 'Visit Rubblegate' }).isVisible());

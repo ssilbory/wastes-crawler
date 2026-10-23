@@ -102,6 +102,10 @@ export function catalog(data: GameData): CatalogItem[] {
     ((g) => ({ kind: 'gear' as const, id: g.id, name: g.name, cost: g.cost, gear: g }))(
       data.content.craftingRules.tools,
     ),
+    // The alchemist's kit a brewer carries (Sam's call).
+    ((g) => ({ kind: 'gear' as const, id: g.id, name: g.name, cost: g.cost, gear: g }))(
+      data.content.alchemy.kit,
+    ),
     ...data.content.alchemy.potions.map((p) => ({
       kind: 'potion' as const,
       id: p.id,

@@ -7,6 +7,7 @@ import type { Dungeon, DungeonLevel, DungeonState, Ruin } from '../../data/schem
 import { ahead, cellKey, turn, type Cell, type Facing } from '../../rules/grid.ts';
 import { hexKey } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
+import { dismountForDungeon, remountOnSurface } from '../world/companion-mounts.ts';
 import { note } from '../world/members.ts';
 import { endQuarter } from '../world/quarter.ts';
 import { emit } from '../world/bus.ts';
@@ -128,6 +129,7 @@ export function enterDungeon(w: World, data: GameData): TownResult {
     sensed: known.sensed,
   };
   note(w, `The party ${goesDown(data, d.id) ? 'goes down into' : 'enters'} ${d.name}.`);
+  dismountForDungeon(w);
   drawKits(w);
   kindle(w);
   arrive(w, data, d.entry.level, d.entry.at, d.entry.facing);
@@ -194,6 +196,7 @@ export function takeStairs(w: World, data: GameData): TownResult {
     chartDungeon(w, data);
     w.dungeon = null;
     douse(w);
+    remountOnSurface(w);
   } else arrive(w, data, link.to.level, link.to.at, link.to.facing);
   endQuarter(w, data);
   return { ok: true };

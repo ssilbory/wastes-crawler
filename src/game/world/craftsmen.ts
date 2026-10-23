@@ -4,12 +4,12 @@
 // armor (4.9.3) at the SRD's creation prices (vendor/wwn-srd/4.0 Magic and Spellcasting/4.10.0). What the party pays them goes
 // back into the pool, and a quarter of it counts toward the town's spending threshold. The month's
 // stock is drawn when the party calls on them, so arriving in town rolls nothing.
-import type { Craftsman, CraftsmanState } from '../../data/schemas/index.ts';
+import type { Cost, Craftsman, CraftsmanState } from '../../data/schemas/index.ts';
 import { roll } from '../../rules/dice.ts';
 import { toTenths } from '../../rules/economy.ts';
 import type { GameData } from '../character/context.ts';
 import { fitSize, sizedLine } from '../character/gear.ts';
-import { findItem } from '../character/items.ts';
+import { findItem, tenths } from '../character/items.ts';
 import { findPeople } from '../character/people.ts';
 import type { People } from '../../data/schemas/index.ts';
 import { roomFor } from './party-load.ts';
@@ -185,6 +185,10 @@ export function partyMember(w: World, id: string): Member {
   return m;
 }
 
+/** A ready-made magic weapon or suit: its own price plus its bonus's stock price. */
+export const magicStockPrice = (data: GameData, id: string, bonus: number) =>
+  toTenths(tenths(findItem(data, id)?.cost as Cost) / 10 + tierOf(data, bonus).stockPrice);
+
 /** Buys a ready-made magic weapon or suit of armor from the month's stock. */
 export function buyMagic(w: World, data: GameData, index: number, memberId: string): TownResult {
   const shop = open(w, data);
@@ -193,7 +197,7 @@ export function buyMagic(w: World, data: GameData, index: number, memberId: stri
   const item = st.stock[index];
   if (!item) throw new Error(`no stock line ${index}`);
   const m = partyMember(w, memberId);
-  const price = tierOf(data, item.bonus).stockPrice;
+  const price = magicStockPrice(data, item.weapon, item.bonus);
   if (!pay(w, data, c, st, price)) return no(`That costs ${price} crowns.`);
   st.stock = st.stock.filter((_, i) => i !== index);
   giveMagic(data, m, item.weapon, item.bonus);

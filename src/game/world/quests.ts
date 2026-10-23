@@ -1,7 +1,7 @@
 // Quest progress (docs/rules-adaptation.md, Quests in Phase 6): each quest runs its steps in order,
 // moved on by world events from the bus. Slay steps wait at a hex as a fixed encounter; scout steps
 // are reached; deliver and escort steps end in a town. A deadline or an escort's death fails it.
-import type { Objective, Quest, QuestState } from '../../data/schemas/index.ts';
+import type { Objective, Quest, QuestState, Site } from '../../data/schemas/index.ts';
 import { hexKey } from '../../rules/hex.ts';
 import type { Cell } from '../../rules/grid.ts';
 import { levelOf } from '../dungeon/explore.ts';
@@ -69,7 +69,7 @@ function advance(w: World, data: GameData, id: string): void {
   st.step += 1;
   if (st.step >= q.objectives.length) {
     st.status = 'ready';
-    note(w, `${q.name}: done. Return to ${payerName(data, q)} for the reward.`);
+    note(w, `${q.name}: done. Return to ${payerPlace(data, q)} for the reward.`);
     return;
   }
   note(w, `${q.name}: ${(q.objectives[st.step] as Objective).text}`);
@@ -87,6 +87,21 @@ export const payerOf = (q: Quest): string => q.payer ?? q.giver;
 export function payerName(data: GameData, q: Quest): string {
   // Content checks guarantee every quest's payer exists.
   return (data.content.missionGivers.find((g) => g.id === payerOf(q)) as { name: string }).name;
+}
+
+/** The town where a finished quest is paid for, with its region; content checks keep it real. */
+export function payerTown(data: GameData, q: Quest): Site & { region: string } {
+  const town = (data.content.missionGivers.find((g) => g.id === payerOf(q)) as { town: string })
+    .town;
+  return data.content.regions
+    .flatMap((r) => r.sites.map((s) => ({ ...s, region: r.id })))
+    .find((s) => s.id === town) as Site & { region: string };
+}
+
+/** Where to go for a finished quest's reward: "Old Hesk in Rubblegate (4,7)". */
+export function payerPlace(data: GameData, q: Quest): string {
+  const town = payerTown(data, q);
+  return `${payerName(data, q)} in ${town.name} (${hexKey(town)})`;
 }
 
 /** Ends a quest as failed, sending any escort away. */

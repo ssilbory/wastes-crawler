@@ -9,6 +9,7 @@ export const KeyActionSchema = z.enum([
   'step-left',
   'step-right',
   'search',
+  'stairs',
 ]);
 export type KeyAction = z.infer<typeof KeyActionSchema>;
 

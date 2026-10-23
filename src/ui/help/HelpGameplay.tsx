@@ -58,6 +58,23 @@ export function HelpGameplay() {
         weighs one item: porters, pack beasts, and mounts carry it first. If nobody can carry it,
         the smallest dice are left behind. Hirelings take a share of loot instead of wages.
       </p>
+
+      <h3>Riding</h3>
+      <p>
+        Buy a mount on a town's Stable tab, then pick its rider in the Mounts panel, in town or on
+        the map. Each PC rides one mount; a Riding Goat carries only Goblins and Gnomes, and
+        centaurs never ride. A mount carries less gear with a rider, and can't take one while it
+        carries more than that. Mounts don't travel faster, but a party that all rides gets +2 to
+        slip away from a group it spots. Mounts wait at a dungeon's entrance. A War Boar fights from
+        its rider's slot once the rider calms it (Cha/Ride against 8); the Rider focus skips the
+        roll.
+      </p>
+      <p>
+        A Beastmaster can ride a big enough companion (Ride in the Companions panel). It then fights
+        from its master's slot without a check and frees its NPC slot, but carries no gear and
+        counts as that PC's mount. Underground it steps down into a slot of its own, or waits at the
+        entrance if there is no room, and is ridden again back on the surface.
+      </p>
     </details>
   );
 }
