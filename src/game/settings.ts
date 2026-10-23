@@ -7,11 +7,26 @@ import type { GameData } from './character/context.ts';
 export const defaultSettings = (data: GameData): Settings =>
   structuredClone(data.content.settingsDefaults.settings);
 
+/**
+ * Key actions added since the settings were stored take their default keys, less any the stored
+ * settings already bind elsewhere.
+ */
+function withNewActions(raw: unknown, data: GameData): unknown {
+  const keys = (raw as { keys?: unknown } | null)?.keys;
+  if (typeof keys !== 'object' || keys === null) return raw;
+  const stored = keys as Record<string, unknown>;
+  const taken = new Set(Object.values(stored).flat());
+  const added = Object.entries(defaultSettings(data).keys)
+    .filter(([action]) => !(action in stored))
+    .map(([action, list]) => [action, list.filter((k) => !taken.has(k))]);
+  return { ...(raw as object), keys: { ...stored, ...Object.fromEntries(added) } };
+}
+
 /** Stored settings, or the defaults if there are none or they no longer fit the schema. */
 export function parseSettings(text: string | null, data: GameData): Settings {
   if (text === null) return defaultSettings(data);
   try {
-    const parsed = SettingsSchema.safeParse(JSON.parse(text));
+    const parsed = SettingsSchema.safeParse(withNewActions(JSON.parse(text), data));
     return parsed.success ? parsed.data : defaultSettings(data);
   } catch {
     return defaultSettings(data);

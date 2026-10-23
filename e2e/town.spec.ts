@@ -110,7 +110,10 @@ test('levels up a character with XP to spend', async ({ page }, testInfo) => {
   }, WORLD_KEY);
   await page.reload();
   await page.getByRole('button', { name: 'Continue journey' }).click();
-  await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
+  // Space visits the town the party stands in.
+  await expect(page.getByRole('button', { name: 'Visit Rubblegate' })).toBeVisible();
+  await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+  await page.keyboard.press(' ');
   await page.getByRole('tab', { name: 'Training' }).click();
   await page.getByRole('combobox', { name: 'Who' }).selectOption({ label: 'Snag' });
   const form = page.getByRole('region', { name: 'Level up' });

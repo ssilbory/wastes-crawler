@@ -19,4 +19,5 @@ export const ACTION_NAMES: Record<KeyAction, string> = {
   'step-left': 'Step left',
   'step-right': 'Step right',
   search: 'Search',
+  stairs: 'Take the stairs',
 };

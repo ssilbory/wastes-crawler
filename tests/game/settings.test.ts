@@ -27,6 +27,24 @@ describe('settings (docs/plan.md, Phase 11)', () => {
     expect(defaultSettings(data).keys.forward).toEqual(['w', 'ArrowUp']);
   });
 
+  it('give actions added since they were stored their default keys, unless already bound', () => {
+    const s = defaultSettings(data);
+    expect(actionForKey(s, ' ')).toBe('stairs');
+    const older: Partial<typeof s.keys> = { ...s.keys };
+    delete older.stairs;
+    const stored = (keys: object) => serializeSettings({ ...s, keys } as typeof s);
+    expect(parseSettings(stored(older), data).keys.stairs).toEqual([' ']);
+    // A stored binding of Space keeps it.
+    const spaced = { ...older, search: ['f', ' '] };
+    expect(parseSettings(stored(spaced), data).keys).toMatchObject({
+      search: ['f', ' '],
+      stairs: [],
+    });
+    expect(parseSettings('{"keys":null}', data)).toEqual(s);
+    expect(ACTION_NAMES.stairs).toBe('Take the stairs');
+    expect(keyLabel(' ')).toBe('Space');
+  });
+
   it('find the action for a key, letters in either case', () => {
     const s = defaultSettings(data);
     expect(actionForKey(s, 'W')).toBe('forward');

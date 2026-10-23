@@ -90,14 +90,16 @@ export function MapScreen(props: {
   const here = town?.name ?? map.terrainAt(w.position).name;
   const way = wayDownHere(w, data);
   const road = map.exitAt(w.position);
-  // H and C pick the plan, Q plays the quarter out, T visits the town: only while the quarter's
-  // plan is on show, so never over an encounter or on a coach.
+  // H and C pick the plan, Q plays the quarter out, T visits the town, and Space visits the town or
+  // goes down the way here: only while the quarter's plan is on show, so never over an encounter
+  // or on a coach.
   const planning = !w.encounter && !w.coach;
   useKeys({
     h: planning && w.destination !== null ? hike : undefined,
     c: planning ? camp : undefined,
     q: planning ? () => props.onPass(current) : undefined,
     t: planning && town ? props.onTown : undefined,
+    ' ': planning && town ? props.onTown : planning && way ? props.onEnter : undefined,
   });
   return (
     <div class="world map-screen">
@@ -114,12 +116,16 @@ export function MapScreen(props: {
         </div>
         <span class="bar-actions">
           {town && !w.encounter && !w.coach && (
-            <button type="button" aria-keyshortcuts="T" onClick={props.onTown}>
+            <button type="button" aria-keyshortcuts="T Space" onClick={props.onTown}>
               Visit {town.name}
             </button>
           )}
           {way && !w.encounter && !w.coach && (
-            <button type="button" onClick={props.onEnter}>
+            <button
+              type="button"
+              aria-keyshortcuts={town ? undefined : 'Space'}
+              onClick={props.onEnter}
+            >
               Enter {way.name}
               {way.level !== null && ` (for level ${way.level})`}
             </button>

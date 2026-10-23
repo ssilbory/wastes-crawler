@@ -8,11 +8,20 @@
       "turn-right": ["d", "ArrowRight"],
       "step-left": ["q"],
       "step-right": ["e"],
-      "search": ["f"]
+      "search": ["f"],
+      "stairs": [" "]
     },
-    "sound": { "on": false, "volume": 0.5 },
+    "sound": {
+      "on": false,
+      "volume": 0.5
+    },
     "combatSpeed": "instant",
     "textSize": "normal"
   },
-  "roundDelays": { "instant": 0, "fast": 250, "normal": 600, "slow": 1200 }
+  "roundDelays": {
+    "instant": 0,
+    "fast": 250,
+    "normal": 600,
+    "slow": 1200
+  }
 }
