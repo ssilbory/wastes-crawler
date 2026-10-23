@@ -8,6 +8,7 @@ import {
   componentPrice,
   craftsmanHere,
   craftsmanState,
+  magicStockPrice,
   sellComponent,
   sellLootTo,
   visitCraftsman,
@@ -47,7 +48,7 @@ export function CraftsmanTab(props: { world: World; act: Act }) {
     );
   // An ability that doesn't fit the item chosen now falls back to none.
   const fit = abilitiesFor(data, weapon).some((a) => a.id === ability) ? ability : '';
-  const terms = forgeTerms(data, bonus, fit || undefined);
+  const terms = forgeTerms(data, weapon, bonus, fit || undefined);
   const jobs = w.commissions.flatMap((j, i) => (j.craftsman === c.id ? [{ j, i }] : []));
   return (
     <>
@@ -83,7 +84,7 @@ export function CraftsmanTab(props: { world: World; act: Act }) {
               {itemName(s.weapon)} +{s.bonus}
               {sized(s.weapon)}{' '}
               <button type="button" onClick={() => props.act(() => buyMagic(w, data, i, m.id))}>
-                Buy ({crowns(rules.magic.tiers[s.bonus - 1]?.stockPrice ?? 0)})
+                Buy ({crowns(magicStockPrice(data, s.weapon, s.bonus))})
               </button>
             </li>
           ))}

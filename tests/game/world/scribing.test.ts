@@ -14,7 +14,9 @@ import {
   scribable,
   scribeDifficulty,
   scribesOf,
+  scrollCost,
   scrollListed,
+  scrollParts,
   startScroll,
 } from '../../../src/game/world/scribing.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
@@ -27,11 +29,26 @@ const learn = (m: Member) => {
 };
 const scrolls = (m: Member) => m.character.inventory.filter((e) => e.id === 'scroll');
 
+const KIT = data.content.scrolls.kit;
+const give = (m: Member, id: string) => {
+  m.character = {
+    ...m.character,
+    inventory: [...m.character.inventory, { id, quantity: 1, location: 'stowed' }],
+  };
+};
+const drop = (m: Member, id: string) => {
+  m.character = { ...m.character, inventory: m.character.inventory.filter((e) => e.id !== id) };
+};
+
+/** Fizzwick with Scribing and a writing kit; 100 crowns, 9 hides and 9 essence in the stash. */
 function scribe(faces: number[] = []): { w: World; fizz: Member } {
   const w = world(faces);
   w.purse = 100;
+  w.components = { 'beast-hide': 9, 'spore-essence': 9 };
   const fizz = member(w, 'Fizzwick');
   learn(fizz);
+  drop(fizz, KIT);
+  give(fizz, KIT);
   return { w, fizz };
 }
 
@@ -57,6 +74,17 @@ describe('writing scrolls (docs/rules-adaptation.md, Scrolls; SRD 4.9.1)', () =>
     expect(scrollListed(data, 'deluge-of-hell')).toBe(100);
     expect(scribeDifficulty(data, 'deluge-of-hell')).toBe(10);
     expect(() => scrollListed(data, 'the-excellent-transpicuous-transformation')).toThrow();
+    // The party pays half, and a hide and an essence for every two spell levels (Sam's calls).
+    expect(scrollCost(data, COFFIN)).toBe(10);
+    expect(scrollCost(data, 'deluge-of-hell')).toBe(50);
+    expect(scrollParts(data, COFFIN)).toEqual([
+      { type: 'hide', count: 1 },
+      { type: 'essence', count: 1 },
+    ]);
+    expect(scrollParts(data, 'deluge-of-hell')).toEqual([
+      { type: 'hide', count: 3 },
+      { type: 'essence', count: 3 },
+    ]);
   });
 
   it('starts a week’s work, paid now, and refuses what can’t be done', () => {
@@ -71,7 +99,8 @@ describe('writing scrolls (docs/rules-adaptation.md, Scrolls; SRD 4.9.1)', () =>
       reason: "Fizzwick doesn't know Deluge of Hell.",
     });
     expect(startScroll(w, data, fizz.id, COFFIN)).toEqual({ ok: true });
-    expect(w.purse).toBe(80);
+    expect(w.purse).toBe(90);
+    expect(w.components).toEqual({ 'beast-hide': 8, 'spore-essence': 8 });
     const p = w.projects[0] as World['projects'][number];
     expect(p).toEqual(expect.objectContaining({ kind: 'scribe', spell: COFFIN, daysLeft: 7 }));
     expect(projectText(w, data, p)).toBe(
@@ -83,8 +112,20 @@ describe('writing scrolls (docs/rules-adaptation.md, Scrolls; SRD 4.9.1)', () =>
     });
     expect(() => startScroll(w, data, 'nobody', COFFIN)).toThrow();
     w.projects = [];
+    w.components = { 'beast-hide': 1 };
+    expect(startScroll(w, data, fizz.id, COFFIN)).toEqual({
+      ok: false,
+      reason: 'It needs 1 hide, 1 essence.',
+    });
+    w.components = { 'beast-hide': 1, 'ooze-essence': 1 };
     w.purse = 0;
     expect(startScroll(w, data, fizz.id, COFFIN).ok).toBe(false);
+    expect(w.components).toEqual({ 'beast-hide': 1, 'ooze-essence': 1 });
+    drop(fizz, KIT);
+    expect(startScroll(w, data, fizz.id, COFFIN)).toEqual({
+      ok: false,
+      reason: 'Fizzwick needs a Writing kit.',
+    });
     w.encounter = encounter([['thug-or-militia']]);
     expect(startScroll(w, data, fizz.id, COFFIN)).toEqual({
       ok: false,
@@ -121,16 +162,9 @@ describe('writing scrolls (docs/rules-adaptation.md, Scrolls; SRD 4.9.1)', () =>
     expect(writes(true)).toBe(1);
   });
 
-  it('goes on in camp shifts with crafting tools', () => {
+  it('goes on in camp shifts with the writing kit', () => {
     const { w, fizz } = scribe();
     startScroll(w, data, fizz.id, COFFIN);
-    fizz.character = {
-      ...fizz.character,
-      inventory: [
-        ...fizz.character.inventory,
-        { id: data.content.craftingRules.tools.id, quantity: 1, location: 'stowed' },
-      ],
-    };
     w.position = { col: 3, row: 3 };
     craftShift(w, data, fizz);
     expect(w.log.at(-1)).toContain('Fizzwick works on a scroll of The Coruscating Coffin.');

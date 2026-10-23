@@ -241,6 +241,7 @@ describe('devices as items', () => {
     const staffDef = deviceOf(data, 'arcane-staff');
     const broken = {
       ...data.content,
+      scrolls: { ...data.content.scrolls, kit: 'quill-x' },
       devices: {
         ...d,
         devices: [
@@ -251,6 +252,7 @@ describe('devices as items', () => {
     } as typeof data.content;
     expect(deviceReferenceErrors(data.srd, broken)).toEqual([
       'devices: staff is taken',
+      'scrolls: unknown kit quill-x',
       'devices/arcane-staff: fewer spells at most than at least',
     ]);
   });

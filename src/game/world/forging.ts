@@ -7,10 +7,10 @@
 // for +1. A failure waits on the forger: start over at full price and time (the components are
 // kept), or go on with a flaw in the item and try again in half the time at a cumulative +1 — once
 // per flaw that fits it, after which the flaws are intolerable.
-import type { Ability, Project } from '../../data/schemas/index.ts';
+import type { Ability, Cost, Project } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
 import { fitSize, sizedLine, type Size } from '../character/gear.ts';
-import { findItem, type InventoryEntry } from '../character/items.ts';
+import { findItem, tenths, type InventoryEntry } from '../character/items.ts';
 import { findPeople } from '../character/people.ts';
 import type { People } from '../../data/schemas/index.ts';
 import { pickComponents, removeComponents } from './components.ts';
@@ -50,12 +50,19 @@ export function abilityById(data: GameData, id: string): Ability {
   return a;
 }
 
-/** Crowns, components, and days for a bonus and an optional ability. */
-export function forgeTerms(data: GameData, bonus: number, ability?: string) {
+/** A forgeable weapon's or suit's own market price in crowns; forged ones always have one. */
+export const basePrice = (data: GameData, id: string) =>
+  tenths(findItem(data, id)?.cost as Cost) / 10;
+
+/**
+ * Crowns, components, and days for an item with a bonus and an optional ability: the item's own
+ * price plus the bonus's and the ability's, as a magic item is valued (Crafting: Magic gear).
+ */
+export function forgeTerms(data: GameData, item: string, bonus: number, ability?: string) {
   const tier = tierOf(data, bonus);
   const a = ability ? abilityById(data, ability) : null;
   return {
-    crowns: tier.commission + (a?.cost ?? 0),
+    crowns: basePrice(data, item) + tier.commission + (a?.cost ?? 0),
     components: [...tier.components, ...(a?.components ?? [])],
     days: tier.days + (a?.days ?? 0),
   };
@@ -86,7 +93,7 @@ export function startForge(
   if (ability && !abilitiesFor(data, item).some((a) => a.id === ability))
     return no(`${abilityById(data, ability).name} doesn't fit that.`);
   if (w.projects.some((p) => p.crafter === m.id)) return no(`${name} is already making something.`);
-  const terms = forgeTerms(data, bonus, ability);
+  const terms = forgeTerms(data, item, bonus, ability);
   const parts = pickComponents(w, data, terms.components);
   if (!parts)
     return no(`It needs ${terms.components.map((x) => `${x.count} ${x.type}`).join(', ')}.`);
@@ -158,7 +165,7 @@ export function restartForge(w: World, data: GameData, smithId: string): TownRes
   if (w.encounter) return no('Settle the encounter first.');
   townHere(w, data);
   const p = failedOf(w, smithId);
-  const terms = forgeTerms(data, p.bonus as number, p.ability);
+  const terms = forgeTerms(data, p.item, p.bonus as number, p.ability);
   if (!spend(w, data, terms.crowns))
     return no(`Starting over costs ${priceHere(w, data, terms.crowns)} crowns.`);
   const next: Project = { ...p, daysLeft: terms.days };

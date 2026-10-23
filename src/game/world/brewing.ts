@@ -1,13 +1,16 @@
 // Brewing potions (docs/rules-adaptation.md, Potions: Brewing; vendor/wwn-srd/4.0 Magic and
-// Spellcasting/4.10.0 Creating Magic Items.md, 4.10.2): a member with Alchemy buys the reagents in
-// a settlement and brews a batch over a week, in a town's workshop or in camp shifts with crafting
-// tools, like any build. When the work is done they roll Int/Alchemy against the recipe's
+// Spellcasting/4.10.0 Creating Magic Items.md, 4.10.2): a member with Alchemy and an alchemist's
+// kit buys the reagents in a settlement, at half the potion's brewing cost, and puts in the
+// recipe's components from the party's stash (Sam's calls), then brews a batch over a week, in a
+// town's workshop or in camp shifts with the kit, like any build. When the work is done they roll Int/Alchemy against the recipe's
 // difficulty, +1 for two doses or +2 for four; another member with Alchemy helps, as the SRD's
 // apprentice, for +1. A failed brew is lost with its reagents (Sam's call: single-use items take
 // no flaws).
 import type { Cost, Project } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
 import { findItem, tenths, type CatalogItem } from '../character/items.ts';
+import { toTenths } from '../../rules/economy.ts';
+import { partsText, pickComponents, removeComponents } from './components.ts';
 import { putLine } from '../character/stacks.ts';
 import { memberCheck, note } from './members.ts';
 import type { TownResult } from './services.ts';
@@ -42,6 +45,14 @@ export const reagentsListed = (data: GameData, item: string) =>
   // Recipes name potions and the antidote, which always have a price.
   tenths(brewItem(data, item).cost as Cost) / 10;
 
+/** Crowns the party pays to brew a batch: its share of the reagents' listed price (Sam's call). */
+export const brewCost = (data: GameData, item: string) =>
+  toTenths(reagentsListed(data, item) * rules(data).makeFraction);
+
+/** Whether a member carries an alchemist's kit, anywhere on them. */
+export const hasKit = (data: GameData, m: Member) =>
+  m.character.inventory.some((e) => e.id === rules(data).kit.id);
+
 /** The check's difficulty for a batch. */
 export const brewDifficulty = (data: GameData, item: string, doses: number) =>
   recipeOf(data, item).difficulty + batchOf(data, doses).difficulty;
@@ -61,10 +72,15 @@ export function startBrew(
   // Unknown recipes and batch sizes are caller errors.
   brewDifficulty(data, item, doses);
   if (!canBrew(data, m)) return no(`${name} has no Alchemy skill.`);
+  if (!hasKit(data, m)) return no(`${name} needs an ${rules(data).kit.name}.`);
   if (w.projects.some((p) => p.crafter === m.id)) return no(`${name} is already making something.`);
-  const listed = reagentsListed(data, item);
+  const needs = recipeOf(data, item).components;
+  const parts = pickComponents(w, data, needs);
+  if (!parts) return no(`It needs ${partsText(needs)}.`);
+  const listed = brewCost(data, item);
   const price = priceHere(w, data, listed);
   if (!spend(w, data, listed)) return no(`The reagents cost ${price} crowns.`);
+  removeComponents(w, parts);
   const days = rules(data).brewDays;
   w.projects.push({
     crafter: m.id,

@@ -41,6 +41,10 @@ export function pickComponents(
   return picked;
 }
 
+/** Component needs as words: `1 hide, 1 essence`, or `no components`. */
+export const partsText = (needs: readonly { type: ComponentType; count: number }[]) =>
+  needs.length === 0 ? 'no components' : needs.map((x) => `${x.count} ${x.type}`).join(', ');
+
 export function addComponents(w: World, ids: readonly string[]): void {
   for (const id of ids) w.components[id] = (w.components[id] ?? 0) + 1;
 }

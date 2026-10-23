@@ -38,7 +38,7 @@ export function ForgePanel(props: { world: World; act: Act }) {
       </section>
     );
   const fit = abilitiesFor(data, item).some((a) => a.id === ability) ? ability : '';
-  const terms = forgeTerms(data, bonus, fit || undefined);
+  const terms = forgeTerms(data, item, bonus, fit || undefined);
   const armor = findItem(data, item)?.kind === 'armor';
   const sized: Size = size ?? fitSizeOf(data, m);
   return (

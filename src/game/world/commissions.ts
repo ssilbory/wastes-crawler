@@ -38,7 +38,7 @@ export function commission(
   if (!wares(c).includes(weapon)) throw new Error(`${c.name} doesn't forge ${weapon}`);
   if (ability && !abilitiesFor(data, weapon).some((a) => a.id === ability))
     throw new Error(`${ability} doesn't fit ${weapon}`);
-  const terms = forgeTerms(data, bonus, ability);
+  const terms = forgeTerms(data, weapon, bonus, ability);
   const parts = pickComponents(w, data, terms.components);
   if (!parts)
     return no(

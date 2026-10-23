@@ -8,6 +8,7 @@ import {
   addComponents,
   componentDrops,
   componentName,
+  partsText,
   pickComponents,
   removeComponents,
 } from '../../../src/game/world/components.ts';
@@ -519,6 +520,13 @@ describe('components', () => {
       'cold-iron',
     ]);
     expect(pickComponents(w, data, [{ type: 'metal', count: 3 }])).toBeNull();
+    expect(partsText([])).toBe('no components');
+    expect(
+      partsText([
+        { type: 'hide', count: 2 },
+        { type: 'gem', count: 1 },
+      ]),
+    ).toBe('2 hide, 1 gem');
     removeComponents(w, ['cold-iron', 'beast-hide']);
     expect(w.components).toEqual({ 'cold-iron': 1 });
     addComponents(w, ['beast-hide']);

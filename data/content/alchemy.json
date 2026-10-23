@@ -3,15 +3,44 @@
   "attributes": ["int"],
   "brewDays": 7,
   "batches": [
-    { "doses": 1, "difficulty": 0 },
-    { "doses": 2, "difficulty": 1 },
-    { "doses": 4, "difficulty": 2 }
+    {
+      "doses": 1,
+      "difficulty": 0
+    },
+    {
+      "doses": 2,
+      "difficulty": 1
+    },
+    {
+      "doses": 4,
+      "difficulty": 2
+    }
   ],
   "assistBonus": 1,
+  "makeFraction": 0.5,
+  "kit": {
+    "id": "alchemists-kit",
+    "name": "Alchemist's Kit",
+    "source": {
+      "file": "4.0 Magic and Spellcasting/4.10.0 Creating Magic Items.md",
+      "heading": "4.9.2 Creating the Item"
+    },
+    "cost": {
+      "amount": 100,
+      "unit": "sp"
+    },
+    "encumbrance": 3,
+    "weightless": false,
+    "freeWhenWorn": false,
+    "bundlesOfThree": false
+  },
   "stockMultiplier": 4,
   "maxStock": 4,
   "maxDoses": 2,
-  "drops": { "boss": 30, "humanoid": 1 },
+  "drops": {
+    "boss": 30,
+    "humanoid": 1
+  },
   "potions": [
     {
       "id": "healing-draught",
@@ -20,13 +49,24 @@
         "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
         "heading": "4.9.2 Potions"
       },
-      "cost": { "amount": 10, "unit": "sp" },
+      "cost": {
+        "amount": 10,
+        "unit": "sp"
+      },
       "encumbrance": 1,
       "weightless": false,
       "freeWhenWorn": false,
       "bundlesOfThree": true,
       "text": "A red, bitter draught that knits flesh: 2d6 hit points and 1 System Strain. It brings back the Mortally Wounded.",
-      "effect": { "kind": "heal", "dice": { "count": 2, "sides": 6, "modifier": 0 }, "strain": 1 }
+      "effect": {
+        "kind": "heal",
+        "dice": {
+          "count": 2,
+          "sides": 6,
+          "modifier": 0
+        },
+        "strain": 1
+      }
     },
     {
       "id": "greater-healing",
@@ -35,13 +75,24 @@
         "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
         "heading": "4.9.2 Potions"
       },
-      "cost": { "amount": 30, "unit": "sp" },
+      "cost": {
+        "amount": 30,
+        "unit": "sp"
+      },
       "encumbrance": 1,
       "weightless": false,
       "freeWhenWorn": false,
       "bundlesOfThree": true,
       "text": "A thick, dark draught brewed twice over: 4d6 hit points and 1 System Strain. It brings back the Mortally Wounded.",
-      "effect": { "kind": "heal", "dice": { "count": 4, "sides": 6, "modifier": 0 }, "strain": 1 }
+      "effect": {
+        "kind": "heal",
+        "dice": {
+          "count": 4,
+          "sides": 6,
+          "modifier": 0
+        },
+        "strain": 1
+      }
     },
     {
       "id": "restorative-tonic",
@@ -50,13 +101,19 @@
         "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
         "heading": "4.9.2 Potions"
       },
-      "cost": { "amount": 20, "unit": "sp" },
+      "cost": {
+        "amount": 20,
+        "unit": "sp"
+      },
       "encumbrance": 1,
       "weightless": false,
       "freeWhenWorn": false,
       "bundlesOfThree": true,
       "text": "A clear tonic that settles a worn body: 1 System Strain eased, even while Hungry, Sleepless, or Cold. Out of fights only.",
-      "effect": { "kind": "ease-strain", "amount": 1 }
+      "effect": {
+        "kind": "ease-strain",
+        "amount": 1
+      }
     },
     {
       "id": "waking-tonic",
@@ -65,13 +122,18 @@
         "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
         "heading": "4.9.2 Potions"
       },
-      "cost": { "amount": 10, "unit": "sp" },
+      "cost": {
+        "amount": 10,
+        "unit": "sp"
+      },
       "encumbrance": 1,
       "weightless": false,
       "freeWhenWorn": false,
       "bundlesOfThree": true,
       "text": "A hot, peppery tonic: the drinker is no longer Sleepless or Cold, until the conditions come again. Out of fights only.",
-      "effect": { "kind": "wake" }
+      "effect": {
+        "kind": "wake"
+      }
     },
     {
       "id": "oil-of-edge",
@@ -80,13 +142,20 @@
         "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
         "heading": "4.9.2 Potions"
       },
-      "cost": { "amount": 20, "unit": "sp" },
+      "cost": {
+        "amount": 20,
+        "unit": "sp"
+      },
       "encumbrance": 1,
       "weightless": false,
       "freeWhenWorn": false,
       "bundlesOfThree": true,
       "text": "A silvery oil rubbed on a blade or point: +1 to hit and damage for the rest of the fight. In fights only.",
-      "effect": { "kind": "edge", "hit": 1, "damage": 1 }
+      "effect": {
+        "kind": "edge",
+        "hit": 1,
+        "damage": 1
+      }
     },
     {
       "id": "shadow-draught",
@@ -95,23 +164,98 @@
         "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
         "heading": "4.9.2 Potions"
       },
-      "cost": { "amount": 50, "unit": "sp" },
+      "cost": {
+        "amount": 50,
+        "unit": "sp"
+      },
       "encumbrance": 1,
       "weightless": false,
       "freeWhenWorn": false,
       "bundlesOfThree": true,
       "text": "A grey draught passed round the party: like The Excellent Transpicuous Transformation, it lets the party slip away from a group that spotted it first.",
-      "effect": { "kind": "vanish" }
+      "effect": {
+        "kind": "vanish"
+      }
     }
   ],
   "recipes": [
-    { "item": "healing-draught", "difficulty": 8, "weight": 6 },
-    { "item": "greater-healing", "difficulty": 10, "weight": 2 },
-    { "item": "restorative-tonic", "difficulty": 9, "weight": 3 },
-    { "item": "waking-tonic", "difficulty": 8, "weight": 3 },
-    { "item": "oil-of-edge", "difficulty": 9, "weight": 3 },
-    { "item": "shadow-draught", "difficulty": 10, "weight": 1 },
-    { "item": "antidote", "difficulty": 8, "weight": 0 }
+    {
+      "item": "healing-draught",
+      "difficulty": 8,
+      "weight": 6,
+      "components": [
+        {
+          "type": "essence",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "item": "greater-healing",
+      "difficulty": 10,
+      "weight": 2,
+      "components": [
+        {
+          "type": "essence",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "item": "restorative-tonic",
+      "difficulty": 9,
+      "weight": 3,
+      "components": [
+        {
+          "type": "essence",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "item": "waking-tonic",
+      "difficulty": 8,
+      "weight": 3,
+      "components": [
+        {
+          "type": "essence",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "item": "oil-of-edge",
+      "difficulty": 9,
+      "weight": 3,
+      "components": [
+        {
+          "type": "essence",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "item": "shadow-draught",
+      "difficulty": 10,
+      "weight": 1,
+      "components": [
+        {
+          "type": "essence",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "item": "antidote",
+      "difficulty": 8,
+      "weight": 0,
+      "components": [
+        {
+          "type": "essence",
+          "count": 1
+        }
+      ]
+    }
   ],
   "alchemists": [
     {

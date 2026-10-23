@@ -63,14 +63,16 @@ describe('forging magic (docs/rules-adaptation.md, Forged magic; SRD 4.10.0)', (
     expect(forgeable(data)).toContain('mail-shirt');
   });
 
-  it('prices a bonus at the commission terms, an ability on top, against 10/12/14 +2', () => {
-    expect(forgeTerms(data, 1)).toEqual({
-      crowns: 200,
+  it('prices the item, its bonus at the commission terms, an ability on top, against 10/12/14 +2', () => {
+    expect(forgeTerms(data, SWORD, 1)).toEqual({
+      crowns: 300,
       days: 30,
       components: data.content.craftingRules.magic.tiers[0]?.components,
     });
-    const flaming = forgeTerms(data, 2, 'flaming');
-    expect([flaming.crowns, flaming.days, flaming.components.length]).toEqual([1200, 120, 5]);
+    const flaming = forgeTerms(data, SWORD, 2, 'flaming');
+    expect([flaming.crowns, flaming.days, flaming.components.length]).toEqual([1300, 120, 5]);
+    // Magic plate costs more than plain plate: its own 1,000 crowns plus the bonus's 200.
+    expect(forgeTerms(data, 'plate-armor', 1).crowns).toBe(1200);
     expect(forgeDifficulty(data, 1)).toBe(10);
     expect(forgeDifficulty(data, 3, 'flaming', 2)).toBe(14);
     expect(abilitiesFor(data, SWORD).map((a) => a.id)).not.toContain('warding');
@@ -90,7 +92,7 @@ describe('forging magic (docs/rules-adaptation.md, Forged magic; SRD 4.10.0)', (
       reason: "Warding doesn't fit that.",
     });
     expect(startForge(w, data, fizz.id, SWORD, 2, 'flaming')).toEqual({ ok: true });
-    expect(w.purse).toBe(3800);
+    expect(w.purse).toBe(3700);
     expect(w.components).toEqual({ 'cold-iron': 1, 'ooze-essence': 1, 'grave-garnet': 1 });
     const p = w.projects[0] as P;
     expect(p).toEqual(
@@ -180,7 +182,7 @@ describe('forging magic (docs/rules-adaptation.md, Forged magic; SRD 4.10.0)', (
     expect(restartForge(w, data, fizz.id).ok).toBe(false);
     w.purse = 500;
     expect(restartForge(w, data, fizz.id)).toEqual({ ok: true });
-    expect(w.purse).toBe(300);
+    expect(w.purse).toBe(200);
     expect(w.components).toEqual(parts);
     expect(w.projects[1]).toEqual(expect.objectContaining({ daysLeft: 30 }));
     expect(w.projects[1]?.failed).toBeUndefined();

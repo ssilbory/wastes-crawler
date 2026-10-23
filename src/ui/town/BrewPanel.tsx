@@ -3,9 +3,11 @@ import {
   brewDifficulty,
   brewItem,
   canBrew,
-  reagentsListed,
+  brewCost,
+  recipeOf,
   startBrew,
 } from '../../game/world/brewing.ts';
+import { partsText } from '../../game/world/components.ts';
 import { priceHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
 import { daysText } from '../../game/world/wording.ts';
@@ -65,14 +67,14 @@ export function BrewPanel(props: { world: World; act: Act }) {
           </label>{' '}
           <p class="hint">
             Int/Alchemy against {brewDifficulty(data, item, doses)}, +1 with another brewer in the
-            party; a failed brew is lost.
+            party; a failed brew is lost. Takes an {alchemy.kit.name} and{' '}
+            {partsText(recipeOf(data, item).components)}.
           </p>
           <button
             type="button"
             onClick={() => props.act(() => startBrew(w, data, m.id, item, doses))}
           >
-            Start ({crowns(priceHere(w, data, reagentsListed(data, item)))},{' '}
-            {daysText(alchemy.brewDays)})
+            Start ({crowns(priceHere(w, data, brewCost(data, item)))}, {daysText(alchemy.brewDays)})
           </button>
         </>
       )}

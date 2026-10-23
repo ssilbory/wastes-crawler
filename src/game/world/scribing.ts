@@ -1,7 +1,9 @@
 // Writing scrolls (docs/rules-adaptation.md, Potions, scrolls, and magic devices: Scrolls;
 // vendor/wwn-srd/4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md, 4.9.1):
-// a member with Scribing writes one of the spells they know into a scroll over a week, at 20 crowns
-// a spell level, in a town's workshop or in camp shifts with crafting tools, like any build. When
+// a member with Scribing and a writing kit writes one of the spells they know into a scroll over a
+// week, at 10 crowns a spell level (half the scroll's 20, Sam's call) and a beast hide and an
+// essence for every two spell levels, rounded up (Sam's call), in a town's workshop or in camp
+// shifts with the kit, like any build. When
 // the work is done they roll Int/Scribing against 7 plus half the spell level, rounded up; another
 // member with Scribing helps, as the SRD's apprentice (4.10.0), for +1. A failed scroll is lost.
 // The scroll goes off at the scribe's caster level. Only spells the combat engine can cast at a
@@ -9,7 +11,9 @@
 import type { Project } from '../../data/schemas/index.ts';
 import { gameSpells, type GameSpell } from '../../data/spells.ts';
 import type { GameData } from '../character/context.ts';
-import { tenths } from '../character/items.ts';
+import { findItem, tenths } from '../character/items.ts';
+import { toTenths } from '../../rules/economy.ts';
+import { partsText, pickComponents, removeComponents } from './components.ts';
 import { putLine } from '../character/stacks.ts';
 import { casterLevelOf } from '../combat/combatants.ts';
 import { memberCheck, note } from './members.ts';
@@ -48,6 +52,23 @@ export const scribesOf = (data: GameData, m: Member): GameSpell[] =>
 export const scrollListed = (data: GameData, spell: string) =>
   (tenths(rules(data).scroll.cost) / 10) * spellOf(data, spell).level;
 
+/** Crowns the party pays to write a scroll: its share of the listed price (Sam's call). */
+export const scrollCost = (data: GameData, spell: string) =>
+  toTenths(scrollListed(data, spell) * rules(data).makeFraction);
+
+/** The components a scroll takes: the set for every `componentLevels` spell levels, rounded up. */
+export function scrollParts(data: GameData, spell: string) {
+  const sets = Math.ceil(spellOf(data, spell).level / rules(data).componentLevels);
+  return rules(data).components.map((c) => ({ type: c.type, count: c.count * sets }));
+}
+
+/** Whether a member carries a writing kit, anywhere on them. */
+export const hasWritingKit = (data: GameData, m: Member) =>
+  m.character.inventory.some((e) => e.id === rules(data).kit);
+
+/** The writing kit's name; content checks keep it real gear. */
+export const writingKitName = (data: GameData) => findItem(data, rules(data).kit)?.name as string;
+
 export const scribeDifficulty = (data: GameData, spell: string) =>
   rules(data).difficulty + Math.ceil(spellOf(data, spell).level / 2);
 
@@ -60,9 +81,14 @@ export function startScroll(w: World, data: GameData, scribeId: string, spell: s
   const name = m.character.name;
   if (!canScribe(data, m)) return no(`${name} has no Scribing skill.`);
   if (!m.character.spells.known.includes(spell)) return no(`${name} doesn't know ${s.name}.`);
+  if (!hasWritingKit(data, m)) return no(`${name} needs a ${writingKitName(data)}.`);
   if (w.projects.some((p) => p.crafter === m.id)) return no(`${name} is already making something.`);
-  const listed = scrollListed(data, spell);
+  const needs = scrollParts(data, spell);
+  const parts = pickComponents(w, data, needs);
+  if (!parts) return no(`It needs ${partsText(needs)}.`);
+  const listed = scrollCost(data, spell);
   if (!spend(w, data, listed)) return no(`The inks cost ${priceHere(w, data, listed)} crowns.`);
+  removeComponents(w, parts);
   const days = rules(data).days;
   w.projects.push({
     crafter: m.id,

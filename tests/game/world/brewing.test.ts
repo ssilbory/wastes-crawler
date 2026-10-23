@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  brewCost,
   brewDifficulty,
   canBrew,
   reagentsListed,
@@ -18,11 +19,25 @@ const learn = (m: Member, level = 1) => {
 const potions = (m: Member, id: string) =>
   m.character.inventory.filter((e) => e.id === id).reduce((n, e) => n + e.quantity, 0);
 
+const KIT = data.content.alchemy.kit.id;
+const give = (m: Member, id: string) => {
+  m.character = {
+    ...m.character,
+    inventory: [...m.character.inventory, { id, quantity: 1, location: 'stowed' }],
+  };
+};
+const drop = (m: Member, id: string) => {
+  m.character = { ...m.character, inventory: m.character.inventory.filter((e) => e.id !== id) };
+};
+
+/** Lirael with Alchemy and an alchemist's kit, the party with 100 crowns and 9 spore essence. */
 function brewer(faces: number[] = []): { w: World; lirael: Member } {
   const w = world(faces);
   w.purse = 100;
+  w.components = { 'spore-essence': 9 };
   const lirael = member(w, 'Lirael');
   learn(lirael);
+  give(lirael, KIT);
   return { w, lirael };
 }
 
@@ -33,6 +48,9 @@ describe('brewing (docs/rules-adaptation.md, Potions: Brewing)', () => {
     expect(canBrew(data, member(w, 'Snag'))).toBe(false);
     expect(reagentsListed(data, 'healing-draught')).toBe(10);
     expect(reagentsListed(data, 'antidote')).toBe(25);
+    // The party pays half (Sam's call).
+    expect(brewCost(data, 'healing-draught')).toBe(5);
+    expect(brewCost(data, 'antidote')).toBe(12.5);
     expect(brewDifficulty(data, 'healing-draught', 1)).toBe(8);
     expect(brewDifficulty(data, 'healing-draught', 2)).toBe(9);
     expect(brewDifficulty(data, 'greater-healing', 4)).toBe(12);
@@ -43,7 +61,8 @@ describe('brewing (docs/rules-adaptation.md, Potions: Brewing)', () => {
   it('starts a week’s brew, paid now', () => {
     const { w, lirael } = brewer();
     expect(startBrew(w, data, lirael.id, 'healing-draught', 4)).toEqual({ ok: true });
-    expect(w.purse).toBe(90);
+    expect(w.purse).toBe(95);
+    expect(w.components).toEqual({ 'spore-essence': 8 });
     expect(w.projects).toEqual([
       expect.objectContaining({ kind: 'brew', item: 'healing-draught', doses: 4, daysLeft: 7 }),
     ]);
@@ -65,8 +84,21 @@ describe('brewing (docs/rules-adaptation.md, Potions: Brewing)', () => {
       ok: false,
       reason: 'Snag has no Alchemy skill.',
     });
+    w.components = {};
+    expect(startBrew(w, data, lirael.id, 'healing-draught', 1)).toEqual({
+      ok: false,
+      reason: 'It needs 1 essence.',
+    });
+    w.components = { 'ooze-essence': 1 };
     w.purse = 0;
     expect(startBrew(w, data, lirael.id, 'healing-draught', 1).ok).toBe(false);
+    // Short of crowns, the essence stays in the stash.
+    expect(w.components).toEqual({ 'ooze-essence': 1 });
+    drop(lirael, KIT);
+    expect(startBrew(w, data, lirael.id, 'healing-draught', 1)).toEqual({
+      ok: false,
+      reason: "Lirael needs an Alchemist's Kit.",
+    });
     expect(() => startBrew(w, data, 'nobody', 'healing-draught', 1)).toThrow();
     w.encounter = encounter([['thug-or-militia']]);
     expect(startBrew(w, data, lirael.id, 'healing-draught', 1)).toEqual({
@@ -106,17 +138,16 @@ describe('brewing (docs/rules-adaptation.md, Potions: Brewing)', () => {
     expect(brews(true)).toBe(1);
   });
 
-  it('goes on in camp shifts with crafting tools, like any build', () => {
+  it('goes on in camp shifts with the alchemist’s kit, not crafting tools', () => {
     const { w, lirael } = brewer([6, 6]);
     startBrew(w, data, lirael.id, 'waking-tonic', 1);
-    lirael.character = {
-      ...lirael.character,
-      inventory: [
-        ...lirael.character.inventory,
-        { id: data.content.craftingRules.tools.id, quantity: 1, location: 'stowed' },
-      ],
-    };
+    drop(lirael, KIT);
+    give(lirael, data.content.craftingRules.tools.id);
     w.position = { col: 3, row: 3 };
+    craftShift(w, data, lirael);
+    expect(w.projects[0]?.daysLeft).toBe(7);
+    expect(w.log.at(-1)).toContain('Lirael has nothing to work on here.');
+    give(lirael, KIT);
     craftShift(w, data, lirael);
     expect(w.projects[0]?.daysLeft).toBe(6.5);
     expect(w.log.at(-1)).toContain('Lirael works on a brew of Waking Tonic.');

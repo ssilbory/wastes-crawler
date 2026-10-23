@@ -147,9 +147,14 @@ describe('alchemy content checks', () => {
       alchemy: {
         ...a,
         skill: 'brewing',
+        kit: { ...a.kit, id: 'healing-draught' },
         batches: [{ doses: 2, difficulty: 1 }],
         potions: [...a.potions, { ...potion, id: 'dagger' }, { ...potion, id: 'lonely' }],
-        recipes: [...a.recipes, { item: 'nothing', difficulty: 8, weight: 1 }, a.recipes[0]],
+        recipes: [
+          ...a.recipes,
+          { item: 'nothing', difficulty: 8, weight: 1, components: [] },
+          a.recipes[0],
+        ],
         alchemists: [
           { ...vell, wares: ['dagger-x'] },
           { ...vell, id: 'twin' },
@@ -161,6 +166,7 @@ describe('alchemy content checks', () => {
     expect(alchemyReferenceErrors(data.srd, broken)).toEqual([
       'alchemy: unknown skill brewing',
       'alchemy/potions/dagger: id taken',
+      'alchemy/kit: healing-draught is taken',
       'alchemy/recipes: unknown item nothing',
       'alchemy/recipes: healing-draught twice',
       'alchemy/potions/dagger: no recipe',

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { AttributeSchema, DiceSchema, IdSchema } from './common.ts';
+import { ComponentTypeSchema } from './crafting-content.ts';
 import { GearSchema } from './gear.ts';
 
 const Difficulty = z.int().min(2).max(20);
@@ -50,6 +51,10 @@ export const AlchemyContentSchema = z.strictObject({
   batches: z.array(z.strictObject({ doses: z.int().min(1), difficulty: z.int().min(0) })).min(1),
   /** SRD 4.10.0: an apprentice adds this to the check; here, another party member with the skill. */
   assistBonus: z.int().min(0),
+  /** The party pays this share of a potion's brewing cost for its reagents (Sam's call). */
+  makeFraction: z.number().positive().max(1),
+  /** The kit a brewer carries to brew, and to work on a brew in camp (Sam's call). */
+  kit: GearSchema,
   /** Ready-made potions cost this many times the brewing cost (Sam's call). */
   stockMultiplier: z.number().min(1),
   /** Ready-made lines an alchemist has each month: 0 to this many, of 1 to `maxDoses` each. */
@@ -59,11 +64,18 @@ export const AlchemyContentSchema = z.strictObject({
   drops: z.strictObject({ boss: Percent, humanoid: Percent }),
   potions: z.array(PotionSchema).min(1),
   /**
-   * What can be brewed: a potion or other gear (the antidote), its difficulty, and its weight in
-   * stock and drops (0 never drops or stocks).
+   * What can be brewed: a potion or other gear (the antidote), its difficulty, its weight in
+   * stock and drops (0 never drops or stocks), and the components a batch takes (Sam's call).
    */
   recipes: z
-    .array(z.strictObject({ item: IdSchema, difficulty: Difficulty, weight: z.int().min(0) }))
+    .array(
+      z.strictObject({
+        item: IdSchema,
+        difficulty: Difficulty,
+        weight: z.int().min(0),
+        components: z.array(z.strictObject({ type: ComponentTypeSchema, count: z.int().min(1) })),
+      }),
+    )
     .min(1),
   alchemists: z.array(AlchemistSchema),
 });
