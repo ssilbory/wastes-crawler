@@ -44,6 +44,7 @@ describe('beasts give rations (Phase 17)', () => {
       setup: null as never,
       memberIds: [],
       npcIds: [],
+      riddenIds: [],
       mountIds: [],
       enemies: [['elephantine-grazer']],
       captive: null,

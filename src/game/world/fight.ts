@@ -33,6 +33,8 @@ import type { Member, Mount, Npc, World } from './types.ts';
 import { keepSummons } from './summons.ts';
 import { BIND, companionOf } from './companion-sync.ts';
 import { companionsBack, companionSetup, unbound, waitingSetup } from './companion-fight.ts';
+import { riddenBack } from './companion-rider-fight.ts';
+import { riddenBy, unseat } from './companion-mounts.ts';
 
 export interface WorldBattle {
   battle: Battle;
@@ -40,6 +42,8 @@ export interface WorldBattle {
   memberIds: string[];
   /** NPC ids in the order of the battle's npc-N combatants. */
   npcIds: string[];
+  /** Members whose ridden companions follow the NPCs, in order (Mounts: Sam's call). */
+  riddenIds: string[];
   /** War mount ids in the order of the battle's mount-N combatants. */
   mountIds: string[];
   /** The line-up the XP simulation replays. */
@@ -73,6 +77,10 @@ function npcSetup(data: GameData, n: Npc, party: readonly Member[]): NpcSetup {
     ...(physician ? { healer: data.content.npcRules.skillBonus } : {}),
   };
 }
+
+/** Fighters carried by a living companion, which fights from their slot above ground. */
+const riders = (w: World, party: readonly Member[]) =>
+  party.filter((m) => (riddenBy(w, m)?.hp ?? 0) > 0);
 
 const fighters = (w: World) => alive(w).filter((m) => m.character.hp.current > 0 && !m.reviving);
 
@@ -155,7 +163,15 @@ export function partySetup(
       canBind: m.character.arts.includes(BIND) && !companionOf(w, m),
       waiting: waitingSetup(data, m),
     })),
-    npcs: withNpcs ? w.npcs.filter((n) => n.hp > 0).map((n) => npcSetup(data, n, party)) : [],
+    npcs: withNpcs
+      ? [
+          ...w.npcs.filter((n) => n.hp > 0).map((n) => npcSetup(data, n, party)),
+          ...riders(w, party).map((m) => ({
+            ...npcSetup(data, riddenBy(w, m) as Npc, party),
+            rider: party.indexOf(m),
+          })),
+        ]
+      : [],
     mounts: mountSetups(w, data, party, mounts),
     enemies,
     dark: inDark(w, data),
@@ -218,6 +234,7 @@ export function partyBattle(
     setup,
     memberIds: fighters(w).map((m) => m.id),
     npcIds: npcs.map((n) => n.id),
+    riddenIds: withNpcs ? riders(w, fighters(w)).map((m) => m.id) : [],
     mountIds: mounts.map((m) => m.id),
     enemies,
     captive,
@@ -268,6 +285,7 @@ export function applyBattle(
   // Tireless Vigor: a Healer regains a hit point after each fight (Phase 15).
   vigor(w, data, 1);
   const npcLost = npcsBack(w, data, fight);
+  riddenBack(w, data, fight);
   mountsBack(w, fight);
   keepSummons(w, data, fight);
   companionsBack(w, data, fight);
@@ -285,6 +303,10 @@ export function applyBattle(
       }
       note(w, `${n.name} is taken captive${n.kind === 'captive' ? ' again' : ''}.`);
       if (n.kind === 'escort') emit(w, data, { kind: 'npc-died', npc: n });
+    }
+    for (const m of w.members.filter((x) => x.companion?.ridden)) {
+      unseat(m.companion as Npc);
+      note(w, `${(m.companion as Npc).name} flees into the wilds.`);
     }
     wipe(w, data);
     return;

@@ -100,7 +100,7 @@ export function endOfDay(w: World, data: GameData, waystation = false): boolean 
   dawnTakesSummons(w);
   nightForNpcs(w, data, fed && rested && !w.noRecovery);
   nightForMounts(w, data, fed && rested && !w.noRecovery);
-  nightForCompanions(w, data);
+  nightForCompanions(w, data, fed && rested && !w.noRecovery);
   wakeRevived(w);
   w.fallen = null;
   emit(w, data, { kind: 'day-passed' });

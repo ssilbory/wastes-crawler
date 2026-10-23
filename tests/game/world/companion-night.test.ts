@@ -33,7 +33,7 @@ const down = (m: Member, max = m.character.hp.max) => {
 describe('a companion through the night (1.5.4)', () => {
   it('stays at the side of a master who is with the party', () => {
     const { w, m, n } = withBramble();
-    nightForCompanions(w, data);
+    nightForCompanions(w, data, true);
     expect(companionHere(w, m.id)).toBe(n);
     expect(m.companion).toBeNull();
   });
@@ -42,7 +42,7 @@ describe('a companion through the night (1.5.4)', () => {
     const { w, m } = withBramble();
     w.members = w.members.filter((x) => x !== m);
     const before = w.log.length;
-    nightForCompanions(w, data);
+    nightForCompanions(w, data, true);
     expect(w.npcs.some((x) => x.kind === 'companion')).toBe(false);
     expect(w.log).toHaveLength(before);
   });
@@ -51,12 +51,12 @@ describe('a companion through the night (1.5.4)', () => {
     const { w, m, n } = withBramble();
     sendAway(w, m.id);
     Object.assign(n, { maxHp: 30, hp: 10, hitDice: 3 });
-    nightForCompanions(w, data);
+    nightForCompanions(w, data, true);
     expect(n.hp).toBe(13);
     // A companion that came without a hit dice count heals by its kind's: 2 for an aurochs.
     delete n.hitDice;
     n.hp = 29;
-    nightForCompanions(w, data);
+    nightForCompanions(w, data, true);
     expect(n.hp).toBe(30);
   });
 
@@ -65,7 +65,7 @@ describe('a companion through the night (1.5.4)', () => {
     sendAway(w, m.id);
     n.hp = 0;
     m.dead = true;
-    nightForCompanions(w, data);
+    nightForCompanions(w, data, true);
     expect(m.companion).toBe(n);
     expect(n.hp).toBe(n.maxHp);
     expect(w.log.at(-1)).toContain('With the dawn Bramble is whole again, waiting for Snag.');

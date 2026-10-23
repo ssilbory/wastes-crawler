@@ -62,7 +62,7 @@ export function mountSetups(
 
 /** War mounts' hit points come back from the fight; one at 0 HP dies with its load. */
 export function mountsBack(w: World, fight: WorldBattle): void {
-  const first = fight.memberIds.length + fight.npcIds.length;
+  const first = fight.memberIds.length + fight.npcIds.length + fight.riddenIds.length;
   fight.mountIds.forEach((id, i) => {
     const c = fight.battle.combatants[first + i] as Battle['combatants'][number];
     const m = w.mounts.find((x) => x.id === id) as Mount;

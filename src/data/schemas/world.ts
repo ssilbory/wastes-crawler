@@ -54,6 +54,10 @@ export const NpcSaveSchema = z.strictObject({
   hitDice: z.int().min(1).optional(),
   /** The Beastmaster's Chosen Friend, who can't truly die while they live (1.5.4). */
   chosen: z.literal(true).optional(),
+  /** A companion carrying its master above ground, out of the NPC slots (Mounts: Sam's call). */
+  ridden: z.literal(true).optional(),
+  /** A ridden companion that stepped down to go underground; ridden again on the surface. */
+  remount: z.literal(true).optional(),
 });
 export type NpcSave = z.infer<typeof NpcSaveSchema>;
 

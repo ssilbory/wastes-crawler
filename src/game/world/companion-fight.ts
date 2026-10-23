@@ -29,7 +29,8 @@ export function companionSetup(
 /** A companion sent away and able to answer a howl: alive, not a Chosen Friend gone till dawn. */
 export function waitingSetup(data: GameData, m: Member): WaitingCompanion | null {
   const n = m.companion;
-  if (!n || n.hp <= 0) return null;
+  // A ridden companion is already in the fight, under its master.
+  if (!n || n.hp <= 0 || n.ridden) return null;
   return {
     monster: n.type,
     name: n.name,

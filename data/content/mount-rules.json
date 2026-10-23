@@ -56,5 +56,75 @@
     "attributes": ["cha"],
     "difficulty": 8
   },
-  "slipAwayBonus": 2
+  "slipAwayBonus": 2,
+  "companionMounts": [
+    {
+      "monster": "herd-beast",
+      "riderSizes": ["small", "standard"]
+    },
+    {
+      "monster": "wild-aurochs",
+      "riderSizes": ["small", "standard"]
+    },
+    {
+      "monster": "aurochs",
+      "riderSizes": ["small", "standard"]
+    },
+    {
+      "monster": "bison",
+      "riderSizes": ["small", "standard"]
+    },
+    {
+      "monster": "vicious-large-herbivore",
+      "riderSizes": ["small", "standard"]
+    },
+    {
+      "monster": "wild-tusker",
+      "riderSizes": ["small", "standard"]
+    },
+    {
+      "monster": "sand-drake",
+      "riderSizes": ["small", "standard"]
+    },
+    {
+      "monster": "elephantine-grazer",
+      "riderSizes": ["small", "standard"]
+    },
+    {
+      "monster": "ruinfield-grazer",
+      "riderSizes": ["small", "standard"]
+    },
+    {
+      "monster": "large-solitary-predator",
+      "riderSizes": ["small", "standard"]
+    },
+    {
+      "monster": "apex-predator",
+      "riderSizes": ["small", "standard"]
+    },
+    {
+      "monster": "crag-stalker",
+      "riderSizes": ["small", "standard"]
+    },
+    {
+      "monster": "gallows-stalker",
+      "riderSizes": ["small", "standard"]
+    },
+    {
+      "monster": "saber-toothed-tiger",
+      "riderSizes": ["small", "standard"]
+    },
+    {
+      "monster": "cave-bear",
+      "riderSizes": ["small", "standard"]
+    },
+    {
+      "monster": "colossus-bear",
+      "riderSizes": ["small", "standard"]
+    },
+    {
+      "monster": "dire-wolf",
+      "riderSizes": ["small"]
+    }
+  ]
 }

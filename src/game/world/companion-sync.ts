@@ -83,6 +83,11 @@ export function untoughened<T>(w: World, data: GameData, m: Member, step: () => 
 
 /** A companion leaves the party with its master, to wait until called (Sam's call). */
 export function followMaster(w: World, m: Member): void {
+  // A ridden companion carries its master off, and waits with them.
+  if (m.companion?.ridden) {
+    delete m.companion.ridden;
+    note(w, `${m.companion.name} goes with ${m.character.name}.`);
+  }
   const n = w.npcs.find((x) => x.kind === 'companion' && x.master === m.id);
   if (!n) return;
   removeNpc(w, n.id);
@@ -92,7 +97,8 @@ export function followMaster(w: World, m: Member): void {
 
 /** A companion with the party whose master can commit Effort to Eyes of the Beast (1.5.4). */
 export function sharedEyes(w: World, data: GameData): Npc | undefined {
-  return w.npcs.find(
+  const ridden = w.members.flatMap((m) => (m.companion?.ridden && !m.dead ? [m.companion] : []));
+  return [...w.npcs, ...ridden].find(
     (n) =>
       n.kind === 'companion' &&
       n.hp > 0 &&

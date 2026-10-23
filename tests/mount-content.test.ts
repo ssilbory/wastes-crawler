@@ -53,4 +53,19 @@ describe('mount content (docs/rules-adaptation.md, Mounts)', () => {
       'mountRules/ride: unknown skill sail',
     ]);
   });
+
+  it('rides companions that are real monsters, each listed once', () => {
+    const rules = content.mountRules;
+    const companionMounts = [
+      { monster: 'herd-beast', riderSizes: ['small' as const] },
+      { monster: 'herd-beast', riderSizes: ['small' as const] },
+      { monster: 'pegasus', riderSizes: ['small' as const] },
+    ];
+    expect(
+      mountReferenceErrors(srd, { ...content, mountRules: { ...rules, companionMounts } }),
+    ).toEqual([
+      'mountRules: rides unknown companion pegasus',
+      'mountRules: companion herd-beast listed twice',
+    ]);
+  });
 });

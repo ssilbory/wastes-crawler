@@ -57,7 +57,12 @@ export const rides = (data: GameData, m: Member, t: MountType): boolean => {
 export function allMounted(w: World, data: GameData): boolean {
   if (w.dungeon) return false;
   const party = alive(w);
-  return party.length > 0 && party.every((m) => sizeOf(data, m) === 'large' || mountOf(w, m.id));
+  return (
+    party.length > 0 &&
+    party.every(
+      (m) => sizeOf(data, m) === 'large' || mountOf(w, m.id) || m.companion?.ridden === true,
+    )
+  );
 }
 
 /** Why a mount's rider can't change here, or null. */
@@ -88,6 +93,7 @@ export function setRider(
   const name = who.character.name;
   if (sizeOf(data, who) === 'large') return no(`${name} is a centaur and rides no one.`);
   if (!rides(data, who, t)) return no(`${m.name} can't carry ${name}.`);
+  if (who.companion?.ridden) return no(`${name} rides ${who.companion.name}; get down first.`);
   if (load(data, m) > t.loadRidden)
     return no(`${m.name} carries too much to take a rider; lighten it to ${t.loadRidden}.`);
   for (const other of w.mounts) if (other.rider === memberId) other.rider = null;
