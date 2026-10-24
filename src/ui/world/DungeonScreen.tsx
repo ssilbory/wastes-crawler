@@ -143,7 +143,6 @@ export function DungeonScreen(props: {
           <span class="turn">{turnText(w)}</span>
           <span class="light">{lightText(w)}</span>
           <span>Rations: {w.rations === 0 ? 'none' : `d${w.rations}`}</span>
-          <span>Water: {w.water === 0 ? 'none' : `d${w.water}`}</span>
         </div>
         <span class="bar-actions">
           <PartyButtons onOpen={props.onOpen} />
