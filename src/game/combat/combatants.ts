@@ -33,6 +33,7 @@ export function base(
     shield: false,
     towerShield: false,
     meleeShockImmune: false,
+    selfStabilize: false,
     rangedInMelee: null,
     initiativeBonus: 0,
     actsFirst: false,
@@ -117,11 +118,15 @@ export function base(
 }
 
 /** A PC with every sheet value, focus effect, and class ability folded in, in `form` if any. */
-/** The level of a character's first mage class: what their spells go off at. */
+/**
+ * What a character's spells and arts go off at: their levels in every casting class added
+ * together (Sam's call, docs/rules-adaptation.md, Class switching). The SRD has no class switching,
+ * so its "character level" is the one casting class's level.
+ */
 export const casterLevelOf = (data: GameData, c: Character): number =>
-  Object.entries(c.classes.levels).find(
-    ([cls, l]) => l >= 1 && classOption(data, cls)?.mage,
-  )?.[1] ?? 0;
+  Object.entries(c.classes.levels)
+    .filter(([cls]) => classOption(data, cls)?.mage)
+    .reduce((sum, [, l]) => sum + l, 0);
 
 export function pcCombatant(
   data: GameData,
@@ -186,6 +191,7 @@ export function pcCombatant(
     shield: shields.length > 0,
     towerShield: shields.some((i) => i?.kind === 'shield' && i.shield.cover),
     meleeShockImmune: effects.some((e) => e.kind === 'melee-shock-immune'),
+    selfStabilize: effects.some((e) => e.kind === 'self-stabilize'),
     rangedInMelee: ranged.length > 0 ? Math.max(...ranged) : null,
     initiativeBonus: Math.max(0, ...init.map((e) => e.bonus)),
     actsFirst: init.some((e) => e.actsFirst),

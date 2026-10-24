@@ -25,7 +25,13 @@ describe('tending a trap’s fallen (docs/rules-adaptation.md, Falling to a trap
   it('brings the living NPCs along, leaves the dead out, and starts with a clean log', () => {
     const w = place(below(), 'barrow-upper', 4, 6, 'n');
     for (const m of w.members) if (m.character.name !== 'Grukk') m.dead = true;
-    setHp(member(w, 'Grukk'), 1);
+    // Without Die Hard, which would stabilize him on its own.
+    const grukk = member(w, 'Grukk');
+    grukk.character = {
+      ...grukk.character,
+      foci: grukk.character.foci.filter((f) => f.id !== 'die-hard'),
+    };
+    setHp(grukk, 1);
     const guard = addNpc(w, data, 'hireling', 'guard', 'thug-or-militia', 'Aldo', true) as Npc;
     const lost = addNpc(w, data, 'hireling', 'guard', 'thug-or-militia', 'Bram', true) as Npc;
     lost.hp = 0;

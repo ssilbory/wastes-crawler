@@ -93,6 +93,8 @@ export function tendRound(b: Battle): void {
         skill: helper.skills.heal ?? null,
         attributeModifier: helper.healModifier - helper.ailPenalty,
         difficulty,
+        // Broken: a step of disadvantage on skill checks (docs/rules-adaptation.md, Broken).
+        steps: helper.strain?.broken ? -1 : 0,
       });
       if (check.success) {
         aid = 1;

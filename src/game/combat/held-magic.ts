@@ -141,6 +141,8 @@ export function invokeHeld(b: Battle, actor: Combatant, action: Invoke): void {
       skill: magicSkill ?? null,
       attributeModifier: Math.max(...rules.attributes.map((a) => actor.modifiers[a])),
       difficulty,
+      // Broken: a step of disadvantage on skill checks (docs/rules-adaptation.md, Broken).
+      steps: actor.strain?.broken ? -1 : 0,
     });
     if (!check.success && difficulty - check.score <= rules.fizzle) {
       say(b, 'The spell fizzles.');

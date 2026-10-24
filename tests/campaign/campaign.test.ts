@@ -38,7 +38,7 @@ function turnIn(w: World, quest: string, region = DARK, town: Town = CINDERHOLD)
 describe('the Command authority campaign (Phase 12 exit)', () => {
   it('is playable from the Borderlands to the Seal of Command and the Hollow Throne', () => {
     const w = world();
-    w.rng = createRng('campaign-0');
+    w.rng = createRng('campaign-3');
     const tries: Record<string, number> = {};
 
     // The east road into the Dark Lands.

@@ -116,6 +116,7 @@ describe('the combat review fixes', () => {
     const [s2, g2] = [who(c, 'Snag'), who(c, 'Grukk')];
     Object.assign(s2, { mergedWith: g2.id, deathlessUntil: 99 });
     g2.mergedWith = s2.id;
+    g2.selfStabilize = false; // Without Die Hard, to fall as anyone does.
     harm(c, s2, 999);
     expect([s2.status, s2.hp]).toEqual(['active', 0]);
     expect(g2.status).toBe('dying');

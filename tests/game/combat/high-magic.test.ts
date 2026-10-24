@@ -510,6 +510,7 @@ describe('summoning and the seemingly slain', () => {
     harm(b, snag, snag.hp);
     expect([snag.status, (f.caster as CasterState).pointsLeft]).toEqual(['out', 1]);
     const grukk = who(b, 'Grukk');
+    grukk.selfStabilize = false; // Without Die Hard, to fall as anyone does.
     harm(b, grukk, grukk.hp);
     expect(grukk.status).toBe('dying');
   });

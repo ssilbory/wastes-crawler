@@ -134,6 +134,7 @@ describe('rival characters on the enemy side (docs/rules-adaptation.md, Arena ri
       canCast: true,
     });
     const grukk = who(b, 'Grukk');
+    grukk.selfStabilize = false; // Without Die Hard, to fall as anyone does.
     harm(b, grukk, 99);
     expect([b.escaped, grukk.status]).toEqual([false, 'dying']);
   });
