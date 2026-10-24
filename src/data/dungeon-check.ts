@@ -148,9 +148,13 @@ function sharedEntrances(content: ContentData): string[] {
   });
 }
 
-export function dungeonReferenceErrors(content: ContentData): string[] {
-  return [
-    ...content.dungeons.flatMap((d) => dungeonErrors(d, content)),
-    ...sharedEntrances(content),
-  ];
+/**
+ * Every dungeon's level problems, then entrances on another's hex. With `only`, just those
+ * dungeons' own levels are checked: one dungeon's levels never depend on another's.
+ */
+export function dungeonReferenceErrors(
+  content: ContentData,
+  only: readonly Dungeon[] = content.dungeons,
+): string[] {
+  return [...only.flatMap((d) => dungeonErrors(d, content)), ...sharedEntrances(content)];
 }

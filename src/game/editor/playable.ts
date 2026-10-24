@@ -1,7 +1,7 @@
 // Saved dungeons in the game (Sam's call): the game plays the shipped content plus each saved
 // dungeon that stands on a shipped map and passes every content check, so a broken one can't break
 // a campaign. A saved map plays as a world of its own, without the campaign's story.
-import { contentReferenceErrors } from '../../data/content.ts';
+import { dungeonContentErrors } from '../../data/content.ts';
 import type { ContentData, EditorLibrary, Region, SrdData } from '../../data/schemas/index.ts';
 import { withWorldMap } from '../world/region.ts';
 import { mapErrors } from './map-edit.ts';
@@ -23,7 +23,8 @@ export function playableContent(
   map: Region | null = null,
 ): Playable {
   const base = withWorldMap({ srd, content: shipped }, map).content;
-  const known = new Set(contentReferenceErrors(srd, base));
+  // Only the checks that read dungeons: the rest come out the same for every swap.
+  const known = new Set(dungeonContentErrors(srd, base));
   const skipped: Record<string, string> = {};
   let content = base;
   for (const d of lib.dungeons) {
@@ -35,7 +36,7 @@ export function playableContent(
       ? content.dungeons.map((x) => (x.id === d.id ? d : x))
       : [...content.dungeons, d];
     const next = { ...content, dungeons };
-    const problem = contentReferenceErrors(srd, next).find((e) => !known.has(e));
+    const problem = dungeonContentErrors(srd, next, d).find((e) => !known.has(e));
     if (problem === undefined) content = next;
     else skipped[d.id] = problem;
   }

@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import type { Dungeon, Region } from '../../../src/data/schemas/index.ts';
+import type { ContentData, Dungeon, Region } from '../../../src/data/schemas/index.ts';
 import { newDungeon } from '../../../src/game/dungeon/dungeon-edit.ts';
 import { setCell } from '../../../src/game/dungeon/level-edit.ts';
+import { contentReferenceErrors, dungeonContentErrors } from '../../../src/data/content.ts';
 import { EMPTY_LIBRARY } from '../../../src/game/editor/library.ts';
 import { freeHex } from '../../../src/game/editor/map-edit.ts';
 import { playableContent, worldMapErrors } from '../../../src/game/editor/playable.ts';
@@ -59,6 +60,40 @@ describe('saved dungeons in the game', () => {
       broken: 'dungeons/broken/pit-1: stairs at 2,2 lead nowhere',
       twin: "dungeons/twin: the entrance is on pit's hex",
     });
+  });
+
+  it('finds the same new problems with the dungeon checks alone as with every check', () => {
+    const broken: Dungeon = {
+      ...pit,
+      levels: pit.levels.map((l) => ({ ...l, map: setCell(l.map, { x: 2, y: 2 }, 'down') })),
+    };
+    // A shipped dungeon cut down to one level loses what quests and captives point at.
+    const cut = { ...barrow, levels: barrow.levels.slice(0, 1) };
+    const swaps = [[pit], [broken], [pit, { ...pit, id: 'twin' }], [cut], [barrow, barrow]];
+    const fresh = (
+      check: (c: ContentData) => string[],
+      dungeons: Dungeon[],
+      before: (c: ContentData) => string[] = check,
+    ) => {
+      const known = new Set(before(shipped));
+      return check({ ...shipped, dungeons: [...shipped.dungeons, ...dungeons] })
+        .filter((e) => !known.has(e))
+        .sort();
+    };
+    for (const dungeons of swaps) {
+      const all = fresh((c) => contentReferenceErrors(data.srd, c), dungeons);
+      expect(fresh((c) => dungeonContentErrors(data.srd, c), dungeons)).toEqual(all);
+      // As playable.ts checks one swap at a time: only the new dungeon's levels.
+      if (dungeons.length === 1)
+        expect(
+          fresh(
+            (c) => dungeonContentErrors(data.srd, c, dungeons[0]),
+            dungeons,
+            (c) => dungeonContentErrors(data.srd, c),
+          ),
+        ).toEqual(all);
+    }
+    expect(fresh((c) => dungeonContentErrors(data.srd, c), [broken]).length).toBeGreaterThan(0);
   });
 
   it('keeps a saved map clear of a shipped map’s town ids', () => {

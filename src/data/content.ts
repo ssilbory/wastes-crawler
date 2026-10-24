@@ -53,6 +53,7 @@ import warlords from '../../data/content/warlords.json';
 import factions from '../../data/content/factions.json';
 import ailments from '../../data/content/ailments.json';
 import { withSettingMonsters } from './monsters.ts';
+import { parseShipped } from './shipped.ts';
 import { combatReferenceErrors } from './combat-check.ts';
 import { equipmentReferenceErrors } from './equipment-check.ts';
 import { factionReferenceErrors } from './faction-check.ts';
@@ -70,71 +71,117 @@ import { dungeonReferenceErrors } from './dungeon-check.ts';
 import { craftingReferenceErrors } from './crafting-check.ts';
 import { alchemyReferenceErrors } from './alchemy-check.ts';
 import { deviceReferenceErrors } from './device-check.ts';
-import { ContentSchemas, type ContentData, type SrdData } from './schemas/index.ts';
+import { ContentSchemas, type ContentData, type Dungeon, type SrdData } from './schemas/index.ts';
 import { gameSkills, skillRuleErrors } from './skills.ts';
 import { spellRuleErrors } from './spells.ts';
 import { groveReferenceErrors } from './grove-check.ts';
 import { ailmentReferenceErrors } from './ailment-check.ts';
 import { warlordReferenceErrors } from './warlord-check.ts';
 
+/** Every shipped content file, by its key in ContentData, before parsing. */
+export const SHIPPED_CONTENT: Record<keyof ContentData, unknown> = {
+  peoples,
+  backgrounds,
+  racialFoci,
+  focusRules,
+  shields,
+  startingPackages,
+  equipmentRules,
+  traditions,
+  classOptions,
+  monsterCombat,
+  combatMagic,
+  terrains,
+  regions,
+  realms,
+  encounterTables,
+  mishaps,
+  overlandRules,
+  townRules,
+  skillRules,
+  spellRules,
+  magicEffects,
+  npcRules,
+  mountRules,
+  captives,
+  coachRoutes,
+  coachRules,
+  arenaCards,
+  missionGivers,
+  quests,
+  monsters,
+  dungeons,
+  mapGen,
+  craftingRules,
+  components,
+  mods,
+  craftsmen,
+  alchemy,
+  scrolls,
+  devices,
+  forging,
+  settingsDefaults,
+  soundCues,
+  starterParty,
+  testParty,
+  settingMonsters,
+  standingOrders,
+  authorities,
+  raidRules,
+  campaign,
+  ruins,
+  groves,
+  warlords,
+  factions,
+  ailments,
+};
+
+/** Parses every data/content file with its schema (see parseShipped); throws on the first invalid one. */
 export function loadContent(): ContentData {
-  return withSettingMonsters({
-    peoples: ContentSchemas.peoples.parse(peoples),
-    backgrounds: ContentSchemas.backgrounds.parse(backgrounds),
-    racialFoci: ContentSchemas.racialFoci.parse(racialFoci),
-    focusRules: ContentSchemas.focusRules.parse(focusRules),
-    shields: ContentSchemas.shields.parse(shields),
-    startingPackages: ContentSchemas.startingPackages.parse(startingPackages),
-    equipmentRules: ContentSchemas.equipmentRules.parse(equipmentRules),
-    traditions: ContentSchemas.traditions.parse(traditions),
-    classOptions: ContentSchemas.classOptions.parse(classOptions),
-    monsterCombat: ContentSchemas.monsterCombat.parse(monsterCombat),
-    combatMagic: ContentSchemas.combatMagic.parse(combatMagic),
-    terrains: ContentSchemas.terrains.parse(terrains),
-    regions: ContentSchemas.regions.parse(regions),
-    realms: ContentSchemas.realms.parse(realms),
-    encounterTables: ContentSchemas.encounterTables.parse(encounterTables),
-    mishaps: ContentSchemas.mishaps.parse(mishaps),
-    overlandRules: ContentSchemas.overlandRules.parse(overlandRules),
-    townRules: ContentSchemas.townRules.parse(townRules),
-    skillRules: ContentSchemas.skillRules.parse(skillRules),
-    spellRules: ContentSchemas.spellRules.parse(spellRules),
-    magicEffects: ContentSchemas.magicEffects.parse(magicEffects),
-    npcRules: ContentSchemas.npcRules.parse(npcRules),
-    mountRules: ContentSchemas.mountRules.parse(mountRules),
-    captives: ContentSchemas.captives.parse(captives),
-    coachRoutes: ContentSchemas.coachRoutes.parse(coachRoutes),
-    coachRules: ContentSchemas.coachRules.parse(coachRules),
-    arenaCards: ContentSchemas.arenaCards.parse(arenaCards),
-    missionGivers: ContentSchemas.missionGivers.parse(missionGivers),
-    quests: ContentSchemas.quests.parse(quests),
-    monsters: ContentSchemas.monsters.parse(monsters),
-    dungeons: ContentSchemas.dungeons.parse(dungeons),
-    mapGen: ContentSchemas.mapGen.parse(mapGen),
-    craftingRules: ContentSchemas.craftingRules.parse(craftingRules),
-    components: ContentSchemas.components.parse(components),
-    mods: ContentSchemas.mods.parse(mods),
-    craftsmen: ContentSchemas.craftsmen.parse(craftsmen),
-    alchemy: ContentSchemas.alchemy.parse(alchemy),
-    scrolls: ContentSchemas.scrolls.parse(scrolls),
-    devices: ContentSchemas.devices.parse(devices),
-    forging: ContentSchemas.forging.parse(forging),
-    settingsDefaults: ContentSchemas.settingsDefaults.parse(settingsDefaults),
-    soundCues: ContentSchemas.soundCues.parse(soundCues),
-    starterParty: ContentSchemas.starterParty.parse(starterParty),
-    testParty: ContentSchemas.testParty.parse(testParty),
-    settingMonsters: ContentSchemas.settingMonsters.parse(settingMonsters),
-    standingOrders: ContentSchemas.standingOrders.parse(standingOrders),
-    authorities: ContentSchemas.authorities.parse(authorities),
-    raidRules: ContentSchemas.raidRules.parse(raidRules),
-    campaign: ContentSchemas.campaign.parse(campaign),
-    ruins: ContentSchemas.ruins.parse(ruins),
-    groves: ContentSchemas.groves.parse(groves),
-    warlords: ContentSchemas.warlords.parse(warlords),
-    factions: ContentSchemas.factions.parse(factions),
-    ailments: ContentSchemas.ailments.parse(ailments),
-  });
+  const out = {} as Record<keyof ContentData, unknown>;
+  for (const name of Object.keys(ContentSchemas) as (keyof ContentData)[]) {
+    out[name] = parseShipped(ContentSchemas[name], SHIPPED_CONTENT[name]);
+  }
+  return withSettingMonsters(out as ContentData);
 }
+
+/**
+ * The part of contentReferenceErrors that reads dungeons. Everything else it checks is the same
+ * whichever dungeons are in, so swapping a dungeon can only change these: comparing them is what
+ * comparing the whole check would give, at a fraction of its cost (src/game/editor/playable.ts).
+ * With `changed`, only that dungeon's own levels are checked, the slow part: the others' levels
+ * come out as they did before it was swapped in. Keep this list in step with the checks that read
+ * content.dungeons.
+ */
+export function dungeonContentErrors(
+  srd: SrdData,
+  content: ContentData,
+  changed?: Dungeon,
+): string[] {
+  const lists: [string, { id: string }[]][] = [
+    ['dungeons', content.dungeons],
+    ...content.dungeons.map((d): [string, { id: string }[]] => [
+      `dungeons/${d.id} levels`,
+      d.levels,
+    ]),
+  ];
+  return [
+    ...lists.flatMap(([name, list]) => duplicateIds(name, list)),
+    ...npcReferenceErrors(srd, content),
+    ...questReferenceErrors(srd, content),
+    ...dungeonReferenceErrors(content, changed && [changed]),
+    ...settingReferenceErrors(srd, content),
+    ...ailmentReferenceErrors(srd, content),
+    ...warlordReferenceErrors(content),
+  ];
+}
+
+const duplicateIds = (name: string, list: { id: string }[]): string[] => {
+  const ids = list.map((r) => r.id);
+  return [...new Set(ids.filter((id, i) => ids.indexOf(id) !== i))].map(
+    (id) => `${name}: duplicate id ${id}`,
+  );
+};
 
 /** Authored content may only reference SRD records that exist. */
 export function contentReferenceErrors(srd: SrdData, content: ContentData): string[] {
@@ -208,12 +255,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
       p.lineages ?? [],
     ]),
   ];
-  for (const [name, list] of idLists) {
-    const ids = list.map((r) => r.id);
-    for (const id of new Set(ids.filter((id, i) => ids.indexOf(id) !== i))) {
-      errors.push(`${name}: duplicate id ${id}`);
-    }
-  }
+  for (const [name, list] of idLists) errors.push(...duplicateIds(name, list));
   return [
     ...errors,
     ...skillRuleErrors(srd, content),
