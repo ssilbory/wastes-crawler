@@ -1,3 +1,5 @@
+// Before any zod schema is built (src/ui/zod-jitless.ts).
+import './ui/zod-jitless.ts';
 // The theme loads first so each screen's own styles build on it.
 import './ui/theme/fonts.ts';
 import './ui/theme/theme.css';

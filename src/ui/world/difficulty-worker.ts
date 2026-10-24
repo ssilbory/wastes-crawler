@@ -1,4 +1,5 @@
 // Runs the XP difficulty simulation off the main thread (docs/rules-adaptation.md, XP).
+import '../zod-jitless.ts';
 import { simulateDifficulty } from '../../game/world/difficulty.ts';
 import { data } from '../builder/data.ts';
 import type { AssessAnswer, AssessMessage } from './assess.ts';
