@@ -6,6 +6,9 @@ import { overlandReferenceErrors } from '../src/data/overland-check.ts';
 const srd = loadSrd();
 const content = loadContent();
 
+/** These tests trim the regions; the hidden sites' dice table is checked in its own test. */
+const withoutSites = (errors: string[]) => errors.filter((e) => !e.startsWith('hiddenSites'));
+
 describe('overland content', () => {
   it('loads a clean test region', () => {
     expect(overlandReferenceErrors(srd, content)).toEqual([]);
@@ -37,7 +40,7 @@ describe('overland content', () => {
         },
       ],
     };
-    expect(overlandReferenceErrors(srd, broken)).toEqual([
+    expect(withoutSites(overlandReferenceErrors(srd, broken))).toEqual([
       'regions/borderlands: encounters for unknown terrain lava',
       'regions/borderlands: unknown table nothing',
       'regions/borderlands: the road at 5,4 is off the land',
@@ -94,7 +97,7 @@ describe('overland content', () => {
       ],
       mishaps: content.mishaps.filter((m) => m.table === 'travel'),
     };
-    expect(overlandReferenceErrors(srd, broken)).toEqual([
+    expect(withoutSites(overlandReferenceErrors(srd, broken))).toEqual([
       'terrains: duplicate glyph',
       'terrains/dupe: unknown table nowhere',
       'regions/borderlands: ragged terrain rows',
@@ -144,7 +147,7 @@ describe('overland content', () => {
           : r,
       ),
     };
-    expect(overlandReferenceErrors(srd, broken)).toEqual([
+    expect(withoutSites(overlandReferenceErrors(srd, broken))).toEqual([
       'realms/wastes: unknown region atlantis',
       'realms/wastes: starts outside its regions, in borderlands',
       `realms/again: region ${realm.start} is already in wastes`,

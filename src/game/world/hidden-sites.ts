@@ -3,11 +3,11 @@
 // Exploration and Expeditions.md). About one wild hex in 15 holds a cache, a lair, a small ruin, or
 // a shrine, placed from the world's own seed. A quarter's exploring finds a lair or a ruin; a cache
 // or a shrine also needs the best explorer's Wis/Survive check. Nothing hints at a site beforehand.
-import type { Region, Ruin } from '../../data/schemas/index.ts';
+import type { LootDice, Region, Ruin } from '../../data/schemas/index.ts';
 import { hexKey, type Hex } from '../../rules/hex.ts';
 import { createRng } from '../../rules/rng.ts';
 import type { GameData } from '../character/context.ts';
-import { hexRng, hiddenRuin, strongestBand } from '../dungeon/hidden-ruins.ts';
+import { hexRng, hiddenRuin, regionLoot, strongestBand } from '../dungeon/hidden-ruins.ts';
 import type { WorldEvent } from './bus.ts';
 import { meetGroup } from './encounters.ts';
 import { alive, bestAt, memberCheck, note } from './members.ts';
@@ -135,9 +135,9 @@ function springLair(w: World, data: GameData, s: HiddenSite, lead: string): void
   e.spotted = true;
 }
 
-function takeLoot(w: World, data: GameData, loot: Parameters<typeof addLoot>[1]): void {
-  const dice = loot.map((d) => `${d.count}d${d.sides}`).join(' + ');
-  note(w, `The party takes ${dice} of loot.`);
+function takeLoot(w: World, data: GameData, count: number): void {
+  const loot = regionLoot(data, w.region, count);
+  note(w, `The party takes ${count}d${(loot[0] as LootDice).sides} of loot.`);
   accrueShares(
     w,
     data,

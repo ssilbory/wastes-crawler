@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest';
+import { loadSrd } from '../../../src/data/load.ts';
+import { overlandReferenceErrors } from '../../../src/data/overland-check.ts';
 import type { HiddenSiteContent } from '../../../src/data/schemas/index.ts';
 import type { GameData } from '../../../src/game/character/context.ts';
 import { dungeonOf, enterDungeon, goesDown, levelOf } from '../../../src/game/dungeon/explore.ts';
 import {
   hiddenRuin,
   hiddenRuinById,
+  regionLoot,
   ruinOfDungeon,
   strongestBand,
 } from '../../../src/game/dungeon/hidden-ruins.ts';
@@ -231,6 +234,28 @@ describe('hidden sites (Sam’s calls: Explore)', () => {
     // A save inside it loads back where it was.
     const back = parseWorld(serializeWorld(w), d);
     expect(back.ok && back.world.dungeon?.dungeon).toBe(id);
+  });
+
+  it('pay in the region’s own loot die, as its ruins do (Sam’s call)', () => {
+    expect(regionLoot(data, 'borderlands', 2)).toEqual([{ count: 2, sides: 6 }]);
+    expect(regionLoot(data, 'wastes-sunscar', 2)).toEqual([{ count: 2, sides: 12 }]);
+    // A custom map pays the default die.
+    expect(regionLoot(data, 'my-own-map', 1)).toEqual([{ count: 1, sides: 6 }]);
+    const ruin = hiddenRuin(data, 'dark-lands', { col: 10, row: 10 });
+    expect(ruin?.cache).toEqual([{ count: 1, sides: 10 }]);
+    expect(ruin?.vault.loot).toEqual([{ count: 2, sides: 10 }]);
+    const srd = loadSrd();
+    const lost = {
+      ...data.content,
+      hiddenSites: {
+        ...data.content.hiddenSites,
+        dice: { default: 6, regions: { atlantis: 8 } },
+      },
+    };
+    expect(overlandReferenceErrors(srd, lost)).toContain(
+      'hiddenSites: loot dice for unknown region atlantis',
+    );
+    expect(overlandReferenceErrors(srd, data.content)).toEqual([]);
   });
 
   it('name hidden ruins only for real regions', () => {

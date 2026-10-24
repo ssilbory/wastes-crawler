@@ -1,7 +1,8 @@
 import { z } from 'zod';
-import { LootDiceSchema } from './town-content.ts';
+import { IdSchema } from './common.ts';
 
-const Loot = z.array(LootDiceSchema).min(1);
+/** How many loot dice; their size is the region's (`dice` below). */
+const Loot = z.int().min(1);
 const Texts = z.array(z.string().min(1)).min(1);
 
 /**
@@ -16,6 +17,14 @@ export const HiddenSiteContentSchema = z.strictObject({
   /** Wis/Survive difficulty to find a cache or shrine, and the extra in difficult terrain. */
   difficulty: z.int().min(2),
   difficultTerrain: z.int().min(0),
+  /**
+   * The loot die each region pays in, matching its ruins' (Sam's call: loot scales by region), and
+   * the die for regions not listed, such as custom maps.
+   */
+  dice: z.strictObject({
+    default: z.int().min(2),
+    regions: z.record(IdSchema, z.int().min(2)),
+  }),
   /** Relative odds of each kind. */
   weights: z.strictObject({
     cache: z.int().min(0),

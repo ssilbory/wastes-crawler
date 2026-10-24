@@ -2,7 +2,7 @@
 // one- or two-level delve built from its region and hex alone, so its id says everything needed to
 // rebuild it: its wanderers and vault guards come from the hex's own encounter table, the guards an
 // entry at the most its dice allow. Where they lie is the world's business (world/hidden-sites.ts).
-import type { EncounterTable, Ruin } from '../../data/schemas/index.ts';
+import type { EncounterTable, LootDice, Ruin } from '../../data/schemas/index.ts';
 import { hexKey, type Hex } from '../../rules/hex.ts';
 import { createRng, type Rng } from '../../rules/rng.ts';
 import type { GameData } from '../character/context.ts';
@@ -37,6 +37,12 @@ export function strongestBand(data: GameData, tableId: string, rng: Rng): string
   return rows.filter((r) => r.length > 0);
 }
 
+/** So many loot dice of the size the region pays in (Sam's call: loot scales by region). */
+export function regionLoot(data: GameData, region: string, count: number): LootDice[] {
+  const dice = data.content.hiddenSites.dice;
+  return [{ count, sides: dice.regions[region] ?? dice.default }];
+}
+
 const built = new WeakMap<GameData['content'], Map<string, Ruin | null>>();
 
 /** The small ruin at a hex, built the same way every time; null where it could have no guards. */
@@ -61,8 +67,8 @@ export function hiddenRuin(data: GameData, region: string, h: Hex): Ruin | null 
     depth: rng.int(rules.depth.min, rules.depth.max),
     size: { ...rules.size },
     wander: { every: rules.wanderEvery, table },
-    cache: rules.cache,
-    vault: { guards, loot: rules.vault },
+    cache: regionLoot(data, region, rules.cache),
+    vault: { guards, loot: regionLoot(data, region, rules.vault) },
   };
   cache.set(id, ruin);
   return ruin;
