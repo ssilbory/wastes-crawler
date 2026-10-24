@@ -6,21 +6,32 @@ import type { EditorLibrary } from '../data/schemas/index.ts';
 const KEY = 'wastes-crawler.editor';
 
 export function loadLibrary(): LoadedLibrary {
+  let text: string | null;
   try {
-    const loaded = parseLibrary(localStorage.getItem(KEY));
-    // Work that no longer loads is kept aside, so saving over it loses nothing.
-    const text = localStorage.getItem(KEY);
-    if (loaded.errors.length > 0 && text !== null) {
-      let n = 1;
-      for (let old; (old = localStorage.getItem(`${KEY}.unreadable.${n}`)) !== null; n++)
-        if (old === text) return loaded;
-      localStorage.setItem(`${KEY}.unreadable.${n}`, text);
-    }
-    return loaded;
+    text = localStorage.getItem(KEY);
   } catch {
     return {
       library: { dungeons: [], regions: [] },
       errors: ['browser storage is unavailable, so editor work won’t be saved'],
+    };
+  }
+  const loaded = parseLibrary(text);
+  if (loaded.errors.length === 0 || text === null) return loaded;
+  // Work that no longer loads is kept aside, so saving over it loses nothing. A full storage can
+  // refuse the copy; the work that did load is still returned, with a warning.
+  try {
+    let n = 1;
+    for (let old; (old = localStorage.getItem(`${KEY}.unreadable.${n}`)) !== null; n++)
+      if (old === text) return loaded;
+    localStorage.setItem(`${KEY}.unreadable.${n}`, text);
+    return loaded;
+  } catch {
+    return {
+      ...loaded,
+      errors: [
+        ...loaded.errors,
+        'browser storage is full, so the unreadable work couldn’t be set aside: export your work before saving',
+      ],
     };
   }
 }

@@ -229,6 +229,19 @@ describe('loot', () => {
     });
     expect(w.loot).toEqual([]);
   });
+
+  it('sells no more dice than are carried when a size is asked for twice', () => {
+    const w = world();
+    addLoot(w, [{ count: 5, sides: 6 }]);
+    // Five dice, not ten: the two asks share the five carried.
+    w.rng = scriptedRng([1, 1, 1, 1, 1]);
+    const sale = exchangeLoot(w, data, [
+      { count: 5, sides: 6 },
+      { count: 5, sides: 6 },
+    ]);
+    expect(sale.rolled).toBe(5);
+    expect(w.loot).toEqual([]);
+  });
 });
 
 describe('the tavern', () => {

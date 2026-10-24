@@ -18,7 +18,7 @@ import {
 } from '../../../src/game/world/quest-board.ts';
 import { currentStep, questOf } from '../../../src/game/world/quests.ts';
 import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
-import { enterTown } from '../../../src/game/world/town.ts';
+import { enterTown, wipe } from '../../../src/game/world/town.ts';
 import type { World } from '../../../src/game/world/types.ts';
 import { createRng } from '../../../src/rules/rng.ts';
 import { data, encounter, member, world } from './helpers.ts';
@@ -258,6 +258,15 @@ describe('deliver and escort steps', () => {
 });
 
 describe('deadlines, turning in, and abandoning', () => {
+  it('counts the night a lost fight costs against the deadline', () => {
+    const w = world();
+    acceptQuest(w, data, 'bandit-camp');
+    w.day = 10;
+    wipe(w, data);
+    expect(w.day).toBe(11);
+    expect(w.quests['bandit-camp']?.status).toBe('failed');
+  });
+
   it('fails an unfinished quest when its days run out', () => {
     const w = world();
     acceptQuest(w, data, 'bandit-camp');

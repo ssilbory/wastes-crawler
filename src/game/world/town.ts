@@ -96,13 +96,18 @@ export function enterTown(w: World, data: GameData, siteId: string, start = fals
   if (firstVisit || w.day - w.climateDay > month(data)) climate(w, data);
 }
 
-/** The party falls: the living wake in the last town visited the next morning; the dead stay dead. */
-export function wipe(w: World, data: GameData): void {
+/**
+ * The party falls: the living wake in the last town visited the next morning; the dead stay dead.
+ * The night still passes for the world, so factions, crafters, raids, and quest deadlines count it,
+ * unless `nightPassed` says endOfDay has already counted it (day.ts).
+ */
+export function wipe(w: World, data: GameData, nightPassed = false): void {
   // The last town may be in another region (Phase 12).
   const region = data.content.regions.find((r) => r.sites.some((s) => s.id === w.lastTown));
   const town = region?.sites.find((s) => s.id === w.lastTown);
   if (!region || !town) throw new Error(`unknown town ${w.lastTown}`);
   note(w, 'The party falls.');
+  if (!nightPassed) emit(w, data, { kind: 'day-passed' });
   enterRegion(w, region.id, town);
   w.encounter = null;
   w.coach = null;
