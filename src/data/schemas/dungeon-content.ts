@@ -113,6 +113,9 @@ export const SpecialSchema = z.discriminatedUnion('kind', [
     guards: z.array(z.array(IdSchema).min(1).max(8)).min(1).max(3).optional(),
     /** What the party sees as a hoard's guards rise: the level's boss (Sam's call). */
     text: z.string().min(1).optional(),
+    /** The standing order its guards keep: they challenge first, its countersign stands them down
+     * and gives up the hoard, and beating them ends it (Sam's call: the Warden). */
+    order: IdSchema.optional(),
     vault: z.literal(true).optional(),
     /** The Wastes warlord who is this hoard's boss: winning it is their fall. */
     warlord: IdSchema.optional(),
@@ -126,12 +129,16 @@ export const SpecialSchema = z.discriminatedUnion('kind', [
     authority: IdSchema,
     text: z.string().min(1),
   }),
-  /** A clue that teaches a standing order's countersign the first time the party steps here. */
+  /**
+   * A clue that teaches a standing order's countersign the first time the party steps here; or,
+   * with `pieces`, one of that many clues, the countersign learned once all are found (Sam's call).
+   */
   z.strictObject({
     kind: z.literal('countersign'),
     ...At,
     order: IdSchema,
     text: z.string().min(1),
+    pieces: z.int().min(2).max(5).optional(),
   }),
 ]);
 export type Special = z.infer<typeof SpecialSchema>;

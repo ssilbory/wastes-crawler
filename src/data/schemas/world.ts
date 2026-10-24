@@ -8,7 +8,7 @@ import { RegionSchema } from './overland-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 40;
+export const WORLD_SCHEMA_VERSION = 41;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -380,6 +380,8 @@ export const WorldSaveSchema = z.strictObject({
   ordersEnded: z.array(IdSchema),
   /** Garrison posts the party has beaten, by key (Phase 12c). */
   beaten: z.array(z.string()),
+  /** Pieces of countersigns found, by "<order>:<dungeon>/<level>/<x>,<y>". */
+  pieces: z.array(z.string()),
   /** The Wastes warlords fallen (docs/rules-adaptation.md, The Wastes: A warlord falls). */
   warlords: z.array(IdSchema),
   /** The warlord's clock, in segments (Phase 12d). */

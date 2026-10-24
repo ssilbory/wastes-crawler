@@ -12939,6 +12939,16 @@
               "y": 14
             },
             "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+          },
+          {
+            "kind": "countersign",
+            "at": {
+              "x": 23,
+              "y": 19
+            },
+            "order": "warden-seal",
+            "text": "Chalked inside the bricked-up south gate, in a soldier's hand: \"The vale sleeps,\" and then nothing. The first line of a watchword.",
+            "pieces": 3
           }
         ],
         "captives": [],
@@ -14611,6 +14621,16 @@
               "y": 16
             },
             "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+          },
+          {
+            "kind": "countersign",
+            "at": {
+              "x": 12,
+              "y": 11
+            },
+            "order": "warden-seal",
+            "text": "A drowned courier's satchel. The letters are pulp, but the wax seal still reads \"...the gate holds...\" The middle of a watchword.",
+            "pieces": 3
           }
         ],
         "captives": [],
@@ -15933,6 +15953,16 @@
               "y": 8
             },
             "text": "A quiet nook, easy to watch. A safe place to rest."
+          },
+          {
+            "kind": "countersign",
+            "at": {
+              "x": 11,
+              "y": 11
+            },
+            "order": "warden-seal",
+            "text": "A petition nailed to the wall, never answered, ends with the words its writer was told to give at the Warden's door: \"...the Warden waits.\" The end of a watchword.",
+            "pieces": 3
           }
         ],
         "captives": [],
@@ -17174,7 +17204,9 @@
             "guards": [
               ["master-vampire", "bone-golem", "bone-golem", "bone-golem", "bone-golem"],
               ["old-barrow-archmage", "old-barrow-archmage"]
-            ]
+            ],
+            "order": "warden-seal",
+            "text": "The Warden turns from the window at last, and his bound host rises around him. \"Who comes into my vale? Give the word, or be buried in it.\""
           },
           {
             "kind": "message",
@@ -17208,18 +17240,11 @@
             },
             "loot": [
               {
-                "count": 6,
+                "count": 4,
                 "sides": 10
-              },
-              {
-                "count": 2,
-                "sides": 12
               }
             ],
-            "guards": [
-              ["master-vampire", "bone-golem", "bone-golem", "bone-golem", "bone-golem"],
-              ["old-barrow-archmage", "old-barrow-archmage"]
-            ]
+            "guards": [["oathbound-champion", "oathbound-champion", "iron-golem"]]
           },
           {
             "kind": "cache",
@@ -17229,12 +17254,8 @@
             },
             "loot": [
               {
-                "count": 6,
+                "count": 4,
                 "sides": 10
-              },
-              {
-                "count": 2,
-                "sides": 12
               }
             ]
           },

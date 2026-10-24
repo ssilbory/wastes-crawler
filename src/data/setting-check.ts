@@ -21,7 +21,19 @@ export function settingReferenceErrors(srd: SrdData, content: ContentData): stri
       errors.push(`standingOrders/${o.id}: unknown quest ${o.complete}`);
     if (o.recruit && !content.npcRules.hirelings.some((h) => h.id === o.recruit))
       errors.push(`standingOrders/${o.id}: unknown hireling type ${o.recruit}`);
+    for (const id of o.ends ?? [])
+      if (!orders.has(id) || id === o.id) errors.push(`standingOrders/${o.id}: can't end ${id}`);
   }
+  // A countersign in pieces needs exactly that many clues, all agreeing on the count.
+  const pieces = new Map<string, number[]>();
+  for (const s of content.dungeons.flatMap((d) => d.levels.flatMap((l) => l.specials)))
+    if (s.kind === 'countersign' && s.pieces)
+      pieces.set(s.order, [...(pieces.get(s.order) ?? []), s.pieces]);
+  for (const [order, counts] of pieces)
+    if (counts.some((n) => n !== counts.length))
+      errors.push(
+        `standingOrders/${order}: ${counts.length} countersign pieces found, not ${counts[0]}`,
+      );
   for (const a of content.authorities)
     for (const id of a.commands === 'all' ? [] : a.commands)
       if (!orders.has(id)) errors.push(`authorities/${a.id}: unknown order ${id}`);
@@ -48,6 +60,8 @@ export function settingReferenceErrors(srd: SrdData, content: ContentData): stri
           errors.push(`${where}: unknown order ${s.order}`);
         if (s.kind === 'notes' && !sets.has(s.set)) errors.push(`${where}: unknown notes ${s.set}`);
         if (s.kind === 'cache' && s.vault) errors.push(`${where}: vaults belong to ruins`);
+        if (s.kind === 'cache' && s.order && (!orders.has(s.order) || !s.guards))
+          errors.push(`${where}: the hoard's order ${s.order} needs guards and a known order`);
         if (s.kind === 'token' && !content.authorities.some((a) => a.id === s.authority))
           errors.push(`${where}: unknown authority ${s.authority}`);
         if (s.kind === 'message')

@@ -76,6 +76,7 @@ export function newWorld(
     components: {},
     countersigns: [],
     beaten: [],
+    pieces: [],
     warlords: [],
     clock: 0,
     notes: {},

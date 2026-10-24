@@ -34,7 +34,9 @@ export type WorldEvent =
   /** A captive was freed into the party, or went their own way. */
   | { kind: 'captive-freed'; captive: string }
   /** A quest was turned in to its giver (Phase 12d). */
-  | { kind: 'quest-done'; quest: string };
+  | { kind: 'quest-done'; quest: string }
+  /** A standing order ended, by countersign, token, quest, or its keeper's fall. */
+  | { kind: 'order-ended'; order: string };
 
 type Listener = (w: World, data: GameData, e: WorldEvent) => void;
 

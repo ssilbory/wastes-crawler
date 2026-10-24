@@ -10,6 +10,7 @@ import type { GameData } from '../character/context.ts';
 import type { WorldEvent } from '../world/bus.ts';
 import { meetGroup } from '../world/encounters.ts';
 import { note } from '../world/members.ts';
+import { endOrder, orderEnded } from '../world/orders.ts';
 import { accrueShares } from '../world/npcs.ts';
 import { addLoot } from '../world/shop.ts';
 import { pickUp } from '../world/party-load.ts';
@@ -109,13 +110,28 @@ function take(w: World, data: GameData, key: string, cache: Cache): void {
   note(w, `${ruin.name} is emptied. Ruins like this shift within a month.`);
 }
 
-/** The ruins' bus listener: caches are taken on stepping onto them, a vault once its guards fall. */
+/**
+ * The ruins' bus listener: caches are taken on stepping onto them, a vault once its guards fall. A
+ * hoard whose guards keep a standing order is given up when the order ends, and beating its guards
+ * ends the order (Sam's call: the Warden).
+ */
 export function ruinsListener(w: World, data: GameData, e: WorldEvent): void {
-  if (e.kind !== 'cell-entered' && e.kind !== 'fight-won') return;
+  if (e.kind !== 'cell-entered' && e.kind !== 'fight-won' && e.kind !== 'order-ended') return;
   const found = cacheHere(w, data);
-  if (!found || w.encounter) return;
+  if (!found) return;
   const { key, cache } = found;
-  if (cache.guards && !w.beaten.includes(key)) {
+  if (e.kind === 'order-ended') {
+    if (cache.order !== e.order || (w.encounter && w.encounter.garrison !== key)) return;
+    if (w.encounter) {
+      note(w, 'The guards step aside from the hoard.');
+      w.encounter = null;
+    }
+    take(w, data, key, cache);
+    return;
+  }
+  if (w.encounter) return;
+  const kept = cache.order && !orderEnded(w, cache.order) ? cache.order : null;
+  if (cache.guards && !w.beaten.includes(key) && (kept || !cache.order)) {
     if (e.kind === 'fight-won') return;
     const s = w.dungeon as NonNullable<World['dungeon']>;
     const where = `${levelOf(data, s.dungeon, s.level).level.name} ${s.at.x},${s.at.y}`;
@@ -130,7 +146,13 @@ export function ruinsListener(w: World, data: GameData, e: WorldEvent): void {
       where,
     );
     g.garrison = key;
+    if (kept) {
+      // Like a garrison post, they challenge first and ask for the countersign.
+      g.order = kept;
+      g.spotted = true;
+    }
     return;
   }
   take(w, data, key, cache);
+  if (e.kind === 'fight-won' && cache.order) endOrder(w, data, cache.order);
 }
