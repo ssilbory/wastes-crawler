@@ -50,6 +50,7 @@ import campaign from '../../data/content/campaign.json';
 import ruins from '../../data/content/ruins.json';
 import groves from '../../data/content/groves.json';
 import warlords from '../../data/content/warlords.json';
+import hiddenSites from '../../data/content/hidden-sites.json';
 import factions from '../../data/content/factions.json';
 import ailments from '../../data/content/ailments.json';
 import { withSettingMonsters } from './monsters.ts';
@@ -132,6 +133,7 @@ export const SHIPPED_CONTENT: Record<keyof ContentData, unknown> = {
   ruins,
   groves,
   warlords,
+  hiddenSites,
   factions,
   ailments,
 };

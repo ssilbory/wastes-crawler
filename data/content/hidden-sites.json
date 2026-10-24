@@ -1,0 +1,53 @@
+{
+  "odds": 15,
+  "difficulty": 8,
+  "difficultTerrain": 2,
+  "weights": { "cache": 4, "lair": 3, "ruin": 1, "shrine": 2 },
+  "cache": {
+    "loot": [{ "count": 2, "sides": 6 }],
+    "texts": [
+      "Under a cairn of flat stones, someone's stash: wrapped in oilcloth, long forgotten.",
+      "A wagon lies on its side in a gully, its driver's bones still on the bench. The strongbox is intact.",
+      "A hollow under an old root holds a bundle a deserter never came back for."
+    ]
+  },
+  "lair": {
+    "loot": [{ "count": 2, "sides": 8 }],
+    "texts": [
+      "Gnawed bones and a trodden path lead to a den. Its owners are home.",
+      "A cave mouth reeks of musk and old blood. Something inside stirs at the party's scent.",
+      "A ring of broken stones hides a lair, and the lair is not empty."
+    ]
+  },
+  "ruin": {
+    "names": [
+      "A Sunken Barrow",
+      "A Fallen Watchpost",
+      "A Buried Chapel",
+      "A Collapsed Mine",
+      "A Forgotten Cellar"
+    ],
+    "depth": { "min": 1, "max": 2 },
+    "size": { "min": 12, "max": 13 },
+    "wanderEvery": 3,
+    "cache": [{ "count": 1, "sides": 6 }],
+    "vault": [{ "count": 2, "sides": 8 }],
+    "texts": [
+      "Brush and earth have nearly closed it, but a way down is here: old steps into the dark."
+    ]
+  },
+  "shrines": [
+    {
+      "text": "A spring wells up beside a weathered statue of the Lady. The water is cold and clean, and wounds close as the party drinks.",
+      "boon": "heal"
+    },
+    {
+      "text": "A hermit's shrine, its candles long burned down. An hour's quiet here eases the weariest of the party.",
+      "boon": "strain"
+    },
+    {
+      "text": "A standing stone, carved with the names of a village that is no longer on any map.",
+      "boon": "none"
+    }
+  ]
+}

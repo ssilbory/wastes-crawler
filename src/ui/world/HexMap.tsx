@@ -236,6 +236,18 @@ export function HexMap(props: {
                 <title>{c.grove}</title>
               </use>
             )}
+            {c.lair && (
+              <use
+                class="lair"
+                href="#hi-lair"
+                x={c.cx - SIZE * 0.4}
+                y={c.cy - SIZE * 0.4}
+                width={SIZE * 0.8}
+                height={SIZE * 0.8}
+              >
+                <title>{c.lair}</title>
+              </use>
+            )}
             {c.exit && (
               <use
                 class="exit"

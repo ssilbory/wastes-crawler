@@ -9,6 +9,7 @@ const ACTIVITIES: Record<Activity, string> = {
   hunt: 'Hunt or fish',
   firewood: 'Gather firewood',
   craft: 'Craft',
+  explore: 'Explore the hex',
 };
 
 interface Choice {

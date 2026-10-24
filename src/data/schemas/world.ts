@@ -8,7 +8,7 @@ import { RegionSchema } from './overland-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 43;
+export const WORLD_SCHEMA_VERSION = 44;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -403,6 +403,12 @@ export const WorldSaveSchema = z.strictObject({
   ),
   /** Loot caches taken, by dungeon, level, and cell. */
   caches: z.array(z.string()),
+  /** Hidden sites: the seed that places them, and those found and used up, by "<region>:<hex>". */
+  sites: z.strictObject({
+    seed: z.int().min(1),
+    found: z.array(z.string()),
+    done: z.array(z.string()),
+  }),
   /** Dungeons and ruins whose way down a tavern rumor has told the party of, by id. */
   rumors: z.array(IdSchema),
   /** What the party did with the Seal of Command, once decided. */

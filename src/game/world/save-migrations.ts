@@ -236,4 +236,15 @@ export const WORLD_MIGRATIONS: Migrations = {
     ...(JSON.parse(JSON.stringify(raw).replaceAll('"vorpal-hare"', '"death-hare"')) as Raw),
     schemaVersion: 43,
   }),
+  // Version 44 adds hidden sites, placed by a seed from the saved stream's state: none found yet.
+  43: (raw) => ({
+    ...raw,
+    schemaVersion: 44,
+    sites: {
+      // A damaged save without a stream fails its own checks later; it needs only some seed here.
+      seed: ((Number((raw.rng as unknown[] | undefined)?.[0]) >>> 0) % 2147483646) + 1,
+      found: [],
+      done: [],
+    },
+  }),
 };

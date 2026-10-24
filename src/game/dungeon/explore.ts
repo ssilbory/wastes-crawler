@@ -12,6 +12,7 @@ import { note } from '../world/members.ts';
 import { endQuarter } from '../world/quarter.ts';
 import { emit } from '../world/bus.ts';
 import { ruinDungeon } from './generate.ts';
+import { ruinOfDungeon } from './hidden-ruins.ts';
 import { openRuin, ruinHere } from './ruins.ts';
 import { chartDungeon, recall } from './chart.ts';
 import { douse, drawKits, blind, kindle } from './light.ts';
@@ -25,7 +26,8 @@ import type { World } from '../world/types.ts';
 const no = (reason: string): TownResult => ({ ok: false, reason });
 
 export function dungeonOf(data: GameData, id: string): Dungeon {
-  const d = data.content.dungeons.find((x) => x.id === id) ?? ruinDungeon(data.content.ruins, id);
+  const ruin = data.content.dungeons.some((x) => x.id === id) ? undefined : ruinOfDungeon(data, id);
+  const d = data.content.dungeons.find((x) => x.id === id) ?? (ruin && ruinDungeon([ruin], id));
   if (!d) throw new Error(`unknown dungeon ${id}`);
   return d;
 }
@@ -79,7 +81,7 @@ export function openFacing(map: LevelMap, at: Cell, facing: Facing): Facing {
 
 /** Towers and cities are walked into and out of; delves are climbed down into and out of. */
 export function goesDown(data: GameData, dungeonId: string): boolean {
-  const ruin = data.content.ruins.find((r) => dungeonId.startsWith(`${r.id}-v`));
+  const ruin = ruinOfDungeon(data, dungeonId);
   return ruin === undefined || ruin.kind === 'delve';
 }
 
