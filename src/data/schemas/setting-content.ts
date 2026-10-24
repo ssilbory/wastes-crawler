@@ -17,6 +17,9 @@ export const StandingOrderSchema = z.strictObject({
   complete: IdSchema.optional(),
   /** A hireling type one of them offers to sign on as, once released. */
   recruit: IdSchema.optional(),
+  /** Orders given on this one's authority, which end with it (Sam's call: the Warden's fall
+   * releases the Sealed Vale's pass). */
+  ends: z.array(IdSchema).min(1).optional(),
 });
 export type StandingOrder = z.infer<typeof StandingOrderSchema>;
 

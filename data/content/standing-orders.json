@@ -81,5 +81,13 @@
     "text": "The Warden's household and the bound who serve him keep his tower against all comers, as ordered the day the vale was sealed.",
     "countersign": "Grey stone, grey sky",
     "bluff": 15
+  },
+  {
+    "id": "warden-seal",
+    "name": "Keep the Vale Sealed",
+    "text": "The Warden sealed the vale on the Dark Lord's word, and every bound post in it answers to him. He keeps the seal still, and gives way only to the word he set for the Dark Lord's own messengers.",
+    "countersign": "The vale sleeps, the gate holds, the Warden waits",
+    "bluff": 16,
+    "ends": ["hold-the-throat", "spire-watch"]
   }
 ]

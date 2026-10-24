@@ -61,6 +61,41 @@ test('plays the Sealed Vale, a world shipped beside the campaign', async ({ page
   await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
 });
 
+test('ends the Sealed Vale at the pass, then keeps adventuring or goes to the title', async ({
+  page,
+}) => {
+  await party(page);
+  const world = page.getByRole('group', { name: 'World' });
+  await world.getByRole('combobox', { name: 'Play on' }).selectOption({ label: 'The Sealed Vale' });
+  await page.getByRole('button', { name: /Start a new world/ }).click();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
+  // As if the party had just cleared the pass's last post.
+  const reach = () =>
+    page.evaluate(() => {
+      const key = 'wastes-crawler.world';
+      const save = JSON.parse(localStorage.getItem(key) as string);
+      save.realmEnd = 'reached';
+      localStorage.setItem(key, JSON.stringify(save));
+    });
+  await reach();
+  await page.reload();
+  await page.getByRole('button', { name: 'Continue journey' }).click();
+  const end = page.getByRole('region', { name: "Journey's end" });
+  await expect(end).toContainText('The Sealed Vale is behind you.');
+  await end.getByRole('button', { name: 'Keep adventuring' }).click();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
+  // Shown once: continuing the save goes straight back to the map.
+  await page.reload();
+  await page.getByRole('button', { name: 'Continue journey' }).click();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
+  await expect(end).toHaveCount(0);
+  await reach();
+  await page.reload();
+  await page.getByRole('button', { name: 'Continue journey' }).click();
+  await end.getByRole('button', { name: 'Return to the title screen' }).click();
+  await expect(page.getByRole('heading', { name: 'Wastes Crawler', level: 1 })).toBeVisible();
+});
+
 test('plays the Wastes, a shipped realm of five maps', async ({ page }) => {
   await party(page);
   const world = page.getByRole('group', { name: 'World' });

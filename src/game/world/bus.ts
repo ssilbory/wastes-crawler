@@ -15,6 +15,7 @@ import { raisingListener } from './raising.ts';
 import { isCampaign } from './region.ts';
 import { rescueListener } from '../dungeon/rescues.ts';
 import { ruinsListener } from '../dungeon/ruins.ts';
+import { realmEndListener } from './realm-end.ts';
 import { warlordsListener } from './warlords.ts';
 import type { Npc, World } from './types.ts';
 
@@ -34,7 +35,9 @@ export type WorldEvent =
   /** A captive was freed into the party, or went their own way. */
   | { kind: 'captive-freed'; captive: string }
   /** A quest was turned in to its giver (Phase 12d). */
-  | { kind: 'quest-done'; quest: string };
+  | { kind: 'quest-done'; quest: string }
+  /** A standing order ended, by countersign, token, quest, or its keeper's fall. */
+  | { kind: 'order-ended'; order: string };
 
 type Listener = (w: World, data: GameData, e: WorldEvent) => void;
 
@@ -53,6 +56,8 @@ const LISTENERS: readonly Listener[] = [
   sharesListener,
   ruinsListener,
   warlordsListener,
+  // Last, so the fight's garrison is recorded before the ending checks the hex.
+  realmEndListener,
 ];
 
 /**

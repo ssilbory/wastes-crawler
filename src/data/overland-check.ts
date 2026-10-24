@@ -98,6 +98,13 @@ function realmErrors(content: ContentData): string[] {
     }
     if (!realm.regions.includes(realm.start))
       errors.push(`${where}: starts outside its regions, in ${realm.start}`);
+    const end = realm.ending;
+    const map = end && content.regions.find((r) => r.id === end.region);
+    if (
+      end &&
+      (!realm.regions.includes(end.region) || map?.terrain[end.row]?.[end.col] === undefined)
+    )
+      errors.push(`${where}: ends off its own maps, at ${end.region} ${end.col},${end.row}`);
   }
   for (const r of content.regions)
     for (const e of r.exits)

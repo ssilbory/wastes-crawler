@@ -1,6 +1,6 @@
 // Special squares (docs/rules-adaptation.md, Dungeon exploration): messages, teleporters,
 // spinners, anti-map, darkness, and anti-magic, keyed by cell in the level's content; and clues that
-// teach a standing order's countersign (Phase 12b).
+// teach a standing order's countersign (Phase 12b), whole or in pieces (Sam's call: the Warden's).
 import type { Special } from '../../data/schemas/index.ts';
 import { FACINGS, type Facing } from '../../rules/grid.ts';
 import type { GameData } from '../character/context.ts';
@@ -51,7 +51,17 @@ export function arriveOn(w: World, data: GameData): void {
       gainAuthority(w, data, sp.authority);
     } else if (sp.kind === 'countersign') {
       if (w.countersigns.includes(sp.order)) continue;
-      note(w, sp.text);
+      if (sp.pieces) {
+        const piece = `${sp.order}:${s.dungeon}/${s.level}/${key}`;
+        if (w.pieces.includes(piece)) continue;
+        w.pieces.push(piece);
+        note(w, sp.text);
+        const found = w.pieces.filter((p) => p.startsWith(`${sp.order}:`)).length;
+        if (found < sp.pieces) {
+          note(w, `The party has ${found} of ${sp.pieces} pieces of a countersign.`);
+          continue;
+        }
+      } else note(w, sp.text);
       learnCountersign(w, data, sp.order);
     } else if (sp.kind === 'spinner') {
       s.facing = FACINGS[w.rng.int(0, 3)] as Facing;

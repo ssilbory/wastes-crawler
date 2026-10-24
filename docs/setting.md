@@ -290,4 +290,4 @@ Each warlord holds a stronghold on their map and stays in it. Their warband ride
 
 ## The Sealed Vale
 
-A world of one map, played on its own (docs/rules-adaptation.md, Shipped worlds), built for one great dungeon: Harrowmere. Its story lives inside that dungeon, told on the way down through the streets, the sewers, and the Warden's Tower. The Warden sealed the vale on the Dark Lord's word and still keeps it sealed. He can be fought, or stood down with his countersign. The vale's epilogue plays when the party reaches its exit.
+A world of one map, played on its own (docs/rules-adaptation.md, Shipped worlds), built for one great dungeon: Harrowmere. Its story lives inside that dungeon, told on the way down through the streets, the sewers, and the Warden's Tower. The Warden sealed the vale on the Dark Lord's word and still keeps it sealed. He can be fought, or stood down with his countersign, found in three pieces across the streets, the sewers, and the tower. Either way his fall releases his household and the bound holding the pass. The vale's epilogue plays when the party reaches its exit.

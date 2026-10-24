@@ -22,6 +22,7 @@ describe('setting content (Phase 12b)', () => {
       'citadel-watch',
       'hold-the-throat',
       'spire-watch',
+      'warden-seal',
     ]);
     expect(content.raidRules.region).toBe('dark-lands');
   });
@@ -36,7 +37,7 @@ describe('setting content (Phase 12b)', () => {
     const level = dungeon.levels[0] as (typeof dungeon.levels)[0];
     const broken: ContentData = {
       ...content,
-      standingOrders: [{ ...order, complete: 'nothing', recruit: 'jester' }],
+      standingOrders: [{ ...order, complete: 'nothing', recruit: 'jester', ends: ['lost'] }],
       authorities: [
         { id: 'a', name: 'A', text: 'A', commands: ['lost'] },
         { id: 'b', name: 'B', text: 'B', commands: 'all' },
@@ -65,6 +66,19 @@ describe('setting content (Phase 12b)', () => {
                 { kind: 'notes', at: { x: 0, y: 0 }, set: 'lost', text: 'x' },
                 { kind: 'cache', at: { x: 0, y: 0 }, loot: [{ count: 1, sides: 6 }], vault: true },
                 { kind: 'token', at: { x: 0, y: 0 }, authority: 'lost', text: 'x' },
+                {
+                  kind: 'cache',
+                  at: { x: 0, y: 0 },
+                  loot: [{ count: 1, sides: 6 }],
+                  order: 'lost',
+                },
+                {
+                  kind: 'countersign',
+                  at: { x: 0, y: 0 },
+                  order: 'ruinfield-gate',
+                  text: 'x',
+                  pieces: 3,
+                },
               ],
               garrisons: [
                 { at: { x: 99, y: 0 }, order: 'lost', enemies: [['dragon']], text: 'x' },
@@ -95,6 +109,8 @@ describe('setting content (Phase 12b)', () => {
     ).toEqual([
       'standingOrders/ruinfield-gate: unknown quest nothing',
       'standingOrders/ruinfield-gate: unknown hireling type jester',
+      "standingOrders/ruinfield-gate: can't end lost",
+      'standingOrders/ruinfield-gate: 1 countersign pieces found, not 3',
       'authorities/a: unknown order lost',
       'regions/dark-lands: the garrison at 99,99 has unknown order lost',
       'regions/dark-lands: the garrison at 99,99 is off the map',
@@ -106,6 +122,7 @@ describe('setting content (Phase 12b)', () => {
       `dungeons/${dungeon.id}/${level.id}: unknown notes lost`,
       `dungeons/${dungeon.id}/${level.id}: vaults belong to ruins`,
       `dungeons/${dungeon.id}/${level.id}: unknown authority lost`,
+      `dungeons/${dungeon.id}/${level.id}: the hoard's order lost needs guards and a known order`,
       `dungeons/${dungeon.id}/${level.id}: the garrison at 99,0 has unknown order lost`,
       `dungeons/${dungeon.id}/${level.id}: the garrison at 99,0 is not on a plain floor cell`,
       `dungeons/${dungeon.id}/${level.id}: the garrison at 99,0: unknown monster dragon`,

@@ -8,7 +8,7 @@ import type { Authority, StandingOrder } from '../../data/schemas/index.ts';
 import { hexKey } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
 import { levelOf } from '../dungeon/explore.ts';
-import type { WorldEvent } from './bus.ts';
+import { emit, type WorldEvent } from './bus.ts';
 import { meetGroup } from './encounters.ts';
 import { passInDisguise } from './guises.ts';
 import { awake, memberCheck, note } from './members.ts';
@@ -54,12 +54,17 @@ export function gainAuthority(w: World, data: GameData, id: string): void {
   note(w, `The party now carries ${a.name}.`);
 }
 
-/** Ends an order for good: its garrison and patrols stand down, and one may offer to sign on. */
+/**
+ * Ends an order for good: its garrison and patrols stand down, and one may offer to sign on. The
+ * orders given on its authority end with it, and a hoard its guards kept is given up.
+ */
 export function endOrder(w: World, data: GameData, id: string): void {
   if (orderEnded(w, id)) return;
   w.ordersEnded.push(id);
   const o = orderOf(data, id);
   note(w, `The order to ${o.name.toLowerCase()} is ended. The bound stand down.`);
+  for (const next of o.ends ?? []) endOrder(w, data, next);
+  emit(w, data, { kind: 'order-ended', order: id });
   const e = w.encounter;
   if (e?.order !== id) return;
   e.hostile = false;
