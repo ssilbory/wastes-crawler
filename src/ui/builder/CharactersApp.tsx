@@ -163,6 +163,12 @@ export function CharactersApp() {
         <button type="button" class="create" onClick={() => open('#/builder/new')}>
           New character
         </button>
+        {/* Back to the world, as from its tavern, where a new party is gathered (TavernTab.tsx). */}
+        {loadWorldText(activeSlot()) !== null && (
+          <button type="button" onClick={() => go(launchHash('continue'))}>
+            Back to the journey
+          </button>
+        )}
         <label class="import">
           <span>Import character files</span>
           <input

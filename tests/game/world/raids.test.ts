@@ -108,6 +108,15 @@ describe('raids (docs/rules-adaptation.md, Raids)', () => {
     expect(settlements.bases.some((b) => b.at === 'lanternfall')).toBe(false);
   });
 
+  it('find no one to stand with the town while a fallen party has none', () => {
+    const w = threatened();
+    enterRegion(w, 'dark-lands', CINDERHOLD);
+    w.members = [];
+    enterTown(w, data, 'cinderhold');
+    expect(w.encounter).toBeNull();
+    expect(w.raid?.fighting).toBe(false);
+  });
+
   it('meet a party arriving before the raid at the gates, once', () => {
     const w = threatened();
     enterRegion(w, 'dark-lands', CINDERHOLD);

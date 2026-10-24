@@ -55,6 +55,8 @@ export interface Member {
   disease: { id: string; nights: number; saves: number } | null;
 }
 
+/** A PC lost when the party fell: who they were, so the roster can't send them back. */
+export type LostPc = WorldSave['lost'][number];
 export type Npc = NpcSave;
 export type Mount = MountSave;
 
@@ -82,6 +84,8 @@ export interface World {
   lastTown: string;
   members: Member[];
   benched: Member[];
+  /** PCs lost when the party fell (Sam's call): gone for good, never to rejoin this world. */
+  lost: LostPc[];
   npcs: Npc[];
   mounts: Mount[];
   purse: number;

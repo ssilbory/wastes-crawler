@@ -97,9 +97,12 @@ export function enterTown(w: World, data: GameData, siteId: string, start = fals
 }
 
 /**
- * The party falls: the living wake in the last town visited the next morning; the dead stay dead.
- * The night still passes for the world, so factions, crafters, raids, and quest deadlines count it,
- * unless `nightPassed` says endOfDay has already counted it (day.ts).
+ * The party falls (Sam's call, docs/rules-adaptation.md, Overland fights): every PC in it is lost
+ * for good, the stabilized and the unconscious with the dead, and can't be raised or rejoin. The
+ * world moves on to the next morning at the tavern of the last town visited, where a new party
+ * must be gathered; PCs left at a tavern, hirelings, mounts, the purse, and the loot are still
+ * there. The night still passes for the world, so factions, crafters, raids, and quest deadlines
+ * count it, unless `nightPassed` says endOfDay has already counted it (day.ts).
  */
 export function wipe(w: World, data: GameData, nightPassed = false): void {
   // The last town may be in another region (Phase 12).
@@ -107,6 +110,14 @@ export function wipe(w: World, data: GameData, nightPassed = false): void {
   const town = region?.sites.find((s) => s.id === w.lastTown);
   if (!region || !town) throw new Error(`unknown town ${w.lastTown}`);
   note(w, 'The party falls.');
+  note(w, `${w.members.map((m) => m.character.name).join(', ')}: lost, never to be seen again.`);
+  w.lost.push(...w.members.map((m) => ({ id: m.character.id, name: m.character.name })));
+  w.members = [];
+  // Nothing the lost party had going goes on without it.
+  w.fallen = null;
+  w.disguise = null;
+  w.palanquin = null;
+  w.pacts = null;
   if (!nightPassed) emit(w, data, { kind: 'day-passed' });
   enterRegion(w, region.id, town);
   w.encounter = null;
@@ -120,6 +131,5 @@ export function wipe(w: World, data: GameData, nightPassed = false): void {
   w.hikes = 0;
   w.noRecovery = false;
   w.camp = 'none';
-  for (const m of w.members) m.slept = false;
   enterTown(w, data, town.id);
 }

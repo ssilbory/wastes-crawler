@@ -11,6 +11,7 @@ import {
   shopPrice,
 } from '../../../src/game/world/shop.ts';
 import { bench, catchUpXp, inWorld, recruit, rejoin } from '../../../src/game/world/tavern.ts';
+import { wipe } from '../../../src/game/world/town.ts';
 import { freeSlot } from '../../../src/game/world/npcs.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { inventoryErrors } from '../../../src/game/character/equipment.ts';
@@ -289,6 +290,24 @@ describe('the tavern', () => {
       ok: false,
       reason: 'Grukk is already in this world.',
     });
+  });
+
+  it('gathers a whole new party after the old one fell, at the newcomers’ own XP', () => {
+    const w = world();
+    const lostSnag = member(w, 'Snag').character;
+    for (const m of w.members) m.character = { ...m.character, xp: 9 };
+    wipe(w, data);
+    expect(w.members).toEqual([]);
+    expect(catchUpXp(w)).toBe(0);
+    expect(inWorld(w, lostSnag.id)).toBe(true);
+    expect(recruit(w, data, lostSnag, 'auto')).toEqual({
+      ok: false,
+      reason: "Snag was lost when the party fell, and can't come back.",
+    });
+    const fresh = { ...starter('grukk'), id: 'char-00000000feedface', xp: 1 };
+    expect(recruit(w, data, fresh, 'auto')).toEqual({ ok: true });
+    expect(w.members.map((m) => m.character.xp)).toEqual([1]);
+    expect(w.members[0]).toMatchObject({ row: 0, column: 0 });
   });
 
   it('holds six PCs', () => {

@@ -100,12 +100,17 @@ describe('wandering encounters (SRD 2.12.6, 5.2.1)', () => {
 });
 
 describe('a fallen party', () => {
-  it('wakes in the last town the next morning, the dead still dead', () => {
+  it('loses the whole party for good, and moves on to the last town’s next morning', () => {
     const w = out(world());
+    const names = w.members.map((m) => m.character.name);
+    const ids = w.members.map((m) => m.character.id);
     member(w, 'Snag').dead = true;
     w.quarter = 2;
     w.encounter = encounter([['thug-or-militia']]);
     w.destination = { col: 9, row: 9 };
+    w.purse = 40;
+    w.disguise = { day: 0, ids: ids.slice(0, 1) };
+    w.palanquin = 9;
     wipe(w, data);
     expect(w).toMatchObject({
       position: { col: 3, row: 8 },
@@ -113,8 +118,15 @@ describe('a fallen party', () => {
       encounter: null,
       day: 1,
       quarter: 0,
+      members: [],
+      purse: 40,
+      disguise: null,
+      palanquin: null,
+      fallen: null,
     });
-    expect(member(w, 'Snag').dead).toBe(true);
+    // The dead and the living alike are lost, and the roster can't send them back.
+    expect(w.lost).toEqual(ids.map((id, i) => ({ id, name: names[i] })));
+    expect(w.log.join('\n')).toContain(`${names.join(', ')}: lost, never to be seen again.`);
     // Falling on the surface charts nothing.
     expect(w.charted).toEqual({});
     w.lastTown = 'atlantis';

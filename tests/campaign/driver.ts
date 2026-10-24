@@ -24,6 +24,8 @@ import { settleByFighting, settleByLeaving } from '../../src/game/world/quarter.
 import { cureSickness, raiseDead, stayAtInn } from '../../src/game/world/services.ts';
 import { enterTown } from '../../src/game/world/town.ts';
 import type { World } from '../../src/game/world/types.ts';
+import { parseWorld, serializeWorld } from '../../src/game/world/save.ts';
+import { createRng } from '../../src/rules/rng.ts';
 
 type Cell = { x: number; y: number };
 const SIDES: [Facing, number, number][] = [
@@ -169,8 +171,9 @@ export function townRest(
 }
 
 /**
- * Runs a delve, and if the party falls, has the dead raised in town and tries again, as a player
- * would. Returns the tries it took.
+ * Runs a delve, and if the party falls, loads the save from before it and tries again, as a player
+ * would: a fallen party is lost for good (town.ts, wipe), so there is nothing to raise. The try
+ * plays on a fresh random stream, as a player's choices would differ. Returns the tries it took.
  */
 export function attempt(
   w: World,
@@ -180,12 +183,16 @@ export function attempt(
   tries = 3,
   region = 'dark-lands',
 ): number {
+  const before = serializeWorld(w);
   for (let n = 1; ; n++) {
     try {
       run();
       return n;
     } catch (e) {
       if (!(e instanceof Wiped) || n >= tries) throw e;
+      const saved = parseWorld(before, data);
+      if (!saved.ok) throw new Error(saved.errors.join('; '), { cause: e });
+      Object.assign(w, saved.world, { rng: createRng(`${before.length}-retry-${n}`) });
       enterRegion(w, region, town);
       w.purse = Math.max(w.purse, 5000);
       townCare(w, data);

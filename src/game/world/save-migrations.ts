@@ -236,4 +236,6 @@ export const WORLD_MIGRATIONS: Migrations = {
     ...(JSON.parse(JSON.stringify(raw).replaceAll('"vorpal-hare"', '"death-hare"')) as Raw),
     schemaVersion: 43,
   }),
+  // Version 44 makes a fallen party's PCs lost for good (Sam's call): none lost yet.
+  43: (raw) => ({ ...raw, schemaVersion: 44, lost: [] }),
 };
