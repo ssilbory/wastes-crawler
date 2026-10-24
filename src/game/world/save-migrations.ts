@@ -231,4 +231,9 @@ export const WORLD_MIGRATIONS: Migrations = {
   40: (raw) => ({ ...raw, schemaVersion: 41, pieces: [] }),
   // Version 42 adds realm endings: none reached yet.
   41: (raw) => ({ ...raw, schemaVersion: 42, realmEnd: null }),
+  // Version 43 renames the vorpal hare the death hare (Sam's call), wherever a save names it.
+  42: (raw) => ({
+    ...(JSON.parse(JSON.stringify(raw).replaceAll('"vorpal-hare"', '"death-hare"')) as Raw),
+    schemaVersion: 43,
+  }),
 };

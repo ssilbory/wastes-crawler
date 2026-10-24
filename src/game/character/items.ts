@@ -178,7 +178,9 @@ export function entryEncumbrance(data: GameData, item: CatalogItem, entry: Inven
   const rules = data.content.equipmentRules;
   switch (item.kind) {
     case 'weapon': {
-      const enc = item.weapon.encumbrance ?? 0;
+      // Balanced Fittings take a point off each, down to 0 (Sam's call; docs/rules-adaptation.md,
+      // Mods).
+      const enc = Math.max(0, (item.weapon.encumbrance ?? 0) + upgrade(data, entry).encumbrance);
       const numerous = item.weapon.traits.includes(rules.numerous.trait);
       return numerous ? Math.ceil(q / rules.numerous.perItem) * enc : q * enc;
     }

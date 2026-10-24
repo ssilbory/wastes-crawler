@@ -42,7 +42,7 @@
       {
         "id": "hare-pit",
         "name": "The Hare Pit",
-        "enemies": [["vorpal-hare", "vorpal-hare", "vorpal-hare", "vorpal-hare"]],
+        "enemies": [["death-hare", "death-hare", "death-hare", "death-hare"]],
         "fee": 15,
         "prize": 100,
         "toTheDeath": true

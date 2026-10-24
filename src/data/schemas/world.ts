@@ -8,7 +8,7 @@ import { RegionSchema } from './overland-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 42;
+export const WORLD_SCHEMA_VERSION = 43;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 

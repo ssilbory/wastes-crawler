@@ -12743,23 +12743,11 @@
             },
             "loot": [
               {
-                "count": 2,
+                "count": 1,
                 "sides": 6
               }
             ],
-            "guards": [
-              [
-                "raised-skeleton",
-                "raised-skeleton",
-                "raised-skeleton",
-                "raised-skeleton",
-                "raised-skeleton",
-                "raised-skeleton",
-                "ghoul",
-                "ghoul"
-              ],
-              ["ghoul", "ghoul", "ghoul"]
-            ]
+            "guards": [["ghoul", "ghoul", "ghoul"]]
           },
           {
             "kind": "cache",
@@ -12769,22 +12757,11 @@
             },
             "loot": [
               {
-                "count": 2,
+                "count": 1,
                 "sides": 6
               }
             ],
-            "guards": [
-              [
-                "human-raider",
-                "human-raider",
-                "human-raider",
-                "human-raider",
-                "human-raider",
-                "alliance-ranger",
-                "alliance-ranger"
-              ],
-              ["slaver", "slaver"]
-            ]
+            "guards": [["grave-robber", "grave-robber", "grave-robber", "grave-robber"]]
           },
           {
             "kind": "cache",
@@ -13389,23 +13366,11 @@
             },
             "loot": [
               {
-                "count": 2,
+                "count": 1,
                 "sides": 8
               }
             ],
-            "guards": [
-              [
-                "mire-drowned",
-                "mire-drowned",
-                "mire-drowned",
-                "mire-drowned",
-                "mire-drowned",
-                "mire-drowned",
-                "mire-drowned",
-                "mire-drowned"
-              ],
-              ["ghoul", "ghoul", "ghoul", "ghoul"]
-            ]
+            "guards": [["ghoul", "ghoul", "ghoul", "ghoul"]]
           },
           {
             "kind": "cache",
@@ -13415,21 +13380,11 @@
             },
             "loot": [
               {
-                "count": 2,
+                "count": 1,
                 "sides": 8
               }
             ],
-            "guards": [
-              [
-                "giant-rattlesnake",
-                "giant-rattlesnake",
-                "giant-rattlesnake",
-                "giant-rattlesnake",
-                "giant-rattlesnake",
-                "giant-black-widow",
-                "giant-black-widow"
-              ]
-            ]
+            "guards": [["barrow-midges"]]
           },
           {
             "kind": "cache",
@@ -13979,21 +13934,11 @@
             },
             "loot": [
               {
-                "count": 2,
+                "count": 1,
                 "sides": 10
               }
             ],
-            "guards": [
-              [
-                "vat-spawn",
-                "vat-spawn",
-                "vat-spawn",
-                "beastman-trooper",
-                "beastman-trooper",
-                "beastman-trooper"
-              ],
-              ["flesh-crafter", "flesh-crafter"]
-            ]
+            "guards": [["ghoul", "ghoul", "ghoul", "ghoul"]]
           },
           {
             "kind": "cache",
@@ -14003,14 +13948,11 @@
             },
             "loot": [
               {
-                "count": 2,
+                "count": 1,
                 "sides": 10
               }
             ],
-            "guards": [
-              ["ghoul", "ghoul", "ghoul", "ghoul", "gnawing-dead", "gnawing-dead", "gnawing-dead"],
-              ["barrow-midges"]
-            ]
+            "guards": [["barrow-midges"]]
           },
           {
             "kind": "cache",
@@ -14526,11 +14468,11 @@
             },
             "loot": [
               {
-                "count": 3,
+                "count": 2,
                 "sides": 8
               }
             ],
-            "guards": [["swamp-thing", "swamp-thing", "swamp-thing", "vat-spawn", "vat-spawn"]]
+            "guards": [["gallows-hulk"]]
           },
           {
             "kind": "cache",
@@ -14540,14 +14482,11 @@
             },
             "loot": [
               {
-                "count": 3,
+                "count": 2,
                 "sides": 8
               }
             ],
-            "guards": [
-              ["gallows-hulk", "gallows-hulk", "gallows-hulk", "gallows-hulk", "gallows-hulk"],
-              ["cull-horror", "cull-horror", "cull-horror"]
-            ]
+            "guards": [["cull-horror"]]
           },
           {
             "kind": "cache",
@@ -14976,22 +14915,11 @@
             },
             "loot": [
               {
-                "count": 3,
+                "count": 2,
                 "sides": 8
               }
             ],
-            "guards": [
-              [
-                "clockwork-soldier",
-                "clockwork-soldier",
-                "clockwork-soldier",
-                "clockwork-soldier",
-                "clockwork-soldier",
-                "clockwork-soldier",
-                "clockwork-soldier"
-              ],
-              ["clockwork-servitor", "clockwork-servitor"]
-            ]
+            "guards": [["grave-knight", "grave-knight"]]
           },
           {
             "kind": "cache",
@@ -15423,23 +15351,11 @@
             },
             "loot": [
               {
-                "count": 3,
+                "count": 2,
                 "sides": 10
               }
             ],
-            "guards": [
-              [
-                "grave-knight",
-                "grave-knight",
-                "grave-knight",
-                "grave-knight",
-                "grave-knight",
-                "grave-knight",
-                "grave-knight",
-                "grave-knight"
-              ],
-              ["ash-walker", "ash-walker"]
-            ]
+            "guards": [["grave-knight", "grave-knight"]]
           },
           {
             "kind": "cache",
@@ -15877,21 +15793,11 @@
             },
             "loot": [
               {
-                "count": 4,
+                "count": 2,
                 "sides": 8
               }
             ],
-            "guards": [
-              [
-                "manticore",
-                "manticore",
-                "manticore",
-                "manticore",
-                "manticore",
-                "manticore",
-                "manticore"
-              ]
-            ]
+            "guards": [["grave-knight", "grave-knight"]]
           },
           {
             "kind": "cache",
@@ -16359,13 +16265,11 @@
             },
             "loot": [
               {
-                "count": 4,
+                "count": 2,
                 "sides": 10
               }
             ],
-            "guards": [
-              ["bone-golem", "bone-golem", "bone-golem", "bone-golem", "bone-golem", "bone-golem"]
-            ]
+            "guards": [["bone-golem", "bone-golem"]]
           },
           {
             "kind": "cache",
@@ -16840,11 +16744,11 @@
             },
             "loot": [
               {
-                "count": 5,
+                "count": 3,
                 "sides": 10
               }
             ],
-            "guards": [["iron-golem", "iron-golem", "war-engine", "war-engine"]]
+            "guards": [["bone-golem", "bone-golem"]]
           },
           {
             "kind": "cache",
@@ -17240,11 +17144,11 @@
             },
             "loot": [
               {
-                "count": 4,
+                "count": 2,
                 "sides": 10
               }
             ],
-            "guards": [["oathbound-champion", "oathbound-champion", "iron-golem"]]
+            "guards": [["bone-golem", "bone-golem"]]
           },
           {
             "kind": "cache",

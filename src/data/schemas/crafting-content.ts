@@ -149,7 +149,14 @@ export const ModSchema = z.strictObject({
   /** Paid in exactly this many loot dice, each this size or larger. */
   loot: z.strictObject({ count: z.int().min(1), sides: z.int().min(2) }),
   components: z.array(z.strictObject({ type: ComponentTypeSchema, count: z.int().min(1) })),
-  weapon: z.strictObject({ hit: z.int().optional(), damage: z.int().optional() }).optional(),
+  weapon: z
+    .strictObject({
+      hit: z.int().optional(),
+      damage: z.int().optional(),
+      /** Change to each unit's encumbrance, down to 0 (Sam's call: Balanced Fittings). */
+      encumbrance: z.int().optional(),
+    })
+    .optional(),
   armor: z.strictObject({ ac: z.int().optional(), encumbrance: z.int().optional() }).optional(),
   text: z.string().min(1),
 });

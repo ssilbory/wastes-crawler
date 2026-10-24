@@ -53,7 +53,10 @@ export function upgrade(data: GameData, entry: InventoryEntry): Upgrade {
       Math.min(BONUS_CAP, magic + sum((m) => m.weapon?.damage)) + flawed((f) => f.weapon?.damage),
     // Only armor reads the AC, and only weapons the hit and damage, so one bonus serves both.
     ac: Math.min(BONUS_CAP, magic + sum((m) => m.armor?.ac)) - penalty + flawed((f) => f.armor?.ac),
-    encumbrance: sum((m) => m.armor?.encumbrance) + flawed((f) => f.armor?.encumbrance),
+    // Each mod fits only its own kind of item, so a weapon's and armor's changes never mix.
+    encumbrance:
+      sum((m) => (m.armor?.encumbrance ?? 0) + (m.weapon?.encumbrance ?? 0)) +
+      flawed((f) => f.armor?.encumbrance),
     broken,
   };
 }
