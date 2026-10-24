@@ -60,7 +60,8 @@ export function passTurn(w: World, data: GameData): void {
   if (s.turn % VIGOR_TURNS === 0) vigor(w, data, 1);
   if (s.turn % MASTERS_VIGOR_TURNS === 0) mastersVigor(w, data, MASTERS_VIGOR_HP);
   if (s.turn % TURNS_PER_QUARTER === 0) endQuarter(w, data);
-  wander(w, data);
+  // A night that finishes off the whole party (endOfDay) leaves no dungeon to wander in.
+  if (w.dungeon) wander(w, data);
 }
 
 /** A step counts toward the turn. */
@@ -76,7 +77,7 @@ export function countStep(w: World, data: GameData): void {
 export function fightTurns(w: World, data: GameData): void {
   burn(w, data);
   passTurn(w, data);
-  passTurn(w, data);
+  if (w.dungeon) passTurn(w, data);
 }
 
 export const onSafeSquare = (w: World, data: GameData) => {

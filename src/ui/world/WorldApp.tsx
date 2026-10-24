@@ -45,16 +45,30 @@ export function WorldApp() {
   // Before any screen reads the content, so saved dungeons are in it.
   useState(loadPlayable);
   const alerts = useAlerts();
+  // Storage that fills up or is blocked mid-game would otherwise leave an old save behind unseen.
+  const [unsaved, setUnsaved] = useState(false);
   return (
     <>
-      <WorldScreens track={alerts.track} />
+      {unsaved && (
+        <p class="errors unsaved" role="alert">
+          Browser storage is full or blocked, so progress isn’t being saved. Export a save to keep
+          it.
+        </p>
+      )}
+      <WorldScreens track={alerts.track} onSaved={(ok) => setUnsaved(!ok)} />
       <Toasts shown={alerts.shown} onDismiss={alerts.dismiss} />
     </>
   );
 }
 
-/** `track` hears of every change to the world, for the notices beside the screen. */
-function WorldScreens(props: { track: (w: World, fresh?: boolean) => void }) {
+/**
+ * `track` hears of every change to the world, for the notices beside the screen; `onSaved` hears
+ * whether each save to browser storage went through.
+ */
+function WorldScreens(props: {
+  track: (w: World, fresh?: boolean) => void;
+  onSaved: (ok: boolean) => void;
+}) {
   const [roster, setRoster] = useState(() => loadRoster().entries);
   const [slot, setSlot] = useState<Slot>(activeSlot);
   const world = useRef<World | null>(null);
@@ -79,7 +93,7 @@ function WorldScreens(props: { track: (w: World, fresh?: boolean) => void }) {
   const changed = (fresh = false) => {
     const now = world.current;
     if (now) {
-      saveWorldText(serializeWorld(now));
+      props.onSaved(saveWorldText(serializeWorld(now)));
       props.track(now, fresh === true);
       // A trap's fallen are tended at once, as after a won fight (trap-falls.ts).
       if (trapFallen(now).length > 0) setFight((f) => f ?? tending(now));
@@ -97,7 +111,7 @@ function WorldScreens(props: { track: (w: World, fresh?: boolean) => void }) {
     }
     if (loaded.roster) {
       const merged = mergeRoster(roster, loaded.roster);
-      saveRoster(merged);
+      if (!saveRoster(merged)) props.onSaved(false);
       setRoster(merged);
     }
     world.current = loaded.world;
@@ -117,7 +131,7 @@ function WorldScreens(props: { track: (w: World, fresh?: boolean) => void }) {
 
   const addStarters = () => {
     const added = addStarterParty(roster, data);
-    saveRoster(added.entries);
+    if (!saveRoster(added.entries)) props.onSaved(false);
     setRoster(added.entries);
     return added;
   };

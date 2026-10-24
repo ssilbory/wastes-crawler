@@ -103,6 +103,19 @@ describe('exploration turns (SRD 2.13.2, 2.13.3)', () => {
     expect(rng.remaining()).toBe(0);
   });
 
+  it('stops counting turns once a night underground finishes off the party', () => {
+    for (const run of [passTurn, fightTurns]) {
+      const w = below();
+      w.rng = createRng('last night');
+      w.quarter = 3;
+      state(w).turn = TURNS_PER_QUARTER - 1;
+      // As hunger, cold, or sleeplessness can leave no one alive by nightfall.
+      for (const m of w.members) m.dead = true;
+      expect(() => run(w, data)).not.toThrow();
+      expect(w.dungeon).toBeNull();
+    }
+  });
+
   it('spends a turn on the fight and one after, burning the light for it', () => {
     const w = below();
     w.rng = rng = scriptedRng([3, 3, 3]);

@@ -76,6 +76,23 @@ describe('charts (docs/rules-adaptation.md, Dungeon exploration: Charts)', () =>
     expect(Object.keys(w.charted)).toEqual(['old-barrow']);
   });
 
+  it('keeps a second visit’s doings out of the chart, so the save still loads', () => {
+    const w = below();
+    takeStairs(w, data);
+    w.quarter = 0;
+    below(w);
+    const s = w.dungeon as NonNullable<World['dungeon']>;
+    const chart = w.charted['old-barrow'] as DungeonChart;
+    expect(s.traps).not.toBe(chart.traps);
+    expect(s.seen).not.toBe(chart.seen);
+    // As traps.ts marks a trap disarmed, and look() marks a cell seen.
+    s.traps[s.level] = { ...s.traps[s.level], '3,3': 'disarmed' };
+    s.seen[s.level] = [...(s.seen[s.level] ?? []), '9,9'];
+    expect(chart.traps[s.level]?.['3,3']).toBeUndefined();
+    expect(chart.seen[s.level]).not.toContain('9,9');
+    expect(parseWorld(serializeWorld(w), data).ok).toBe(true);
+  });
+
   it('saves its charts, and gives an older save none', () => {
     const w = below();
     takeStairs(w, data);

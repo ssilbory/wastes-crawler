@@ -124,6 +124,11 @@ describe('world saves', () => {
     });
     const empty = parseWorld('{"schemaVersion":2}', data);
     expect(!empty.ok && empty.errors[0]).toMatch(/^region: /);
+    // Upgrades that rework a list leave a missing one for the schema to report.
+    for (const version of [11, 18]) {
+      const cut = parseWorld(`{"schemaVersion":${version}}`, data);
+      expect(!cut.ok && cut.errors[0]).toMatch(/^region: /);
+    }
     const save = JSON.parse(serializeWorld(world()));
     expect(parseWorld(JSON.stringify({ ...save, region: 'atlantis' }), data)).toEqual({
       ok: false,

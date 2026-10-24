@@ -79,7 +79,9 @@ export const WORLD_MIGRATIONS: Migrations = {
   11: (raw) => ({
     ...raw,
     schemaVersion: 12,
-    projects: (raw.projects as object[]).map((p) => ({ ...p, kind: 'gear' })),
+    projects: Array.isArray(raw.projects)
+      ? (raw.projects as Raw[]).map((p) => ({ ...p, kind: 'gear' }))
+      : raw.projects,
     components: {},
   }),
   // Version 13 adds craftsmen (Phase 10c): none visited, nothing commissioned.
@@ -106,7 +108,9 @@ export const WORLD_MIGRATIONS: Migrations = {
   18: (raw) => ({
     ...raw,
     schemaVersion: 19,
-    npcs: (raw.npcs as Raw[]).map((n) => ({ ...n, owed: 0, refund: 0 })),
+    npcs: Array.isArray(raw.npcs)
+      ? (raw.npcs as Raw[]).map((n) => ({ ...n, owed: 0, refund: 0 }))
+      : raw.npcs,
     deadShares: [],
     hireBans: {},
   }),
