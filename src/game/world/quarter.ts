@@ -13,6 +13,7 @@ import { VIGOR_QUARTER, vigor } from './arts.ts';
 import { MASTERS_VIGOR_QUARTER, mastersVigor } from './vowed-arts.ts';
 import { applyBattle, type WorldBattle } from './fight.ts';
 import { alive } from './members.ts';
+import { checkRealmEnd } from './realm-end.ts';
 import type { QuarterPlan, World } from './types.ts';
 
 export function isDarkNow(w: World, data: GameData): boolean {
@@ -50,10 +51,13 @@ export function passQuarter(w: World, data: GameData, plan: QuarterPlan): boolea
 
 /** Avoids or lets pass the pending encounter, then finishes the quarter. */
 export function settleByLeaving(w: World, data: GameData): boolean {
+  const peaceful = w.encounter?.hostile === false;
   if (!leaveEncounter(w)) return false;
   // Underground, slipping away takes a turn (SRD 2.13.3).
   if (w.dungeon) passTurn(w, data);
   else endQuarter(w, data);
+  // Talking past the last post, or one stood down, clears the way; slipping away from it doesn't.
+  if (peaceful) checkRealmEnd(w, data);
   return true;
 }
 

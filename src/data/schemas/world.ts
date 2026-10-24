@@ -8,7 +8,7 @@ import { RegionSchema } from './overland-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 41;
+export const WORLD_SCHEMA_VERSION = 42;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -319,6 +319,8 @@ export const WorldSaveSchema = z.strictObject({
   map: RegionSchema.nullable(),
   /** The shipped realm the world is played on, or null for the campaign or a custom map. */
   realm: IdSchema.nullable(),
+  /** The realm's ending: reached and waiting to be shown, or seen. */
+  realmEnd: z.enum(['reached', 'seen']).nullable(),
   rng: z.tuple([z.int(), z.int(), z.int(), z.int()]),
   /** Days since the world began, and the quarter: morning, day, evening, night. */
   day: z.int().min(0),

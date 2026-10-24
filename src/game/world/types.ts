@@ -64,6 +64,8 @@ export interface World {
   map: Region | null;
   /** The shipped realm the world is played on, or null for the campaign or a custom map. */
   realm: string | null;
+  /** The realm's ending: reached and waiting to be shown, or seen (realm-end.ts). */
+  realmEnd: 'reached' | 'seen' | null;
   rng: Rng;
   day: number;
   quarter: number;

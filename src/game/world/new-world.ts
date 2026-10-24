@@ -46,6 +46,7 @@ export function newWorld(
     region: map.id,
     map: custom,
     realm: custom ? null : realm,
+    realmEnd: null,
     rng,
     day: 0,
     quarter: 0,

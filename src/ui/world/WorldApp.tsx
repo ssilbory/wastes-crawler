@@ -5,6 +5,7 @@ import { coachQuarter } from '../../game/world/coach.ts';
 import { difficultySeed } from '../../game/world/difficulty.ts';
 import { encounterBattle, xpText } from '../../game/world/fight.ts';
 import { passQuarter, settleByFighting, settleByLeaving } from '../../game/world/quarter.ts';
+import { realmEnding, seeRealmEnd } from '../../game/world/realm-end.ts';
 import { addStarterParty } from '../../game/character/roster.ts';
 import { mergeRoster, parseSave, savedMap, serializeBundle } from '../../game/world/bundle.ts';
 import { serializeWorld } from '../../game/world/save.ts';
@@ -29,6 +30,7 @@ import { assess } from './assess.ts';
 import { MapScreen } from './MapScreen.tsx';
 import { DungeonScreen } from './DungeonScreen.tsx';
 import { enterDungeon } from '../../game/dungeon/explore.ts';
+import { EndingScreen } from './EndingScreen.tsx';
 import { IntroScreen } from './IntroScreen.tsx';
 import type { PartyScreen } from './PartyButtons.tsx';
 import { PartyScreens } from './PartyScreens.tsx';
@@ -203,6 +205,23 @@ function WorldScreens(props: {
         onDone={() => {
           setFight(null);
           setScreen(fight.back);
+          changed();
+        }}
+      />
+    );
+  const ending = w.realmEnd === 'reached' ? realmEnding(w, data) : null;
+  if (ending)
+    return (
+      <EndingScreen
+        ending={ending}
+        onTitle={() => {
+          seeRealmEnd(w);
+          changed();
+          location.hash = '';
+        }}
+        onContinue={() => {
+          seeRealmEnd(w);
+          setScreen('map');
           changed();
         }}
       />

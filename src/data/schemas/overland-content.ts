@@ -91,6 +91,19 @@ export const RealmSchema = z.strictObject({
   regions: z.array(IdSchema).min(1),
   /** The region a new party sets out in. */
   start: IdSchema,
+  /**
+   * Where the realm's journey ends (Sam's call): reaching this hex with no fight pending shows the
+   * ending once, and the party can go back to the title screen or keep adventuring.
+   */
+  ending: z
+    .strictObject({
+      region: IdSchema,
+      col: z.int().min(0),
+      row: z.int().min(0),
+      title: z.string().min(1),
+      paragraphs: z.array(z.string().min(1)).min(1),
+    })
+    .optional(),
 });
 export type Realm = z.infer<typeof RealmSchema>;
 

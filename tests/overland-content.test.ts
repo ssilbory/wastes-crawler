@@ -120,7 +120,12 @@ describe('overland content', () => {
       ...content,
       realms: [
         { ...realm, regions: [...realm.regions, 'atlantis'], start: 'borderlands' },
-        { ...realm, id: 'again', regions: [realm.start] },
+        {
+          ...realm,
+          id: 'again',
+          regions: [realm.start],
+          ending: { region: realm.start, col: 999, row: 0, title: 'x', paragraphs: ['x'] },
+        },
       ],
       regions: content.regions.map((r) =>
         r.id === campaign.id
@@ -143,6 +148,7 @@ describe('overland content', () => {
       'realms/wastes: unknown region atlantis',
       'realms/wastes: starts outside its regions, in borderlands',
       `realms/again: region ${realm.start} is already in wastes`,
+      `realms/again: ends off its own maps, at ${realm.start} 999,0`,
       'regions/borderlands: the road at 23,8 leaves its realm',
       // Claimed by the second realm, the first map's roads east now leave it.
       `regions/${realm.start}: the road at 31,11 leaves its realm`,

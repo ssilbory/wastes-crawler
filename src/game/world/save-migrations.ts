@@ -229,4 +229,6 @@ export const WORLD_MIGRATIONS: Migrations = {
   39: (raw) => ({ ...raw, schemaVersion: 40, alchemists: {}, brewOrders: [] }),
   // Version 41 adds countersigns found in pieces (the Warden's): none found yet.
   40: (raw) => ({ ...raw, schemaVersion: 41, pieces: [] }),
+  // Version 42 adds realm endings: none reached yet.
+  41: (raw) => ({ ...raw, schemaVersion: 42, realmEnd: null }),
 };

@@ -17,6 +17,17 @@
     "name": "The Sealed Vale",
     "text": "A vale ringed by impassable peaks, with one town, Lastward, and the ruins of Harrowmere: its streets, three levels of sewers, and the Warden's six-floor tower, trapped and guarded on every floor. One pass leads out, held by five bound posts, each worse than the last; the outermost wants a party of 15th level. No quests, factions, or raids.",
     "regions": ["sealed-vale"],
-    "start": "sealed-vale"
+    "start": "sealed-vale",
+    "ending": {
+      "region": "sealed-vale",
+      "col": 23,
+      "row": 8,
+      "title": "The pass is clear. The Sealed Vale is behind you.",
+      "paragraphs": [
+        "The last post of the Throat is behind you, and the road east runs open under a grey sky. For the first time in twenty years, someone walks out of the Sealed Vale.",
+        "Behind you, the ash settles over Harrowmere's streets. Ahead lie the lands beyond the peaks, and whatever the world became while the vale slept.",
+        "Your journey through the Sealed Vale is done. Return to the title screen, or keep adventuring in the vale with this party."
+      ]
+    }
   }
 ]
