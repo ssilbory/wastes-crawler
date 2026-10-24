@@ -129,6 +129,13 @@ export function fall(b: Battle, target: Combatant): void {
     return;
   }
   if (abnegate(b, target) || sheltered(b, target)) return;
+  // Die Hard stabilizes on its own (vendor/wwn-srd/1.0 Character Creation/1.6.0 Foci.md), last of
+  // all (Sam's call): every other save gets its chance first.
+  if (target.selfStabilize) {
+    say(b, `${target.name} falls, but hangs on.`);
+    Object.assign(target, { status: 'stable', frail: true, fellRound: b.round });
+    return;
+  }
   target.status = 'dying';
   target.fellRound = b.round;
   say(b, `${target.name} falls, mortally wounded.`);

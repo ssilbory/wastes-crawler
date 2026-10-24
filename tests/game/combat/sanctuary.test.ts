@@ -190,7 +190,6 @@ describe('High Magic sheltering spells (Phase 18d, 4.4.0)', () => {
     const f = mage(b, ['invocation-of-the-invincible-citadel'], 9);
     // A second blow in the same breath finds the bubble already up, and costs nothing.
     const [snag, grukk] = [who(b, 'Snag'), who(b, 'Grukk')];
-    grukk.selfStabilize = false; // Without Die Hard, to fall as anyone does.
     const before = grukk.hp;
     Object.assign(snag, { hp: 2, frail: true });
     harm(b, snag, 10);
