@@ -1,25 +1,30 @@
 [
   {
-    "id": "vorpal-hare",
-    "name": "Vorpal Hare",
+    "id": "death-hare",
+    "name": "Death Hare",
     "category": "Unnatural Entities",
     "hitDice": 1,
-    "ac": 14,
+    "hitPoints": {
+      "count": 1,
+      "sides": 3,
+      "modifier": 0
+    },
+    "ac": 17,
     "armored": false,
-    "attackBonus": 4,
+    "attackBonus": 5,
     "attacks": 1,
     "damage": {
       "kind": "dice",
       "dice": {
-        "count": 1,
-        "sides": 12,
+        "count": 2,
+        "sides": 8,
         "modifier": 0
       }
     },
     "shock": {
       "kind": "fixed",
-      "damage": 3,
-      "maxAc": 15
+      "damage": 6,
+      "maxAc": 18
     },
     "move": 50,
     "morale": 12,
@@ -27,6 +32,35 @@
     "skill": 2,
     "save": 15,
     "description": "A white hare with a fixed, glassy stare and teeth like a surgeon's shears. The Dark Lord's flesh crafters bred them either as a terror weapon or as a joke, and nobody who has met one has been able to say which; most suspect both. It knows no fear, it does not stop, and it goes for the throat."
+  },
+  {
+    "id": "death-hare-beastman",
+    "name": "Death Hare Beastman",
+    "category": "Normal Humans",
+    "hitDice": 2,
+    "ac": 16,
+    "armored": false,
+    "attackBonus": 5,
+    "attacks": 2,
+    "damage": {
+      "kind": "dice",
+      "dice": {
+        "count": 2,
+        "sides": 8,
+        "modifier": 0
+      }
+    },
+    "shock": {
+      "kind": "fixed",
+      "damage": 6,
+      "maxAc": 18
+    },
+    "move": 40,
+    "morale": 12,
+    "instinct": 5,
+    "skill": 1,
+    "save": 14,
+    "description": "A beastman bred from death hare stock: man-high and long-eared, with the hare's glassy stare and its shear-blade teeth. The flesh crafters wanted the hare's fearlessness in a soldier that could take orders, and got half of it. It never breaks, it never stops, and it still goes for the throat."
   },
   {
     "id": "grave-wyrm",

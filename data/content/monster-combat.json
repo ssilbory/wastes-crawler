@@ -354,10 +354,44 @@
     "figure": "giant"
   },
   {
-    "id": "vorpal-hare",
+    "id": "death-hare",
     "tags": [],
     "mind": "monster",
     "figure": "beast"
+  },
+  {
+    "id": "death-hare-beastman",
+    "tags": ["humanoid"],
+    "loot": {
+      "count": 1,
+      "sides": 6
+    },
+    "mind": "sapient",
+    "figure": "brute",
+    "routine": [
+      {
+        "name": "Claw",
+        "damage": {
+          "count": 1,
+          "sides": 6,
+          "modifier": 0
+        },
+        "count": 1
+      },
+      {
+        "name": "Shearing bite",
+        "damage": {
+          "count": 2,
+          "sides": 8,
+          "modifier": 0
+        },
+        "count": 1,
+        "onHit": {
+          "kind": "disease",
+          "disease": "pit-flux"
+        }
+      }
+    ]
   },
   {
     "id": "grave-wyrm",

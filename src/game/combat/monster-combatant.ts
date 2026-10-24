@@ -2,7 +2,7 @@
 // hit points per hit die; Wpn damage uses the weapon in data/content/monster-combat.json), with the
 // routines, volleys, breath weapons, resistances, and on-hit effects of Phase 14a.
 import type { Monster, MonsterCombat, OnHit, Strike, Weapon } from '../../data/schemas/index.ts';
-import { rollDie } from '../../rules/dice.ts';
+import { roll, rollDie } from '../../rules/dice.ts';
 import type { Rng } from '../../rules/rng.ts';
 import { findMonster, type GameData } from '../character/context.ts';
 import { findItem } from '../character/items.ts';
@@ -91,8 +91,10 @@ export function monsterCombatant(
   const tags = new Set(combat?.tags ?? []);
   const weaponItem = combat?.weapon ? findItem(data, combat.weapon) : undefined;
   const weapon = weaponItem?.kind === 'weapon' ? weaponItem.weapon : undefined;
+  // SRD 5.1.0: 1d8 hit points a hit die, unless the monster rolls its own (at least 1).
   let hp = 0;
-  for (let i = 0; i < m.hitDice; i++) hp += rollDie(rng, 8);
+  if (m.hitPoints) hp = Math.max(1, roll(rng, m.hitPoints).total);
+  else for (let i = 0; i < m.hitDice; i++) hp += rollDie(rng, 8);
   const { attacks, routine, volley } = attacksOf(
     combat,
     monsterAttack(m, weapon, tags.has('reach'), combat?.onHit),

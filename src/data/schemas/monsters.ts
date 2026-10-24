@@ -6,6 +6,8 @@ import { DiceSchema, IdSchema, recordBase } from './common.ts';
 const stats = {
   category: z.string().min(1),
   hitDice: z.int().min(1),
+  /** Hit points rolled on these dice in place of 1d8 a hit die (Sam's call: the death hare). */
+  hitPoints: DiceSchema.optional(),
   ac: z.int().min(10),
   /** SRD "a": the AC comes from worn armor. */
   armored: z.boolean(),

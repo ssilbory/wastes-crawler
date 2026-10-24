@@ -215,11 +215,26 @@
         "nature": "hostile",
         "groups": [
           {
-            "monster": "vorpal-hare",
+            "monster": "death-hare",
             "count": {
               "count": 1,
               "sides": 4,
-              "modifier": 0
+              "modifier": 1
+            },
+            "row": 0
+          }
+        ]
+      },
+      {
+        "weight": 1,
+        "nature": "hostile",
+        "groups": [
+          {
+            "monster": "death-hare-beastman",
+            "count": {
+              "count": 1,
+              "sides": 2,
+              "modifier": 1
             },
             "row": 0
           }
