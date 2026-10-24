@@ -156,6 +156,7 @@ describe('Unliving Persistence and Keeper of the Gate', () => {
   it('stabilizes the Necromancer at zero for day Effort', () => {
     const b = battle(necro(['unliving-persistence']));
     const f = fizz(b);
+    f.selfStabilize = false; // Without Die Hard, to fall as anyone does.
     harm(b, f, 100);
     expect(f.status).toBe('stable');
     expect(casterOf(f).effortDay).toBe(1);
@@ -167,6 +168,7 @@ describe('Unliving Persistence and Keeper of the Gate', () => {
   it('keeps any ally who falls from dying, while the Necromancer stands', () => {
     const b = battle(necro(['unliving-persistence']));
     const grukk = who(b, 'Grukk');
+    grukk.selfStabilize = false; // Without Die Hard, to fall as anyone does.
     grukk.column = 3;
     harm(b, grukk, 100);
     expect(grukk.status).toBe('stable');

@@ -42,10 +42,16 @@ export function vitalFurnace(b: Battle, target: Combatant, amount: number): bool
 }
 
 /**
- * A PC falling to zero who need not lie dying: Vital Furnace stabilizes the Healer on its own, and
- * Unliving Persistence does it for anyone in the party for the Necromancer's Effort for the day.
+ * A PC falling to zero who need not lie dying: Die Hard stabilizes on its own
+ * (vendor/wwn-srd/1.0 Character Creation/1.6.0 Foci.md, Die Hard), as does Vital Furnace for the
+ * Healer, and Unliving Persistence does it for anyone in the party for the Necromancer's Effort for
+ * the day.
  */
 export function keepsDying(b: Battle, target: Combatant): boolean {
+  if (target.selfStabilize) {
+    say(b, `${target.name} falls, but hangs on.`);
+    return true;
+  }
   // Like the Stones and Augment Mortal Vitality: the body stabilizes at zero on its own.
   if (target.stone > 0 || target.vitality) {
     say(b, `${target.name} falls, still as stone, but lives.`);

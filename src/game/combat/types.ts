@@ -100,6 +100,8 @@ export interface Combatant {
   shield: boolean;
   towerShield: boolean;
   meleeShockImmune: boolean;
+  /** Die Hard: falls to zero stable, not dying. */
+  selfStabilize: boolean;
   /** Deadeye: hit modifier for two-handed ranged attacks in melee, or null if not allowed. */
   rangedInMelee: number | null;
   initiativeBonus: number;

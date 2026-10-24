@@ -140,7 +140,13 @@
     "id": "die-hard",
     "availability": "pickable",
     "category": "combat",
-    "dieHard": true
+    "dieHard": true,
+    "effects": [
+      {
+        "kind": "self-stabilize",
+        "level": 1
+      }
+    ]
   },
   {
     "id": "deadeye",

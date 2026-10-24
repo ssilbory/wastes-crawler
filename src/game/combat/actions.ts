@@ -31,6 +31,8 @@ export function stabilize(b: Battle, actor: Combatant, target: Combatant, aid = 
         attributeModifier: actor.healModifier - actor.ailPenalty,
         modifier: aid,
         difficulty: stabilizeDifficulty(b.round - target.fellRound, actor.hasHealKit),
+        // Broken: a step of disadvantage on skill checks (docs/rules-adaptation.md, Broken).
+        steps: actor.strain?.broken ? -1 : 0,
       });
   if (!check.success) {
     say(b, `${actor.name} tries to stabilize ${target.name}, and fails.`);

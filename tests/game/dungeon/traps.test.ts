@@ -3,7 +3,7 @@ import { step } from '../../../src/game/dungeon/explore.ts';
 import { disarm, knownTrapAhead, springHere } from '../../../src/game/dungeon/traps.ts';
 import { tendTrapFallen, trapFallen } from '../../../src/game/dungeon/trap-falls.ts';
 import { checkBonus, setHp } from '../../../src/game/world/members.ts';
-import type { World } from '../../../src/game/world/types.ts';
+import type { Member, World } from '../../../src/game/world/types.ts';
 import type { Trap } from '../../../src/data/schemas/index.ts';
 import { scriptedRng, scriptedThen } from '../../helpers/scripted-rng.ts';
 import { createRng } from '../../../src/rules/rng.ts';
@@ -26,6 +26,10 @@ const sure = withTrap({ save: null });
 const onTrap = () => place(below(), 'barrow-upper', 4, 6, 'n');
 /** Facing the trap from the cell south of it. */
 const facing = () => place(below(), 'barrow-upper', 4, 7, 'n');
+/** Takes Die Hard away, so the member falls as anyone does (it stabilizes them on its own). */
+const plain = (m: Member) => {
+  m.character = { ...m.character, foci: m.character.foci.filter((f) => f.id !== 'die-hard') };
+};
 const only = (w: World, ...names: string[]) => {
   for (const m of w.members) if (!names.includes(m.character.name)) m.dead = true;
 };
@@ -140,6 +144,7 @@ describe('traps (docs/rules-adaptation.md, Dungeon exploration)', () => {
   it('kills the Mortally Wounded no one can save, and the Frail at once', () => {
     const w = onTrap();
     only(w, 'Snag', 'Grukk');
+    plain(member(w, 'Grukk'));
     setHp(member(w, 'Grukk'), 1);
     w.rng = scriptedRng([6, 6]);
     springHere(w, sure);
@@ -164,6 +169,7 @@ describe('traps (docs/rules-adaptation.md, Dungeon exploration)', () => {
   it('lets a Healer’s magic save the fallen, as after a fight', () => {
     const w = onTrap();
     only(w, 'Fizzwick', 'Grukk');
+    plain(member(w, 'Grukk'));
     const fizz = member(w, 'Fizzwick');
     fizz.character = { ...fizz.character, arts: [...fizz.character.arts, 'healing-touch'] };
     setHp(member(w, 'Grukk'), 1);
@@ -179,9 +185,22 @@ describe('traps (docs/rules-adaptation.md, Dungeon exploration)', () => {
     expect(member(w, 'Grukk').character.strain.value).toBe(1);
   });
 
+  it('lets Die Hard keep the fallen from dying, Frail, with no one to tend them', () => {
+    const w = onTrap();
+    only(w, 'Grukk');
+    setHp(member(w, 'Grukk'), 1);
+    w.rng = scriptedRng([1]);
+    springHere(w, sure);
+    w.rng = createRng('after');
+    tendTrapFallen(w, sure);
+    expect(member(w, 'Grukk')).toMatchObject({ dead: false, frail: true });
+    expect(w.dungeon).not.toBeNull();
+  });
+
   it('sends the party back to town when the last of it dies', () => {
     const w = onTrap();
     only(w, 'Grukk');
+    plain(member(w, 'Grukk'));
     setHp(member(w, 'Grukk'), 1);
     w.rng = scriptedRng([1]);
     springHere(w, sure);

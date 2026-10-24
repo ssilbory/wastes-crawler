@@ -96,6 +96,20 @@ describe('reading scrolls (docs/rules-adaptation.md, Scrolls; SRD 4.9.1)', () =>
     expect(snag.character?.inventory[at]).toBeUndefined();
   });
 
+  it('rolls a Broken reader at a disadvantage (docs/rules-adaptation.md, Broken)', () => {
+    const probe = battle();
+    const s = who(probe, 'Snag');
+    const bonus = -1 + Math.max(s.modifiers.int, s.modifiers.cha);
+    // Kept 6 and the low die: a miss by 1 against 9, where 6 + 6 would have cast it.
+    const b = battle([6, 6, 2 - bonus]);
+    const snag = who(b, 'Snag');
+    snag.strain = { strain: 0, max: 10, broken: true };
+    withMagic(snag, null);
+    const at = carry(snag, scroll());
+    invokeHeld(b, snag, { kind: 'invoke', item: at, spell: COFFIN, target: 'foe-0-0' });
+    expect(b.log?.join('\n')).toContain('The spell fizzles.');
+  });
+
   it('strikes a random one of its targets on a worse miss', () => {
     const b = battle([1, 1, 1]);
     const snag = who(b, 'Snag');

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { pcCombatant } from '../../../src/game/combat/combatants.ts';
+import { casterLevelOf, pcCombatant } from '../../../src/game/combat/combatants.ts';
 import { monsterCombatant } from '../../../src/game/combat/monster-combatant.ts';
 import {
   attackSteps,
@@ -15,6 +15,29 @@ import { createRng } from '../../../src/rules/rng.ts';
 import { data, standardBattle, starter, who } from './helpers.ts';
 
 const rng = () => createRng('combatants');
+
+describe('casterLevelOf (Sam’s call: every casting class’s levels added together)', () => {
+  it('adds the casting classes and leaves the others out', () => {
+    const c = starter('snag');
+    const at = (levels: Record<string, number>) =>
+      casterLevelOf(data, { ...c, classes: { ...c.classes, levels } });
+    expect(at({ 'full-warrior': 4 })).toBe(0);
+    expect(at({ 'full-high-mage': 3 })).toBe(3);
+    expect(at({ 'full-warrior': 4, 'full-high-mage': 2, 'full-elementalist': 1 })).toBe(3);
+  });
+
+  it('casts a switched Warrior’s spells at the casting levels alone', () => {
+    const c = starter('snag');
+    const caster = pcCombatant(data, {
+      ...c,
+      classes: {
+        ...c.classes,
+        levels: { 'full-warrior': 4, 'full-high-mage': 2, 'full-elementalist': 1 },
+      },
+    }).caster;
+    expect(caster?.level).toBe(3);
+  });
+});
 
 describe('pcCombatant', () => {
   it('folds Killing Blow, Veteran’s Luck, shields, and Alert into a Warrior', () => {

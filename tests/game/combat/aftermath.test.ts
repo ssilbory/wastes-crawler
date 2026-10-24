@@ -74,6 +74,26 @@ describe('tending the dying after a win (SRD 2.5.1, 2.3.3)', () => {
     expect(b.log?.join('\n')).toContain('Grukk helps Lirael tend Snag.');
   });
 
+  it('rolls a Broken medic and helper at a disadvantage (docs/rules-adaptation.md, Broken)', () => {
+    const b = won(standardBattle([['thug-or-militia']]));
+    b.round = 1;
+    const [snag, grukk, lirael, fizz] = ['Snag', 'Grukk', 'Lirael', 'Fizzwick'].map((n) =>
+      who(b, n),
+    ) as [Combatant, Combatant, Combatant, Combatant];
+    fall(snag, 1);
+    medic(lirael, 2, true);
+    medic(grukk, 0, true);
+    fizz.status = 'out';
+    for (const c of [grukk, lirael]) c.strain = { strain: 0, max: 10, broken: true };
+    // Each rolls three dice and keeps the lowest two: Grukk aids with 1 + 4 against 8, and
+    // Lirael tends with 1 + 4 + 2 against 8. Both would have made it on 4 + 4.
+    const rng = scriptedRng([4, 4, 1, 4, 4, 1]);
+    b.rng = rng;
+    tendRound(b);
+    expect(snag.status).toBe('dying');
+    expect(rng.remaining()).toBe(0);
+  });
+
   it('keeps going until the dying live or die, with no one to ask', () => {
     const b = won(standardBattle([['thug-or-militia']]));
     const snag = fall(who(b, 'Snag'), b.round);

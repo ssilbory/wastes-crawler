@@ -10,6 +10,7 @@ import {
 } from '../../../src/game/combat/companions.ts';
 import { roundPasses } from '../../../src/game/combat/conditions.ts';
 import { harm } from '../../../src/game/combat/damage.ts';
+import { freeActions } from '../../../src/game/combat/free-actions.ts';
 import { canUse, combatMagic } from '../../../src/game/combat/spells.ts';
 import { targets } from '../../../src/game/combat/targeting.ts';
 import type { Battle, CasterState, Combatant } from '../../../src/game/combat/types.ts';
@@ -205,6 +206,15 @@ describe('Know the Weak Spot and Beast Ward (1.5.4)', () => {
     expect(hits(raider)).toContain(pc(b));
     beast.provoked = true;
     expect(hits(beast)).toContain(pc(b));
+  });
+
+  it('raises the ward on its own while an unprovoked beast stands among the foes', () => {
+    const b = battle(['beast-ward'], [['herd-beast', 'human-raider']], null);
+    freeActions(b, pc(b));
+    expect(pc(b).beastWard).toBe(true);
+    const none = battle(['beast-ward'], [['human-raider']], null);
+    freeActions(none, pc(none));
+    expect(pc(none).beastWard).toBe(false);
   });
 });
 

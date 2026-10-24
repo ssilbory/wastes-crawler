@@ -150,6 +150,7 @@ describe('Necromancer spells in combat (Phase 18c, 4.6.0)', () => {
   it('Merge Souls: one pool of life, spent together', () => {
     const b = standardBattle([['thug-or-militia']]);
     const f = necromancer(b, ['merge-souls'], 5);
+    f.selfStabilize = false; // Without Die Hard, to fall as anyone does.
     const snag = sturdySnag(b, 10);
     Object.assign(f, { hp: 6, maxHp: 6 });
     cast(b, f, 'merge-souls', { target: snag.id });

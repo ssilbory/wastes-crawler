@@ -247,11 +247,14 @@ test('shows a notice on picking up a quest item', async ({ page }) => {
 test('tends a PC a trap brings down, as after a fight', async ({ page }) => {
   await startAtBarrow(page);
   await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
+  // Grukk, without the Die Hard that would stabilize him on its own.
   await edit(
     page,
     `Object.assign(save.dungeon, { at: { x: 4, y: 7 }, facing: 'n' });
      save.dungeon.traps = { 'barrow-upper': { '4,6': 'noticed' } };
-     save.members.find((m) => m.character.name === 'Grukk').character.hp.current = 1;`,
+     const grukk = save.members.find((m) => m.character.name === 'Grukk').character;
+     grukk.hp.current = 1;
+     grukk.foci = grukk.foci.filter((f) => f.id !== 'die-hard');`,
   );
   await page.getByRole('button', { name: 'Step onto the dart trap' }).click();
   // The fallen are tended on the fight screen, Heal checks and healing magic and all.

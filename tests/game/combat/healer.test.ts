@@ -287,6 +287,7 @@ describe('Vital Furnace', () => {
     harm(b, snag, 20);
     expect(snag.status).toBe('dying');
     const grukk = who(b, 'Grukk');
+    grukk.selfStabilize = false; // Without Die Hard, to fall as anyone does.
     grukk.hp = 1;
     harm(b, grukk, 1);
     expect(grukk.status).toBe('dying');

@@ -119,6 +119,7 @@ describe('harm and saves (SRD 2.5.1)', () => {
     harm(b, snag, 99);
     expect(snag.status).toBe('dead');
     const grukk = who(b, 'Grukk');
+    grukk.selfStabilize = false; // Without Die Hard, to fall as anyone does.
     harm(b, grukk, 99);
     expect(grukk.status).toBe('dying');
     harm(b, grukk, 1);
