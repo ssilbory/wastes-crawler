@@ -69,6 +69,21 @@
     "text": "Altered to fit one wearer: 1 less encumbrance."
   },
   {
+    "id": "balanced-fittings",
+    "name": "Balanced Fittings",
+    "minCraft": 2,
+    "targets": ["weapon"],
+    "loot": {
+      "count": 29,
+      "sides": 6
+    },
+    "components": [],
+    "weapon": {
+      "encumbrance": -1
+    },
+    "text": "Hollowed, trimmed, and rebalanced for one wielder: 1 less encumbrance, down to 0."
+  },
+  {
     "id": "thirsting-blade",
     "name": "Thirsting Blade",
     "minCraft": 3,

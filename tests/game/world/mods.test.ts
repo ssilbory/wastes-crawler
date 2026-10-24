@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { craftingReferenceErrors } from '../../../src/data/crafting-check.ts';
-import type { InventoryEntry } from '../../../src/game/character/items.ts';
+import {
+  entryEncumbrance,
+  findItem,
+  type InventoryEntry,
+} from '../../../src/game/character/items.ts';
 import { characterSheet } from '../../../src/game/character/derived.ts';
 import { brokenEntry, upgrade } from '../../../src/game/character/upgrades.ts';
 import { emit } from '../../../src/game/world/bus.ts';
@@ -408,6 +412,25 @@ describe('what mods do on the sheet (SRD 2.8.4)', () => {
       inventory: [...s.character.inventory].reverse(),
     };
     expect(hit(sheet())?.damageBonus).toBe((hit(before)?.damageBonus as number) + 2);
+  });
+
+  it('lighten weapons and armor a point each, down to 0 (Sam’s call)', () => {
+    const enc = (id: string, extra: Partial<InventoryEntry>) =>
+      entryEncumbrance(data, findItem(data, id) as NonNullable<ReturnType<typeof findItem>>, {
+        id,
+        quantity: 2,
+        location: 'stowed',
+        ...extra,
+      });
+    expect(enc('sword-great', {})).toBe(4);
+    expect(enc('sword-great', { mods: mods('balanced-fittings') })).toBe(2);
+    expect(enc('dagger', { mods: mods('balanced-fittings') })).toBe(0);
+    // An unmaintained mod stops working.
+    expect(enc('dagger', { mods: mods('balanced-fittings'), upkeep: 1 })).toBe(2);
+    // Tailored Harness takes light armor to 0 too, mastercrafted or not.
+    expect(enc('mail-shirt', { mods: mods('tailored-harness') })).toBe(0);
+    expect(enc('mail-shirt', { quality: 'mastercrafted', mods: mods('tailored-harness') })).toBe(0);
+    expect(enc('cuirass-and-greaves', { mods: mods('tailored-harness') })).toBe(2);
   });
 });
 
