@@ -168,7 +168,7 @@ describe('setting content (Phase 12b)', () => {
       {
         ...ruin,
         id: 'odd',
-        size: { min: 10, max: 9 },
+        size: { min: 14, max: 13 },
         wander: { every: 2, table: 'nowhere' },
         vault: { guards: [['dragon']], loot: ruin.vault.loot, component: 'unobtainium' },
       },
@@ -189,16 +189,16 @@ describe('setting content (Phase 12b)', () => {
       'ruins/odd: shares its hex with another ruin',
     ]);
     const sized = [
-      { ...ruin, id: 'big', size: { min: 8, max: 12 } },
-      { ...ruin, id: 'deep-city', kind: 'city' as const, depth: 2, size: { min: 12, max: 12 } },
-      { ...ruin, id: 'wet-tower', kind: 'tower' as const, sewer: true, size: { min: 5, max: 5 } },
+      { ...ruin, id: 'big', size: { min: 12, max: 18 } },
+      { ...ruin, id: 'deep-city', kind: 'city' as const, depth: 2, size: { min: 18, max: 18 } },
+      { ...ruin, id: 'wet-tower', kind: 'tower' as const, sewer: true, size: { min: 7, max: 7 } },
     ].map((r, i) => ({ ...r, col: i + 1, row: 9 }));
     expect(
       settingReferenceErrors(srd, { ...content, ruins: sized }).filter((e) =>
         e.startsWith('ruins'),
       ),
     ).toEqual([
-      "ruins/big: a delve's levels are 8 to 10 cells",
+      "ruins/big: a delve's levels are 12 to 15 cells",
       'ruins/deep-city: a city is one level',
       'ruins/wet-tower: only cities have sewers',
     ]);

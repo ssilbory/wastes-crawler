@@ -4,9 +4,9 @@ import { LootDiceSchema } from './town-content.ts';
 
 /** Each kind's level sizes, in cells (Sam's calls). */
 export const RUIN_SIZES = {
-  delve: { min: 8, max: 10 },
-  tower: { min: 5, max: 7 },
-  city: { min: 12, max: 14 },
+  delve: { min: 12, max: 15 },
+  tower: { min: 7, max: 10 },
+  city: { min: 18, max: 21 },
 } as const;
 
 /**
@@ -29,7 +29,7 @@ export const RuinSchema = z.strictObject({
   /** Levels or floors, each a step denser with traps; a city's is 1. */
   depth: z.int().min(1).max(4),
   /** Each level's width and height are drawn from this range of cells, within the kind's sizes. */
-  size: z.strictObject({ min: z.int().min(5), max: z.int().max(14) }),
+  size: z.strictObject({ min: z.int().min(5), max: z.int().max(21) }),
   wander: z.strictObject({ every: z.int().min(1).max(6), table: IdSchema }),
   /** Loot dice in each small cache. */
   cache: z.array(LootDiceSchema).min(1),

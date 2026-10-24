@@ -106,9 +106,10 @@ export function framed(edges: Edges, w: number, h: number, a: Cell, b: Cell): bo
   return ends.every((others) => others.some(([p, q]) => wall(p, q)));
 }
 
-/** Opens a few rooms and loops, turns some passages into doors, and hides one secret door. */
+/** Opens a few rooms (more on bigger levels) and loops, turns some passages into doors, and hides
+ * one secret door. */
 export function decorate(rng: Rng, edges: Edges, w: number, h: number): void {
-  for (let r = rng.int(1, 3); r > 0; r--) {
+  for (let r = rng.int(1, 3) + Math.floor((w * h) / 100); r > 0; r--) {
     const rw = rng.int(2, 3);
     const rh = rng.int(2, 3);
     const x0 = rng.int(0, w - rw);
@@ -205,6 +206,21 @@ export const cacheAt = (ruin: Ruin, at: Cell): DungeonLevel['specials'][number] 
   at,
   loot: ruin.cache,
 });
+
+/** A cache held by a smaller band of the vault's guards: the first half of its first group. */
+export function guardedAt(ruin: Ruin, at: Cell): DungeonLevel['specials'][number] {
+  const band = ruin.vault.guards[0] as string[];
+  return {
+    kind: 'cache',
+    at,
+    loot: ruin.cache,
+    guards: [band.slice(0, Math.ceil(band.length / 2))],
+  };
+}
+
+/** One or two guarded caches on cells taken from `free`. */
+export const guardedCaches = (rng: Rng, ruin: Ruin, free: string[]) =>
+  Array.from({ length: rng.int(1, 2) }, () => guardedAt(ruin, takeCell(rng, free)));
 
 export const vaultAt = (ruin: Ruin, at: Cell): DungeonLevel['specials'][number] => ({
   kind: 'cache',
