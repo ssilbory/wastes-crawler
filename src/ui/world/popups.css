@@ -152,3 +152,16 @@
 .toast-inn .toast-icon {
   color: var(--accent-hi);
 }
+
+/* Along the foot of the screen, clear of the menu pinned top-left (app-menu.css). */
+.unsaved {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 41;
+  margin: 0;
+  padding: 8px 14px;
+  background: var(--panel-sunk);
+  border-top: 1px solid var(--error);
+}
