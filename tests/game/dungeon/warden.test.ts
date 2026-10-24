@@ -3,12 +3,12 @@ import { enterDungeon } from '../../../src/game/dungeon/explore.ts';
 import { arriveOn } from '../../../src/game/dungeon/specials.ts';
 import { emit } from '../../../src/game/world/bus.ts';
 import { newWorld } from '../../../src/game/world/new-world.ts';
-import { giveCountersign } from '../../../src/game/world/orders.ts';
+import { endOrder, giveCountersign } from '../../../src/game/world/orders.ts';
 import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
 import { WORLD_MIGRATIONS } from '../../../src/game/world/save-migrations.ts';
 import type { World } from '../../../src/game/world/types.ts';
 import { createRng } from '../../../src/rules/rng.ts';
-import { data, starter } from '../world/helpers.ts';
+import { data, encounter, starter } from '../world/helpers.ts';
 import { place } from './helpers.ts';
 
 const HARROWMERE = data.content.dungeons.find((d) => d.id === 'harrowmere');
@@ -93,6 +93,21 @@ describe("the Warden's countersign (Sam's call: the Sealed Vale's story)", () =>
     expect(w.caches).toContain(HOARD);
     expect(w.ordersEnded).toEqual(['warden-seal', 'hold-the-throat', 'spire-watch']);
     expect(w.log.join('\n')).toContain('The order to keep the vale sealed is ended.');
+  });
+
+  it('keeps the hoard when another order ends, or another group stands here', () => {
+    const w = inVale();
+    place(w, WARDEN.level, WARDEN.at.x, WARDEN.at.y, 'n');
+    emit(w, data, { kind: 'order-ended', order: 'spire-watch' });
+    expect(w.caches).not.toContain(HOARD);
+    w.encounter = { ...encounter([['thug-or-militia']]), garrison: 'elsewhere' };
+    emit(w, data, { kind: 'order-ended', order: 'warden-seal' });
+    expect(w.caches).not.toContain(HOARD);
+    expect(w.encounter).not.toBeNull();
+    // With no one challenging, the order's end gives the hoard up where the party stands.
+    w.encounter = null;
+    endOrder(w, data, 'warden-seal');
+    expect(w.caches).toContain(HOARD);
   });
 
   it('gives up a hoard without a fight once its order has ended', () => {
