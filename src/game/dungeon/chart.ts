@@ -29,13 +29,14 @@ export function chartDungeon(w: World, data: GameData): void {
       Object.fromEntries(Object.keys(cells).map((key) => [key, 'noticed' as const])),
     ]),
   );
+  // Copies, so nothing done underground later reaches the chart (or a save) through a shared object.
   w.charted[s.dungeon] = {
     layout: layoutOf(dungeonOf(data, s.dungeon)),
-    seen: s.seen,
-    found: s.found,
-    glimpsed: s.glimpsed,
+    seen: structuredClone(s.seen),
+    found: structuredClone(s.found),
+    glimpsed: structuredClone(s.glimpsed),
     traps,
-    sensed: s.sensed,
+    sensed: structuredClone(s.sensed),
   };
 }
 
@@ -43,11 +44,12 @@ export function chartDungeon(w: World, data: GameData): void {
 export function recall(w: World, d: Dungeon) {
   const chart = w.charted[d.id];
   const known = chart && chart.layout === layoutOf(d) ? chart : null;
-  return {
+  // Copies: a trap disarmed this visit must not mark the chart, whose traps are only ever noticed.
+  return structuredClone({
     seen: known?.seen ?? {},
     found: known?.found ?? {},
     glimpsed: known?.glimpsed ?? {},
     traps: known?.traps ?? {},
     sensed: known?.sensed ?? {},
-  };
+  });
 }
