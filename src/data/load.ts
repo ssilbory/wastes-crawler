@@ -13,8 +13,10 @@ import arts from '../../data/srd/arts.json';
 import weaponTraits from '../../data/srd/weapon-traits.json';
 import weapons from '../../data/srd/weapons.json';
 import { SrdSchemas, type SrdData } from './schemas/index.ts';
+import { parseShipped } from './shipped.ts';
 
-const RAW: Record<keyof SrdData, unknown> = {
+/** Every data/srd file, by its key in SrdData, before parsing. */
+export const SHIPPED_SRD: Record<keyof SrdData, unknown> = {
   skills,
   foci,
   classes,
@@ -31,11 +33,11 @@ const RAW: Record<keyof SrdData, unknown> = {
   'faction-assets': factionAssets,
 };
 
-/** Parses every data/srd file with its schema; throws on the first invalid file. */
+/** Parses every data/srd file with its schema (see parseShipped); throws on the first invalid file. */
 export function loadSrd(): SrdData {
   const out = {} as Record<keyof SrdData, unknown>;
   for (const name of Object.keys(SrdSchemas) as (keyof SrdData)[]) {
-    out[name] = SrdSchemas[name].parse(RAW[name]);
+    out[name] = parseShipped(SrdSchemas[name], SHIPPED_SRD[name]);
   }
   return out as SrdData;
 }
