@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitest/config';
+import { contentSecurityPolicy } from './tools/csp.ts';
 import { serviceWorker } from './tools/pwa/service-worker.ts';
 
 export default defineConfig({
@@ -7,8 +8,9 @@ export default defineConfig({
   // Preact JSX through Vite's built-in Oxc transform; @preact/preset-vite pulls in Babel, whose
   // dependencies fail the pnpm trust policy.
   oxc: { jsx: { runtime: 'automatic', importSource: 'preact' } },
-  // Writes dist/sw.js so the built game installs and plays offline (src/ui/pwa.ts).
-  plugins: [serviceWorker()],
+  // Writes dist/sw.js so the built game installs and plays offline (src/ui/pwa.ts), and puts the
+  // Content Security Policy in the built page (tools/csp.ts).
+  plugins: [serviceWorker(), contentSecurityPolicy()],
   test: {
     include: ['tests/**/*.test.ts', 'src/**/*.test.ts'],
     coverage: {
