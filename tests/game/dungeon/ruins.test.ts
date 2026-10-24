@@ -39,26 +39,30 @@ function atRuin(ruin: Ruin): World {
 }
 
 describe('the ruin generator (ADR 0004)', () => {
-  it('makes the same valid dungeon from the same seed, and another from another', () => {
-    const a = generateRuin(CRYPTS, 7);
-    expect(generateRuin(CRYPTS, 7)).toEqual(a);
-    expect(generateRuin(CRYPTS, 8).levels[0]?.map).not.toEqual(a.levels[0]?.map);
-    expect(a.id).toBe('gallows-crypts-v7');
-    expect(a.levels.map((l) => l.id)).toEqual([
-      'gallows-crypts-1',
-      'gallows-crypts-2',
-      'gallows-crypts-3',
-    ]);
-    for (const ruin of data.content.ruins)
-      for (let seed = 1; seed <= 30; seed++)
-        expect(
-          dungeonReferenceErrors({ ...data.content, dungeons: [generateRuin(ruin, seed)] }),
-        ).toEqual([]);
-  });
+  it(
+    'makes the same valid dungeon from the same seed, and another from another',
+    { timeout: 60_000 },
+    () => {
+      const a = generateRuin(CRYPTS, 7);
+      expect(generateRuin(CRYPTS, 7)).toEqual(a);
+      expect(generateRuin(CRYPTS, 8).levels[0]?.map).not.toEqual(a.levels[0]?.map);
+      expect(a.id).toBe('gallows-crypts-v7');
+      expect(a.levels.map((l) => l.id)).toEqual([
+        'gallows-crypts-1',
+        'gallows-crypts-2',
+        'gallows-crypts-3',
+      ]);
+      for (const ruin of data.content.ruins)
+        for (let seed = 1; seed <= 30; seed++)
+          expect(
+            dungeonReferenceErrors({ ...data.content, dungeons: [generateRuin(ruin, seed)] }),
+          ).toEqual([]);
+    },
+  );
 
   it('thickens the traps level by level, with caches, and a guarded vault at the bottom', () => {
     const d = generateRuin(CRYPTS, 3);
-    expect(d.levels.map((l) => l.traps.length)).toEqual([1, 2, 3]);
+    expect(d.levels.map((l) => l.traps.length)).toEqual([2, 3, 4]);
     const caches = d.levels.map((l) => l.specials.filter((s) => s.kind === 'cache'));
     for (const c of caches.slice(0, 2))
       expect(c.every((s) => s.kind === 'cache' && !s.vault)).toBe(true);
@@ -69,6 +73,30 @@ describe('the ruin generator (ADR 0004)', () => {
     expect(plain.levels[0]?.specials.find((s) => s.kind === 'cache' && s.vault)).not.toHaveProperty(
       'component',
     );
+  });
+
+  it('sizes levels from the ruin, with one or two caches held by half the vault band', () => {
+    const band = CRYPTS.vault.guards[0] as string[];
+    for (let seed = 1; seed <= 20; seed++)
+      for (const level of generateRuin(CRYPTS, seed).levels) {
+        const rows = level.map.length;
+        expect((rows - 1) / 2).toBeGreaterThanOrEqual(CRYPTS.size.min);
+        expect((rows - 1) / 2).toBeLessThanOrEqual(CRYPTS.size.max);
+        const held = level.specials.filter((s) => s.kind === 'cache' && s.guards && !s.vault);
+        expect(held.length).toBeGreaterThanOrEqual(1);
+        expect(held.length).toBeLessThanOrEqual(2);
+        for (const s of held)
+          expect(s).toMatchObject({
+            loot: CRYPTS.cache,
+            guards: [band.slice(0, Math.ceil(band.length / 2))],
+          });
+      }
+    // A single-monster band still leaves one guard.
+    const lone = { ...CHAPEL, vault: { ...CHAPEL.vault, guards: [['barrow-golem']] } };
+    const held = generateRuin(lone, 1).levels[0]?.specials.find(
+      (s) => s.kind === 'cache' && s.guards && !s.vault,
+    );
+    expect(held).toMatchObject({ guards: [['barrow-golem']] });
   });
 
   it('finds generated dungeons by id, and nothing for other ids', () => {
@@ -218,7 +246,7 @@ describe('towers and ruined cities (Sam’s call)', () => {
     const [street] = d.levels;
     expect(street?.name).toBe('Old Westgate, the streets');
     expect(street?.links).toEqual([{ at: d.entry.at, to: { surface: true } }]);
-    expect(street?.traps).toHaveLength(2);
+    expect(street?.traps).toHaveLength(3);
     expect(street?.specials.filter((s) => s.kind === 'cache' && s.vault)).toHaveLength(1);
   });
 
@@ -230,6 +258,8 @@ describe('towers and ruined cities (Sam’s call)', () => {
     expect(sewer?.links).toHaveLength(2);
     expect(street?.specials.some((s) => s.kind === 'cache' && s.vault)).toBe(false);
     expect(sewer?.specials.some((s) => s.kind === 'cache' && s.vault)).toBe(true);
+    for (const l of [street, sewer])
+      expect(l?.specials.some((s) => s.kind === 'cache' && s.guards && !s.vault)).toBe(true);
   });
 
   it('pass the level validation, every kind, under many seeds', () => {

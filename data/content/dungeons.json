@@ -12222,35 +12222,47 @@
         "id": "hm-streets",
         "name": "The Streets of Harrowmere",
         "map": [
-          "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+",
-          "|                               |",
-          "+ +-+-+d+-+ +-+-+-+-+ +-+-+-+-+ +",
-          "| |   |   | |       | | | | | d |",
-          "+ + + + + + + + + + + +-+-+-+ + +",
-          "| d   |   | |       |T| | | | | |",
-          "+ + + + + + + + + + + +-+-+-+-+ +",
-          "| |   d   | |       | | | | | | |",
-          "+ + + + + + + + + + + +-+-+-+-+ +",
-          "| |   |   | |       | | | | | | |",
-          "+ +-+-+-+-+ +-+d+d+-+ +-+-+-+-+ +",
-          "|                               |",
-          "+ +d+-+-+-+ + + + + + +-+-+-+-+ +",
-          "| |   |   |           |     | | |",
-          "+ + + + + + + + + + + + + + + + +",
-          "| |   d   |T          |     s | |",
-          "+ + + + + + + + + + + + + + + + +",
-          "| |   |   |           |     | | |",
-          "+ +-+-+-+-+ + + + + + +-+d+-+-+ +",
-          "|                              T|",
-          "+ +-+d+-+-+ +-+-+-+-+ +-+-+-+-+ +",
-          "| |       | | | | | | |       | |",
-          "+ + + + + + +-+-+-+-+ + + + + + +",
-          "| |       d | | | | | d    >  d |",
-          "+ + + + + + +-+-+-+-+ + + + + + +",
-          "| |       | |   | | | |       | |",
-          "+ +-+-+-+-+ +d+-+-+-+ +-+-+-+-+ +",
-          "|          <                    |",
-          "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "|                               |               |",
+          "+ +-+-+d+-+ +-+-+-+-+ +-+-+-+-+ + +-+ + +-+-+ +-+",
+          "| |   |   | |       | | | | | d |   |   |   |   |",
+          "+ + + + + + + + + + + +-+-+-+ + +-+ + + + + +-+ +",
+          "| d   |   | |       |T| | | | | d | | |   |   | |",
+          "+ + + + + + + + + + + +-+-+-+-+ + + + + +-+-+ + +",
+          "| |   d   | |       | | | | | | |   |         | |",
+          "+ + + + + + + + + + + +-+-+-+-+ + +-+-+-+-+-+-+ +",
+          "| |   |   | |       | | | | | | |               |",
+          "+ +-+-+-+-+ +-+d+d+-+ +-+-+-+-+ + +-+-+-+ +-+-+ +",
+          "|                               | |     | |   | |",
+          "+ +d+-+-+-+ + + + + + +-+-+-+-+ + + +-+ + + + +d+",
+          "| |   |   |           |     | | d   |   | | |   |",
+          "+ + + + + + + + + + + + + + + + + +-+ +-+-+ +-+ +",
+          "| |   d   |T          |     s | |   |         | |",
+          "+ + + + + + + + + + + + + + + + +-+ +-+-+-+-+-+ +",
+          "| |   |   |           |     | | | | |     |     |",
+          "+ +-+-+-+-+ + + + + + +-+d+-+-+ + + + + + + +-+ +",
+          "|                              T|   |   | |   | |",
+          "+ +-+d+-+-+ +-+-+-+-+ +-+-+-+-+ + +-+-+ + +-+ +-+",
+          "| |       | | | | | | |       | | |   | | | |   |",
+          "+ + + + + + +-+-+-+-+ + + + + + + + + + + + +-+ +",
+          "| |       d | | | | | d    >  d | | |   |     | |",
+          "+ + + + + + +-+-+-+-+ + + + + + + + + +-+ + +-+ +",
+          "| |       | |   | | | |       | |   d |     d   |",
+          "+ +-+-+-+-+ +d+-+-+-+ +-+-+-+-+ + +-+ + + + + + +",
+          "|          <                    | |     |   |   |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ +d+-+ + + +-+ +-+ +",
+          "|         |      T|     |   |       |   | | |   |",
+          "+-+-+-+-+ + + + +-+ +-+ + +-+-+ +-+-+-+-+ + + + +",
+          "|       | |   |     | | |   |       |   |   | | |",
+          "+ +-+-+ + +-+ +-+-+-+ + +-+ + +-+ +-+ + + +-+ +-+",
+          "|   |     |   | |     |     | | |     | |   |   |",
+          "+ + + + + + +-+ + +-+ + + +-+ + + +-+-+ +-+ + + +",
+          "| |         |       |     |   |   |     |   |   |",
+          "+ + + +-+ + +-+ + + + + + + + + + + +-+ + + + + +",
+          "|       | |   |     |       | |   |   |T|   |   |",
+          "+-+ + + + +-+ +-+-+-+ + + +-+ +-+ + + +-+-+ + + +",
+          "|       |                     |               | |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
         ],
         "links": [
           {
@@ -12345,6 +12357,110 @@
           {
             "x": 7,
             "y": 12
+          },
+          {
+            "x": 3,
+            "y": 14
+          },
+          {
+            "x": 4,
+            "y": 14
+          },
+          {
+            "x": 23,
+            "y": 19
+          },
+          {
+            "x": 23,
+            "y": 18
+          },
+          {
+            "x": 20,
+            "y": 3
+          },
+          {
+            "x": 21,
+            "y": 3
+          },
+          {
+            "x": 6,
+            "y": 17
+          },
+          {
+            "x": 7,
+            "y": 17
+          },
+          {
+            "x": 21,
+            "y": 5
+          },
+          {
+            "x": 22,
+            "y": 5
+          },
+          {
+            "x": 18,
+            "y": 9
+          },
+          {
+            "x": 18,
+            "y": 8
+          },
+          {
+            "x": 13,
+            "y": 15
+          },
+          {
+            "x": 13,
+            "y": 16
+          },
+          {
+            "x": 19,
+            "y": 15
+          },
+          {
+            "x": 19,
+            "y": 16
+          },
+          {
+            "x": 17,
+            "y": 6
+          },
+          {
+            "x": 17,
+            "y": 5
+          },
+          {
+            "x": 22,
+            "y": 13
+          },
+          {
+            "x": 22,
+            "y": 12
+          },
+          {
+            "x": 5,
+            "y": 14
+          },
+          {
+            "x": 6,
+            "y": 14
+          },
+          {
+            "x": 21,
+            "y": 4
+          },
+          {
+            "x": 22,
+            "y": 4
+          },
+          {
+            "x": 0,
+            "y": 17
+          },
+          {
+            "x": 0,
+            "y": 16
           }
         ],
         "secrets": [
@@ -12419,6 +12535,46 @@
                 "sides": 6,
                 "modifier": 0
               }
+            }
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 14
+            },
+            "name": "cellar collapse",
+            "notice": 8,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 9
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 2,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 19,
+              "y": 18
+            },
+            "name": "tripwire and bells",
+            "notice": 7,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 7
+            },
+            "save": null,
+            "effect": {
+              "kind": "alarm"
             }
           }
         ],
@@ -12586,6 +12742,219 @@
               "y": 12
             },
             "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 3,
+              "y": 18
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 6
+              }
+            ],
+            "guards": [
+              [
+                "raised-skeleton",
+                "raised-skeleton",
+                "raised-skeleton",
+                "raised-skeleton",
+                "raised-skeleton",
+                "raised-skeleton",
+                "ghoul",
+                "ghoul"
+              ],
+              ["ghoul", "ghoul", "ghoul"]
+            ]
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 2,
+              "y": 15
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 6
+              }
+            ],
+            "guards": [
+              [
+                "human-raider",
+                "human-raider",
+                "human-raider",
+                "human-raider",
+                "human-raider",
+                "alliance-ranger",
+                "alliance-ranger"
+              ],
+              ["slaver", "slaver"]
+            ]
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 16,
+              "y": 17
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 8
+              },
+              {
+                "count": 1,
+                "sides": 8
+              }
+            ]
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 16,
+              "y": 15
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 8
+              },
+              {
+                "count": 1,
+                "sides": 8
+              }
+            ]
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 19,
+              "y": 13
+            },
+            "text": "The east ward: tanners' yards and drying sheds, roofs caved under the ash. Something drags itself between them."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 20,
+              "y": 18
+            },
+            "text": "A market square, its stalls burned to stumps. Coins still lie where the ash buried them."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 7,
+              "y": 16
+            },
+            "text": "The south gate, bricked up from inside like the tower. Whoever sealed it never came out."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 3,
+              "y": 14
+            },
+            "text": "A quiet nook, easy to watch. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 23,
+              "y": 19
+            },
+            "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 20,
+              "y": 3
+            },
+            "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 17
+            },
+            "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 21,
+              "y": 5
+            },
+            "text": "A quiet nook, easy to watch. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 18,
+              "y": 9
+            },
+            "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 13,
+              "y": 15
+            },
+            "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 19,
+              "y": 15
+            },
+            "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 17,
+              "y": 6
+            },
+            "text": "A quiet nook, easy to watch. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 22,
+              "y": 13
+            },
+            "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 5,
+              "y": 14
+            },
+            "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 21,
+              "y": 4
+            },
+            "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 0,
+              "y": 17
+            },
+            "text": "A quiet nook, easy to watch. A safe place to rest."
           }
         ],
         "captives": [],
@@ -12632,31 +13001,43 @@
         "id": "hm-sewer-1",
         "name": "The Upper Sewers",
         "map": [
-          "+-+-+-+-+-+-+-+-+-+-+-+-+",
-          "| | | | | | | | | | | | |",
-          "+-+-+-+-+-+-+-+-+-+-+-+-+",
-          "| |<                  | |",
-          "+-+ +-+-+-+ +-+-+-+-+ +-+",
-          "| | d   | | | | | | | | |",
-          "+-+ + + +-+ +-+-+-+-+ +-+",
-          "| | |   | | | | | | |T| |",
-          "+-+ +-+-+-+ +-+-+-+-+ + +",
-          "| | | | |       | | | | |",
-          "+-+ +-+-+ + + + +-+-+ + +",
-          "| |     d       | | | s |",
-          "+-+ +-+-+ + + + +-+-+ + +",
-          "| | | | |       d     | |",
-          "+-+ +-+-+ + + + +-+-+ + +",
-          "| | | | |       | | | | |",
-          "+-+ +-+-+-+-+-+-+-+-+ + +",
-          "| | | | | | | | |   | | |",
-          "+-+ +-+-+-+-+-+-+ + + +-+",
-          "| | | | | | | | |   d | |",
-          "+-+ +-+-+-+-+-+-+-+-+ +-+",
-          "| |    T              | |",
-          "+-+-+-+-+-+-+d+-+-+-+-+-+",
-          "| | | | |        >| | | |",
-          "+-+-+-+-+-+-+-+-+-+-+-+-+"
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | | | | | | | | |           |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+ + +-+-+-+ +",
+          "| |<                  | | | |       |",
+          "+-+ +-+-+-+ +-+-+-+-+ +-+ + + +-+-+-+",
+          "| | d   | | | | | | | | | | |   |   |",
+          "+-+ + + +-+ +-+-+-+-+ +-+ + +-+-+ + +",
+          "| | |   | | | | | | |T| | | |T    | |",
+          "+-+ +-+-+-+ +-+-+-+-+ + + + + +-+-+ +",
+          "| | | | |       | | | | | |   |     |",
+          "+-+ +-+-+ + + + +-+-+ + +-+-+-+ + + +",
+          "| |     d       | | | s |     |     |",
+          "+-+ +-+-+ + + + +-+-+ + + + + + + + +",
+          "| | | | |       d     | |   | |     |",
+          "+-+ +-+-+ + + + +-+-+ + + + + + + + +",
+          "| | | | |       | | | | | |   |     |",
+          "+-+ +-+-+-+-+-+-+-+-+ + + + + + + +-+",
+          "| | | | | | | | |   | | | |     |   |",
+          "+-+ +-+-+-+-+-+-+ + + +-+ + +-+-+-+ +",
+          "| | | | | | | | |   d | | | |       |",
+          "+-+ +-+-+-+-+-+-+-+-+ +-+ + + + +-+-+",
+          "| |    T              | | |         |",
+          "+-+-+-+-+-+-+d+-+-+-+-+-+ + + + + + +",
+          "| | | | |        >| | | | |       | |",
+          "+-+-+-+-+-+-+d+d+-+-+-+-+ + + +-+ + +",
+          "|     |       |     |     |   |   | |",
+          "+ +-+-+ +-+ + +-+ + + +-+-+-+-+-+ + +",
+          "| |         |       | |     |     | |",
+          "+ + + +-+ + + + + + + + +-+ +-+ +-+ +",
+          "|     d     |             |T    |   |",
+          "+ + + + +-+-+ + + + + + + +-+-+ + +-+",
+          "|     |   |   |               | |   |",
+          "+ +-+-+-+ + +-+ +-+ +-+ +-+-+ +-+-+d+",
+          "| | |     |   | |   |   |   |       |",
+          "+ + + +-+-+-+-+ + + + +-+ + +-+ +-+ +",
+          "|   |           |         |     |   |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
         ],
         "links": [
           {
@@ -12732,6 +13113,78 @@
           {
             "x": 5,
             "y": 11
+          },
+          {
+            "x": 15,
+            "y": 1
+          },
+          {
+            "x": 16,
+            "y": 1
+          },
+          {
+            "x": 15,
+            "y": 8
+          },
+          {
+            "x": 15,
+            "y": 7
+          },
+          {
+            "x": 16,
+            "y": 16
+          },
+          {
+            "x": 17,
+            "y": 16
+          },
+          {
+            "x": 0,
+            "y": 16
+          },
+          {
+            "x": 0,
+            "y": 15
+          },
+          {
+            "x": 14,
+            "y": 13
+          },
+          {
+            "x": 15,
+            "y": 13
+          },
+          {
+            "x": 16,
+            "y": 3
+          },
+          {
+            "x": 16,
+            "y": 2
+          },
+          {
+            "x": 10,
+            "y": 13
+          },
+          {
+            "x": 10,
+            "y": 12
+          },
+          {
+            "x": 12,
+            "y": 1
+          },
+          {
+            "x": 12,
+            "y": 0
+          },
+          {
+            "x": 6,
+            "y": 17
+          },
+          {
+            "x": 7,
+            "y": 17
           }
         ],
         "exposure": {
@@ -12776,6 +13229,48 @@
             "at": {
               "x": 3,
               "y": 10
+            },
+            "name": "filth spray",
+            "notice": 9,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 9
+            },
+            "save": "physical",
+            "element": "water",
+            "effect": {
+              "kind": "disease",
+              "disease": "swamp-fever"
+            }
+          },
+          {
+            "at": {
+              "x": 13,
+              "y": 14
+            },
+            "name": "rotten grating",
+            "notice": 9,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 9
+            },
+            "save": "evasion",
+            "element": "water",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 2,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 14,
+              "y": 3
             },
             "name": "filth spray",
             "notice": 9,
@@ -12907,6 +13402,153 @@
               "y": 11
             },
             "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 14,
+              "y": 10
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 8
+              }
+            ],
+            "guards": [
+              [
+                "mire-drowned",
+                "mire-drowned",
+                "mire-drowned",
+                "mire-drowned",
+                "mire-drowned",
+                "mire-drowned",
+                "mire-drowned",
+                "mire-drowned"
+              ],
+              ["ghoul", "ghoul", "ghoul", "ghoul"]
+            ]
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 14,
+              "y": 9
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 8
+              }
+            ],
+            "guards": [
+              [
+                "giant-rattlesnake",
+                "giant-rattlesnake",
+                "giant-rattlesnake",
+                "giant-rattlesnake",
+                "giant-rattlesnake",
+                "giant-black-widow",
+                "giant-black-widow"
+              ]
+            ]
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 3,
+              "y": 14
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 10
+              },
+              {
+                "count": 1,
+                "sides": 8
+              }
+            ]
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 14,
+              "y": 12
+            },
+            "text": "An overflow channel, newer brick than the rest, dug when the town still had hands to dig."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 15,
+              "y": 1
+            },
+            "text": "A quiet nook, easy to watch. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 15,
+              "y": 8
+            },
+            "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 16,
+              "y": 16
+            },
+            "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 0,
+              "y": 16
+            },
+            "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 14,
+              "y": 13
+            },
+            "text": "A quiet nook, easy to watch. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 16,
+              "y": 3
+            },
+            "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 10,
+              "y": 13
+            },
+            "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 12,
+              "y": 1
+            },
+            "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 17
+            },
+            "text": "A quiet nook, easy to watch. A safe place to rest."
           }
         ],
         "captives": [],
@@ -12932,31 +13574,43 @@
         "id": "hm-sewer-2",
         "name": "The Outfall Tunnels",
         "map": [
-          "+-+-+-+-+-+-+-+-+-+-+-+-+",
-          "|          >| | | | | | |",
-          "+ +-+-+-+-+-+-+-+-+-+-+-+",
-          "| | | | |   | | | | | | |",
-          "+ +-+-+-+d+-+-+-+-+-+-+-+",
-          "|      T                |",
-          "+-+-+-+-+-+-+-+d+-+-+-+ +",
-          "| | | | | | |     | | | |",
-          "+-+-+-+-+-+-+ + + +-+-+ +",
-          "| | | | | | |     | | | |",
-          "+-+-+-+-+-+-+-+s+-+-+-+ +",
-          "|            T          |",
-          "+ +-+-+-+-+-+-+-+-+d+-+-+",
-          "| d   | | | | | | |   | |",
-          "+ + + +-+-+-+-+-+-+ + +-+",
-          "| |   | | | | | | |   | |",
-          "+ +-+-+-+-+-+-+-+-+-+-+-+",
-          "|                  T    |",
-          "+-+-+-+-+d+-+-+-+-+-+d+ +",
-          "| | | |     | | | | | | |",
-          "+-+-+-+ + + +-+-+-+-+ + +",
-          "| | | |     | | | | | | |",
-          "+-+-+-+-+d+-+-+-+-+-+-+ +",
-          "|                <      |",
-          "+-+-+-+-+-+-+-+-+-+-+-+-+"
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "|          >| | | | | | |   |       |",
+          "+ +-+-+-+-+-+-+-+-+-+-+-+ + + +-+-+ +",
+          "| | | | |   | | | | | | | |   |   | |",
+          "+ +-+-+-+d+-+-+-+-+-+-+-+ +-+-+-+ + +",
+          "|      T                |   |     | |",
+          "+-+-+-+-+-+-+-+d+-+-+-+ +-+-+ + +-+ +",
+          "| | | | | | |     | | | | |   | d   |",
+          "+-+-+-+-+-+-+ + + +-+-+ + + + + + +-+",
+          "| | | | | | |     | | | |       | | |",
+          "+-+-+-+-+-+-+-+s+-+-+-+ + + + + + + +",
+          "|            T          d |     |   |",
+          "+ +-+-+-+-+-+-+-+-+d+-+-+ + +-+ +-+ +",
+          "| d   | | | | | | |   | |   |       |",
+          "+ + + +-+-+-+-+-+-+ + +-+-+-+ + + +-+",
+          "| |   | | | | | | |   | |     | |   |",
+          "+ +-+-+-+-+-+-+-+-+-+-+-+ +-+-+ +-+ +",
+          "|                  T    d |  T  |   |",
+          "+-+-+-+-+d+-+-+-+-+-+d+ + + + + + +-+",
+          "| | | |     | | | | | | |   |       |",
+          "+-+-+-+ + + +-+-+-+-+ + + +-+ + + + +",
+          "| | | |     | | | | | | | |   |     |",
+          "+-+-+-+-+d+-+-+-+-+-+-+ +-+ +-+-+ + +",
+          "|                <      |   |     | |",
+          "+-+-+-+-+-+-+-+-+-+-+ +d+ +-+ +-+-+ +",
+          "| |   |     |             |   |     |",
+          "+ + + + +-+ + + + + + +-+ + + +-+-+ +",
+          "|   | | | |     |   |   |   |       |",
+          "+ +-+ + + + + + + + + + +-+-+ + +-+-+",
+          "| |T| |   |     |       |           |",
+          "+ + + +-+ + + + + +-+ + +-+-+-+-+-+ +",
+          "|   |     |     |         |     |   |",
+          "+-+ +-+-+-+ + + +-+ + +-+ + + + + + +",
+          "|       |           |   |   |   |   |",
+          "+ + + + + + + + +-+d+ +-+-+-+ +-+-+ +",
+          "|                                   |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
         ],
         "links": [
           {
@@ -13048,6 +13702,62 @@
           {
             "x": 3,
             "y": 0
+          },
+          {
+            "x": 2,
+            "y": 13
+          },
+          {
+            "x": 2,
+            "y": 12
+          },
+          {
+            "x": 12,
+            "y": 0
+          },
+          {
+            "x": 13,
+            "y": 0
+          },
+          {
+            "x": 16,
+            "y": 15
+          },
+          {
+            "x": 17,
+            "y": 15
+          },
+          {
+            "x": 8,
+            "y": 15
+          },
+          {
+            "x": 8,
+            "y": 14
+          },
+          {
+            "x": 16,
+            "y": 3
+          },
+          {
+            "x": 17,
+            "y": 3
+          },
+          {
+            "x": 16,
+            "y": 8
+          },
+          {
+            "x": 17,
+            "y": 8
+          },
+          {
+            "x": 0,
+            "y": 17
+          },
+          {
+            "x": 0,
+            "y": 16
           }
         ],
         "exposure": {
@@ -13120,6 +13830,46 @@
             "save": "physical",
             "effect": {
               "kind": "poison"
+            }
+          },
+          {
+            "at": {
+              "x": 1,
+              "y": 14
+            },
+            "name": "sluice gate",
+            "notice": 10,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 10
+            },
+            "save": "evasion",
+            "element": "water",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 14,
+              "y": 8
+            },
+            "name": "rat bells",
+            "notice": 9,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 9
+            },
+            "save": null,
+            "effect": {
+              "kind": "alarm"
             }
           }
         ],
@@ -13246,6 +13996,128 @@
               "y": 0
             },
             "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 17,
+              "y": 16
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 10
+              }
+            ],
+            "guards": [
+              [
+                "vat-spawn",
+                "vat-spawn",
+                "vat-spawn",
+                "beastman-trooper",
+                "beastman-trooper",
+                "beastman-trooper"
+              ],
+              ["flesh-crafter", "flesh-crafter"]
+            ]
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 2,
+              "y": 17
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 10
+              }
+            ],
+            "guards": [
+              ["ghoul", "ghoul", "ghoul", "ghoul", "gnawing-dead", "gnawing-dead", "gnawing-dead"],
+              ["barrow-midges"]
+            ]
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 13,
+              "y": 12
+            },
+            "loot": [
+              {
+                "count": 1,
+                "sides": 10
+              },
+              {
+                "count": 1,
+                "sides": 10
+              }
+            ]
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 14,
+              "y": 14
+            },
+            "text": "The outfall galleries spread wide here, low arches over silted floors that crunch with bone."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 2,
+              "y": 13
+            },
+            "text": "A quiet nook, easy to watch. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 12,
+              "y": 0
+            },
+            "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 16,
+              "y": 15
+            },
+            "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 8,
+              "y": 15
+            },
+            "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 16,
+              "y": 3
+            },
+            "text": "A quiet nook, easy to watch. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 16,
+              "y": 8
+            },
+            "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 0,
+              "y": 17
+            },
+            "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
           }
         ],
         "captives": [],
@@ -13271,31 +14143,43 @@
         "id": "hm-sewer-3",
         "name": "The Warden's Cistern",
         "map": [
-          "+-+-+-+-+-+-+-+-+-+-+-+-+",
-          "| | | | | |<| | |     | |",
-          "+-+-+-+-+-+ +-+-+ + + +-+",
-          "| | | | | |     d     | |",
-          "+-+-+-+-+-+ +-+-+-+-+-+-+",
-          "| | | | | | | | | | | | |",
-          "+-+-+-+-+-+ +-+-+-+-+-+-+",
-          "| | |               | | |",
-          "+-+-+ + + + + + + + +-+-+",
-          "| | |               | | |",
-          "+-+-+ + + + + + + + +-+-+",
-          "| | |               d   |",
-          "+-+-+ + + + + + + + +-+ +",
-          "|   d      T        | | |",
-          "+ +-+ + + + + + + + +-+ +",
-          "| | |               | d |",
-          "+ +-+ + + + + + + + + + +",
-          "| | |               | |T|",
-          "+ +-+-+-+-+-+-+-+-+-+-+ +",
-          "|T| | | | | | | | | | | |",
-          "+ +-+-+-+-+-+-+-+-+-+-+ +",
-          "| | |   | | |     d     |",
-          "+ +-+ + +-+-+ + + +-+-+-+",
-          "|       | | |  <  | | | |",
-          "+-+-+-+-+-+-+-+-+-+-+-+-+"
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "| | | | | |<| | |     | |    T  |   |",
+          "+-+-+-+-+-+ +-+-+ + + +-+ +-+-+-+-+ +",
+          "| | | | | |     d     | |           |",
+          "+-+-+-+-+-+ +-+-+-+-+-+-+-+-+-+-+-+ +",
+          "| | | | | | | | | | | | |   |     | |",
+          "+-+-+-+-+-+ +-+-+-+-+-+-+ + + +-+ + +",
+          "| | |               | | | |   | |   |",
+          "+-+-+ + + + + + + + +-+-+ + +-+ + + +",
+          "| | |               | | |     |     |",
+          "+-+-+ + + + + + + + +-+-+ +-+ +-+ + +",
+          "| | |               d   d   |   |   |",
+          "+-+-+ + + + + + + + +-+ + + +-+ +-+ +",
+          "|   d      T        | | | |   | |   |",
+          "+ +-+ + + + + + + + +-+ + +-+-+ + +-+",
+          "| | |               | d |     | |   |",
+          "+ +-+ + + + + + + + + + + +-+ + +-+ +",
+          "| | |               | |T|   d   |   |",
+          "+ +-+-+-+-+-+-+-+-+-+-+ +-+ +-+-+ + +",
+          "|T| | | | | | | | | | | d   |     | |",
+          "+ +-+-+-+-+-+-+-+-+-+-+ + + + +-+ +-+",
+          "| | |   | | |     d     |   |   |   |",
+          "+ +-+ + +-+-+ + + +-+-+-+ + +-+-+ + +",
+          "|       | | |  <  | | | |           |",
+          "+-+d+-+-+-+-+-+d+-+-+-+-+ +-+-+-+ + +",
+          "|             |       | |   |   |   |",
+          "+ + +-+ +-+ + + +-+-+ + + + + + + + +",
+          "| | | |   |     |   | |   |  T  | | |",
+          "+-+ + +-+ + + + + + + + +-+ + + + + +",
+          "|   |     |         | | d           |",
+          "+ + +-+ +-+ + +-+-+ + +-+ + + + + + +",
+          "| |   |     |       |     | |   |   |",
+          "+ + + +-+-+-+-+-+ +-+-+ + +-+ + + +-+",
+          "| | |     |   |   |   |   d     |   |",
+          "+ + +-+-+ + + +-+-+ + +-+-+ + +-+-+ +",
+          "|       |   |       |               |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
         ],
         "links": [
           {
@@ -13375,6 +14259,70 @@
           {
             "x": 8,
             "y": 3
+          },
+          {
+            "x": 12,
+            "y": 0
+          },
+          {
+            "x": 13,
+            "y": 0
+          },
+          {
+            "x": 11,
+            "y": 17
+          },
+          {
+            "x": 12,
+            "y": 17
+          },
+          {
+            "x": 16,
+            "y": 8
+          },
+          {
+            "x": 17,
+            "y": 8
+          },
+          {
+            "x": 14,
+            "y": 7
+          },
+          {
+            "x": 14,
+            "y": 8
+          },
+          {
+            "x": 15,
+            "y": 3
+          },
+          {
+            "x": 15,
+            "y": 4
+          },
+          {
+            "x": 9,
+            "y": 15
+          },
+          {
+            "x": 9,
+            "y": 14
+          },
+          {
+            "x": 3,
+            "y": 16
+          },
+          {
+            "x": 4,
+            "y": 16
+          },
+          {
+            "x": 4,
+            "y": 14
+          },
+          {
+            "x": 4,
+            "y": 13
           }
         ],
         "exposure": {
@@ -13444,6 +14392,46 @@
                 "sides": 6,
                 "modifier": 0
               }
+            }
+          },
+          {
+            "at": {
+              "x": 14,
+              "y": 13
+            },
+            "name": "drowning sluice",
+            "notice": 11,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 11
+            },
+            "save": "evasion",
+            "element": "water",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
+          },
+          {
+            "at": {
+              "x": 14,
+              "y": 0
+            },
+            "name": "needle sump",
+            "notice": 11,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 11
+            },
+            "save": "physical",
+            "effect": {
+              "kind": "poison"
             }
           }
         ],
@@ -13567,6 +14555,126 @@
               "y": 3
             },
             "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 17,
+              "y": 14
+            },
+            "loot": [
+              {
+                "count": 3,
+                "sides": 8
+              }
+            ],
+            "guards": [["swamp-thing", "swamp-thing", "swamp-thing", "vat-spawn", "vat-spawn"]]
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 16,
+              "y": 17
+            },
+            "loot": [
+              {
+                "count": 3,
+                "sides": 8
+              }
+            ],
+            "guards": [
+              ["gallows-hulk", "gallows-hulk", "gallows-hulk", "gallows-hulk", "gallows-hulk"],
+              ["cull-horror", "cull-horror", "cull-horror"]
+            ]
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 14,
+              "y": 14
+            },
+            "loot": [
+              {
+                "count": 2,
+                "sides": 10
+              },
+              {
+                "count": 1,
+                "sides": 12
+              }
+            ]
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 14,
+              "y": 3
+            },
+            "text": "A second cistern, half drained, its walls ringed with the marks of years of black water."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 12,
+              "y": 0
+            },
+            "text": "A quiet nook, easy to watch. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 11,
+              "y": 17
+            },
+            "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 16,
+              "y": 8
+            },
+            "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 14,
+              "y": 7
+            },
+            "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 15,
+              "y": 3
+            },
+            "text": "A quiet nook, easy to watch. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 9,
+              "y": 15
+            },
+            "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 3,
+              "y": 16
+            },
+            "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 4,
+              "y": 14
+            },
+            "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
           }
         ],
         "captives": [],
@@ -13592,23 +14700,31 @@
         "id": "hm-tower-1",
         "name": "The Tower: Guardroom Floor",
         "map": [
-          "+-+-+-+-+-+-+-+-+",
-          "|               |",
-          "+ +-+d+-+-+-+-+ +",
-          "| |     |<    | |",
-          "+ + + + + + + + +",
-          "| d  T  |     d |",
-          "+ + + + + + + + +",
-          "|T|     |     | |",
-          "+ +-+d+-+-+-+-+ +",
-          "| |     |     |T|",
-          "+ + + + + + + + +",
-          "| d     |     d |",
-          "+ + + + + + + + +",
-          "| |     |     | |",
-          "+ +-+-+-+-+d+-+ +",
-          "|>     T        |",
-          "+-+-+-+-+-+-+-+-+"
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "|               | |     |",
+          "+ +-+d+-+-+-+-+ + + +-+ +",
+          "| |     |<    | | |   | |",
+          "+ + + + + + + + + +-+ + +",
+          "| d  T  |     d | |   | |",
+          "+ + + + + + + + + + + + +",
+          "|T|     |     | |T|     |",
+          "+ +-+d+-+-+-+-+ + + + + +",
+          "| |     |     |T|     | |",
+          "+ + + + + + + + +-+ + + +",
+          "| d     |     d |   |   |",
+          "+ + + + + + + + + + + + +",
+          "| |     |     | | | |   |",
+          "+ +-+-+-+-+d+-+ + +-+-+ +",
+          "|>     T        d     | |",
+          "+-+-+-+-+-+-+-+d+ +-+ + +",
+          "|     |         | | |   |",
+          "+ +-+d+ +-+-+ +-+ + +-+-+",
+          "| |     |   |   |   |   |",
+          "+ + +-+-+ +-+-+ + + + +-+",
+          "| |     |     |         |",
+          "+ +-+-+ + + + +-+ + + + +",
+          "|               |       |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+"
         ],
         "links": [
           {
@@ -13676,6 +14792,38 @@
           {
             "x": 3,
             "y": 6
+          },
+          {
+            "x": 5,
+            "y": 10
+          },
+          {
+            "x": 6,
+            "y": 10
+          },
+          {
+            "x": 11,
+            "y": 4
+          },
+          {
+            "x": 11,
+            "y": 3
+          },
+          {
+            "x": 11,
+            "y": 9
+          },
+          {
+            "x": 10,
+            "y": 9
+          },
+          {
+            "x": 3,
+            "y": 8
+          },
+          {
+            "x": 4,
+            "y": 8
           }
         ],
         "secrets": [],
@@ -13757,6 +14905,28 @@
             "effect": {
               "kind": "poison"
             }
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 3
+            },
+            "name": "scything blade",
+            "notice": 11,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 11
+            },
+            "save": "evasion",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 3,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
           }
         ],
         "specials": [
@@ -13833,6 +15003,84 @@
               "y": 6
             },
             "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 11,
+              "y": 1
+            },
+            "loot": [
+              {
+                "count": 3,
+                "sides": 8
+              }
+            ],
+            "guards": [
+              [
+                "clockwork-soldier",
+                "clockwork-soldier",
+                "clockwork-soldier",
+                "clockwork-soldier",
+                "clockwork-soldier",
+                "clockwork-soldier",
+                "clockwork-soldier"
+              ],
+              ["clockwork-servitor", "clockwork-servitor"]
+            ]
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 7,
+              "y": 10
+            },
+            "loot": [
+              {
+                "count": 3,
+                "sides": 8
+              }
+            ]
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 3,
+              "y": 9
+            },
+            "text": "The guardroom's east wing: weapon racks, emptied, and a duty roster kept current to this day."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 5,
+              "y": 10
+            },
+            "text": "A quiet nook, easy to watch. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 11,
+              "y": 4
+            },
+            "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 11,
+              "y": 9
+            },
+            "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 3,
+              "y": 8
+            },
+            "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
           }
         ],
         "captives": [],
@@ -13880,23 +15128,31 @@
         "id": "hm-tower-2",
         "name": "The Tower: Barracks Floor",
         "map": [
-          "+-+-+-+-+-+-+-+-+",
-          "|               |",
-          "+ +-+d+-+-+d+-+ +",
-          "| |     |>    |T|",
-          "+ + + + + + + + +",
-          "| |     d     d |",
-          "+ + + + + + + + +",
-          "| |     |     | |",
-          "+ +-+-+-+-+d+-+ +",
-          "|T|     |     | |",
-          "+ + + + + + + + +",
-          "| |     |     d |",
-          "+ + + + + + + + +",
-          "| |<    |     |T|",
-          "+ +-+d+-+-+-+-+ +",
-          "|        T      |",
-          "+-+-+-+-+-+-+-+-+"
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "|               d       |",
+          "+ +-+d+-+-+d+-+ + +-+ + +",
+          "| |     |>    |T|   | | |",
+          "+ + + + + + + + + + + + +",
+          "| |     d     d |     |T|",
+          "+ + + + + + + + + + + + +",
+          "| |     |     | |     | |",
+          "+ +-+-+-+-+d+-+ + + + + +",
+          "|T|     |     | |   |   |",
+          "+ + + + + + + + + +-+-+-+",
+          "| |     |     d | |     |",
+          "+ + + + + + + + + + +-+ +",
+          "| |<    |     |T|     | |",
+          "+ +-+d+-+-+-+-+ + +-+-+ +",
+          "|        T      | |     |",
+          "+-+-+-+-+-+-+-+d+-+ +-+-+",
+          "| |                 |   |",
+          "+ + +-+-+ + +-+ + + + + +",
+          "|   |               | | |",
+          "+ + + + + + +-+ + + + +-+",
+          "|   | | |   |       |   |",
+          "+ +-+-+ + +-+ + +-+-+ + +",
+          "|       |     |         |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+"
         ],
         "links": [
           {
@@ -13964,6 +15220,38 @@
           {
             "x": 4,
             "y": 4
+          },
+          {
+            "x": 11,
+            "y": 10
+          },
+          {
+            "x": 11,
+            "y": 11
+          },
+          {
+            "x": 2,
+            "y": 11
+          },
+          {
+            "x": 3,
+            "y": 11
+          },
+          {
+            "x": 10,
+            "y": 6
+          },
+          {
+            "x": 9,
+            "y": 6
+          },
+          {
+            "x": 10,
+            "y": 1
+          },
+          {
+            "x": 10,
+            "y": 0
           }
         ],
         "secrets": [],
@@ -14045,6 +15333,29 @@
             "save": null,
             "effect": {
               "kind": "alarm"
+            }
+          },
+          {
+            "at": {
+              "x": 11,
+              "y": 2
+            },
+            "name": "pit to the floor below",
+            "notice": 12,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 12
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 4,
+                "sides": 6,
+                "modifier": 0
+              }
             }
           }
         ],
@@ -14131,6 +15442,85 @@
               "y": 6
             },
             "text": "A quiet nook, easy to watch. A safe place to rest."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 1,
+              "y": 10
+            },
+            "loot": [
+              {
+                "count": 3,
+                "sides": 10
+              }
+            ],
+            "guards": [
+              [
+                "grave-knight",
+                "grave-knight",
+                "grave-knight",
+                "grave-knight",
+                "grave-knight",
+                "grave-knight",
+                "grave-knight",
+                "grave-knight"
+              ],
+              ["ash-walker", "ash-walker"]
+            ]
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 9,
+              "y": 7
+            },
+            "loot": [
+              {
+                "count": 3,
+                "sides": 10
+              }
+            ]
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 10,
+              "y": 9
+            },
+            "text": "More bunks, row on row. The blankets are folded, and the dust on them is undisturbed."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 11,
+              "y": 10
+            },
+            "text": "A quiet nook, easy to watch. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 2,
+              "y": 11
+            },
+            "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 10,
+              "y": 6
+            },
+            "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 10,
+              "y": 1
+            },
+            "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
           }
         ],
         "captives": [],
@@ -14177,23 +15567,31 @@
         "id": "hm-tower-3",
         "name": "The Tower: Hall of Audience",
         "map": [
-          "+-+-+-+-+-+-+-+-+",
-          "|      T       T|",
-          "+ +-+-+d+-+-+-+ +",
-          "| |           | |",
-          "+ + + + + + + + +",
-          "| |        T  | |",
-          "+ + + + + + + + +",
-          "| |    T      dT|",
-          "+ + + + + + + + +",
-          "| |           | |",
-          "+ + + + + + + + +",
-          "| |           | |",
-          "+ +-+d+-+-+d+-+ +",
-          "| d>    |    <| |",
-          "+ +-+-+-+-+-+-+ +",
-          "|               |",
-          "+-+-+-+-+-+-+-+-+"
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "|      T       T|       |",
+          "+ +-+-+d+-+-+-+ + + + + +",
+          "| |           | |       |",
+          "+ + + + + + + + + + + + +",
+          "| |        T  | |       |",
+          "+ + + + + + + + + +-+ +-+",
+          "| |    T      dT|     | |",
+          "+ + + + + + + + + + +-+ +",
+          "| |           | |       |",
+          "+ + + + + + + + + +-+d+ +",
+          "| |           | |     | |",
+          "+ +-+d+-+-+d+-+ + + + + +",
+          "| d>    |    <| |   | | |",
+          "+ +-+-+-+-+-+-+ + + +-+ +",
+          "|               d | |   |",
+          "+-+-+-+-+-+d+-+-+-+ + +-+",
+          "|     |         |       |",
+          "+ + + + + +-+ + + +-+-+ +",
+          "| |   |           |   | |",
+          "+ + +-+ + + + + +-+ + + +",
+          "| | |          T    |   |",
+          "+ + + + + + + +-+-+-+-+-+",
+          "| |                     |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+"
         ],
         "links": [
           {
@@ -14249,6 +15647,38 @@
           {
             "x": 6,
             "y": 5
+          },
+          {
+            "x": 2,
+            "y": 8
+          },
+          {
+            "x": 2,
+            "y": 9
+          },
+          {
+            "x": 10,
+            "y": 2
+          },
+          {
+            "x": 10,
+            "y": 1
+          },
+          {
+            "x": 11,
+            "y": 8
+          },
+          {
+            "x": 11,
+            "y": 9
+          },
+          {
+            "x": 8,
+            "y": 11
+          },
+          {
+            "x": 7,
+            "y": 11
           }
         ],
         "secrets": [],
@@ -14354,6 +15784,29 @@
             "effect": {
               "kind": "alarm"
             }
+          },
+          {
+            "at": {
+              "x": 7,
+              "y": 10
+            },
+            "name": "pit to the floor below",
+            "notice": 13,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 13
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 5,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
           }
         ],
         "specials": [
@@ -14435,6 +15888,83 @@
               "y": 5
             },
             "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 9,
+              "y": 11
+            },
+            "loot": [
+              {
+                "count": 4,
+                "sides": 8
+              }
+            ],
+            "guards": [
+              [
+                "manticore",
+                "manticore",
+                "manticore",
+                "manticore",
+                "manticore",
+                "manticore",
+                "manticore"
+              ]
+            ]
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 1,
+              "y": 8
+            },
+            "loot": [
+              {
+                "count": 4,
+                "sides": 8
+              }
+            ]
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 9,
+              "y": 10
+            },
+            "text": "An antechamber where petitioners waited. The benches are worn hollow."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 2,
+              "y": 8
+            },
+            "text": "A quiet nook, easy to watch. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 10,
+              "y": 2
+            },
+            "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 11,
+              "y": 8
+            },
+            "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 8,
+              "y": 11
+            },
+            "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
           }
         ],
         "captives": [],
@@ -14473,23 +16003,31 @@
         "id": "hm-tower-4",
         "name": "The Tower: The Turning Floor",
         "map": [
-          "+-+-+-+-+-+-+-+-+",
-          "|        T      |",
-          "+ +-+d+-+-+-+-+ +",
-          "| |<    |     | |",
-          "+ + + + + + + + +",
-          "|T|     |     dT|",
-          "+ + + + + + + + +",
-          "| |     |     | |",
-          "+ +-+-+-+-+d+-+ +",
-          "| |     |     | |",
-          "+ + + + + + + + +",
-          "| d     |     d |",
-          "+ + + + + + + + +",
-          "| |     |    >| |",
-          "+ +-+-+-+-+d+-+ +",
-          "|  T       T    |",
-          "+-+-+-+-+-+-+-+-+"
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "|        T      | |   | |",
+          "+ +-+d+-+-+-+-+ + + + + +",
+          "| |<    |     | |       |",
+          "+ + + + + + + + + +-+-+-+",
+          "|T|     |     dTd       |",
+          "+ + + + + + + + +-+ + + +",
+          "| |     |     | | |     |",
+          "+ +-+-+-+-+d+-+ + + + +-+",
+          "| |     |     | |   |   |",
+          "+ + + + + + + + + +-+-+ +",
+          "| d     |     d | |     |",
+          "+ + + + + + + + + + +-+ +",
+          "| |     |    >| |   |   |",
+          "+ +-+-+-+-+d+-+ + +-+ +-+",
+          "|  T       T    |   |   |",
+          "+-+-+-+-+d+-+-+-+ +-+ + +",
+          "| |           |       | |",
+          "+ + + +-+ +-+-+ +-+-+-+ +",
+          "|T  |     |             |",
+          "+ +-+ + + + + + + +-+-+ +",
+          "|                       |",
+          "+ + + + +-+-+-+-+ + + +-+",
+          "|                 |     |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+"
         ],
         "links": [
           {
@@ -14557,6 +16095,18 @@
           {
             "x": 6,
             "y": 4
+          },
+          {
+            "x": 11,
+            "y": 9
+          },
+          {
+            "x": 11,
+            "y": 8
+          },
+          {
+            "x": 0,
+            "y": 8
           }
         ],
         "secrets": [],
@@ -14662,6 +16212,29 @@
             "effect": {
               "kind": "alarm"
             }
+          },
+          {
+            "at": {
+              "x": 0,
+              "y": 9
+            },
+            "name": "pit to the floor below",
+            "notice": 14,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 13
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 5,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
           }
         ],
         "specials": [
@@ -14747,6 +16320,59 @@
               "y": 6
             },
             "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 11,
+              "y": 6
+            },
+            "loot": [
+              {
+                "count": 4,
+                "sides": 10
+              }
+            ],
+            "guards": [
+              ["bone-golem", "bone-golem", "bone-golem", "bone-golem", "bone-golem", "bone-golem"]
+            ]
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 10,
+              "y": 6
+            },
+            "loot": [
+              {
+                "count": 4,
+                "sides": 10
+              }
+            ]
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 8
+            },
+            "text": "The rings turn slower out here, at the edge of the floor, grinding stone on stone."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 11,
+              "y": 9
+            },
+            "text": "A quiet nook, easy to watch. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 0,
+              "y": 8
+            },
+            "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
           }
         ],
         "captives": [],
@@ -14793,23 +16419,31 @@
         "id": "hm-tower-5",
         "name": "The Tower: The Dark Floor",
         "map": [
-          "+-+-+-+-+-+-+-+-+",
-          "|        T      |",
-          "+ +-+d+-+-+d+-+ +",
-          "| |>    |     |T|",
-          "+ + + + + + + + +",
-          "| |     d     d |",
-          "+ + + + + + + + +",
-          "| |     |     |T|",
-          "+ +-+d+-+-+-+-+ +",
-          "| |     |     | |",
-          "+ + + + + + + + +",
-          "| d     |  <  d |",
-          "+ + + + + + + + +",
-          "|T|     |     | |",
-          "+ +-+-+-+-+-+-+ +",
-          "|      T        |",
-          "+-+-+-+-+-+-+-+-+"
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "|        T      |       |",
+          "+ +-+d+-+-+d+-+ + + + + +",
+          "| |>    |     |T|   |   |",
+          "+ + + + + + + + + + + +-+",
+          "| |     d     d |   |   |",
+          "+ + + + + + + + + + +d+-+",
+          "| |     |     |T| |    T|",
+          "+ +-+d+-+-+-+-+ + +-+-+ +",
+          "| |     |     | | |     |",
+          "+ + + + + + + + +-+ +-+ +",
+          "| d     |  <  d d   | d |",
+          "+ + + + + + + + + +-+ + +",
+          "|T|     |     | |   | | |",
+          "+ +-+-+-+-+-+-+ + + + + +",
+          "|      T        | | | | |",
+          "+-+-+-+-+-+-+d+-+-+ + + +",
+          "|   |   |           |   |",
+          "+ +-+ + + +-+-+ + + + +-+",
+          "| |   |   |   |         |",
+          "+ + + +-+-+ + +-+ + + + +",
+          "| |       | |   |       |",
+          "+ +-+-+ + +-+ + +-+ +-+ +",
+          "|             |         |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+"
         ],
         "links": [
           {
@@ -14877,6 +16511,38 @@
           {
             "x": 1,
             "y": 6
+          },
+          {
+            "x": 0,
+            "y": 10
+          },
+          {
+            "x": 0,
+            "y": 9
+          },
+          {
+            "x": 8,
+            "y": 0
+          },
+          {
+            "x": 9,
+            "y": 0
+          },
+          {
+            "x": 8,
+            "y": 10
+          },
+          {
+            "x": 8,
+            "y": 9
+          },
+          {
+            "x": 6,
+            "y": 11
+          },
+          {
+            "x": 6,
+            "y": 10
           }
         ],
         "secrets": [],
@@ -14982,6 +16648,29 @@
             "effect": {
               "kind": "alarm"
             }
+          },
+          {
+            "at": {
+              "x": 11,
+              "y": 3
+            },
+            "name": "pit to the floor below",
+            "notice": 15,
+            "disarm": {
+              "skill": "sneak",
+              "attributes": ["dex"],
+              "difficulty": 14
+            },
+            "save": "evasion",
+            "element": "earth",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 6,
+                "sides": 6,
+                "modifier": 0
+              }
+            }
           }
         ],
         "specials": [
@@ -15080,6 +16769,73 @@
               "y": 6
             },
             "text": "A quiet nook, easy to watch. A safe place to rest."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 0,
+              "y": 11
+            },
+            "loot": [
+              {
+                "count": 5,
+                "sides": 10
+              }
+            ],
+            "guards": [["iron-golem", "iron-golem", "war-engine", "war-engine"]]
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 3,
+              "y": 11
+            },
+            "loot": [
+              {
+                "count": 5,
+                "sides": 10
+              }
+            ]
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 10,
+              "y": 6
+            },
+            "text": "The dark presses close in this wing. Even lamplight seems to go a shorter way."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 0,
+              "y": 10
+            },
+            "text": "A quiet nook, easy to watch. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 8,
+              "y": 0
+            },
+            "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 8,
+              "y": 10
+            },
+            "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 6,
+              "y": 11
+            },
+            "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
           }
         ],
         "captives": [],
@@ -15118,23 +16874,31 @@
         "id": "hm-tower-6",
         "name": "The Tower: The Warden's Crown",
         "map": [
-          "+-+-+-+-+-+-+-+-+",
-          "|T             T|",
-          "+ +-+-+-+-+-+-+ +",
-          "| |           | |",
-          "+ + + + + + + + +",
-          "| |           | |",
-          "+ + + + + + + + +",
-          "| |           d |",
-          "+ + + + + + + + +",
-          "| |           | |",
-          "+ + + + + + + + +",
-          "| |           | |",
-          "+ +-+-+-+-+-+-+ +",
-          "| d        >  dT|",
-          "+ +-+-+-+-+-+-+ +",
-          "|T       T      |",
-          "+-+-+-+-+-+-+-+-+"
+          "+-+-+-+-+-+-+-+-+-+-+-+-+",
+          "|T             Td       |",
+          "+ +-+-+-+-+-+-+ + + + + +",
+          "| |           | | |     |",
+          "+ + + + + + + + + + + + +",
+          "| |           | | |     |",
+          "+ + + + + + + + + + + + +",
+          "| |           d |       |",
+          "+ + + + + + + + + + + + +",
+          "| |           | | |     |",
+          "+ + + + + + + + + + +-+-+",
+          "| |           | |T      |",
+          "+ +-+-+-+-+-+-+ + +-+-+ +",
+          "| d        >  dT| |     |",
+          "+ +-+-+-+-+-+-+ +-+ +-+ +",
+          "|T       T      |   | | |",
+          "+-+-+-+-+-+-+d+-+ +-+ + +",
+          "|                 |     |",
+          "+ + +-+ + + +-+-+ + +-+-+",
+          "|   |         |     |   |",
+          "+ + + + + + +-+ + + + + +",
+          "|             |       | |",
+          "+-+-+ + + +-+ + + +-+ + +",
+          "|                 |     |",
+          "+-+-+-+-+-+-+-+-+-+-+-+-+"
         ],
         "links": [
           {
@@ -15179,6 +16943,30 @@
           },
           {
             "x": 0,
+            "y": 4
+          },
+          {
+            "x": 9,
+            "y": 11
+          },
+          {
+            "x": 10,
+            "y": 11
+          },
+          {
+            "x": 2,
+            "y": 9
+          },
+          {
+            "x": 3,
+            "y": 9
+          },
+          {
+            "x": 9,
+            "y": 5
+          },
+          {
+            "x": 9,
             "y": 4
           }
         ],
@@ -15285,6 +17073,28 @@
             "effect": {
               "kind": "alarm"
             }
+          },
+          {
+            "at": {
+              "x": 8,
+              "y": 5
+            },
+            "name": "scything blade",
+            "notice": 15,
+            "disarm": {
+              "skill": "craft",
+              "attributes": ["int", "dex"],
+              "difficulty": 15
+            },
+            "save": "evasion",
+            "effect": {
+              "kind": "damage",
+              "dice": {
+                "count": 5,
+                "sides": 8,
+                "modifier": 0
+              }
+            }
           }
         ],
         "specials": [
@@ -15341,6 +17151,76 @@
               "y": 4
             },
             "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 6,
+              "y": 11
+            },
+            "loot": [
+              {
+                "count": 6,
+                "sides": 10
+              },
+              {
+                "count": 2,
+                "sides": 12
+              }
+            ],
+            "guards": [
+              ["master-vampire", "bone-golem", "bone-golem", "bone-golem", "bone-golem"],
+              ["old-barrow-archmage", "old-barrow-archmage"]
+            ]
+          },
+          {
+            "kind": "cache",
+            "at": {
+              "x": 8,
+              "y": 4
+            },
+            "loot": [
+              {
+                "count": 6,
+                "sides": 10
+              },
+              {
+                "count": 2,
+                "sides": 12
+              }
+            ]
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 10,
+              "y": 2
+            },
+            "text": "The Warden's private rooms: a narrow cot, a desk, and the vale's seal-orders pinned above it."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 9,
+              "y": 11
+            },
+            "text": "A quiet nook, easy to watch. A safe place to rest."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 2,
+              "y": 9
+            },
+            "text": "A dry corner with one way in, out of the wind and the water. The party could rest here."
+          },
+          {
+            "kind": "message",
+            "at": {
+              "x": 9,
+              "y": 5
+            },
+            "text": "The door bars from inside, and nothing has scratched at it in a long while. A place to camp."
           }
         ],
         "captives": [],

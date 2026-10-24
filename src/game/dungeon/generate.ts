@@ -2,7 +2,8 @@
 // Phase 12e). A ruin's levels come from its own seed, drawn from the world's RNG, so the same seed
 // always gives the same dungeon. Delves go down level by level and towers climb floor by floor:
 // mazes with a few loops and rooms, stairs to the farthest cell, traps that grow denser level by
-// level, small loot caches, and a guarded vault at the far end. Cities are in city.ts.
+// level, small loot caches, one or two caches held by a band of the vault's guards, and a guarded
+// vault at the far end. Cities are in city.ts.
 import type { Dungeon, DungeonLevel, Facing, Ruin } from '../../data/schemas/index.ts';
 import { createRng, type Rng } from '../../rules/rng.ts';
 import { generateCity } from './city.ts';
@@ -13,6 +14,7 @@ import {
   decorate,
   distances,
   emptyLevel,
+  guardedCaches,
   maze,
   openFacing,
   render,
@@ -47,9 +49,10 @@ function buildLevel(rng: Rng, ruin: Ruin, index: number): Built {
   if (!last) glyphs.set(far, tower ? '<' : '>');
   // Traps and caches go on cells away from the stairs and the vault.
   const free = [...dist.keys()].filter((k) => k !== cellKey(arrive) && k !== far);
-  const traps = Array.from({ length: index + 1 }, () => trapAt(rng, takeCell(rng, free), index));
+  const traps = Array.from({ length: index + 2 }, () => trapAt(rng, takeCell(rng, free), index));
   for (const t of traps) glyphs.set(cellKey(t.at), 'T');
   const specials = Array.from({ length: rng.int(1, 2) }, () => cacheAt(ruin, takeCell(rng, free)));
+  specials.push(...guardedCaches(rng, ruin, free));
   if (last) specials.push(vaultAt(ruin, onward));
   const word = tower ? 'floor' : 'level';
   const level = emptyLevel(

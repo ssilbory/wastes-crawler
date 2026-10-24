@@ -94,7 +94,7 @@ export function LevelEditor(props: {
           <input
             type="number"
             min="1"
-            max="30"
+            max="60"
             value={size.w}
             onInput={(e) => setSize({ ...size, w: Number((e.target as HTMLInputElement).value) })}
           />
@@ -104,7 +104,7 @@ export function LevelEditor(props: {
           <input
             type="number"
             min="1"
-            max="30"
+            max="60"
             value={size.h}
             onInput={(e) => setSize({ ...size, h: Number((e.target as HTMLInputElement).value) })}
           />
