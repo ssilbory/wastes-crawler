@@ -63,6 +63,7 @@
     "hunt": null,
     "water": false,
     "harsh": true,
+    "treeless": true,
     "encounters": "mountains"
   },
   {
@@ -89,6 +90,7 @@
     "hunt": 12,
     "water": false,
     "harsh": true,
+    "dry": true,
     "encounters": "badlands"
   },
   {
@@ -133,6 +135,8 @@
     "hunt": 12,
     "water": false,
     "harsh": true,
+    "dry": true,
+    "treeless": true,
     "encounters": "badlands"
   },
   {
@@ -144,6 +148,8 @@
     "hunt": null,
     "water": false,
     "harsh": true,
+    "dry": true,
+    "treeless": true,
     "encounters": "badlands"
   },
   {
@@ -155,6 +161,8 @@
     "hunt": null,
     "water": false,
     "harsh": true,
+    "dry": true,
+    "treeless": true,
     "encounters": "badlands"
   },
   {

@@ -66,6 +66,11 @@ export function gatherFirewood(
   const best = bestAt(data, gatherers, 'survive', ['wis']);
   if (!best) return false;
   const name = best.character.name;
+  // Treeless land has nothing to burn (Sam's call: Water and fuel); no one wanders off for it.
+  if (regionMap(data, w.region).terrainAt(w.position).treeless) {
+    note(w, `${name} finds no wood in this treeless land.`);
+    return false;
+  }
   if (!memberCheck(w, data, best, 'survive', ['wis'], difficulty).success) {
     note(w, `${name} finds nothing to burn.`);
     return true;

@@ -165,6 +165,17 @@ export const EquipmentRulesSchema = z.strictObject({
   /** SRD 1.7.7: 3d6 x 10 silver, paid in crowns. */
   startingCrowns: z.strictObject({ dice: DiceSchema, multiplier: z.int().min(1) }),
   /** Stowed items each loot die and each component in the party stash weighs (Party stash). */
-  stash: z.strictObject({ lootDie: z.number().min(0), component: z.number().min(0) }),
+  stash: z.strictObject({
+    lootDie: z.number().min(0),
+    component: z.number().min(0),
+    /** What the rations die weighs at each size (Sam's call: Water and fuel). */
+    rations: z.strictObject({
+      '4': z.number().min(0),
+      '6': z.number().min(0),
+      '8': z.number().min(0),
+      '10': z.number().min(0),
+      '12': z.number().min(0),
+    }),
+  }),
 });
 export type EquipmentRules = z.infer<typeof EquipmentRulesSchema>;

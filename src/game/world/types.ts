@@ -35,6 +35,7 @@ export interface Member {
   dead: boolean;
   frail: boolean;
   hungry: boolean;
+  thirsty: boolean;
   sleepless: boolean;
   cold: boolean;
   slept: boolean;
@@ -76,6 +77,9 @@ export interface World {
   /** Hexes shown on the trade-route maps bought, by region. */
   routes: Record<string, string[]>;
   rations: ResourceDie;
+  /** The water die, and whether today was spent partly in dry land (water.ts). */
+  water: ResourceDie;
+  dryDay: boolean;
   hikes: number;
   camp: WorldSave['camp'];
   noRecovery: boolean;

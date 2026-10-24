@@ -247,4 +247,17 @@ export const WORLD_MIGRATIONS: Migrations = {
       done: [],
     },
   }),
+  // Version 45 adds water (Sam's call: Water and fuel): a full water die, and no one Thirsty.
+  44: (raw) => {
+    const dry = (list: unknown) =>
+      Array.isArray(list) ? (list as Raw[]).map((m) => ({ ...m, thirsty: false })) : list;
+    return {
+      ...raw,
+      schemaVersion: 45,
+      water: 12,
+      dryDay: false,
+      members: dry(raw.members),
+      benched: dry(raw.benched),
+    };
+  },
 };

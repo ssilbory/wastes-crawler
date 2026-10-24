@@ -23,11 +23,12 @@ export interface PartyLoad {
 
 const count = (r: Record<string, number>) => Object.values(r).reduce((a, b) => a + b, 0);
 
-/** The stash's weight: loot dice and components at their content weights. */
+/** The stash's weight: loot dice, components, and the rations die at their content weights. */
 export function stashWeight(w: World, data: GameData): number {
-  const { lootDie, component } = data.content.equipmentRules.stash;
+  const { lootDie, component, rations } = data.content.equipmentRules.stash;
   const dice = w.loot.reduce((sum, d) => sum + d.count, 0);
-  return dice * lootDie + count(w.components) * component;
+  const food = w.rations === 0 ? 0 : rations[`${w.rations}`];
+  return dice * lootDie + count(w.components) * component + food;
 }
 
 /** A member's own load, from their gear alone. */

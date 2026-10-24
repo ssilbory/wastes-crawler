@@ -24,6 +24,7 @@ import { regionMap } from './region.ts';
 import type { Member, World } from './types.ts';
 import { wipe } from './town.ts';
 import { purifiedNeeds, purifyBodies } from './vowed-arts.ts';
+import { drinkForDay } from './water.ts';
 
 /**
  * `waystation`: a coach's night stop, with meals and shelter like a town (Phase 6d).
@@ -43,6 +44,8 @@ export function endOfDay(w: World, data: GameData, waystation = false): boolean 
     if (!use.available) note(w, 'There is nothing left to eat.');
     w.rations = use.die;
   }
+  // A day partly in dry land drinks from the water die (Sam's call: Water and fuel).
+  const thirsty = drinkForDay(w, data, inTown);
   const sheltered = inTown || w.camp === 'made';
   const physician = firstPhysician(w, data);
   const outdoors = !sheltered && !w.dungeon;
@@ -60,7 +63,8 @@ export function endOfDay(w: World, data: GameData, waystation = false): boolean 
   const wanted = alive(w).some(
     (m) =>
       !m.reviving &&
-      ((harsh && exposedToCold(w, data, m)) || (!w.noRecovery && !hungry(m) && !sleepless(m))),
+      ((harsh && exposedToCold(w, data, m)) ||
+        (!w.noRecovery && !hungry(m) && !thirsty && !sleepless(m))),
   );
   const fire = outdoors && wanted ? burnFirewood(w, data) : null;
   if (fire) note(w, `${fire} builds a fire from a night's firewood.`);
@@ -72,11 +76,15 @@ export function endOfDay(w: World, data: GameData, waystation = false): boolean 
   // The revived sleep the night through, untouched by hunger, cold, or rest (Phase 14d).
   for (const m of alive(w).filter((x) => !x.reviving)) {
     m.hungry = hungry(m);
+    m.thirsty = thirsty;
     m.sleepless = sleepless(m);
     m.cold = cold && exposedToCold(w, data, m);
-    const conditions = [m.hungry && 'Hungry', m.sleepless && 'Sleepless', m.cold && 'Cold'].filter(
-      Boolean,
-    );
+    const conditions = [
+      m.hungry && 'Hungry',
+      m.thirsty && 'Thirsty',
+      m.sleepless && 'Sleepless',
+      m.cold && 'Cold',
+    ].filter(Boolean);
     if (conditions.length > 0) {
       note(w, `${m.character.name} is ${conditions.join(', ')}.`);
       addMemberStrain(w, data, m, 1, 'condition');

@@ -56,6 +56,8 @@ export function newWorld(
     elsewhere: {},
     routes: {},
     rations: FULL_RATIONS,
+    water: FULL_RATIONS,
+    dryDay: false,
     hikes: 0,
     camp: 'none',
     noRecovery: false,
