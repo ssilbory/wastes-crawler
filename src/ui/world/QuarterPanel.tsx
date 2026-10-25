@@ -48,6 +48,8 @@ export function QuarterPanel(props: {
   guides: Choice[];
   plan: QuarterPlan;
   canHike: boolean;
+  /** Space plays the quarter out too: a hex is targeted (MapScreen.tsx). */
+  spacePlays?: boolean;
   /** No quest is under way: say where to find one. */
   noQuests?: boolean;
   onPlan: (plan: QuarterPlan) => void;
@@ -62,7 +64,12 @@ export function QuarterPanel(props: {
       <div class="quarter-head">
         <h2>This quarter</h2>
         {/* Up top so it never moves as the plan below grows or shrinks. */}
-        <button type="button" class="create" aria-keyshortcuts="Q" onClick={props.onPass}>
+        <button
+          type="button"
+          class="create"
+          aria-keyshortcuts={props.spacePlays ? 'Q Space' : 'Q'}
+          onClick={props.onPass}
+        >
           {plan.kind === 'hike' ? 'Hike' : 'Camp'} for the quarter
         </button>
       </div>

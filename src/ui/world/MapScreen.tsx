@@ -97,16 +97,27 @@ export function MapScreen(props: {
   const here = town?.name ?? map.terrainAt(w.position).name;
   const way = wayDownHere(w, data);
   const road = map.exitAt(w.position);
-  // H and C pick the plan, Q plays the quarter out, T visits the town, and Space visits the town or
-  // goes down the way here: only while the quarter's plan is on show, so never over an encounter
-  // or on a coach.
+  // H and C pick the plan, Q plays the quarter out, T visits the town. Space plays the quarter out
+  // toward a targeted hex, hiking or camping as planned (Sam's call); with no hex targeted, it
+  // visits the town or goes down the way here. Only while the quarter's plan is on show, so never
+  // over an encounter or on a coach.
   const planning = !w.encounter && !w.coach;
+  const pass = () => props.onPass(current);
+  const targeted = w.destination !== null;
   useKeys({
-    h: planning && w.destination !== null ? hike : undefined,
+    h: planning && targeted ? hike : undefined,
     c: planning ? camp : undefined,
-    q: planning ? () => props.onPass(current) : undefined,
+    q: planning ? pass : undefined,
     t: planning && town ? props.onTown : undefined,
-    ' ': planning && town ? props.onTown : planning && way ? props.onEnter : undefined,
+    ' ': !planning
+      ? undefined
+      : targeted
+        ? pass
+        : town
+          ? props.onTown
+          : way
+            ? props.onEnter
+            : undefined,
   });
   return (
     <div class="world map-screen">
@@ -124,14 +135,18 @@ export function MapScreen(props: {
         </div>
         <span class="bar-actions">
           {town && !w.encounter && !w.coach && (
-            <button type="button" aria-keyshortcuts="T Space" onClick={props.onTown}>
+            <button
+              type="button"
+              aria-keyshortcuts={targeted ? 'T' : 'T Space'}
+              onClick={props.onTown}
+            >
               Visit {town.name}
             </button>
           )}
           {way && !w.encounter && !w.coach && (
             <button
               type="button"
-              aria-keyshortcuts={town ? undefined : 'Space'}
+              aria-keyshortcuts={town || targeted ? undefined : 'Space'}
               onClick={props.onEnter}
             >
               Enter {way.name}
@@ -195,7 +210,8 @@ export function MapScreen(props: {
               onPlan={choose}
               onHike={hike}
               onCamp={camp}
-              onPass={() => props.onPass(current)}
+              onPass={pass}
+              spacePlays={targeted}
             />
           )}
           {/* Quests, then the party, then the panels of powers and places (Sam's call: one column). */}
