@@ -99,6 +99,12 @@ function WorldScreens(props: {
       props.track(now, fresh === true);
       // A trap's fallen are tended at once, as after a won fight (trap-falls.ts).
       if (trapFallen(now).length > 0) setFight((f) => f ?? tending(now));
+      // A fallen party is lost (town.ts, wipe): the town's tavern is where a new one is gathered,
+      // and the town stays open while it is.
+      if (now.members.length === 0) {
+        setScreen('town');
+        setTownTab('tavern');
+      }
     }
     setVersion((v) => v + 1);
   };
@@ -250,7 +256,7 @@ function WorldScreens(props: {
         onExport={exportSave}
       />
     );
-  if (screen === 'town')
+  if (screen === 'town' || w.members.length === 0)
     return (
       <TownScreen
         world={w}

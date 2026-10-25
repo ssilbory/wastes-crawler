@@ -60,8 +60,16 @@ export function TavernTab(props: { world: World; roster: RosterEntry[]; act: Act
       <section class="panel" aria-label="New faces">
         <h2>New faces</h2>
         <p class="hint">
-          Roster characters new to this world join with {catchUpXp(w)} XP, the lowest in the world,
+          {w.members.length + w.benched.length === 0
+            ? 'Roster characters join as they were made'
+            : `Roster characters new to this world join with ${catchUpXp(w)} XP, the lowest in the world,`}{' '}
           and add their crowns to the purse.
+        </p>
+        <p>
+          {/* The builder's character list offers the way back (CharactersApp.tsx). */}
+          <button type="button" class="create" onClick={() => (location.hash = '#/builder/new')}>
+            Make a new character
+          </button>
         </p>
         {newcomers.length === 0 && <p class="hint">Everyone in the roster is already here.</p>}
         <ul class="tavern-list">
@@ -80,6 +88,13 @@ export function TavernTab(props: { world: World; roster: RosterEntry[]; act: Act
           ))}
         </ul>
       </section>
+      {w.lost.length > 0 && (
+        <section class="panel" aria-label="Lost">
+          <h2>Lost</h2>
+          <p class="hint">Fallen with their party, and gone for good.</p>
+          <p>{w.lost.map((l) => l.name).join(', ')}</p>
+        </section>
+      )}
       <section class="panel" aria-label="Hirelings">
         <h2>
           Hirelings ({w.npcs.length}/{MAX_NPCS} NPC slots)

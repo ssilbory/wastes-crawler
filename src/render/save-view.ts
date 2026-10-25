@@ -16,7 +16,8 @@ export function slotSummary(text: string | null, data: GameData): string {
   const where = w.dungeon
     ? dungeonOf(data, w.dungeon.dungeon).name
     : (site?.name ?? `the wilds at ${w.position.col},${w.position.row}`);
-  const names = w.members.map((m) => m.character.name).join(', ');
+  // A fallen party leaves no one until a new one is gathered (town.ts, wipe).
+  const names = w.members.map((m) => m.character.name).join(', ') || 'no party';
   const name = w.map?.name ?? data.content.realms.find((r) => r.id === w.realm)?.name;
   const world = name ? ` · ${name}` : '';
   return `${describeDate(data.content.overlandRules, w.day, w.quarter)}${world} · ${where} · ${names}`;

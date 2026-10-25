@@ -181,9 +181,12 @@ export function exchangeLoot(
 ): { rolled: number; paid: number } {
   const town = townHere(w, data);
   const held = (sides: number) => w.loot.find((d) => d.sides === sides)?.count ?? 0;
-  const sold = selling
+  // One entry per die size, so a size listed twice can't sell more dice than are carried.
+  const asked = new Map<number, number>();
+  for (const d of selling) asked.set(d.sides, (asked.get(d.sides) ?? 0) + d.count);
+  const sold = [...asked]
     // Only whole dice are sold, never more than are carried.
-    .map((d) => ({ sides: d.sides, count: Math.min(Math.floor(d.count), held(d.sides)) }))
+    .map(([sides, count]) => ({ sides, count: Math.min(Math.floor(count), held(sides)) }))
     .filter((d) => d.count > 0);
   if (sold.length === 0) return { rolled: 0, paid: 0 };
   const rules = data.content.townRules;

@@ -50,13 +50,18 @@ export function rejoin(w: World, data: GameData, id: string): TownResult {
 
 const everyone = (w: World): Member[] => [...w.members, ...w.benched];
 
-/** True if this roster character is already somewhere in the world. */
+/** True if this roster character is already somewhere in the world, or was lost in it. */
 export const inWorld = (w: World, characterId: string) =>
-  everyone(w).some((m) => m.character.id === characterId);
+  everyone(w).some((m) => m.character.id === characterId) ||
+  w.lost.some((l) => l.id === characterId);
 
-/** The XP a newcomer starts with: the lowest of any PC in the world. */
+/**
+ * The XP a newcomer starts with: the lowest of any PC in the world, or none when a fallen party
+ * left no one, so a new party starts as it was made.
+ */
 export function catchUpXp(w: World): number {
-  return Math.min(...everyone(w).map((m) => m.character.xp));
+  const pcs = everyone(w);
+  return pcs.length === 0 ? 0 : Math.min(...pcs.map((m) => m.character.xp));
 }
 
 /** A roster character joins; their crowns go to the purse and their XP catches up. */
@@ -68,6 +73,8 @@ export function recruit(
 ): TownResult {
   const slot = room(w, data);
   if ('ok' in slot) return slot;
+  if (w.lost.some((l) => l.id === character.id))
+    return no(`${character.name} was lost when the party fell, and can't come back.`);
   if (inWorld(w, character.id)) return no(`${character.name} is already in this world.`);
   const xp = Math.max(character.xp, catchUpXp(w));
   const ids = new Set(everyone(w).map((m) => m.id));

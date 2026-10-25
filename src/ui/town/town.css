@@ -98,3 +98,8 @@ label.check {
 .panel select {
   max-width: 100%;
 }
+
+/* The fallen party's notice above the town tabs (TownScreen.tsx). */
+.party-lost {
+  margin: 0 14px;
+}

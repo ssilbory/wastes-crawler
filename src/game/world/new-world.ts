@@ -62,6 +62,7 @@ export function newWorld(
     lastTown: map.start.id,
     members: party.map((p, i) => newMember(`m-${i}`, p)),
     benched: [],
+    lost: [],
     npcs: [],
     mounts: [],
     coach: null,

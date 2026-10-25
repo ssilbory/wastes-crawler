@@ -8,7 +8,7 @@ import { RegionSchema } from './overland-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 43;
+export const WORLD_SCHEMA_VERSION = 44;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -340,13 +340,16 @@ export const WorldSaveSchema = z.strictObject({
   /** A camp mishap ruined tonight's rest. */
   noRecovery: z.boolean(),
   lastTown: IdSchema,
-  members: z.array(MemberSaveSchema).min(1).max(8),
+  /** Empty only after the party fell, until a new one is recruited (Sam's call). */
+  members: z.array(MemberSaveSchema).max(8),
   /** Hirelings and captives in the NPC slots. */
   npcs: z.array(NpcSaveSchema).max(2),
   /** Riding and war mounts, outside the NPC slots. */
   mounts: z.array(MountSaveSchema),
   /** PCs left at a tavern; any tavern can bring them back. */
   benched: z.array(MemberSaveSchema),
+  /** PCs lost when the party fell, by character id: never to rejoin this world. */
+  lost: z.array(z.strictObject({ id: z.string(), name: z.string() })),
   /** The party's pooled crowns. */
   purse: z.number().min(0),
   /** Loot dice carried unrolled, one entry per die size. */
