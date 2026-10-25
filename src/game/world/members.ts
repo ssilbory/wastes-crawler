@@ -125,7 +125,7 @@ export function restQuarter(m: Member): void {
 
 /** Strain recovered by rest, none while Hungry, Sleepless, or Cold. */
 export function easeStrain(m: Member, amount: number): void {
-  if (m.hungry || m.sleepless || m.cold) return;
+  if (m.hungry || m.thirsty || m.sleepless || m.cold) return;
   const s = m.character.strain;
   m.character = { ...m.character, strain: { ...s, value: Math.max(0, s.value - amount) } };
 }
@@ -171,6 +171,7 @@ export function newMember(
     dead: false,
     frail: false,
     hungry: false,
+    thirsty: false,
     sleepless: false,
     cold: false,
     slept: false,

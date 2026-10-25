@@ -309,6 +309,8 @@ describe('building mods (SRD 2.8.2)', () => {
 
   it('strips a mod in a day, giving its components back', () => {
     const w = stocked();
+    // The stocked party has no room to spare, so the food stays behind.
+    w.rations = 0;
     const s = snag(w);
     s.character = {
       ...s.character,

@@ -56,6 +56,8 @@ export function newWorld(
     elsewhere: {},
     routes: {},
     rations: FULL_RATIONS,
+    water: FULL_RATIONS,
+    dryDay: false,
     hikes: 0,
     camp: 'none',
     noRecovery: false,
@@ -88,6 +90,8 @@ export function newWorld(
     hireBans: {},
     ruins: {},
     caches: [],
+    // Read from the stream's state, not drawn from it, so nothing else the seed decides moves.
+    sites: { seed: ((rng.state()[0] >>> 0) % 2147483646) + 1, found: [], done: [] },
     rumors: [],
     ordersEnded: [],
     authority: [],

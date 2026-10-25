@@ -11,6 +11,7 @@ import { rngFromState } from '../../rules/rng.ts';
 import type { ResourceDie } from '../../rules/resource-die.ts';
 import type { GameData } from '../character/context.ts';
 import { importCharacter, type Raw } from '../character/io.ts';
+import { ruinOfDungeon } from '../dungeon/hidden-ruins.ts';
 import { note } from './members.ts';
 import { WORLD_MIGRATIONS } from './save-migrations.ts';
 import type { Member, World } from './types.ts';
@@ -34,6 +35,8 @@ export function serializeWorld(w: World): string {
     elsewhere: w.elsewhere,
     routes: w.routes,
     rations: w.rations,
+    water: w.water,
+    dryDay: w.dryDay,
     hikes: w.hikes,
     camp: w.camp,
     noRecovery: w.noRecovery,
@@ -71,6 +74,7 @@ export function serializeWorld(w: World): string {
     hireBans: w.hireBans,
     ruins: w.ruins,
     caches: w.caches,
+    sites: w.sites,
     rumors: w.rumors,
     ordersEnded: w.ordersEnded,
     authority: w.authority,
@@ -125,7 +129,7 @@ function members(saved: WorldSave['members'], data: GameData, errors: string[]):
  */
 function standsIn(s: DungeonState, data: GameData): boolean {
   const d = data.content.dungeons.find((x) => x.id === s.dungeon);
-  if (!d) return data.content.ruins.some((r) => s.dungeon.startsWith(`${r.id}-v`));
+  if (!d) return ruinOfDungeon(data, s.dungeon) !== undefined;
   const level = d.levels.find((l) => l.id === s.level);
   const parsed = level ? parseLevelMap(level.map) : null;
   return parsed?.ok === true && parsed.map.inBounds(s.at);
@@ -200,6 +204,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
     hireBans: s.hireBans,
     ruins: s.ruins,
     caches: s.caches,
+    sites: s.sites,
     rumors: s.rumors,
     ordersEnded: s.ordersEnded,
     authority: s.authority,
@@ -223,6 +228,8 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
     elsewhere: s.elsewhere,
     routes: s.routes,
     rations: s.rations as ResourceDie,
+    water: s.water as ResourceDie,
+    dryDay: s.dryDay,
     members: party,
     benched,
     lost: s.lost,

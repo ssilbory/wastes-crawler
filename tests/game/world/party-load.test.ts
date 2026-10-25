@@ -16,7 +16,14 @@ import { addLoot } from '../../../src/game/world/shop.ts';
 import { winnings } from '../../../src/game/world/winnings.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
-import { data, member, world } from './helpers.ts';
+import { data, member, world as stocked } from './helpers.ts';
+
+/** A world with no food on hand, so the stash weighs only what each test puts in it. */
+function world(faces?: number[]): World {
+  const w = stocked(faces);
+  w.rations = 0;
+  return w;
+}
 
 const own = (m: Member) => memberSheet(data, m).equipment.load;
 const room = (m: Member) => own(m).stowedLimit - own(m).stowed;
@@ -34,6 +41,21 @@ describe('the party stash’s weight (docs/rules-adaptation.md, Party stash)', (
     w.components = { 'beast-hide': 2, ironwood: 1 };
     expect(stashWeight(w, data)).toBe(4.5);
     expect(partyLoad(w, data)).toMatchObject({ weight: 4.5, overflow: 0 });
+  });
+
+  it('carries the rations die by its size (Sam’s call: Water and fuel)', () => {
+    const w = world();
+    for (const [die, weight] of [
+      [12, 4],
+      [10, 3],
+      [8, 2],
+      [6, 1],
+      [4, 1],
+      [0, 0],
+    ] as const) {
+      w.rations = die;
+      expect(stashWeight(w, data)).toBe(weight);
+    }
   });
 
   it('fills porters and mounts first, then the PCs with the most room', () => {

@@ -43,6 +43,7 @@ export function editorHexCells(
         dungeon: here.length > 0 ? here.join(', ') : null,
         exit: map.exitAt(h)?.name ?? null,
         grove: null,
+        lair: null,
       });
     }
   return cells;

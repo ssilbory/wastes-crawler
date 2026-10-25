@@ -83,8 +83,10 @@ export function suggestPlan(w: World, data: GameData, prefer?: QuarterPlan['kind
     if (w.camp !== 'made') set(leader, 'make-camp');
     const watcher = watch(others(party, leader)) ?? leader;
     set(watcher, 'watch');
-    // Outdoors with no wood packed, someone looks for some in case the camp fails (Sam's call).
-    if (!w.dungeon && w.camp !== 'made' && !carriesFirewood(w, data))
+    // Outdoors with no wood packed, someone looks for some in case the camp fails (Sam's call),
+    // unless the land is treeless (Water and fuel).
+    const wood = !regionMap(data, w.region).terrainAt(w.position).treeless;
+    if (!w.dungeon && wood && w.camp !== 'made' && !carriesFirewood(w, data))
       set(bestAt(data, others(free, leader, watcher), 'survive', ['wis']), 'firewood');
   } else {
     // Food comes first for those with Survival, so the watch goes to someone without it if it can.
