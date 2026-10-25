@@ -238,13 +238,37 @@ export const WORLD_MIGRATIONS: Migrations = {
   }),
   // Version 44 makes a fallen party's PCs lost for good (Sam's call): none lost yet.
   43: (raw) => ({ ...raw, schemaVersion: 44, lost: [] }),
-  // Version 45 adds Die Hard's daily escape from a felling blow: no one has used it yet.
-  44: (raw) => {
+  // Version 45 adds hidden sites, placed by a seed from the saved stream's state: none found yet.
+  44: (raw) => ({
+    ...raw,
+    schemaVersion: 45,
+    sites: {
+      // A damaged save without a stream fails its own checks later; it needs only some seed here.
+      seed: ((Number((raw.rng as unknown[] | undefined)?.[0]) >>> 0) % 2147483646) + 1,
+      found: [],
+      done: [],
+    },
+  }),
+  // Version 46 adds water (Sam's call: Water and fuel): a full water die, and no one Thirsty.
+  45: (raw) => {
+    const dry = (list: unknown) =>
+      Array.isArray(list) ? (list as Raw[]).map((m) => ({ ...m, thirsty: false })) : list;
+    return {
+      ...raw,
+      schemaVersion: 46,
+      water: 12,
+      dryDay: false,
+      members: dry(raw.members),
+      benched: dry(raw.benched),
+    };
+  },
+  // Version 47 adds Die Hard's daily escape from a felling blow: no one has used it yet.
+  46: (raw) => {
     const fresh = (list: unknown) =>
       Array.isArray(list) ? (list as Raw[]).map((m) => ({ ...m, lastStandDay: null })) : list;
     return {
       ...raw,
-      schemaVersion: 45,
+      schemaVersion: 47,
       members: fresh(raw.members),
       benched: fresh(raw.benched),
     };

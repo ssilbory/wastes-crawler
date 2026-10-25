@@ -35,6 +35,7 @@ export interface Member {
   dead: boolean;
   frail: boolean;
   hungry: boolean;
+  thirsty: boolean;
   sleepless: boolean;
   cold: boolean;
   slept: boolean;
@@ -80,6 +81,9 @@ export interface World {
   /** Hexes shown on the trade-route maps bought, by region. */
   routes: Record<string, string[]>;
   rations: ResourceDie;
+  /** The water die, and whether today was spent partly in dry land (water.ts). */
+  water: ResourceDie;
+  dryDay: boolean;
   hikes: number;
   camp: WorldSave['camp'];
   noRecovery: boolean;
@@ -125,6 +129,8 @@ export interface World {
   /** Generated ruins and taken loot caches (Phase 12e). */
   ruins: Record<string, { seed: number; emptied: number | null }>;
   caches: string[];
+  /** Hidden sites (hidden-sites.ts): the seed that places them, and those found and used up. */
+  sites: { seed: number; found: string[]; done: string[] };
   /** Ways down a tavern rumor has told the party of, by dungeon or ruin id. */
   rumors: string[];
   ordersEnded: string[];
@@ -162,7 +168,7 @@ export const NO_LIGHT: World['light'] = {
 
 /** What a member does in a camp quarter (docs/rules-adaptation.md, Overland travel). */
 export type Activity =
-  'rest' | 'sleep' | 'forage' | 'hunt' | 'firewood' | 'make-camp' | 'watch' | 'craft';
+  'rest' | 'sleep' | 'forage' | 'hunt' | 'firewood' | 'make-camp' | 'watch' | 'craft' | 'explore';
 
 export type QuarterPlan =
   | { kind: 'hike'; leader: string | null; watcher: string | null }

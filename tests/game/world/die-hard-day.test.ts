@@ -36,13 +36,13 @@ describe('Die Hard’s daily escape, across fights', () => {
   });
 
   it('gives older saves no day spent', () => {
-    const up = WORLD_MIGRATIONS[44] as (raw: Record<string, unknown>) => Record<string, unknown>;
-    expect(up({ schemaVersion: 44, members: [{ id: 'm-0' }], benched: [] })).toEqual({
-      schemaVersion: 45,
+    const up = WORLD_MIGRATIONS[46] as (raw: Record<string, unknown>) => Record<string, unknown>;
+    expect(up({ schemaVersion: 46, members: [{ id: 'm-0' }], benched: [] })).toEqual({
+      schemaVersion: 47,
       members: [{ id: 'm-0', lastStandDay: null }],
       benched: [],
     });
-    expect(up({ schemaVersion: 44, members: 'odd', benched: [] })).toMatchObject({
+    expect(up({ schemaVersion: 46, members: 'odd', benched: [] })).toMatchObject({
       members: 'odd',
     });
   });

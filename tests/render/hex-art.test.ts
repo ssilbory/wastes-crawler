@@ -32,6 +32,7 @@ function cell(col: number, row: number, over: Partial<HexCell> = {}): HexCell {
     dungeon: null,
     exit: null,
     grove: null,
+    lair: null,
     ...over,
   };
 }

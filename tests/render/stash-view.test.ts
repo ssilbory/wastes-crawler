@@ -5,6 +5,8 @@ import { data, world } from '../game/world/helpers.ts';
 describe('the party stash', () => {
   it('shows the purse, loot dice, and components by name', () => {
     const w = world();
+    // The rations weigh on the stash too; this test weighs only what it puts in.
+    w.rations = 0;
     expect(stashView(w, data)).toEqual({
       purse: `${w.purse} crowns`,
       loot: 'none',

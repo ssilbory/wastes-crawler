@@ -264,6 +264,23 @@
 .hex .party,
 .hex .dungeon,
 .hex .grove,
+.hex .lair,
 .hex .exit {
   pointer-events: none;
+}
+
+#hi-lair .den {
+  fill: #5a3f2c;
+  stroke: #2a1d14;
+  stroke-width: 0.08;
+}
+
+#hi-lair .mouth {
+  fill: #140d08;
+}
+
+#hi-lair .bones {
+  stroke: #e8dcc0;
+  stroke-width: 0.12;
+  stroke-linecap: round;
 }

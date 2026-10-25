@@ -57,6 +57,10 @@ export function overlandReferenceErrors(srd: SrdData, content: ContentData): str
   for (const id of new Set(towns.filter((id, i) => towns.indexOf(id) !== i)))
     errors.push(`regions: two maps have a town with the id ${id}`);
   errors.push(...realmErrors(content));
+  // Hidden sites pay in each listed region's die (docs/rules-adaptation.md, Explore).
+  for (const id of Object.keys(content.hiddenSites.dice.regions))
+    if (!content.regions.some((r) => r.id === id))
+      errors.push(`hiddenSites: loot dice for unknown region ${id}`);
   const monsters = new Set(allMonsters(srd, content).map((m) => m.id));
   for (const t of content.encounterTables) {
     for (const e of t.entries) {

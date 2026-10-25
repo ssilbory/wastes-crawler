@@ -29,6 +29,8 @@ export interface HexCell {
   exit: string | null;
   /** A grove of walking trees not yet cleared, once the hex is known. */
   grove: string | null;
+  /** A lair found by exploring and not yet cleared (hidden-sites.ts). */
+  lair: string | null;
 }
 
 const SQRT3 = Math.sqrt(3);
@@ -65,7 +67,10 @@ export function hexCells(
   groves: readonly (Hex & { name: string })[] = [],
   /** Hexes the party knows of without having seen them, such as a freed captive's home. */
   revealed: readonly Hex[] = [],
+  /** Lairs found by exploring and not yet cleared. */
+  lairs: readonly (Hex & { name: string })[] = [],
 ): HexCell[] {
+  const dens = new Map(lairs.map((l) => [hexKey(l), l.name]));
   const quests = new Set(questHexes.map(hexKey));
   const ways = new Map(entrances.map((e) => [hexKey(e), e]));
   const woods = new Map(groves.map((g) => [hexKey(g), g.name]));
@@ -100,6 +105,7 @@ export function hexCells(
         dungeon: known || ways.get(key)?.heard ? (ways.get(key)?.name ?? null) : null,
         exit: known ? (map.exitAt(h)?.name ?? null) : null,
         grove: known ? (woods.get(key) ?? null) : null,
+        lair: dens.get(key) ?? null,
       });
     }
   }

@@ -1,6 +1,7 @@
 // Journey activities (docs/rules-adaptation.md, Overland travel): Hike with Lead the Way and the
 // Exert check past two quarters a day, and camp quarters of resting, sleeping, foraging, hunting,
 // making camp, keeping watch, and crafting (Sam's call). Forage difficulties follow SRD 2.12.5.
+import { explore } from './hidden-sites.ts';
 import type { Mishap } from '../../data/schemas/index.ts';
 import { npcCheck } from '../../rules/checks.ts';
 import { roll } from '../../rules/dice.ts';
@@ -218,6 +219,7 @@ export function camp(
     'brings in',
   );
   if (!inTown && gatherFirewood(w, data, doing('firewood'), terrain.survive)) extraChecks += 1;
+  extraChecks += explore(w, data, doing('explore'));
   guideFood(w, data, inTown);
   return { extraChecks, watcher: doing('watch')[0] };
 }

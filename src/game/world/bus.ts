@@ -16,6 +16,8 @@ import { isCampaign } from './region.ts';
 import { rescueListener } from '../dungeon/rescues.ts';
 import { ruinsListener } from '../dungeon/ruins.ts';
 import { realmEndListener } from './realm-end.ts';
+import { sitesListener } from './hidden-sites.ts';
+import { waterListener } from './water.ts';
 import { warlordsListener } from './warlords.ts';
 import type { Npc, World } from './types.ts';
 
@@ -55,6 +57,8 @@ const LISTENERS: readonly Listener[] = [
   notesListener,
   sharesListener,
   ruinsListener,
+  sitesListener,
+  waterListener,
   warlordsListener,
   // Last, so the fight's garrison is recorded before the ending checks the hex.
   realmEndListener,

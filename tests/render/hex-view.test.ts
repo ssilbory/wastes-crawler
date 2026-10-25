@@ -50,4 +50,20 @@ describe('hex map view', () => {
     expect(cells.find((c) => c.key === '20,8')?.dungeon).toBeNull();
     expect(cells.find((c) => c.key === '3,8')?.dungeon).toBeNull();
   });
+
+  it('marks found lairs not yet cleared', () => {
+    const cells = hexCells(
+      map,
+      world(),
+      [],
+      10,
+      [],
+      [],
+      [],
+      [],
+      [{ col: 4, row: 8, name: 'A lair' }],
+    );
+    expect(cells.find((c) => c.key === '4,8')?.lair).toBe('A lair');
+    expect(cells.find((c) => c.key === '3,8')?.lair).toBeNull();
+  });
 });

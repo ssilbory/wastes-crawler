@@ -10,19 +10,22 @@ import type { GameData } from '../character/context.ts';
 import type { WorldEvent } from '../world/bus.ts';
 import { meetGroup } from '../world/encounters.ts';
 import { note } from '../world/members.ts';
+import { foundRuinHere } from '../world/hidden-sites.ts';
 import { endOrder, orderEnded } from '../world/orders.ts';
 import { accrueShares } from '../world/npcs.ts';
 import { addLoot } from '../world/shop.ts';
 import { pickUp } from '../world/party-load.ts';
 import type { World } from '../world/types.ts';
 import { dungeonHere, levelOf } from './explore.ts';
-import { generateRuin, ruinDungeonId } from './generate.ts';
+import { generateRuin } from './generate.ts';
+import { ruinOfDungeon } from './hidden-ruins.ts';
 
 const MAX_SEED = 2 ** 31 - 1;
 
 /** The ruin whose hex the party stands on, if any. */
 export const ruinHere = (w: World, data: GameData): Ruin | undefined =>
-  data.content.ruins.find((r) => r.region === w.region && hexKey(r) === hexKey(w.position));
+  data.content.ruins.find((r) => r.region === w.region && hexKey(r) === hexKey(w.position)) ??
+  foundRuinHere(w, data);
 
 /** The way down at the party's hex, hand-made or ruin, by name, with a ruin's party level. */
 export function wayDownHere(
@@ -32,7 +35,9 @@ export function wayDownHere(
   const d = dungeonHere(w, data);
   if (d) return { name: d.name, level: null };
   const r = ruinHere(w, data);
-  return r && { name: r.name, level: r.level };
+  // A ruin found by exploring matches the land around it, not a party level.
+  const shipped = r && data.content.ruins.includes(r);
+  return r && { name: r.name, level: shipped ? r.level : null };
 }
 
 /**
@@ -101,11 +106,8 @@ function take(w: World, data: GameData, key: string, cache: Cache): void {
   });
   accrueShares(w, data, kept);
   if (!cache.vault) return;
-  // Vaults are only generated, so the party is in a ruin it has opened.
-  const ruin = data.content.ruins.find((r) => {
-    const rec = w.ruins[r.id];
-    return rec !== undefined && key.startsWith(`${ruinDungeonId(r, rec.seed)}/`);
-  }) as Ruin;
+  // Vaults are only generated, so the party is in a ruin it has opened, shipped or hidden.
+  const ruin = ruinOfDungeon(data, key.slice(0, key.indexOf('/'))) as Ruin;
   (w.ruins[ruin.id] as { emptied: number | null }).emptied = w.day;
   note(w, `${ruin.name} is emptied. Ruins like this shift within a month.`);
 }

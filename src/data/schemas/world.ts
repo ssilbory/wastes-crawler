@@ -8,7 +8,7 @@ import { RegionSchema } from './overland-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 45;
+export const WORLD_SCHEMA_VERSION = 47;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -71,6 +71,8 @@ export const MemberSaveSchema = z.strictObject({
   dead: z.boolean(),
   frail: z.boolean(),
   hungry: z.boolean(),
+  /** No water on a day in dry land (Sam's call: Water and fuel). */
+  thirsty: z.boolean(),
   sleepless: z.boolean(),
   cold: z.boolean(),
   /** Slept a quarter today. */
@@ -335,6 +337,9 @@ export const WorldSaveSchema = z.strictObject({
   /** Hexes shown on the trade-route maps bought, by region. */
   routes: z.record(IdSchema, z.array(z.string())),
   rations: z.union([0, 4, 6, 8, 10, 12].map((n) => z.literal(n))),
+  /** The water die, and whether today was spent partly in dry land (Sam's call: Water and fuel). */
+  water: z.union([0, 4, 6, 8, 10, 12].map((n) => z.literal(n))),
+  dryDay: z.boolean(),
   /** Quarters spent hiking today. */
   hikes: z.int().min(0),
   /** Tonight's shelter. */
@@ -408,6 +413,12 @@ export const WorldSaveSchema = z.strictObject({
   ),
   /** Loot caches taken, by dungeon, level, and cell. */
   caches: z.array(z.string()),
+  /** Hidden sites: the seed that places them, and those found and used up, by "<region>:<hex>". */
+  sites: z.strictObject({
+    seed: z.int().min(1),
+    found: z.array(z.string()),
+    done: z.array(z.string()),
+  }),
   /** Dungeons and ruins whose way down a tavern rumor has told the party of, by id. */
   rumors: z.array(IdSchema),
   /** What the party did with the Seal of Command, once decided. */

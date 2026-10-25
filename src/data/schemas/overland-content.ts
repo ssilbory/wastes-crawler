@@ -19,6 +19,10 @@ export const TerrainSchema = z.strictObject({
   water: z.boolean(),
   /** Nights here are harsh, so sleeping without a camp makes a character Cold. */
   harsh: z.boolean(),
+  /** Dry land: a day spent here rolls the water die (Sam's call: Water and fuel). */
+  dry: z.literal(true).optional(),
+  /** No wood to gather here for a fire (Sam's call: Water and fuel). */
+  treeless: z.literal(true).optional(),
   encounters: IdSchema,
   /** A disease the party may catch spending the night here (Sam's call). */
   exposure: ExposureSchema.optional(),

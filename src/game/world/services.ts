@@ -143,7 +143,7 @@ export function raiseDead(w: World, data: GameData, id: string): TownResult {
 
 /** Brings a dead member back: 1 HP, no strain, and the XP they earned while dead. */
 export function revive(m: Member): void {
-  Object.assign(m, { dead: false, hungry: false, sleepless: false, cold: false });
+  Object.assign(m, { dead: false, hungry: false, thirsty: false, sleepless: false, cold: false });
   cureFrailty(m);
   m.character = {
     ...m.character,

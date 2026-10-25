@@ -1,3 +1,4 @@
+import { foundSitesIn } from '../../game/world/hidden-sites.ts';
 import { useState } from 'preact/hooks';
 import type { World } from '../../game/world/types.ts';
 import { describeDate } from '../../game/world/calendar.ts';
@@ -69,7 +70,12 @@ export function MapScreen(props: {
   const hike = () => choose(suggestPlan(w, data, 'hike'));
   const camp = () => choose(suggestPlan(w, data, 'camp'));
   const { width, height } = mapPixels(map, HEX_SIZE);
-  const entrances = entrancesIn(data, w.region, w.rumors);
+  const found = foundSitesIn(w, data, w.region);
+  // Ruins found by exploring are ways down like any other.
+  const entrances = [
+    ...entrancesIn(data, w.region, w.rumors),
+    ...found.filter((s) => s.kind === 'ruin'),
+  ];
   const cells = hexCells(
     map,
     w,
@@ -80,6 +86,7 @@ export function MapScreen(props: {
     entrances,
     grovesHere(w, data),
     revealedHexes(w, data),
+    found.filter((s) => s.kind === 'lair'),
   );
   // Zooming in from the whole map closes in on the party.
   const party = cells.find((c) => c.party);
@@ -111,6 +118,7 @@ export function MapScreen(props: {
             {here} ({hexKey(w.position)})
           </span>
           <span>Rations: {w.rations === 0 ? 'none' : `d${w.rations}`}</span>
+          <span>Water: {w.water === 0 ? 'none' : `d${w.water}`}</span>
           <span>Purse: {crowns(w.purse)}</span>
           <span>Loot: {lootText(w.loot)}</span>
         </div>
