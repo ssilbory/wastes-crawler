@@ -76,6 +76,8 @@ export const FocusEffectSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('melee-shock-immune'), level: Level }),
   /** Die Hard: falling to zero HP leaves the character stable and Frail, not dying (1.6.0). */
   z.strictObject({ kind: z.literal('self-stabilize'), level: Level }),
+  /** Die Hard: the first time each day an injury would drop the character to zero, 1 HP is left. */
+  z.strictObject({ kind: z.literal('last-stand'), level: Level }),
   /** Deadeye: two-handed ranged weapons work with a foe in melee, at this hit modifier. */
   z.strictObject({ kind: z.literal('ranged-in-melee'), level: Level, modifier: z.int() }),
   /** Alert: a bonus to the side's initiative roll (not stacking), or acting first. */

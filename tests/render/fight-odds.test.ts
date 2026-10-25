@@ -31,11 +31,12 @@ describe('fight odds (docs/presentation-plan.md, V3)', () => {
   it('counts God Wills It, Flame Without End, and Red Harvest’s next hit', () => {
     const b = standardBattle([['thug-or-militia']]);
     const snag = who(b, 'Snag');
-    b.damageBonus.party = 1;
+    snag.blessed = 1;
     snag.flame = 2;
     snag.nextHitBonus = 4;
     expect(attackOdds(b, snag, attack(0) as never)).toEqual({
-      chance: 0.75,
+      // The blessing's +1 to hit too.
+      chance: 0.8,
       // 1d6 + 3, +1 blessed, +2 flame; God Wills It adds to Shock too, but flame doesn't.
       min: 7,
       max: 12,

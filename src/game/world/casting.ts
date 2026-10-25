@@ -34,8 +34,7 @@ export function cannotCast(data: GameData, m: Member | undefined, spell: string)
 /** Pays for a spell cannotCast allowed: a slot while any are left, else its level in points. */
 export function spendCast(data: GameData, m: Member, spell: string): void {
   const magic = characterSheet(m.character, data).magic as SheetMagic;
-  const pool = poolOf(m, magic);
-  payFor(pool, spellOf(data, spell).level);
+  const pool = payFor(poolOf(m, magic), spellOf(data, spell).level);
   m.spellsCast = magic.slots.spellsCast - pool.spellsLeft;
   m.pointsSpent = magic.slots.spellPoints - pool.pointsLeft;
 }

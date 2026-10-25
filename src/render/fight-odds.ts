@@ -3,10 +3,10 @@
 // and Shock rules the attack uses (src/game/combat/attack.ts, src/rules/attacks.ts); nothing here
 // rolls or changes the battle. Resistances, wards, and walls aren't counted, so a blow can still
 // come out lower than the range.
-import { attackInput, shockContext } from '../game/combat/attack.ts';
+import { attackInput, hitShockContext, shockContext } from '../game/combat/attack.ts';
 import { blastAttribute, blastInput } from '../game/combat/blast.ts';
 import type { Action, Battle, Combatant } from '../game/combat/types.ts';
-import { hitChance, shockDamage } from '../rules/attacks.ts';
+import { hitChance, shockDamage, type ShockContext } from '../rules/attacks.ts';
 
 export interface AttackOdds {
   /** From 0 to 1. */
@@ -32,11 +32,12 @@ export function attackOdds(b: Battle, actor: Combatant, action: AttackAction): A
   const target = b.combatants.find((c) => c.id === action.target);
   if (!attack || !target) return null;
   const smite = action.smite ? smiteEdge(b, actor) : { hit: 0, damage: 0 };
-  const blessed = b.damageBonus[actor.side];
-  const shock =
-    attack.mode === 'melee'
-      ? shockDamage(attack.shock, 0, blessed, shockContext(target, attack))
-      : 0;
+  const blessed = actor.blessed;
+  const shockOf = (ctx: ShockContext) =>
+    attack.mode === 'melee' ? shockDamage(attack.shock, 0, blessed, ctx) : 0;
+  const shock = shockOf(shockContext(target, attack));
+  // A ready shield would have soaked the miss's Shock, so a hit isn't raised to it (attack.ts).
+  const floor = shockOf(hitShockContext(target, attack));
   const d = attack.damage;
   const bonus = d.modifier + attack.damageBonus + blessed + actor.flame;
   // Call of the Tomb: every blow lands on the doomed, for the most its dice can do (4.6.0).
@@ -48,8 +49,8 @@ export function attackOdds(b: Battle, actor: Combatant, action: AttackAction): A
   return {
     chance: hitChance(input),
     // A hit never does less than the Shock the same blow deals on a miss (2.4.6.4).
-    min: Math.max(shock, Math.max(0, d.count + bonus)) + smite.damage,
-    max: Math.max(shock, Math.max(0, d.count * d.sides + bonus)) + smite.damage,
+    min: Math.max(floor, Math.max(0, d.count + bonus)) + smite.damage,
+    max: Math.max(floor, Math.max(0, d.count * d.sides + bonus)) + smite.damage,
     shock,
   };
 }

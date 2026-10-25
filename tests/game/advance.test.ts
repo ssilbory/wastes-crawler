@@ -77,6 +77,13 @@ describe('the next level (SRD 2.7.1)', () => {
       bonusSkills: [],
     });
     expect(levelPlan(data, withXp(starter('lirael'), 3))?.quickPoints).toBe(1);
+    // A former Expert levelling as a Warrior gets no Quick Learner point (Sam's call).
+    const lirael = withXp(starter('lirael'), 3);
+    const switched = {
+      ...lirael,
+      classes: { current: 'full-warrior', levels: { 'full-expert': 1, 'full-warrior': 0 } },
+    };
+    expect(levelPlan(data, switched)?.quickPoints).toBe(0);
     const pem = 'partial-expert-partial-mage';
     const odd = { ...starter('snag'), xp: 3, classes: { current: pem, levels: { [pem]: 1 } } };
     expect(() => levelPlan(data, odd)).toThrow(`unknown class ${pem}`);

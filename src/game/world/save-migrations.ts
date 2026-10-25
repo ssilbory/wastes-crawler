@@ -238,4 +238,15 @@ export const WORLD_MIGRATIONS: Migrations = {
   }),
   // Version 44 makes a fallen party's PCs lost for good (Sam's call): none lost yet.
   43: (raw) => ({ ...raw, schemaVersion: 44, lost: [] }),
+  // Version 45 adds Die Hard's daily escape from a felling blow: no one has used it yet.
+  44: (raw) => {
+    const fresh = (list: unknown) =>
+      Array.isArray(list) ? (list as Raw[]).map((m) => ({ ...m, lastStandDay: null })) : list;
+    return {
+      ...raw,
+      schemaVersion: 45,
+      members: fresh(raw.members),
+      benched: fresh(raw.benched),
+    };
+  },
 };

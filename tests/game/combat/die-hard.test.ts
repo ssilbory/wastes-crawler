@@ -28,4 +28,23 @@ describe('Die Hard', () => {
     harm(b, grukk, grukk.hp);
     expect(grukk.status).toBe('dead');
   });
+
+  it('at level 2, once, leaves 1 HP where a blow would drop them', () => {
+    const grukk = starter('grukk');
+    expect(pcCombatant(data, grukk).lastStand).toBe(false);
+    const level2 = {
+      ...grukk,
+      foci: grukk.foci.map((f) => (f.id === 'die-hard' ? { ...f, level: 2 } : f)),
+    };
+    expect(pcCombatant(data, level2).lastStand).toBe(true);
+    const b = standardBattle([['thug-or-militia']]);
+    const g = who(b, 'Grukk');
+    g.lastStand = true;
+    harm(b, g, g.hp + 5);
+    expect(g).toMatchObject({ hp: 1, status: 'active', lastStand: false, lastStandUsed: true });
+    expect(b.log?.at(-1)).toContain('Grukk should be down, and stays on their feet.');
+    // The second blow fells them as level 1 would: stable and Frail.
+    harm(b, g, 1);
+    expect(g).toMatchObject({ hp: 0, status: 'stable', frail: true });
+  });
 });

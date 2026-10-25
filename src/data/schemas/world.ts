@@ -8,7 +8,7 @@ import { RegionSchema } from './overland-content.ts';
 import { LootDiceSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 44;
+export const WORLD_SCHEMA_VERSION = 45;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -90,6 +90,8 @@ export const MemberSaveSchema = z.strictObject({
   artUses: z.record(IdSchema, z.int().min(0)),
   /** The day of the member's last prayer at a temple or mortuary. */
   prayedDay: z.int().min(0).nullable(),
+  /** The day Die Hard last kept the member up at 1 HP; it works once a day (1.6.0). */
+  lastStandDay: z.int().min(0).nullable(),
   /** A Beastmaster's companion, sent away out of the party and ready to be called (1.5.4). */
   companion: NpcSaveSchema.nullable(),
   /** Hit points Feral Toughness adds to the maximum now, from the companion's hit dice (1.5.4). */

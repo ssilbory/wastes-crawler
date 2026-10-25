@@ -1,3 +1,4 @@
+import { characterSheet } from '../../src/game/character/derived.ts';
 import { describe, expect, it } from 'vitest';
 import {
   addStarterParty,
@@ -126,5 +127,12 @@ describe('the starter party', () => {
       },
     };
     expect(() => addStarterParty([], broken)).toThrow(/^starter Gretar: /);
+  });
+
+  it('sets every starter out within their load (Sam: Talus and Telwin carried a dagger too many)', () => {
+    for (const e of addStarterParty([], data).entries) {
+      const { load } = characterSheet(e.character, data).equipment;
+      expect([e.character.name, load.state]).toEqual([e.character.name, 'ok']);
+    }
   });
 });

@@ -140,25 +140,48 @@ describe('the Blood Priest (1.5.5)', () => {
     const snag = who(b, 'Snag');
     // One 1-HD thug against three: no need.
     freeActions(b, snag);
-    expect(b.hitModifier.party).toBe(0);
+    expect(snag.blessed).toBe(0);
     const c = battle(priest(5, ['god-wills-it']), [
       ['veteran-soldier', 'veteran-soldier', 'veteran-soldier'],
     ]);
     const s = who(c, 'Snag');
     freeActions(c, s);
-    expect(c.hitModifier.party).toBe(2);
-    expect(c.damageBonus.party).toBe(2);
+    const party = (x: Battle) => x.combatants.filter((m) => m.side === 'party');
+    expect(party(c).map((m) => m.blessed)).toEqual(party(c).map(() => 2));
     // Once a scene.
     freeActions(c, s);
-    expect(c.hitModifier.party).toBe(2);
+    expect(party(c).map((m) => m.blessed)).toEqual(party(c).map(() => 2));
     const d = battle(priest(10, ['god-wills-it']), [['thug-or-militia']]);
     castMagic(d, who(d, 'Snag'), 'god-wills-it', undefined, undefined);
-    expect(d.damageBonus.party).toBe(3);
+    expect(who(d, 'Lirael').blessed).toBe(3);
     expect(commandsFor(c, s).find((cmd) => cmd.key === 'magic:god-wills-it')).toBeUndefined();
     const e = battle(priest(1, ['god-wills-it']), [['thug-or-militia']]);
     expect(
       commandsFor(e, who(e, 'Snag')).find((cmd) => cmd.key === 'magic:god-wills-it')?.choices,
     ).toEqual([{ label: 'Everyone', action: { kind: 'cast', magic: 'god-wills-it' } }]);
+  });
+
+  it('God Wills It reaches six allies per level, PCs first, and two blessings don’t add up', () => {
+    const b = battle(priest(1, ['god-wills-it']), [['thug-or-militia']]);
+    const snag = who(b, 'Snag');
+    // Four PCs and four allied soldiers: a level-1 priest blesses six of the eight.
+    const foe = who(b, 'foe-0-0');
+    for (let i = 0; i < 4; i++)
+      b.combatants.push({ ...foe, id: `ally-${i}`, name: `Ally ${i}`, side: 'party' });
+    castMagic(b, snag, 'god-wills-it', undefined, undefined);
+    const party = b.combatants.filter((m) => m.side === 'party');
+    expect(party.filter((m) => m.blessed === 1)).toHaveLength(6);
+    expect(party.filter((m) => m.kind === 'pc').every((m) => m.blessed === 1)).toBe(true);
+    expect(foe.blessed).toBe(0);
+    // A second priest's +1 changes nothing; a better blessing replaces it.
+    const lirael = who(b, 'Lirael');
+    const fresh = { effortUsed: 0, effortDay: 0, usedThisScene: new Set<string>() };
+    lirael.caster = { ...(snag.caster as CasterState), ...fresh, level: 1 };
+    castMagic(b, lirael, 'god-wills-it', undefined, undefined);
+    expect(snag.blessed).toBe(1);
+    lirael.caster = { ...lirael.caster, ...fresh, level: 5, usedThisScene: new Set() };
+    castMagic(b, lirael, 'god-wills-it', undefined, undefined);
+    expect(snag.blessed).toBe(2);
   });
 
   it('adds the blessing to hits and to Shock on a miss', () => {
@@ -167,7 +190,7 @@ describe('the Blood Priest (1.5.5)', () => {
     const thug = who(b, 'foe-0-0');
     thug.hp = 50;
     thug.ac = 10;
-    b.damageBonus.party = 2;
+    snag.blessed = 2;
     const spear = snag.attacks[0] as Combatant['attacks'][0];
     // A miss (1) with Shock: the weapon's Shock plus 2.
     b.rng = scriptedRng([1]);
