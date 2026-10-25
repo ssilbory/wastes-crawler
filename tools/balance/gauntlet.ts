@@ -1,5 +1,6 @@
 // The balance tool's gauntlets (tools/balance.ts): the starter party levelled automatically, worn down
 // by the fights before each campaign fight, with no rest between.
+import { guardedAt } from '../../src/game/dungeon/maze.ts';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadContent } from '../../src/data/content.ts';
@@ -180,12 +181,17 @@ for (const d of data.content.dungeons)
           before: delveBefore(d.id, l.id),
           enemies: s.guards,
         });
-for (const r of data.content.ruins)
+// A ruin's vault comes after a wandering fight and one of its guarded caches on each level (each
+// level holds one or two, held by a band of the vault's guards; docs/rules-adaptation.md, Ruins).
+for (const r of data.content.ruins) {
+  const band = guardedAt(r, { x: 0, y: 0 }) as { guards: string[][] };
   fights.push({
     name: `${r.name} vault`,
     minLevel: r.level,
-    before: Array.from({ length: r.kind === 'city' && r.sewer ? 2 : r.depth }, () => ({
-      table: r.wander.table,
-    })),
+    before: Array.from({ length: r.kind === 'city' && r.sewer ? 2 : r.depth }, () => [
+      { table: r.wander.table },
+      { enemies: band.guards },
+    ]).flat(),
     enemies: r.vault.guards,
   });
+}
