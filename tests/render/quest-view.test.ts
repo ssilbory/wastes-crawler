@@ -64,6 +64,12 @@ describe('quest view', () => {
     expect(questStatus(w, data, 'bandit-camp')).toBe(
       'Break the raider camp in the forest at 6,12. 7 days left.',
     );
+    // The count runs down to a last day, on which the quest can still be done (Sam's call).
+    w.day = 9;
+    expect(questStatus(w, data, 'bandit-camp')).toMatch(/ 1 day left\.$/);
+    w.day = 10;
+    expect(questStatus(w, data, 'bandit-camp')).toMatch(/ Last day\.$/);
+    w.day = 3;
     w.quests.surveyor = { status: 'active', step: 0, acceptedDay: 0 };
     expect(questStatus(w, data, 'surveyor')).toBe('Bring Engineer Tamsin safely to Scrapmarch.');
     w.quests.surveyor = { status: 'active', step: 1, acceptedDay: 0 };

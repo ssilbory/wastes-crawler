@@ -8,6 +8,9 @@ import {
   settleByLeaving,
 } from '../../../src/game/world/quarter.ts';
 import { parseWorld, SAVED_LOG_LINES, serializeWorld } from '../../../src/game/world/save.ts';
+import { WORLD_MIGRATIONS } from '../../../src/game/world/save-migrations.ts';
+import { wipe } from '../../../src/game/world/town.ts';
+import { slotSummary } from '../../../src/render/save-view.ts';
 import { createRng } from '../../../src/rules/rng.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { data, starter, world, encounter } from './helpers.ts';
@@ -101,6 +104,21 @@ describe('world saves', () => {
     const back = loaded.world;
     expect(back.rng.int(1, 1000)).toBe(w.rng.int(1, 1000));
     expect({ ...back, rng: null }).toEqual({ ...w, rng: null });
+  });
+
+  it('keeps a fallen party’s empty ranks, and no other empty party', () => {
+    const w = world();
+    wipe(w, data);
+    const back = parseWorld(serializeWorld(w), data);
+    expect(back.ok && back.world.members).toEqual([]);
+    expect(back.ok && back.world.lost).toEqual(w.lost);
+    expect(slotSummary(serializeWorld(w), data)).toMatch(/ · Rubblegate · no party$/);
+    const save = JSON.parse(serializeWorld(world()));
+    expect(parseWorld(JSON.stringify({ ...save, members: [] }), data)).toEqual({
+      ok: false,
+      errors: ['members: the party has no one in it'],
+    });
+    expect(WORLD_MIGRATIONS[43]?.({ schemaVersion: 43 })).toEqual({ schemaVersion: 44, lost: [] });
   });
 
   it('keeps only the latest log lines', () => {

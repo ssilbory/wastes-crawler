@@ -68,7 +68,10 @@ export function TownScreen(props: {
 }) {
   const w = props.world;
   const town = townHere(w, data);
-  const { tab } = props;
+  // With the party lost (town.ts, wipe), the tavern is the one way on, until someone is recruited.
+  const partyless = w.members.length === 0;
+  const tab = partyless ? 'tavern' : props.tab;
+  const tabs = (Object.keys(TABS) as Tab[]).filter((t) => !partyless || t === 'tavern');
   const [message, setMessage] = useState<string | null>(null);
   const act: Act = (action) => {
     const r = action();
@@ -86,17 +89,25 @@ export function TownScreen(props: {
           {tradeText(w, data) && <span class="trade">{tradeText(w, data)}</span>}
         </div>
         <span class="bar-actions">
-          <PartyButtons onOpen={props.onOpen} />
+          {!partyless && <PartyButtons onOpen={props.onOpen} />}
           <BarMore>
             <button type="button" class="secondary" onClick={props.onExport}>
               Export save
             </button>
           </BarMore>
-          <button type="button" class="create" onClick={props.onLeave}>
-            Back to the map
-          </button>
+          {!partyless && (
+            <button type="button" class="create" onClick={props.onLeave}>
+              Back to the map
+            </button>
+          )}
         </span>
       </div>
+      {partyless && (
+        <p class="errors party-lost" role="alert">
+          The party is lost. Gather a new one here at the tavern: recruit from the roster, or make
+          new characters.
+        </p>
+      )}
       {w.encounter && (
         <PopOut label="Raid">
           <div class="raid-alarm" role="alert">
@@ -112,7 +123,7 @@ export function TownScreen(props: {
         id="town"
         class="town-tabs"
         label="Town"
-        tabs={(Object.keys(TABS) as Tab[]).map((t) => ({ key: t, label: TABS[t] }))}
+        tabs={tabs.map((t) => ({ key: t, label: TABS[t] }))}
         selected={tab}
         onSelect={(t) => {
           props.onTab(t);

@@ -270,12 +270,12 @@ describe('hidden sites (Sam’s calls: Explore)', () => {
     w.sites.found.push('borderlands:1,1');
     const back = parseWorld(serializeWorld(w), data);
     expect(back.ok && back.world.sites).toEqual(w.sites);
-    const up = WORLD_MIGRATIONS[43] as (raw: Record<string, unknown>) => Record<string, unknown>;
-    expect(up({ schemaVersion: 43, rng: [12345, 0, 0, 0] })).toEqual({
-      schemaVersion: 44,
+    const up = WORLD_MIGRATIONS[44] as (raw: Record<string, unknown>) => Record<string, unknown>;
+    expect(up({ schemaVersion: 44, rng: [12345, 0, 0, 0] })).toEqual({
+      schemaVersion: 45,
       rng: [12345, 0, 0, 0],
       sites: { seed: 12346, found: [], done: [] },
     });
-    expect(up({ schemaVersion: 43 })).toMatchObject({ sites: { seed: 1 } });
+    expect(up({ schemaVersion: 44 })).toMatchObject({ sites: { seed: 1 } });
   });
 });

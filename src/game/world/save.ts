@@ -43,6 +43,7 @@ export function serializeWorld(w: World): string {
     lastTown: w.lastTown,
     members: w.members,
     benched: w.benched,
+    lost: w.lost,
     npcs: w.npcs,
     mounts: w.mounts,
     purse: w.purse,
@@ -155,6 +156,9 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
     return { ok: false, errors: [`unknown region ${s.region}`] };
   if (s.realm && !data.content.realms.some((r) => r.id === s.realm && r.regions.includes(s.region)))
     return { ok: false, errors: [`unknown realm ${s.realm}`] };
+  // Only a fallen party leaves none behind, until a new one is gathered (town.ts, wipe).
+  if (s.members.length === 0 && s.lost.length === 0)
+    return { ok: false, errors: ['members: the party has no one in it'] };
   const errors: string[] = [];
   const party = members(s.members, data, errors);
   const benched = members(s.benched, data, errors);
@@ -228,6 +232,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
     dryDay: s.dryDay,
     members: party,
     benched,
+    lost: s.lost,
     npcs: s.npcs,
     mounts: s.mounts,
     purse: s.purse,

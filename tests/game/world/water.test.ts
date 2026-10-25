@@ -109,15 +109,15 @@ describe('water (Sam’s calls: Water and fuel)', () => {
     if (!back.ok) throw new Error(back.errors.join('; '));
     expect(back.world).toMatchObject({ water: 6, dryDay: true });
     expect(back.world.members.find((m) => m.id === member(w, 'Grukk').id)?.thirsty).toBe(true);
-    const up = WORLD_MIGRATIONS[44] as (raw: Record<string, unknown>) => Record<string, unknown>;
-    expect(up({ schemaVersion: 44, members: [{ id: 'a' }], benched: [] })).toEqual({
-      schemaVersion: 45,
+    const up = WORLD_MIGRATIONS[45] as (raw: Record<string, unknown>) => Record<string, unknown>;
+    expect(up({ schemaVersion: 45, members: [{ id: 'a' }], benched: [] })).toEqual({
+      schemaVersion: 46,
       water: 12,
       dryDay: false,
       members: [{ id: 'a', thirsty: false }],
       benched: [],
     });
-    expect(up({ schemaVersion: 44 })).toMatchObject({ water: 12, members: undefined });
+    expect(up({ schemaVersion: 45 })).toMatchObject({ water: 12, members: undefined });
   });
 });
 

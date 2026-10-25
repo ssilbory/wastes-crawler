@@ -117,7 +117,7 @@ export function endOfDay(w: World, data: GameData, waystation = false): boolean 
   w.hikes = 0;
   // Hunger, sleeplessness and cold can finish off the whole party, as a lost fight does.
   if (w.members.length > 0 && alive(w).length === 0) {
-    wipe(w, data);
+    wipe(w, data, true);
     return true;
   }
   return false;

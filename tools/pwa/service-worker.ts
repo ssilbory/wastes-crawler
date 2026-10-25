@@ -1,7 +1,7 @@
 // Build step for playing offline (src/ui/pwa.ts registers the result). After Vite writes dist/, this
 // lists every file it wrote and emits dist/sw.js, a service worker that caches them all on install.
 // The cache name is a hash of the file list, so each new build replaces the cache, and the old
-// one is dropped once the new worker takes over.
+// one is dropped once the new worker takes over: when no tab still runs the old build.
 import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
@@ -33,10 +33,19 @@ export function buildVersion(dir: string, files: readonly string[]): string {
   return h.digest('hex').slice(0, 12);
 }
 
+/** How long a page load waits on the network before the cached game is served instead. */
+export const NAVIGATE_TIMEOUT_MS = 3000;
+
 /**
  * The service worker's source. Pages are fetched network-first, so an online player always gets
- * the newest build; everything else comes from the cache first. Offline, any page falls back to
- * the cached index.html (the game routes by hash, so there is only the one page).
+ * the newest build; everything else comes from the cache first. Offline, on a network slower than
+ * NAVIGATE_TIMEOUT_MS, or on an error page (a captive portal's, say), a page load gets the cached
+ * index.html instead (the game routes by hash, so there is only the one page).
+ *
+ * A new worker waits, rather than taking over at once, until no tab runs the old build: taking
+ * over would drop the old cache under a tab still asking for the old build's files. Online, a
+ * reload still gets the new build, as pages come from the network, and the waiting worker's cache
+ * already serves its files (caches.match looks in every cache).
  */
 export function serviceWorkerSource(files: readonly string[], version: string): string {
   // Every browser that runs service workers reads WOFF2, so the older .woff fonts are left out.
@@ -47,9 +56,9 @@ const CACHE = 'wastes-crawler-${version}';
 const PRECACHE = ${JSON.stringify(precache)};
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(PRECACHE)).then(() => self.skipWaiting()),
-  );
+  // Past the HTTP cache, so a stale copy of a file whose name has no hash isn't cached as new.
+  const fresh = PRECACHE.map((url) => new Request(url, { cache: 'reload' }));
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(fresh)));
 });
 
 self.addEventListener('activate', (event) => {
@@ -65,12 +74,16 @@ self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
   if (req.mode === 'navigate') {
+    const network = fetch(req);
+    const ok = network.then((r) => (r.ok ? r : null), () => null);
+    const late = new Promise((resolve) => setTimeout(() => resolve(null), ${NAVIGATE_TIMEOUT_MS}));
+    const cached = () =>
+      caches
+        .match('./index.html', { ignoreVary: true })
+        .then((r) => r || caches.match('./', { ignoreVary: true }));
+    // With nothing cached yet, the network's answer is all there is, whatever it is.
     event.respondWith(
-      fetch(req).catch(() =>
-        caches
-          .match('./index.html', { ignoreVary: true })
-          .then((r) => r || caches.match('./', { ignoreVary: true })),
-      ),
+      Promise.race([ok, late]).then((r) => r || cached().then((c) => c || network)),
     );
     return;
   }

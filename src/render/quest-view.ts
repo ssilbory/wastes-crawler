@@ -79,7 +79,15 @@ export function questStatus(w: World, data: GameData, id: string): string {
   if (st.status === 'done') return 'Done.';
   if (st.status === 'failed') return 'Failed.';
   if (st.status === 'ready') return `Done: return to ${payerPlace(data, q)} for the reward.`;
-  const left =
-    q.deadlineDays === undefined ? '' : ` ${q.deadlineDays - (w.day - st.acceptedDay)} days left.`;
-  return `${currentStep(w, data, id)?.text ?? ''}${left}`;
+  return `${currentStep(w, data, id)?.text ?? ''}${deadlineText(q.deadlineDays, w.day - st.acceptedDay)}`;
+}
+
+/**
+ * Days left on a quest: it fails at the end of the day the count reaches 0, so that day reads as
+ * the last (Sam's call, docs/rules-adaptation.md, Quests).
+ */
+function deadlineText(deadlineDays: number | undefined, spent: number): string {
+  if (deadlineDays === undefined) return '';
+  const left = deadlineDays - spent;
+  return left <= 0 ? ' Last day.' : ` ${left} ${left === 1 ? 'day' : 'days'} left.`;
 }

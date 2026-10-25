@@ -39,7 +39,9 @@ export function raidedCost(w: World, data: GameData, town: string, cost: number)
 /** The raiders reach the gates while the party is there. */
 function defend(w: World, data: GameData): void {
   const raid = w.raid;
-  if (!raid || raid.fighting || w.encounter || !atRaid(w, data, raid.town)) return;
+  // A fallen party's town has no one to stand with it until a new party is gathered.
+  if (!raid || raid.fighting || w.encounter || w.members.length === 0) return;
+  if (!atRaid(w, data, raid.town)) return;
   raid.fighting = true;
   const site = raidSite(data, raid.town);
   meetGroup(w, data, raidParty(w, data), 'hostile', null, null, `Raiders fall on ${site.name}!`);
