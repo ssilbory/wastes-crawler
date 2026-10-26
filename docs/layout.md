@@ -167,7 +167,7 @@ One `*-view.ts` per screen or panel that turns game state into text or drawing d
 
 ## tests/ (Vitest)
 
-About 180 `*.test.ts` files mirroring `src/`: `tests/rules/`, `tests/game/` (with `combat/`, `dungeon/`, `factions/`, `world/` subfolders), `tests/render/`, plus top-level content and SRD integrity tests (`*-content.test.ts`, `srd-*.test.ts`, `smoke.test.ts`). `tests/campaign/` holds a headless campaign driver and its end-to-end campaign test. Shared helpers: `tests/helpers/scripted-rng.ts` (forces exact die faces) and `helpers*.ts` in each game subfolder.
+About 180 `*.test.ts` files mirroring `src/`: `tests/rules/`, `tests/game/` (with `combat/`, `dungeon/`, `factions/`, `world/` subfolders), `tests/render/`, plus top-level content and SRD integrity tests (`*-content.test.ts`, `srd-*.test.ts`, `data-check-edges.test.ts`). `tests/campaign/` holds a headless campaign driver and its end-to-end campaign test. Shared helpers: `tests/helpers/scripted-rng.ts` (forces exact die faces) and `helpers*.ts` in each game subfolder.
 
 ## e2e/ (Playwright)
 

@@ -24,7 +24,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `pnpm build && pnpm preview --port ${port} --strictPort`,
+    // CI builds once before the tests (.github/workflows/ci.yml) and publishes that same build.
+    command: `${process.env.CI ? '' : 'pnpm build && '}pnpm preview --port ${port} --strictPort`,
     url: `http://localhost:${port}`,
     reuseExistingServer: !process.env.CI,
   },

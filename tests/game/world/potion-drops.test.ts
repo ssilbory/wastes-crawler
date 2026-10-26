@@ -24,7 +24,7 @@ describe('potion drops (docs/rules-adaptation.md, Potions: Drops)', () => {
     const w = world([30, 41, 7]);
     dropPotion(w, data, ['small-pack-predator'], BOSS);
     const holder = w.members.find((m) => count(m, 'greater-healing') === 1);
-    expect(holder).toBeDefined();
+    expect(holder?.id).toBe('m-1');
     expect(w.log.at(-1)).toContain('finds a Greater Healing among the fallen');
   });
 

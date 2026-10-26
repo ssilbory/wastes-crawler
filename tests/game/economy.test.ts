@@ -101,7 +101,7 @@ describe('the economy validator (docs/rules-adaptation.md, Economy validator in 
       sim({ delves: 6, fight: { ...base.fight, xp: 0 } }),
       ['highcairn'],
     );
-    expect(r.locks['loot-worthless']).toBeDefined();
+    expect(r.locks['loot-worthless']).toBe(2);
     expect(r.locks['no-progress']).toBe(2);
     const patient = sim({ delves: 6, lockouts: { ...base.lockouts, worthlessDays: 1000 } });
     expect(

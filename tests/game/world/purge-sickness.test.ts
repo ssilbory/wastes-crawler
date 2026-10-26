@@ -95,6 +95,6 @@ describe('Purge Ailment against poison and disease (1.5.9)', () => {
       { id: snag.id, name: 'Snag', ailment: 'poison', label: 'poison' },
       { id: snag.id, name: 'Snag', ailment: 'disease', label: 'Grave Rot' },
     ]);
-    expect(h.id).toBeDefined();
+    expect(h.id).toBe('m-3');
   });
 });
