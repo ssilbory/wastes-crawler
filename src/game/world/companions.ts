@@ -67,7 +67,7 @@ export function bindProblem(w: World, data: GameData, m: Member): string | null 
 }
 
 /** A companion needs a name to focus the Beastmaster's arts (1.5.4). */
-export const nameProblem = (name: string): string | null =>
+const nameProblem = (name: string): string | null =>
   name.trim().length < 1 || name.trim().length > 40 ? 'Give the companion a name.' : null;
 
 /**

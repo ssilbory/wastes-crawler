@@ -45,7 +45,7 @@ export function parleyReach(w: World, data: GameData): ParleyReach {
  * Anyone awake with Animal Ken, who can talk to beasts (docs/rules-adaptation.md, Skills), or a
  * Beastmaster with Effort to commit to Tongue of the Beasts (1.5.4).
  */
-export const beastSpeaker = (w: World, data: GameData) =>
+const beastSpeaker = (w: World, data: GameData) =>
   w.members.some(
     (m) =>
       (awake(m) && m.character.skills[data.content.skillRules.animalKen.skill] !== undefined) ||
