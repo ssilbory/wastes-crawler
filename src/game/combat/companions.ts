@@ -117,12 +117,7 @@ export function arrive(b: Battle, c: Combatant): void {
 }
 
 /** A companion as a combatant: its stat line, with Shared Vitality's hit bonus floor. */
-export function companionCombatant(
-  b: Battle,
-  w: WaitingCompanion,
-  id: string,
-  master: string,
-): Combatant {
+function companionCombatant(b: Battle, w: WaitingCompanion, id: string, master: string): Combatant {
   const c = monsterCombatant(b.data, w.monster, id, b.rng);
   return {
     ...c,

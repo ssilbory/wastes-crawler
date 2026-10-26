@@ -34,7 +34,7 @@ export function sizedLine(data: GameData, entry: InventoryEntry, size: Size): In
  * Fits an item to the people: armor is small for small peoples, and a centaur's worn body armor
  * comes with matching barding.
  */
-export function sizeEntries(data: GameData, entries: readonly InventoryEntry[], people: People) {
+function sizeEntries(data: GameData, entries: readonly InventoryEntry[], people: People) {
   return entries.flatMap((entry): InventoryEntry[] => {
     if (findItem(data, entry.id)?.kind !== 'armor') return [entry];
     const sized: InventoryEntry = people.size === 'small' ? { ...entry, small: true } : entry;
@@ -43,11 +43,7 @@ export function sizeEntries(data: GameData, entries: readonly InventoryEntry[], 
   });
 }
 
-export function packageInventory(
-  data: GameData,
-  pkg: StartingPackage,
-  people: People,
-): InventoryEntry[] {
+function packageInventory(data: GameData, pkg: StartingPackage, people: People): InventoryEntry[] {
   return sizeEntries(data, pkg.items, people);
 }
 

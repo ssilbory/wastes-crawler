@@ -3,6 +3,7 @@ import {
   actionForKey,
   defaultSettings,
   normalKey,
+  bindable,
   parseSettings,
   rebind,
   roundDelay,
@@ -63,6 +64,17 @@ describe('settings (docs/plan.md, Phase 11)', () => {
     expect(u.keys['step-left']).toEqual(['q', 'z']);
     expect(unbind(u, 'step-left', 0).keys['step-left']).toEqual(['z']);
     expect(s.keys.forward).toEqual(['w', 'ArrowUp']);
+  });
+
+  it('never bind Tab, Enter, Escape, or a lone modifier, and drop any stored', () => {
+    const s = defaultSettings(data);
+    for (const key of ['Tab', 'Enter', 'Escape', 'Shift', 'Control', 'Alt', 'Meta']) {
+      expect(bindable(key)).toBe(false);
+      expect(rebind(s, 'search', 0, key)).toBe(s);
+    }
+    expect(bindable('f')).toBe(true);
+    const stored = { ...s, keys: { ...s.keys, search: ['Enter', 'f'] } };
+    expect(parseSettings(serializeSettings(stored), data).keys.search).toEqual(['f']);
   });
 
   it('give each combat speed its delay, and each cue its notes', () => {

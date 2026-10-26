@@ -48,7 +48,7 @@ import { lightText, turnText } from '../../render/light-view.ts';
 import type { KeyAction } from '../../data/schemas/index.ts';
 import { actionForKey } from '../../game/settings.ts';
 import { getSettings } from '../settings-store.ts';
-import { CONTROLS } from '../keys.ts';
+import { isShortcut } from '../keys.ts';
 import { keyLabel } from '../../render/settings-view.ts';
 import { play } from '../sound.ts';
 
@@ -88,16 +88,9 @@ export function DungeonScreen(props: {
   // Re-listened in the same commit as each render, so keys pressed between renders aren't lost.
   useLayoutEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement | null;
-      if (target?.closest('input, select, textarea')) return;
-      if (document.querySelector('[aria-modal="true"]')) return;
-      // Ctrl, Cmd and Alt chords belong to the browser (find, save), not the dungeon.
-      if (e.ctrlKey || e.metaKey || e.altKey) return;
       // Keys come from the settings (docs/plan.md, Phase 11: key remapping).
-      const action = actionForKey(getSettings(), e.key);
+      const action = isShortcut(e) ? actionForKey(getSettings(), e.key) : null;
       if (!action) return;
-      // Space presses a focused button, as the browser does, before it takes the stairs.
-      if (e.key === ' ' && target?.closest(CONTROLS)) return;
       e.preventDefault();
       if (action === 'stairs') {
         if (stairsLabel && !w.encounter) climb();

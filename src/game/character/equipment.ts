@@ -112,7 +112,7 @@ export function loadoutArmorClass(data: GameData, l: Loadout): number {
 }
 
 /** What the loadout's AC is made of, so a fight can lay a natural AC under it (Armor of God). */
-export function loadoutArmorClassInput(data: GameData, l: Loadout): ArmorClassInput {
+function loadoutArmorClassInput(data: GameData, l: Loadout): ArmorClassInput {
   const worn = resolve(data, l.entries).filter((r) => r.entry.location === 'worn');
   const armor = worn.find((r) => r.item.kind === 'armor' && !r.entry.barding);
   const barding = worn.find((r) => r.item.kind === 'armor' && r.entry.barding);

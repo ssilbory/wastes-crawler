@@ -13,6 +13,7 @@ import { actionForKey } from '../../game/settings.ts';
 import { sandboxView } from '../../render/dungeon-view.ts';
 import { walkLight } from '../../render/dungeon-light.ts';
 import { DungeonView } from '../world/DungeonView.tsx';
+import { isShortcut } from '../keys.ts';
 import { getSettings } from '../settings-store.ts';
 
 /** The editor's test walk: the edited geometry in first person, with the dungeon keys. */
@@ -46,9 +47,7 @@ export function WalkPanel(props: {
   useEffect(() => {
     if (!walk) return;
     const onKey = (e: KeyboardEvent) => {
-      if ((e.target as HTMLElement | null)?.closest('input, select, textarea')) return;
-      if (e.ctrlKey || e.metaKey || e.altKey) return;
-      const action = actionForKey(getSettings(), e.key);
+      const action = isShortcut(e) ? actionForKey(getSettings(), e.key) : null;
       if (!action || action === 'search' || action === 'stairs') return;
       e.preventDefault();
       const now = latest.current as Walk;

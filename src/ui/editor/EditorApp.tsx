@@ -18,6 +18,7 @@ import '../world/dungeon-view.css';
 import '../world/dungeon-props.css';
 import './editor.css';
 import { LevelEditor } from './LevelEditor.tsx';
+import { readText, unreadable } from '../storage.ts';
 
 /** What the editor can tell the author about saving. */
 export interface Saving {
@@ -70,7 +71,9 @@ export function EditorApp() {
     pick(id);
   };
   const onImport = async (file: File) => {
-    const { dungeons: found, errors } = importDungeons(await file.text());
+    const text = await readText(file);
+    if (text === null) return setMessage(unreadable(file));
+    const { dungeons: found, errors } = importDungeons(text);
     let next = lib;
     for (const d of found) next = saveDungeon(next, d);
     if (found.length > 0) {

@@ -82,3 +82,12 @@ export function saveWorldText(text: string | null, slot: Slot = activeSlot()): b
     return false;
   }
 }
+
+/**
+ * A picked file's text, or null if it can't be read: removed or moved since it was picked, or
+ * refused by the phone's storage.
+ */
+export const readText = (file: File): Promise<string | null> => file.text().catch(() => null);
+
+/** The message for a picked file that couldn't be read. */
+export const unreadable = (file: File) => `${file.name}: the file couldn’t be read`;

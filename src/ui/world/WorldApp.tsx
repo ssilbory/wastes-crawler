@@ -20,9 +20,11 @@ import {
   activeSlot,
   loadRoster,
   loadWorldText,
+  readText,
   saveRoster,
   saveWorldText,
   setActiveSlot,
+  unreadable,
   type Slot,
 } from '../storage.ts';
 import { TownScreen, type Tab } from '../town/TownScreen.tsx';
@@ -196,7 +198,11 @@ function WorldScreens(props: {
         onContinue={() => open(loadWorldText())}
         onNew={start}
         onStarters={() => addStarters().placement}
-        onImport={(file) => void file.text().then(open)}
+        onImport={(file) =>
+          void readText(file).then((text) =>
+            text === null ? setErrors([unreadable(file)]) : open(text),
+          )
+        }
       />
     );
   if (screen === 'intro')
