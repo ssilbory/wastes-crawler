@@ -43,9 +43,11 @@ describe('the ruin generator (ADR 0004)', () => {
     'makes the same valid dungeon from the same seed, and another from another',
     { timeout: 60_000 },
     () => {
-      const a = generateRuin(CRYPTS, 7);
-      expect(generateRuin(CRYPTS, 7)).toEqual(a);
-      expect(generateRuin(CRYPTS, 8).levels[0]?.map).not.toEqual(a.levels[0]?.map);
+      const a = generateRuin(CRYPTS, 7, data.content.ruinTraps);
+      expect(generateRuin(CRYPTS, 7, data.content.ruinTraps)).toEqual(a);
+      expect(generateRuin(CRYPTS, 8, data.content.ruinTraps).levels[0]?.map).not.toEqual(
+        a.levels[0]?.map,
+      );
       expect(a.id).toBe('gallows-crypts-v7');
       expect(a.levels.map((l) => l.id)).toEqual([
         'gallows-crypts-1',
@@ -55,13 +57,16 @@ describe('the ruin generator (ADR 0004)', () => {
       for (const ruin of data.content.ruins)
         for (let seed = 1; seed <= 30; seed++)
           expect(
-            dungeonReferenceErrors({ ...data.content, dungeons: [generateRuin(ruin, seed)] }),
+            dungeonReferenceErrors({
+              ...data.content,
+              dungeons: [generateRuin(ruin, seed, data.content.ruinTraps)],
+            }),
           ).toEqual([]);
     },
   );
 
   it('thickens the traps level by level, with caches, and a guarded vault at the bottom', () => {
-    const d = generateRuin(CRYPTS, 3);
+    const d = generateRuin(CRYPTS, 3, data.content.ruinTraps);
     expect(d.levels.map((l) => l.traps.length)).toEqual([2, 3, 4]);
     const caches = d.levels.map((l) => l.specials.filter((s) => s.kind === 'cache'));
     for (const c of caches.slice(0, 2))
@@ -69,7 +74,11 @@ describe('the ruin generator (ADR 0004)', () => {
     const vault = caches[2]?.find((s) => s.kind === 'cache' && s.vault);
     expect(vault).toMatchObject({ guards: CRYPTS.vault.guards, component: 'grave-garnet' });
     // A ruin with no component leaves it out.
-    const plain = generateRuin({ ...CHAPEL, vault: { ...CHAPEL.vault, component: undefined } }, 1);
+    const plain = generateRuin(
+      { ...CHAPEL, vault: { ...CHAPEL.vault, component: undefined } },
+      1,
+      data.content.ruinTraps,
+    );
     expect(plain.levels[0]?.specials.find((s) => s.kind === 'cache' && s.vault)).not.toHaveProperty(
       'component',
     );
@@ -78,7 +87,7 @@ describe('the ruin generator (ADR 0004)', () => {
   it('sizes levels from the ruin, with one or two caches held by half the vault band', () => {
     const band = CRYPTS.vault.guards[0] as string[];
     for (let seed = 1; seed <= 20; seed++)
-      for (const level of generateRuin(CRYPTS, seed).levels) {
+      for (const level of generateRuin(CRYPTS, seed, data.content.ruinTraps).levels) {
         const rows = level.map.length;
         expect((rows - 1) / 2).toBeGreaterThanOrEqual(CRYPTS.size.min);
         expect((rows - 1) / 2).toBeLessThanOrEqual(CRYPTS.size.max);
@@ -93,19 +102,19 @@ describe('the ruin generator (ADR 0004)', () => {
       }
     // A single-monster band still leaves one guard.
     const lone = { ...CHAPEL, vault: { ...CHAPEL.vault, guards: [['barrow-golem']] } };
-    const held = generateRuin(lone, 1).levels[0]?.specials.find(
+    const held = generateRuin(lone, 1, data.content.ruinTraps).levels[0]?.specials.find(
       (s) => s.kind === 'cache' && s.guards && !s.vault,
     );
     expect(held).toMatchObject({ guards: [['barrow-golem']] });
   });
 
   it('finds generated dungeons by id, and nothing for other ids', () => {
-    expect(ruinDungeon(data.content.ruins, 'gallows-crypts-v7')).toBe(
-      ruinDungeon(data.content.ruins, 'gallows-crypts-v7'),
+    expect(ruinDungeon(data.content.ruins, data.content.ruinTraps, 'gallows-crypts-v7')).toBe(
+      ruinDungeon(data.content.ruins, data.content.ruinTraps, 'gallows-crypts-v7'),
     );
     expect(dungeonOf(data, 'gallows-crypts-v7').name).toBe('The Gallows Crypts');
-    expect(ruinDungeon(data.content.ruins, 'atlantis-v1')).toBeUndefined();
-    expect(ruinDungeon(data.content.ruins, 'old-barrow')).toBeUndefined();
+    expect(ruinDungeon(data.content.ruins, data.content.ruinTraps, 'atlantis-v1')).toBeUndefined();
+    expect(ruinDungeon(data.content.ruins, data.content.ruinTraps, 'old-barrow')).toBeUndefined();
     expect(ruinDungeonId(CHAPEL, 4)).toBe('sunken-chapel-v4');
   });
 });
@@ -221,7 +230,7 @@ describe('towers and ruined cities (Sam’s call)', () => {
   const WESTGATE = ruinOf('old-westgate');
 
   it('climb a tower floor by floor to a vault at the top', () => {
-    const d = generateRuin(SPIRE, 2);
+    const d = generateRuin(SPIRE, 2, data.content.ruinTraps);
     expect(d.levels.map((l) => l.name)).toEqual([
       'The Black Spire, floor 1',
       'The Black Spire, floor 2',
@@ -241,7 +250,7 @@ describe('towers and ruined cities (Sam’s call)', () => {
   });
 
   it('lay out a city as streets and buildings, its vault in the biggest building', () => {
-    const d = generateRuin(WESTGATE, 4);
+    const d = generateRuin(WESTGATE, 4, data.content.ruinTraps);
     expect(d.levels).toHaveLength(1);
     const [street] = d.levels;
     expect(street?.name).toBe('Old Westgate, the streets');
@@ -251,7 +260,7 @@ describe('towers and ruined cities (Sam’s call)', () => {
   });
 
   it('put a sewer under some cities, with two manholes and the vault below', () => {
-    const d = generateRuin(DUSKMERE, 4);
+    const d = generateRuin(DUSKMERE, 4, data.content.ruinTraps);
     expect(d.levels.map((l) => l.id)).toEqual(['duskmere-streets', 'duskmere-sewer']);
     const [street, sewer] = d.levels;
     expect(street?.links.filter((l) => 'level' in l.to)).toHaveLength(2);
@@ -266,7 +275,10 @@ describe('towers and ruined cities (Sam’s call)', () => {
     for (const ruin of [SPIRE, DUSKMERE, WESTGATE, ruinOf('watchers-spire')])
       for (let seed = 1; seed <= 40; seed++)
         expect(
-          dungeonReferenceErrors({ ...data.content, dungeons: [generateRuin(ruin, seed)] }),
+          dungeonReferenceErrors({
+            ...data.content,
+            dungeons: [generateRuin(ruin, seed, data.content.ruinTraps)],
+          }),
         ).toEqual([]);
   });
 

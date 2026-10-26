@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { resolveAttack } from '../../../src/game/combat/attack.ts';
-import { effectiveAc, harm, save } from '../../../src/game/combat/damage.ts';
+import { effectiveAc, harm } from '../../../src/game/combat/damage.ts';
+import { save } from '../../../src/game/combat/saves.ts';
 import type { Attack, Battle } from '../../../src/game/combat/types.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { standardBattle, who } from './helpers.ts';

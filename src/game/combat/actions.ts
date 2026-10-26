@@ -1,5 +1,5 @@
-// Resolving one chosen action (vendor/wwn-srd/2.0 The Rules of the Game/2.4.3 Combat Actions.md),
-// including stabilizing the dying (2.5.1).
+// Resolving one chosen action (vendor/wwn-srd/2.0 The Rules of the Game/2.4.0 Combat.md, 2.4.3
+// Combat Action Types and 2.4.4 Common Combat Actions), including stabilizing the dying (2.5.1).
 import { shift } from './forms.ts';
 import { readyOrStow } from './gear.ts';
 import { skillCheck } from '../../rules/checks.ts';

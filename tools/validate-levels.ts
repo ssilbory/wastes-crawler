@@ -18,7 +18,12 @@ for (const d of content.dungeons) {
 const RUIN_SEEDS = 100;
 for (const r of content.ruins)
   for (let seed = 1; seed <= RUIN_SEEDS; seed++)
-    errors.push(...dungeonReferenceErrors({ ...content, dungeons: [generateRuin(r, seed)] }));
+    errors.push(
+      ...dungeonReferenceErrors({
+        ...content,
+        dungeons: [generateRuin(r, seed, content.ruinTraps)],
+      }),
+    );
 console.log(`${content.ruins.length} ruins generated under ${RUIN_SEEDS} seeds each.`);
 if (errors.length > 0) {
   for (const e of errors) console.error(e);

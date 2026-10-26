@@ -2,7 +2,7 @@
 // Vowed.md): Brutal Counter, Hurling Throw, Mob Justice, and Revivifying Breath. When each fires,
 // and Hurling Throw's throw costing the target its next action, are Sam's calls
 // (docs/rules-adaptation.md, The Vowed).
-import { save } from './damage.ts';
+import { save } from './saves.ts';
 import { say } from './log.ts';
 import { artReady, BREATH, breathe, spendDay } from './reactions.ts';
 import { canAct, foeSide, targets } from './targeting.ts';

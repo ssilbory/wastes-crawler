@@ -57,6 +57,10 @@ export const TrapSchema = z.strictObject({
 });
 export type Trap = z.infer<typeof TrapSchema>;
 
+/** A kind of trap the ruin generators set (docs/rules-adaptation.md, Ruins): a trap with no cell yet. */
+export const RuinTrapSchema = TrapSchema.omit({ at: true });
+export type RuinTrap = z.infer<typeof RuinTrapSchema>;
+
 /** A captive held on an `N` cell by a fixed group of guards (Phase 8c). */
 export const HeldCaptiveSchema = z.strictObject({
   at: CellSchema,

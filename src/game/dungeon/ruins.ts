@@ -58,14 +58,14 @@ export function openRuin(w: World, data: GameData, ruin: Ruin): Dungeon {
   const rec = w.ruins[ruin.id];
   const month = data.content.overlandRules.daysPerMonth;
   if (rec && (rec.emptied === null || w.day - rec.emptied < month))
-    return generateRuin(ruin, rec.seed);
+    return generateRuin(ruin, rec.seed, data.content.ruinTraps);
   if (rec) note(w, `${ruin.name} has shifted: old passages are choked, and new ones open.`);
   let seed = w.rng.int(1, MAX_SEED);
-  let d = generateRuin(ruin, seed);
+  let d = generateRuin(ruin, seed, data.content.ruinTraps);
   // ADR 0004: only a layout that passes the level validation is entered.
   while (dungeonReferenceErrors({ ...data.content, dungeons: [d] }).length > 0) {
     seed = (seed % MAX_SEED) + 1;
-    d = generateRuin(ruin, seed);
+    d = generateRuin(ruin, seed, data.content.ruinTraps);
   }
   w.ruins[ruin.id] = { seed, emptied: null };
   return d;

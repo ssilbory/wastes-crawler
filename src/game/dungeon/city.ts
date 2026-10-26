@@ -2,7 +2,7 @@
 // each a building with a door onto the street or a heap of rubble, and for some cities a sewer
 // below, reached by two manholes. The vault is in the largest building, or at the far end of the
 // sewer when there is one.
-import type { DungeonLevel, Ruin } from '../../data/schemas/index.ts';
+import type { DungeonLevel, Ruin, RuinTrap } from '../../data/schemas/index.ts';
 import type { Rng } from '../../rules/rng.ts';
 import type { Generated } from './generate.ts';
 import {
@@ -104,7 +104,7 @@ function streetLevel(rng: Rng, ruin: Ruin): Street {
   return { level, edges, w, h, streets, gate, buildings };
 }
 
-function sewerLevel(rng: Rng, ruin: Ruin, w: number, h: number) {
+function sewerLevel(rng: Rng, ruin: Ruin, kinds: readonly RuinTrap[], w: number, h: number) {
   const edges = maze(rng, w, h);
   decorate(rng, edges, w, h);
   const a = { x: rng.int(0, w - 1), y: rng.int(0, h - 1) };
@@ -115,7 +115,7 @@ function sewerLevel(rng: Rng, ruin: Ruin, w: number, h: number) {
   const free = dist
     .map(([k]) => k)
     .filter((k) => ![cellKey(a), cellKey(b), cellKey(vault)].includes(k));
-  const traps = Array.from({ length: 3 }, () => trapAt(rng, takeCell(rng, free), 1));
+  const traps = Array.from({ length: 3 }, () => trapAt(rng, kinds, takeCell(rng, free), 1));
   const glyphs = new Map([
     [cellKey(a), '<'],
     [cellKey(b), '<'],
@@ -145,7 +145,7 @@ function vaultRoom(city: Street): Cell {
   return biggest.reduce((a, b) => (far(b) > far(a) ? b : a));
 }
 
-export function generateCity(rng: Rng, ruin: Ruin): Generated {
+export function generateCity(rng: Rng, ruin: Ruin, kinds: readonly RuinTrap[]): Generated {
   const city = streetLevel(rng, ruin);
   const { edges, w, h, gate } = city;
   const vault = ruin.sewer ? null : vaultRoom(city);
@@ -154,7 +154,7 @@ export function generateCity(rng: Rng, ruin: Ruin): Generated {
     .flatMap((b) => b.slice(1))
     .map(cellKey)
     .filter((k) => vault === null || k !== cellKey(vault));
-  const traps = Array.from({ length: 3 }, () => trapAt(rng, takeCell(rng, rooms), 0));
+  const traps = Array.from({ length: 3 }, () => trapAt(rng, kinds, takeCell(rng, rooms), 0));
   for (const t of traps) glyphs.set(cellKey(t.at), 'T');
   const specials = Array.from({ length: rng.int(2, 3) }, () => cacheAt(ruin, takeCell(rng, rooms)));
   specials.push(...guardedCaches(rng, ruin, rooms));
@@ -162,7 +162,7 @@ export function generateCity(rng: Rng, ruin: Ruin): Generated {
   const levels: DungeonLevel[] = [];
   const links: DungeonLevel['links'] = [{ at: gate, to: { surface: true } }];
   if (ruin.sewer) {
-    const sewer = sewerLevel(rng, ruin, w, h);
+    const sewer = sewerLevel(rng, ruin, kinds, w, h);
     const holes = city.streets.filter((k) => k !== cellKey(gate));
     const m1 = takeCell(rng, holes);
     const m2 = takeCell(rng, holes);

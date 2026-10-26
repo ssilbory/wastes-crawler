@@ -27,7 +27,9 @@ const no = (reason: string): TownResult => ({ ok: false, reason });
 
 export function dungeonOf(data: GameData, id: string): Dungeon {
   const ruin = data.content.dungeons.some((x) => x.id === id) ? undefined : ruinOfDungeon(data, id);
-  const d = data.content.dungeons.find((x) => x.id === id) ?? (ruin && ruinDungeon([ruin], id));
+  const d =
+    data.content.dungeons.find((x) => x.id === id) ??
+    (ruin && ruinDungeon([ruin], data.content.ruinTraps, id));
   if (!d) throw new Error(`unknown dungeon ${id}`);
   return d;
 }

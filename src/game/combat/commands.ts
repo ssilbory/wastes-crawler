@@ -1,6 +1,7 @@
 // The command menu: every action a combatant can legally take right now, with its targets. Combat
-// actions follow vendor/wwn-srd/2.0 The Rules of the Game/2.4.3 Combat Actions.md; moving rows is
-// the Formation rules' "Moving rows" in docs/rules-adaptation.md.
+// actions follow vendor/wwn-srd/2.0 The Rules of the Game/2.4.0 Combat.md (2.4.3 Combat Action Types,
+// 2.4.4 Common Combat Actions); moving rows is the Formation rules' "Moving rows" in
+// docs/rules-adaptation.md.
 import { shiftChoices } from './forms.ts';
 import { lineLabel } from '../character/items.ts';
 import { afterMove } from './gear.ts';

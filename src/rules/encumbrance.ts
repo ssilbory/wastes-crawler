@@ -1,5 +1,5 @@
-// The Encumbrance and Overloaded house rules in docs/rules-adaptation.md, which follow SRD 3.0's
-// Readied and Stowed items.
+// The Encumbrance and Overloaded house rules in docs/rules-adaptation.md, which follow the Readied
+// and Stowed items of vendor/wwn-srd/2.0 The Rules of the Game/2.9.0 Encumbrance.md.
 
 export interface Load {
   readied: number;

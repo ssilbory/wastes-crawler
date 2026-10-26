@@ -1,4 +1,4 @@
-// Faction patrols (Phase 13b; Sam's call: faction results change the world). An overland
+// Faction patrols (Phase 13b; docs/rules-adaptation.md, Factions: Patrols). An overland
 // encounter within the content's radius of an asset that sends patrols is that asset's patrol one
 // time in `chance`. Beating a patrol costs its asset half its hit points, rounded up.
 import { rollDie } from '../../rules/dice.ts';

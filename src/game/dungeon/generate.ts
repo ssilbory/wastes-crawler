@@ -4,7 +4,7 @@
 // mazes with a few loops and rooms, stairs to the farthest cell, traps that grow denser level by
 // level, small loot caches, one or two caches held by a band of the vault's guards, and a guarded
 // vault at the far end. Cities are in city.ts.
-import type { Dungeon, DungeonLevel, Facing, Ruin } from '../../data/schemas/index.ts';
+import type { Dungeon, DungeonLevel, Facing, Ruin, RuinTrap } from '../../data/schemas/index.ts';
 import { createRng, type Rng } from '../../rules/rng.ts';
 import { generateCity } from './city.ts';
 import {
@@ -34,7 +34,7 @@ interface Built {
 
 /** Delves go down: arrive on stairs up, go on by stairs down. Towers climb: arrive on stairs down
  * (the ground floor's way out is the door, stairs up to the surface), go on by stairs up. */
-function buildLevel(rng: Rng, ruin: Ruin, index: number): Built {
+function buildLevel(rng: Rng, ruin: Ruin, traps: readonly RuinTrap[], index: number): Built {
   const tower = ruin.kind === 'tower';
   const w = rng.int(ruin.size.min, ruin.size.max);
   const h = rng.int(ruin.size.min, ruin.size.max);
@@ -49,8 +49,10 @@ function buildLevel(rng: Rng, ruin: Ruin, index: number): Built {
   if (!last) glyphs.set(far, tower ? '<' : '>');
   // Traps and caches go on cells away from the stairs and the vault.
   const free = [...dist.keys()].filter((k) => k !== cellKey(arrive) && k !== far);
-  const traps = Array.from({ length: index + 2 }, () => trapAt(rng, takeCell(rng, free), index));
-  for (const t of traps) glyphs.set(cellKey(t.at), 'T');
+  const set = Array.from({ length: index + 2 }, () =>
+    trapAt(rng, traps, takeCell(rng, free), index),
+  );
+  for (const t of set) glyphs.set(cellKey(t.at), 'T');
   const specials = Array.from({ length: rng.int(1, 2) }, () => cacheAt(ruin, takeCell(rng, free)));
   specials.push(...guardedCaches(rng, ruin, free));
   if (last) specials.push(vaultAt(ruin, onward));
@@ -63,7 +65,7 @@ function buildLevel(rng: Rng, ruin: Ruin, index: number): Built {
     arrive,
   );
   return {
-    level: { ...level, traps, specials },
+    level: { ...level, traps: set, specials },
     arrive,
     facing: openFacing(edges, arrive, w, h),
     onward,
@@ -77,8 +79,8 @@ export interface Generated {
 }
 
 /** A delve or a tower: a chain of levels, each linked to the next by its far stairs. */
-function generateStack(rng: Rng, ruin: Ruin): Generated {
-  const built = Array.from({ length: ruin.depth }, (_, i) => buildLevel(rng, ruin, i));
+function generateStack(rng: Rng, ruin: Ruin, traps: readonly RuinTrap[]): Generated {
+  const built = Array.from({ length: ruin.depth }, (_, i) => buildLevel(rng, ruin, traps, i));
   built.forEach((b, i) => {
     const prev = built[i - 1];
     const next = built[i + 1];
@@ -99,11 +101,14 @@ function generateStack(rng: Rng, ruin: Ruin): Generated {
 /** The dungeon id a ruin has under a seed. */
 export const ruinDungeonId = (ruin: Ruin, seed: number) => `${ruin.id}-v${seed}`;
 
-/** A ruin's dungeon under a seed: the same seed always gives the same dungeon. */
-export function generateRuin(ruin: Ruin, seed: number): Dungeon {
+/**
+ * A ruin's dungeon under a seed, its traps drawn from `traps`: the same seed always gives the same
+ * dungeon.
+ */
+export function generateRuin(ruin: Ruin, seed: number, traps: readonly RuinTrap[]): Dungeon {
   const rng = createRng(`${ruin.id}:${seed}`);
   const { levels, facing } =
-    ruin.kind === 'city' ? generateCity(rng, ruin) : generateStack(rng, ruin);
+    ruin.kind === 'city' ? generateCity(rng, ruin, traps) : generateStack(rng, ruin, traps);
   const first = levels[0] as DungeonLevel;
   const exit = first.links.find((l) => 'surface' in l.to) as DungeonLevel['links'][number];
   return {
@@ -120,14 +125,18 @@ export function generateRuin(ruin: Ruin, seed: number): Dungeon {
 const generated = new WeakMap<Ruin, Map<number, Dungeon>>();
 
 /** The generated dungeon for a ruin dungeon id ("<ruin>-v<seed>"), if the id is one. */
-export function ruinDungeon(ruins: readonly Ruin[], id: string): Dungeon | undefined {
+export function ruinDungeon(
+  ruins: readonly Ruin[],
+  traps: readonly RuinTrap[],
+  id: string,
+): Dungeon | undefined {
   const m = /^(.+)-v(\d+)$/.exec(id);
   const ruin = m && ruins.find((r) => r.id === m[1]);
   if (!m || !ruin) return undefined;
   const seed = Number(m[2]);
   const bySeed = generated.get(ruin) ?? new Map<number, Dungeon>();
   generated.set(ruin, bySeed);
-  const d = bySeed.get(seed) ?? generateRuin(ruin, seed);
+  const d = bySeed.get(seed) ?? generateRuin(ruin, seed, traps);
   bySeed.set(seed, d);
   return d;
 }

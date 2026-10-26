@@ -6,7 +6,7 @@
 import type { CombatEffect } from '../../data/schemas/index.ts';
 import { roll2d6WithEdge } from '../../rules/advantage.ts';
 import { pcWinsOpposed } from '../../rules/checks.ts';
-import { save } from './damage.ts';
+import { save } from './saves.ts';
 import { say } from './log.ts';
 import { bearsHealing, takeHealingStrain } from './healing-strain.ts';
 import { artReady, spendDay, worksNow } from './reactions.ts';

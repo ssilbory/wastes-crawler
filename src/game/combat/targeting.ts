@@ -4,7 +4,10 @@
 import type { AttackMode } from '../../data/schemas/index.ts';
 import { coverSteps } from '../../rules/formation.ts';
 import type { Attack, Battle, Combatant, SideId } from './types.ts';
-import { wardedFrom } from './companions.ts';
+
+/** Beast Ward: an unprovoked beast won't attack the warded. */
+export const wardedFrom = (attacker: Combatant, target: Combatant): boolean =>
+  target.beastWard && attacker.beast && !attacker.provoked && !attacker.companion;
 
 export const isUp = (c: Combatant) => c.status === 'active' || c.status === 'asleep';
 /** Up, awake, not held by paralysis, and not frozen in amber. */

@@ -57,7 +57,7 @@ describe('generated doors (docs/decisions/0004-procedural-levels.md)', () => {
 
   it('builds the towers that once ran out of walls for a secret door', () => {
     const spire = data.content.ruins.find((r) => r.id === 'watchers-spire') as Ruin;
-    expect(() => generateRuin(spire, 499)).not.toThrow();
-    expect(() => generateRuin(spire, 1549)).not.toThrow();
+    expect(() => generateRuin(spire, 499, data.content.ruinTraps)).not.toThrow();
+    expect(() => generateRuin(spire, 1549, data.content.ruinTraps)).not.toThrow();
   });
 });

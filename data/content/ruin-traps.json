@@ -1,0 +1,64 @@
+[
+  {
+    "name": "dart trap",
+    "notice": 8,
+    "disarm": {
+      "skill": "sneak",
+      "attributes": ["dex"],
+      "difficulty": 8
+    },
+    "save": "evasion",
+    "effect": {
+      "kind": "damage",
+      "dice": {
+        "count": 1,
+        "sides": 6,
+        "modifier": 0
+      }
+    }
+  },
+  {
+    "name": "falling block",
+    "notice": 8,
+    "disarm": {
+      "skill": "exert",
+      "attributes": ["str"],
+      "difficulty": 8
+    },
+    "save": "evasion",
+    "effect": {
+      "kind": "damage",
+      "dice": {
+        "count": 1,
+        "sides": 8,
+        "modifier": 0
+      }
+    }
+  },
+  {
+    "name": "poison needle",
+    "notice": 9,
+    "disarm": {
+      "skill": "sneak",
+      "attributes": ["dex"],
+      "difficulty": 9
+    },
+    "save": "physical",
+    "effect": {
+      "kind": "poison"
+    }
+  },
+  {
+    "name": "alarm wire",
+    "notice": 8,
+    "disarm": {
+      "skill": "sneak",
+      "attributes": ["dex"],
+      "difficulty": 7
+    },
+    "save": null,
+    "effect": {
+      "kind": "alarm"
+    }
+  }
+]

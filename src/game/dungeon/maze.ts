@@ -1,7 +1,7 @@
 // Building blocks for the ruin generators (docs/decisions/0004-procedural-levels.md): cells and the
 // edges between them, mazes, distances, traps, caches, and rendering to the doubled ASCII format
 // (ADR 0003).
-import type { DungeonLevel, Facing, Ruin, Trap } from '../../data/schemas/index.ts';
+import type { DungeonLevel, Facing, Ruin, RuinTrap, Trap } from '../../data/schemas/index.ts';
 import type { Rng } from '../../rules/rng.ts';
 
 export type Cell = { x: number; y: number };
@@ -17,37 +17,6 @@ export const pair = (a: Cell, b: Cell) =>
   a.y < b.y || (a.y === b.y && a.x < b.x)
     ? `${a.x},${a.y}|${b.x},${b.y}`
     : `${b.x},${b.y}|${a.x},${a.y}`;
-
-export const TRAPS: readonly Omit<Trap, 'at'>[] = [
-  {
-    name: 'dart trap',
-    notice: 8,
-    disarm: { skill: 'sneak', attributes: ['dex'], difficulty: 8 },
-    save: 'evasion',
-    effect: { kind: 'damage', dice: { count: 1, sides: 6, modifier: 0 } },
-  },
-  {
-    name: 'falling block',
-    notice: 8,
-    disarm: { skill: 'exert', attributes: ['str'], difficulty: 8 },
-    save: 'evasion',
-    effect: { kind: 'damage', dice: { count: 1, sides: 8, modifier: 0 } },
-  },
-  {
-    name: 'poison needle',
-    notice: 9,
-    disarm: { skill: 'sneak', attributes: ['dex'], difficulty: 9 },
-    save: 'physical',
-    effect: { kind: 'poison' },
-  },
-  {
-    name: 'alarm wire',
-    notice: 8,
-    disarm: { skill: 'sneak', attributes: ['dex'], difficulty: 7 },
-    save: null,
-    effect: { kind: 'alarm' },
-  },
-];
 
 export function neighbors(c: Cell, w: number, h: number): [Facing, Cell][] {
   return SIDES.map(([f, dx, dy]): [Facing, Cell] => [f, { x: c.x + dx, y: c.y + dy }]).filter(
@@ -195,9 +164,12 @@ export function openFacing(edges: Edges, c: Cell, w: number, h: number): Facing 
   return (neighbors(c, w, h).find(([, n]) => edges.has(pair(c, n))) as [Facing, Cell])[0];
 }
 
-/** A random trap at `at`, a point harder to notice for each level down (`index`). */
-export function trapAt(rng: Rng, at: Cell, index: number): Trap {
-  const kind = TRAPS[rng.int(0, TRAPS.length - 1)] as Omit<Trap, 'at'>;
+/**
+ * A random trap of the content's kinds (data/content/ruin-traps.json) at `at`, a point harder to
+ * notice for each level down (`index`; docs/rules-adaptation.md, Ruins).
+ */
+export function trapAt(rng: Rng, kinds: readonly RuinTrap[], at: Cell, index: number): Trap {
+  const kind = kinds[rng.int(0, kinds.length - 1)] as RuinTrap;
   return { ...kind, notice: kind.notice + index, at };
 }
 

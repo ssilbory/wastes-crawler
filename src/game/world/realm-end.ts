@@ -1,4 +1,5 @@
-// A realm's ending (Sam's call: the Sealed Vale ends when the party clears the pass). Reaching the
+// A realm's ending (docs/rules-adaptation.md, Shipped worlds: the Sealed Vale ends when the party
+// clears the pass). Reaching the
 // realm's ending hex with no fight pending marks it reached; the world screen shows the ending
 // once, and the party can go back to the title screen or keep adventuring.
 import type { Realm } from '../../data/schemas/index.ts';

@@ -6,7 +6,8 @@
 // System Strain. Disease is caught on a failed Physical save at its penalty (2.5.0, 2.5.5; Sam's
 // calls in docs/rules-adaptation.md, Poison and disease).
 import { roll } from '../../rules/dice.ts';
-import { harm, save, say } from './damage.ts';
+import { harm, say } from './damage.ts';
+import { save } from './saves.ts';
 import { negatesUndead } from './reactions.ts';
 import { isUp } from './targeting.ts';
 import type { Attack, Battle, Combatant } from './types.ts';

@@ -4,7 +4,8 @@
 // and conditions.ts; Everlasting is cast for the player as an ally would fall (reactions.ts).
 import type { CombatEffect } from '../../data/schemas/index.ts';
 import { addStrain } from '../../rules/strain.ts';
-import { save, say } from './damage.ts';
+import { say } from './damage.ts';
+import { save } from './saves.ts';
 import type { Resists } from './high-magic.ts';
 import { isUp } from './targeting.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';

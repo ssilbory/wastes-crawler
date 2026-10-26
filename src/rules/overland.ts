@@ -1,5 +1,6 @@
-// Overland travel (docs/rules-adaptation.md, Overland travel, and SRD 2.11–2.12): quarter days,
-// hike costs, dark quarters, harsh nights, and the wandering encounter check.
+// Overland travel (docs/rules-adaptation.md, Overland travel; vendor/wwn-srd/2.0 The Rules of the
+// Game/2.11.0 Overland Travel.md and 2.12.0 Wilderness Exploration and Expeditions.md): quarter
+// days, hike costs, dark quarters, harsh nights, and the wandering encounter check.
 import { rollDie } from './dice.ts';
 import type { Rng } from './rng.ts';
 

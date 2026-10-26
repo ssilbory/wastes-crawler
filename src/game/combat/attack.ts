@@ -13,7 +13,8 @@ import {
   type ShockContext,
 } from '../../rules/attacks.ts';
 import { crossWall, cutVines, mantleCut, subdue } from './conditions.ts';
-import { effectiveAc, harm, save, say } from './damage.ts';
+import { effectiveAc, harm, say } from './damage.ts';
+import { save } from './saves.ts';
 import { afterHit, resisted } from './specials.ts';
 import { abilityDamage, drink } from './weapon-abilities.ts';
 import { negatesUndead } from './reactions.ts';
