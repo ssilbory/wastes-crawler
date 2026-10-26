@@ -101,16 +101,20 @@ export function shiftAction(actor: Combatant): Action | null {
 
 /**
  * Serpent's Kiss: a Savage Talons hit that stands, for Effort for the scene, does 1d8 plus Survive
- * more, except to the immune to poison.
+ * more, except to the immune to poison. This rolls it; spendVenom pays for it once the hit stands,
+ * so a blow turned aside costs nothing.
  */
 export function venom(b: Battle, actor: Combatant, attack: Attack, target: Combatant): number {
   if (attack.id !== 'savage-talons' || !wornForm(actor)?.arts.includes('serpents-kiss')) return 0;
   // Wearing a form takes Change Form, so the actor is a caster.
   const c = actor.caster as CasterState;
   if (target.poisonImmune || c.effortUsed >= c.effortMax) return 0;
-  c.effortUsed += 1;
-  const extra =
-    roll(b.rng, { count: 1, sides: 8, modifier: 0 }).total + (actor.skills.survive ?? 0);
+  return roll(b.rng, { count: 1, sides: 8, modifier: 0 }).total + (actor.skills.survive ?? 0);
+}
+
+/** Pays the Effort for venom that `venom` rolled, as the hit lands. */
+export function spendVenom(b: Battle, actor: Combatant, extra: number): void {
+  if (extra === 0) return;
+  (actor.caster as CasterState).effortUsed += 1;
   say(b, `${actor.name}'s venom burns for ${extra} more.`);
-  return extra;
 }

@@ -104,6 +104,19 @@ export interface BattleSetup {
   log?: boolean;
 }
 
+/**
+ * A character side's initiative: its PCs' best Dex modifier and best Alert bonus. Only PCs count:
+ * hirelings, mounts, companions and summons have no Dex of their own (their modifiers are all 0),
+ * so they'd lift a side of clumsy PCs to +0.
+ */
+export function initiativeModifiers(side: readonly Combatant[]): { dex: number; bonus: number } {
+  const pcs = side.filter((c) => c.kind === 'pc' && canAct(c));
+  return {
+    dex: pcs.length > 0 ? Math.max(...pcs.map((p) => p.modifiers.dex)) : 0,
+    bonus: Math.max(0, ...pcs.map((p) => p.initiativeBonus)),
+  };
+}
+
 /** An NPC's stat line; a companion's with Shared Vitality's hit dice and hit bonus (1.5.4). */
 function npcCombatant(s: BattleSetup, n: NpcSetup, i: number): Combatant {
   const c = monsterCombatant(s.data, n.monster, `npc-${i}`, s.rng);
@@ -227,7 +240,6 @@ export function createBattle(s: BattleSetup): Battle {
     halfChecked: new Set(),
     startCount: { party: party.length, enemy: enemies.length },
     stabilizedThisRound: new Set(),
-    hitModifier: { party: 0, enemy: 0 },
     dark: s.dark ?? false,
     indoors: s.indoors ?? false,
     walls: [],
@@ -236,7 +248,6 @@ export function createBattle(s: BattleSetup): Battle {
     vines: null,
     escaped: false,
     mended: false,
-    damageBonus: { party: 0, enemy: 0 },
     log: s.log ? [] : null,
     logSides: s.log ? [] : null,
     acting: null,
@@ -245,12 +256,8 @@ export function createBattle(s: BattleSetup): Battle {
   };
   // Characters roll with their best Dex and Alert; monsters roll flat.
   const pcRoll = (side: Combatant[]) => {
-    const active = side.filter(canAct);
-    return sideInitiative(
-      s.rng,
-      active.length > 0 ? Math.max(...active.map((p) => p.modifiers.dex)) : 0,
-      Math.max(0, ...active.map((p) => p.initiativeBonus)),
-    );
+    const { dex, bonus } = initiativeModifiers(side);
+    return sideInitiative(s.rng, dex, bonus);
   };
   const partyRoll = pcRoll(party);
   const enemyRoll = rivals.length > 0 ? pcRoll(enemies) : sideInitiative(s.rng, 0);

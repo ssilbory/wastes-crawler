@@ -54,6 +54,8 @@ export function levelPlan(data: GameData, c: Character): LevelPlan | null {
   const progression = progressionLookup(data)(classId);
   // Saved characters always hold a level entry, maybe 0, for their current class.
   const classLevel = (c.classes.levels[classId] as number) + 1;
+  // Only a level in a class with Quick Learner brings its point (Sam's call, docs/rules-adaptation.md,
+  // Skill points), unlike the abilities a character keeps from earlier classes.
   const quick = option.abilities?.includes('quick-learner') === true;
   const mage = option.mage;
   return {

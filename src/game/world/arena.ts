@@ -8,7 +8,7 @@ import { toTenths } from '../../rules/economy.ts';
 import type { BattleResult } from '../combat/battle.ts';
 import type { Battle } from '../combat/types.ts';
 import type { GameData } from '../character/context.ts';
-import { carryBack } from './carry-back.ts';
+import { carryBack, lastStandBack } from './carry-back.ts';
 import { ailmentsBack } from './ailments.ts';
 import { partyBattle, type WorldBattle } from './fight.ts';
 import { alive, note, setHp } from './members.ts';
@@ -61,6 +61,7 @@ export function settleBout(
     const c = fight.battle.combatants[i] as Battle['combatants'][number];
     carryBack(data, m, c);
     ailmentsBack(w, data, m, c);
+    lastStandBack(w, m, c);
     // Pulled out alive: everyone in a bout to yield, and the not-yet-dead in a bout to the death.
     if (fell(c) && !(bout.toTheDeath && c.status === 'dead')) {
       m.dead = false;

@@ -75,8 +75,9 @@ const medicBonus = (c: Combatant) =>
 
 /** One round of Heal checks for the dying, then the round ends and the clock moves on. */
 export function tendRound(b: Battle): void {
+  // PCs, and hirelings who are healers (with their kit); not beasts, mounts, servants or summons.
   const free = b.combatants
-    .filter((c) => c.side === 'party' && canAct(c))
+    .filter((c) => c.side === 'party' && canAct(c) && (c.kind === 'pc' || c.hasHealKit))
     .sort((x, y) => medicBonus(y) - medicBonus(x));
   // Each victim gets a medic before anyone is left over to aid.
   const tended = dyingOf(b).flatMap((victim) => {

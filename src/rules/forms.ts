@@ -15,7 +15,8 @@ export const pliantHeal = (roll: number, level: number): number => roll + level;
 
 /**
  * Hit points after a shift that changes the Con modifier by `conChange` at `level`: Feral Prowess's
- * hit points come and go with the form, and losing them never fells the conscious (Sam's call).
+ * hit points come and go with the form, and losing them never fells the conscious (Sam's call). The
+ * maximum never drops below 1, even if the level changed between shifting in and out.
  */
 export function shiftedHp(
   hp: { max: number; current: number },
@@ -23,7 +24,7 @@ export function shiftedHp(
   conChange: number,
 ): { max: number; current: number } {
   const change = level * conChange;
-  const max = hp.max + change;
+  const max = Math.max(1, hp.max + change);
   const floor = hp.current > 0 ? 1 : 0;
   return { max, current: Math.min(max, Math.max(floor, hp.current + change)) };
 }

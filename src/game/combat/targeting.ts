@@ -24,11 +24,11 @@ export const flying = (c: Combatant) => c.tags.has('flying') || c.flyingRounds >
 export const DARK_HIT_MODIFIER = -4;
 
 /**
- * The side's hit modifier (God Wills It), and -4 for a PC fighting in the dark who doesn't see in
- * it (docs/rules-adaptation.md, Dungeon exploration and Phase 15).
+ * The actor's blessing (God Wills It), and -4 for a PC fighting in the dark who doesn't see in it
+ * (docs/rules-adaptation.md, Dungeon exploration and Phase 15).
  */
 export const hitModifier = (b: Battle, actor: Combatant) =>
-  b.hitModifier[actor.side] +
+  actor.blessed +
   (b.dark && actor.side === 'party' && !actor.seesInDark ? DARK_HIT_MODIFIER : 0) -
   actor.ailPenalty;
 

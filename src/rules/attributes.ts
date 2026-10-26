@@ -4,8 +4,12 @@ import type { Attribute } from '../data/schemas/index.ts';
 
 export type AttributeScores = Record<Attribute, number>;
 
-/** 3 → −2, 4–7 → −1, 8–13 → 0, 14–17 → +1, 18 → +2; scores outside 3–18 stay within ±2. */
+/**
+ * 3 → −2, 4–7 → −1, 8–13 → 0, 14–17 → +1, 18 → +2; scores outside 3–18 stay within ±2. A missing
+ * or non-numeric score throws rather than passing as the best modifier.
+ */
 export function attributeModifier(score: number): number {
+  if (!Number.isFinite(score)) throw new RangeError(`not an attribute score: ${score}`);
   if (score <= 3) return -2;
   if (score <= 7) return -1;
   if (score <= 13) return 0;
