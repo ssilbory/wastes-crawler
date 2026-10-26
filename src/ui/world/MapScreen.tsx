@@ -1,5 +1,5 @@
 import { foundSitesIn } from '../../game/world/hidden-sites.ts';
-import { useState } from 'preact/hooks';
+import { useMemo, useState } from 'preact/hooks';
 import type { World } from '../../game/world/types.ts';
 import { describeDate } from '../../game/world/calendar.ts';
 import { route, setDestination, suggestPlan } from '../../game/world/plans.ts';
@@ -76,17 +76,22 @@ export function MapScreen(props: {
     ...entrancesIn(data, w.region, w.rumors),
     ...found.filter((s) => s.kind === 'ruin'),
   ];
-  const cells = hexCells(
-    map,
-    w,
-    route(w, data),
-    HEX_SIZE,
-    // A freed captive's home is marked like a quest's goal, and shows through the fog.
-    [...questTargets(w, data), ...captiveHomes(w, data)],
-    entrances,
-    grovesHere(w, data),
-    revealedHexes(w, data),
-    found.filter((s) => s.kind === 'lair'),
+  // The hexes change only with the world, so picking a plan or zooming reuses them.
+  const cells = useMemo(
+    () =>
+      hexCells(
+        map,
+        w,
+        route(w, data),
+        HEX_SIZE,
+        // A freed captive's home is marked like a quest's goal, and shows through the fog.
+        [...questTargets(w, data), ...captiveHomes(w, data)],
+        entrances,
+        grovesHere(w, data),
+        revealedHexes(w, data),
+        found.filter((s) => s.kind === 'lair'),
+      ),
+    [w, props.version],
   );
   // Zooming in from the whole map closes in on the party.
   const party = cells.find((c) => c.party);
