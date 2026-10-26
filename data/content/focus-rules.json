@@ -145,6 +145,10 @@
       {
         "kind": "self-stabilize",
         "level": 1
+      },
+      {
+        "kind": "last-stand",
+        "level": 2
       }
     ]
   },

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   createBattle,
+  initiativeModifiers,
   runBattle,
   runRound,
   type NpcSetup,
@@ -9,6 +10,8 @@ import { monsterAction } from '../../../src/game/combat/ai.ts';
 import { targets } from '../../../src/game/combat/targeting.ts';
 import type { Attack } from '../../../src/game/combat/types.ts';
 import { createRng } from '../../../src/rules/rng.ts';
+import { tendRound } from '../../../src/game/combat/aftermath.ts';
+import { scriptedThen } from '../../helpers/scripted-rng.ts';
 import { data, starter, who } from './helpers.ts';
 
 const guard: NpcSetup = {
@@ -97,6 +100,36 @@ describe('NPCs in the formation (docs/rules-adaptation.md, Party and formation)'
     Object.assign(who(b, 'Snag'), { status: 'dying', hp: 0, fellRound: 1 });
     expect(monsterAction(b, who(b, 'Doc'))).toEqual({ kind: 'stabilize', target: 'pc-0' });
     expect(who(b, 'Doc')).toMatchObject({ healModifier: 1, hasHealKit: true });
+  });
+
+  it('rolls the side’s initiative from its PCs alone', () => {
+    const b = battle([guard]);
+    const snag = who(b, 'Snag');
+    snag.modifiers = { ...snag.modifiers, dex: -1 };
+    snag.initiativeBonus = 0;
+    // The guard's flat +0 doesn't lift a clumsy party.
+    expect(initiativeModifiers(b.combatants.filter((c) => c.side === 'party'))).toEqual({
+      dex: -1,
+      bonus: 0,
+    });
+    // With no PC able to act, the side rolls flat.
+    snag.status = 'dying';
+    expect(initiativeModifiers([snag, who(b, 'Bran')])).toEqual({ dex: 0, bonus: 0 });
+  });
+
+  it('leaves the dying to PCs and healers after a win: not guards, beasts or mounts', () => {
+    const medic = { ...captive, name: 'Doc', healer: 1 };
+    const b = battle([guard, { ...medic, column: 2 }]);
+    for (const c of b.combatants.filter((x) => x.side === 'enemy')) c.status = 'dead';
+    b.outcome = 'party';
+    const snag = who(b, 'Snag');
+    Object.assign(snag, { status: 'dying', hp: 0, fellRound: b.round });
+    // Bran the guard has the best Heal bonus a non-healer could have (untrained −1), and Doc +1
+    // with a kit: Doc tends, and Bran neither tends nor aids.
+    b.rng = scriptedThen([6, 6], createRng('tend'));
+    tendRound(b);
+    expect(b.log?.join('\n')).toContain('Doc stabilizes Snag.');
+    expect(b.log?.join('\n')).not.toContain('Bran');
   });
 
   it('loses when only non-combatants are left standing, and never promotes them', () => {

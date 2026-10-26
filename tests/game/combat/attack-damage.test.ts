@@ -25,6 +25,20 @@ describe('resolveAttack (SRD 2.4.5–2.4.6)', () => {
     expect(last(b)).toBe('Round 1: Snag hits Thug or Militia with Spear, Light for 7.');
   });
 
+  it('raises a weak hit to the Shock a miss would deal, unless a ready shield would soak it', () => {
+    // Spear 1 + 3 is 4; a miss would deal its Shock of 5, so the hit does 5.
+    const { b, snag, thug, spear } = setup([15, 1]);
+    resolveAttack(b, snag, spear, thug);
+    expect(thug.hp).toBe(5);
+    // A shield the bearer hasn't used this round would have soaked that Shock: the hit does 4,
+    // and the shield is still ready, as nothing was soaked.
+    thug.hp = 10;
+    Object.assign(thug, { shield: true, shieldUsed: false });
+    b.rng = scriptedRng([15, 1]);
+    resolveAttack(b, snag, spear, thug);
+    expect([thug.hp, thug.shieldUsed]).toEqual([6, false]);
+  });
+
   it('deals Shock on a melee miss when the target’s AC allows it', () => {
     const { b, snag, thug, spear } = setup([2]);
     resolveAttack(b, snag, spear, thug);

@@ -48,6 +48,11 @@ describe('loot threshold', () => {
   it('never drops with a zero rate', () => {
     expect(lootPayout(750, 100, 750, 0)).toBe(100);
   });
+
+  it('refuses a threshold of zero or less, which both curves divide by', () => {
+    expect(() => lootPayout(0, 10, 0, 0.5)).toThrow('a town threshold must be positive, not 0');
+    expect(() => surchargedCost(0, 10, -1, 0.5)).toThrow('a town threshold must be positive');
+  });
 });
 
 describe('economic climate', () => {

@@ -10,6 +10,11 @@ import { syncToughness } from './companion-sync.ts';
 import type { Member, Npc, World } from './types.ts';
 import { wearForm } from './wear.ts';
 
+/** Die Hard's daily escape, spent in the fight, stays spent for the rest of the day (1.6.0). */
+export function lastStandBack(w: World, m: Member, c: Battle['combatants'][number]): void {
+  if (c.lastStandUsed) m.lastStandDay = w.day;
+}
+
 export function carryBack(data: GameData, m: Member, c: Battle['combatants'][number]): void {
   // Gear readied or stowed mid-fight stays where it was put, even by the fallen; so does the form,
   // with the hit point maximum Feral Prowess gave it.

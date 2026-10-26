@@ -22,6 +22,7 @@ import { spellLevel } from './spell-level.ts';
 import type { Battle, CasterState, Combatant } from './types.ts';
 import { gameSpells } from '../../data/spells.ts';
 import { swiftHealingDice } from '../../rules/beastmaster.ts';
+import { bless } from './blessing.ts';
 
 export function combatMagic(b: Battle, id: string): CombatMagic | undefined {
   return b.data.content.combatMagic.find((m) => m.id === id);
@@ -125,7 +126,7 @@ function pay(b: Battle, actor: Combatant, m: CombatMagic, strain: boolean): void
   } else if (strain && actor.strain) {
     const outcome = addStrain(actor.strain, strainCastCost(spellLevel(b, m.id)), 'strain-cast');
     actor.strain = outcome.state;
-  } else if (!retainsSpell(b, actor)) payFor(c, spellLevel(b, m.id));
+  } else if (!retainsSpell(b, actor)) Object.assign(c, payFor(c, spellLevel(b, m.id)));
 }
 
 /** Healing that revives the Mortally Wounded and adds System Strain, unless it is refused. */
@@ -247,12 +248,9 @@ export function castMagic(
     case 'repose':
       if (target && !target.tags.has('unliving')) target.reposePenalty = actor.skills[e.skill] ?? 0;
       return true;
-    case 'bless': {
-      const bonus = tierAt(e.tiers, c.level).bonus;
-      b.hitModifier[actor.side] += bonus;
-      b.damageBonus[actor.side] += bonus;
+    case 'bless':
+      bless(b, actor, tierAt(e.tiers, c.level).bonus, c.level);
       return true;
-    }
     case 'turn': {
       let budget = roll(b.rng, e.dice).total + c.level;
       const foes = b.combatants

@@ -262,4 +262,15 @@ export const WORLD_MIGRATIONS: Migrations = {
       benched: dry(raw.benched),
     };
   },
+  // Version 47 adds Die Hard's daily escape from a felling blow: no one has used it yet.
+  46: (raw) => {
+    const fresh = (list: unknown) =>
+      Array.isArray(list) ? (list as Raw[]).map((m) => ({ ...m, lastStandDay: null })) : list;
+    return {
+      ...raw,
+      schemaVersion: 47,
+      members: fresh(raw.members),
+      benched: fresh(raw.benched),
+    };
+  },
 };

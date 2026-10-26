@@ -14,7 +14,7 @@ import type { GameData } from '../character/context.ts';
 import { difficultyTier, type Difficulty } from './difficulty.ts';
 import { alive, note } from './members.ts';
 import { fights, isServant, moraleAfterFight, npcMonster, removeNpc, typeOf } from './npcs.ts';
-import { carryBack, npcsBack } from './carry-back.ts';
+import { carryBack, lastStandBack, npcsBack } from './carry-back.ts';
 import { ailPenalty } from './ailing.ts';
 import { ailmentsBack } from './ailments.ts';
 import { winnings } from './winnings.ts';
@@ -113,6 +113,8 @@ export interface PartySetup {
     committed: number;
     /** The element of a Pact of Stone and Sea on them, if any. */
     pact: Element | null;
+    /** Die Hard's daily escape from a felling blow already spent today (1.6.0). */
+    lastStandSpent: boolean;
     /** Poisoned, and the penalty their poison and disease bring into the fight. */
     poisoned: boolean;
     ailPenalty: number;
@@ -159,6 +161,7 @@ export function partySetup(
       committed: m === faith ? 1 : 0,
       pact: pactOf(w, m.id) ?? null,
       poisoned: m.poisoned,
+      lastStandSpent: m.lastStandDay === w.day,
       ailPenalty: ailPenalty(data, m),
       canBind: m.character.arts.includes(BIND) && !companionOf(w, m),
       waiting: waitingSetup(data, m),
@@ -207,6 +210,7 @@ export function battleFrom(data: GameData, rng: Rng, setup: PartySetup, log: boo
     c.pact = p.pact;
     c.poisoned = p.poisoned;
     c.ailPenalty = p.ailPenalty;
+    if (p.lastStandSpent) c.lastStand = false;
     if (c.caster) {
       c.caster.spellsLeft = Math.max(0, c.caster.spellsLeft - p.spellsCast);
       c.caster.pointsLeft = Math.max(0, c.caster.pointsLeft - p.pointsSpent);
@@ -278,6 +282,7 @@ export function applyBattle(
     const c = fight.battle.combatants[i] as Battle['combatants'][number];
     carryBack(data, m, c);
     ailmentsBack(w, data, m, c);
+    lastStandBack(w, m, c);
   });
   recordFallen(w, fight.memberIds, fight.battle);
   // The fight ends the scene, and any Pact of Stone and Sea with it.

@@ -22,6 +22,7 @@ import { focusInfo, type HeldFocus } from './foci.ts';
 import { entryEncumbrance, findItem, type CatalogItem, type InventoryEntry } from './items.ts';
 import { upgrade } from './upgrades.ts';
 import type { Skills } from './skills.ts';
+import { bestSkillDamage } from './skill-damage.ts';
 
 /** Effects from foci held at or above each effect's level. */
 export function activeEffects(data: GameData, foci: readonly HeldFocus[]): FocusEffect[] {
@@ -206,13 +207,12 @@ function attackLine(
   let shock: ShockRating | null = mode === 'melee' && src.shock ? { ...src.shock } : null;
   let shockExtra = src.damageExtra ?? 0;
   let ignoresAc = false;
+  const skillDamage = bestSkillDamage(effects, mode, src.unarmed === true, l.skills);
+  damageBonus += skillDamage.damage;
+  shockExtra += skillDamage.shock;
   for (const e of effects) {
     if ('excludesUnarmed' in e && e.excludesUnarmed && src.unarmed) continue;
     if (e.kind === 'hit-bonus' && e.modes.includes(mode)) hit += e.amount;
-    if (e.kind === 'damage-adds-skill' && e.modes.includes(mode)) {
-      damageBonus += l.skills[e.skill] ?? 0;
-      if (e.shock) shockExtra += l.skills[e.skill] ?? 0;
-    }
     if (e.kind === 'shock-bonus') shockExtra += e.amount;
     if (e.kind === 'shock-ignores-ac') ignoresAc = true;
     if (e.kind === 'vowed-punch' && src.addsPunch) {

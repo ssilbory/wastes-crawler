@@ -10,6 +10,7 @@ import { roll } from '../../rules/dice.ts';
 import { ahead, cellKey, type Cell } from '../../rules/grid.ts';
 import { rollSave } from '../../rules/saves.ts';
 import type { GameData } from '../character/context.ts';
+import { activeEffects } from '../character/equipment.ts';
 import { poisonProof } from '../world/ailing.ts';
 import { infect, poisonMember } from '../world/ailments.ts';
 import { pactOf } from '../world/pacts.ts';
@@ -64,10 +65,22 @@ export function approach(w: World, data: GameData, target: Cell, stepIn: boolean
   return text;
 }
 
-/** A PC brought to zero lies Mortally Wounded, for the party to tend (trap-falls.ts). */
-function wound(w: World, m: Member, amount: number): void {
+/**
+ * A PC brought to zero lies Mortally Wounded, for the party to tend (trap-falls.ts), unless Die
+ * Hard keeps them up at 1 HP, once a day (vendor/wwn-srd/1.0 Character Creation/1.6.0 Foci.md).
+ */
+function wound(w: World, data: GameData, m: Member, amount: number): void {
   const hp = m.character.hp.current - amount;
   note(w, `${m.character.name} takes ${amount} damage.`);
+  const lastStand =
+    m.lastStandDay !== w.day &&
+    activeEffects(data, m.character.foci).some((e) => e.kind === 'last-stand');
+  if (hp <= 0 && lastStand) {
+    setHp(m, 1);
+    m.lastStandDay = w.day;
+    note(w, `${m.character.name} should be down, and stays on their feet.`);
+    return;
+  }
   setHp(m, Math.max(0, hp));
   if (hp <= 0) note(w, `${m.character.name} falls, mortally wounded.`);
 }
@@ -109,7 +122,7 @@ function spring(w: World, data: GameData, trap: Trap): void {
     if (e.kind === 'poison') poisonMember(w, data, m);
     const amount =
       e.kind === 'damage' ? roll(w.rng, e.dice).total : Math.ceil(m.character.hp.max / 2);
-    wound(w, m, amount);
+    wound(w, data, m, amount);
   }
 }
 
