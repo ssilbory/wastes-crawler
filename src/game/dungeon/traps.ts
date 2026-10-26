@@ -17,9 +17,9 @@ import { pactOf } from '../world/pacts.ts';
 import { alive, bestAt, memberCheck, memberSheet, note, setHp } from '../world/members.ts';
 import type { TownResult } from '../world/services.ts';
 import type { Member, World } from '../world/types.ts';
-import { levelOf } from './explore.ts';
 import { blind } from './light.ts';
 import { callWanderers, passTurn } from './time.ts';
+import { levelOf } from './levels.ts';
 
 const state = (w: World) => w.dungeon as NonNullable<World['dungeon']>;
 const able = (w: World) => alive(w).filter((m) => m.character.hp.current > 0);

@@ -3,14 +3,13 @@ import { dungeonReferenceErrors } from '../../../src/data/dungeon-check.ts';
 import type { LevelMap } from '../../../src/data/dungeon-map.ts';
 import type { Ruin } from '../../../src/data/schemas/index.ts';
 import {
-  dungeonOf,
   enterDungeon,
   exitLabel,
   goesDown,
-  levelOf,
   openFacing,
   takeStairs,
 } from '../../../src/game/dungeon/explore.ts';
+import { dungeonOf, levelOf } from '../../../src/game/dungeon/levels.ts';
 import { generateRuin, ruinDungeon, ruinDungeonId } from '../../../src/game/dungeon/generate.ts';
 import {
   entrancesIn,
@@ -20,12 +19,12 @@ import {
   wayDownHere,
 } from '../../../src/game/dungeon/ruins.ts';
 import { emit } from '../../../src/game/world/bus.ts';
-import { enterRegion } from '../../../src/game/world/crossing.ts';
 import { addNpc } from '../../../src/game/world/npcs.ts';
 import type { World } from '../../../src/game/world/types.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { data, world } from '../world/helpers.ts';
 import { place } from './helpers.ts';
+import { enterRegion } from '../../../src/game/world/enter-region.ts';
 
 const ruinOf = (id: string) => data.content.ruins.find((r) => r.id === id) as Ruin;
 const CHAPEL = ruinOf('sunken-chapel');

@@ -1,12 +1,6 @@
 import { useLayoutEffect, useState } from 'preact/hooks';
-import {
-  exitLabel,
-  levelOf,
-  stairsHere,
-  step,
-  takeStairs,
-  turnParty,
-} from '../../game/dungeon/explore.ts';
+import { exitLabel, stairsHere, step, takeStairs, turnParty } from '../../game/dungeon/explore.ts';
+import { levelOf } from '../../game/dungeon/levels.ts';
 import { describeDate } from '../../game/world/calendar.ts';
 import type { World } from '../../game/world/types.ts';
 import { automap, FACING_NAMES } from '../../render/automap-view.ts';

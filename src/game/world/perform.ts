@@ -6,8 +6,8 @@ import { toTenths } from '../../rules/economy.ts';
 import type { GameData } from '../character/context.ts';
 import { awake, memberCheck, note } from './members.ts';
 import { restAtInn, type TownResult } from './services.ts';
-import { townHere } from './town.ts';
 import type { World } from './types.ts';
+import { townHere } from './town-prices.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 

@@ -16,8 +16,8 @@ import { roomFor } from './party-load.ts';
 import { componentName, removeComponents } from './components.ts';
 import { note } from './members.ts';
 import type { TownResult } from './services.ts';
-import { currentTown, ledger, townHere } from './town.ts';
 import type { Member, World } from './types.ts';
+import { currentTown, ledger, townHere } from './town-prices.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 const rules = (data: GameData) => data.content.craftingRules.craftsmen;

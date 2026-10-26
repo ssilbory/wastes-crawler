@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { step } from '../../../src/game/dungeon/explore.ts';
 import type { GameData } from '../../../src/game/character/context.ts';
 import { emit } from '../../../src/game/world/bus.ts';
-import { enterRegion } from '../../../src/game/world/crossing.ts';
 import { maybeEncounter, rollEnemies, startEncounter } from '../../../src/game/world/encounters.ts';
 import {
   authorityFor,
@@ -21,6 +20,7 @@ import { createRng } from '../../../src/rules/rng.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { below, place } from '../dungeon/helpers.ts';
 import { data, encounter, member, world } from './helpers.ts';
+import { enterRegion } from '../../../src/game/world/enter-region.ts';
 
 const GATE = { col: 18, row: 12 };
 

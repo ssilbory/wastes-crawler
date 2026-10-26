@@ -2,16 +2,14 @@
 // Dungeon exploration): step and turn on the grid, walk through doors, take stairs between levels
 // or back to the hex map. Steps count toward exploration turns (time.ts); each flight of stairs
 // costs a quarter day. Secret doors are walls until Phase 8's Search.
-import { parseLevelMap, type LevelMap } from '../../data/dungeon-map.ts';
-import type { Dungeon, DungeonLevel, DungeonState, Ruin } from '../../data/schemas/index.ts';
+import type { LevelMap } from '../../data/dungeon-map.ts';
+import type { DungeonState, Ruin } from '../../data/schemas/index.ts';
 import { ahead, cellKey, turn, type Cell, type Facing } from '../../rules/grid.ts';
-import { hexKey } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
 import { dismountForDungeon, remountOnSurface } from '../world/companion-mounts.ts';
 import { note } from '../world/members.ts';
-import { endQuarter } from '../world/quarter.ts';
 import { emit } from '../world/bus.ts';
-import { ruinDungeon } from './generate.ts';
+import { dungeonHere, dungeonOf, levelOf } from './levels.ts';
 import { ruinOfDungeon } from './hidden-ruins.ts';
 import { openRuin, ruinHere } from './ruins.ts';
 import { chartDungeon, recall } from './chart.ts';
@@ -22,38 +20,9 @@ import { countStep } from './time.ts';
 import { approach, springHere } from './traps.ts';
 import type { TownResult } from '../world/services.ts';
 import type { World } from '../world/types.ts';
+import { endQuarter } from '../world/end-quarter.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
-
-export function dungeonOf(data: GameData, id: string): Dungeon {
-  const ruin = data.content.dungeons.some((x) => x.id === id) ? undefined : ruinOfDungeon(data, id);
-  const d =
-    data.content.dungeons.find((x) => x.id === id) ??
-    (ruin && ruinDungeon([ruin], data.content.ruinTraps, id));
-  if (!d) throw new Error(`unknown dungeon ${id}`);
-  return d;
-}
-
-const maps = new WeakMap<DungeonLevel, LevelMap>();
-
-/** A level and its parsed map; content checks guarantee the map parses. */
-export function levelOf(data: GameData, dungeonId: string, levelId: string) {
-  const level = dungeonOf(data, dungeonId).levels.find((l) => l.id === levelId);
-  if (!level) throw new Error(`unknown level ${levelId}`);
-  let map = maps.get(level);
-  if (!map) {
-    map = (parseLevelMap(level.map) as { ok: true; map: LevelMap }).map;
-    maps.set(level, map);
-  }
-  return { level, map };
-}
-
-/** The hand-made dungeon whose entrance is the party's hex, if any; ruins are in ruins.ts. */
-export function dungeonHere(w: World, data: GameData): Dungeon | undefined {
-  return data.content.dungeons.find(
-    (d) => d.region === w.region && hexKey(d.entrance) === hexKey(w.position),
-  );
-}
 
 /** Marks the party's cell and the cells it can see straight ahead (up to 3) as seen. */
 export function look(w: World, data: GameData, s: DungeonState): void {

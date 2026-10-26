@@ -20,8 +20,8 @@ import { completeForge, forgedName } from './forging.ts';
 import { completeMod, modOf } from './mods.ts';
 import { regionMap } from './region.ts';
 import type { TownResult } from './services.ts';
-import { priceHere, spend, townHere } from './town.ts';
 import type { Member, World } from './types.ts';
+import { priceHere, spend, townHere } from './town-prices.ts';
 
 export type Tier = Project['quality'];
 

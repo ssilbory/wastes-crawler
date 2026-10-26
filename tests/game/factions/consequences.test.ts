@@ -3,10 +3,10 @@ import { nearbyPatrols, patrolBeaten, rollPatrol } from '../../../src/game/facti
 import { sack, strikesFor } from '../../../src/game/factions/strikes.ts';
 import { pickGoal } from '../../../src/game/factions/goals.ts';
 import { emit } from '../../../src/game/world/bus.ts';
-import { enterRegion } from '../../../src/game/world/crossing.ts';
 import { maybeEncounter } from '../../../src/game/world/encounters.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { data, faction, factionWorld, held } from './helpers.ts';
+import { enterRegion } from '../../../src/game/world/enter-region.ts';
 
 /** The party on the Dark Lands plains two hexes from Lanternfall. */
 function nearLanternfall() {

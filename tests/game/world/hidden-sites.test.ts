@@ -3,7 +3,8 @@ import { loadSrd } from '../../../src/data/load.ts';
 import { overlandReferenceErrors } from '../../../src/data/overland-check.ts';
 import type { HiddenSiteContent } from '../../../src/data/schemas/index.ts';
 import type { GameData } from '../../../src/game/character/context.ts';
-import { dungeonOf, enterDungeon, goesDown, levelOf } from '../../../src/game/dungeon/explore.ts';
+import { enterDungeon, goesDown } from '../../../src/game/dungeon/explore.ts';
+import { dungeonOf, levelOf } from '../../../src/game/dungeon/levels.ts';
 import {
   hiddenRuin,
   hiddenRuinById,

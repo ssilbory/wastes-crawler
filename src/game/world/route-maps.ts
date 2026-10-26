@@ -6,8 +6,8 @@ import type { GameData } from '../character/context.ts';
 import { note } from './members.ts';
 import { knownHexes, regionMap, type RegionMap } from './region.ts';
 import type { TownResult } from './services.ts';
-import { priceHere, spend, townHere } from './town.ts';
 import type { World } from './types.ts';
+import { priceHere, spend, townHere } from './town-prices.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 

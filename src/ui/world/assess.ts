@@ -2,8 +2,8 @@
 // one, otherwise on the main thread. Either way it runs on its own seed, never the world's RNG.
 // One worker serves every fight, so its copy of the game data loads once, not once a fight.
 import { simulateDifficulty, type Difficulty } from '../../game/world/difficulty.ts';
-import type { PartySetup } from '../../game/world/fight.ts';
 import { data } from '../builder/data.ts';
+import type { PartySetup } from '../../game/world/battle-setup.ts';
 
 export interface AssessRequest {
   setup: PartySetup;

@@ -2,13 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { playedTonight, playForLodging } from '../../../src/game/world/perform.ts';
 import { pray, prayedToday, shrineHere } from '../../../src/game/world/prayer.ts';
 import { sellPrice } from '../../../src/game/world/shop.ts';
-import { priceHere } from '../../../src/game/world/town.ts';
 import { haggler, tradePercent } from '../../../src/game/world/trade.ts';
 import type { Member } from '../../../src/game/world/types.ts';
 import { tradeText } from '../../../src/render/town-view.ts';
 import { createRng } from '../../../src/rules/rng.ts';
 import { scriptedRng, scriptedThen } from '../../helpers/scripted-rng.ts';
 import { data, encounter, member, world } from './helpers.ts';
+import { priceHere } from '../../../src/game/world/town-prices.ts';
 
 /** Gives a member these skills with Int, Wis, and Cha at 10, so a check adds only the skill. */
 function plain(m: Member, skills: Record<string, number>): void {

@@ -8,12 +8,12 @@ import {
   startBrew,
 } from '../../game/world/brewing.ts';
 import { partsText } from '../../game/world/components.ts';
-import { priceHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
 import { daysText } from '../../game/world/wording.ts';
 import { crowns } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import type { Act } from './TownScreen.tsx';
+import { priceHere } from '../../game/world/town-prices.ts';
 
 const alchemy = data.content.alchemy;
 

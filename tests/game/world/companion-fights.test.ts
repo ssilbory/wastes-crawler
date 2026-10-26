@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { act } from '../../../src/game/combat/actions.ts';
 import type { Battle, Combatant } from '../../../src/game/combat/types.ts';
-import { syncToughness } from '../../../src/game/world/companion-sync.ts';
-import { companionHere, companionOf } from '../../../src/game/world/companions.ts';
+import { syncToughness, companionHere } from '../../../src/game/world/companion-sync.ts';
+import { companionOf } from '../../../src/game/world/companions.ts';
 import { applyBattle, encounterBattle, type WorldBattle } from '../../../src/game/world/fight.ts';
 import { addNpc, MAX_NPCS } from '../../../src/game/world/npcs.ts';
 import type { Member, Npc, World } from '../../../src/game/world/types.ts';

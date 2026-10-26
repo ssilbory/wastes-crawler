@@ -11,13 +11,8 @@ import {
   stepDown,
 } from '../../../src/game/world/companion-mounts.ts';
 import { nightForCompanions } from '../../../src/game/world/companion-night.ts';
-import { followMaster, sharedEyes } from '../../../src/game/world/companion-sync.ts';
-import {
-  callCompanion,
-  companionHere,
-  sendAway,
-  swiftHealing,
-} from '../../../src/game/world/companions.ts';
+import { followMaster, sharedEyes, companionHere } from '../../../src/game/world/companion-sync.ts';
+import { callCompanion, sendAway, swiftHealing } from '../../../src/game/world/companions.ts';
 import { applyBattle, encounterBattle, type WorldBattle } from '../../../src/game/world/fight.ts';
 import { allMounted, buyMount, setRider } from '../../../src/game/world/mounts.ts';
 import { addNpc, MAX_NPCS } from '../../../src/game/world/npcs.ts';

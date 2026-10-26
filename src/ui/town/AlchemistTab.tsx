@@ -10,11 +10,11 @@ import {
 } from '../../game/world/alchemists.ts';
 import { brewItem, reagentsListed } from '../../game/world/brewing.ts';
 import { daysText } from '../../game/world/wording.ts';
-import { priceHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
 import { crowns } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import type { Act } from './TownScreen.tsx';
+import { priceHere } from '../../game/world/town-prices.ts';
 
 const name = (id: string) => brewItem(data, id).name;
 const DOSES = [1, 2, 3, 4];

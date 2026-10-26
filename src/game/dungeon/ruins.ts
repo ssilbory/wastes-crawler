@@ -16,9 +16,9 @@ import { accrueShares } from '../world/npcs.ts';
 import { addLoot } from '../world/shop.ts';
 import { pickUp } from '../world/party-load.ts';
 import type { World } from '../world/types.ts';
-import { dungeonHere, levelOf } from './explore.ts';
 import { generateRuin } from './generate.ts';
 import { ruinOfDungeon } from './hidden-ruins.ts';
+import { dungeonHere, levelOf } from './levels.ts';
 
 const MAX_SEED = 2 ** 31 - 1;
 

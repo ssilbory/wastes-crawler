@@ -3,14 +3,13 @@ import {
   bindable,
   bindCompanion,
   callCompanion,
-  companionHere,
   companionOf,
   releaseCompanion,
   sendAway,
   swiftHealing,
 } from '../../../src/game/world/companions.ts';
 import { immuneTo } from '../../../src/game/world/arts.ts';
-import { sharedEyes, untoughened } from '../../../src/game/world/companion-sync.ts';
+import { sharedEyes, untoughened, companionHere } from '../../../src/game/world/companion-sync.ts';
 import { endOfDay } from '../../../src/game/world/day.ts';
 import { checkBonus } from '../../../src/game/world/members.ts';
 import { parleyReach } from '../../../src/game/world/minds.ts';

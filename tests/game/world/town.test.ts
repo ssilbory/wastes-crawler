@@ -9,14 +9,14 @@ import {
   stayAtInn,
   healerHeal,
 } from '../../../src/game/world/services.ts';
+import { enterTown } from '../../../src/game/world/town.ts';
 import {
   currentTown,
-  enterTown,
   ledger,
   priceHere,
   spend,
   townHere,
-} from '../../../src/game/world/town.ts';
+} from '../../../src/game/world/town-prices.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { data, member, world, encounter } from './helpers.ts';
 

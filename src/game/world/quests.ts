@@ -4,7 +4,6 @@
 import type { Objective, Quest, QuestState, Site } from '../../data/schemas/index.ts';
 import { hexKey } from '../../rules/hex.ts';
 import type { Cell } from '../../rules/grid.ts';
-import { levelOf } from '../dungeon/explore.ts';
 import type { GameData } from '../character/context.ts';
 import type { WorldEvent } from './bus.ts';
 import { reinforced } from './clock.ts';
@@ -12,6 +11,7 @@ import { meetGroup } from './encounters.ts';
 import { note } from './members.ts';
 import { removeNpc } from './npcs.ts';
 import type { World } from './types.ts';
+import { levelOf } from '../dungeon/levels.ts';
 
 export function questOf(data: GameData, id: string): Quest {
   const q = data.content.quests.find((x) => x.id === id);

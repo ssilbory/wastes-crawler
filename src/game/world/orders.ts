@@ -7,7 +7,6 @@
 import type { Authority, StandingOrder } from '../../data/schemas/index.ts';
 import { hexKey } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
-import { levelOf } from '../dungeon/explore.ts';
 import { emit, type WorldEvent } from './bus.ts';
 import { meetGroup } from './encounters.ts';
 import { passInDisguise } from './guises.ts';
@@ -16,6 +15,7 @@ import { hirelingType } from './npcs.ts';
 import type { TownResult } from './services.ts';
 import { speechCheck } from './speech.ts';
 import type { World } from './types.ts';
+import { levelOf } from '../dungeon/levels.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 

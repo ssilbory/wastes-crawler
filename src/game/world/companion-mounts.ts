@@ -6,11 +6,11 @@
 // entrance, and is ridden again on the surface.
 import type { GameData } from '../character/context.ts';
 import { findPeople } from '../character/people.ts';
-import { companionHere } from './companions.ts';
 import { note } from './members.ts';
 import { placeNpc, removeNpc } from './npcs.ts';
 import type { TownResult } from './services.ts';
 import type { Member, Npc, World } from './types.ts';
+import { companionHere } from './companion-sync.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 

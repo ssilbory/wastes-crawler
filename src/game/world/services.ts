@@ -8,10 +8,11 @@ import { addStrain, fullRest } from '../../rules/strain.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
 import { cure } from './ailments.ts';
+import { revive } from './healer.ts';
 import { endOfDay } from './day.ts';
 import { alive, cureFrailty, note, setHp } from './members.ts';
-import { FULL_RATIONS, priceHere, spend, townHere } from './town.ts';
 import type { Member, World } from './types.ts';
+import { FULL_RATIONS, priceHere, spend, townHere } from './town-prices.ts';
 
 export type TownResult = { ok: true } | { ok: false; reason: string };
 
@@ -139,17 +140,4 @@ export function raiseDead(w: World, data: GameData, id: string): TownResult {
   revive(m);
   note(w, `${raiser.name} raises ${m.character.name}.`);
   return OK;
-}
-
-/** Brings a dead member back: 1 HP, no strain, and the XP they earned while dead. */
-export function revive(m: Member): void {
-  Object.assign(m, { dead: false, hungry: false, thirsty: false, sleepless: false, cold: false });
-  cureFrailty(m);
-  m.character = {
-    ...m.character,
-    xp: m.character.xp + m.pendingXp,
-    strain: { value: 0, broken: false },
-  };
-  m.pendingXp = 0;
-  setHp(m, 1);
 }

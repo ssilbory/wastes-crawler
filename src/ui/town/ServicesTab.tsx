@@ -9,7 +9,6 @@ import {
   raiserHere,
   stayAtInn,
 } from '../../game/world/services.ts';
-import { priceHere } from '../../game/world/town.ts';
 import { shrineHere } from '../../game/world/prayer.ts';
 import { findDisease } from '../../game/world/ailing.ts';
 import type { World } from '../../game/world/types.ts';
@@ -18,6 +17,7 @@ import { data } from '../builder/data.ts';
 import { SellLootForm } from './SellLootForm.tsx';
 import { PerformForm, PrayerForm } from './SkillServices.tsx';
 import type { Act } from './TownScreen.tsx';
+import { priceHere } from '../../game/world/town-prices.ts';
 
 /** Where each kind of raiser works (Phase 14d adds the Blood Priest temple). */
 const RAISER_PLACE = { crypt: 'Crypt', mortuary: 'Mortuary', temple: 'Temple' } as const;

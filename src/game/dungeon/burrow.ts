@@ -8,7 +8,8 @@ import { cannotCast, spendCast } from '../world/casting.ts';
 import { alive, note } from '../world/members.ts';
 import type { TownResult } from '../world/services.ts';
 import type { Member, World } from '../world/types.ts';
-import { levelOf, look } from './explore.ts';
+import { look } from './explore.ts';
+import { levelOf } from './levels.ts';
 import { edgeKey, knownEdges } from './secrets.ts';
 import { passTurn } from './time.ts';
 

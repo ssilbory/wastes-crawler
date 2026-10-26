@@ -1,9 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { emit } from '../../../src/game/world/bus.ts';
-import { enterRegion } from '../../../src/game/world/crossing.ts';
-import { isRaided, raidedCost } from '../../../src/game/world/raids.ts';
 import { stayAtInn } from '../../../src/game/world/services.ts';
-import { enterTown, priceHere } from '../../../src/game/world/town.ts';
+import { enterTown } from '../../../src/game/world/town.ts';
 import type { World } from '../../../src/game/world/types.ts';
 import type { FactionState } from '../../../src/data/schemas/index.ts';
 import { pickGoal } from '../../../src/game/factions/goals.ts';
@@ -13,6 +11,8 @@ import { takeAction } from '../../../src/game/factions/turn.ts';
 import type { Rng } from '../../../src/rules/rng.ts';
 import { below } from '../dungeon/helpers.ts';
 import { data, world } from './helpers.ts';
+import { enterRegion } from '../../../src/game/world/enter-region.ts';
+import { isRaided, raidedCost, priceHere } from '../../../src/game/world/town-prices.ts';
 
 const CINDERHOLD = { col: 6, row: 12 };
 

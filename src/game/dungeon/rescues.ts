@@ -7,7 +7,7 @@ import type { GameData } from '../character/context.ts';
 import type { WorldEvent } from '../world/bus.ts';
 import { meetGroup } from '../world/encounters.ts';
 import type { World } from '../world/types.ts';
-import { levelOf } from './explore.ts';
+import { levelOf } from './levels.ts';
 
 /** The world-wide key of a held captive's cell. */
 const keyOf = (w: World, c: HeldCaptive) => {

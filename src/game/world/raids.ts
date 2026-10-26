@@ -28,14 +28,6 @@ function atRaid(w: World, data: GameData, town: string): boolean {
   );
 }
 
-/** Whether a settlement's prices are up after a raid. */
-export const isRaided = (w: World, town: string) => (w.raided[town] ?? -1) > w.day;
-
-/** The raided surcharge on top of `cost`. */
-export function raidedCost(w: World, data: GameData, town: string, cost: number): number {
-  return isRaided(w, town) ? toTenths(cost * (1 + data.content.raidRules.surcharge)) : cost;
-}
-
 /** The raiders reach the gates while the party is there. */
 function defend(w: World, data: GameData): void {
   const raid = w.raid;

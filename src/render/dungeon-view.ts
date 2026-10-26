@@ -4,7 +4,6 @@
 // look like walls until found, and traps show once known.
 import type { EdgeKind, LevelMap } from '../data/dungeon-map.ts';
 import type { Trap } from '../data/schemas/index.ts';
-import { levelOf } from '../game/dungeon/explore.ts';
 import { arcaneSeer, blind } from '../game/dungeon/light.ts';
 import { seer } from '../game/world/arts.ts';
 import { darknessPanels, type DarkAt } from './dungeon-darkness.ts';
@@ -42,6 +41,7 @@ export { shade, type Panel } from './dungeon-panel.ts';
 
 export { VIEW_DEPTH, VIEW_HEIGHT, VIEW_WIDTH } from './dungeon-geometry.ts';
 import { VIEW_DEPTH } from './dungeon-geometry.ts';
+import { levelOf } from '../game/dungeon/levels.ts';
 
 /** The cell `depth` ahead and `lateral` to the right (negative: left) of the party. */
 function cellAt(at: Cell, f: Facing, depth: number, lateral: number): Cell {

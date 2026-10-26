@@ -12,7 +12,8 @@ import { alive, note } from './members.ts';
 import { findPath, regionMap, type RegionMap } from './region.ts';
 import type { TownResult } from './services.ts';
 import { emit } from './bus.ts';
-import { enterTown, priceHere, spend, townHere } from './town.ts';
+import { enterTown } from './town.ts';
+import { priceHere, spend, townHere } from './town-prices.ts';
 import type { World } from './types.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });

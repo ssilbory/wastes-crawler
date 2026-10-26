@@ -14,7 +14,6 @@ import {
 } from '../../game/world/crafting.ts';
 import type { Size } from '../../game/character/gear.ts';
 import { fitSizeOf } from '../../game/world/shop.ts';
-import { priceHere, townHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
 import { stayToWork, workDay } from '../../game/world/workshop.ts';
 import { projectText } from '../../render/crafting-view.ts';
@@ -27,6 +26,7 @@ import { EnchantPanel } from './EnchantPanel.tsx';
 import { ForgePanel } from './ForgePanel.tsx';
 import { goOnFlawed, restartForge } from '../../game/world/forging.ts';
 import type { Act } from './TownScreen.tsx';
+import { priceHere, townHere } from '../../game/world/town-prices.ts';
 
 const items = craftable(data);
 const TIERS: Tier[] = ['jury-rigged', 'normal', 'mastercrafted'];

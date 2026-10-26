@@ -5,7 +5,6 @@
 import type { Cell } from '../rules/grid.ts';
 import { cellKey } from '../rules/grid.ts';
 import type { GameData } from '../game/character/context.ts';
-import { levelOf } from '../game/dungeon/explore.ts';
 import { captiveOf } from '../game/world/npcs.ts';
 import { orderEnded } from '../game/world/orders.ts';
 import { currentStep, questOf } from '../game/world/quests.ts';
@@ -14,6 +13,7 @@ import { ring, type Part } from './figure-art.ts';
 import { monsterFigureOf, type FigureView } from './figure-view.ts';
 import { flatOn, standIn } from './dungeon-geometry.ts';
 import { shade, type Panel } from './dungeon-panel.ts';
+import { levelOf } from '../game/dungeon/levels.ts';
 
 export interface Occupant {
   kind: 'captive' | 'garrison' | 'guardian' | 'item';

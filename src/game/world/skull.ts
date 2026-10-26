@@ -7,7 +7,6 @@ import { cellKey, FACINGS, type Cell } from '../../rules/grid.ts';
 import { distance, hexKey } from '../../rules/hex.ts';
 import { characterLevel } from '../../rules/progression.ts';
 import type { GameData } from '../character/context.ts';
-import { levelOf } from '../dungeon/explore.ts';
 import { edgeKey } from '../dungeon/secrets.ts';
 import { cannotCast, spendCast } from './casting.ts';
 import { note } from './members.ts';
@@ -15,6 +14,7 @@ import { corpsesHere } from './necromancy.ts';
 import { regionMap } from './region.ts';
 import type { TownResult } from './services.ts';
 import type { Member, World } from './types.ts';
+import { levelOf } from '../dungeon/levels.ts';
 
 export const QUERY_THE_SKULL = 'query-the-skull';
 

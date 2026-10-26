@@ -12,8 +12,8 @@ import { carryBack, lastStandBack } from './carry-back.ts';
 import { ailmentsBack } from './ailments.ts';
 import { partyBattle, type WorldBattle } from './fight.ts';
 import { alive, note, setHp } from './members.ts';
-import { priceHere, spend, townHere } from './town.ts';
 import type { Member, World } from './types.ts';
+import { priceHere, spend, townHere } from './town-prices.ts';
 
 export function arenaCard(w: World, data: GameData): ArenaBout[] {
   const town = townHere(w, data);

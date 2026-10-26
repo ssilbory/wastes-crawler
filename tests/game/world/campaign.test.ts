@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { enterRegion } from '../../../src/game/world/crossing.ts';
 import { questOf } from '../../../src/game/world/quests.ts';
 import {
   acceptQuest,
@@ -8,6 +7,7 @@ import {
   turnInQuest,
 } from '../../../src/game/world/quest-board.ts';
 import { data, world } from './helpers.ts';
+import { enterRegion } from '../../../src/game/world/enter-region.ts';
 
 const CINDERHOLD = { col: 6, row: 12 };
 const GUTTERWICK = { col: 16, row: 15 };

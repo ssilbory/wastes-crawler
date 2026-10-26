@@ -9,8 +9,8 @@ import type { TrainResult } from '../character/training.ts';
 import { untoughened } from './companion-sync.ts';
 import { note } from './members.ts';
 import type { TownResult } from './services.ts';
-import { townHere } from './town.ts';
 import type { Member, World } from './types.ts';
+import { townHere } from './town-prices.ts';
 
 function living(w: World, data: GameData, id: string): Member {
   townHere(w, data);

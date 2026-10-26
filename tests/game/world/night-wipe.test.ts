@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { endQuarter } from '../../../src/game/world/quarter.ts';
 import { data, world } from './helpers.ts';
+import { endQuarter } from '../../../src/game/world/end-quarter.ts';
 
 describe('a night that leaves no one standing (SRD 2.5.0 strain, docs/rules-adaptation.md)', () => {
   it('falls back to the last town as a lost fight does, moving the day on once', () => {

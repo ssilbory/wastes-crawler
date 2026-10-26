@@ -10,12 +10,12 @@ import {
   startForge,
 } from '../../game/world/forging.ts';
 import { fitSizeOf } from '../../game/world/shop.ts';
-import { priceHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
 import { daysText } from '../../game/world/wording.ts';
 import { crowns } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import type { Act } from './TownScreen.tsx';
+import { priceHere } from '../../game/world/town-prices.ts';
 
 const items = forgeable(data);
 const name = (id: string) => findItem(data, id)?.name ?? id;

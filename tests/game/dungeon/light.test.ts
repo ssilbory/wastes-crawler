@@ -135,7 +135,7 @@ describe('light underground (docs/rules-adaptation.md, Dungeon exploration)', ()
 
 describe('fighting in the dark', () => {
   it('replays and fights the party at -4 to hit with no light', async () => {
-    const { partySetup, battleFrom } = await import('../../../src/game/world/fight.ts');
+    const { partySetup, battleFrom } = await import('../../../src/game/world/battle-setup.ts');
     const { createRng } = await import('../../../src/rules/rng.ts');
     const w = below();
     expect(partySetup(w, data, [['thug-or-militia']], true).dark).toBe(false);

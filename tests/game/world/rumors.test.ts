@@ -5,10 +5,10 @@ import { entrancesIn } from '../../../src/game/dungeon/ruins.ts';
 import { regionMap } from '../../../src/game/world/region.ts';
 import { buyRumor, rumorListed, rumorsLeft } from '../../../src/game/world/rumors.ts';
 import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
-import { enterRegion } from '../../../src/game/world/crossing.ts';
 import { hexCells } from '../../../src/render/hex-view.ts';
 import { createRng } from '../../../src/rules/rng.ts';
 import { data, encounter, world } from './helpers.ts';
+import { enterRegion } from '../../../src/game/world/enter-region.ts';
 
 const ids = (w: ReturnType<typeof world>) => rumorsLeft(w, data).map((r) => r.id);
 

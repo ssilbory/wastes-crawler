@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { FURNITURE, type DungeonState } from '../../src/data/schemas/index.ts';
-import { levelOf } from '../../src/game/dungeon/explore.ts';
 import type { World } from '../../src/game/world/types.ts';
 import { automap } from '../../src/render/automap-view.ts';
 import { furnitureOf } from '../../src/render/dungeon-furniture.ts';
 import { dungeonView, sandboxView } from '../../src/render/dungeon-view.ts';
 import { furnitureIn, furnitureParts } from '../../src/render/furniture-art.ts';
 import { data, world } from '../game/world/helpers.ts';
+import { levelOf } from '../../src/game/dungeon/levels.ts';
 
 function at(x: number, y: number, facing: DungeonState['facing'], seen: string[] = []): World {
   const w = world();

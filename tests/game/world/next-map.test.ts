@@ -4,7 +4,6 @@ import { describe, expect, it } from 'vitest';
 import { questReferenceErrors } from '../../../src/data/quest-check.ts';
 import type { Quest } from '../../../src/data/schemas/index.ts';
 import { loadSrd } from '../../../src/data/load.ts';
-import { enterRegion } from '../../../src/game/world/crossing.ts';
 import {
   acceptQuest,
   cannotAccept,
@@ -15,6 +14,7 @@ import { payerName, questOf } from '../../../src/game/world/quests.ts';
 import { enterTown } from '../../../src/game/world/town.ts';
 import type { World } from '../../../src/game/world/types.ts';
 import { data, world } from './helpers.ts';
+import { enterRegion } from '../../../src/game/world/enter-region.ts';
 
 const levelled = (w: World, level: number) => {
   for (const m of w.members)

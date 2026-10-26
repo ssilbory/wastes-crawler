@@ -5,14 +5,8 @@ import type { Facing } from '../../src/data/schemas/index.ts';
 import type { GameData } from '../../src/game/character/context.ts';
 import { autoLevel } from '../../src/game/character/auto-level.ts';
 import { runBattle } from '../../src/game/combat/battle.ts';
-import {
-  enterDungeon,
-  levelOf,
-  step,
-  takeStairs,
-  turnParty,
-} from '../../src/game/dungeon/explore.ts';
-import { enterRegion } from '../../src/game/world/crossing.ts';
+import { enterDungeon, step, takeStairs, turnParty } from '../../src/game/dungeon/explore.ts';
+import { levelOf } from '../../src/game/dungeon/levels.ts';
 import { encounterBattle } from '../../src/game/world/fight.ts';
 import {
   authorityFor,
@@ -26,6 +20,7 @@ import { enterTown } from '../../src/game/world/town.ts';
 import type { World } from '../../src/game/world/types.ts';
 import { parseWorld, serializeWorld } from '../../src/game/world/save.ts';
 import { createRng } from '../../src/rules/rng.ts';
+import { enterRegion } from '../../src/game/world/enter-region.ts';
 
 type Cell = { x: number; y: number };
 const SIDES: [Facing, number, number][] = [

@@ -17,10 +17,10 @@ import { findPeople } from '../character/people.ts';
 import { alive, awake, note } from './members.ts';
 import { addNpc, freshName, monsterOf, npcRoom, removeNpc } from './npcs.ts';
 import type { TownResult } from './services.ts';
-import { priceHere, spend, townHere } from './town.ts';
 import { tradePercent } from './trade.ts';
 import { spoils } from './warlords.ts';
 import type { Member, Mount, Npc, World } from './types.ts';
+import { priceHere, spend, townHere } from './town-prices.ts';
 
 const OK: TownResult = { ok: true };
 const no = (reason: string): TownResult => ({ ok: false, reason });

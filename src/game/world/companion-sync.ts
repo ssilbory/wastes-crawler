@@ -17,6 +17,10 @@ export const BIND = 'bind-companion';
 export const companionOf = (w: World, m: Member): Npc | null =>
   w.npcs.find((n) => n.kind === 'companion' && n.master === m.id) ?? m.companion;
 
+/** The member's companion travelling with the party, if any. */
+export const companionHere = (w: World, memberId: string): Npc | undefined =>
+  w.npcs.find((n) => n.kind === 'companion' && n.master === memberId);
+
 /** The companion's natural hit dice, before Shared Vitality. */
 export const naturalHitDice = (data: GameData, n: Npc): number => monsterOf(data, n.type).hitDice;
 

@@ -16,8 +16,8 @@ import { campUnderground } from '../../../src/game/dungeon/time.ts';
 import { camp } from '../../../src/game/world/activities.ts';
 import { endOfDay } from '../../../src/game/world/day.ts';
 import { startEncounter } from '../../../src/game/world/encounters.ts';
-import { applyBattle, battleFrom, partySetup } from '../../../src/game/world/fight.ts';
-import { endQuarter } from '../../../src/game/world/quarter.ts';
+import { applyBattle } from '../../../src/game/world/fight.ts';
+import { battleFrom, partySetup } from '../../../src/game/world/battle-setup.ts';
 import { passTurn } from '../../../src/game/dungeon/time.ts';
 import { setHp } from '../../../src/game/world/members.ts';
 import { parley } from '../../../src/game/world/parley.ts';
@@ -26,6 +26,7 @@ import { createRng } from '../../../src/rules/rng.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { below, place } from '../dungeon/helpers.ts';
 import { data, encounter, member, world } from './helpers.ts';
+import { endQuarter } from '../../../src/game/world/end-quarter.ts';
 
 /** Fizzwick in a class with these arts and Effort to spare. */
 function gift(w: World, arts: string[], classId = 'blood-priest-partial-warrior'): Member {

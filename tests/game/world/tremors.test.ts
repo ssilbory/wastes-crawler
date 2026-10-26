@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { emit } from '../../../src/game/world/bus.ts';
-import { enterRegion } from '../../../src/game/world/crossing.ts';
 import { cannotTopple, topple, TREMORS } from '../../../src/game/world/tremors.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
 import { below } from '../dungeon/helpers.ts';
 import { fail } from './helpers-mage.ts';
 import { data, encounter, member, world } from './helpers.ts';
+import { enterRegion } from '../../../src/game/world/enter-region.ts';
 
 /** Fizzwick as a level-`level` Elementalist with Tremors of the Depths prepared. */
 function elementalist(w: World, level = 9): Member {

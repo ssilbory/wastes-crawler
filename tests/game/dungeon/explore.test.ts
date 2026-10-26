@@ -1,14 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import {
-  dungeonHere,
-  dungeonOf,
   enterDungeon,
-  levelOf,
   stairsHere,
   step,
   takeStairs,
   turnParty,
 } from '../../../src/game/dungeon/explore.ts';
+import { dungeonHere, dungeonOf, levelOf } from '../../../src/game/dungeon/levels.ts';
 import { passQuarter } from '../../../src/game/world/quarter.ts';
 import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
 import type { World } from '../../../src/game/world/types.ts';

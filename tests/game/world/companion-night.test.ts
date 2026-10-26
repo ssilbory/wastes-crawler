@@ -5,10 +5,10 @@ import {
   syncCompanion,
   syncToughness,
   untoughened,
+  companionHere,
 } from '../../../src/game/world/companion-sync.ts';
 import {
   bindCompanion,
-  companionHere,
   companionOf,
   releaseCompanion,
   sendAway,
