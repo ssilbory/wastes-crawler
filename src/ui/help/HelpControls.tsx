@@ -34,8 +34,9 @@ export function HelpControls() {
         </li>
         <li>Visit, Enter, and Take buttons appear in the bar on a town, dungeon, or road.</li>
         <li>
-          Keys: H plans a hike and C a camp, Q plays out the quarter, T visits the town the party
-          stands in, and Space visits that town or enters the dungeon there.
+          Keys: H plans a hike and C a camp, Q plays out the quarter, and T visits the town the
+          party stands in. Space plays out the quarter when a hex is targeted, hiking toward it or
+          camping as planned; with none targeted, it visits the town or enters the dungeon there.
         </li>
       </ul>
 
