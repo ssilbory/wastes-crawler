@@ -13,7 +13,7 @@ export function findLineage(people: People, id: string): Lineage | undefined {
 }
 
 /** The people's modifiers plus the lineage's, per attribute. */
-export function combinedModifiers(people: People, lineage: Lineage | undefined): Adjustments {
+function combinedModifiers(people: People, lineage: Lineage | undefined): Adjustments {
   const out: Adjustments = {};
   for (const a of ATTRIBUTES) {
     const total = (people.attributeModifiers[a] ?? 0) + (lineage?.attributeModifiers[a] ?? 0);

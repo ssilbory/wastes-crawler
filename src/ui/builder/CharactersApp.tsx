@@ -15,7 +15,14 @@ import {
   sameName,
 } from '../../game/character/roster-edit.ts';
 import { ConfirmButton } from '../confirm.tsx';
-import { activeSlot, loadRoster, loadWorldText, saveRoster } from '../storage.ts';
+import {
+  activeSlot,
+  loadRoster,
+  loadWorldText,
+  readText,
+  saveRoster,
+  unreadable,
+} from '../storage.ts';
 import { launchHash } from '../world/launch.ts';
 import { Builder } from './Builder.tsx';
 import { CharacterList } from './CharacterList.tsx';
@@ -144,7 +151,12 @@ export function CharactersApp() {
     const imported: Character[] = [];
     const problems: string[] = [];
     for (const file of files) {
-      const result = importCharacter(await file.text(), data);
+      const text = await readText(file);
+      if (text === null) {
+        problems.push(unreadable(file));
+        continue;
+      }
+      const result = importCharacter(text, data);
       if (result.ok) imported.push(result.character);
       else problems.push(...result.errors.map((e) => `${file.name}: ${e}`));
     }

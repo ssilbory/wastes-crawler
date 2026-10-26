@@ -8,7 +8,7 @@ import {
 } from '../../game/character/roster.ts';
 import { importToRoster } from '../../game/character/roster-edit.ts';
 import { data, freshRng } from '../builder/data.ts';
-import { loadRoster, saveRoster } from '../storage.ts';
+import { loadRoster, readText, saveRoster, unreadable } from '../storage.ts';
 import { startBattle, type FightSetup, type PartySlot } from './fight.ts';
 import { FightScreen } from './FightScreen.tsx';
 import { MonsterPicker } from './MonsterPicker.tsx';
@@ -47,7 +47,12 @@ export function ArenaApp() {
     const rng = freshRng();
     const problems: string[] = [];
     for (const file of Array.from(files)) {
-      const result = importCharacter(await file.text(), data);
+      const text = await readText(file);
+      if (text === null) {
+        problems.push(unreadable(file));
+        continue;
+      }
+      const result = importCharacter(text, data);
       if (result.ok) setRoster(importToRoster(rosterNow.current, result.character, rng));
       else problems.push(...result.errors.map((e) => `${file.name}: ${e}`));
     }

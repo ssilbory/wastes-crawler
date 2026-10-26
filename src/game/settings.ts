@@ -22,12 +22,26 @@ function withNewActions(raw: unknown, data: GameData): unknown {
   return { ...(raw as object), keys: { ...stored, ...Object.fromEntries(added) } };
 }
 
+/**
+ * Keys that never take an action: Tab and Enter move focus and press buttons, Escape cancels, and
+ * a modifier alone is half a chord.
+ */
+const RESERVED = new Set(['Tab', 'Enter', 'Escape', 'Shift', 'Control', 'Alt', 'Meta', 'AltGraph']);
+
+/** Whether a key can be bound to an action. */
+export const bindable = (key: string): boolean => !RESERVED.has(key);
+
 /** Stored settings, or the defaults if there are none or they no longer fit the schema. */
 export function parseSettings(text: string | null, data: GameData): Settings {
   if (text === null) return defaultSettings(data);
   try {
     const parsed = SettingsSchema.safeParse(withNewActions(JSON.parse(text), data));
-    return parsed.success ? parsed.data : defaultSettings(data);
+    if (!parsed.success) return defaultSettings(data);
+    // A reserved key stored by an older version is dropped.
+    const keys = Object.fromEntries(
+      Object.entries(parsed.data.keys).map(([a, list]) => [a, list.filter(bindable)]),
+    ) as Settings['keys'];
+    return { ...parsed.data, keys };
   } catch {
     return defaultSettings(data);
   }
@@ -44,8 +58,12 @@ export function actionForKey(s: Settings, key: string): KeyAction | null {
   return hit ? (hit[0] as KeyAction) : null;
 }
 
-/** Binds a key to an action's first or second slot, taking it from any action that had it. */
+/**
+ * Binds a key to an action's first or second slot, taking it from any action that had it. A
+ * reserved key changes nothing.
+ */
 export function rebind(s: Settings, action: KeyAction, slot: 0 | 1, key: string): Settings {
+  if (!bindable(key)) return s;
   const k = normalKey(key);
   const keys = Object.fromEntries(
     Object.entries(s.keys).map(([a, list]) => [a, list.filter((x) => x !== k)]),

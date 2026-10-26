@@ -46,7 +46,7 @@ export function artPicks(data: GameData, mage: Mage, level = 1): ArtPick[] {
  * Whether the game does anything with a spell: a combat effect, or a use outside fights, and not
  * left out for good (docs/rules-adaptation.md, High Magic). Others wait until they are built.
  */
-export function playableSpell(data: GameData, id: string): boolean {
+function playableSpell(data: GameData, id: string): boolean {
   const rules = data.content.spellRules;
   if (rules.excluded.includes(id)) return false;
   return rules.outsideCombat.includes(id) || data.content.combatMagic.some((m) => m.id === id);

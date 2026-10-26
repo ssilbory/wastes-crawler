@@ -12,7 +12,7 @@ import type { GameData } from './context.ts';
 import { importCharacter } from './io.ts';
 
 /** Stored builder picks, or null if there are none or they no longer fit the shape. */
-export function parseChoices(raw: unknown): Choices | null {
+function parseChoices(raw: unknown): Choices | null {
   const parsed = ChoicesSchema.safeParse(raw);
   return parsed.success ? parsed.data : null;
 }

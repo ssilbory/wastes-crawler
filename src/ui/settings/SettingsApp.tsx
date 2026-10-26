@@ -12,6 +12,8 @@ import { setSettings, useSettings } from '../settings-store.ts';
 import { play } from '../sound.ts';
 import './settings.css';
 
+const MODIFIERS = new Set(['Shift', 'Control', 'Alt', 'Meta', 'AltGraph']);
+
 /** Settings: keys, sound, combat speed, and text size (docs/plan.md, Phase 11). */
 export function SettingsApp() {
   const s = useSettings();
@@ -21,8 +23,11 @@ export function SettingsApp() {
   useLayoutEffect(() => {
     if (!listening) return;
     const onKey = (e: KeyboardEvent) => {
+      // A modifier alone waits for the key it goes with; Tab gives up and moves focus on.
+      if (MODIFIERS.has(e.key) || e.repeat) return;
+      if (e.key === 'Tab') return setListening(null);
       e.preventDefault();
-      if (e.key !== 'Escape') setSettings(rebind(s, listening.action, listening.slot, e.key));
+      setSettings(rebind(s, listening.action, listening.slot, e.key));
       setListening(null);
     };
     window.addEventListener('keydown', onKey);
@@ -33,7 +38,9 @@ export function SettingsApp() {
       <h1>Settings</h1>
       <section class="panel" aria-label="Keys">
         <h2>Dungeon keys</h2>
-        <p class="hint">Click a key, then press the new one (Escape cancels).</p>
+        <p class="hint">
+          Click a key, then press the new one (Escape or Tab cancels; Enter can't be bound).
+        </p>
         <table>
           <tbody>
             {KeyActionSchema.options.map((action) => (

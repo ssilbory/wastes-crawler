@@ -41,6 +41,22 @@ test('remaps keys, sizes text, and keeps settings across a reload', async ({ pag
   );
   await page.keyboard.press('i');
   await expect(keys.getByRole('button', { name: 'Forward key 1', exact: true })).toHaveText('I');
+  // Tab gives up listening and moves on; Shift alone waits for its key; Enter binds nothing.
+  const back = keys.getByRole('button', { name: 'Back key 1', exact: true });
+  const before = await back.textContent();
+  await back.click();
+  await page.keyboard.press('Tab');
+  await expect(back).toHaveText(before as string);
+  await expect(back).not.toBeFocused();
+  await back.click();
+  await page.keyboard.press('Enter');
+  await expect(back).toHaveText(before as string);
+  await back.click();
+  await page.keyboard.down('Shift');
+  await expect(back).toHaveText('Press a key…');
+  await page.keyboard.up('Shift');
+  await page.keyboard.press('Escape');
+  await expect(back).toHaveText(before as string);
   await page.getByRole('combobox', { name: 'Text size' }).selectOption('large');
   await expect(page.locator('html')).toHaveAttribute('data-text-size', 'large');
   await page.getByRole('checkbox', { name: 'Sound on' }).check();
