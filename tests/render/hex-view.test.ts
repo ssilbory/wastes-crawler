@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { regionMap } from '../../src/game/world/region.ts';
-import { hexCells, hexCenter, hexPoints, mapPixels } from '../../src/render/hex-view.ts';
+import {
+  hexCells,
+  hexCenter,
+  hexPoints,
+  landSignature,
+  mapPixels,
+} from '../../src/render/hex-view.ts';
 import { data, world } from '../game/world/helpers.ts';
 
 describe('hex map view', () => {
@@ -37,6 +43,18 @@ describe('hex map view', () => {
     });
     w.destination = null;
     expect(hexCells(map, w, [], 10).some((c) => c.destination)).toBe(false);
+  });
+
+  it('signs the land, unchanged by the party, its route, or the hour', () => {
+    const w = world();
+    const land = landSignature(hexCells(map, w, [], 10));
+    expect(land).toContain('3,8:plainsvr:Rubblegate');
+    w.destination = { col: 4, row: 8 };
+    w.quarter = 2;
+    expect(landSignature(hexCells(map, w, [{ col: 4, row: 8 }], 10))).toBe(land);
+    // Setting foot on a hex changes it: it is now visited, and its neighbours known.
+    w.visited.add('4,8');
+    expect(landSignature(hexCells(map, w, [], 10))).not.toBe(land);
   });
 
   it('marks dungeon entrances once the hex is known', () => {
