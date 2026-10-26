@@ -1,14 +1,7 @@
 import { useId } from 'preact/hooks';
-import {
-  glyphsFor,
-  riverPath,
-  roadPath,
-  scaleBar,
-  type DayTint,
-  type ScaleBar,
-} from '../../render/hex-art.ts';
-import type { HexCell } from '../../render/hex-view.ts';
-import { bridges, shores } from '../../render/hex-water.ts';
+import { scaleBar, type DayTint, type ScaleBar } from '../../render/hex-art.ts';
+import { landSignature, type HexCell } from '../../render/hex-view.ts';
+import { FogLayer, LandLayer } from './HexLand.tsx';
 import { HexArtDefs } from './HexArt.tsx';
 import { useMapKeys } from './map-keys.ts';
 import { cursorText } from '../../render/map-cursor.ts';
@@ -92,8 +85,13 @@ export function HexMap(props: {
   tint?: DayTint;
 }) {
   const { onDrag, cells, tint } = props;
-  const known = cells.filter((c) => c.terrain);
-  const shore = shores(cells, SIZE);
+  const layer = {
+    cells,
+    size: SIZE,
+    width: props.width,
+    height: props.height,
+    signature: landSignature(cells),
+  };
   const keys = useMapKeys(cells, props.onPick);
   const hint = useId();
   return (
@@ -109,40 +107,7 @@ export function HexMap(props: {
       >
         <HexArtDefs />
         <rect class="paper" width={props.width} height={props.height} fill="url(#hm-paper)" />
-        <g class="ground">
-          {known.map((c) => (
-            <g key={c.key} class={`t-${c.terrain}${c.visited ? '' : ' unvisited'}`}>
-              <polygon points={c.points} />
-              {glyphsFor(c, SIZE).map((g, i) => (
-                <use
-                  key={i}
-                  href={`#${g.symbol}`}
-                  x={g.x - g.size / 2}
-                  y={g.y - g.size / 2}
-                  width={g.size}
-                  height={g.size}
-                />
-              ))}
-              {!c.visited && <polygon class="wash" points={c.points} />}
-            </g>
-          ))}
-        </g>
-        <path class="shallows" d={shore.shallows} />
-        <path class="shore" d={shore.line} />
-        <path class="river" d={riverPath(cells)} />
-        <path class="road" d={roadPath(cells)} />
-        {bridges(cells).map((b) => (
-          <use
-            key={b.key}
-            class="bridge"
-            href="#hi-bridge"
-            x={-SIZE * 0.6}
-            y={-SIZE * 0.6}
-            width={SIZE * 1.2}
-            height={SIZE * 1.2}
-            transform={`translate(${b.x} ${b.y}) rotate(${b.angle})`}
-          />
-        ))}
+        <LandLayer {...layer} />
         {tint && tint.opacity > 0 && (
           <rect
             class="day-tint"
@@ -152,24 +117,7 @@ export function HexMap(props: {
             fill-opacity={tint.opacity}
           />
         )}
-        {known.length < cells.length && (
-          <>
-            <mask id="hm-fog-mask">
-              <rect width={props.width} height={props.height} fill="#fff" />
-              <g filter="url(#hm-fog)">
-                {known.map((c) => (
-                  <polygon key={c.key} points={c.points} fill="#000" />
-                ))}
-              </g>
-            </mask>
-            <rect
-              class="fog-layer"
-              width={props.width}
-              height={props.height}
-              mask="url(#hm-fog-mask)"
-            />
-          </>
-        )}
+        <FogLayer {...layer} />
         <ScaleBarMark bar={scaleBar(props.height, SIZE)} />
         <use
           class="compass"

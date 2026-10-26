@@ -157,8 +157,8 @@ export function DungeonScreen(props: {
         <div class="world-left">
           <div class="dungeon-main">
             <DungeonView
-              key={motion?.n ?? 0}
               motion={motion?.kind ?? null}
+              moves={motion?.n ?? 0}
               foes={w.encounter ? encounterPortrait(data, w.encounter.enemies) : []}
               panels={dungeonView(w, data)}
               light={lightView(w, data)}

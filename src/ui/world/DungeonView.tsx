@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef } from 'preact/hooks';
 import { darkness, type LightView } from '../../render/dungeon-light.ts';
 import { VIEW_HEIGHT, VIEW_WIDTH, type Panel } from '../../render/dungeon-view.ts';
 import type { TrapArt } from '../../render/trap-art.ts';
@@ -55,10 +56,23 @@ export function DungeonView(props: {
   label: string;
   /** How the view moves in after the party's last move (src/render/dungeon-motion.ts). */
   motion?: Motion | null;
+  /** Counts the moves, so the same motion twice plays twice. */
+  moves?: number;
   /** A pending encounter's foes, standing ahead (src/render/encounter-portrait.ts). */
   foes?: PortraitFigure[];
 }) {
   const { light } = props;
+  // Each move restarts the motion on the same scene: the view is patched, not rebuilt, so a step
+  // changes a few attributes rather than recreating hundreds of nodes.
+  const scene = useRef<SVGGElement>(null);
+  useLayoutEffect(() => {
+    const g = scene.current;
+    if (!g || !props.moves) return;
+    g.style.animation = 'none';
+    // Reading layout makes the browser drop the old animation before the next one starts.
+    void g.getBoundingClientRect();
+    g.style.animation = '';
+  }, [props.moves]);
   return (
     <svg
       class={[
@@ -81,7 +95,7 @@ export function DungeonView(props: {
           </radialGradient>
         </defs>
       )}
-      <g class="scene">
+      <g class="scene" ref={scene}>
         <rect class="ceiling" width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
         <rect class="floor" y={VIEW_HEIGHT / 2} width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
         {props.panels.map((p) =>

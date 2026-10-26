@@ -111,3 +111,14 @@ export function hexCells(
   }
   return cells;
 }
+
+/**
+ * What the land layers draw from: each known hex's terrain, whether it is visited, a road or a
+ * town. The party, its route and the hour change far more often, and none of them redraw the land.
+ */
+export function landSignature(cells: HexCell[]): string {
+  return cells
+    .filter((c) => c.terrain)
+    .map((c) => `${c.key}:${c.terrain}${c.visited ? 'v' : ''}${c.road ? 'r' : ''}:${c.site ?? ''}`)
+    .join('|');
+}
