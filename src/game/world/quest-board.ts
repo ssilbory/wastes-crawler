@@ -11,7 +11,7 @@ import { addNpc } from './npcs.ts';
 import { fulfilOrders, gainAuthority, learnCountersign } from './orders.ts';
 import { failQuest, giverName, payerName, payerOf, questOf } from './quests.ts';
 import { anyDead, isRaising, raisingBlocked } from './raising.ts';
-import { type TownResult } from './services.ts';
+import type { TownResult } from './services.ts';
 import { revive } from './healer.ts';
 import { addLoot } from './shop.ts';
 import { pickUp } from './party-load.ts';

@@ -8,7 +8,7 @@ import { fall } from '../combat/damage.ts';
 import type { Combatant } from '../combat/types.ts';
 import type { GameData } from '../character/context.ts';
 import { carryBack, npcsBack } from '../world/carry-back.ts';
-import { type WorldBattle } from '../world/fight.ts';
+import type { WorldBattle } from '../world/fight.ts';
 import { battleFrom, partySetup } from '../world/battle-setup.ts';
 import { recordFallen } from '../world/healer.ts';
 import { alive, note } from '../world/members.ts';
