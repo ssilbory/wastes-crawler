@@ -29,20 +29,21 @@ Snapshot: 2026-10-11, about 850 tracked files.
 
 ## Scripts (`pnpm <name>`)
 
-| Script                     | Runs                                                                               |
-| -------------------------- | ---------------------------------------------------------------------------------- |
-| `dev`, `build`, `preview`  | Vite                                                                               |
-| `typecheck`, `lint`        | `tsc --noEmit`, `eslint .`                                                         |
-| `format`, `format:check`   | Prettier                                                                           |
-| `test`, `test:coverage`    | Vitest over `tests/**/*.test.ts` and `src/**/*.test.ts`                            |
-| `test:e2e`                 | Playwright over `e2e/`                                                             |
-| `srd:extract`, `srd:check` | `tools/srd-extract`: regenerate `data/srd/`, or verify it matches the vendored SRD |
-| `license:check`            | `tools/check-licenses.ts`: shipped deps must be MIT/BSD/Apache/ISC/zlib/CC0/OFL    |
-| `sim`                      | `tools/sim`: auto-combat of exported characters vs SRD monsters                    |
-| `economy`                  | `tools/economy.ts`: Phase 9 economy validator, driven by `data/economy-sim.json`   |
-| `balance`                  | `tools/balance.ts`: campaign fights against the auto-levelled starter party        |
-| `factions`                 | `tools/factions.ts`: faction turns run headless for two years, many seeds          |
-| `validate:levels`          | `tools/validate-levels.ts`: every dungeon level parses, connects, and completes    |
+| Script                     | Runs                                                                                 |
+| -------------------------- | ------------------------------------------------------------------------------------ |
+| `dev`, `build`, `preview`  | Vite                                                                                 |
+| `typecheck`, `lint`        | `tsc --noEmit`, `eslint .`                                                           |
+| `format`, `format:check`   | Prettier                                                                             |
+| `test`, `test:coverage`    | Vitest over `tests/**/*.test.ts` and `src/**/*.test.ts`                              |
+| `test:e2e`                 | Playwright over `e2e/`                                                               |
+| `srd:extract`, `srd:check` | `tools/srd-extract`: regenerate `data/srd/`, or verify it matches the vendored SRD   |
+| `license:check`            | `tools/check-licenses.ts`: shipped deps must be MIT/BSD/Apache/ISC/zlib/CC0/OFL      |
+| `sim`                      | `tools/sim`: auto-combat of exported characters vs SRD monsters                      |
+| `economy`                  | `tools/economy.ts`: Phase 9 economy validator, driven by `data/economy-sim.json`     |
+| `balance`                  | `tools/balance.ts`: campaign fights against the auto-levelled starter party          |
+| `playtest`                 | `tools/playtest.ts`: a cautious bot plays the starter party's early game, many seeds |
+| `factions`                 | `tools/factions.ts`: faction turns run headless for two years, many seeds            |
+| `validate:levels`          | `tools/validate-levels.ts`: every dungeon level parses, connects, and completes      |
 
 ## docs/
 
@@ -179,6 +180,7 @@ One `*.spec.ts` per player-facing feature (builder, wizard, dungeon, town, quest
 | `srd-extract/`                                                         | SRD extractor: `index.ts`, `reader.ts`, `markdown.ts`, `parse-values.ts`, `validate.ts`, `errata.json`, and `extractors/` (classes, equipment, factions, magic, monsters, skills-foci) |
 | `sim/`                                                                 | Combat sim (`index.ts`), `make-starter-party.ts`, and the four starter characters in `parties/starter/`                                                                                |
 | `balance.ts`, `balance/`                                               | Balance tool and its gauntlets                                                                                                                                                         |
+| `playtest.ts`, `playtest/`                                             | Playtest tool and its bot                                                                                                                                                              |
 | `pwa/service-worker.ts`                                                | Vite plugin that writes `dist/sw.js`, caching the whole build for offline play                                                                                                         |
 | `csp.ts`                                                               | Vite plugin that writes the Content Security Policy meta tag into the built `index.html`                                                                                               |
 | `economy.ts`, `factions.ts`, `validate-levels.ts`, `check-licenses.ts` | Backing scripts for the pnpm commands above                                                                                                                                            |
