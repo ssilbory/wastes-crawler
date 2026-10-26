@@ -48,6 +48,7 @@ import authorities from '../../data/content/authorities.json';
 import raidRules from '../../data/content/raid-rules.json';
 import campaign from '../../data/content/campaign.json';
 import ruins from '../../data/content/ruins.json';
+import ruinTraps from '../../data/content/ruin-traps.json';
 import groves from '../../data/content/groves.json';
 import warlords from '../../data/content/warlords.json';
 import hiddenSites from '../../data/content/hidden-sites.json';
@@ -131,6 +132,7 @@ export const SHIPPED_CONTENT: Record<keyof ContentData, unknown> = {
   raidRules,
   campaign,
   ruins,
+  ruinTraps,
   groves,
   warlords,
   hiddenSites,

@@ -5,7 +5,7 @@
 import { maxCompanionHitDice, sharedHitFloor } from '../../rules/beastmaster.ts';
 import { servantPlace } from '../../rules/formation.ts';
 import { followRiders, inSlot } from './mounted.ts';
-import { save } from './damage.ts';
+import { save } from './saves.ts';
 import { say } from './log.ts';
 import { monsterCombatant } from './monster-combatant.ts';
 import { artReady, spendDay } from './reactions.ts';
@@ -168,10 +168,6 @@ export function heedCall(b: Battle, c: Combatant): void {
 /** Know the Weak Spot: a blow on a beast rolls its damage twice and keeps the better. */
 export const knowsWeakSpot = (actor: Combatant, target: Combatant): boolean =>
   target.beast && actor.caster?.arts.includes('know-the-weak-spot') === true;
-
-/** Beast Ward: an unprovoked beast won't attack the warded. */
-export const wardedFrom = (attacker: Combatant, target: Combatant): boolean =>
-  target.beastWard && attacker.beast && !attacker.provoked && !attacker.companion;
 
 /** A hostile act against a beast frees it from Beast Ward. */
 export function provoke(attacker: Combatant, target: Combatant): void {

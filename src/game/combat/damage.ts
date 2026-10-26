@@ -1,11 +1,10 @@
-// Damage, falling, and saves in combat: vendor/wwn-srd/2.0 The Rules of the Game/2.5.0 Injury,
+// Damage and falling in combat: vendor/wwn-srd/2.0 The Rules of the Game/2.5.0 Injury,
 // Healing, And System Strain.md (2.5.1: PCs are Mortally Injured at 0 HP and die if Frail; unnamed
-// NPCs die), and the rear-cover save advantage in docs/rules-adaptation.md; from Phase 18c the
+// NPCs die), and the rear-cover save advantage (saves.ts); from Phase 18c the
 // Necromancer's pooled, deathless, and everlasting lives (4.6.0).
-import { netSteps } from '../../rules/advantage.ts';
 import { armorClass } from '../../rules/armor-class.ts';
-import { rollSave, type SaveResult, type SaveType } from '../../rules/saves.ts';
-import { covered, isUp } from './targeting.ts';
+import { save } from './saves.ts';
+import { isUp } from './targeting.ts';
 import { say } from './log.ts';
 import {
   abnegate,
@@ -159,20 +158,6 @@ function die(b: Battle, target: Combatant): void {
   target.status = 'dead';
   say(b, `${target.name} dies.`);
   redHarvest(b, target);
-}
-
-/** A save with rear-cover advantage and Broken disadvantage. */
-export function save(b: Battle, target: Combatant, type: SaveType, modifier = 0): SaveResult {
-  const steps = netSteps([covered(b, target) ? 1 : 0, target.strain?.broken ? -1 : 0]);
-  const repose = type === 'physical' ? target.reposePenalty : 0;
-  // Augment Mortal Vitality adds the caster's Magic skill to Physical saves (4.6.0).
-  const vital = type === 'physical' ? (target.vitality?.saveBonus ?? 0) : 0;
-  // Sanctified Ward: +4 to every save (1.5.5.1).
-  const ward = target.sanctified ? 4 : 0;
-  return rollSave(b.rng, target.saves[type], {
-    modifier: modifier - repose + ward + vital,
-    steps,
-  });
 }
 
 /**

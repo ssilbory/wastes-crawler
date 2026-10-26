@@ -47,7 +47,7 @@ import { MountRulesSchema } from './mount-content.ts';
 import { ArenaCardSchema, CoachRouteSchema, CoachRulesSchema } from './travel-content.ts';
 import { MissionGiverSchema, QuestSchema } from './quest-content.ts';
 import { AuthoredMonsterSchema, SettingMonsterSchema } from './monsters.ts';
-import { DungeonSchema } from './dungeon-content.ts';
+import { DungeonSchema, RuinTrapSchema } from './dungeon-content.ts';
 import { MapGenSchema } from './map-gen-content.ts';
 import { FactionContentSchema } from './faction-content.ts';
 
@@ -223,6 +223,8 @@ export const ContentSchemas = {
   raidRules: RaidRulesSchema,
   campaign: CampaignSchema,
   ruins: z.array(RuinSchema),
+  /** The kinds of trap the ruin generators draw from. */
+  ruinTraps: z.array(RuinTrapSchema).min(1),
   groves: z.array(GroveSchema),
   warlords: WarlordContentSchema,
   hiddenSites: HiddenSiteContentSchema,

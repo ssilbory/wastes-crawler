@@ -5,7 +5,7 @@ import { setCell } from '../../../src/game/dungeon/level-edit.ts';
 import { contentReferenceErrors, dungeonContentErrors } from '../../../src/data/content.ts';
 import { EMPTY_LIBRARY } from '../../../src/game/editor/library.ts';
 import { freeHex } from '../../../src/game/editor/map-edit.ts';
-import { playableContent, worldMapErrors } from '../../../src/game/editor/playable.ts';
+import { playableContent, playWith, worldMapErrors } from '../../../src/game/editor/playable.ts';
 import { data } from '../world/helpers.ts';
 
 const shipped = data.content;
@@ -21,6 +21,14 @@ describe('saved dungeons in the game', () => {
       content: shipped,
       skipped: {},
     });
+  });
+
+  it('has the game play the playable content in place of what it played', () => {
+    const game = { ...data };
+    const playable = playableContent(data.srd, shipped, { ...EMPTY_LIBRARY, dungeons: [pit] });
+    playWith(game, playable);
+    expect(game.content).toBe(playable.content);
+    expect(data.content).toBe(shipped);
   });
 
   it('adds a valid saved dungeon on a shipped map', () => {

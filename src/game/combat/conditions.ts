@@ -5,7 +5,8 @@
 // Fury of the Elements from 4.5.0.
 import { roll } from '../../rules/dice.ts';
 import { addStrain } from '../../rules/strain.ts';
-import { fall, harm, save, say } from './damage.ts';
+import { fall, harm, say } from './damage.ts';
+import { save } from './saves.ts';
 import { smite } from './elementalist.ts';
 import { canAct, flying, isUp, targets } from './targeting.ts';
 import type { Action, Attack, Battle, Combatant } from './types.ts';

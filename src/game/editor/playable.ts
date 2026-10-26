@@ -3,6 +3,7 @@
 // a campaign. A saved map plays as a world of its own, without the campaign's story.
 import { dungeonContentErrors } from '../../data/content.ts';
 import type { ContentData, EditorLibrary, Region, SrdData } from '../../data/schemas/index.ts';
+import type { GameData } from '../character/context.ts';
 import { withWorldMap } from '../world/region.ts';
 import { mapErrors } from './map-edit.ts';
 
@@ -41,6 +42,11 @@ export function playableContent(
     else skipped[d.id] = problem;
   }
   return { content, skipped };
+}
+
+/** Has the game play `playable`'s content from now on, in place of what it played before. */
+export function playWith(data: GameData, playable: Playable): void {
+  data.content = playable.content;
 }
 
 /**
