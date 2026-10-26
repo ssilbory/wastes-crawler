@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { crossOver, enterRegion } from '../../../src/game/world/crossing.ts';
+import { crossOver } from '../../../src/game/world/crossing.ts';
+import { enterRegion } from '../../../src/game/world/enter-region.ts';
 import { acceptQuest } from '../../../src/game/world/quest-board.ts';
 import { regionMap } from '../../../src/game/world/region.ts';
 import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';

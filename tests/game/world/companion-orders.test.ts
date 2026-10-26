@@ -5,13 +5,13 @@ import {
   bindCompanion,
   bindProblem,
   callCompanion,
-  companionHere,
   companionOf,
   releaseCompanion,
   renameCompanion,
   sendAway,
   swiftHealing,
 } from '../../../src/game/world/companions.ts';
+import { companionHere } from '../../../src/game/world/companion-sync.ts';
 import { monsterOf } from '../../../src/game/world/npcs.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
 import { data, encounter, member, world } from './helpers.ts';

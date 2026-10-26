@@ -15,8 +15,9 @@ import { newWorld } from '../../src/game/world/new-world.ts';
 import type { Member } from '../../src/game/world/types.ts';
 import { roll } from '../../src/rules/dice.ts';
 import { createRng, type Rng } from '../../src/rules/rng.ts';
+import { WORLD_LISTENERS } from '../../src/game/world/listeners.ts';
 
-export const data = { srd: loadSrd(), content: loadContent() };
+export const data = { srd: loadSrd(), content: loadContent(), listeners: WORLD_LISTENERS };
 const arg = (name: string, fallback: string) => {
   const i = process.argv.indexOf(`--${name}`);
   return i >= 0 ? (process.argv[i + 1] ?? fallback) : fallback;

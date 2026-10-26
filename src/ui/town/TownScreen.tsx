@@ -1,7 +1,6 @@
 import { useState } from 'preact/hooks';
 import type { RosterEntry } from '../../game/character/roster.ts';
 import type { TownResult } from '../../game/world/services.ts';
-import { townHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
 import { crowns, lootText, tradeText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
@@ -33,6 +32,7 @@ import type { BoutStart } from '../../game/world/arena.ts';
 import { PopOut } from '../world/PopOut.tsx';
 import { BarMore } from '../world/BarMore.tsx';
 import { panelProps, Tabs } from '../tabs.tsx';
+import { townHere } from '../../game/world/town-prices.ts';
 
 const TABS = {
   quests: 'Quests',

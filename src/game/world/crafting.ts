@@ -20,8 +20,8 @@ import { completeForge, forgedName } from './forging.ts';
 import { completeMod, modOf } from './mods.ts';
 import { regionMap } from './region.ts';
 import type { TownResult } from './services.ts';
-import { priceHere, spend, townHere } from './town.ts';
 import type { Member, World } from './types.ts';
+import { priceHere, spend, townHere } from './town-prices.ts';
 
 export type Tier = Project['quality'];
 
@@ -223,7 +223,7 @@ export const hasTools = (data: GameData, m: Member) =>
   m.character.inventory.some((e) => e.id === data.content.craftingRules.tools.id);
 
 /** The tools a project is worked with in camp: a brew's or a scroll's own kit (Sam's call). */
-export const projectTools = (data: GameData, p: Pick<Project, 'kind'>): string =>
+const projectTools = (data: GameData, p: Pick<Project, 'kind'>): string =>
   p.kind === 'brew'
     ? data.content.alchemy.kit.id
     : p.kind === 'scribe'

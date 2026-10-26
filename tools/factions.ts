@@ -11,6 +11,7 @@ import { startFactions } from '../src/game/factions/state.ts';
 import { factionTurn } from '../src/game/factions/turn.ts';
 import type { World } from '../src/game/world/types.ts';
 import { createRng } from '../src/rules/rng.ts';
+import { WORLD_LISTENERS } from '../src/game/world/listeners.ts';
 
 const arg = (name: string, fallback: string) => {
   const i = process.argv.indexOf(`--${name}`);
@@ -20,7 +21,7 @@ const RUNS = Number(arg('runs', '200'));
 const SEED = arg('seed', 'factions');
 const MONTHS = Number(arg('months', '24'));
 
-const data = { srd: loadSrd(), content: loadContent() };
+const data = { srd: loadSrd(), content: loadContent(), listeners: WORLD_LISTENERS };
 const ids = data.content.factions.factions.map((f) => f.id);
 const checkpoints = Array.from({ length: Math.floor(MONTHS / 6) }, (_, i) => (i + 1) * 6);
 type Tally = { alive: number; bases: number; assets: number };

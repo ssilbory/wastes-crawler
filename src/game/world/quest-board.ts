@@ -11,11 +11,12 @@ import { addNpc } from './npcs.ts';
 import { fulfilOrders, gainAuthority, learnCountersign } from './orders.ts';
 import { failQuest, giverName, payerName, payerOf, questOf } from './quests.ts';
 import { anyDead, isRaising, raisingBlocked } from './raising.ts';
-import { revive, type TownResult } from './services.ts';
+import type { TownResult } from './services.ts';
+import { revive } from './healer.ts';
 import { addLoot } from './shop.ts';
 import { pickUp } from './party-load.ts';
-import { townHere } from './town.ts';
 import type { World } from './types.ts';
+import { townHere } from './town-prices.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 

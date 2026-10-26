@@ -8,10 +8,10 @@ import { hireBlocked } from './shares.ts';
 import type { TownResult } from './services.ts';
 import { toTenths } from '../../rules/economy.ts';
 import { settleShare } from './shares.ts';
-import { currentTown, priceHere, spend, townHere } from './town.ts';
 import { shareText } from './wording.ts';
 import type { Npc, World } from './types.ts';
 import { sendAway } from './companions.ts';
+import { currentTown, priceHere, spend, townHere } from './town-prices.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 

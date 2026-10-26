@@ -7,11 +7,11 @@ import { shareText } from '../../game/world/wording.ts';
 import { buyRumor, rumorListed, rumorsLeft } from '../../game/world/rumors.ts';
 import { buyRouteMap, routeMapListed, routeMapRefusal } from '../../game/world/route-maps.ts';
 import { bench, catchUpXp, inWorld, recruit, rejoin } from '../../game/world/tavern.ts';
-import { priceHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
 import { levelLine } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import type { Act } from './TownScreen.tsx';
+import { priceHere } from '../../game/world/town-prices.ts';
 
 /** Who travels with the party: up to six PCs, the rest waiting at any tavern. */
 export function TavernTab(props: { world: World; roster: RosterEntry[]; act: Act }) {

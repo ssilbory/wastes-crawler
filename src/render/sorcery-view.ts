@@ -1,7 +1,6 @@
 // What the party's High Mages can cast outside fights from the High Magic panel, and the spells
 // already in force, as data for the panel. Pure.
 import { ARCANE_FORM } from '../game/dungeon/arcane-sight.ts';
-import { levelOf } from '../game/dungeon/explore.ts';
 import { arcaneSeer } from '../game/dungeon/light.ts';
 import { gateTargets, LITHIC, PALLID_GATE } from '../game/dungeon/stonework.ts';
 import type { GameData } from '../game/character/context.ts';
@@ -9,6 +8,7 @@ import { disguised, palanquinUp, PALANQUIN, VISAGE } from '../game/world/guises.
 import { castersOf } from '../game/world/waygates.ts';
 import type { World } from '../game/world/types.ts';
 import { cellKey, type Cell } from '../rules/grid.ts';
+import { levelOf } from '../game/dungeon/levels.ts';
 
 export interface GateChoice {
   key: string;

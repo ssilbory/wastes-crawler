@@ -5,9 +5,9 @@ import { capacity, upkeepNeed } from '../../game/world/maintenance.ts';
 import { canMod, craftLevel, modMisfit, startMod, startStrip } from '../../game/world/mods.ts';
 import type { World } from '../../game/world/types.ts';
 import { crowns, entryText } from '../../render/town-view.ts';
-import { priceHere } from '../../game/world/town.ts';
 import { data } from '../builder/data.ts';
 import type { Act } from './TownScreen.tsx';
+import { priceHere } from '../../game/world/town-prices.ts';
 
 const mods = data.content.mods;
 

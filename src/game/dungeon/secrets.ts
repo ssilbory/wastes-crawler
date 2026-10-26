@@ -8,9 +8,9 @@ import type { GameData } from '../character/context.ts';
 import { alive, bestAt, memberCheck, note } from '../world/members.ts';
 import type { TownResult } from '../world/services.ts';
 import type { World } from '../world/types.ts';
-import { levelOf } from './explore.ts';
 import { blind } from './light.ts';
 import { passTurn } from './time.ts';
+import { levelOf } from './levels.ts';
 
 export const SECRET_DIFFICULTY = 8;
 export const GLIMPSE_PENALTY = 2;

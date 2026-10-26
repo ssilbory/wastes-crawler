@@ -7,8 +7,13 @@ import { importCharacter } from '../../../src/game/character/io.ts';
 import { createBattle } from '../../../src/game/combat/battle.ts';
 import type { Battle, Combatant } from '../../../src/game/combat/types.ts';
 import { createRng, type Rng } from '../../../src/rules/rng.ts';
+import { WORLD_LISTENERS } from '../../../src/game/world/listeners.ts';
 
-export const data: GameData = { srd: loadSrd(), content: loadContent() };
+export const data: GameData = {
+  srd: loadSrd(),
+  content: loadContent(),
+  listeners: WORLD_LISTENERS,
+};
 
 /** One of the sample characters in tools/sim/parties/starter/. */
 export function starter(file: 'snag' | 'grukk' | 'lirael' | 'fizzwick'): Character {

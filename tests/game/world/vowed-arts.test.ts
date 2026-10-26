@@ -2,12 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { passTurn } from '../../../src/game/dungeon/time.ts';
 import { endOfDay } from '../../../src/game/world/day.ts';
 import { setHp } from '../../../src/game/world/members.ts';
-import { endQuarter } from '../../../src/game/world/quarter.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
 import { mastersVigor, purifiedNeeds, purifyBodies } from '../../../src/game/world/vowed-arts.ts';
 import { createRng } from '../../../src/rules/rng.ts';
 import { below } from '../dungeon/helpers.ts';
 import { data, member, world } from './helpers.ts';
+import { endQuarter } from '../../../src/game/world/end-quarter.ts';
 
 /** Snag as a level 3 Monk out of armor, with these arts. */
 function monk(w: World, arts: string[]): Member {

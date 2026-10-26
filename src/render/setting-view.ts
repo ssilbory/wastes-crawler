@@ -3,9 +3,9 @@
 import type { GameData } from '../game/character/context.ts';
 import { authorityFor, orderOf, pendingOrder } from '../game/world/orders.ts';
 import { pendingNotes, setName } from '../game/world/notes.ts';
-import { isRaided } from '../game/world/raids.ts';
 import { epilogue, sealBlocked } from '../game/world/seal.ts';
 import type { World } from '../game/world/types.ts';
+import { isRaided } from '../game/world/town-prices.ts';
 
 const siteName = (data: GameData, id: string) =>
   data.content.regions.flatMap((r) => r.sites).find((s) => s.id === id)?.name ?? id;

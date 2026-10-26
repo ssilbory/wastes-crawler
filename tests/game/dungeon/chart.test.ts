@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { chartDungeon, layoutOf, recall } from '../../../src/game/dungeon/chart.ts';
-import { dungeonOf, enterDungeon, step, takeStairs } from '../../../src/game/dungeon/explore.ts';
+import { enterDungeon, step, takeStairs } from '../../../src/game/dungeon/explore.ts';
+import { dungeonOf } from '../../../src/game/dungeon/levels.ts';
 import { wipe } from '../../../src/game/world/town.ts';
 import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
 import { WORLD_MIGRATIONS } from '../../../src/game/world/save-migrations.ts';

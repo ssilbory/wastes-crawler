@@ -1,9 +1,9 @@
 // One line describing a save slot. Pure reads.
-import { dungeonOf } from '../game/dungeon/explore.ts';
 import type { GameData } from '../game/character/context.ts';
 import { describeDate } from '../game/world/calendar.ts';
 import { regionMap, withWorldMap } from '../game/world/region.ts';
 import { parseWorld } from '../game/world/save.ts';
+import { dungeonOf } from '../game/dungeon/levels.ts';
 
 /** "Morning, 3 Seedtime · Rubblegate · Snag, Grukk", or why the slot can't be continued. */
 export function slotSummary(text: string | null, data: GameData): string {

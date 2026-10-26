@@ -6,10 +6,10 @@ import { newMember, note } from './members.ts';
 import { MAX_PCS } from './new-world.ts';
 import { freeSlot } from './npcs.ts';
 import type { TownResult } from './services.ts';
-import { townHere } from './town.ts';
 import type { GameData } from '../character/context.ts';
 import type { Member, World } from './types.ts';
 import { followMaster } from './companion-sync.ts';
+import { townHere } from './town-prices.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 

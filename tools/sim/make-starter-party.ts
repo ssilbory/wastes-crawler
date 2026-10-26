@@ -6,8 +6,9 @@ import { loadSrd } from '../../src/data/load.ts';
 import { emptyChoices, finishCharacter, type Choices } from '../../src/game/character/creation.ts';
 import { exportCharacter } from '../../src/game/character/io.ts';
 import { createRng } from '../../src/rules/rng.ts';
+import { WORLD_LISTENERS } from '../../src/game/world/listeners.ts';
 
-const data = { srd: loadSrd(), content: loadContent() };
+const data = { srd: loadSrd(), content: loadContent(), listeners: WORLD_LISTENERS };
 const array = { str: 14, dex: 12, con: 11, int: 10, wis: 9, cha: 7 };
 const pick = (a: number, b: number) => ({
   mode: 'pick' as const,

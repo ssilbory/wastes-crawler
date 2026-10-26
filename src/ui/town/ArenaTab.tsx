@@ -1,9 +1,9 @@
 import { arenaCard, boutBlocked, startBout, type BoutStart } from '../../game/world/arena.ts';
-import { priceHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
 import { crowns } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import type { Act } from './TownScreen.tsx';
+import { priceHere } from '../../game/world/town-prices.ts';
 
 type Started = Extract<BoutStart, { ok: true }>;
 

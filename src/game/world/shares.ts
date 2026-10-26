@@ -10,8 +10,8 @@ import { note } from './members.ts';
 import { hirelings, removeNpc } from './npcs.ts';
 import type { TownResult } from './services.ts';
 import { exchangeLoot } from './shop.ts';
-import { townHere } from './town.ts';
 import type { Npc, World } from './types.ts';
+import { townHere } from './town-prices.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 

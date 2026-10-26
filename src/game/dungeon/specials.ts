@@ -8,7 +8,7 @@ import { alive, note } from '../world/members.ts';
 import { findNotes } from '../world/notes.ts';
 import { gainAuthority, learnCountersign } from '../world/orders.ts';
 import type { World } from '../world/types.ts';
-import { levelOf } from './explore.ts';
+import { levelOf } from './levels.ts';
 
 /** The special squares where the party stands. */
 export function specialsHere(w: World, data: GameData): Special[] {

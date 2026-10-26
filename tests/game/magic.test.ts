@@ -29,8 +29,9 @@ import {
 } from '../../src/game/character/magic.ts';
 import type { AttributeScores } from '../../src/rules/attributes.ts';
 import { scriptedRng } from '../helpers/scripted-rng.ts';
+import { WORLD_LISTENERS } from '../../src/game/world/listeners.ts';
 
-const data: GameData = { srd: loadSrd(), content: loadContent() };
+const data: GameData = { srd: loadSrd(), content: loadContent(), listeners: WORLD_LISTENERS };
 const mage = (id: string) =>
   (classOption(data, id) as ClassOption).mage as NonNullable<ClassOption['mage']>;
 const scores = (s: Partial<AttributeScores>): AttributeScores => ({

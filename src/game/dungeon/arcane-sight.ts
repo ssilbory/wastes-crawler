@@ -11,7 +11,7 @@ import { cannotCast, spendCast } from '../world/casting.ts';
 import { note } from '../world/members.ts';
 import type { TownResult } from '../world/services.ts';
 import type { Member, World } from '../world/types.ts';
-import { levelOf } from './explore.ts';
+import { levelOf } from './levels.ts';
 
 export const ARCANE_FORM = 'apprehending-the-arcane-form';
 

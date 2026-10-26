@@ -6,7 +6,7 @@
 import type { Dungeon } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
 import type { World } from '../world/types.ts';
-import { dungeonOf } from './explore.ts';
+import { dungeonOf } from './levels.ts';
 
 /** A short fingerprint of a dungeon's levels, FNV-1a over their maps. */
 export function layoutOf(d: Dungeon): string {

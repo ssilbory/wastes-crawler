@@ -2,7 +2,6 @@
 // shows the roads to the towns they reach, and every hex beside them.
 import { describe, expect, it } from 'vitest';
 import type { Region } from '../../../src/data/schemas/index.ts';
-import { enterRegion } from '../../../src/game/world/crossing.ts';
 import { route, setDestination } from '../../../src/game/world/plans.ts';
 import { knownHexes, regionMap, regionMapOf, seenHexes } from '../../../src/game/world/region.ts';
 import {
@@ -18,6 +17,7 @@ import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
 import { hexCells } from '../../../src/render/hex-view.ts';
 import { hexKey, neighbors } from '../../../src/rules/hex.ts';
 import { data, encounter, world } from './helpers.ts';
+import { enterRegion } from '../../../src/game/world/enter-region.ts';
 
 const fringe = regionMap(data, 'wastes-fringe');
 const at = (map: typeof fringe, name: string) => map.sites.find((s) => s.name === name) as never;

@@ -18,9 +18,9 @@ import { tierOf } from './craftsmen.ts';
 import { memberCheck, note } from './members.ts';
 import { craftLevel } from './mods.ts';
 import type { TownResult } from './services.ts';
-import { priceHere, spend, townHere } from './town.ts';
 import type { Member, World } from './types.ts';
 import { daysText } from './wording.ts';
+import { priceHere, spend, townHere } from './town-prices.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 const rules = (data: GameData) => data.content.forging;
@@ -51,8 +51,7 @@ export function abilityById(data: GameData, id: string): Ability {
 }
 
 /** A forgeable weapon's or suit's own market price in crowns; forged ones always have one. */
-export const basePrice = (data: GameData, id: string) =>
-  tenths(findItem(data, id)?.cost as Cost) / 10;
+const basePrice = (data: GameData, id: string) => tenths(findItem(data, id)?.cost as Cost) / 10;
 
 /**
  * Crowns, components, and days for an item with a bonus and an optional ability: the item's own

@@ -10,9 +10,9 @@ import { putLine } from '../character/stacks.ts';
 import { brewItem, reagentsListed, recipeOf } from './brewing.ts';
 import { note } from './members.ts';
 import type { TownResult } from './services.ts';
-import { currentTown, priceHere, spend, townHere } from './town.ts';
 import type { Member, World } from './types.ts';
 import { daysText } from './wording.ts';
+import { currentTown, priceHere, spend, townHere } from './town-prices.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 const rules = (data: GameData) => data.content.alchemy;

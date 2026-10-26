@@ -5,12 +5,10 @@ import { isDark } from '../../rules/overland.ts';
 import type { GameData } from '../character/context.ts';
 import { camp, hike } from './activities.ts';
 import { dateOf, quarterName } from './calendar.ts';
-import { endOfDay } from './day.ts';
+import { endQuarter } from './end-quarter.ts';
 import { fightTurns, passTurn } from '../dungeon/time.ts';
 import { leaveEncounter, maybeEncounter } from './encounters.ts';
 import type { Difficulty } from './difficulty.ts';
-import { VIGOR_QUARTER, vigor } from './arts.ts';
-import { MASTERS_VIGOR_QUARTER, mastersVigor } from './vowed-arts.ts';
 import { applyBattle, type WorldBattle } from './fight.ts';
 import { alive } from './members.ts';
 import { checkRealmEnd } from './realm-end.ts';
@@ -18,18 +16,6 @@ import type { QuarterPlan, World } from './types.ts';
 
 export function isDarkNow(w: World, data: GameData): boolean {
   return isDark(quarterName(w.quarter), dateOf(data.content.overlandRules, w.day).season);
-}
-
-export function endQuarter(w: World, data: GameData): void {
-  vigor(w, data, VIGOR_QUARTER);
-  mastersVigor(w, data, MASTERS_VIGOR_QUARTER);
-  if (w.quarter < 3) {
-    w.quarter += 1;
-    return;
-  }
-  if (endOfDay(w, data)) return;
-  w.day += 1;
-  w.quarter = 0;
 }
 
 /** Plays a quarter; returns false if an encounter must be settled first. */

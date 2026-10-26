@@ -14,8 +14,9 @@ import {
 import { addCreationSkill } from '../../src/game/character/skills.ts';
 import type { AttributeScores } from '../../src/rules/attributes.ts';
 import { scriptedRng } from '../helpers/scripted-rng.ts';
+import { WORLD_LISTENERS } from '../../src/game/world/listeners.ts';
 
-const data: GameData = { srd: loadSrd(), content: loadContent() };
+const data: GameData = { srd: loadSrd(), content: loadContent(), listeners: WORLD_LISTENERS };
 const array: AttributeScores = { str: 14, dex: 12, con: 11, int: 10, wis: 9, cha: 7 };
 
 /** A complete Goblin Raider Warrior. */

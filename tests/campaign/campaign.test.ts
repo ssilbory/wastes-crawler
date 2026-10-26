@@ -6,7 +6,8 @@
 // next quest's minimum level plus one, standing in for side delves; the economy and the road
 // between towns have their own checks.
 import { describe, expect, it } from 'vitest';
-import { crossOver, enterRegion } from '../../src/game/world/crossing.ts';
+import { crossOver } from '../../src/game/world/crossing.ts';
+import { enterRegion } from '../../src/game/world/enter-region.ts';
 import { burnNotes, pendingNotes } from '../../src/game/world/notes.ts';
 import { acceptQuest, turnInQuest } from '../../src/game/world/quest-board.ts';
 import { questOf } from '../../src/game/world/quests.ts';

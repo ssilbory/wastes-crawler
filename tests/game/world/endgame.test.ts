@@ -3,7 +3,6 @@ import { enterDungeon, step } from '../../../src/game/dungeon/explore.ts';
 import type { GameData } from '../../../src/game/character/context.ts';
 import { emit } from '../../../src/game/world/bus.ts';
 import { clockTier, moveClock, reinforced } from '../../../src/game/world/clock.ts';
-import { enterRegion } from '../../../src/game/world/crossing.ts';
 import { rollEnemies } from '../../../src/game/world/encounters.ts';
 import {
   burnNotes,
@@ -20,6 +19,7 @@ import type { World } from '../../../src/game/world/types.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { place } from '../dungeon/helpers.ts';
 import { data, member, world } from './helpers.ts';
+import { enterRegion } from '../../../src/game/world/enter-region.ts';
 
 const CINDERHOLD = { col: 6, row: 12 };
 const GUTTERWICK = { col: 16, row: 15 };

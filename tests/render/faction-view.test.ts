@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { pickGoal } from '../../src/game/factions/goals.ts';
-import { enterRegion } from '../../src/game/world/crossing.ts';
 import { factionViews } from '../../src/render/faction-view.ts';
 import { data, world } from '../game/world/helpers.ts';
+import { enterRegion } from '../../src/game/world/enter-region.ts';
 
 describe('faction view (Phase 13)', () => {
   it('shows only the factions of the region the party is in', () => {

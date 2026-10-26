@@ -7,7 +7,8 @@ import type { GameData } from '../character/context.ts';
 import { startFactions } from '../factions/state.ts';
 import { newMember, note } from './members.ts';
 import { isCampaign, regionMap, withWorldMap } from './region.ts';
-import { enterTown, FULL_RATIONS } from './town.ts';
+import { enterTown } from './town.ts';
+import { FULL_RATIONS } from './town-prices.ts';
 import { NO_LIGHT, type World } from './types.ts';
 
 /** Six PCs; the two NPC slots come in Phase 6c (docs/rules-adaptation.md, Party and formation). */

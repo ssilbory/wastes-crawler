@@ -1,13 +1,13 @@
 // Read-only drawing data for the dungeon automap: the cells the party has seen on this level, their
 // walls and doors, and an arrow for the party. Secret doors draw as walls until found, and traps
 // as floor until known.
-import { levelOf } from '../game/dungeon/explore.ts';
 import { knownEdges } from '../game/dungeon/secrets.ts';
 import type { GameData } from '../game/character/context.ts';
 import type { World } from '../game/world/types.ts';
 import { FACINGS, type Facing } from '../rules/grid.ts';
 import type { CellKind } from '../data/dungeon-map.ts';
 import type { Furniture } from '../data/schemas/index.ts';
+import { levelOf } from '../game/dungeon/levels.ts';
 
 export const MAP_CELL = 16;
 

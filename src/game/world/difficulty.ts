@@ -6,8 +6,8 @@ import { createRng } from '../../rules/rng.ts';
 import { runBattle } from '../combat/battle.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
-import { battleFrom, type PartySetup } from './fight.ts';
 import type { World } from './types.ts';
+import { battleFrom, type PartySetup } from './battle-setup.ts';
 
 export interface Difficulty {
   /** The share of simulated fights in which at least one PC ends dying, stabilized, or dead. */

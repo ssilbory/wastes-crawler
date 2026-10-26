@@ -5,7 +5,8 @@ import {
   partyLevel,
   simulateDifficulty,
 } from '../../../src/game/world/difficulty.ts';
-import { applyBattle, encounterBattle, partySetup, xpText } from '../../../src/game/world/fight.ts';
+import { applyBattle, encounterBattle, xpText } from '../../../src/game/world/fight.ts';
+import { partySetup } from '../../../src/game/world/battle-setup.ts';
 import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
 import { createRng } from '../../../src/rules/rng.ts';
 import { data, member, world, encounter } from './helpers.ts';

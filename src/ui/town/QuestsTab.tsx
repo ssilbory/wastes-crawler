@@ -7,12 +7,12 @@ import {
   turnInQuest,
 } from '../../game/world/quest-board.ts';
 import { decideSeal, type SealChoice } from '../../game/world/seal.ts';
-import { townHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
 import { sealOpen } from '../../render/setting-view.ts';
 import { questStatus, rewardText } from '../../render/quest-view.ts';
 import { data } from '../builder/data.ts';
 import type { Act } from './TownScreen.tsx';
+import { townHere } from '../../game/world/town-prices.ts';
 
 const SEAL: [SealChoice, string][] = [
   ['destroy', 'Destroy the seal'],

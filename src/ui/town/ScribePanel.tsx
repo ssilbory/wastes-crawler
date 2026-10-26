@@ -9,12 +9,12 @@ import {
   startScroll,
 } from '../../game/world/scribing.ts';
 import { partsText } from '../../game/world/components.ts';
-import { priceHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
 import { daysText } from '../../game/world/wording.ts';
 import { crowns } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import type { Act } from './TownScreen.tsx';
+import { priceHere } from '../../game/world/town-prices.ts';
 
 /** Writing scrolls (docs/rules-adaptation.md, Potions, scrolls, and magic devices: Scrolls). */
 export function ScribePanel(props: { world: World; act: Act }) {

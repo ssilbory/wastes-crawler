@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { enterDungeon, step } from '../../../src/game/dungeon/explore.ts';
 import { emit } from '../../../src/game/world/bus.ts';
-import { enterRegion } from '../../../src/game/world/crossing.ts';
 import { encounterBattle } from '../../../src/game/world/fight.ts';
 import { endOrder, learnCountersign, giveCountersign } from '../../../src/game/world/orders.ts';
 import type { World } from '../../../src/game/world/types.ts';
 import { data, encounter, member, world } from '../world/helpers.ts';
 import { place } from './helpers.ts';
+import { enterRegion } from '../../../src/game/world/enter-region.ts';
 
 /** The four starters inside a Dark Lands dungeon, on a cell. */
 function inside(

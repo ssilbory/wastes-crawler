@@ -9,10 +9,10 @@ import { rollEnemies, startEncounter } from '../world/encounters.ts';
 import { VIGOR_TURNS, vigor } from '../world/arts.ts';
 import { MASTERS_VIGOR_HP, MASTERS_VIGOR_TURNS, mastersVigor } from '../world/vowed-arts.ts';
 import { alive, bestAt, note, restQuarter } from '../world/members.ts';
-import { endQuarter } from '../world/quarter.ts';
 import type { Activity, World } from '../world/types.ts';
-import { levelOf } from './explore.ts';
 import { burn, blind } from './light.ts';
+import { levelOf } from './levels.ts';
+import { endQuarter } from '../world/end-quarter.ts';
 
 export const STEPS_PER_TURN = 12;
 export const TURNS_PER_QUARTER = 36;

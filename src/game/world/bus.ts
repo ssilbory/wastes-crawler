@@ -1,24 +1,8 @@
 // The world's event bus (docs/plan.md, Quest: driven by an event bus from the game layer). The
-// game layer emits what happened; listeners, the quests for now, react to it.
+// game layer emits what happened; listeners, the quests for now, react to it. The listeners are
+// assembled in listeners.ts and reach emit through GameData, so no listener imports the others.
 import type { GameData } from '../character/context.ts';
-import { clockListener } from './clock.ts';
-import { craftingListener } from './crafting.ts';
-import { grovesListener } from './groves.ts';
-import { factionsListener } from '../factions/turn.ts';
-import { maintenanceListener } from './maintenance.ts';
-import { notesListener } from './notes.ts';
-import { sharesListener } from './shares.ts';
-import { ordersListener } from './orders.ts';
-import { questListener } from './quests.ts';
-import { raidsListener } from './raids.ts';
-import { raisingListener } from './raising.ts';
 import { isCampaign } from './region.ts';
-import { rescueListener } from '../dungeon/rescues.ts';
-import { ruinsListener } from '../dungeon/ruins.ts';
-import { realmEndListener } from './realm-end.ts';
-import { sitesListener } from './hidden-sites.ts';
-import { waterListener } from './water.ts';
-import { warlordsListener } from './warlords.ts';
 import type { Npc, World } from './types.ts';
 
 export type WorldEvent =
@@ -41,43 +25,19 @@ export type WorldEvent =
   /** A standing order ended, by countersign, token, quest, or its keeper's fall. */
   | { kind: 'order-ended'; order: string };
 
-type Listener = (w: World, data: GameData, e: WorldEvent) => void;
+export type Listener = (w: World, data: GameData, e: WorldEvent) => void;
 
-const LISTENERS: readonly Listener[] = [
-  questListener,
-  grovesListener,
-  rescueListener,
-  raisingListener,
-  craftingListener,
-  maintenanceListener,
-  ordersListener,
-  raidsListener,
-  factionsListener,
-  clockListener,
-  notesListener,
-  sharesListener,
-  ruinsListener,
-  sitesListener,
-  waterListener,
-  warlordsListener,
-  // Last, so the fight's garrison is recorded before the ending checks the hex.
-  realmEndListener,
-];
-
-/**
- * The campaign's own story: its raids, factions, warlord's clock, and crafter's notes, all tied to
- * the campaign's towns. A world on a custom map or a realm has none of it (Sam's call). Standing
- * orders run everywhere: the Sealed Vale's posts hold its pass and tower, and the same listener
- * records every won post and hoard fight (docs/rules-adaptation.md, Shipped worlds).
- */
-const CAMPAIGN: ReadonlySet<Listener> = new Set([
-  raidsListener,
-  factionsListener,
-  clockListener,
-  notesListener,
-]);
+/** Every listener, in the order each event reaches them, and the campaign-only ones among them. */
+export interface WorldListeners {
+  all: readonly Listener[];
+  campaign: ReadonlySet<Listener>;
+}
 
 export function emit(w: World, data: GameData, e: WorldEvent): void {
+  const { listeners } = data;
+  // A GameData built without the table would drop every event; built from untyped code it fails.
+  if (!listeners) throw new Error('GameData has no world listeners (src/game/world/listeners.ts)');
   const story = isCampaign(w);
-  for (const listen of LISTENERS) if (story || !CAMPAIGN.has(listen)) listen(w, data, e);
+  for (const listen of listeners.all)
+    if (story || !listeners.campaign.has(listen)) listen(w, data, e);
 }

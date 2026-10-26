@@ -1,11 +1,16 @@
 import { allMonsters } from '../../data/monsters.ts';
 import type { ContentData, Monster, Progression, SrdData } from '../../data/schemas/index.ts';
 import { gameSkills } from '../../data/skills.ts';
+import type { WorldListeners } from '../world/bus.ts';
 
-/** Everything character rules need to look up; built once from loadSrd() and loadContent(). */
+/**
+ * Everything character rules need to look up; built once from loadSrd() and loadContent(), with
+ * the world's event listeners from src/game/world/listeners.ts.
+ */
 export interface GameData {
   srd: SrdData;
   content: ContentData;
+  listeners: WorldListeners;
 }
 
 /** A class's level table, by class option id; an option may borrow another's table. */

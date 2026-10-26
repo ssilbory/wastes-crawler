@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import type { GameData } from '../../../src/game/character/context.ts';
 import { springHere } from '../../../src/game/dungeon/traps.ts';
-import { applyBattle, partySetup, type WorldBattle } from '../../../src/game/world/fight.ts';
+import { applyBattle, type WorldBattle } from '../../../src/game/world/fight.ts';
+import { partySetup } from '../../../src/game/world/battle-setup.ts';
 import { endPacts, makePact, PACT, pactOf } from '../../../src/game/world/pacts.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';

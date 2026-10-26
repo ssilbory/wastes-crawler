@@ -17,12 +17,12 @@ import {
   poisonMember,
 } from '../../../src/game/world/ailments.ts';
 import { endOfDay } from '../../../src/game/world/day.ts';
-import { battleFrom, partySetup } from '../../../src/game/world/fight.ts';
 import { healNight, memberCheck, memberSheet } from '../../../src/game/world/members.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
 import { createRng } from '../../../src/rules/rng.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { data, member, world } from './helpers.ts';
+import { battleFrom, partySetup } from '../../../src/game/world/battle-setup.ts';
 
 /** Only Snag left in the party, so each night's rolls are his alone. */
 function alone(faces: number[] = []): { w: World; snag: Member } {

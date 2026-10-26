@@ -1,9 +1,9 @@
 import { boardCoach, fareListed, routesFrom } from '../../game/world/coach.ts';
-import { priceHere, townHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
 import { crowns } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import type { Act } from './TownScreen.tsx';
+import { priceHere, townHere } from '../../game/world/town-prices.ts';
 
 /** Coaches out of town (docs/rules-adaptation.md, Coach routes). */
 export function TravelTab(props: { world: World; act: Act; onBoard: () => void }) {

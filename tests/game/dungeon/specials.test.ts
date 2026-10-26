@@ -2,11 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { step } from '../../../src/game/dungeon/explore.ts';
 import { inDark } from '../../../src/game/dungeon/light.ts';
 import { arriveOn, onSpecial, specialsHere } from '../../../src/game/dungeon/specials.ts';
-import { battleFrom, partySetup } from '../../../src/game/world/fight.ts';
 import { createRng } from '../../../src/rules/rng.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { data, world } from '../world/helpers.ts';
 import { below, place, state } from './helpers.ts';
+import { battleFrom, partySetup } from '../../../src/game/world/battle-setup.ts';
 
 const lower = (x: number, y: number, facing: 'n' | 'e' | 's' | 'w') =>
   place(below(), 'barrow-lower', x, y, facing);

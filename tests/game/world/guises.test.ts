@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { hike } from '../../../src/game/world/activities.ts';
 import { emit } from '../../../src/game/world/bus.ts';
-import { enterRegion } from '../../../src/game/world/crossing.ts';
 import { startEncounter } from '../../../src/game/world/encounters.ts';
 import {
   adoptVisage,
@@ -16,6 +15,7 @@ import { createRng } from '../../../src/rules/rng.ts';
 import { below } from '../dungeon/helpers.ts';
 import { fail, highMage } from './helpers-mage.ts';
 import { data, encounter, member, world } from './helpers.ts';
+import { enterRegion } from '../../../src/game/world/enter-region.ts';
 
 describe('Adopt the Simulacular Visage', () => {
   it('gives the whole party the seeming of the bound until dawn', () => {

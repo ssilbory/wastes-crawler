@@ -14,8 +14,9 @@ import type { Character } from '../../src/data/schemas/index.ts';
 import { createBattle, runBattle } from '../../src/game/combat/battle.ts';
 import { importCharacter } from '../../src/game/character/io.ts';
 import { createRng } from '../../src/rules/rng.ts';
+import { WORLD_LISTENERS } from '../../src/game/world/listeners.ts';
 
-const data = { srd: loadSrd(), content: loadContent() };
+const data = { srd: loadSrd(), content: loadContent(), listeners: WORLD_LISTENERS };
 
 function arg(name: string, fallback: string): string {
   const i = process.argv.indexOf(`--${name}`);

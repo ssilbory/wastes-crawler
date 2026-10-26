@@ -29,7 +29,7 @@ function unshaped(c: Character): Character {
 }
 
 /** Why the caster can't shape now, wherever the party is, or null if they can. */
-export function cannotShapeHere(w: World): string | null {
+function cannotShapeHere(w: World): string | null {
   if (w.encounter) return 'Settle the encounter first.';
   if (w.dungeon || w.coach) return 'Boneshaping takes an hour of quiet work above ground.';
   return null;

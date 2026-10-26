@@ -12,11 +12,18 @@ import { fitSize, sizedLine, type Size } from '../character/gear.ts';
 import { entryPrice, findItem, type InventoryEntry } from '../character/items.ts';
 import { findPeople } from '../character/people.ts';
 import { note } from './members.ts';
-import { currentLedger, ledger, priceHere, spend, spendingThreshold, townHere } from './town.ts';
 import type { TownResult } from './services.ts';
 import { tradePercent } from './trade.ts';
 import { spoils } from './warlords.ts';
 import type { Member, World } from './types.ts';
+import {
+  currentLedger,
+  ledger,
+  priceHere,
+  spend,
+  spendingThreshold,
+  townHere,
+} from './town-prices.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 

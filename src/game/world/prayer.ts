@@ -5,8 +5,8 @@ import type { MissionGiver } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
 import { alive, awake, cureFrailty, memberCheck, note } from './members.ts';
 import type { TownResult } from './services.ts';
-import { townHere } from './town.ts';
 import type { World } from './types.ts';
+import { townHere } from './town-prices.ts';
 
 export type Prayer = { kind: 'strain' } | { kind: 'frailty'; target: string };
 

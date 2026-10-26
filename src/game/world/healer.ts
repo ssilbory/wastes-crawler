@@ -6,9 +6,9 @@
 import { characterSheet } from '../character/derived.ts';
 import { armorFreeArts } from '../character/magic.ts';
 import type { GameData } from '../character/context.ts';
-import { note, setHp } from './members.ts';
+import { cureFrailty, note, setHp } from './members.ts';
 import { placeKey } from './necromancy.ts';
-import { revive, type TownResult } from './services.ts';
+import type { TownResult } from './services.ts';
 import type { Battle } from '../combat/types.ts';
 import type { Member, World } from './types.ts';
 
@@ -88,4 +88,17 @@ export function wakeRevived(w: World): void {
     setHp(m, Math.max(1, m.character.hp.current));
     note(w, `${m.character.name} wakes.`);
   }
+}
+
+/** Brings a dead member back: 1 HP, no strain, and the XP they earned while dead. */
+export function revive(m: Member): void {
+  Object.assign(m, { dead: false, hungry: false, thirsty: false, sleepless: false, cold: false });
+  cureFrailty(m);
+  m.character = {
+    ...m.character,
+    xp: m.character.xp + m.pendingXp,
+    strain: { value: 0, broken: false },
+  };
+  m.pendingXp = 0;
+  setHp(m, 1);
 }

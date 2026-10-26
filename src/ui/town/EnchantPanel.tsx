@@ -7,12 +7,12 @@ import {
   startDevice,
 } from '../../game/world/enchanting.ts';
 import { scribesOf } from '../../game/world/scribing.ts';
-import { priceHere } from '../../game/world/town.ts';
 import type { World } from '../../game/world/types.ts';
 import { daysText } from '../../game/world/wording.ts';
 import { crowns } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import type { Act } from './TownScreen.tsx';
+import { priceHere } from '../../game/world/town-prices.ts';
 
 const rules = data.content.devices;
 

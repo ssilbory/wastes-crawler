@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { loadSrd } from '../../../src/data/load.ts';
 import { npcReferenceErrors } from '../../../src/data/npc-check.ts';
-import { enterRegion } from '../../../src/game/world/crossing.ts';
 import { rollEnemies } from '../../../src/game/world/encounters.ts';
 import { regionMap } from '../../../src/game/world/region.ts';
 import { data, world } from './helpers.ts';
+import { enterRegion } from '../../../src/game/world/enter-region.ts';
 
 const homeOf = (id: string | null) => data.content.captives.find((c) => c.id === id)?.destination;
 

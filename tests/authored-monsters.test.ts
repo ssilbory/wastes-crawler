@@ -7,10 +7,11 @@ import { allMonsters, baseMonster, withSettingMonsters } from '../src/data/monst
 import { findMonster } from '../src/game/character/context.ts';
 import { monsterCombatant } from '../src/game/combat/monster-combatant.ts';
 import { createRng } from '../src/rules/rng.ts';
+import { WORLD_LISTENERS } from '../src/game/world/listeners.ts';
 
 const srd = loadSrd();
 const content = loadContent();
-const data = { srd, content };
+const data = { srd, content, listeners: WORLD_LISTENERS };
 
 describe('authored monsters', () => {
   it('take setting monsters onto existing stat lines, combat entry and all', () => {
