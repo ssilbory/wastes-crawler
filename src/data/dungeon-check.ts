@@ -2,7 +2,7 @@
 // match, links and the entry land on real cells, the entrance is on passable land, and every open
 // cell is reachable from the entry, taking stairs between levels and secret doors as passages.
 import { parseLevelMap, type LevelMap } from './dungeon-map.ts';
-import type { Cell, ContentData, Dungeon, Facing } from './schemas/index.ts';
+import type { Cell, ContentData, Dungeon, DungeonLevel, Facing } from './schemas/index.ts';
 
 const SIDES: readonly Facing[] = ['n', 'e', 's', 'w'];
 const STEP: Record<Facing, Cell> = {
@@ -100,7 +100,7 @@ function dungeonErrors(d: Dungeon, content: ContentData): string[] {
       level,
       { x: c.x + STEP[s].x, y: c.y + STEP[s].y },
     ]);
-    for (const l of d.levels.find((x) => x.id === level)?.links ?? [])
+    for (const l of (d.levels.find((x) => x.id === level) as DungeonLevel).links)
       if (l.at.x === c.x && l.at.y === c.y && 'level' in l.to && onFloor(l.to.level, l.to.at))
         next.push([l.to.level, l.to.at]);
     for (const [lv, n] of next) {

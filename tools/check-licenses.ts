@@ -13,8 +13,11 @@ const ALLOWED = new Set([
   'OFL-1.1',
 ]);
 
-/** No dependency at all, dev tooling included, may be limited to these. */
-const DENIED = /\b(?:A?GPL|LGPL|EPL|MS-PL)\b/i;
+/**
+ * No dependency at all, dev tooling included, may be limited to these: the SPDX ids, and a license
+ * written out in words ("GNU General Public License v3") or calling itself copyleft.
+ */
+const DENIED = /\b(?:A?GPL|LGPL|EPL|MS-PL)\b|general public licen[cs]e|copyleft/i;
 
 type Report = Record<string, { name: string; versions: string[] }[]>;
 

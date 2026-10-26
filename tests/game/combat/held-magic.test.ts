@@ -148,7 +148,8 @@ describe('reading scrolls (docs/rules-adaptation.md, Scrolls; SRD 4.9.1)', () =>
     expect(heldMagicAt(b, snag, fake)).toBeNull();
     const good = carry(snag, scroll());
     invokeHeld(b, snag, { kind: 'invoke', item: good, spell: COFFIN, target: 'Grukk' });
-    expect(snag.character?.inventory[good]).toBeDefined();
+    // Not an offered target: the scroll stays, unread.
+    expect(snag.character?.inventory[good]).toMatchObject({ id: 'scroll', quantity: 1 });
   });
 
   it('aims row spells at a row', () => {

@@ -4,10 +4,10 @@ import { hike } from '../../../src/game/world/activities.ts';
 import { emit } from '../../../src/game/world/bus.ts';
 import { groveKey, grovesHere, hexesToAvoid } from '../../../src/game/world/groves.ts';
 import { route, setDestination } from '../../../src/game/world/plans.ts';
-import { findPath, regionMap } from '../../../src/game/world/region.ts';
+import { findPath, regionMap, type RegionMap } from '../../../src/game/world/region.ts';
 import type { World } from '../../../src/game/world/types.ts';
 import { hexCells } from '../../../src/render/hex-view.ts';
-import { hexKey, type Hex } from '../../../src/rules/hex.ts';
+import { hexKey, neighbors, type Hex } from '../../../src/rules/hex.ts';
 import { createRng } from '../../../src/rules/rng.ts';
 import { below } from '../dungeon/helpers.ts';
 import { data, encounter, world } from './helpers.ts';
@@ -137,6 +137,20 @@ describe('groves of walking trees (Sam’s calls)', () => {
   });
 });
 
+/** Every hex reachable from `start` over passable hexes, never through one in `avoid`. */
+function reach(map: RegionMap, start: Hex, avoid: ReadonlySet<string> = new Set()): Set<string> {
+  const seen = new Set([hexKey(start)]);
+  const queue = [start];
+  for (let h = queue.shift(); h; h = queue.shift())
+    for (const n of neighbors(h)) {
+      const key = hexKey(n);
+      if (seen.has(key) || avoid.has(key) || map.costOf(n) === null) continue;
+      seen.add(key);
+      queue.push(n);
+    }
+  return seen;
+}
+
 describe('groves and the roads', () => {
   it.each(data.content.regions.map((r) => [r.id, r] as const))(
     'never cut a hex off from the start of %s',
@@ -145,22 +159,14 @@ describe('groves and the roads', () => {
       w.region = region.id;
       const map = regionMap(data, region.id);
       const start = region.sites.find((x) => x.id === region.start) ?? (region.sites[0] as Hex);
-      const all = new Set<string>();
-      for (let row = 0; row < map.height; row++)
-        for (let col = 0; col < map.width; col++)
-          if (map.costOf({ col, row }) !== null) all.add(hexKey({ col, row }));
       const avoid = hexesToAvoid(w, data, null);
-      for (const key of all) {
-        if (avoid.has(key)) continue;
-        const [col, row] = key.split(',').map(Number) as [number, number];
-        if (findPath(map, start, { col, row }, all) === null) continue;
-        expect(
-          findPath(map, start, { col, row }, all, avoid),
-          `${region.id} ${key}`,
-        ).not.toBeNull();
-      }
+      const around = reach(map, start, avoid);
+      const cut = [...reach(map, start)].filter((key) => !avoid.has(key) && !around.has(key));
+      expect(cut, region.id).toEqual([]);
+      // As the hike planner finds them: a hex the flood reaches has a path that keeps clear.
+      const far = [...around].at(-1) as string;
+      const [col, row] = far.split(',').map(Number) as [number, number];
+      expect(findPath(map, start, { col, row }, around, avoid)).not.toBeNull();
     },
-    // A path search per hex: about 4 seconds for the Dark Lands alone, more under a full run.
-    20_000,
   );
 });

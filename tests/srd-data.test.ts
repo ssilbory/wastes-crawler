@@ -90,7 +90,12 @@ describe('data/srd', () => {
       damage: 10,
       maxAc: null,
     });
-    expect(srd.monsters.find((m) => m.id === 'automaton-humanlike')).toBeDefined();
+    expect(srd.monsters.find((m) => m.id === 'automaton-humanlike')).toMatchObject({
+      hitDice: 2,
+      ac: 13,
+      morale: 12,
+      damage: { kind: 'weapon', bonus: 0 },
+    });
     const gear = (id: string) => srd.gear.find((g) => g.id === id);
     expect(gear('candle')).toMatchObject({ encumbrance: null, weightless: true });
     expect(gear('backpack')).toMatchObject({ encumbrance: 1, freeWhenWorn: true });

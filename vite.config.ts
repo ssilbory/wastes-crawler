@@ -15,7 +15,7 @@ export default defineConfig({
     include: ['tests/**/*.test.ts', 'src/**/*.test.ts'],
     coverage: {
       provider: 'v8',
-      include: ['src/rules/**/*.ts', 'src/game/**/*.ts', 'src/render/**/*.ts'],
+      include: ['src/data/**/*.ts', 'src/rules/**/*.ts', 'src/game/**/*.ts', 'src/render/**/*.ts'],
       reporter: ['text', 'html'],
       thresholds: { lines: 100, branches: 100, functions: 100, statements: 100 },
     },

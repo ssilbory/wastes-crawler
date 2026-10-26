@@ -15,6 +15,7 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  # The fast checks first, so a typo fails in seconds rather than after the tests.
   check:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -31,12 +32,36 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm format:check
-      - run: pnpm test:coverage
       - run: pnpm srd:check
       - run: pnpm license:check
-      - run: pnpm build
+      - run: pnpm test:coverage
       - run: pnpm sim --fights 100
-      - run: pnpm exec playwright install --with-deps chromium
+
+  # Alongside the checks: one build, played end to end, then published from main.
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - id: playwright
+        run: echo "version=$(pnpm exec playwright --version | cut -d' ' -f2)" >> "$GITHUB_OUTPUT"
+      - id: browsers
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      - if: steps.browsers.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium
+      # A cached browser still needs the system libraries it runs on.
+      - if: steps.browsers.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps chromium
       - run: pnpm test:e2e
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
@@ -51,7 +76,7 @@ jobs:
 
   deploy:
     if: github.ref == 'refs/heads/main'
-    needs: check
+    needs: [check, e2e]
     # One Pages deployment at a time; never cancel one mid-flight.
     concurrency:
       group: pages

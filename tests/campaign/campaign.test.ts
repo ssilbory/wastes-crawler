@@ -67,7 +67,7 @@ describe('the Command authority campaign (Phase 12 exit)', () => {
       delve(w, data, DARK, { col: 17, row: 22 });
       stairs(w, data, { x: 9, y: 7 });
       walkTo(w, data, { x: 1, y: 1 });
-      expect(w.notes['vats-notes']).toBeDefined();
+      expect(w.notes['vats-notes']).toBe('found');
       if (pendingNotes(w).length > 0)
         expect(burnNotes(w, data, 'vats-notes')).toEqual({ ok: true });
       stairs(w, data, { x: 0, y: 9 });
