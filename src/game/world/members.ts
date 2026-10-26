@@ -183,6 +183,7 @@ export function newMember(
     reviving: false,
     artUses: {},
     prayedDay: null,
+    lastStandDay: null,
     companion: null,
     toughness: 0,
     purgeTries: [],

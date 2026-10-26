@@ -161,6 +161,24 @@ describe('attack fixtures (SRD 2.4.5)', () => {
     });
   });
 
+  it('lets only the better of Armsmaster and Deadeye add to a thrown weapon (1.6.0)', () => {
+    const dex14 = { str: 10, dex: 14, con: 11, int: 10, wis: 9, cha: 7 };
+    const both = {
+      scores: dex14,
+      skills: { stab: 1, shoot: 2 },
+      foci: [f('armsmaster'), f('deadeye')],
+      entries: [I('dagger')],
+    };
+    // Dex +1, plus Deadeye's Shoot-2 alone: not Stab-1 on top.
+    expect(attack(both, 'dagger', 'thrown')).toMatchObject({ damageBonus: 3 });
+    // With the higher Stab, Armsmaster's counts instead.
+    expect(attack({ ...both, skills: { stab: 2, shoot: 1 } }, 'dagger', 'thrown')).toMatchObject({
+      damageBonus: 3,
+    });
+    // In melee only Armsmaster fits, so it applies as ever.
+    expect(attack(both, 'dagger', 'melee')).toMatchObject({ damageBonus: 2 });
+  });
+
   it('gives Unarmed Combatant bigger dice and Shock from Punch-1', () => {
     const brawler = { foci: [f('unarmed-combatant')] };
     // Punch-1, Str +1: 0 + 1 + 1 = 2; 1d8 + 1 + Punch 1; Shock 1 + 1 = 2 against AC 15.

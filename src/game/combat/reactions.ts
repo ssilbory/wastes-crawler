@@ -126,7 +126,7 @@ export function abnegate(b: Battle, target: Combatant): boolean {
     );
     const effect = spell?.effect;
     if (!spell || effect?.kind !== 'abnegation' || !canPay(c, spellLevel(b, spell.id))) continue;
-    payFor(c, spellLevel(b, spell.id));
+    Object.assign(c, payFor(c, spellLevel(b, spell.id)));
     target.status = 'out';
     target.revives = { hp: effect.hpPerLevel * c.level, strain: effect.strain };
     say(b, `${target.name} is cut down in a spray of gore, to all eyes dead.`);
@@ -151,7 +151,7 @@ export function everlast(b: Battle, target: Combatant): boolean {
     );
     if (m?.effect.kind !== 'everlasting' || c.usedThisScene.has(m.id)) continue;
     if (!canPay(c, spellLevel(b, m.id))) continue;
-    payFor(c, spellLevel(b, m.id));
+    Object.assign(c, payFor(c, spellLevel(b, m.id)));
     c.usedThisScene.add(m.id);
     b.everlasting = { side: x.side, caster: x.id, until: b.round + m.effect.rounds - 1 };
     say(b, `${x.name} pours unquenchable life into ${b.sideNames[x.side]}.`);
@@ -176,7 +176,7 @@ export function shelter(b: Battle, target: Combatant): boolean {
       (y) => y.effect.kind === 'citadel' && c.prepared.includes(y.id),
     );
     if (!m || !canPay(c, spellLevel(b, m.id))) continue;
-    payFor(c, spellLevel(b, m.id));
+    Object.assign(c, payFor(c, spellLevel(b, m.id)));
     b.escaped = true;
     b.outcome = 'draw';
     say(b, `${x.name} raises the Invincible Citadel; the foes can't reach the party and give up.`);

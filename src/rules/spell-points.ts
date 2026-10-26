@@ -11,9 +11,10 @@ export interface SpellPool {
 export const canPay = (p: SpellPool, level: number): boolean =>
   p.spellsLeft > 0 || p.pointsLeft >= level;
 
-/** Spends a slot if one is left, else the spell's level in points. */
-export function payFor(p: SpellPool, level: number): void {
+/** The pool after paying: a slot if one is left, else the spell's level in points. */
+export function payFor(p: SpellPool, level: number): SpellPool {
   if (!canPay(p, level)) throw new Error(`nothing left to pay for a level-${level} spell`);
-  if (p.spellsLeft > 0) p.spellsLeft -= 1;
-  else p.pointsLeft -= level;
+  return p.spellsLeft > 0
+    ? { spellsLeft: p.spellsLeft - 1, pointsLeft: p.pointsLeft }
+    : { spellsLeft: p.spellsLeft, pointsLeft: p.pointsLeft - level };
 }

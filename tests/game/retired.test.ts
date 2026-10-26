@@ -47,12 +47,12 @@ describe('skills and foci the game took away (docs/rules-adaptation.md, Skills)'
     expect(c.skills).toEqual({ 'animal-ken': 1, exert: 2, convince: 0 });
     expect(c.advancement.skillCredit).toEqual({ stab: 1, 'animal-ken': 2 });
     expect(c.advancement.freeFoci).toBeUndefined();
-    // Credit toward the replacement keeps the larger amount.
+    // Credit toward both adds up: the points were spent either way.
     const both = retire(data, {
       ...snag,
       advancement: { ...snag.advancement, skillCredit: { work: 1, exert: 2 } },
     });
-    expect(both.advancement.skillCredit).toEqual({ exert: 2 });
+    expect(both.advancement.skillCredit).toEqual({ exert: 3 });
   });
 
   it('swaps Rider for a free focus pick per level, kept until taken', () => {

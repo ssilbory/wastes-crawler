@@ -99,6 +99,13 @@ function downed(b: Battle, target: Combatant, before: number): void {
     say(b, `${target.name} should be dead, and fights on.`);
     return;
   }
+  // Die Hard: once a day, an injury that would drop them leaves 1 HP (vendor/wwn-srd/1.0 Character
+  // Creation/1.6.0 Foci.md). Free, so it comes before the spells that would cost something.
+  if (target.lastStand) {
+    Object.assign(target, { hp: 1, lastStand: false, lastStandUsed: true });
+    say(b, `${target.name} should be down, and stays on their feet.`);
+    return;
+  }
   if (everlast(b, target)) {
     target.hp = 1;
     return;

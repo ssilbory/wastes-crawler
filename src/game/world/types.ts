@@ -47,6 +47,8 @@ export interface Member {
   reviving: boolean;
   artUses: Record<string, number>;
   prayedDay: number | null;
+  /** The day Die Hard last kept them up at 1 HP: once a day (1.6.0). */
+  lastStandDay: number | null;
   /** A Beastmaster's companion sent away, ready to be called (1.5.4). */
   companion: NpcSave | null;
   /** Hit points Feral Toughness adds to the maximum now (1.5.4). */
