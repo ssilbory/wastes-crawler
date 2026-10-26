@@ -3,7 +3,7 @@
 // Wardpact Invocation and Mantle of Disjecting Dissection (4.4.0), the Warrior's Veteran's Luck
 // (1.5.18), creature resistances and on-hit effects (specials.ts), and the Vowed's Brutal Counter
 // and Hurling Throw (vowed.ts).
-import { venom } from './forms.ts';
+import { spendVenom, venom } from './forms.ts';
 import { netSteps } from '../../rules/advantage.ts';
 import {
   attackRoll,
@@ -38,6 +38,16 @@ export function shockContext(target: Combatant, attack: Attack): ShockContext {
 }
 
 /**
+ * A hit never does less than the Shock a miss would have dealt (vendor/wwn-srd/2.0 The Rules of the
+ * Game/2.4.0 Combat.md, Shock), and a miss's Shock is the one a ready shield ignores. Asking is
+ * hypothetical, so it doesn't use the shield up.
+ */
+export const hitShockContext = (target: Combatant, attack: Attack): ShockContext => ({
+  ...shockContext(target, attack),
+  shieldNegates: target.shield && !target.shieldUsed,
+});
+
+/**
  * The roll an attack makes against a target, with `bonus` added to hit (Smite the Wicked, Red
  * Harvest). The fight screen's odds read the same input, so they match the roll.
  */
@@ -62,7 +72,7 @@ const record = recordBlow;
 
 /** Shock on a miss; a shield soaks the first Shock its bearer would take each round. */
 function missShock(b: Battle, attacker: Combatant, target: Combatant, attack: Attack): void {
-  const blessed = b.damageBonus[attacker.side];
+  const blessed = attacker.blessed;
   const amount =
     attack.mode === 'melee'
       ? shockDamage(attack.shock, 0, blessed, shockContext(target, attack))
@@ -138,7 +148,7 @@ function strike(
     say(b, `${actor.name}'s blow slides off the ward around ${target.name}.`);
     return;
   }
-  const blessed = b.damageBonus[actor.side];
+  const blessed = actor.blessed;
   const d = attack.damage;
   const dice = doomed
     ? { count: d.count, sides: 1, modifier: d.modifier + d.count * (d.sides - 1) }
@@ -154,7 +164,7 @@ function strike(
         shock: attack.mode === 'melee' ? attack.shock : null,
         shockBonus: blessed,
       },
-      shockContext(target, attack),
+      hitShockContext(target, attack),
     ).total;
   // Enfeebling Wave: damage rolled twice, the worse kept (4.6.0).
   const damageRoll = () => (actor.enfeebledUntil >= b.round ? Math.min(once(), once()) : once());
@@ -165,8 +175,11 @@ function strike(
     (twice ? Math.max(damageRoll(), damageRoll()) : damageRoll()) + (boost?.damage ?? 0);
   // The doomed lose their defenses against blows, too.
   const blow = doomed ? rolled : resisted(target, attack, rolled);
+  // Venom and a weapon's ability ride on the blow, so they count toward whether it drops the target.
+  const venomExtra = venom(b, actor, attack, target);
+  const damage = blow + venomExtra + abilityDamage(b, attack, target);
   // Veteran's Luck: once per scene, turn a hit that would drop the Warrior into a miss.
-  if (target.veteransLuck && target.status === 'active' && blow >= target.hp) {
+  if (target.veteransLuck && target.status === 'active' && damage >= target.hp) {
     target.veteransLuck = false;
     say(b, `${target.name}'s veteran's luck turns aside ${actor.name}'s blow.`);
     missShock(b, actor, target, attack);
@@ -174,13 +187,13 @@ function strike(
   }
   // Rider: once a fight the rider negates a blow that would drop their mount (1.6.0).
   const rider = target.steedGuard ? b.combatants.find((c) => c.id === target.rider) : undefined;
-  if (rider && canAct(rider) && target.status === 'active' && blow >= target.hp) {
+  if (rider && canAct(rider) && target.status === 'active' && damage >= target.hp) {
     target.steedGuard = false;
     record(b, 'turned', actor, target);
     say(b, `${rider.name} turns ${target.name} aside from ${actor.name}'s blow.`);
     return;
   }
-  const damage = blow + venom(b, actor, attack, target) + abilityDamage(b, attack, target);
+  spendVenom(b, actor, venomExtra);
   record(b, 'hit', actor, target, damage);
   if (subdue(b, actor, target, damage)) return;
   say(b, `${actor.name} hits ${target.name} with ${attack.name} for ${damage}.`);

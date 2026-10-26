@@ -34,6 +34,13 @@ describe('attributeModifier', () => {
     ]);
   });
 
+  it('throws on a missing score rather than passing it as the best modifier', () => {
+    expect(() => attributeModifier(Number.NaN)).toThrow('not an attribute score: NaN');
+    expect(() => attributeModifier(undefined as unknown as number)).toThrow(
+      'not an attribute score: undefined',
+    );
+  });
+
   it('picks the best of several attributes', () => {
     expect(bestModifier(scores({ str: 18, con: 4 }), ['str', 'con'])).toBe(2);
     expect(boostedModifier(18, 1)).toBe(3);

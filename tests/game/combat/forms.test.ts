@@ -174,8 +174,8 @@ describe('Serpent’s Kiss (1.5.15)', () => {
   });
 
   it('is not spent on a blow Veteran’s Luck turns aside', () => {
-    // Hit 20; talons 1d8 = 8, enough to drop the thug.
-    const { b, snag, caster } = fight(c(), [20, 8], 0);
+    // Hit 20; talons 1d8 = 8, enough to drop the thug; the venom's d8 is rolled, not spent.
+    const { b, snag, caster } = fight(c(), [20, 8, 3], 0);
     const thug = who(b, 'foe-0-0');
     Object.assign(thug, { hp: 2, veteransLuck: true });
     const talons = snag.attacks.find((a) => a.id === 'savage-talons') as Combatant['attacks'][0];
@@ -183,5 +183,17 @@ describe('Serpent’s Kiss (1.5.15)', () => {
     expect(log(b)).toContain("veteran's luck turns aside Snag's blow");
     expect(log(b)).not.toContain('venom');
     expect(caster.effortUsed).toBe(0);
+  });
+
+  it('counts toward a blow that would drop the target, for Veteran’s Luck', () => {
+    // Talons 1 does too little alone against 9 HP; the venom's 8 plus Survive-2 drops the thug.
+    const { b, snag, caster } = fight(c(), [20, 1, 8], 0);
+    const thug = who(b, 'foe-0-0');
+    Object.assign(thug, { hp: 9, veteransLuck: true });
+    const talons = snag.attacks.find((a) => a.id === 'savage-talons') as Combatant['attacks'][0];
+    resolveAttack(b, snag, talons, thug);
+    expect(log(b)).toContain("veteran's luck turns aside Snag's blow");
+    // Turned into a miss, which still deals its Shock.
+    expect([thug.status, caster.effortUsed]).toEqual(['active', 0]);
   });
 });

@@ -24,6 +24,8 @@ describe('form arts (1.5.15)', () => {
     expect(shiftedHp({ max: 20, current: 20 }, 3, 1)).toEqual({ max: 23, current: 23 });
     expect(shiftedHp({ max: 23, current: 2 }, 3, -1)).toEqual({ max: 20, current: 1 });
     expect(shiftedHp({ max: 23, current: 0 }, 3, -1)).toEqual({ max: 20, current: 0 });
+    // Shifting back at a higher level than the shift in can't leave a maximum below 1.
+    expect(shiftedHp({ max: 3, current: 3 }, 5, -1)).toEqual({ max: 1, current: 1 });
   });
 
   it('heals 1d6 plus the level with Pliant Flesh', () => {

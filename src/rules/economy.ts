@@ -17,9 +17,15 @@ export function surchargedCost(
   threshold: number,
   rate: number,
 ): number {
+  positiveThreshold(threshold);
   const over = (x: number) => Math.max(0, x - threshold);
   const extra = (rate / (2 * threshold)) * (over(spent + amount) ** 2 - over(spent) ** 2);
   return toTenths(amount + extra);
+}
+
+/** Both curves divide by the threshold; the content schema keeps it positive (town-content.ts). */
+function positiveThreshold(threshold: number): void {
+  if (!(threshold > 0)) throw new RangeError(`a town threshold must be positive, not ${threshold}`);
 }
 
 /** Crowns paid for the first `x` crowns of loot cashed in at a town (the payout's integral). */
@@ -40,6 +46,7 @@ export function lootPayout(
   threshold: number,
   rate: number,
 ): number {
+  positiveThreshold(threshold);
   return toTenths(
     cumulativePayout(looted + amount, threshold, rate) - cumulativePayout(looted, threshold, rate),
   );

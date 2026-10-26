@@ -102,11 +102,16 @@ export interface Combatant {
   meleeShockImmune: boolean;
   /** Die Hard: falls to zero stable, not dying. */
   selfStabilize: boolean;
+  /** Die Hard: today's one escape from an injury that would drop them, and whether it was spent. */
+  lastStand: boolean;
+  lastStandUsed: boolean;
   /** Deadeye: hit modifier for two-handed ranged attacks in melee, or null if not allowed. */
   rangedInMelee: number | null;
   initiativeBonus: number;
   actsFirst: boolean;
   veteransLuck: boolean;
+  /** God Wills It's bonus to hit, damage, and Shock: the best blessing on them (Phase 14c). */
+  blessed: number;
   caster: CasterState | null;
   strain: StrainState | null;
   status: Status;
@@ -324,8 +329,6 @@ export interface Battle {
   /** Each side's starting number of combatants. */
   startCount: Record<SideId, number>;
   stabilizedThisRound: Set<string>;
-  /** Attack roll modifier by side, from God Wills It. */
-  hitModifier: Record<SideId, number>;
   /** The party fights without light; those who don't see in the dark take -4 to hit. */
   dark: boolean;
   /** The fight is underground, where Deluge of Hell can't be cast. */
@@ -344,8 +347,6 @@ export interface Battle {
   escaped: boolean;
   /** The player is done healing the wounded after the fight (Sam's call). */
   mended: boolean;
-  /** God Wills It's bonus to damage and Shock, by side (Phase 14c). */
-  damageBonus: Record<SideId, number>;
   log: string[] | null;
   /** For each log line, the side whose turn it came in; null between turns. Kept with the log. */
   logSides: (SideId | null)[] | null;

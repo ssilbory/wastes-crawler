@@ -197,6 +197,25 @@ describe('traps (docs/rules-adaptation.md, Dungeon exploration)', () => {
     expect(w.dungeon).not.toBeNull();
   });
 
+  it('lets Die Hard at level 2 keep a PC up at 1 HP from a trap, once a day', () => {
+    const w = onTrap();
+    only(w, 'Snag', 'Grukk');
+    const grukk = member(w, 'Grukk');
+    grukk.character = {
+      ...grukk.character,
+      foci: grukk.character.foci.map((f) => (f.id === 'die-hard' ? { ...f, level: 2 } : f)),
+    };
+    setHp(grukk, 1);
+    w.rng = scriptedRng([6, 6]);
+    springHere(w, sure);
+    expect([grukk.character.hp.current, grukk.lastStandDay]).toEqual([1, w.day]);
+    expect(w.log.join('\n')).toContain('Grukk should be down, and stays on their feet.');
+    // Spent for the day: the next trap fells him.
+    w.rng = scriptedRng([6, 6]);
+    springHere(w, sure);
+    expect(grukk.character.hp.current).toBe(0);
+  });
+
   it('sends the party back to town when the last of it dies', () => {
     const w = onTrap();
     only(w, 'Grukk');

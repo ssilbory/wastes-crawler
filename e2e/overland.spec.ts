@@ -136,3 +136,29 @@ test('heads toward an unexplored hex picked on the map', async ({ page }) => {
   await page.getByRole('button', { name: 'Hike for the quarter' }).click();
   await expect(page.locator('.world-bar')).not.toContainText('Rubblegate');
 });
+
+// Sam's call: with a hex targeted, Space plays the quarter out toward it, even standing in a town.
+test('hikes toward the targeted hex with Space', async ({ page }) => {
+  await page.goto('/#/arena');
+  await page.getByLabel('Import character files').setInputFiles(starters.slice(0, 2));
+  await page.getByRole('button', { name: 'Menu' }).click();
+  await page.getByRole('link', { name: 'Overland' }).click();
+  await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();
+  await page.getByRole('combobox', { name: 'Front row, slot 1' }).selectOption({ label: 'Snag' });
+  await page.getByRole('combobox', { name: 'Front row, slot 2' }).selectOption({ label: 'Grukk' });
+  await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('fog-e2e');
+  await page.getByRole('button', { name: 'Start a new world' }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
+  await page.locator('[data-hex="10,8"]').click();
+  await expect(page.getByRole('button', { name: 'Hike for the quarter' })).toHaveAttribute(
+    'aria-keyshortcuts',
+    'Q Space',
+  );
+  await expect(page.getByRole('button', { name: 'Visit Rubblegate' })).toHaveAttribute(
+    'aria-keyshortcuts',
+    'T',
+  );
+  await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+  await page.keyboard.press(' ');
+  await expect(page.locator('.world-bar')).not.toContainText('Rubblegate');
+});
