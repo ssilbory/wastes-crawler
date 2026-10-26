@@ -24,6 +24,7 @@
     "economy": "tsx tools/economy.ts",
     "balance": "tsx tools/balance.ts",
     "factions": "tsx tools/factions.ts",
+    "playtest": "tsx tools/playtest.ts",
     "validate:levels": "tsx tools/validate-levels.ts"
   },
   "dependencies": {
