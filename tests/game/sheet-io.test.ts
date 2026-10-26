@@ -8,8 +8,9 @@ import { characterSheet, previewSheet } from '../../src/game/character/derived.t
 import { evaluateChoices } from '../../src/game/character/creation.ts';
 import { exportCharacter, importCharacter, MIGRATIONS } from '../../src/game/character/io.ts';
 import { scriptedRng } from '../helpers/scripted-rng.ts';
+import { WORLD_LISTENERS } from '../../src/game/world/listeners.ts';
 
-const data: GameData = { srd: loadSrd(), content: loadContent() };
+const data: GameData = { srd: loadSrd(), content: loadContent(), listeners: WORLD_LISTENERS };
 const d2 = { count: 1, sides: 2, modifier: 0 };
 const d4 = { count: 1, sides: 4, modifier: 0 };
 const d6 = { count: 1, sides: 6, modifier: 0 };

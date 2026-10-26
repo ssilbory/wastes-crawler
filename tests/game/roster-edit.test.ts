@@ -26,8 +26,9 @@ import {
   type RosterEntry,
 } from '../../src/game/character/roster.ts';
 import { scriptedRng } from '../helpers/scripted-rng.ts';
+import { WORLD_LISTENERS } from '../../src/game/world/listeners.ts';
 
-const data: GameData = { srd: loadSrd(), content: loadContent() };
+const data: GameData = { srd: loadSrd(), content: loadContent(), listeners: WORLD_LISTENERS };
 
 /** A complete Goblin Raider Warrior. */
 const raider = (): Choices => ({

@@ -23,8 +23,9 @@ import {
 import { findLineage, findPeople } from '../../src/game/character/people.ts';
 import type { Skills } from '../../src/game/character/skills.ts';
 import { scriptedRng } from '../helpers/scripted-rng.ts';
+import { WORLD_LISTENERS } from '../../src/game/world/listeners.ts';
 
-const data: GameData = { srd: loadSrd(), content: loadContent() };
+const data: GameData = { srd: loadSrd(), content: loadContent(), listeners: WORLD_LISTENERS };
 const people = (id: string) => findPeople(data, id) as People;
 const cls = (id: string) => findProgression(data, id) as Progression;
 

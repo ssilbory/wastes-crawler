@@ -41,7 +41,7 @@ export function regionMap(data: GameData, id: string): RegionMap {
  * The game data with a world's custom map among the regions (Sam's call: worlds on maps from the
  * map editor), in place of any region with its id; the data itself for the campaign.
  */
-export function withWorldMap(data: GameData, map: Region | null): GameData {
+export function withWorldMap<D extends Pick<GameData, 'content'>>(data: D, map: Region | null): D {
   if (!map) return data;
   const regions = [...data.content.regions.filter((r) => r.id !== map.id), map];
   return { ...data, content: { ...data.content, regions } };

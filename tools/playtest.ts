@@ -8,6 +8,7 @@ import { loadContent } from '../src/data/content.ts';
 import { loadSrd } from '../src/data/load.ts';
 import type { GameData } from '../src/game/character/context.ts';
 import { play, type Run } from './playtest/bot.ts';
+import { WORLD_LISTENERS } from '../src/game/world/listeners.ts';
 
 const arg = (name: string, fallback: string) => {
   const i = process.argv.indexOf(`--${name}`);
@@ -18,7 +19,7 @@ const DAYS = Number(arg('days', '60'));
 const SEED = arg('seed', 'playtest');
 const WITHOUT = arg('without', '');
 
-const loaded: GameData = { srd: loadSrd(), content: loadContent() };
+const loaded: GameData = { srd: loadSrd(), content: loadContent(), listeners: WORLD_LISTENERS };
 const data: GameData = WITHOUT
   ? {
       ...loaded,

@@ -5,8 +5,9 @@ import { loadContent } from '../src/data/content.ts';
 import { loadSrd } from '../src/data/load.ts';
 import { EconomySimSchema } from '../src/data/schemas/index.ts';
 import { economyReport, LOCKOUTS, passes, RULED_OUT } from '../src/game/economy/report.ts';
+import { WORLD_LISTENERS } from '../src/game/world/listeners.ts';
 
-const data = { srd: loadSrd(), content: loadContent() };
+const data = { srd: loadSrd(), content: loadContent(), listeners: WORLD_LISTENERS };
 const sim = EconomySimSchema.parse(JSON.parse(readFileSync('data/economy-sim.json', 'utf8')));
 const reports = economyReport(data, sim);
 
