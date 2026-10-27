@@ -1,7 +1,8 @@
 // Mods (docs/rules-adaptation.md, Crafting and modifying gear; vendor/wwn-srd/2.0 The Rules of the
 // Game/2.8.0 Crafting and Modifying Gear.md, 2.8.2). An Expert or Partial Expert with Craft-1, or
-// anyone with the Artisan focus, starts a mod on one weapon or suit of armor in a workshop town,
-// paying exact loot dice and components, and works it there or in camp shifts (Sam's calls).
+// anyone with the Artisan focus, starts a mod on one weapon or suit of armor in any settlement,
+// paying exact loot dice and components, and works it at a town's workshop or in camp shifts; a
+// village has no workshop, so a mod started there is worked only in camp (Sam's calls).
 // Building takes a week per Craft level of the mod, halved because workshop work is full time,
 // and halved again with a Craft assistant in the party. Any loot dice short can be paid in crowns
 // at their highest face (Sam's call). Stripping a mod off takes a day and gives its components
@@ -92,7 +93,7 @@ interface Work {
   mod: Mod;
 }
 
-/** The checks building and stripping share: in a workshop town, a free crafter with the skill. */
+/** The checks building and stripping share: a free crafter with the skill. */
 function prepare(
   w: World,
   data: GameData,
@@ -102,8 +103,6 @@ function prepare(
   modId: string,
 ): Work | TownResult {
   if (w.encounter) return no('Settle the encounter first.');
-  const town = townHere(w, data);
-  if (town.size === 'village') return no(`${town.name} has no workshop.`);
   const crafter = w.members.find((x) => x.id === crafterId && !x.dead);
   const owner = w.members.find((x) => x.id === ownerId);
   const entry = owner?.character.inventory[index];
@@ -193,6 +192,9 @@ export function startStrip(
   index: number,
   modId: string,
 ): TownResult {
+  // Stripping is workshop work alone, never camp work (SRD 2.8.1).
+  const town = townHere(w, data);
+  if (town.size === 'village') return no(`${town.name} has no workshop.`);
   const work = prepare(w, data, crafterId, ownerId, index, modId);
   if ('ok' in work) return work;
   if (!work.entry.mods?.some((m) => m.id === modId)) return no(`It has no ${work.mod.name}.`);

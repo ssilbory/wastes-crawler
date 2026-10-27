@@ -150,11 +150,6 @@ describe('building mods (SRD 2.8.2)', () => {
       reason: 'Thirsting Blade needs 1 essence and 1 gem.',
     });
     expect(() => startMod(w, data, 'm-9', 'm-0', SPEAR, 'customized')).toThrow('no such');
-    w.position = { col: 17, row: 4 };
-    expect(startMod(w, data, 'm-3', 'm-0', SPEAR, 'customized')).toEqual({
-      ok: false,
-      reason: 'Grimcairn has no workshop.',
-    });
     w.encounter = encounter([['thug-or-militia']]);
     expect(startMod(w, data, 'm-3', 'm-0', SPEAR, 'customized')).toMatchObject({ ok: false });
   });
@@ -195,6 +190,25 @@ describe('building mods (SRD 2.8.2)', () => {
       { id: 'thirsting-blade', components: ['ooze-essence', 'grave-garnet'] },
     ]);
     expect(w.log.join('\n')).toContain('Fizzwick finishes Thirsting Blade on the Spear, Light.');
+  });
+
+  it('starts in a village with no workshop, and is worked there only in camp (Sam’s call)', () => {
+    const w = stocked();
+    w.position = { col: 17, row: 4 };
+    expect(startMod(w, data, 'm-3', 'm-0', SPEAR, 'customized')).toEqual({ ok: true });
+    expect(workDay(w, data)).toEqual({ ok: false, reason: 'Grimcairn has no workshop.' });
+    withTools(fizz(w));
+    expect(campProject(w, data, fizz(w))).toBeNull();
+    const left = w.projects[0]?.daysLeft as number;
+    w.position = { col: 4, row: 8 };
+    craftShift(w, data, fizz(w));
+    expect(w.projects[0]?.daysLeft).toBe(left - data.content.craftingRules.shiftDays);
+    // Stripping is workshop work alone: never in a village.
+    w.position = { col: 17, row: 4 };
+    expect(startStrip(w, data, 'm-0', 'm-0', SPEAR, 'customized')).toEqual({
+      ok: false,
+      reason: 'Grimcairn has no workshop.',
+    });
   });
 
   it('pays dice short in crowns at their highest face, or the whole cost in crowns', () => {
