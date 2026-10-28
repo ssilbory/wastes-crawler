@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef } from 'preact/hooks';
 import { darkness, type LightView } from '../../render/dungeon-light.ts';
 import { VIEW_HEIGHT, VIEW_WIDTH, type Panel } from '../../render/dungeon-view.ts';
+import type { Relief } from '../../render/dungeon-relief.ts';
 import type { TrapArt } from '../../render/trap-art.ts';
 import type { Motion } from '../../render/dungeon-motion.ts';
 import type { PortraitFigure } from '../../render/encounter-portrait.ts';
@@ -27,6 +28,22 @@ function Shadow(props: { panel: Panel; light: LightView }) {
         <stop offset="1" stop-color={DARK} stop-opacity={far} />
       </linearGradient>
       <polygon class="shadow" points={panel.points} fill={`url(#${id})`} />
+    </>
+  );
+}
+
+/** A surface's relief (docs/presentation-plan.md, V7): light stones, grime, bevels, cracks, grain. */
+function ReliefShapes(props: { relief: Relief }) {
+  const { relief } = props;
+  return (
+    <>
+      {relief.lights && <path class="lights" d={relief.lights} />}
+      {relief.grime.map((d, i) => (
+        <path key={i} class="grime" d={d} />
+      ))}
+      {relief.undersides && <path class="undersides" d={relief.undersides} />}
+      {relief.bevels && <path class="bevels" d={relief.bevels} />}
+      {relief.cracks && <path class="cracks" d={relief.cracks} />}
     </>
   );
 }
@@ -119,10 +136,12 @@ export function DungeonView(props: {
                 {(!p.trap || p.trap.plate) && <polygon points={p.points} fill={p.fill} />}
                 {p.trap && <TrapMarks art={p.trap} />}
                 {p.detail.patches && <path class="patches" d={p.detail.patches} />}
+                {p.detail.relief && <ReliefShapes relief={p.detail.relief} />}
                 {p.detail.lines && <path class="detail" d={p.detail.lines} />}
                 {p.frame && p.leaf && (
                   <>
                     <polygon class="door-frame" points={p.frame} fill={p.leaf.fill} />
+                    {p.leaf.detail.relief && <ReliefShapes relief={p.leaf.detail.relief} />}
                     <path class="detail" d={p.leaf.detail.lines} />
                     <path class="iron" d={p.leaf.detail.patches} />
                   </>
