@@ -2,7 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { step } from '../../src/game/dungeon/explore.ts';
 import { addMemberStrain } from '../../src/game/world/members.ts';
 import { abandonQuest } from '../../src/game/world/quest-board.ts';
-import { alertSnapshot, alertsSince } from '../../src/render/alert-view.ts';
+import {
+  addAlerts,
+  alertSnapshot,
+  alertsSince,
+  STRAIN_WINDOW,
+  type Alert,
+} from '../../src/render/alert-view.ts';
 import { below, place } from '../game/dungeon/helpers.ts';
 import { data, member, world } from '../game/world/helpers.ts';
 
@@ -172,5 +178,57 @@ describe('the inn notice', () => {
     w.performedDay = w.day;
     w.log.push('Day 1, Evening: The party sleeps.');
     expect(alertsSince(before, w, data)).toEqual([]);
+  });
+});
+
+describe('the strain window (Sam’s ask)', () => {
+  const strain = (title: string): Alert => ({ kind: 'strain', title, text: `${title} text` });
+  const quest = (title: string): Alert => ({ kind: 'quest', title, text: '' });
+
+  it('opens one window for the first strain notices, newest first', () => {
+    const { shown, nextId } = addAlerts([], [strain('Snag: +1'), strain('Grukk: +2')], 0, 5);
+    expect(shown).toEqual([
+      {
+        kind: 'strain',
+        title: STRAIN_WINDOW,
+        text: '',
+        id: 0,
+        entries: [
+          { title: 'Grukk: +2', text: 'Grukk: +2 text' },
+          { title: 'Snag: +1', text: 'Snag: +1 text' },
+        ],
+      },
+    ]);
+    expect(nextId).toBe(1);
+  });
+
+  it('adds later strain to the open window under the same id, and other notices beside it', () => {
+    const first = addAlerts([], [strain('Snag: +1')], 0, 5);
+    const later = addAlerts(first.shown, [strain('Snag: +1 again'), quest('Quest taken')], 1, 5);
+    expect(later.shown).toHaveLength(2);
+    const [window, other] = later.shown;
+    expect(window?.id).toBe(0);
+    expect(window?.entries?.map((e) => e.title)).toEqual(['Snag: +1 again', 'Snag: +1']);
+    expect(other).toEqual({ kind: 'quest', title: 'Quest taken', text: '', id: 1 });
+    expect(later.nextId).toBe(2);
+    // Nothing new leaves it as it was.
+    expect(addAlerts(later.shown, [], 2, 5)).toEqual({ shown: later.shown, nextId: 2 });
+    // More strain grows the window and leaves the other notices as they are.
+    const more = addAlerts(later.shown, [strain('Grukk: +1')], 2, 5);
+    expect(more.shown[0]?.entries).toHaveLength(3);
+    expect(more.shown[1]).toBe(later.shown[1]);
+  });
+
+  it('opens a fresh window once the last was dismissed', () => {
+    const first = addAlerts([], [strain('Snag: +1')], 0, 5);
+    const dismissed = first.shown.filter((a) => a.kind !== 'strain');
+    const again = addAlerts(dismissed, [strain('Grukk: +1')], first.nextId, 5);
+    expect(again.shown).toMatchObject([{ id: 1, entries: [{ title: 'Grukk: +1' }] }]);
+  });
+
+  it('lets the oldest other notices give way, never the strain window', () => {
+    const open = addAlerts([], [strain('Snag: +1')], 0, 3);
+    const full = addAlerts(open.shown, [quest('a'), quest('b'), quest('c')], open.nextId, 3);
+    expect(full.shown.map((a) => a.title)).toEqual([STRAIN_WINDOW, 'b', 'c']);
   });
 });

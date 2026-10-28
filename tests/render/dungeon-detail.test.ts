@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   beams,
   breach,
+  courses,
   flagstones,
   hash01,
   inQuad,
@@ -71,10 +72,26 @@ describe('dungeon surface detail', () => {
     expect(patches / stones).toBeLessThan(0.25);
   });
 
-  it('builds a door of three plank seams, two bands, and a ring', () => {
-    const door = planks(square);
+  it('builds a door of three plank seams, two bands, a ring, and grain down each plank', () => {
+    const door = planks(square, '2,2:e');
     expect(segments(door.lines)).toBe(3);
     expect(shapes(door.patches)).toBe(3);
+    expect(segments(door.relief?.cracks ?? '')).toBe(8);
+    expect(door).toEqual(planks(square, '2,2:e'));
+    expect(door.relief?.cracks).not.toBe(planks(square, '2,2:w').relief?.cracks);
+  });
+
+  it('keeps the same mortar and dark stones as before relief, with relief for every stone', () => {
+    const wall = stonework(square, '4,4:n');
+    const { stones } = courses('4,4:n');
+    expect(shapes(wall.relief?.bevels ?? '')).toBe(stones.length);
+    expect(wall.relief?.grime).toHaveLength(3);
+    // The stones tile the wall: each course runs edge to edge.
+    for (let row = 0; row < 5; row++) {
+      const course = stones.filter((s) => s.v0 === row / 5);
+      expect(course[0]?.u0).toBe(0);
+      expect(course.at(-1)?.u1).toBe(1);
+    }
   });
 
   it('flags a floor in four, darkening one stone some of the time', () => {
@@ -82,6 +99,8 @@ describe('dungeon surface detail', () => {
     for (let i = 0; i < 100; i++) {
       const f = flagstones(square, `${i},${i}`);
       expect(segments(f.lines)).toBe(3);
+      expect(shapes(f.relief?.bevels ?? '')).toBe(4);
+      expect(f.relief?.grime).toEqual([]);
       counts[shapes(f.patches)] = (counts[shapes(f.patches)] as number) + 1;
     }
     expect(counts[0]).toBeGreaterThan(0);
@@ -89,10 +108,13 @@ describe('dungeon surface detail', () => {
   });
 
   it('draws stair treads and ceiling beams', () => {
-    expect(treads(square)).toEqual({
-      lines: 'M0.0,30.0L100.0,30.0M0.0,55.0L100.0,55.0M0.0,78.0L100.0,78.0',
-      patches: '',
-    });
+    const stair = treads(square, '6,1');
+    expect(stair.lines).toBe('M0.0,30.0L100.0,30.0M0.0,55.0L100.0,55.0M0.0,78.0L100.0,78.0');
+    expect(stair.patches).toBe('');
+    // Four treads, each with its nosing lit and its foot in shadow.
+    expect(shapes(stair.relief?.bevels ?? '')).toBe(4);
+    expect(shapes(stair.relief?.undersides ?? '')).toBe(4);
+    expect(stair.relief?.cracks).toBe('');
     const b = beams(square);
     expect(segments(b.lines)).toBe(3);
     expect(shapes(b.patches)).toBe(1);

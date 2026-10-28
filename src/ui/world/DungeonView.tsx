@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef } from 'preact/hooks';
-import { darkness, type LightView } from '../../render/dungeon-light.ts';
+import { darkness, poolAt, type LightView } from '../../render/dungeon-light.ts';
 import { VIEW_HEIGHT, VIEW_WIDTH, type Panel } from '../../render/dungeon-view.ts';
+import type { Relief } from '../../render/dungeon-relief.ts';
 import type { TrapArt } from '../../render/trap-art.ts';
 import type { Motion } from '../../render/dungeon-motion.ts';
 import type { PortraitFigure } from '../../render/encounter-portrait.ts';
@@ -27,6 +28,47 @@ function Shadow(props: { panel: Panel; light: LightView }) {
         <stop offset="1" stop-color={DARK} stop-opacity={far} />
       </linearGradient>
       <polygon class="shadow" points={panel.points} fill={`url(#${id})`} />
+    </>
+  );
+}
+
+/** A surface's relief (docs/presentation-plan.md, V7): light stones, grime, bevels, cracks, grain. */
+function ReliefShapes(props: { relief: Relief }) {
+  const { relief } = props;
+  return (
+    <>
+      {relief.lights && <path class="lights" d={relief.lights} />}
+      {relief.grime.map((d, i) => (
+        <path key={i} class="grime" d={d} />
+      ))}
+      {relief.undersides && <path class="undersides" d={relief.undersides} />}
+      {relief.bevels && <path class="bevels" d={relief.bevels} />}
+      {relief.cracks && <path class="cracks" d={relief.cracks} />}
+    </>
+  );
+}
+
+/**
+ * The light pooling over one panel near the party (docs/presentation-plan.md, V7), in its own
+ * colour: flat on a face square to the view, a gradient on one running away.
+ */
+function Pool(props: { panel: Panel; light: LightView }) {
+  const { panel, light } = props;
+  const near = poolAt(light, panel.span.near);
+  const far = poolAt(light, panel.span.far);
+  if (near === 0 && far === 0) return null;
+  if (near === far)
+    return <polygon class="pool" points={panel.points} fill={light.tint} fill-opacity={near} />;
+  const id = `dv-pool-${panel.key}`;
+  const [x1, y1] = panel.span.from;
+  const [x2, y2] = panel.span.to;
+  return (
+    <>
+      <linearGradient id={id} gradientUnits="userSpaceOnUse" x1={x1} y1={y1} x2={x2} y2={y2}>
+        <stop offset="0" stop-color={light.tint} stop-opacity={near} />
+        <stop offset="1" stop-color={light.tint} stop-opacity={far} />
+      </linearGradient>
+      <polygon class="pool" points={panel.points} fill={`url(#${id})`} />
     </>
   );
 }
@@ -84,6 +126,8 @@ export function DungeonView(props: {
         .filter(Boolean)
         .join(' ')}
       viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}
+      // The light's colour, for the rims it catches on what stands in the view (V7).
+      style={light ? { '--light': light.tint } : undefined}
       role="img"
       aria-label={props.label}
     >
@@ -119,14 +163,17 @@ export function DungeonView(props: {
                 {(!p.trap || p.trap.plate) && <polygon points={p.points} fill={p.fill} />}
                 {p.trap && <TrapMarks art={p.trap} />}
                 {p.detail.patches && <path class="patches" d={p.detail.patches} />}
+                {p.detail.relief && <ReliefShapes relief={p.detail.relief} />}
                 {p.detail.lines && <path class="detail" d={p.detail.lines} />}
                 {p.frame && p.leaf && (
                   <>
                     <polygon class="door-frame" points={p.frame} fill={p.leaf.fill} />
+                    {p.leaf.detail.relief && <ReliefShapes relief={p.leaf.detail.relief} />}
                     <path class="detail" d={p.leaf.detail.lines} />
                     <path class="iron" d={p.leaf.detail.patches} />
                   </>
                 )}
+                {light && !p.trap && <Pool panel={p} light={light} />}
                 {light && !p.trap && <Shadow panel={p} light={light} />}
               </g>
               {p.breach && (
@@ -151,7 +198,7 @@ export function DungeonView(props: {
               viewBox="0 0 48 48"
               opacity={1 - darkness(light, f.depth)}
             >
-              <FigureParts figure={f.figure} down={false} />
+              <FigureParts figure={f.figure} down={false} light={f.light} mirror={f.mirror} />
             </svg>
           ))}
       </g>

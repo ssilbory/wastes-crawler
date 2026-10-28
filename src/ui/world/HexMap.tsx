@@ -108,6 +108,7 @@ export function HexMap(props: {
         <HexArtDefs />
         <rect class="paper" width={props.width} height={props.height} fill="url(#hm-paper)" />
         <LandLayer {...layer} />
+        <rect class="grain" width={props.width} height={props.height} fill="url(#hm-grain)" />
         {tint && tint.opacity > 0 && (
           <rect
             class="day-tint"

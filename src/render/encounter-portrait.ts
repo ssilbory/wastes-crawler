@@ -5,6 +5,7 @@
 // those of the fight screen (figure-view.ts).
 import type { GameData } from '../game/character/context.ts';
 import { VIEW_HEIGHT, VIEW_WIDTH } from './dungeon-geometry.ts';
+import { facesMiddle, lightFrom, type Relief } from './figure-draw.ts';
 import { monsterFigureOf, type FigureView } from './figure-view.ts';
 
 export interface PortraitFigure {
@@ -16,6 +17,10 @@ export interface PortraitFigure {
   size: number;
   /** Cells from the party, for how dark the light leaves it. */
   depth: number;
+  /** Which edge catches the party's light (figure-draw.ts). */
+  light: Relief;
+  /** A beast left of the middle turns to face it (figure-draw.ts). */
+  mirror: boolean;
 }
 
 /** The most figures one row shows; a crowd stands behind its first few. */
@@ -37,15 +42,20 @@ export function encounterPortrait(data: GameData, enemies: readonly string[][]):
       const shown = row.slice(0, ROW_SHOWN);
       // Spread across the corridor, closer together the further back they stand.
       const span = VIEW_WIDTH * (0.72 - r * 0.16);
-      return shown.map((id, i) => ({
-        key: `${r}-${i}`,
-        figure: monsterFigureOf(data, id),
-        x: VIEW_WIDTH / 2 + span * ((i + 1) / (shown.length + 1) - 0.5) - size / 2,
-        // The figure stands on y = 46 of its 48-unit box.
-        y: feet - (size * 46) / 48,
-        size,
-        depth: r + 2,
-      }));
+      return shown.map((id, i) => {
+        const cx = VIEW_WIDTH / 2 + span * ((i + 1) / (shown.length + 1) - 0.5);
+        return {
+          key: `${r}-${i}`,
+          figure: monsterFigureOf(data, id),
+          x: cx - size / 2,
+          // The figure stands on y = 46 of its 48-unit box.
+          y: feet - (size * 46) / 48,
+          size,
+          depth: r + 2,
+          light: lightFrom(cx),
+          mirror: facesMiddle(cx),
+        };
+      });
     })
     .reverse();
 }

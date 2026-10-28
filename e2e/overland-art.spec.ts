@@ -170,3 +170,29 @@ test('keeps quests in the one dock beside the map', async ({ page }) => {
   await fit(page);
   expect((await map.boundingBox())?.width).toBe(before?.width);
 });
+
+// Sam's ask: until the browser agrees to keep saves, the quarter's plan links to how.
+test('links from the quarter plan to keeping saves while the browser may clear them', async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator.storage, 'persisted', { value: () => Promise.resolve(false) });
+  });
+  await startWorld(page);
+  const plan = page.getByRole('region', { name: 'Quarter plan' });
+  const link = plan.getByRole('link', { name: 'Keep your saves' });
+  await expect(link).toBeVisible();
+  await link.click();
+  await expect(page).toHaveURL(/#\/about\/saves$/);
+  await expect(page.getByRole('region', { name: 'Your saves' })).toBeInViewport();
+});
+
+test('shows no saves reminder once the browser keeps them', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator.storage, 'persisted', { value: () => Promise.resolve(true) });
+  });
+  await startWorld(page);
+  const plan = page.getByRole('region', { name: 'Quarter plan' });
+  await expect(plan.getByRole('radio', { name: 'Hike' })).toBeVisible();
+  await expect(plan.getByRole('link', { name: 'Keep your saves' })).toHaveCount(0);
+});

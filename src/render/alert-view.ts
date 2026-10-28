@@ -19,6 +19,55 @@ export type AlertSnapshot = {
 
 export type Alert = { kind: 'strain' | 'quest' | 'inn'; title: string; text: string };
 
+/** One line in the strain window. */
+export type Entry = { title: string; text: string };
+
+/** A notice on screen; the strain window holds every strain notice as an entry, newest first. */
+export type Shown = Alert & { id: number; entries?: Entry[] };
+
+/** The strain window's heading. */
+export const STRAIN_WINDOW = 'Strain';
+
+/**
+ * Puts newly found notices on screen beside those already there (Sam's ask): every strain notice
+ * goes into the one strain window, added to it if it is open, else opening it, so the player
+ * dismisses strain once. Other notices stand on their own. At most `most` show, the oldest of the
+ * others giving way first; the strain window stays until dismissed. Ids count on from `nextId`.
+ */
+export function addAlerts(
+  shown: readonly Shown[],
+  found: readonly Alert[],
+  nextId: number,
+  most: number,
+): { shown: Shown[]; nextId: number } {
+  let id = nextId;
+  const strain = found
+    .filter((a) => a.kind === 'strain')
+    .map(({ title, text }) => ({ title, text }));
+  const others = found.filter((a) => a.kind !== 'strain').map((a) => ({ ...a, id: id++ }));
+  const open = shown.find((a) => a.kind === 'strain');
+  let out: Shown[] = [...shown];
+  if (strain.length > 0 && open)
+    // Kept under the same id, so the window stays put and only grows; it opened with entries.
+    out = out.map((a) =>
+      a === open ? { ...a, entries: [...strain.reverse(), ...(a.entries as Entry[])] } : a,
+    );
+  else if (strain.length > 0)
+    out.push({
+      kind: 'strain',
+      title: STRAIN_WINDOW,
+      text: '',
+      entries: strain.reverse(),
+      id: id++,
+    });
+  out.push(...others);
+  while (out.length > most) {
+    const oldest = out.findIndex((a) => a.kind !== 'strain');
+    out.splice(oldest, 1);
+  }
+  return { shown: out, nextId: id };
+}
+
 const timeOf = (w: World) => `${w.day}:${w.quarter}:${w.dungeon?.turn ?? ''}`;
 
 export function alertSnapshot(w: World): AlertSnapshot {

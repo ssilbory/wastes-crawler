@@ -501,6 +501,7 @@
     "id": "sand-burrower",
     "name": "Sand Burrower",
     "base": "large-solitary-predator",
+    "figure": "shelled",
     "description": "A blind, plated hunter that swims under the dunes and rises beneath its prey."
   },
   {
@@ -555,6 +556,7 @@
     "id": "bone-crawler",
     "name": "Bone Crawler",
     "base": "terrible-warbeast",
+    "figure": "crawler",
     "description": "A centipede-thing of fused bone, raised in some war no one recorded."
   },
   {
@@ -633,6 +635,7 @@
     "id": "sand-drake",
     "name": "Sand Drake",
     "base": "vicious-large-herbivore",
+    "figure": "lizard",
     "description": "A long, low lizard the size of an ox, saddled and goaded on by the rider behind it."
   },
   {

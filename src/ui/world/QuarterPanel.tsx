@@ -1,4 +1,5 @@
 import type { Activity, Member, QuarterPlan } from '../../game/world/types.ts';
+import { SAVES_LINK, usePersisted } from '../pwa.ts';
 
 const ACTIVITIES: Record<Activity, string> = {
   rest: 'Rest',
@@ -59,6 +60,7 @@ export function QuarterPanel(props: {
 }) {
   const { plan } = props;
   const people = props.members.map((m) => ({ id: m.id, name: m.character.name }));
+  const [persisted] = usePersisted();
   return (
     <section class="panel quarter-panel" aria-label="Quarter plan">
       <div class="quarter-head">
@@ -98,6 +100,13 @@ export function QuarterPanel(props: {
         <p class="hint">
           Click a hex on the map to set a destination, or Tab to the map and use the arrow keys and
           Enter.
+        </p>
+      )}
+      {persisted === false && (
+        // Sam's ask: until the browser agrees to keep saves, point to how.
+        <p class="hint saves-hint">
+          This browser may clear your saves when space runs low.{' '}
+          <a href={SAVES_LINK}>Keep your saves</a>
         </p>
       )}
       {props.noQuests && (

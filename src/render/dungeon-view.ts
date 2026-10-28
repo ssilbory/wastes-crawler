@@ -72,7 +72,10 @@ function panel(
     detail: stonework(q, `${cellKey(c)}:${side}`),
     breach: kind === 'dug' ? breach(q, edgeKey(c, side)) : null,
     trap: null,
-    leaf: kind === 'door' ? { fill: shade('door', depth, along), detail: planks(leaf) } : null,
+    leaf:
+      kind === 'door'
+        ? { fill: shade('door', depth, along), detail: planks(leaf, `${cellKey(c)}:${side}`) }
+        : null,
     span: along ? alongSide(depth, q) : flatOn(depth + 1, q),
   };
 }
@@ -232,7 +235,7 @@ function viewPanels(
         points: fmt(q),
         frame: null,
         fill: shade(cell, depth, false),
-        detail: treads(q),
+        detail: treads(q, cellKey(c)),
         breach: null,
         trap: null,
         leaf: null,

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Character } from '../../src/data/schemas/index.ts';
 import type { Attack } from '../../src/game/combat/types.ts';
-import { ARMORED_AC, figureOf } from '../../src/render/figure-view.ts';
+import { ARMORED_AC, figureOf, monsterFigureOf } from '../../src/render/figure-view.ts';
 import { sideView } from '../../src/render/arena-view.ts';
 import { data, standardBattle, who } from '../game/combat/helpers.ts';
 
@@ -77,6 +77,26 @@ describe('figures (docs/presentation-plan.md, V3)', () => {
       shape: 'giant',
       large: true,
     });
+  });
+
+  it('splits the animals by kind, and a setting monster takes its own figure over its base’s', () => {
+    const shape = (id: string) => (monsterFigureOf(data, id) as { shape: string }).shape;
+    // V7 (Sam's ask): the shared beast figures split by kind.
+    expect(shape('dire-wolf')).toBe('beast');
+    expect(shape('barrow-rat')).toBe('vermin');
+    expect(shape('saber-toothed-tiger')).toBe('big-cat');
+    expect(shape('crag-stalker')).toBe('big-cat');
+    expect(shape('war-boar')).toBe('boar');
+    expect(shape('ruinfield-grazer')).toBe('tusker');
+    expect(shape('unicorn')).toBe('unicorn');
+    expect(shape('giant-turtle')).toBe('shelled');
+    expect(shape('cave-bear')).toBe('great-beast');
+    // Its base is a boar, a warbeast, and a large predator; each looks nothing like it.
+    expect(shape('sand-drake')).toBe('lizard');
+    expect(shape('bone-crawler')).toBe('crawler');
+    expect(shape('sand-burrower')).toBe('shelled');
+    // Still drawn large if its base is.
+    expect(monsterFigureOf(data, 'sand-drake')).toMatchObject({ large: true });
   });
 
   it('falls back to the tags for a monster with no entry, and finds a summons by its stat line', () => {

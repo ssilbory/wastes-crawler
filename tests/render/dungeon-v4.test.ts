@@ -49,6 +49,13 @@ describe('encounter portrait', () => {
     // A lone foe stands in the middle; a pair either side of it.
     expect(giant.x + giant.size / 2).toBeCloseTo(VIEW_WIDTH / 2);
     expect(a.x + a.size / 2 + (b.x + b.size / 2)).toBeCloseTo(VIEW_WIDTH);
+    // Each catches the light on the side toward the middle.
+    expect(Math.abs(giant.light[0])).toBe(0);
+    for (const f of [a, b]) {
+      expect(Math.sign(f.light[0])).toBe(Math.sign(f.x + f.size / 2 - VIEW_WIDTH / 2));
+      expect(f.mirror).toBe(f.x + f.size / 2 < VIEW_WIDTH / 2);
+    }
+    expect(giant.mirror).toBe(false);
   });
 
   it('shows a crowd’s first few, and draws an unknown monster as a beast', () => {

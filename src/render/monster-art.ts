@@ -3,6 +3,7 @@
 // standing on the same line. Armed folk are people with a fixed kit; beasts face left, toward the
 // party.
 import type { MonsterFigure } from '../data/schemas/index.ts';
+import { ANIMALS } from './animal-art.ts';
 import { personParts, ring, type Part, type PersonView } from './figure-art.ts';
 
 const fill = (d: string): Part => ({ kind: 'fill', d });
@@ -50,6 +51,7 @@ const SPECKS: [number, number, number][] = [
 ];
 
 const ART: Record<MonsterFigure, () => Part[]> = {
+  ...ANIMALS,
   commoner: () => kit({ garb: 'cloak', held: 'fist', shield: false }),
   soldier: () => kit({ garb: 'armor', held: 'spear', shield: true }),
   caster: () => kit({ garb: 'robe', held: 'staff', shield: false }),

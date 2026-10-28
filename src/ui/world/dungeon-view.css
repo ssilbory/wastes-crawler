@@ -50,6 +50,42 @@
   stroke: none;
 }
 
+/* Relief (docs/presentation-plan.md, V7): stones lit along one edge and shadowed along the
+   other, a few lighter, hairline cracks or wood grain, and grime up from a wall's foot. */
+.dungeon-view .lights {
+  fill: #fff4e0;
+  fill-opacity: 0.07;
+}
+
+.dungeon-view .bevels {
+  fill: #fff4e0;
+  fill-opacity: 0.13;
+}
+
+/* Seen from above, a flagstone's lit edge is a glint, not a band. */
+.dungeon-view .panel-floor .bevels {
+  fill-opacity: 0.05;
+}
+
+.dungeon-view .undersides {
+  fill: #0d0c0b;
+  fill-opacity: 0.22;
+}
+
+.dungeon-view .grime {
+  fill: #0d0c0b;
+  fill-opacity: 0.12;
+}
+
+.dungeon-view .cracks {
+  fill: none;
+  stroke: #0d0c0b;
+  stroke-width: 0.45;
+  stroke-opacity: 0.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .dungeon-view .panel-ceiling .detail {
   stroke: #6b6056;
   stroke-width: 0.9;
@@ -127,6 +163,13 @@
 
 .dungeon-view .shadow {
   stroke: none;
+}
+
+/* The light pooling on the floor and walls at the party's feet (V7). It holds steady: fading it
+   with the flicker would brighten and dim the view against the dark at the same time. */
+.dungeon-view .pool {
+  stroke: none;
+  pointer-events: none;
 }
 
 .dungeon-view .glow {

@@ -118,10 +118,12 @@ test('enters the barrow from the hex map, walks both levels, and climbs out', as
   // Going back down, the party still has its map (docs/rules-adaptation.md, Charts).
   await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
   await expect(bar).toContainText('The Upper Barrow, facing north');
-  // The day's notices can pop up over the map; they're not what this checks.
+  // The day's notices can pop up over the map, and the strain window waits to be dismissed:
+  // close them, as a player would, since they're not what this checks.
+  const close = page.locator('.toasts').getByRole('button', { name: 'Dismiss' });
+  while ((await close.count()) > 0) await close.first().click();
   await expect(page.getByRole('img', { name: 'Map of The Upper Barrow' })).toHaveScreenshot(
     'barrow-upper-map-again.png',
-    { mask: [page.locator('.toasts')] },
   );
 });
 
@@ -364,4 +366,29 @@ test('shows a held captive among their guards, and a quest item, in the cells ah
   );
   await expect(view.locator('.occupant.item')).toHaveCount(1);
   await expect(view).toHaveScreenshot('barrow-quest-item.png');
+});
+
+// Sam's ask: a level's boss is seen before the fight. A hoard's guards stand over its chest, named
+// for a warlord whose hoard it is, until they're beaten.
+test('shows a hoard’s guards, the level’s boss, over its chest in the cells ahead', async ({
+  page,
+}) => {
+  await startAtBarrow(page);
+  await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
+  const view = page.getByRole('img', { name: 'Dungeon view' });
+  await edit(
+    page,
+    `Object.assign(save.dungeon, {
+       dungeon: 'scrap-kings-pumpworks', level: 'scrap-kings-pumpworks-2',
+       at: { x: 6, y: 2 }, facing: 'n',
+     });`,
+  );
+  const hoard = view.locator('.occupant.hoard');
+  await expect(hoard).toHaveCount(1);
+  await expect(hoard.locator('title')).toHaveText('The Scrap King, over a hoard');
+  await expect(hoard.locator('svg.foe')).toHaveCount(2);
+  await expect(view).toHaveScreenshot('pumpworks-hoard.png');
+  await edit(page, `save.beaten.push('scrap-kings-pumpworks/scrap-kings-pumpworks-2/6,0');`);
+  await expect(hoard.locator('title')).toHaveText('A hoard');
+  await expect(hoard.locator('svg.foe')).toHaveCount(0);
 });
