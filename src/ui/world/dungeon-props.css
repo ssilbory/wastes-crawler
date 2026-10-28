@@ -11,6 +11,12 @@
   paint-order: stroke;
 }
 
+/* A foe in the corridor catches the party's light on its rim (Figure.tsx, V7). */
+.dungeon-view .foe .relief-lit {
+  fill: #d9a76a;
+  fill-opacity: 0.4;
+}
+
 .dungeon-view .foe .line {
   fill: none;
   stroke: #0d0907;

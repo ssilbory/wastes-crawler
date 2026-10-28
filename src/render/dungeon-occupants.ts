@@ -1,7 +1,8 @@
 // Who and what stands in the cells ahead (Sam's ask; docs/presentation-plan.md): a held captive
-// among their guards, a garrison post's troops, a quest's guardians, and a quest item waiting to be
-// taken, drawn standing in their cells with the fight screen's figures. They show until the
-// captive is freed, the post beaten or its order ended, or the quest step done. Read-only.
+// among their guards, a garrison post's troops, a hoard's or vault's guards (the level's boss)
+// over its chest, a quest's guardians, and a quest item waiting to be taken, drawn standing in
+// their cells with the fight screen's figures. They show until the captive is freed, the post
+// beaten or its order ended, the hoard taken, or the quest step done. Read-only.
 import type { Cell } from '../rules/grid.ts';
 import { cellKey } from '../rules/grid.ts';
 import type { GameData } from '../game/character/context.ts';
@@ -15,12 +16,17 @@ import { flatOn, standIn } from './dungeon-geometry.ts';
 import { shade, type Panel } from './dungeon-panel.ts';
 import { levelOf } from '../game/dungeon/levels.ts';
 
+const warlordOf = (data: GameData, id: string) =>
+  data.content.warlords.warlords.find((w) => w.id === id);
+
 export interface Occupant {
-  kind: 'captive' | 'garrison' | 'guardian' | 'item';
+  kind: 'captive' | 'garrison' | 'hoard' | 'guardian' | 'item';
   /** What it is, for a tooltip. */
   title: string;
   /** The figures, the captive among their guards; none for an item. */
   figures: { figure: FigureView; foe: boolean }[];
+  /** A hoard's chest, standing behind its guards. */
+  chest?: boolean;
 }
 
 /** The most figures one cell shows; the rest of a group stands behind them. */
@@ -59,6 +65,25 @@ export function occupantsOf(w: World, data: GameData): Map<string, Occupant> {
       figures: foes(p.enemies, data),
     });
   }
+  for (const x of level.specials) {
+    // A guarded hoard or a vault; small caches with no guards are left to be found.
+    if (x.kind !== 'cache' || !x.guards) continue;
+    const key = `${place}/${cellKey(x.at)}`;
+    if (w.caches.includes(key)) continue;
+    const what = x.vault ? 'vault' : 'hoard';
+    const standing = !w.beaten.includes(key) && !(x.order && orderEnded(w, x.order));
+    const boss = x.warlord && warlordOf(data, x.warlord)?.name;
+    out.set(cellKey(x.at), {
+      kind: 'hoard',
+      title: standing
+        ? boss
+          ? `${boss}, over a ${what}`
+          : `A ${what} and its guards`
+        : `A ${what}`,
+      figures: standing ? foes(x.guards, data).slice(0, CELL_SHOWN - 1) : [],
+      chest: true,
+    });
+  }
   for (const [id, st] of Object.entries(w.quests)) {
     const o = st.status === 'active' ? currentStep(w, data, id) : undefined;
     if (!o || !('at' in o) || !('dungeon' in o) || `${o.dungeon}/${o.level}` !== place) continue;
@@ -91,24 +116,35 @@ export interface Placed {
 export function placeIn(o: Occupant, depth: number, lateral: number): Placed[] {
   const cell = standIn(depth + 0.5, lateral);
   const feet = cell.y + (cell.size * 46) / 48;
-  if (o.figures.length === 0) {
-    const size = cell.size * 0.6;
-    return [
-      {
-        figure: null,
-        foe: false,
-        x: cell.x + (cell.size - size) / 2,
-        y: feet - (size * 46) / 48,
-        size,
-      },
-    ];
-  }
   const n = o.figures.length;
+  const chestAt = (u: number, scale: number, back: number): Placed => {
+    const size = cell.size * scale;
+    const base = feet - cell.size * back;
+    return {
+      figure: null,
+      foe: false,
+      x: cell.x + cell.size * u - size / 2,
+      y: base - (size * 46) / 48,
+      size,
+    };
+  };
+  if (n === 0) return [chestAt(0.5, 0.6, 0)];
   const size = cell.size * (n === 1 ? 0.9 : 0.72);
-  return o.figures.map((f, i) => {
-    const cx = cell.x + cell.size * (n === 1 ? 0.5 : 0.22 + (0.56 * i) / (n - 1));
+  // With a chest, its guards stand to either side of it, or one guard beside it.
+  const across = (i: number) =>
+    o.chest
+      ? n === 1
+        ? 0.3
+        : 0.2 + (0.6 * i) / (n - 1)
+      : n === 1
+        ? 0.5
+        : 0.22 + (0.56 * i) / (n - 1);
+  const figures = o.figures.map((f, i) => {
+    const cx = cell.x + cell.size * across(i);
     return { ...f, x: cx - size / 2, y: feet - (size * 46) / 48, size };
   });
+  // The chest stands a little behind them, so it is drawn first.
+  return o.chest ? [chestAt(n === 1 ? 0.68 : 0.5, 0.5, 0.05), ...figures] : figures;
 }
 
 /** The occupant of a cell, if any, for the view. */

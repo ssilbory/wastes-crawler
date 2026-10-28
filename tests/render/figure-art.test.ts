@@ -9,7 +9,7 @@ import {
   SMALL_SCALE,
   type PersonView,
 } from '../../src/render/figure-art.ts';
-import { drawFigure } from '../../src/render/figure-draw.ts';
+import { drawFigure, RELIEF } from '../../src/render/figure-draw.ts';
 import { monsterParts, UPRIGHT } from '../../src/render/monster-art.ts';
 
 const person = (over: Partial<PersonView> = {}): PersonView => ({
@@ -96,5 +96,10 @@ describe('figure art (docs/presentation-plan.md, V3)', () => {
     expect(drawFigure(person(), true).transform).toContain('rotate(90');
     expect(drawFigure({ ...beast, shape: 'tree' }, true).transform).toContain('rotate(90');
     expect(drawFigure(person(), false).parts).toEqual(personParts(person()));
+    // A standing figure is shaded from the upper left; a fallen one lies flat.
+    expect(drawFigure(person(), false).relief).toBe(RELIEF);
+    expect(drawFigure(beast, false).relief).toBe(RELIEF);
+    expect(drawFigure(person(), true).relief).toBeNull();
+    expect(RELIEF).toBeGreaterThan(0);
   });
 });

@@ -165,12 +165,12 @@ or turn, so they get no SVG filters (blur, turbulence, lighting). Depth comes fr
 each panel's own quad. A filter may go on a layer that redraws only when it changes, such as the
 overland's land layer.
 
-| Slice       | Scope                                                                                                                                                                      | State   |
-| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| Surfaces    | Relief on the dungeon's stone, flagstones, doors, and stairs                                                                                                               | Done    |
-| Overland    | Glyph colours fixed, glyphs lit from the north-west with a shaded side and a ground shadow, and a paper grain over the land. Softer washes between terrains left for later | Done    |
-| Silhouettes | A lit edge and a shaded side on each figure, so people and monsters read as solid in the fight field and the encounter portrait                                            | Planned |
-| Light       | Pools of light on the floor and walls nearest the party, and a warm rim on furniture and occupants that face it                                                            | Planned |
+| Slice       | Scope                                                                                                                                                                                                                   | State   |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| Surfaces    | Relief on the dungeon's stone, flagstones, doors, and stairs                                                                                                                                                            | Done    |
+| Overland    | Glyph colours fixed, glyphs lit from the north-west with a shaded side and a ground shadow, and a paper grain over the land. Softer washes between terrains left for later                                              | Done    |
+| Silhouettes | A lit rim and a shaded edge on each standing figure, so people and monsters read as solid in the fight field and the dungeon. With it (Sam's ask), a hoard's or vault's guards stand over its chest in the dungeon view | Done    |
+| Light       | Pools of light on the floor and walls nearest the party, and a warm rim on furniture and occupants that face it                                                                                                         | Planned |
 
 Surfaces:
 
@@ -189,3 +189,12 @@ Overland:
 | Glyph colours   | `src/ui/world/hex-terrain.css`               | A fix: the glyph rules began at `.hex-map`, which Chrome doesn't see from inside a `<use>` copy, so every glyph drew as a black shape with no ink line. They now begin at the symbol's own class, `hex-glyph` (renamed from `glyph`, which the level editor also uses)                  |
 | Light and shade | `src/ui/world/HexArt.tsx`, `hex-terrain.css` | Lit from the north-west, as on a chart: a tree's crown shaded to the south-east with a glint to the north-west, a pine's east half darker, a hill's and a mesa's east face shaded, a dune's lee side; trees cast a shadow on the ground. Each filled shape keeps its ink outline on top |
 | Paper grain     | `src/render/paper-grain.ts`, `HexMap.tsx`    | Specks and short fibres in a 97-unit tile, repeated as an SVG pattern over the land and under the hour's tint and the fog. A pattern rather than a filter, so zooming and scrolling cost nothing. An odd tile size keeps its repeat from lining up with the hexes                       |
+
+Silhouettes:
+
+| Piece          | Where                                                      | What it does                                                                                                                                                                                                                                                                                               |
+| -------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Relief         | `RELIEF` in `src/render/figure-draw.ts`                    | How far a figure's body is shifted against itself to find its edges; none for a figure that is down, which lies flat                                                                                                                                                                                       |
+| Drawing        | `FigureParts` in `src/ui/arena/Figure.tsx`, `fight-fx.css` | The figure as before, then two translucent bands over it: light on the upper-left rim (the body less itself moved down and right) and shade on the lower-right edge (less itself moved up and left), each a small mask. Lines and cuts keep their order, so nothing is restacked                           |
+| Dungeon        | `dungeon-props.css`                                        | A foe in the corridor stays dark, its rim catching the party's light in the torch's colour                                                                                                                                                                                                                 |
+| Hoards in view | `occupantsOf` in `src/render/dungeon-occupants.ts`         | Sam's ask: a level's boss is seen before the fight. A guarded hoard or a ruin's vault shows its guards (up to two, the first row) standing over its chest, named for its warlord if it has one. Once beaten, or its order ended, the chest stands alone until taken. Unguarded caches are left to be found |
