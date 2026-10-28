@@ -198,7 +198,7 @@ export function DungeonView(props: {
               viewBox="0 0 48 48"
               opacity={1 - darkness(light, f.depth)}
             >
-              <FigureParts figure={f.figure} down={false} light={f.light} />
+              <FigureParts figure={f.figure} down={false} light={f.light} mirror={f.mirror} />
             </svg>
           ))}
       </g>

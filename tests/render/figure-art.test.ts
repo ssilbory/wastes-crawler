@@ -9,7 +9,13 @@ import {
   SMALL_SCALE,
   type PersonView,
 } from '../../src/render/figure-art.ts';
-import { drawFigure, FIGHT_LIGHT, lightFrom, RELIEF } from '../../src/render/figure-draw.ts';
+import {
+  drawFigure,
+  facesMiddle,
+  FIGHT_LIGHT,
+  lightFrom,
+  RELIEF,
+} from '../../src/render/figure-draw.ts';
 import { monsterParts, UPRIGHT } from '../../src/render/monster-art.ts';
 
 const person = (over: Partial<PersonView> = {}): PersonView => ({
@@ -111,5 +117,15 @@ describe('figure art (docs/presentation-plan.md, V3)', () => {
     expect(lightFrom(280)[0]).toBeGreaterThan(0);
     expect(lightFrom(-500)).toEqual(lightFrom(0));
     expect(lightFrom(900)).toEqual(lightFrom(320));
+    // A beast left of the middle turns to face it, its light turning with it; one standing
+    // upright faces the viewer and stays as it is.
+    expect(facesMiddle(40)).toBe(true);
+    expect(facesMiddle(160)).toBe(false);
+    expect(facesMiddle(280)).toBe(false);
+    const turned = drawFigure(beast, false, [1, 2], true);
+    expect(turned.transform.startsWith('translate(48,0) scale(-1,1) ')).toBe(true);
+    expect(turned.relief).toEqual([-1, 2]);
+    expect(drawFigure(beast, false, [1, 2], false).transform).not.toContain('scale(-1');
+    expect(drawFigure(person(), false, [1, 2], true)).toEqual(drawFigure(person(), false, [1, 2]));
   });
 });

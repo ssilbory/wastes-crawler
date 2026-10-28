@@ -5,7 +5,7 @@
 // those of the fight screen (figure-view.ts).
 import type { GameData } from '../game/character/context.ts';
 import { VIEW_HEIGHT, VIEW_WIDTH } from './dungeon-geometry.ts';
-import { lightFrom, type Relief } from './figure-draw.ts';
+import { facesMiddle, lightFrom, type Relief } from './figure-draw.ts';
 import { monsterFigureOf, type FigureView } from './figure-view.ts';
 
 export interface PortraitFigure {
@@ -19,6 +19,8 @@ export interface PortraitFigure {
   depth: number;
   /** Which edge catches the party's light (figure-draw.ts). */
   light: Relief;
+  /** A beast left of the middle turns to face it (figure-draw.ts). */
+  mirror: boolean;
 }
 
 /** The most figures one row shows; a crowd stands behind its first few. */
@@ -51,6 +53,7 @@ export function encounterPortrait(data: GameData, enemies: readonly string[][]):
           size,
           depth: r + 2,
           light: lightFrom(cx),
+          mirror: facesMiddle(cx),
         };
       });
     })

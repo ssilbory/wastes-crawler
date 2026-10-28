@@ -108,7 +108,7 @@ export function OccupantShape(props: { panel: Panel; light: LightView | null }) 
           viewBox="0 0 48 48"
         >
           {p.figure ? (
-            <FigureParts figure={p.figure} down={false} light={p.light} />
+            <FigureParts figure={p.figure} down={false} light={p.light} mirror={p.mirror} />
           ) : (
             <>
               <Shaded parts={CHEST} fill={panel.fill} />

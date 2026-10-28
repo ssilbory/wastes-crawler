@@ -27,6 +27,12 @@ export function lightFrom(cx: number): Relief {
   return [Number((aside * RELIEF).toFixed(2)), RELIEF * 0.6];
 }
 
+/**
+ * Whether a piece at `cx` (view pixels) turns to face the middle of the corridor: beasts are
+ * drawn facing left, so those left of the middle turn round.
+ */
+export const facesMiddle = (cx: number) => cx < VIEW_WIDTH / 2 - 0.5;
+
 export interface FigureDrawing {
   parts: Part[];
   transform: string;
@@ -34,9 +40,24 @@ export interface FigureDrawing {
   relief: Relief | null;
 }
 
-export function drawFigure(v: FigureView, down: boolean, light = FIGHT_LIGHT): FigureDrawing {
+/**
+ * A figure's parts, transform, and relief. `mirror` turns a beast to face right (one standing
+ * upright faces the viewer and is left as it is); its light turns with it.
+ */
+export function drawFigure(
+  v: FigureView,
+  down: boolean,
+  light = FIGHT_LIGHT,
+  mirror = false,
+): FigureDrawing {
   const parts = v.kind === 'person' ? personParts(v) : monsterParts(v.shape);
   const upright = v.kind === 'person' || UPRIGHT.has(v.shape);
-  // A fallen figure lies flat in its own shadow.
-  return { parts, transform: figureTransform(v, down, upright), relief: down ? null : light };
+  const turned = mirror && !upright;
+  const transform = figureTransform(v, down, upright);
+  return {
+    parts,
+    transform: turned ? `translate(48,0) scale(-1,1) ${transform}` : transform,
+    // A fallen figure lies flat in its own shadow.
+    relief: down ? null : turned ? [-light[0], light[1]] : light,
+  };
 }

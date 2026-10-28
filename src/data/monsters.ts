@@ -15,8 +15,8 @@ export const baseMonster = (content: ContentData, id: string) =>
   content.settingMonsters.find((r) => r.id === id)?.base ?? id;
 
 /**
- * Gives each setting monster its base's combat entry under its own id, with its own magic and
- * weapon if any.
+ * Gives each setting monster its base's combat entry under its own id, with its own magic,
+ * weapon, and figure if any.
  */
 export function withSettingMonsters(content: ContentData): ContentData {
   const extra = content.settingMonsters.flatMap((r) => {
@@ -24,6 +24,7 @@ export function withSettingMonsters(content: ContentData): ContentData {
     const own = {
       ...(r.caster ? { caster: r.caster } : {}),
       ...(r.weapon ? { weapon: r.weapon } : {}),
+      ...(r.figure ? { figure: r.figure } : {}),
     };
     return base ? [{ ...base, id: r.id, ...own }] : [];
   });

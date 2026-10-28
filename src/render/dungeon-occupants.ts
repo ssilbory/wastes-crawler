@@ -11,7 +11,7 @@ import { orderEnded } from '../game/world/orders.ts';
 import { currentStep, questOf } from '../game/world/quests.ts';
 import type { World } from '../game/world/types.ts';
 import { ring, type Part } from './figure-art.ts';
-import { lightFrom, type Relief } from './figure-draw.ts';
+import { facesMiddle, lightFrom, type Relief } from './figure-draw.ts';
 import { monsterFigureOf, type FigureView } from './figure-view.ts';
 import { flatOn, standIn } from './dungeon-geometry.ts';
 import { shade, type Panel } from './dungeon-panel.ts';
@@ -113,6 +113,8 @@ export interface Placed {
   size: number;
   /** Which edge catches the party's light (figure-draw.ts). */
   light: Relief;
+  /** A beast left of the middle turns to face it (figure-draw.ts). */
+  mirror: boolean;
 }
 
 /** Where each of an occupant's pieces stands in its cell: side by side, a little apart. */
@@ -131,6 +133,7 @@ export function placeIn(o: Occupant, depth: number, lateral: number): Placed[] {
       y: base - (size * 46) / 48,
       size,
       light: lightFrom(cx),
+      mirror: false,
     };
   };
   if (n === 0) return [chestAt(0.5, 0.6, 0)];
@@ -146,7 +149,8 @@ export function placeIn(o: Occupant, depth: number, lateral: number): Placed[] {
         : 0.22 + (0.56 * i) / (n - 1);
   const figures = o.figures.map((f, i) => {
     const cx = cell.x + cell.size * across(i);
-    return { ...f, x: cx - size / 2, y: feet - (size * 46) / 48, size, light: lightFrom(cx) };
+    const at = { x: cx - size / 2, y: feet - (size * 46) / 48, size };
+    return { ...f, ...at, light: lightFrom(cx), mirror: facesMiddle(cx) };
   });
   // The chest stands a little behind them, so it is drawn first.
   return o.chest ? [chestAt(n === 1 ? 0.68 : 0.5, 0.5, 0.05), ...figures] : figures;

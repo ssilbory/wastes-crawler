@@ -54,8 +54,19 @@ export function ReliefBands(props: { parts: Part[]; by: Relief }) {
  * A figure's paths in its 48 by 48 box, for drawing inside another SVG, shaded when it stands:
  * from the upper left in a fight, or by `light` where the party's light falls on it.
  */
-export function FigureParts(props: { figure: FigureView; down: boolean; light?: Relief }) {
-  const { parts, transform, relief } = drawFigure(props.figure, props.down, props.light);
+export function FigureParts(props: {
+  figure: FigureView;
+  down: boolean;
+  light?: Relief;
+  /** Turns a beast to face right (figure-draw.ts). */
+  mirror?: boolean;
+}) {
+  const { parts, transform, relief } = drawFigure(
+    props.figure,
+    props.down,
+    props.light,
+    props.mirror,
+  );
   return (
     <g transform={transform}>
       {parts.map((p, i) =>

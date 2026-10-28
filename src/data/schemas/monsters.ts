@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { MonsterFigureSchema } from './figure-content.ts';
 import { MonsterCasterSchema } from './combat-content.ts';
 import { DiceSchema, IdSchema, recordBase } from './common.ts';
 
@@ -67,5 +68,7 @@ export const SettingMonsterSchema = z.strictObject({
   caster: MonsterCasterSchema.optional(),
   /** A weapon of its own, in place of its base's (Sam's call: the sand-riders' pikes). */
   weapon: IdSchema.optional(),
+  /** A figure of its own, when it looks nothing like its base (V7: the sand drake, a lizard). */
+  figure: MonsterFigureSchema.optional(),
 });
 export type SettingMonster = z.infer<typeof SettingMonsterSchema>;
