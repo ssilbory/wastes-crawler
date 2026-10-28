@@ -118,10 +118,12 @@ test('enters the barrow from the hex map, walks both levels, and climbs out', as
   // Going back down, the party still has its map (docs/rules-adaptation.md, Charts).
   await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
   await expect(bar).toContainText('The Upper Barrow, facing north');
-  // The day's notices can pop up over the map; they're not what this checks.
+  // The day's notices can pop up over the map, and the strain window waits to be dismissed:
+  // close them, as a player would, since they're not what this checks.
+  const close = page.locator('.toasts').getByRole('button', { name: 'Dismiss' });
+  while ((await close.count()) > 0) await close.first().click();
   await expect(page.getByRole('img', { name: 'Map of The Upper Barrow' })).toHaveScreenshot(
     'barrow-upper-map-again.png',
-    { mask: [page.locator('.toasts')] },
   );
 });
 

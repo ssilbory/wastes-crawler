@@ -111,6 +111,27 @@
   font-size: 0.9rem;
 }
 
+/* The strain window: every strain notice since it opened, newest first (Toasts.tsx). */
+.toast-entries {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  max-height: 11.5rem;
+  overflow-y: auto;
+  font-size: 0.9rem;
+}
+
+.toast-entries li + li {
+  margin-top: 3px;
+  padding-top: 3px;
+  border-top: 1px solid color-mix(in srgb, var(--error) 30%, transparent);
+}
+
+.toast-entries strong {
+  color: var(--error);
+  font-weight: 600;
+}
+
 .toast-close {
   padding: 0 6px;
   font-size: 0.85rem;
