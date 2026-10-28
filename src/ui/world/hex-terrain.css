@@ -77,8 +77,11 @@
   fill: #b9d1d2;
 }
 
-/* Glyphs: ink lines with a little colour, as on a hand-drawn chart. */
-.hex-map .glyph {
+/* Glyphs: ink lines with a little colour, as on a hand-drawn chart. Selectors start at the
+   symbol's own class: Chrome matches rules for a <use> copy inside that copy, where .hex-map is
+   not an ancestor, so a rule starting at .hex-map never reaches a glyph. Lit from the north-west
+   (docs/presentation-plan.md, V7): a lit side, a shaded side, and a shadow on the ground. */
+.hex-glyph {
   fill: none;
   stroke: #3a2f22;
   stroke-width: 0.11;
@@ -87,70 +90,136 @@
   overflow: visible;
 }
 
-.hex-map .glyph .leaf {
-  fill: #6f8a45;
+.hex-glyph .outline {
+  fill: none;
 }
 
-.hex-map .glyph .pine {
-  fill: #3f5d36;
-}
-
-.hex-map .glyph .hill {
-  fill: #c09a5e;
-}
-
-.hex-map .glyph .rock {
-  fill: #a49886;
-}
-
-.hex-map .glyph .shade {
-  fill: #7d7264;
+.hex-glyph .cast {
+  fill: #3a2f22;
+  fill-opacity: 0.22;
   stroke: none;
 }
 
-.hex-map .glyph .snow {
+.hex-glyph .shade,
+.hex-glyph .leaf,
+.hex-glyph .pine,
+.hex-glyph .hill,
+.hex-glyph .mesa,
+.hex-glyph .dune {
+  stroke: none;
+}
+
+.hex-glyph .leaf {
+  fill: #6f8a45;
+}
+
+#hg-forest .shade {
+  fill: #4b6330;
+}
+
+#hg-forest .lit {
+  fill: #a3b96c;
+  stroke: none;
+}
+
+.hex-glyph .pine {
+  fill: #4b6b3f;
+}
+
+#hg-deep-forest .shade {
+  fill: #2f4629;
+}
+
+.hex-glyph .hill {
+  fill: #c9a466;
+}
+
+#hg-hills .shade {
+  fill: #a07c47;
+}
+
+#hg-hills .lit {
+  stroke: #ecd7a6;
+  stroke-width: 0.09;
+}
+
+.hex-glyph .rock {
+  fill: #a49886;
+}
+
+.hex-glyph .shade {
+  fill: #7d7264;
+}
+
+.hex-glyph .snow {
   fill: #f6f1e4;
   stroke-width: 0.06;
 }
 
-.hex-map .glyph .mesa {
+.hex-glyph .mesa {
   fill: #c0835a;
 }
 
-.hex-map .glyph .dune {
-  fill: #d8ad6c;
+#hg-badlands .shade {
+  fill: #96603e;
 }
 
-.hex-map .glyph .salt {
+.hex-glyph .dune {
+  fill: #dfb676;
+}
+
+#hg-dunes .shade {
+  fill: #c0924f;
+}
+
+.hex-glyph .salt {
   stroke: #9a8f7a;
 }
 
-.hex-map .glyph .pebble {
+.hex-glyph .pebble {
   fill: #8a7350;
   stroke: none;
 }
 
-.hex-map .glyph .pool {
+.hex-glyph .pool {
   fill: #8fb6c6;
   stroke: #3f6f8c;
 }
 
-.hex-map .glyph .frond {
+.hex-glyph .frond {
   stroke: #4f6f35;
 }
 
-.hex-map .glyph .water {
+.hex-glyph .water {
   stroke: #3f6f8c;
 }
 
-.hex-map .glyph .reed {
+.hex-glyph .reed {
   stroke: #6b4a2a;
   stroke-width: 0.2;
 }
 
-.hex-map .glyph .stone {
+.hex-glyph .stone {
   fill: #9c9384;
   stroke-width: 0.06;
+}
+
+/* The paper's grain over the land (src/render/paper-grain.ts): a pattern, cheap to zoom. */
+.hex-map .grain {
+  pointer-events: none;
+}
+
+#hm-grain .speck {
+  fill: #5a4628;
+  fill-opacity: 0.22;
+}
+
+#hm-grain .fibre {
+  fill: none;
+  stroke: #5a4628;
+  stroke-width: 0.25;
+  stroke-opacity: 0.18;
+  stroke-linecap: round;
 }
 
 /* Where water meets land: an ink shoreline, and a paler wash of shallows just inside it. */

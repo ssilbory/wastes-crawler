@@ -1,11 +1,20 @@
+import { paperGrain } from '../../render/paper-grain.ts';
+
+const GRAIN = paperGrain(97, 90, 14);
+
 /**
  * The overland map's glyphs and icons as SVG symbols, drawn in ink on parchment
  * (docs/presentation-plan.md, V2). Each sits in a 2 by 2 box centred on the origin; src/render/
- * hex-art.ts says where each terrain glyph goes, and HexMap.tsx places the icons.
+ * hex-art.ts says where each terrain glyph goes, and HexMap.tsx places the icons. Glyphs are lit
+ * from the north-west, as on a chart: a lit side, a shaded side, and a shadow on the ground (V7).
  */
 export function HexArtDefs() {
   return (
     <defs>
+      <pattern id="hm-grain" width={GRAIN.tile} height={GRAIN.tile} patternUnits="userSpaceOnUse">
+        <path class="speck" d={GRAIN.specks} />
+        <path class="fibre" d={GRAIN.fibres} />
+      </pattern>
       <filter id="hm-fog" x="-5%" y="-5%" width="110%" height="110%">
         <feGaussianBlur stdDeviation="3" />
       </filter>
@@ -14,55 +23,72 @@ export function HexArtDefs() {
         <stop offset="1" stop-color="#c9b483" />
       </radialGradient>
 
-      <symbol id="hg-plains" viewBox="-1 -1 2 2" class="glyph">
+      <symbol id="hg-plains" viewBox="-1 -1 2 2" class="hex-glyph">
         <path d="M-0.7,0.4l0.12,-0.45M-0.48,0.4v-0.6M-0.26,0.4l-0.12,-0.45M0.2,0.4l0.1,-0.4M0.42,0.4v-0.55M0.64,0.4l-0.1,-0.4" />
       </symbol>
-      <symbol id="hg-forest" viewBox="-1 -1 2 2" class="glyph">
+      <symbol id="hg-forest" viewBox="-1 -1 2 2" class="hex-glyph">
+        <ellipse class="cast" cx="0.22" cy="0.9" rx="0.5" ry="0.11" />
         <path class="trunk" d="M0,0.2V0.9" />
         <circle class="leaf" cx="0" cy="-0.2" r="0.55" />
+        <path class="shade" d="M0.39,-0.59A0.55,0.55 0 0 1 -0.39,0.19A0.8,0.8 0 0 0 0.39,-0.59Z" />
+        <circle class="lit" cx="-0.2" cy="-0.42" r="0.15" />
+        <circle class="outline" cx="0" cy="-0.2" r="0.55" />
       </symbol>
-      <symbol id="hg-deep-forest" viewBox="-1 -1 2 2" class="glyph">
+      <symbol id="hg-deep-forest" viewBox="-1 -1 2 2" class="hex-glyph">
+        <ellipse class="cast" cx="0.25" cy="0.9" rx="0.5" ry="0.1" />
         <path class="trunk" d="M0,0.5V0.9" />
         <path class="pine" d="M0,-0.95L0.6,0.55H-0.6Z" />
+        <path class="shade" d="M0,-0.95L0.6,0.55H0.05Z" />
+        <path class="outline" d="M0,-0.95L0.6,0.55H-0.6Z" />
       </symbol>
-      <symbol id="hg-hills" viewBox="-1 -1 2 2" class="glyph">
+      <symbol id="hg-hills" viewBox="-1 -1 2 2" class="hex-glyph">
         <path class="hill" d="M-0.95,0.45Q0,-0.75 0.95,0.45Z" />
+        <path class="shade" d="M0,-0.15Q0.55,-0.12 0.95,0.45H0.12Q0.18,0.1 0,-0.15Z" />
+        <path class="lit" d="M-0.62,0.22Q-0.42,-0.04 -0.16,-0.1" />
+        <path class="outline" d="M-0.95,0.45Q0,-0.75 0.95,0.45Z" />
         <path d="M0.15,-0.05q0.2,0.15 0.3,0.4M0.35,-0.0q0.15,0.12 0.2,0.3" />
       </symbol>
-      <symbol id="hg-mountains" viewBox="-1 -1 2 2" class="glyph">
+      <symbol id="hg-mountains" viewBox="-1 -1 2 2" class="hex-glyph">
         <path class="rock" d="M-0.95,0.8L-0.1,-0.9L0.28,-0.2L0.5,-0.5L0.95,0.8Z" />
         <path class="shade" d="M-0.1,-0.9L0.05,0.8H0.95L0.5,-0.5L0.28,-0.2Z" />
         <path class="snow" d="M-0.33,-0.44L-0.1,-0.9L0.12,-0.46L0,-0.36L-0.12,-0.5Z" />
       </symbol>
-      <symbol id="hg-peaks" viewBox="-1 -1 2 2" class="glyph">
+      <symbol id="hg-peaks" viewBox="-1 -1 2 2" class="hex-glyph">
         <path class="rock" d="M-0.95,0.85L-0.05,-0.95L0.95,0.85Z" />
         <path class="shade" d="M-0.05,-0.95L0.1,0.85H0.95Z" />
         <path class="snow" d="M-0.42,-0.1L-0.05,-0.95L0.32,-0.1L0.1,0.02L-0.05,-0.18L-0.22,0.02Z" />
       </symbol>
-      <symbol id="hg-swamp" viewBox="-1 -1 2 2" class="glyph">
+      <symbol id="hg-swamp" viewBox="-1 -1 2 2" class="hex-glyph">
         <path class="water" d="M-0.8,0.55h0.5M-0.1,0.55h0.8M-0.5,0.8h0.9" />
         <path d="M-0.35,0.45v-0.7M0,0.45v-0.95M0.32,0.45v-0.6" />
         <path class="reed" d="M0,-0.5v-0.25M-0.35,-0.25v-0.18" />
       </symbol>
-      <symbol id="hg-badlands" viewBox="-1 -1 2 2" class="glyph">
+      <symbol id="hg-badlands" viewBox="-1 -1 2 2" class="hex-glyph">
         <path class="mesa" d="M-0.95,0.55L-0.62,-0.2H0.5L0.88,0.55Z" />
+        <path class="shade" d="M0.5,-0.2L0.88,0.55H0.42L0.3,-0.2Z" />
+        <path class="outline" d="M-0.95,0.55L-0.62,-0.2H0.5L0.88,0.55Z" />
         <path d="M-0.5,0.05h0.9M-0.2,-0.2l0.08,0.75M0.25,-0.2l-0.06,0.4" />
       </symbol>
-      <symbol id="hg-desert" viewBox="-1 -1 2 2" class="glyph">
+      <symbol id="hg-desert" viewBox="-1 -1 2 2" class="hex-glyph">
         <path d="M-0.75,0.3q0.2,-0.18 0.4,0t0.4,0M0.0,-0.15q0.2,-0.18 0.4,0t0.35,0" />
         <circle class="pebble" cx="-0.15" cy="0.55" r="0.08" />
       </symbol>
-      <symbol id="hg-dunes" viewBox="-1 -1 2 2" class="glyph">
+      <symbol id="hg-dunes" viewBox="-1 -1 2 2" class="hex-glyph">
         <path class="dune" d="M-0.95,0.5Q-0.35,-0.55 0.25,0.1Q0.6,-0.3 0.95,0.5Z" />
+        <path
+          class="shade"
+          d="M-0.35,-0.2Q-0.1,0.1 -0.2,0.5H0.4Q0.3,0.25 0.25,0.1Q-0.05,-0.18 -0.35,-0.2Z"
+        />
+        <path class="outline" d="M-0.95,0.5Q-0.35,-0.55 0.25,0.1Q0.6,-0.3 0.95,0.5Z" />
         <path d="M-0.35,-0.2Q-0.1,0.1 -0.2,0.5" />
       </symbol>
-      <symbol id="hg-salt-flats" viewBox="-1 -1 2 2" class="glyph">
+      <symbol id="hg-salt-flats" viewBox="-1 -1 2 2" class="hex-glyph">
         <path
           class="salt"
           d="M-0.7,0.1l0.35,-0.25l0.35,0.25l0.35,-0.25l0.35,0.25M-0.5,0.45l0.3,0.2l0.3,-0.2"
         />
       </symbol>
-      <symbol id="hg-oasis" viewBox="-1 -1 2 2" class="glyph">
+      <symbol id="hg-oasis" viewBox="-1 -1 2 2" class="hex-glyph">
         <ellipse class="pool" cx="0" cy="0.55" rx="0.75" ry="0.25" />
         <path class="trunk" d="M-0.25,0.45Q-0.3,-0.1 -0.1,-0.5M0.3,0.45Q0.35,0 0.2,-0.35" />
         <path
@@ -70,16 +96,16 @@ export function HexArtDefs() {
           d="M-0.1,-0.5l-0.45,0.15M-0.1,-0.5l0.4,0.1M-0.1,-0.5l-0.15,0.35M0.2,-0.35l0.4,0.15M0.2,-0.35l-0.35,0.05"
         />
       </symbol>
-      <symbol id="hg-lake" viewBox="-1 -1 2 2" class="glyph">
+      <symbol id="hg-lake" viewBox="-1 -1 2 2" class="hex-glyph">
         <path
           class="water"
           d="M-0.6,-0.25q0.15,-0.14 0.3,0t0.3,0t0.3,0t0.3,0M-0.45,0.2q0.15,-0.14 0.3,0t0.3,0t0.3,0"
         />
       </symbol>
-      <symbol id="hg-river" viewBox="-1 -1 2 2" class="glyph">
+      <symbol id="hg-river" viewBox="-1 -1 2 2" class="hex-glyph">
         <path class="water" d="M-0.6,0q0.15,-0.16 0.3,0t0.3,0t0.3,0t0.3,0" />
       </symbol>
-      <symbol id="hg-ford" viewBox="-1 -1 2 2" class="glyph">
+      <symbol id="hg-ford" viewBox="-1 -1 2 2" class="hex-glyph">
         <circle class="stone" cx="-0.55" cy="0.3" r="0.13" />
         <circle class="stone" cx="-0.18" cy="0.1" r="0.13" />
         <circle class="stone" cx="0.18" cy="-0.1" r="0.13" />

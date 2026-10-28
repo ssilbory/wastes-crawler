@@ -165,12 +165,12 @@ or turn, so they get no SVG filters (blur, turbulence, lighting). Depth comes fr
 each panel's own quad. A filter may go on a layer that redraws only when it changes, such as the
 overland's land layer.
 
-| Slice       | Scope                                                                                                                                 | State   |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| Surfaces    | Relief on the dungeon's stone, flagstones, doors, and stairs                                                                          | Done    |
-| Overland    | Glyphs with a lit and a shaded side (trees, pines, hills, peaks), a parchment grain on the land layer, softer washes between terrains | Planned |
-| Silhouettes | A lit edge and a shaded side on each figure, so people and monsters read as solid in the fight field and the encounter portrait       | Planned |
-| Light       | Pools of light on the floor and walls nearest the party, and a warm rim on furniture and occupants that face it                       | Planned |
+| Slice       | Scope                                                                                                                                                                      | State   |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| Surfaces    | Relief on the dungeon's stone, flagstones, doors, and stairs                                                                                                               | Done    |
+| Overland    | Glyph colours fixed, glyphs lit from the north-west with a shaded side and a ground shadow, and a paper grain over the land. Softer washes between terrains left for later | Done    |
+| Silhouettes | A lit edge and a shaded side on each figure, so people and monsters read as solid in the fight field and the encounter portrait                                            | Planned |
+| Light       | Pools of light on the floor and walls nearest the party, and a warm rim on furniture and occupants that face it                                                            | Planned |
 
 Surfaces:
 
@@ -181,3 +181,11 @@ Surfaces:
 | Relief       | `src/render/dungeon-relief.ts`                        | Each stone lit along its top and shadowed along its foot, about one in seven a shade lighter, one in eight cracked, and grime in three bands up from a wall's foot. Flagstones are lit along their near edge instead |
 | Wood, stairs | same, and `planks`, `treads` in `dungeon-detail.ts`   | Two wavering grain lines down each of a door's planks; each stair tread lit along its nosing, never cracked                                                                                                          |
 | Drawing      | `ReliefShapes` in `src/ui/world/DungeonView.tsx`, CSS | Over the panel's fill and dark stones, under the mortar and the light's shadow, so the light dims the relief with the stone. The editor's test walk shares it                                                        |
+
+Overland:
+
+| Piece           | Where                                        | What it does                                                                                                                                                                                                                                                                            |
+| --------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Glyph colours   | `src/ui/world/hex-terrain.css`               | A fix: the glyph rules began at `.hex-map`, which Chrome doesn't see from inside a `<use>` copy, so every glyph drew as a black shape with no ink line. They now begin at the symbol's own class, `hex-glyph` (renamed from `glyph`, which the level editor also uses)                  |
+| Light and shade | `src/ui/world/HexArt.tsx`, `hex-terrain.css` | Lit from the north-west, as on a chart: a tree's crown shaded to the south-east with a glint to the north-west, a pine's east half darker, a hill's and a mesa's east face shaded, a dune's lee side; trees cast a shadow on the ground. Each filled shape keeps its ink outline on top |
+| Paper grain     | `src/render/paper-grain.ts`, `HexMap.tsx`    | Specks and short fibres in a 97-unit tile, repeated as an SVG pattern over the land and under the hour's tint and the fog. A pattern rather than a filter, so zooming and scrolling cost nothing. An odd tile size keeps its repeat from lining up with the hexes                       |
