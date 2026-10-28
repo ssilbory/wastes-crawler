@@ -1,24 +1,18 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect } from 'preact/hooks';
 import notice from '../../../NOTICE?raw';
 import { noticeParagraphs, SHIPPED, storageNote } from '../../render/about-view.ts';
 import { fullscreenAvailable, toggleFullscreen, useFullscreen } from '../fullscreen.ts';
-import { installed, persistStorage, useInstall } from '../pwa.ts';
+import { installed, SAVES_LINK, useInstall, usePersisted } from '../pwa.ts';
 import './about.css';
-
-/** Whether the browser has promised to keep this site's storage; null if it won't say. */
-function usePersisted(): [boolean | null, () => void] {
-  const [persisted, setPersisted] = useState<boolean | null>(null);
-  useEffect(() => {
-    navigator.storage?.persisted?.().then(setPersisted, () => setPersisted(null));
-  }, []);
-  return [persisted, () => void persistStorage().then(setPersisted)];
-}
 
 /** About: what the game is, how to install it on a phone, where saves live, and the credits. */
 export function AboutApp() {
   const install = useInstall();
   const fullscreen = useFullscreen();
   const [persisted, keepSaves] = usePersisted();
+  useEffect(() => {
+    if (location.hash === SAVES_LINK) document.getElementById('saves')?.scrollIntoView();
+  }, []);
   return (
     <main class="about">
       <h1>About</h1>
@@ -50,8 +44,9 @@ export function AboutApp() {
         <dl class="recommend">
           <dt>The games that started it</dt>
           <dd>
-            Wizardry: Proving Grounds of the Mad Overlord is excellent on Steam, and so is Wizardry
-            Variants Daphne. The Bard's Tale Trilogy is on Steam too.
+            Wizardry: Proving Grounds of the Mad Overlord is excellent on Steam. Wizardry Variants
+            Daphne is too, on Steam and Android, and possibly iPhone. The Bard's Tale Trilogy is on
+            Steam.
           </dd>
           <dt>To play with friends</dt>
           <dd>
@@ -104,7 +99,7 @@ export function AboutApp() {
         )}
       </section>
 
-      <section class="panel" aria-label="Your saves">
+      <section class="panel" id="saves" aria-label="Your saves">
         <h2>Your saves</h2>
         <p>
           Saves live in this browser, on this device only. To move a game to another device, use

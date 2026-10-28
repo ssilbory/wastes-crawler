@@ -14,6 +14,21 @@ export function registerServiceWorker(): void {
   });
 }
 
+/** The About page's saves section, scrolled to: where the overland's reminder links. */
+export const SAVES_LINK = '#/about/saves';
+
+/**
+ * Whether the browser has promised to keep this site's storage, null if it won't say, and a call
+ * that asks it to.
+ */
+export function usePersisted(): [boolean | null, () => void] {
+  const [persisted, setPersisted] = useState<boolean | null>(null);
+  useEffect(() => {
+    navigator.storage?.persisted?.().then(setPersisted, () => setPersisted(null));
+  }, []);
+  return [persisted, () => void persistStorage().then(setPersisted)];
+}
+
 /** Asks the browser not to evict saved games; true if it agreed. */
 export async function persistStorage(): Promise<boolean> {
   try {
