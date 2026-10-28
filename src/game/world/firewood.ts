@@ -1,11 +1,13 @@
 // A night's firewood (vendor/wwn-srd/2.0 The Rules of the Game/2.12.0 Wilderness Exploration and
 // Expeditions.md; docs/rules-adaptation.md, Cold). 2.12.4: a harsh night costs strain only without
 // shelter or fire, and a fire also lets the party rest (Sam's call). 2.12.5: a forage find can be
-// firewood instead; here a find is one night's.
+// firewood instead; here a find is one night's. A find also cuts fresh torches for the party's
+// Dungeoneering Kits (Sam's call, docs/rules-adaptation.md, Dungeon exploration).
 import { isHarshNight } from '../../rules/overland.ts';
 import type { GameData } from '../character/context.ts';
 import { immuneTo } from './arts.ts';
 import { dateOf } from './calendar.ts';
+import { restockKits } from '../dungeon/light.ts';
 import { addOne, carriers, takeOne } from './loads.ts';
 import { alive, bestAt, memberCheck, note } from './members.ts';
 import { load } from './mounts.ts';
@@ -55,7 +57,8 @@ export function burnFirewood(w: World, data: GameData): string | null {
 /**
  * Gather Firewood: the best of the gatherers makes a Wis/Survive check at the terrain's forage
  * difficulty, and a success yields one night's firewood, carried by the finder or else by a porter,
- * pack beast, or mount with room. Returns whether anyone went looking.
+ * pack beast, or mount with room, and restocks the kits' torches. Returns whether anyone went
+ * looking.
  */
 export function gatherFirewood(
   w: World,
@@ -75,12 +78,20 @@ export function gatherFirewood(
     note(w, `${name} finds nothing to burn.`);
     return true;
   }
+  stow(w, data, best);
+  if (restockKits(w)) note(w, `${name} cuts fresh torches for the kits.`);
+  return true;
+}
+
+/** Carries a night's firewood found by `finder`, or a porter, pack beast, or mount with room. */
+function stow(w: World, data: GameData, finder: Member): void {
+  const name = finder.character.name;
   const wood = { id: FIREWOOD, quantity: 1, location: 'stowed' as const };
-  const carried = addOne(best.character.inventory, wood);
-  if (!inventoryProblem(data, best, carried)) {
-    best.character = { ...best.character, inventory: carried };
+  const carried = addOne(finder.character.inventory, wood);
+  if (!inventoryProblem(data, finder, carried)) {
+    finder.character = { ...finder.character, inventory: carried };
     note(w, `${name} gathers a night's firewood.`);
-    return true;
+    return;
   }
   const beast = carriers(w, data).find(
     (c) => load(data, { inventory: addOne(c.holder.inventory, wood) }) <= c.capacity,
@@ -89,5 +100,4 @@ export function gatherFirewood(
     beast.holder.inventory = addOne(beast.holder.inventory, wood);
     note(w, `${name} gathers a night's firewood for ${beast.holder.name} to carry.`);
   } else note(w, `${name} gathers firewood, but no one has room to carry it.`);
-  return true;
 }

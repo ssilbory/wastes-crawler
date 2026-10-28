@@ -194,6 +194,23 @@ describe('gathering firewood (SRD 2.12.5)', () => {
     expect(woodOn(member(w, 'Snag').character.inventory)).toBe(1);
   });
 
+  it('cuts fresh torches for the kits on a find, as a town visit does', () => {
+    const w = outAt();
+    const snag = member(w, 'Snag');
+    w.light.kitsReady = false;
+    w.rng = scriptedThen([1, 1], createRng('wood'));
+    gatherFirewood(w, data, [snag], 9);
+    expect(w.light.kitsReady).toBe(false);
+    w.rng = scriptedThen([6, 6], createRng('wood'));
+    gatherFirewood(w, data, [snag], 9);
+    expect(w.light.kitsReady).toBe(true);
+    expect(w.log.at(-1)).toContain('Snag cuts fresh torches for the kits.');
+    // Kits already stocked: nothing more to say.
+    w.rng = scriptedThen([6, 6], createRng('wood'));
+    gatherFirewood(w, data, [snag], 9);
+    expect(w.log.at(-1)).toContain("Snag gathers a night's firewood.");
+  });
+
   it('hands it to a pack beast when the finder is full, or leaves it', () => {
     const w = withBison();
     const snag = member(w, 'Snag');

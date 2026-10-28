@@ -124,11 +124,13 @@ describe('water (Sam’s calls: Water and fuel)', () => {
 describe('fuel in treeless land (Sam’s call)', () => {
   it('finds no wood to gather, and the evening plan sends no one to look', () => {
     const w = world();
+    w.light.kitsReady = false;
     onTerrain(w, (t) => t.treeless === true && t.movement !== 'impassable');
     const lirael = member(w, 'Lirael');
     expect(gatherFirewood(w, data, [lirael], 6)).toBe(false);
     expect(w.log.at(-1)).toContain('Lirael finds no wood in this treeless land.');
     expect(lirael.character.inventory.some((e) => e.id === FIREWOOD)).toBe(false);
+    expect(w.light.kitsReady).toBe(false);
     w.quarter = 2;
     const plan = suggestPlan(w, data);
     expect(plan.kind === 'camp' && Object.values(plan.activities)).not.toContain('firewood');

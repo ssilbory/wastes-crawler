@@ -8,6 +8,7 @@ import { note } from './members.ts';
 import { regionMap } from './region.ts';
 import { emit } from './bus.ts';
 import { chartDungeon } from '../dungeon/chart.ts';
+import { restockKits } from '../dungeon/light.ts';
 import { arriveNpcs } from './rescue.ts';
 import { payShares } from './shares.ts';
 import { ledger, month } from './town-prices.ts';
@@ -34,7 +35,7 @@ export function enterTown(w: World, data: GameData, siteId: string, start = fals
   ledger(w, data, site);
   w.lastTown = site.id;
   // Dungeoneering Kits restock in town (docs/rules-adaptation.md, Dungeon exploration).
-  w.light.kitsReady = true;
+  restockKits(w);
   if (start) return;
   note(w, `The party reaches ${site.name}.`);
   payShares(w, data);
