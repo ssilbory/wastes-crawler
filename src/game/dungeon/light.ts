@@ -1,9 +1,9 @@
 // Light underground (docs/rules-adaptation.md, Resource dice and Dungeon exploration): a fresh torch
 // burns at d6 and a pint of oil fills the lantern to d12. The light in use rolls its die each
 // exploration turn and after each fight, stepping down on a 1 or 2 (src/rules/resource-die.ts).
-// A Dungeoneering Kit holds one torch, drawn once per kit per trip to town (SRD 3.2.1 leaves a
-// bundle's contents to the GM: vendor/wwn-srd/3.0 Equipment, Armor, and Weapons/3.2.0 Adventuring
-// Gear.md).
+// A Dungeoneering Kit holds one torch, drawn once per kit after each trip to town or successful
+// Gather Firewood (SRD 3.2.1 leaves a bundle's contents to the GM: vendor/wwn-srd/3.0 Equipment,
+// Armor, and Weapons/3.2.0 Adventuring Gear.md).
 import { useResource, type ResourceDie } from '../../rules/resource-die.ts';
 import { FAITH_LIGHT, seer, userOf } from '../world/arts.ts';
 import { alive, awake, note } from '../world/members.ts';
@@ -39,6 +39,16 @@ function takeOne(w: World, id: string): void {
 
 /** Torches the party can still light: kit torches and any bought ones. */
 export const spareTorches = (w: World) => w.light.kitTorches + carried(w, 'torch');
+
+/**
+ * Restocks each kit's torch for the next descent, in town or on gathering wood. Returns whether
+ * this put fresh torches in kits the party carries.
+ */
+export function restockKits(w: World): boolean {
+  const fresh = !w.light.kitsReady && carried(w, KIT) > 0;
+  w.light.kitsReady = true;
+  return fresh;
+}
 
 /** On coming down, each kit not drawn on since town gives up its torch. */
 export function drawKits(w: World): void {

@@ -6,6 +6,7 @@ import {
   drawKits,
   inDark,
   kindle,
+  restockKits,
   spareTorches,
 } from '../../../src/game/dungeon/light.ts';
 import { enterDungeon } from '../../../src/game/dungeon/explore.ts';
@@ -43,6 +44,22 @@ describe('light underground (docs/rules-adaptation.md, Dungeon exploration)', ()
     expect(spareTorches(w)).toBe(1);
     expect(kindle(w)).toBe(true);
     expect(w.log.filter((l) => l.includes('A torch is lit.'))).toHaveLength(1);
+  });
+
+  it('restocks the kits, saying so only when kits carried were empty', () => {
+    const w = world();
+    expect(restockKits(w)).toBe(false);
+    w.light.kitsReady = false;
+    expect(restockKits(w)).toBe(true);
+    expect(w.light.kitsReady).toBe(true);
+    for (const m of w.members)
+      m.character = {
+        ...m.character,
+        inventory: m.character.inventory.filter((e) => e.id !== 'dungeoneering-kit'),
+      };
+    w.light.kitsReady = false;
+    expect(restockKits(w)).toBe(false);
+    expect(w.light.kitsReady).toBe(true);
   });
 
   it('draws nothing without kits', () => {
