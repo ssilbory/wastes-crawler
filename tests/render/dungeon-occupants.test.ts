@@ -139,6 +139,8 @@ describe('who stands in the cells ahead', () => {
     expect(lone.map((p) => p.figure === null)).toEqual([true, false]);
     expect((lone[0]?.x ?? 0) > (lone[1]?.x ?? 0)).toBe(true);
     const pair = placeIn({ kind: 'hoard', title: '', figures: [foe, foe], chest: true }, 1, 0);
+    // The guards either side catch the light on the sides facing the middle; the chest on top.
+    expect(pair.map((p) => Math.sign(p.light[0]))).toEqual([0, -1, 1]);
     const [box, left, right] = pair.map((p) => p.x + p.size / 2);
     expect(box).toBeCloseTo(160);
     expect((left ?? 0) < 160 && (right ?? 0) > 160).toBe(true);

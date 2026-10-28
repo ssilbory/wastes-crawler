@@ -11,10 +11,15 @@
   paint-order: stroke;
 }
 
-/* A foe in the corridor catches the party's light on its rim (Figure.tsx, V7). */
-.dungeon-view .foe .relief-lit {
-  fill: #d9a76a;
+/* What stands in the view catches the party's light on the edge that faces it, in the light's
+   colour (Figure.tsx, docs/presentation-plan.md, V7). */
+.dungeon-view .relief-lit {
+  fill: var(--light, #d9a76a);
   fill-opacity: 0.4;
+}
+
+.dungeon-view .relief-shade {
+  fill-opacity: 0.38;
 }
 
 .dungeon-view .foe .line {

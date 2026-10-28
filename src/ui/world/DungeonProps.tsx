@@ -2,7 +2,7 @@ import { darkness, type LightView } from '../../render/dungeon-light.ts';
 import type { Panel } from '../../render/dungeon-view.ts';
 import { CHEST } from '../../render/dungeon-occupants.ts';
 import type { Part } from '../../render/figure-art.ts';
-import { FigureParts } from '../arena/Figure.tsx';
+import { FigureParts, ReliefBands } from '../arena/Figure.tsx';
 
 // What stands in the cells of the first-person view: furniture (docs/presentation-plan.md, V4),
 // and the people, foes, and quest items in them (dungeon-occupants.ts).
@@ -71,6 +71,7 @@ export function FurnitureShape(props: { panel: Panel; light: LightView | null })
               />
             ),
           )}
+        <ReliefBands parts={art.parts} by={art.light} />
       </svg>
       {flames.length > 0 && (
         <svg class="furniture" {...box}>
@@ -107,9 +108,12 @@ export function OccupantShape(props: { panel: Panel; light: LightView | null }) 
           viewBox="0 0 48 48"
         >
           {p.figure ? (
-            <FigureParts figure={p.figure} down={false} />
+            <FigureParts figure={p.figure} down={false} light={p.light} />
           ) : (
-            <Shaded parts={CHEST} fill={panel.fill} />
+            <>
+              <Shaded parts={CHEST} fill={panel.fill} />
+              <ReliefBands parts={CHEST} by={p.light} />
+            </>
           )}
         </svg>
       ))}

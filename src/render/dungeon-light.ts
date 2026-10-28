@@ -17,13 +17,18 @@ export interface LightView {
   /** Cells ahead before the dark closes in; the view draws four. */
   reach: number;
   flicker: boolean;
+  /** How strongly it pools on the floor and walls at the party's feet (V7); none for sight. */
+  pool: number;
 }
 
-const LOOKS: Record<LightSource, Pick<LightView, 'tint' | 'tintOpacity' | 'flicker'>> = {
-  torch: { tint: '#ff8a2a', tintOpacity: 0.45, flicker: true },
-  lantern: { tint: '#ffc066', tintOpacity: 0.35, flicker: false },
-  faith: { tint: '#fff1b8', tintOpacity: 0.3, flicker: false },
-  sight: { tint: '#7f93b0', tintOpacity: 0.55, flicker: false },
+type Look = Pick<LightView, 'tint' | 'tintOpacity' | 'flicker' | 'pool'>;
+
+const LOOKS: Record<LightSource, Look> = {
+  torch: { tint: '#ff8a2a', tintOpacity: 0.45, flicker: true, pool: 0.26 },
+  lantern: { tint: '#ffc066', tintOpacity: 0.35, flicker: false, pool: 0.22 },
+  faith: { tint: '#fff1b8', tintOpacity: 0.3, flicker: false, pool: 0.18 },
+  // Seeing without light casts none.
+  sight: { tint: '#7f93b0', tintOpacity: 0.55, flicker: false, pool: 0 },
 };
 
 /** Cells a burning light reaches by its die: a fresh lantern four, a guttering torch two. */
@@ -46,6 +51,18 @@ export function darkness(light: LightView, k: number): number {
   const clear = light.reach / 2;
   const t = (k - clear) / (light.reach + 1 - clear);
   return MAX_DARK * Math.min(1, Math.max(0, t));
+}
+
+/** How far the pool of light spreads, as a share of the light's reach. */
+export const POOL_SPREAD = 0.6;
+
+/**
+ * How strongly the light pools on a surface k view planes from the party (V7): its full strength
+ * at the party's feet, easing off to none over the nearer part of its reach.
+ */
+export function poolAt(light: LightView, k: number): number {
+  const t = Math.min(1, Math.max(0, k / (light.reach * POOL_SPREAD)));
+  return light.pool * (1 - t) ** 2;
 }
 
 /** How the party's light looks, or null when there is nothing to see. */

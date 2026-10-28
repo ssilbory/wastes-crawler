@@ -4,6 +4,7 @@
 import type { Furniture } from '../data/schemas/index.ts';
 import { ring, type Part } from './figure-art.ts';
 import { standIn } from './dungeon-geometry.ts';
+import { lightFrom, type Relief } from './figure-draw.ts';
 
 const fill = (d: string, tone?: Part['tone']): Part => ({
   kind: 'fill',
@@ -71,10 +72,12 @@ export interface FurnitureArt {
   x: number;
   y: number;
   size: number;
+  /** Which edge catches the party's light (figure-draw.ts). */
+  light: Relief;
 }
 
 /** The furniture on the cell `depth` ahead and `lateral` across, standing in its middle. */
 export function furnitureIn(kind: Furniture['kind'], depth: number, lateral: number): FurnitureArt {
   const { x, y, size } = standIn(depth + 0.5, lateral);
-  return { kind, parts: ART[kind], x, y, size };
+  return { kind, parts: ART[kind], x, y, size, light: lightFrom(x + size / 2) };
 }

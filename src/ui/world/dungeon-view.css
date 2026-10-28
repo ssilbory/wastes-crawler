@@ -165,6 +165,13 @@
   stroke: none;
 }
 
+/* The light pooling on the floor and walls at the party's feet (V7). It holds steady: fading it
+   with the flicker would brighten and dim the view against the dark at the same time. */
+.dungeon-view .pool {
+  stroke: none;
+  pointer-events: none;
+}
+
 .dungeon-view .glow {
   pointer-events: none;
   mix-blend-mode: overlay;

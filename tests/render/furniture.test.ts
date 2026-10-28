@@ -55,6 +55,10 @@ describe('furniture art (docs/presentation-plan.md, V4)', () => {
     expect(near.size).toBeGreaterThan(far.size);
     expect(near.x + near.size / 2).toBeCloseTo(160);
     expect(furnitureIn('altar', 1, 1).x).toBeGreaterThan(near.x);
+    // Lit from the middle of the corridor: on its top ahead, on its inner side to either side.
+    expect(Math.abs(near.light[0])).toBe(0);
+    expect(furnitureIn('altar', 1, 1).light[0]).toBeGreaterThan(0);
+    expect(furnitureIn('altar', 1, -1).light[0]).toBeLessThan(0);
     // Its feet (y = 46 of the box) are on the floor line at the middle of the cell.
     expect(near.y + (near.size * 46) / 48).toBeCloseTo(120 + 120 / 2.5);
   });

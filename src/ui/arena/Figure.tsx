@@ -1,5 +1,6 @@
 import { useId } from 'preact/hooks';
-import { drawFigure } from '../../render/figure-draw.ts';
+import type { Part } from '../../render/figure-art.ts';
+import { drawFigure, type Relief } from '../../render/figure-draw.ts';
 import type { FigureView } from '../../render/figure-view.ts';
 
 /**
@@ -15,26 +16,46 @@ export function Figure(props: { figure: FigureView; down: boolean }) {
 }
 
 /**
- * A figure's paths in its 48 by 48 box, for drawing inside another SVG. A standing figure is
- * shaded over that (docs/presentation-plan.md, V7): light on its upper-left rim and dark on its
- * lower-right edge, each the body less a copy of itself shifted toward the other side.
+ * Light and shade over a piece drawn from `parts` (docs/presentation-plan.md, V7): a lit band on
+ * the edges facing away from `by` and a dark band on the edges facing toward it, each the body
+ * less a copy of itself shifted the other way, as a small mask. Drawn over the piece, so its lines
+ * and cuts keep their order.
  */
-export function FigureParts(props: { figure: FigureView; down: boolean }) {
-  const { parts, transform, relief } = drawFigure(props.figure, props.down);
+export function ReliefBands(props: { parts: Part[]; by: Relief }) {
   const id = useId();
-  const body = (by: number) =>
-    parts.map((p, i) =>
-      p.kind === 'fill' ? (
-        <path key={i} d={p.d} transform={by ? `translate(${by} ${by})` : undefined} />
+  const [dx, dy] = props.by;
+  const body = (sx: number, sy: number) =>
+    props.parts.map((p, i) =>
+      p.kind === 'fill' && !p.tone ? (
+        <path key={i} d={p.d} transform={sx || sy ? `translate(${sx} ${sy})` : undefined} />
       ) : null,
     );
-  // The body less the body moved by `by`: the edge facing away from that move.
-  const edge = (name: string, by: number) => (
+  const edge = (name: string, sx: number, sy: number) => (
     <mask id={`${id}-${name}`} maskUnits="userSpaceOnUse" x="-8" y="-8" width="64" height="64">
-      <g fill="#fff">{body(0)}</g>
-      <g fill="#000">{body(by)}</g>
+      <g fill="#fff">{body(0, 0)}</g>
+      <g fill="#000">{body(sx, sy)}</g>
     </mask>
   );
+  return (
+    <>
+      {edge('lit', dx, dy)}
+      {edge('shade', -dx, -dy)}
+      <g class="relief-lit" mask={`url(#${id}-lit)`}>
+        {body(0, 0)}
+      </g>
+      <g class="relief-shade" mask={`url(#${id}-shade)`}>
+        {body(0, 0)}
+      </g>
+    </>
+  );
+}
+
+/**
+ * A figure's paths in its 48 by 48 box, for drawing inside another SVG, shaded when it stands:
+ * from the upper left in a fight, or by `light` where the party's light falls on it.
+ */
+export function FigureParts(props: { figure: FigureView; down: boolean; light?: Relief }) {
+  const { parts, transform, relief } = drawFigure(props.figure, props.down, props.light);
   return (
     <g transform={transform}>
       {parts.map((p, i) =>
@@ -44,18 +65,7 @@ export function FigureParts(props: { figure: FigureView; down: boolean }) {
           <path key={i} class={p.kind} d={p.d} stroke-width={p.width} />
         ),
       )}
-      {relief !== null && (
-        <>
-          {edge('lit', relief)}
-          {edge('shade', -relief)}
-          <g class="relief-lit" mask={`url(#${id}-lit)`}>
-            {body(0)}
-          </g>
-          <g class="relief-shade" mask={`url(#${id}-shade)`}>
-            {body(0)}
-          </g>
-        </>
-      )}
+      {relief && <ReliefBands parts={parts} by={relief} />}
     </g>
   );
 }

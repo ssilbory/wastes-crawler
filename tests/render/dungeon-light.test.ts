@@ -4,6 +4,8 @@ import {
   dieReach,
   lightView,
   MAX_DARK,
+  poolAt,
+  POOL_SPREAD,
   walkLight,
 } from '../../src/render/dungeon-light.ts';
 import type { Member, World } from '../../src/game/world/types.ts';
@@ -69,5 +71,27 @@ describe('the light in the first-person view', () => {
     expect(darkness(torch, 2.375)).toBeCloseTo(MAX_DARK / 2);
     expect(darkness(torch, 3.5)).toBe(MAX_DARK);
     expect(darkness(torch, 9)).toBe(MAX_DARK);
+  });
+
+  it('pools at the party’s feet, easing off over the nearer part of its reach', () => {
+    const torch = walkLight();
+    expect(poolAt(torch, 0)).toBe(torch.pool);
+    expect(poolAt(torch, 0.5)).toBeLessThan(torch.pool);
+    expect(poolAt(torch, 0.5)).toBeGreaterThan(poolAt(torch, 1));
+    expect(poolAt(torch, torch.reach * POOL_SPREAD)).toBe(0);
+    expect(poolAt(torch, 9)).toBe(0);
+    // A guttering torch pools less far.
+    const low = { ...torch, reach: dieReach(2) };
+    expect(poolAt(low, 1)).toBeLessThan(poolAt(torch, 1));
+  });
+
+  it('casts no pool by sight alone', () => {
+    const dark = below();
+    dark.light.lit = null;
+    gift(dark, ['flamesight'], 'full-elementalist');
+    const sight = lightView(dark, data);
+    expect(sight?.pool).toBe(0);
+    if (sight) expect(poolAt(sight, 0)).toBe(0);
+    expect(walkLight().pool).toBeGreaterThan(0);
   });
 });

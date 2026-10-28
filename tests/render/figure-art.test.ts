@@ -9,7 +9,7 @@ import {
   SMALL_SCALE,
   type PersonView,
 } from '../../src/render/figure-art.ts';
-import { drawFigure, RELIEF } from '../../src/render/figure-draw.ts';
+import { drawFigure, FIGHT_LIGHT, lightFrom, RELIEF } from '../../src/render/figure-draw.ts';
 import { monsterParts, UPRIGHT } from '../../src/render/monster-art.ts';
 
 const person = (over: Partial<PersonView> = {}): PersonView => ({
@@ -97,9 +97,19 @@ describe('figure art (docs/presentation-plan.md, V3)', () => {
     expect(drawFigure({ ...beast, shape: 'tree' }, true).transform).toContain('rotate(90');
     expect(drawFigure(person(), false).parts).toEqual(personParts(person()));
     // A standing figure is shaded from the upper left; a fallen one lies flat.
-    expect(drawFigure(person(), false).relief).toBe(RELIEF);
-    expect(drawFigure(beast, false).relief).toBe(RELIEF);
+    expect(drawFigure(person(), false).relief).toEqual(FIGHT_LIGHT);
+    expect(FIGHT_LIGHT).toEqual([RELIEF, RELIEF]);
+    expect(drawFigure(beast, false, [1, 2]).relief).toEqual([1, 2]);
     expect(drawFigure(person(), true).relief).toBeNull();
     expect(RELIEF).toBeGreaterThan(0);
+    // In the corridor, the party's light catches the top and the side toward the middle.
+    const [midX, midY] = lightFrom(160);
+    expect(Math.abs(midX)).toBe(0);
+    expect(midY).toBeGreaterThan(0);
+    // Shifted away from the lit side: left of the middle shifts left, so its right edge is lit.
+    expect(lightFrom(40)[0]).toBeLessThan(0);
+    expect(lightFrom(280)[0]).toBeGreaterThan(0);
+    expect(lightFrom(-500)).toEqual(lightFrom(0));
+    expect(lightFrom(900)).toEqual(lightFrom(320));
   });
 });
