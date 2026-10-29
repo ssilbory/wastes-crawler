@@ -63,6 +63,41 @@ describe('Query the Skull: locating', () => {
     expect(seen(w)).toHaveLength(before);
   });
 
+  it('knows of no boss on a level without guarded hoards', () => {
+    const w = below();
+    const m = necromancer(w);
+    leaveCorpses(w, data, [['thug-or-militia']]);
+    expect(queryTheSkull(w, data, m.id, ['boss'])).toEqual({ ok: true });
+    expect(lastNote(w)).toBe('The dead know of no boss on this level.');
+  });
+
+  it('counts a boss whose hoard is taken, or whose order has ended, as fallen', () => {
+    const { w, m } = waterworks();
+    w.caches.push('buried-waterworks/buried-waterworks-1/1,0');
+    expect(queryTheSkull(w, data, m.id, ['boss'])).toEqual({ ok: true });
+    expect(lastNote(w)).toBe("The dead say this level's boss has already fallen.");
+    const tower = below();
+    Object.assign(state(tower), { dungeon: 'harrowmere' });
+    place(tower, 'hm-tower-6', 3, 4, 'n');
+    const n = necromancer(tower);
+    leaveCorpses(tower, data, [['thug-or-militia']]);
+    expect(queryTheSkull(tower, data, n.id, ['boss'])).toEqual({ ok: true });
+    expect(lastNote(tower)).toBe("The dead say this level's boss waits 2 squares north.");
+    tower.ordersEnded.push('warden-seal');
+    tower.corpses = { ...(tower.corpses as NonNullable<World['corpses']>), queried: false };
+    n.spellsCast = 0;
+    expect(queryTheSkull(tower, data, n.id, ['boss'])).toEqual({ ok: true });
+    expect(lastNote(tower)).toBe("The dead say this level's boss has already fallen.");
+  });
+
+  it('names the nearest hoard wherever it comes in the level', () => {
+    const { w, m } = waterworks();
+    place(w, 'buried-waterworks-1', 8, 3, 'n');
+    leaveCorpses(w, data, [['thug-or-militia']]);
+    expect(queryTheSkull(w, data, m.id, ['hoard'])).toEqual({ ok: true });
+    expect(lastNote(w)).toBe('The dead tell of 2 hoards on this level, the nearest 1 square east.');
+  });
+
   it('marks every hoard left and names the nearest', () => {
     const { w, m } = waterworks();
     expect(queryTheSkull(w, data, m.id, ['hoard'])).toEqual({ ok: true });
