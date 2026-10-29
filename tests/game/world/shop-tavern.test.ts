@@ -18,7 +18,7 @@ import { inventoryErrors } from '../../../src/game/character/equipment.ts';
 import { findPeople } from '../../../src/game/character/people.ts';
 import type { InventoryEntry } from '../../../src/game/character/items.ts';
 import type { People } from '../../../src/data/schemas/index.ts';
-import { data, member, starter, world, encounter } from './helpers.ts';
+import { data, fullShop, member, starter, world, encounter } from './helpers.ts';
 
 const rich = () => {
   const w = world();
@@ -41,9 +41,9 @@ describe('the shop (SRD 3.0 prices)', () => {
 
   it('sells stowed, sized goods to a member, stacking repeats', () => {
     const w = rich();
-    expect(buy(w, data, 'm-0', 'crowbar')).toEqual({ ok: true });
-    expect(buy(w, data, 'm-0', 'crowbar')).toEqual({ ok: true });
-    expect(buy(w, data, 'm-0', 'mail-shirt')).toEqual({ ok: true });
+    expect(buy(w, fullShop, 'm-0', 'crowbar')).toEqual({ ok: true });
+    expect(buy(w, fullShop, 'm-0', 'crowbar')).toEqual({ ok: true });
+    expect(buy(w, fullShop, 'm-0', 'mail-shirt')).toEqual({ ok: true });
     const inv = member(w, 'Snag').character.inventory;
     expect(inv.slice(-2)).toEqual([
       { id: 'crowbar', quantity: 2, location: 'stowed' },
@@ -55,8 +55,8 @@ describe('the shop (SRD 3.0 prices)', () => {
 
   it("sells armor in either size at the standard price (Small armor, Sam's call)", () => {
     const w = rich();
-    expect(buy(w, data, 'm-2', 'mail-shirt', 'small')).toEqual({ ok: true });
-    expect(buy(w, data, 'm-0', 'mail-shirt', 'standard')).toEqual({ ok: true });
+    expect(buy(w, fullShop, 'm-2', 'mail-shirt', 'small')).toEqual({ ok: true });
+    expect(buy(w, fullShop, 'm-0', 'mail-shirt', 'standard')).toEqual({ ok: true });
     expect(w.purse).toBe(500);
     const lirael = member(w, 'Lirael').character.inventory;
     expect(lirael.at(-1)).toEqual({
@@ -71,7 +71,7 @@ describe('the shop (SRD 3.0 prices)', () => {
 
   it('carries small armor to a small member, who can wear it', () => {
     const w = rich();
-    buy(w, data, 'm-2', 'mail-shirt', 'small');
+    buy(w, fullShop, 'm-2', 'mail-shirt', 'small');
     const idx = member(w, 'Lirael').character.inventory.length - 1;
     expect(giveItem(w, data, 'm-2', idx, 'm-0')).toEqual({ ok: true });
     const snag = member(w, 'Snag').character.inventory;
@@ -85,7 +85,7 @@ describe('the shop (SRD 3.0 prices)', () => {
         goblinPeople,
       ),
     ).toEqual([]);
-    expect(buy(w, data, 'm-2', 'crowbar', 'small')).toEqual({
+    expect(buy(w, fullShop, 'm-2', 'crowbar', 'small')).toEqual({
       ok: false,
       reason: "Crowbar isn't sold small.",
     });
@@ -93,15 +93,18 @@ describe('the shop (SRD 3.0 prices)', () => {
 
   it('refuses goods too heavy to carry, or too dear', () => {
     const w = rich();
-    expect(buy(w, data, 'm-3', 'rations-one-week')).toEqual({ ok: true });
-    expect(buy(w, data, 'm-3', 'rations-one-week')).toEqual({
+    expect(buy(w, fullShop, 'm-3', 'rations-one-week')).toEqual({ ok: true });
+    expect(buy(w, fullShop, 'm-3', 'rations-one-week')).toEqual({
       ok: false,
       reason: "Fizzwick can't carry that much",
     });
     w.purse = 3;
-    expect(buy(w, data, 'm-0', 'crowbar')).toEqual({ ok: false, reason: 'That costs 4 crowns.' });
+    expect(buy(w, fullShop, 'm-0', 'crowbar')).toEqual({
+      ok: false,
+      reason: 'That costs 4 crowns.',
+    });
     member(w, 'Snag').dead = true;
-    expect(() => buy(w, data, 'm-0', 'crowbar')).toThrow('no living party member m-0');
+    expect(() => buy(w, fullShop, 'm-0', 'crowbar')).toThrow('no living party member m-0');
   });
 
   it('buys back gear at half price, one at a time', () => {
@@ -126,7 +129,7 @@ describe('the shop (SRD 3.0 prices)', () => {
 
   it('moves gear between worn, readied, and stowed within the limits', () => {
     const w = rich();
-    buy(w, data, 'm-1', 'mail-shirt');
+    buy(w, fullShop, 'm-1', 'mail-shirt');
     const grukk = member(w, 'Grukk');
     const shirt = grukk.character.inventory.length - 1;
     expect(setLocation(w, data, 'm-1', shirt, 'worn')).toMatchObject({ ok: false });
@@ -337,7 +340,7 @@ describe('buying into a pack that already has a magic copy (#3)', () => {
       ...m.character,
       inventory: [{ id: 'crowbar', quantity: 1, location: 'stowed', bonus: 2 }],
     };
-    expect(buy(w, data, m.id, 'crowbar')).toEqual({ ok: true });
+    expect(buy(w, fullShop, m.id, 'crowbar')).toEqual({ ok: true });
     const bonuses = m.character.inventory
       .filter((e) => e.id === 'crowbar')
       .map((e) => [e.quantity, e.bonus ?? 0])

@@ -5,10 +5,10 @@ import { CharacterSchema } from './character.ts';
 import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { FactionStateSchema } from './faction-content.ts';
 import { RegionSchema } from './overland-content.ts';
-import { LootDiceSchema } from './town-content.ts';
+import { LootDiceSchema, ShopStateSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 47;
+export const WORLD_SCHEMA_VERSION = 48;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -363,6 +363,8 @@ export const WorldSaveSchema = z.strictObject({
   loot: z.array(LootDiceSchema),
   /** Each visited town's spending and loot since its thresholds last reset. */
   towns: z.record(IdSchema, TownLedgerSchema),
+  /** What each settlement's shop has sold out of this month, by town. */
+  shops: z.record(IdSchema, ShopStateSchema),
   /** The day the economic climate last moved the purse. */
   climateDay: z.int().min(0),
   encounter: PendingEncounterSchema.nullable(),

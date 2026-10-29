@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks';
 import type { ItemLocation } from '../../data/schemas/index.ts';
-import { buyable, type CatalogItem } from '../../game/character/items.ts';
+import type { CatalogItem } from '../../game/character/items.ts';
 import { carriers, stowWith, takeFrom, type Carrier } from '../../game/world/loads.ts';
 import type { Size } from '../../game/character/gear.ts';
 import {
@@ -13,6 +13,7 @@ import {
   shopPrice,
 } from '../../game/world/shop.ts';
 import { load } from '../../game/world/mounts.ts';
+import { shopStock } from '../../game/world/shop-stock.ts';
 import type { World } from '../../game/world/types.ts';
 import { itemStats } from '../../render/gear-view.ts';
 import { crowns, entryText } from '../../render/town-view.ts';
@@ -37,14 +38,16 @@ const CARRIER: Record<Carrier['kind'], string> = {
   mount: 'mount',
 };
 const LOCATIONS: ItemLocation[] = ['worn', 'readied', 'stowed'];
-const stock = buyable(data);
 
-/** The shop: SRD gear at this town's prices, and each member's pack. */
+/** The shop: this month's SRD gear at this town's prices, and each member's pack. */
 export function ShopTab(props: { world: World; act: Act }) {
   const w = props.world;
   const living = w.members.filter((m) => !m.dead);
+  const stock = shopStock(w, data);
   const [who, setWho] = useState(living[0]?.id ?? '');
-  const [item, setItem] = useState(stock[0]?.id ?? '');
+  const [picked, setItem] = useState(stock[0]?.id ?? '');
+  // What was picked may have just sold out.
+  const item = stock.some((i) => i.id === picked) ? picked : (stock[0]?.id ?? '');
   const [size, setSize] = useState<Size | null>(null);
   const m = living.find((x) => x.id === who) ?? living[0];
   if (!m) return <p class="hint">No one living can shop.</p>;
@@ -60,6 +63,9 @@ export function ShopTab(props: { world: World; act: Act }) {
       </section>
       <section class="panel" aria-label="Buy">
         <h2>Buy</h2>
+        <p class="hint">
+          Light and crafting gear is always in. The rest changes each month and can sell out.
+        </p>
         <label>
           For{' '}
           <select
@@ -79,19 +85,21 @@ export function ShopTab(props: { world: World; act: Act }) {
         <label>
           Item{' '}
           <select value={item} onChange={(e) => setItem((e.target as HTMLSelectElement).value)}>
-            {(Object.keys(KINDS) as CatalogItem['kind'][]).map((kind) => (
-              <optgroup key={kind} label={KINDS[kind]}>
-                {stock
-                  .filter((i) => i.kind === kind)
-                  .map((i) => (
-                    <option key={i.id} value={i.id}>
-                      {i.name}
-                      {itemStats(data, i) ? ` · ${itemStats(data, i)}` : ''} (
-                      {crowns(shopPrice(w, data, i.id))})
-                    </option>
-                  ))}
-              </optgroup>
-            ))}
+            {(Object.keys(KINDS) as CatalogItem['kind'][])
+              .filter((kind) => stock.some((i) => i.kind === kind))
+              .map((kind) => (
+                <optgroup key={kind} label={KINDS[kind]}>
+                  {stock
+                    .filter((i) => i.kind === kind)
+                    .map((i) => (
+                      <option key={i.id} value={i.id}>
+                        {i.name}
+                        {itemStats(data, i) ? ` · ${itemStats(data, i)}` : ''} (
+                        {crowns(shopPrice(w, data, i.id))})
+                      </option>
+                    ))}
+                </optgroup>
+              ))}
           </select>
         </label>{' '}
         {armor && (

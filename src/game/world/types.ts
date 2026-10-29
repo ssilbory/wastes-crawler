@@ -18,6 +18,7 @@ import type {
   CraftsmanState,
   FactionState,
   Raising,
+  ShopState,
   Region,
   TownLedger,
   WorldSave,
@@ -97,6 +98,8 @@ export interface World {
   purse: number;
   loot: LootDice[];
   towns: Record<string, TownLedger>;
+  /** What each shop has sold out of this month, by town (shop-stock.ts). */
+  shops: Record<string, ShopState>;
   climateDay: number;
   encounter: PendingEncounter | null;
   coach: CoachTrip | null;

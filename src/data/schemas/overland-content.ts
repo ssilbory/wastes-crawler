@@ -95,6 +95,8 @@ export const RealmSchema = z.strictObject({
   regions: z.array(IdSchema).min(1),
   /** The region a new party sets out in. */
   start: IdSchema,
+  /** The only gear its shops sell besides the staples, all of it in every settlement (Sam's call). */
+  shop: z.array(IdSchema).min(1).optional(),
   /**
    * Where the realm's journey ends (Sam's call): reaching this hex with no fight pending shows the
    * ending once, and the party can go back to the title screen or keep adventuring.

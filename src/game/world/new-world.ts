@@ -113,6 +113,7 @@ export function newWorld(
     purse: toTenths(party.reduce((sum, p) => sum + p.character.crowns, 0)),
     loot: [],
     towns: {},
+    shops: {},
     climateDay: 0,
     encounter: null,
     log: [],

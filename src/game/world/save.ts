@@ -49,6 +49,7 @@ export function serializeWorld(w: World): string {
     purse: w.purse,
     loot: w.loot,
     towns: w.towns,
+    shops: w.shops,
     climateDay: w.climateDay,
     encounter: w.encounter,
     coach: w.coach,
@@ -238,6 +239,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
     purse: s.purse,
     loot: s.loot,
     towns: s.towns,
+    shops: s.shops,
     climateDay: s.climateDay,
   };
   if (world.dungeon && !standsIn(world.dungeon, data)) {

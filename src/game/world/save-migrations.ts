@@ -273,4 +273,6 @@ export const WORLD_MIGRATIONS: Migrations = {
       benched: fresh(raw.benched),
     };
   },
+  // Version 48 adds shop stock (Sam's calls): nothing has sold out anywhere yet.
+  47: (raw) => ({ ...raw, schemaVersion: 48, shops: {} }),
 };

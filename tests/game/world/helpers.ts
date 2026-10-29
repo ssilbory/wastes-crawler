@@ -27,6 +27,22 @@ export function member(w: World, name: string): Member {
   return m;
 }
 
+/** Content whose shops stock every item and never sell out (shop-stock.ts). */
+export const fullShop: GameData = {
+  ...data,
+  content: {
+    ...data.content,
+    townRules: {
+      ...data.content.townRules,
+      shop: {
+        ...data.content.townRules.shop,
+        stocked: { village: 1, town: 1, city: 1 },
+        sellOutPercent: { village: 0, town: 0, city: 0 },
+      },
+    },
+  },
+};
+
 /** Content with a single mishap of the given effect, for both tables. */
 export function withMishap(effect: GameData['content']['mishaps'][number]['effect']): GameData {
   const mishaps = (['travel', 'camp'] as const).map((table) => ({

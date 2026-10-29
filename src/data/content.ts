@@ -271,7 +271,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...combatReferenceErrors(srd, content),
     ...factionReferenceErrors(srd, content),
     ...overlandReferenceErrors(srd, content),
-    ...townReferenceErrors(content),
+    ...townReferenceErrors(srd, content),
     ...npcReferenceErrors(srd, content),
     ...mountReferenceErrors(srd, content),
     ...travelReferenceErrors(srd, content),

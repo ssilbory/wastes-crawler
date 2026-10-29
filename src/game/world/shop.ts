@@ -12,6 +12,7 @@ import { fitSize, sizedLine, type Size } from '../character/gear.ts';
 import { entryPrice, findItem, type InventoryEntry } from '../character/items.ts';
 import { findPeople } from '../character/people.ts';
 import { note } from './members.ts';
+import { afterSale, shopStock } from './shop-stock.ts';
 import type { TownResult } from './services.ts';
 import { tradePercent } from './trade.ts';
 import { spoils } from './warlords.ts';
@@ -72,8 +73,9 @@ export function inventoryProblem(
 export const fitSizeOf = (data: GameData, m: Member): Size => fitSize(peopleOf(data, m));
 
 /**
- * Sells one unit into a member's pack. Armor comes in either size at the standard price; `size`
- * defaults to the member's own. A stowed suit of either size is carried by anyone.
+ * Sells one unit into a member's pack, if the shop has it (shop-stock.ts). Armor comes in either
+ * size at the standard price; `size` defaults to the member's own. A stowed suit of either size is
+ * carried by anyone.
  */
 export function buy(
   w: World,
@@ -83,8 +85,12 @@ export function buy(
   size?: Size,
 ): TownResult {
   const m = member(w, memberId);
+  const name = findItem(data, itemId)?.name ?? itemId;
+  const town = townHere(w, data);
+  if (!shopStock(w, data).some((i) => i.id === itemId))
+    return no(`${town.name} has no ${name} for sale.`);
   if (size === 'small' && findItem(data, itemId)?.kind !== 'armor')
-    return no(`${findItem(data, itemId)?.name ?? itemId} isn't sold small.`);
+    return no(`${name} isn't sold small.`);
   const line = { id: itemId, quantity: 1, location: 'stowed' as const };
   const entry = sizedLine(data, line, size ?? fitSizeOf(data, m));
   const inventory = putLine(m.character.inventory, entry);
@@ -93,6 +99,7 @@ export function buy(
   const price = shopPrice(w, data, itemId);
   if (!spend(w, data, listedPrice(data, itemId))) return no(`That costs ${price} crowns.`);
   m.character = { ...m.character, inventory };
+  if (afterSale(w, data, itemId)) note(w, `That was ${town.name}'s last ${name} this month.`);
   return { ok: true };
 }
 
