@@ -26,7 +26,7 @@ describe('Query the Skull', () => {
     const w = below();
     const m = necromancer(w, 3);
     leaveCorpses(w, data, [['thug-or-militia']]);
-    expect(skullQuestions(w)).toEqual(['map', 'traps', 'secrets']);
+    expect(skullQuestions(w)).toEqual(['map', 'traps', 'secrets', 'boss', 'vault', 'hoard']);
     const s = state(w);
     s.traps['barrow-upper'] = { '9,9': 'disarmed' };
     expect(queryTheSkull(w, data, m.id, ['map', 'traps', 'secrets'])).toEqual({ ok: true });

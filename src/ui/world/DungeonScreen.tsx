@@ -12,7 +12,7 @@ import { encounterPortrait } from '../../render/encounter-portrait.ts';
 import { motionOf, type Motion, type PartyMove as Move } from '../../render/dungeon-motion.ts';
 import { data } from '../builder/data.ts';
 import { PartyPanel } from './PartyPanel.tsx';
-import { HealerPanel } from './HealerPanel.tsx';
+import { HealerPanel, RevivePopOut, useReviveAsk } from './HealerPanel.tsx';
 import { PurgePanel } from './PurgePanel.tsx';
 import { AntidotePanel } from './AntidotePanel.tsx';
 import { PotionPanel } from './PotionPanel.tsx';
@@ -67,6 +67,8 @@ export function DungeonScreen(props: {
   onExport: () => void;
 }) {
   const w = props.world;
+  // Asks about reviving the fallen before the party moves on (Sam's call).
+  const revive = useReviveAsk(w);
   const s = w.dungeon as NonNullable<World['dungeon']>;
   const [bump, setBump] = useState<string | null>(null);
   // The view's motion after each move, numbered so the same motion twice plays twice.
@@ -231,6 +233,9 @@ export function DungeonScreen(props: {
               />
             </PopOut>
           )}
+          {revive.open && (
+            <RevivePopOut world={w} onChange={props.onChange} onLeave={revive.dismiss} />
+          )}
         </div>
         <div class="dock">
           {map && (
@@ -239,7 +244,7 @@ export function DungeonScreen(props: {
               <Automap map={map} label={`Map of ${level.name}`} />
             </section>
           )}
-          {!w.encounter && onSafeSquare(w, data) && (
+          {!w.encounter && !revive.open && onSafeSquare(w, data) && (
             <CampPanel world={w} onChange={props.onChange} />
           )}
           {/* Quests, then the party, then the panels of powers (Sam's call: one column). */}
@@ -253,7 +258,7 @@ export function DungeonScreen(props: {
           <ConjunctPanel world={w} onChange={props.onChange} />
           <SorceryPanel world={w} onChange={props.onChange} />
           <PactPanel world={w} onChange={props.onChange} />
-          <HealerPanel world={w} onChange={props.onChange} />
+          {!revive.open && <HealerPanel world={w} onChange={props.onChange} />}
           <PurgePanel world={w} onChange={props.onChange} />
           <AntidotePanel world={w} onChange={props.onChange} />
           <PotionPanel world={w} onChange={props.onChange} />

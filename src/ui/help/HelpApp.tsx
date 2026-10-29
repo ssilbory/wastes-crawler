@@ -13,7 +13,13 @@ export function HelpApp() {
         <summary>
           <h2>The game is too hard</h2>
         </summary>
-        <p>Yes. It is designed that way, because that's how I play it. Some ways to soften it:</p>
+        <p>Yes. It is designed that way, because that's how I play it.</p>
+        <p>
+          The Wastes are meant to be a very hard hex crawl. No town there raises the dead: a PC who
+          dies stays dead unless a Healer uses Revive the Fallen before the party moves on. A Healer
+          is recommended.
+        </p>
+        <p>Some ways to soften it:</p>
         <ul>
           <li>
             Export a character from the Characters page (Export), edit their stats in the file (3 to
@@ -38,7 +44,8 @@ export function HelpApp() {
           <li>Give your spellcasters the Die Hard and Armored Magic foci.</li>
           <li>
             Bring a necromancer: Raise Corpse animates the dead, and Query the Skull lets you
-            question corpses after a fight.
+            question corpses after a fight. In a dungeon they can also say where the level's boss,
+            vault, or hoards lie.
           </li>
           <li>
             Bring a ranger and bind a beast companion (Bind Companion), or win over a beast with

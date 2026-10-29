@@ -8,12 +8,24 @@ import { useDialog } from '../dialog.ts';
  * party's panels beside it stay readable. Focus moves to the card when it opens and back when it
  * closes, and Tab stays inside it until it is answered (Sam's call).
  */
-export function PopOut(props: { label: string; children: ComponentChildren }) {
+export function PopOut(props: {
+  label: string;
+  /** Holds the screen's keys too, so nothing moves on under it (keys.ts). */
+  modal?: boolean;
+  children: ComponentChildren;
+}) {
   const card = useRef<HTMLDivElement>(null);
   useDialog({ box: card, trap: true });
   return (
     <div class="pop-out">
-      <div ref={card} class="pop-out-card" role="dialog" aria-label={props.label} tabIndex={-1}>
+      <div
+        ref={card}
+        class="pop-out-card"
+        role="dialog"
+        aria-label={props.label}
+        aria-modal={props.modal ? 'true' : undefined}
+        tabIndex={-1}
+      >
         {props.children}
       </div>
     </div>

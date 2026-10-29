@@ -52,8 +52,11 @@ test('revives the fallen right after the fight', async ({ page }, testInfo) => {
      snag.character.hp.current = 0;
      save.fallen = { at: save.region + '/' + save.position.col + ',' + save.position.row, members: [snag.id] };`,
   );
-  const panel = page.getByRole('region', { name: 'Revive the Fallen' });
+  // It pops up over the map before the party can move on, holding the plans for the day.
+  const ask = page.getByRole('dialog', { name: 'Revive the Fallen' });
+  const panel = ask.getByRole('region', { name: 'Revive the Fallen' });
   await expect(panel).toContainText('Fizzwick: 2 Effort left today');
+  await expect(page.getByRole('region', { name: 'Revive the Fallen' })).toHaveCount(1);
   await page.screenshot({ path: testInfo.outputPath('revive.png'), fullPage: true });
   await panel.getByRole('button', { name: 'Revive Snag' }).click();
   await expect(panel).toHaveCount(0);
@@ -61,6 +64,32 @@ test('revives the fallen right after the fight', async ({ page }, testInfo) => {
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
     'Fizzwick revives Snag, who lies unconscious.',
   );
+});
+
+test('lets the party wave the revive popup away, still offering it in the dock', async ({
+  page,
+}) => {
+  await begin(page);
+  await edit(
+    page,
+    `const fizz = save.members.find((m) => m.character.name === 'Fizzwick').character;
+     fizz.classes = { current: 'healer-partial-mage', levels: { 'healer-partial-mage': 8 } };
+     fizz.skills.heal = 1;
+     fizz.spells = { known: [], prepared: [] };
+     fizz.arts = ['healing-touch', 'revive-the-fallen'];
+     const snag = save.members.find((m) => m.character.name === 'Snag');
+     snag.dead = true;
+     snag.character.hp.current = 0;
+     save.fallen = { at: save.region + '/' + save.position.col + ',' + save.position.row, members: [snag.id] };`,
+  );
+  const ask = page.getByRole('dialog', { name: 'Revive the Fallen' });
+  await ask.getByRole('button', { name: 'Not now' }).click();
+  await expect(ask).toHaveCount(0);
+  const panel = page.getByRole('region', { name: 'Revive the Fallen' });
+  await expect(panel).toContainText('Fizzwick: 2 Effort left today');
+  await expect(panel.getByRole('button', { name: 'Not now' })).toHaveCount(0);
+  await panel.getByRole('button', { name: 'Revive Snag' }).click();
+  await expect(panel).toHaveCount(0);
 });
 
 test('purges an ally of Frailty, spending Effort win or lose', async ({ page }) => {
