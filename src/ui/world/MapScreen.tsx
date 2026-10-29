@@ -18,7 +18,7 @@ import { EncounterPanel } from './EncounterPanel.tsx';
 import { FactionsPanel } from './FactionsPanel.tsx';
 import { WarlordsPanel } from './WarlordsPanel.tsx';
 import { SettingPanel } from './SettingPanel.tsx';
-import { HealerPanel } from './HealerPanel.tsx';
+import { HealerPanel, RevivePopOut, useReviveAsk } from './HealerPanel.tsx';
 import { PurgePanel } from './PurgePanel.tsx';
 import { AntidotePanel } from './AntidotePanel.tsx';
 import { PotionPanel } from './PotionPanel.tsx';
@@ -62,6 +62,8 @@ export function MapScreen(props: {
   onAbandon: () => void;
 }) {
   const w = props.world;
+  // Asks about reviving the fallen before the party moves on (Sam's call).
+  const revive = useReviveAsk(w);
   const map = regionMap(data, w.region);
   const [plan, setPlan] = useState<{ version: number; plan: QuarterPlan } | null>(null);
   const current = plan?.version === props.version ? plan.plan : suggestPlan(w, data);
@@ -199,9 +201,12 @@ export function MapScreen(props: {
               />
             </PopOut>
           )}
+          {revive.open && (
+            <RevivePopOut world={w} onChange={props.onChange} onLeave={revive.dismiss} />
+          )}
         </div>
         <div class="dock">
-          {w.encounter ? null : w.coach ? (
+          {w.encounter || revive.open ? null : w.coach ? (
             <CoachPanel world={w} onRide={props.onRide} />
           ) : (
             <QuarterPanel
@@ -233,7 +238,7 @@ export function MapScreen(props: {
           <HighRoadPanel world={w} onChange={props.onChange} />
           <SorceryPanel world={w} onChange={props.onChange} />
           <PactPanel world={w} onChange={props.onChange} />
-          <HealerPanel world={w} onChange={props.onChange} />
+          {!revive.open && <HealerPanel world={w} onChange={props.onChange} />}
           <PurgePanel world={w} onChange={props.onChange} />
           <AntidotePanel world={w} onChange={props.onChange} />
           <PotionPanel world={w} onChange={props.onChange} />
