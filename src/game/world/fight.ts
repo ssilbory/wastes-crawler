@@ -11,7 +11,7 @@ import { moraleAfterFight, removeNpc } from './npcs.ts';
 import { carryBack, lastStandBack, npcsBack } from './carry-back.ts';
 import { ailmentsBack } from './ailments.ts';
 import { winnings } from './winnings.ts';
-import { calmWarMounts, mountsBack } from './mount-fights.ts';
+import { calmWarMounts, mountsBack, warMounts } from './mount-fights.ts';
 import { emit } from './bus.ts';
 import { vigor } from './arts.ts';
 import { atGuardedHoard } from '../dungeon/ruins.ts';
@@ -59,6 +59,17 @@ export function encounterBattle(w: World, data: GameData): WorldBattle {
     garrison: w.encounter.garrison ?? null,
     patrol: w.encounter.patrol ?? null,
   };
+}
+
+/**
+ * The line-up the pending encounter would be fought with, for weighing the odds before choosing
+ * (Sam's call, docs/rules-adaptation.md, XP): as encounterBattle's, but every war mount counted
+ * as calmed, since calming one rolls. Reads only.
+ */
+export function threatSetup(w: World, data: GameData): PartySetup {
+  const e = w.encounter;
+  if (!e) throw new Error('no encounter to weigh');
+  return partySetup(w, data, e.enemies, true, warMounts(w, data, fighters(w)));
 }
 
 /** The conscious party, and its NPCs if `withNpcs`, against enemy rows. */

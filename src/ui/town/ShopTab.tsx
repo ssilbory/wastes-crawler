@@ -18,6 +18,7 @@ import { itemStats } from '../../render/gear-view.ts';
 import { crowns, entryText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { cue } from '../sound.ts';
+import { ConfirmButton } from '../confirm.tsx';
 import { SellLootForm } from './SellLootForm.tsx';
 import type { Act } from './TownScreen.tsx';
 
@@ -144,9 +145,15 @@ export function ShopTab(props: { world: World; act: Act }) {
                   </option>
                 ))}
               </select>
-              <button type="button" onClick={() => props.act(() => sell(w, data, m.id, i))}>
+              {/* Gear in use asks first, so a slip doesn't sell the armor off a back. */}
+              <ConfirmButton
+                ask={entry.location !== 'stowed'}
+                confirm="Sell for good"
+                label={`Sell ${entryText(data, entry)} (${crowns(sellPrice(w, data, entry))})`}
+                onConfirm={() => props.act(() => sell(w, data, m.id, i))}
+              >
                 Sell ({crowns(sellPrice(w, data, entry))})
-              </button>
+              </ConfirmButton>
               {others.length + porters.length > 0 && (
                 <select
                   aria-label={`Give ${entry.id} to`}

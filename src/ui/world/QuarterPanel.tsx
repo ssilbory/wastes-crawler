@@ -57,7 +57,9 @@ export function QuarterPanel(props: {
   onPass: () => void;
   /** Plays quarters toward the destination until it is reached or something needs the player. */
   onTravel: () => void;
-  /** Why Travel on last stopped, while it still applies. */
+  /** Targets the nearest known town (plans.ts, headForTown). */
+  onNearestTown: () => void;
+  /** Why Travel on last stopped, or where Nearest town headed, while it still applies. */
   travelled: string | null;
   onHike: () => void;
   onCamp: () => void;
@@ -79,13 +81,18 @@ export function QuarterPanel(props: {
           {plan.kind === 'hike' ? 'Hike' : 'Camp'} for the quarter
         </button>
       </div>
+      <div class="actions">
+        {props.canHike && (
+          <button type="button" aria-keyshortcuts="G" onClick={props.onTravel}>
+            Travel on
+          </button>
+        )}
+        <button type="button" class="secondary" onClick={props.onNearestTown}>
+          Nearest town
+        </button>
+      </div>
       {props.canHike && (
         <>
-          <div class="actions">
-            <button type="button" aria-keyshortcuts="G" onClick={props.onTravel}>
-              Travel on
-            </button>
-          </div>
           <p class="hint">
             Travel on hikes by day and camps by night until the party arrives or something needs
             you.

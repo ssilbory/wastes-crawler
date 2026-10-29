@@ -27,14 +27,20 @@ function calms(w: World, data: GameData, rider: Member): boolean {
  * A mount that panics sits the fight out.
  */
 export function calmWarMounts(w: World, data: GameData, fighters: readonly Member[]): Mount[] {
+  return warMounts(w, data, fighters).filter((m) => {
+    if (calms(w, data, riderOf(w, m) as Member)) return true;
+    note(w, `${m.name} panics and won't be ridden into the fight.`);
+    return false;
+  });
+}
+
+/** The living war mounts whose riders fight, before any is calmed; none underground. Pure. */
+export function warMounts(w: World, data: GameData, fighters: readonly Member[]): Mount[] {
   if (w.dungeon) return [];
   return w.mounts.filter((m) => {
     const rider = riderOf(w, m);
     if (mountType(data, m.type).role !== 'war' || m.hp <= 0 || !rider) return false;
-    if (!fighters.includes(rider)) return false;
-    if (calms(w, data, rider)) return true;
-    note(w, `${m.name} panics and won't be ridden into the fight.`);
-    return false;
+    return fighters.includes(rider);
   });
 }
 

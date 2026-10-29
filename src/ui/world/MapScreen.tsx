@@ -2,7 +2,7 @@ import { foundSitesIn } from '../../game/world/hidden-sites.ts';
 import { useMemo, useState } from 'preact/hooks';
 import type { World } from '../../game/world/types.ts';
 import { describeDate } from '../../game/world/calendar.ts';
-import { route, setDestination, suggestPlan } from '../../game/world/plans.ts';
+import { headForTown, route, setDestination, suggestPlan } from '../../game/world/plans.ts';
 import { regionMap } from '../../game/world/region.ts';
 import { hexKey } from '../../rules/hex.ts';
 import { hexCells, mapPixels } from '../../render/hex-view.ts';
@@ -78,6 +78,14 @@ export function MapScreen(props: {
   const [travelled, setTravelled] = useState<{ at: string; text: string } | null>(null);
   const stamp = stampOf(w);
   const travel = () => setTravelled({ text: props.onTravel(), at: stampOf(w) });
+  const nearestTown = () => {
+    const name = headForTown(w, data);
+    setTravelled({
+      text: name ? `Heading for ${name}.` : 'No known town is in reach.',
+      at: stampOf(w),
+    });
+    props.onChange();
+  };
   const able = w.members.filter((m) => !m.dead && m.character.hp.current > 0);
   const hike = () => choose(suggestPlan(w, data, 'hike'));
   const camp = () => choose(suggestPlan(w, data, 'camp'));
@@ -234,6 +242,7 @@ export function MapScreen(props: {
               onCamp={camp}
               onPass={pass}
               onTravel={travel}
+              onNearestTown={nearestTown}
               travelled={travelled?.at === stamp ? travelled.text : null}
               spacePlays={targeted}
             />

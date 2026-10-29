@@ -9,7 +9,7 @@ import { carriesFirewood } from './firewood.ts';
 import { alive, bestAt, checkBonus } from './members.ts';
 import { firstGuide } from './npcs.ts';
 import { hexesToAvoid } from './groves.ts';
-import { pathToward, regionMap, knownHexes } from './region.ts';
+import { nearestTown, pathToward, regionMap, knownHexes } from './region.ts';
 import type { Activity, Member, QuarterPlan, World } from './types.ts';
 
 /** Sets a destination the party can head toward, even under fog; false if it can get no closer. */
@@ -22,6 +22,15 @@ export function setDestination(w: World, data: GameData, to: Hex | null): boolea
   if (!pathToward(map, w.position, to, knownHexes(map, w), hexesToAvoid(w, data, to))) return false;
   w.destination = to;
   return true;
+}
+
+/** Targets the town cheapest to reach through known hexes; its name, or null if none is in reach. */
+export function headForTown(w: World, data: GameData): string | null {
+  const map = regionMap(data, w.region);
+  const town = nearestTown(map, w.position, knownHexes(map, w), hexesToAvoid(w, data));
+  if (!town) return null;
+  w.destination = { col: town.col, row: town.row };
+  return town.name;
 }
 
 /** The planned route, for drawing it on the map. */

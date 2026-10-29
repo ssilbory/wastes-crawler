@@ -26,27 +26,31 @@ export const townName = (data: GameData, id: string): string =>
   data.content.regions.flatMap((r) => r.sites).find((s) => s.id === id)?.name ?? id;
 
 /**
- * Hexes on the party's map where an active quest's current step waits, or where a finished one is
- * paid for.
+ * The hex on the party's map where a quest's current step waits, or where a finished one is paid
+ * for; null when it is elsewhere, or the quest is over.
  */
+export function questTarget(w: World, data: GameData, id: string): Hex | null {
+  const st = w.quests[id];
+  if (st?.status === 'ready') {
+    const town = payerTown(data, questOf(data, id));
+    return town.region === w.region ? { col: town.col, row: town.row } : null;
+  }
+  if (st?.status !== 'active') return null;
+  const o = currentStep(w, data, id);
+  if (!o) return null;
+  if (o.kind === 'slay' || o.kind === 'scout') return o.region === w.region ? o.hex : null;
+  if (o.kind === 'escort' || o.kind === 'deliver') {
+    const town = regionMap(data, w.region).sites.find((s) => s.id === o.to);
+    return town ? { col: town.col, row: town.row } : null;
+  }
+  // A delve step marks its dungeon's entrance; content checks guarantee the dungeon.
+  const d = data.content.dungeons.find((x) => x.id === o.dungeon) as Dungeon;
+  return d.region === w.region ? d.entrance : null;
+}
+
+/** Hexes on the party's map where quests wait or are paid for. */
 export function questTargets(w: World, data: GameData): Hex[] {
-  return Object.entries(w.quests).flatMap(([id, st]) => {
-    if (st.status === 'ready') {
-      const town = payerTown(data, questOf(data, id));
-      return town.region === w.region ? [{ col: town.col, row: town.row }] : [];
-    }
-    if (st.status !== 'active') return [];
-    const o = currentStep(w, data, id);
-    if (!o) return [];
-    if (o.kind === 'slay' || o.kind === 'scout') return o.region === w.region ? [o.hex] : [];
-    if (o.kind === 'escort' || o.kind === 'deliver') {
-      const town = regionMap(data, w.region).sites.find((s) => s.id === o.to);
-      return town ? [{ col: town.col, row: town.row }] : [];
-    }
-    // A delve step marks its dungeon's entrance; content checks guarantee the dungeon.
-    const d = data.content.dungeons.find((x) => x.id === o.dungeon) as Dungeon;
-    return d.region === w.region ? [d.entrance] : [];
-  });
+  return Object.keys(w.quests).flatMap((id) => questTarget(w, data, id) ?? []);
 }
 
 /**

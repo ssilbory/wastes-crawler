@@ -194,3 +194,23 @@ export function pathToward(
   }
   return hexKey(goal) === hexKey(from) ? null : trace(prev, from, goal);
 }
+
+/**
+ * The town cheapest to reach by hike points through known hexes, going around `avoid`, other than
+ * one the party stands in; null if none is in reach.
+ */
+export function nearestTown(
+  map: RegionMap,
+  from: Hex,
+  known: ReadonlySet<string>,
+  avoid: ReadonlySet<string> = new Set(),
+): Site | null {
+  const { best } = explore(map, from, known, avoid);
+  let near: Site | null = null;
+  let least = Infinity;
+  for (const s of map.sites) {
+    const cost = best.get(hexKey(s)) ?? Infinity;
+    if (cost > 0 && cost < least) [near, least] = [s, cost];
+  }
+  return near;
+}

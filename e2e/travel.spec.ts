@@ -56,3 +56,40 @@ test('lists the keys behind ? and searches the full journal', async ({ page }) =
   await log.getByRole('button', { name: 'Close' }).click();
   await expect(log).toHaveCount(0);
 });
+
+async function edit(page: Page, change: string) {
+  await page.evaluate(
+    ([key, body]) => {
+      const save = JSON.parse(localStorage.getItem(key as string) as string);
+      new Function('save', body as string)(save);
+      localStorage.setItem(key as string, JSON.stringify(save));
+    },
+    [WORLD_KEY, change],
+  );
+  await page.reload();
+  await page.getByRole('button', { name: 'Continue journey' }).click();
+}
+
+test('sets course for a quest, and for the nearest town', async ({ page }) => {
+  await begin(page);
+  await edit(page, `save.quests['bandit-camp'] = { status: 'active', step: 0, acceptedDay: 0 };`);
+  await page.getByRole('button', { name: /^Set course for / }).click();
+  const plan = page.getByRole('region', { name: 'Quarter plan' });
+  await expect(plan.getByRole('button', { name: 'Travel on' })).toBeVisible();
+  await edit(page, `save.position = { col: 4, row: 8 }; save.visited.push('4,8');`);
+  await plan.getByRole('button', { name: 'Nearest town' }).click();
+  await expect(plan).toContainText('Heading for Rubblegate.');
+});
+
+test('weighs an encounter before the party chooses to fight', async ({ page }) => {
+  await begin(page);
+  await edit(
+    page,
+    `save.encounter = {
+       enemies: [['thug-or-militia']], nature: 'hostile', reaction: 'expected', parleyed: false,
+       captive: null, quest: null, offer: null, hostile: true, spotted: true, text: 'Thugs.',
+     };`,
+  );
+  const meeting = page.getByRole('dialog', { name: 'Encounter' });
+  await expect(meeting).toContainText(/Looks \w+: the party wins \d+% of trial fights/);
+});

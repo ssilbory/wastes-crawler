@@ -2,7 +2,9 @@ import { useState } from 'preact/hooks';
 import { abandonQuest } from '../../game/world/quest-board.ts';
 import { questOf } from '../../game/world/quests.ts';
 import type { World } from '../../game/world/types.ts';
-import { questStatus } from '../../render/quest-view.ts';
+import { questStatus, questTarget } from '../../render/quest-view.ts';
+import { setDestination } from '../../game/world/plans.ts';
+import { hexKey } from '../../rules/hex.ts';
 import { data } from '../builder/data.ts';
 import { ConfirmButton } from '../confirm.tsx';
 
@@ -19,6 +21,12 @@ export function QuestLog(props: { world: World; onChange: () => void }) {
   const [message, setMessage] = useState<string | null>(null);
   const open = openQuests(w);
   if (open.length === 0) return null;
+  // Only on the hex map, with nothing to settle first.
+  const steering = !w.dungeon && !w.encounter && !w.coach;
+  const course = (id: string) => {
+    const to = questTarget(w, data, id);
+    return steering && to && hexKey(to) !== hexKey(w.position) ? to : null;
+  };
   return (
     <section class="panel" aria-label="Quests">
       <h3>Quests</h3>
@@ -27,6 +35,20 @@ export function QuestLog(props: { world: World; onChange: () => void }) {
           <li key={id}>
             <strong>{questOf(data, id).name}</strong>
             <span>{questStatus(w, data, id)}</span>
+            {course(id) && (
+              <button
+                type="button"
+                class="secondary"
+                aria-label={`Set course for ${questOf(data, id).name}`}
+                onClick={() => {
+                  const ok = setDestination(w, data, course(id));
+                  setMessage(ok ? null : 'No known way leads there yet.');
+                  props.onChange();
+                }}
+              >
+                Set course
+              </button>
+            )}
             <ConfirmButton
               class="secondary"
               label={`Abandon ${questOf(data, id).name}`}
