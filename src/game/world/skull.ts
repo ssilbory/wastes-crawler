@@ -1,8 +1,9 @@
 // Query the Skull (vendor/wwn-srd/4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md; Sam's
 // call, docs/rules-adaptation.md, Necromancer spells outside fights): the corpses where the party
 // last won a fight, dead no more than a day per caster level, answer one question per caster level.
-// The questions are fixed: below ground, the level's map, its traps, or its secret doors; above
-// ground, the lay of the land around. The spell may not be cast twice on the same corpses.
+// The questions are fixed: below ground, the level's map, its traps, its secret doors, and where
+// its boss, vault, or hoards lie (one of those three a casting, skull-locate.ts); above ground, the
+// lay of the land around. The spell may not be cast twice on the same corpses.
 import { cellKey, FACINGS, type Cell } from '../../rules/grid.ts';
 import { distance, hexKey } from '../../rules/hex.ts';
 import { characterLevel } from '../../rules/progression.ts';
@@ -12,13 +13,14 @@ import { cannotCast, spendCast } from './casting.ts';
 import { note } from './members.ts';
 import { corpsesHere } from './necromancy.ts';
 import { regionMap } from './region.ts';
+import { isLocate, LOCATE, locate, type LocateQuestion } from './skull-locate.ts';
 import type { TownResult } from './services.ts';
 import type { Member, World } from './types.ts';
 import { levelOf } from '../dungeon/levels.ts';
 
 export const QUERY_THE_SKULL = 'query-the-skull';
 
-export type SkullQuestion = 'map' | 'traps' | 'secrets' | 'land';
+export type SkullQuestion = 'map' | 'traps' | 'secrets' | LocateQuestion | 'land';
 
 /** How far around the party the dead describe the land, in hexes (Sam's call). */
 export const LAND_RADIUS = 3;
@@ -27,7 +29,7 @@ const no = (reason: string): TownResult => ({ ok: false, reason });
 
 /** The questions the dead can answer where the party stands. */
 export const skullQuestions = (w: World): SkullQuestion[] =>
-  w.dungeon ? ['map', 'traps', 'secrets'] : ['land'];
+  w.dungeon ? ['map', 'traps', 'secrets', ...LOCATE] : ['land'];
 
 /** Why the corpses here can't be questioned by this caster, or null if they can. */
 export function cannotQuery(w: World, m: Member): string | null {
@@ -80,6 +82,9 @@ const answers: Record<SkullQuestion, (w: World, data: GameData) => string> = {
         if (distance(w.position, { col, row }) <= LAND_RADIUS) w.visited.add(hexKey({ col, row }));
     return 'The dead describe the land about.';
   },
+  boss: (w, data) => locate(w, data, 'boss'),
+  vault: (w, data) => locate(w, data, 'vault'),
+  hoard: (w, data) => locate(w, data, 'hoard'),
 };
 
 /** Query the Skull: the corpses here answer the chosen questions, one per caster level. */
@@ -100,6 +105,8 @@ export function queryTheSkull(
   const open = skullQuestions(w);
   if (asked.length === 0 || asked.some((q) => !open.includes(q)))
     return no('Ask the dead something they can answer here.');
+  if (asked.filter(isLocate).length > 1)
+    return no('The dead can locate only one of the boss, the vault, or a hoard.');
   const level = characterLevel(caster.character.classes);
   if (asked.length > level)
     return no(

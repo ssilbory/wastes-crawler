@@ -21,3 +21,7 @@ export function healerView(w: World, data: GameData): HealerView | null {
   });
   return healers.length > 0 && fallen.length > 0 ? { healers, fallen } : null;
 }
+
+/** True when a Healer still has the Effort to revive someone here: worth asking before moving on. */
+export const reviveOffered = (view: HealerView | null): boolean =>
+  !!view && view.healers.some((h) => h.effortLeft > 0);

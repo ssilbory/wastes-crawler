@@ -10,7 +10,7 @@ import {
 } from '../../../src/game/world/healer.ts';
 import { characterSheet } from '../../../src/game/character/derived.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
-import { healerView } from '../../../src/render/healer-view.ts';
+import { healerView, reviveOffered } from '../../../src/render/healer-view.ts';
 import { data, member, world } from './helpers.ts';
 
 /** Fizzwick as a level-8 Priest of Death with Heal-1 and Revive the Fallen. */
@@ -101,6 +101,17 @@ describe('Revive the Fallen', () => {
     expect(w.fallen?.members).toEqual([]);
     expect(healerView(w, data)).toBeNull();
     expect(w.log.at(-1)).toMatch(/Fizzwick revives Snag, who lies unconscious\.$/);
+  });
+
+  it('asks before moving on only while a Healer has Effort to revive', () => {
+    const w = world();
+    expect(reviveOffered(healerView(w, data))).toBe(false);
+    const fizz = healer(w);
+    slainSnag(w);
+    expect(reviveOffered(healerView(w, data))).toBe(true);
+    fizz.effortDay = 2;
+    expect(reviveOffered(healerView(w, data))).toBe(false);
+    expect(reviveOffered(null)).toBe(false);
   });
 
   it('wakes the revived with 1 hit point when the night passes, untouched by it', () => {
