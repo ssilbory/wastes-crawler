@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { camp } from '../../../src/game/world/activities.ts';
-import { route, setDestination, suggestPlan } from '../../../src/game/world/plans.ts';
+import { headForTown, route, setDestination, suggestPlan } from '../../../src/game/world/plans.ts';
+import { regionMap } from '../../../src/game/world/region.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
 import { data, member, world } from './helpers.ts';
 
@@ -43,6 +44,30 @@ describe('destinations', () => {
     // A destination set before the party came here, hemmed in by water, has no route to draw.
     w.destination = { col: 6, row: 3 };
     expect(route(w, data)).toEqual([]);
+  });
+});
+
+describe('the nearest town', () => {
+  /** The whole region charted, as if on a trade-route map. */
+  const charted = (w: World) => {
+    const map = regionMap(data, w.region);
+    w.routes[w.region] = Array.from({ length: map.width * map.height }, (_, i) => {
+      return `${i % map.width},${Math.floor(i / map.width)}`;
+    });
+  };
+
+  it('heads for the town cheapest to reach, not the one the party stands in', () => {
+    const w = world();
+    expect(headForTown(w, data)).toBeNull();
+    expect(w.destination).toBeNull();
+    charted(w);
+    const name = headForTown(w, data);
+    expect(name).not.toBeNull();
+    expect(name).not.toBe('Rubblegate');
+    expect(w.destination).not.toBeNull();
+    w.position = { col: 4, row: 8 };
+    expect(headForTown(w, data)).toBe('Rubblegate');
+    expect(w.destination).toEqual({ col: 3, row: 8 });
   });
 });
 

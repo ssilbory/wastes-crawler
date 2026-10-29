@@ -14,6 +14,13 @@ import type { Member, World } from './types.ts';
 
 export const REVIVE = 'revive-the-fallen';
 
+/** Revive the Fallen as `cannotUseArt` names it. */
+export const REVIVE_ART = {
+  id: REVIVE,
+  name: 'Revive the Fallen',
+  unable: 'No one is able to revive the fallen.',
+};
+
 const no = (reason: string): TownResult => ({ ok: false, reason });
 
 /** After a fight, the members it killed lie where it was fought. */
@@ -58,11 +65,7 @@ export function reviveFallen(
   targetId: string,
 ): TownResult {
   const healer = w.members.find((m) => m.id === healerId);
-  const why = cannotUseArt(data, healer, {
-    id: REVIVE,
-    name: 'Revive the Fallen',
-    unable: 'No one is able to revive the fallen.',
-  });
+  const why = cannotUseArt(data, healer, REVIVE_ART);
   if (why) return no(why);
   const target = fallenHere(w).find((m) => m.id === targetId);
   if (!target) return no('Only those slain in the fight just won can be revived, where they fell.');

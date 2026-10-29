@@ -2,7 +2,8 @@
 // Necromancer Spells.md; Sam's call, docs/rules-adaptation.md, Necromancer spells outside fights):
 // below ground the dead can say where the level's boss waits, where its vault lies, or where its
 // caches of loot still lie, one of the three a casting. Each answer is a sentence giving the way
-// from the party in squares, and the squares named are marked on the automap.
+// from the party in squares, and the squares named are marked on the automap until the hoard there
+// is taken or its boss falls.
 import { cellKey, type Cell } from '../../rules/grid.ts';
 import type { Special } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
@@ -56,19 +57,50 @@ export function wayTo(from: Cell, to: Cell): string {
   return `${plural(a.n, 'square')} ${a.dir}${b ? ` and ${b.n} ${b.dir}` : ''}`;
 }
 
+type Underground = NonNullable<World['dungeon']>;
+
+const cachesOf = (data: GameData, s: Underground) =>
+  levelOf(data, s.dungeon, s.level).level.specials.filter((x): x is Cache => x.kind === 'cache');
+
+const keyOf = (s: Underground, c: Cache) => `${s.dungeon}/${s.level}/${cellKey(c.at)}`;
+
+/** Whether a boss still stands over its hoard: not taken, not beaten, its order not ended. */
+const standing = (w: World, s: Underground, boss: Cache) =>
+  !w.caches.includes(keyOf(s, boss)) &&
+  !w.beaten.includes(keyOf(s, boss)) &&
+  !(boss.order && orderEnded(w, boss.order));
+
+/** A square's mark gives way only to a weightier one: a boss over a vault over a hoard. */
+const WEIGHT: Record<LocateQuestion, number> = { hoard: 0, vault: 1, boss: 2 };
+
+/** The marks still worth drawing on this level's automap: hoards untaken, each boss's or its hoard's. */
+export function locatedMarks(
+  w: World,
+  data: GameData,
+): { key: string; x: number; y: number; what: LocateQuestion }[] {
+  const s = w.dungeon;
+  if (!s) return [];
+  const marks = s.located[s.level] ?? {};
+  return cachesOf(data, s).flatMap((c) => {
+    const what = marks[cellKey(c.at)];
+    if (!what || w.caches.includes(keyOf(s, c))) return [];
+    // A boss beaten leaves its hoard behind.
+    const now = what === 'boss' && !standing(w, s, c) ? 'hoard' : what;
+    return [{ key: cellKey(c.at), x: c.at.x, y: c.at.y, what: now }];
+  });
+}
+
 /** Answers one locating question, marking the squares it names on the automap. */
 export function locate(w: World, data: GameData, q: LocateQuestion): string {
-  const s = w.dungeon as NonNullable<World['dungeon']>;
-  const place = `${s.dungeon}/${s.level}`;
-  const caches = levelOf(data, s.dungeon, s.level).level.specials.filter(
-    (x): x is Cache => x.kind === 'cache',
-  );
-  const key = (c: Cache) => `${place}/${cellKey(c.at)}`;
-  const left = caches.filter((c) => !w.caches.includes(key(c)));
+  const s = w.dungeon as Underground;
+  const caches = cachesOf(data, s);
+  const left = caches.filter((c) => !w.caches.includes(keyOf(s, c)));
   const mark = (cells: Cache[]) => {
-    s.seen[s.level] = [
-      ...new Set([...(s.seen[s.level] ?? []), ...cells.map((c) => cellKey(c.at))]),
-    ];
+    const marks = (s.located[s.level] ??= {});
+    for (const c of cells) {
+      const was = marks[cellKey(c.at)];
+      if (!was || WEIGHT[q] > WEIGHT[was]) marks[cellKey(c.at)] = q;
+    }
   };
   const nearest = (cells: Cache[]) =>
     cells.reduce((a, b) =>
@@ -80,11 +112,7 @@ export function locate(w: World, data: GameData, q: LocateQuestion): string {
   if (q === 'boss') {
     const boss = bossCache(caches);
     if (!boss) return 'The dead know of no boss on this level.';
-    const standing =
-      !w.caches.includes(key(boss)) &&
-      !w.beaten.includes(key(boss)) &&
-      !(boss.order && orderEnded(w, boss.order));
-    if (!standing) return "The dead say this level's boss has already fallen.";
+    if (!standing(w, s, boss)) return "The dead say this level's boss has already fallen.";
     mark([boss]);
     return `The dead say this level's boss waits ${wayTo(s.at, boss.at)}.`;
   }

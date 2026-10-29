@@ -9,7 +9,7 @@ import { LootDiceSchema, ShopStateSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 import { ComponentTypeSchema } from './crafting-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 48;
+export const WORLD_SCHEMA_VERSION = 49;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -278,6 +278,8 @@ export const DungeonStateSchema = z.strictObject({
   sight: z.strictObject({ member: z.string().min(1), until: z.int().min(0) }).nullable(),
   /** Magical squares the party has sensed with it, by level, as "x,y". */
   sensed: z.record(IdSchema, z.array(z.string())),
+  /** What Query the Skull has said lies where, by level and cell (skull-locate.ts). */
+  located: z.record(IdSchema, z.record(z.string(), z.enum(['boss', 'vault', 'hoard']))),
 });
 export type DungeonState = z.infer<typeof DungeonStateSchema>;
 
@@ -290,6 +292,7 @@ export const DungeonChartSchema = DungeonStateSchema.pick({
   found: true,
   glimpsed: true,
   sensed: true,
+  located: true,
 }).extend({
   layout: z.string().min(1),
   traps: z.record(IdSchema, z.record(z.string(), z.literal('noticed'))),

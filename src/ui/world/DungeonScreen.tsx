@@ -45,6 +45,10 @@ import { getSettings } from '../settings-store.ts';
 import { isShortcut } from '../keys.ts';
 import { keyLabel } from '../../render/settings-view.ts';
 import { play } from '../sound.ts';
+import { nearestStairs } from '../../game/dungeon/walk.ts';
+import { useWalk } from './useWalk.ts';
+import { KeyHelp } from './KeyHelp.tsx';
+import { dungeonKeys } from '../../render/key-help.ts';
 
 /** What each remappable move does here; Search and the stairs are handled on their own. */
 const MOVES: Record<Exclude<KeyAction, 'search' | 'stairs'>, Move> = {
@@ -112,6 +116,17 @@ export function DungeonScreen(props: {
     setBump(r.ok ? null : r.reason);
     props.onChange();
   };
+  // Walking to a square: each step plays as a step forward; a stop says why, if it needs saying.
+  const walk = useWalk(w, (r) => {
+    if (r.kind === 'stopped') setBump(r.reason);
+    else {
+      setBump(null);
+      play('step');
+      setMotion({ kind: motionOf({ step: 'forward' }, true), n: (motion?.n ?? 0) + 1 });
+    }
+    props.onChange();
+  });
+  const stairsAway = !w.encounter && !walk.walking ? nearestStairs(w, data) : null;
   const trap = knownTrapAhead(w, data);
   const { level } = levelOf(data, s.dungeon, s.level);
   const stairs = stairsHere(w, data);
@@ -135,6 +150,7 @@ export function DungeonScreen(props: {
         </div>
         <span class="bar-actions">
           <PartyButtons onOpen={props.onOpen} />
+          <KeyHelp rows={dungeonKeys(getSettings())} />
           <BarMore>
             <button type="button" class="secondary" onClick={props.onExport}>
               Export save
@@ -215,6 +231,11 @@ export function DungeonScreen(props: {
                   )}
                 </div>
               )}
+              {stairsAway && (
+                <button type="button" onClick={() => walk.walkTo(stairsAway)}>
+                  Walk to the stairs
+                </button>
+              )}
               {stairsLabel && !w.encounter && (
                 <button type="button" aria-keyshortcuts={keysFor('stairs')} onClick={climb}>
                   {stairsLabel}
@@ -241,7 +262,12 @@ export function DungeonScreen(props: {
           {map && (
             <section class="panel" aria-label="Automap">
               <h3>Map</h3>
-              <Automap map={map} label={`Map of ${level.name}`} />
+              <Automap
+                map={map}
+                label={`Map of ${level.name}`}
+                onPick={w.encounter ? undefined : walk.walkTo}
+              />
+              {!w.encounter && <p class="hint">Click a square you've seen to walk there.</p>}
             </section>
           )}
           {!w.encounter && !revive.open && onSafeSquare(w, data) && (

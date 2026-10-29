@@ -44,7 +44,7 @@ test('climbs out of Grisk’s Hold, turns the warlord in, and keeps the seal', a
       notes: { 'vats-notes': 'burned', 'grisk-notes': 'kept' },
       dungeon: { dungeon: 'grisks-hold', level: 'hold-stockade', at: { x: 4, y: 9 }, facing: 's',
         seen: {}, turn: 0, steps: 0, found: {}, dug: {}, glimpsed: {}, traps: {}, read: {},
-        sight: null, sensed: {} },
+        sight: null, sensed: {}, located: {} },
     });
     for (const id of ['ashgate-rolls', 'cull-records', 'lieutenants-seal'])
       save.quests[id] = { status: 'done', step: 2, acceptedDay: 0 };

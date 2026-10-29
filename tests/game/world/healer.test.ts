@@ -10,7 +10,7 @@ import {
 } from '../../../src/game/world/healer.ts';
 import { characterSheet } from '../../../src/game/character/derived.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
-import { healerView, reviveOffered } from '../../../src/render/healer-view.ts';
+import { healerView, leavingWarning, reviveOffered } from '../../../src/render/healer-view.ts';
 import { data, member, world } from './helpers.ts';
 
 /** Fizzwick as a level-8 Priest of Death with Heal-1 and Revive the Fallen. */
@@ -89,7 +89,7 @@ describe('Revive the Fallen', () => {
     const snag = slainSnag(w);
     snag.pendingXp = 1;
     expect(healerView(w, data)).toEqual({
-      healers: [{ id: fizz.id, name: 'Fizzwick', effortLeft: 2 }],
+      healers: [{ id: fizz.id, name: 'Fizzwick', effortLeft: 2, unable: null }],
       fallen: [{ id: snag.id, name: 'Snag' }],
     });
     expect(reviveFallen(w, data, fizz.id, snag.id)).toEqual({ ok: true });
@@ -110,8 +110,23 @@ describe('Revive the Fallen', () => {
     slainSnag(w);
     expect(reviveOffered(healerView(w, data))).toBe(true);
     fizz.effortDay = 2;
+    expect(healerView(w, data)?.healers[0]?.unable).toBe('Fizzwick has no Effort left today.');
     expect(reviveOffered(healerView(w, data))).toBe(false);
     expect(reviveOffered(null)).toBe(false);
+  });
+
+  it('warns that the fallen are lost for good once the party moves on', () => {
+    const fallen = (...names: string[]) => ({
+      healers: [],
+      fallen: names.map((name) => ({ id: name, name })),
+    });
+    expect(leavingWarning(fallen('Snag'))).toBe('Once the party moves on, Snag is gone for good.');
+    expect(leavingWarning(fallen('Snag', 'Grukk'))).toBe(
+      'Once the party moves on, Snag and Grukk are gone for good.',
+    );
+    expect(leavingWarning(fallen('Snag', 'Grukk', 'Brom'))).toBe(
+      'Once the party moves on, Snag, Grukk and Brom are gone for good.',
+    );
   });
 
   it('wakes the revived with 1 hit point when the night passes, untouched by it', () => {
@@ -187,5 +202,8 @@ describe('Revive the Fallen', () => {
     expect(reviveFallen(v, plain, g.id, fallen.id)).toEqual(
       fail("Grukk can't use that art in armor."),
     );
+    // The panel says so too, and doesn't ask before moving on.
+    expect(healerView(v, plain)?.healers[0]?.unable).toBe("Grukk can't use that art in armor.");
+    expect(reviveOffered(healerView(v, plain))).toBe(false);
   });
 });

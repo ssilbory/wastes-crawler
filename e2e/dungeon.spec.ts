@@ -392,3 +392,51 @@ test('shows a hoard’s guards, the level’s boss, over its chest in the cells 
   await expect(hoard.locator('title')).toHaveText('A hoard');
   await expect(hoard.locator('svg.foe')).toHaveCount(0);
 });
+
+test('marks on the automap what the dead have located, until it is taken', async ({
+  page,
+}, testInfo) => {
+  await startAtBarrow(page);
+  await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
+  await edit(
+    page,
+    `save.encounter = null;
+     Object.assign(save.dungeon, {
+       dungeon: 'buried-waterworks', level: 'buried-waterworks-1', at: { x: 4, y: 2 }, facing: 'n',
+       located: { 'buried-waterworks-1': { '1,0': 'boss', '9,3': 'hoard' } },
+     });`,
+  );
+  const map = page.locator('svg.automap');
+  await expect(map.locator('.located.boss title')).toHaveText("The level's boss");
+  await expect(map.locator('.located.hoard title')).toHaveText('A hoard');
+  await map.screenshot({ path: testInfo.outputPath('located.png') });
+  await edit(page, `save.caches.push('buried-waterworks/buried-waterworks-1/9,3');`);
+  await expect(map.locator('.located')).toHaveCount(1);
+});
+
+test('walks to a square clicked on the automap, and to the stairs', async ({ page }) => {
+  await startAtBarrow(page);
+  await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
+  // The whole upper level mapped, as on a return visit.
+  await edit(
+    page,
+    `save.encounter = null;
+     save.dungeon.seen['barrow-upper'] = Array.from({ length: 100 }, (_, i) => (i % 10) + ',' + Math.floor(i / 10));`,
+  );
+  const map = page.locator('svg.automap');
+  const box = (await map.boundingBox()) as { width: number };
+  const scale = box.width / 164;
+  // Square 4,8: two units of margin, then 16 a square.
+  await map.click({ position: { x: (2 + 4.5 * 16) * scale, y: (2 + 8.5 * 16) * scale } });
+  await expect(page.locator('.world-bar')).toContainText('facing east');
+  const at = () =>
+    page.evaluate((key) => {
+      const s = JSON.parse(localStorage.getItem(key) as string).dungeon;
+      return `${s.at.x},${s.at.y}`;
+    }, WORLD_KEY);
+  await expect.poll(at).toBe('4,8');
+  // The nearest stairs from here are the way out.
+  await page.getByRole('button', { name: 'Walk to the stairs' }).click();
+  await expect.poll(at, { timeout: 15_000 }).toBe('1,8');
+  await expect(page.getByRole('button', { name: 'Climb out of The Old Barrow' })).toBeVisible();
+});

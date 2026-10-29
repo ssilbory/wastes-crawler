@@ -275,4 +275,17 @@ export const WORLD_MIGRATIONS: Migrations = {
   },
   // Version 48 adds shop stock and salvage (Sam's calls): nothing sold out, no scrap yet.
   47: (raw) => ({ ...raw, schemaVersion: 48, shops: {}, scrap: {} }),
+  // Version 49 adds what Query the Skull has located, underground and on charts: nothing yet.
+  48: (raw) => {
+    const d = raw.dungeon as Raw | null | undefined;
+    const charted = raw.charted as Record<string, Raw>;
+    return {
+      ...raw,
+      schemaVersion: 49,
+      dungeon: d && { ...d, located: {} },
+      charted: Object.fromEntries(
+        Object.entries(charted).map(([id, c]) => [id, { ...c, located: {} }]),
+      ),
+    };
+  },
 };

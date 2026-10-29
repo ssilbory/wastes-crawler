@@ -4,6 +4,7 @@ import { hexCells } from '../../src/render/hex-view.ts';
 import {
   captiveHomes,
   questStatus,
+  questTarget,
   questTargets,
   rewardText,
   townName,
@@ -26,6 +27,11 @@ describe('quest view', () => {
       { col: 17, row: 4 },
       { col: 17, row: 4 },
     ]);
+    expect(questTarget(w, data, 'letters')).toEqual({ col: 17, row: 4 });
+    expect(questTarget(w, data, 'no-such-quest')).toBeNull();
+    w.quests.done = { status: 'done', step: 2, acceptedDay: 0 };
+    expect(questTarget(w, data, 'done')).toBeNull();
+    delete w.quests.done;
     const cells = hexCells(regionMap(data, w.region), w, [], 10, questTargets(w, data));
     expect(cells.find((c) => c.key === '6,12')).toMatchObject({ quest: true, terrain: null });
     expect(cells.filter((c) => c.quest)).toHaveLength(2);

@@ -20,6 +20,7 @@ import { itemStats } from '../../render/gear-view.ts';
 import { crowns, entryText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import { cue } from '../sound.ts';
+import { ConfirmButton } from '../confirm.tsx';
 import { SellLootForm } from './SellLootForm.tsx';
 import type { Act } from './TownScreen.tsx';
 
@@ -172,6 +173,8 @@ export function ShopTab(props: { world: World; act: Act }) {
                 name={entry.id}
                 held={entry.quantity}
                 each={sellPrice(w, data, entry)}
+                // Gear in use asks first, so a slip doesn't sell the armor off a back.
+                ask={entry.location !== 'stowed'}
                 onSell={(n) => props.act(() => sell(w, data, m.id, i, n))}
               />
               {others.length + porters.length > 0 && (
@@ -232,6 +235,8 @@ function SellButton(props: {
   name: string;
   held: number;
   each: number;
+  /** Asks before selling, as for gear in use. */
+  ask: boolean;
   onSell: (quantity: number) => void;
 }) {
   const [count, setCount] = useState(1);
@@ -248,9 +253,9 @@ function SellButton(props: {
           onInput={(e) => setCount(Number((e.target as HTMLInputElement).value))}
         />
       )}
-      <button type="button" onClick={() => props.onSell(n)}>
+      <ConfirmButton ask={props.ask} confirm="Sell for good" onConfirm={() => props.onSell(n)}>
         Sell{n > 1 ? ` ${n}` : ''} ({crowns(toTenths(props.each * n))})
-      </button>
+      </ConfirmButton>
     </>
   );
 }

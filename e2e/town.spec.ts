@@ -50,6 +50,16 @@ test('rests at the inn, shops, and changes the party at the tavern', async ({ pa
   await page.getByRole('spinbutton', { name: 'How many' }).fill('3');
   await page.getByRole('button', { name: 'Buy', exact: true }).click();
   await expect(pack).toContainText('Torch ×3 (stowed)');
+  // Gear in use asks before it sells (Sam's ask).
+  const before = await purse(page);
+  const inUse = pack
+    .getByRole('listitem')
+    .filter({ hasText: /\((worn|readied)\)/ })
+    .first();
+  await inUse.getByRole('button', { name: /^Sell / }).click();
+  await expect(inUse.getByRole('button', { name: 'Sell for good' })).toBeVisible();
+  await inUse.getByRole('button', { name: 'Keep' }).click();
+  expect(await purse(page)).toBe(before);
   await page.screenshot({ path: testInfo.outputPath('town-shop.png'), fullPage: true });
 
   await page.getByRole('tab', { name: 'Tavern' }).click();

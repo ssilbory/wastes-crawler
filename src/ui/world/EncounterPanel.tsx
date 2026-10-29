@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { useThreat } from './useThreat.ts';
 import { bluff, giveCountersign, presentAuthority } from '../../game/world/orders.ts';
 import { acceptBeast, beastRefusal, handlers } from '../../game/world/beasts.ts';
 import { acceptOffer, bribePrice, canParley, parley } from '../../game/world/parley.ts';
@@ -32,6 +33,7 @@ export function EncounterPanel(props: {
   const keepers = handlers(w, data);
   const [handler, setHandler] = useState('');
   const [message, setMessage] = useState<string | null>(null);
+  const threat = useThreat(w);
   if (!e) return null;
   const order = orderChoices(w, data);
   // Each kind of speech goes to whoever in the party is best at it.
@@ -53,6 +55,9 @@ export function EncounterPanel(props: {
       {/* Only what changes is read out: the meeting's text as a parley moves it on, and a refusal. */}
       <p aria-live="polite">{e.text}</p>
       <KnownFoes foes={knownFoes(w, data, e.enemies)} />
+      <p class="hint threat" aria-live="polite">
+        {threat ?? 'Weighing the odds…'}
+      </p>
       <div class="actions">
         <button type="button" class="create" onClick={props.onFight}>
           {e.hostile ? 'Fight' : 'Attack them'}

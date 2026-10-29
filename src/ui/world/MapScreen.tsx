@@ -2,7 +2,7 @@ import { foundSitesIn } from '../../game/world/hidden-sites.ts';
 import { useMemo, useState } from 'preact/hooks';
 import type { World } from '../../game/world/types.ts';
 import { describeDate } from '../../game/world/calendar.ts';
-import { route, setDestination, suggestPlan } from '../../game/world/plans.ts';
+import { headForTown, route, setDestination, suggestPlan } from '../../game/world/plans.ts';
 import { regionMap } from '../../game/world/region.ts';
 import { hexKey } from '../../rules/hex.ts';
 import { hexCells, mapPixels } from '../../render/hex-view.ts';
@@ -35,6 +35,8 @@ import { NpcPanel } from './NpcPanel.tsx';
 import { PopOut } from './PopOut.tsx';
 import { BarMore } from './BarMore.tsx';
 import { useKeys } from '../keys.ts';
+import { KeyHelp } from './KeyHelp.tsx';
+import { MAP_KEYS } from '../../render/key-help.ts';
 import { openQuests, QuestLog } from './QuestLog.tsx';
 import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
 import { JournalPanel } from './JournalPanel.tsx';
@@ -46,11 +48,15 @@ import { entrancesIn, wayDownHere } from '../../game/dungeon/ruins.ts';
 import type { QuarterPlan } from '../../game/world/types.ts';
 import { grovesHere } from '../../game/world/groves.ts';
 
+const stampOf = (w: World) => `${w.day}/${w.quarter}/${hexKey(w.position)}`;
+
 export function MapScreen(props: {
   world: World;
   version: number;
   onChange: () => void;
   onPass: (plan: QuarterPlan) => void;
+  /** Travels on toward the destination (travel-on.ts); returns why it stopped. */
+  onTravel: () => string;
   onFight: () => void;
   onLeave: () => void;
   onTown: () => void;
@@ -68,6 +74,18 @@ export function MapScreen(props: {
   const [plan, setPlan] = useState<{ version: number; plan: QuarterPlan } | null>(null);
   const current = plan?.version === props.version ? plan.plan : suggestPlan(w, data);
   const choose = (p: QuarterPlan) => setPlan({ version: props.version, plan: p });
+  // Why Travel on stopped, shown until the party is somewhere else or time moves on.
+  const [travelled, setTravelled] = useState<{ at: string; text: string } | null>(null);
+  const stamp = stampOf(w);
+  const travel = () => setTravelled({ text: props.onTravel(), at: stampOf(w) });
+  const nearestTown = () => {
+    const name = headForTown(w, data);
+    setTravelled({
+      text: name ? `Heading for ${name}.` : 'No known town is in reach.',
+      at: stampOf(w),
+    });
+    props.onChange();
+  };
   const able = w.members.filter((m) => !m.dead && m.character.hp.current > 0);
   const hike = () => choose(suggestPlan(w, data, 'hike'));
   const camp = () => choose(suggestPlan(w, data, 'camp'));
@@ -104,7 +122,7 @@ export function MapScreen(props: {
   const here = town?.name ?? map.terrainAt(w.position).name;
   const way = wayDownHere(w, data);
   const road = map.exitAt(w.position);
-  // H and C pick the plan, Q plays the quarter out, T visits the town. Space plays the quarter out
+  // G travels on, H and C pick the plan, Q plays the quarter out, T visits the town. Space plays the quarter out
   // toward a targeted hex, hiking or camping as planned (Sam's call); with no hex targeted, it
   // visits the town or goes down the way here. Only while the quarter's plan is on show, so never
   // over an encounter or on a coach.
@@ -112,6 +130,7 @@ export function MapScreen(props: {
   const pass = () => props.onPass(current);
   const targeted = w.destination !== null;
   useKeys({
+    g: planning && targeted ? travel : undefined,
     h: planning && targeted ? hike : undefined,
     c: planning ? camp : undefined,
     q: planning ? pass : undefined,
@@ -166,6 +185,7 @@ export function MapScreen(props: {
             </button>
           )}
           <PartyButtons onOpen={props.onOpen} />
+          <KeyHelp rows={MAP_KEYS} />
           <BarMore>
             <button type="button" class="secondary" onClick={props.onExport}>
               Export save
@@ -221,6 +241,9 @@ export function MapScreen(props: {
               onHike={hike}
               onCamp={camp}
               onPass={pass}
+              onTravel={travel}
+              onNearestTown={nearestTown}
+              travelled={travelled?.at === stamp ? travelled.text : null}
               spacePlays={targeted}
             />
           )}

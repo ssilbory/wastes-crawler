@@ -37,6 +37,7 @@ export function chartDungeon(w: World, data: GameData): void {
     glimpsed: structuredClone(s.glimpsed),
     traps,
     sensed: structuredClone(s.sensed),
+    located: structuredClone(s.located),
   };
 }
 
@@ -51,5 +52,6 @@ export function recall(w: World, d: Dungeon) {
     glimpsed: known?.glimpsed ?? {},
     traps: known?.traps ?? {},
     sensed: known?.sensed ?? {},
+    located: known?.located ?? {},
   });
 }

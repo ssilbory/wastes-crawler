@@ -1,6 +1,7 @@
 import {
   automapLegend,
   LEGEND_HEIGHT,
+  LOCATED_ART,
   MAP_CELL,
   type Automap as AutomapData,
   type AutomapLegend,
@@ -8,19 +9,36 @@ import {
 import { furnitureParts } from '../../render/furniture-art.ts';
 
 /**
- * The dungeon automap: the cells seen on this level, their walls and doors, magic sensed, and the
- * party's arrow, with a scale and a compass under it (docs/presentation-plan.md, V4).
+ * The dungeon automap: the cells seen on this level, their walls and doors, magic sensed, what the
+ * dead have located, and the party's arrow, with a scale and a compass under it (docs/presentation-plan.md, V4).
  */
-export function Automap(props: { map: AutomapData; label: string }) {
-  const { map } = props;
+export function Automap(props: {
+  map: AutomapData;
+  label: string;
+  /** A square clicked, to walk to (useWalk.ts). */
+  onPick?: ((cell: { x: number; y: number }) => void) | undefined;
+}) {
+  const { map, onPick } = props;
   const legend = automapLegend(map);
   const end = legend.blocks.at(-1) as AutomapLegend['blocks'][number];
   return (
     <svg
-      class="automap"
       viewBox={`-2 -2 ${map.width + 4} ${map.height + LEGEND_HEIGHT + 4}`}
       role="img"
       aria-label={props.label}
+      class={onPick ? 'automap pickable' : 'automap'}
+      onClick={
+        onPick &&
+        ((e) => {
+          // From the click to the map's own units: the view box starts 2 units out.
+          const box = (e.currentTarget as SVGSVGElement).getBoundingClientRect();
+          const scale = (map.width + 4) / box.width;
+          const x = Math.floor(((e.clientX - box.left) * scale - 2) / MAP_CELL);
+          const y = Math.floor(((e.clientY - box.top) * scale - 2) / MAP_CELL);
+          if (x >= 0 && y >= 0 && x * MAP_CELL < map.width && y * MAP_CELL < map.height)
+            onPick({ x, y });
+        })
+      }
     >
       {map.cells.map((c) => (
         <rect
@@ -45,6 +63,20 @@ export function Automap(props: { map: AutomapData; label: string }) {
         >
           <title>A working of magic</title>
         </circle>
+      ))}
+      {map.located.map((m) => (
+        <svg
+          key={m.key}
+          class={`located ${m.what}`}
+          x={m.x * MAP_CELL + 2}
+          y={m.y * MAP_CELL + 2}
+          width={MAP_CELL - 4}
+          height={MAP_CELL - 4}
+          viewBox="0 0 12 12"
+        >
+          <title>{LOCATED_ART[m.what].title}</title>
+          <path d={LOCATED_ART[m.what].d} fill-rule="evenodd" />
+        </svg>
       ))}
       {map.furniture.map((f) => (
         <svg
