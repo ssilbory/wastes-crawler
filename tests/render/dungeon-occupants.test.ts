@@ -29,6 +29,7 @@ function at(
     read: {},
     sight: null,
     sensed: {},
+    located: {},
   };
   w.light.lit = 'torch';
   w.light.torch = 6;

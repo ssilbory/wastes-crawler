@@ -392,3 +392,24 @@ test('shows a hoard’s guards, the level’s boss, over its chest in the cells 
   await expect(hoard.locator('title')).toHaveText('A hoard');
   await expect(hoard.locator('svg.foe')).toHaveCount(0);
 });
+
+test('marks on the automap what the dead have located, until it is taken', async ({
+  page,
+}, testInfo) => {
+  await startAtBarrow(page);
+  await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
+  await edit(
+    page,
+    `save.encounter = null;
+     Object.assign(save.dungeon, {
+       dungeon: 'buried-waterworks', level: 'buried-waterworks-1', at: { x: 4, y: 2 }, facing: 'n',
+       located: { 'buried-waterworks-1': { '1,0': 'boss', '9,3': 'hoard' } },
+     });`,
+  );
+  const map = page.locator('svg.automap');
+  await expect(map.locator('.located.boss title')).toHaveText("The level's boss");
+  await expect(map.locator('.located.hoard title')).toHaveText('A hoard');
+  await map.screenshot({ path: testInfo.outputPath('located.png') });
+  await edit(page, `save.caches.push('buried-waterworks/buried-waterworks-1/9,3');`);
+  await expect(map.locator('.located')).toHaveCount(1);
+});

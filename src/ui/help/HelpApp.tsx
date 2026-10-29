@@ -45,7 +45,7 @@ export function HelpApp() {
           <li>
             Bring a necromancer: Raise Corpse animates the dead, and Query the Skull lets you
             question corpses after a fight. In a dungeon they can also say where the level's boss,
-            vault, or hoards lie.
+            vault, or hoards lie, and mark them on the automap.
           </li>
           <li>
             Bring a ranger and bind a beast companion (Bind Companion), or win over a beast with

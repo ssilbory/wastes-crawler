@@ -21,6 +21,7 @@ function at(x: number, y: number, facing: DungeonState['facing'], seen: string[]
     dug: {},
     sight: null,
     sensed: {},
+    located: {},
     glimpsed: {},
     traps: {},
     read: {},

@@ -23,6 +23,7 @@ function at(x: number, y: number, facing: DungeonState['facing']): World {
     read: {},
     sight: null,
     sensed: {},
+    located: {},
   };
   w.light.lit = 'torch';
   w.light.torch = 6;

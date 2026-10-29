@@ -1,7 +1,7 @@
 import { useState } from 'preact/hooks';
 import { reviveFallen } from '../../game/world/healer.ts';
 import type { World } from '../../game/world/types.ts';
-import { healerView, reviveOffered } from '../../render/healer-view.ts';
+import { healerView, leavingWarning, reviveOffered } from '../../render/healer-view.ts';
 import { data } from '../builder/data.ts';
 import { PopOut } from './PopOut.tsx';
 
@@ -23,10 +23,12 @@ export function HealerPanel(props: { world: World; onChange: () => void; onLeave
           <p>
             <strong>{h.name}</strong>: {h.effortLeft} Effort left today
           </p>
+          {h.unable && <p class="hint">{h.unable}</p>}
           {view.fallen.map((f) => (
             <button
               key={f.id}
               type="button"
+              disabled={!!h.unable}
               onClick={() => {
                 const r = reviveFallen(w, data, h.id, f.id);
                 setMessage(r.ok ? null : r.reason);
@@ -40,11 +42,14 @@ export function HealerPanel(props: { world: World; onChange: () => void; onLeave
       ))}
       {message && <p class="bump">{message}</p>}
       {props.onLeave && (
-        <div class="actions">
-          <button type="button" class="secondary" onClick={props.onLeave}>
-            Not now
-          </button>
-        </div>
+        <>
+          <p class="bump">{leavingWarning(view)}</p>
+          <div class="actions">
+            <button type="button" class="secondary" onClick={props.onLeave}>
+              Not now
+            </button>
+          </div>
+        </>
       )}
     </section>
   );

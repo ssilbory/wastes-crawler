@@ -100,6 +100,7 @@ export function enterDungeon(w: World, data: GameData): TownResult {
     read: {},
     sight: null,
     sensed: known.sensed,
+    located: known.located,
   };
   note(w, `The party ${goesDown(data, d.id) ? 'goes down into' : 'enters'} ${d.name}.`);
   dismountForDungeon(w);

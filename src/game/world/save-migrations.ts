@@ -273,4 +273,17 @@ export const WORLD_MIGRATIONS: Migrations = {
       benched: fresh(raw.benched),
     };
   },
+  // Version 48 adds what Query the Skull has located, underground and on charts: nothing yet.
+  47: (raw) => {
+    const d = raw.dungeon as Raw | null | undefined;
+    const charted = raw.charted as Record<string, Raw>;
+    return {
+      ...raw,
+      schemaVersion: 48,
+      dungeon: d && { ...d, located: {} },
+      charted: Object.fromEntries(
+        Object.entries(charted).map(([id, c]) => [id, { ...c, located: {} }]),
+      ),
+    };
+  },
 };

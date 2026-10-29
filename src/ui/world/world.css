@@ -163,6 +163,14 @@
   opacity: 0.85;
 }
 
+.automap .located {
+  fill: #e0b84a;
+}
+
+.automap .located.boss {
+  fill: #e8e1d2;
+}
+
 .automap .party {
   fill: var(--error);
 }

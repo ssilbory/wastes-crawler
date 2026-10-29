@@ -8,6 +8,7 @@ import { FACINGS, type Facing } from '../rules/grid.ts';
 import type { CellKind } from '../data/dungeon-map.ts';
 import type { Furniture } from '../data/schemas/index.ts';
 import { levelOf } from '../game/dungeon/levels.ts';
+import { locatedMarks } from '../game/world/skull-locate.ts';
 
 export const MAP_CELL = 16;
 
@@ -34,6 +35,8 @@ export interface Automap {
   lines: AutomapLine[];
   /** Magical squares sensed with Apprehending the Arcane Form. */
   sensed: { key: string; x: number; y: number }[];
+  /** What Query the Skull has located, still there to find. */
+  located: ReturnType<typeof locatedMarks>;
   /** Furniture on cells the party has seen (docs/presentation-plan.md, V4). */
   furniture: { key: string; x: number; y: number; kind: Furniture['kind'] }[];
   /** The party's arrow as SVG polygon points. */
@@ -111,12 +114,30 @@ export function automap(w: World, data: GameData, size = MAP_CELL): Automap | nu
       const [x, y] = key.split(',').map(Number) as [number, number];
       return { key, x, y };
     }),
+    located: locatedMarks(w, data),
     party: arrow(s.at.x, s.at.y, s.facing, size),
     furniture: (level.furniture ?? [])
       .filter((f) => seen.has(`${f.at.x},${f.at.y}`))
       .map((f) => ({ key: `${f.at.x},${f.at.y}`, x: f.at.x, y: f.at.y, kind: f.kind })),
   };
 }
+
+/**
+ * The marks for what Query the Skull located, drawn even-odd in a 12-unit box: a skull for the
+ * boss, an arched door with a keyhole for a vault, a chest for a hoard.
+ */
+export const LOCATED_ART: Record<Automap['located'][number]['what'], { d: string; title: string }> =
+  {
+    boss: {
+      d: 'M6 1a5 5 0 0 1 5 5v2H9v3H3V8H1V6a5 5 0 0 1 5-5ZM3.5 5.5h2v2h-2ZM6.5 5.5h2v2h-2Z',
+      title: "The level's boss",
+    },
+    vault: { d: 'M2 11V5a4 4 0 0 1 8 0v6ZM5 5h2v4H5Z', title: 'A vault' },
+    hoard: {
+      d: 'M1 5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1H1ZM1 7h10v4H1ZM5 6h2v2H5Z',
+      title: 'A hoard',
+    },
+  };
 
 /** A dungeon cell is 10 feet across (docs/rules-adaptation.md, Dungeon exploration: Turns). */
 export const CELL_FEET = 10;

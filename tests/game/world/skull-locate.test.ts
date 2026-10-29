@@ -4,7 +4,8 @@ import { enterDungeon } from '../../../src/game/dungeon/explore.ts';
 import { dungeonOf } from '../../../src/game/dungeon/levels.ts';
 import { enterRegion } from '../../../src/game/world/enter-region.ts';
 import { leaveCorpses } from '../../../src/game/world/necromancy.ts';
-import { bossCache, isLocate, wayTo } from '../../../src/game/world/skull-locate.ts';
+import { WORLD_MIGRATIONS } from '../../../src/game/world/save-migrations.ts';
+import { bossCache, isLocate, locatedMarks, wayTo } from '../../../src/game/world/skull-locate.ts';
 import { queryTheSkull, skullQuestions } from '../../../src/game/world/skull.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
 import { below, place, state } from '../dungeon/helpers.ts';
@@ -35,7 +36,7 @@ function waterworks(): { w: World; m: Member } {
 }
 
 const lastNote = (w: World) => (w.log.at(-1) ?? '').replace(/^Day \d+, \w+: /, '');
-const seen = (w: World) => state(w).seen['buried-waterworks-1'] ?? [];
+const marks = (w: World) => state(w).located['buried-waterworks-1'];
 const fail = (reason: string) => ({ ok: false, reason });
 
 describe('Query the Skull: locating', () => {
@@ -50,17 +51,15 @@ describe('Query the Skull: locating', () => {
     const { w, m } = waterworks();
     expect(queryTheSkull(w, data, m.id, ['boss'])).toEqual({ ok: true });
     expect(lastNote(w)).toBe("The dead say this level's boss waits 2 squares north and 3 west.");
-    expect(seen(w)).toContain('1,0');
-    expect(seen(w)).not.toContain('9,3');
+    expect(marks(w)).toEqual({ '1,0': 'boss' });
   });
 
   it('says when the boss has already fallen, marking nothing', () => {
     const { w, m } = waterworks();
     w.beaten.push('buried-waterworks/buried-waterworks-1/1,0');
-    const before = seen(w).length;
     expect(queryTheSkull(w, data, m.id, ['boss'])).toEqual({ ok: true });
     expect(lastNote(w)).toBe("The dead say this level's boss has already fallen.");
-    expect(seen(w)).toHaveLength(before);
+    expect(marks(w)).toBeUndefined();
   });
 
   it('knows of no boss on a level without guarded hoards', () => {
@@ -104,7 +103,7 @@ describe('Query the Skull: locating', () => {
     expect(lastNote(w)).toBe(
       'The dead tell of 2 hoards on this level, the nearest 2 squares north and 3 west.',
     );
-    expect(seen(w)).toEqual(expect.arrayContaining(['1,0', '9,3']));
+    expect(marks(w)).toEqual({ '1,0': 'hoard', '9,3': 'hoard' });
   });
 
   it('leaves out hoards already taken', () => {
@@ -138,7 +137,7 @@ describe('Query the Skull: locating', () => {
     leaveCorpses(w, data, [['thug-or-militia']]);
     expect(queryTheSkull(w, data, m.id, ['vault'])).toEqual({ ok: true });
     expect(lastNote(w)).toBe(`The dead say the vault lies ${wayTo(s.at, vault.at)}.`);
-    expect(s.seen[s.level]).toContain(`${vault.at.x},${vault.at.y}`);
+    expect(s.located[s.level]).toEqual({ [`${vault.at.x},${vault.at.y}`]: 'vault' });
   });
 
   it('asks only one locating question a casting, beside the others', () => {
@@ -148,6 +147,54 @@ describe('Query the Skull: locating', () => {
     );
     expect(m.spellsCast).toBe(0);
     expect(queryTheSkull(w, data, m.id, ['map', 'boss', 'traps'])).toEqual({ ok: true });
+  });
+});
+
+describe('locatedMarks', () => {
+  /** Asks again over fresh corpses, with the spell not yet cast today. */
+  const ask = (w: World, m: Member, q: 'boss' | 'hoard') => {
+    w.corpses = { ...(w.corpses as NonNullable<World['corpses']>), queried: false };
+    m.spellsCast = 0;
+    expect(queryTheSkull(w, data, m.id, [q])).toEqual({ ok: true });
+  };
+
+  it('keeps the weightier mark on a square named twice', () => {
+    const { w, m } = waterworks();
+    ask(w, m, 'hoard');
+    ask(w, m, 'boss');
+    expect(marks(w)).toEqual({ '1,0': 'boss', '9,3': 'hoard' });
+    ask(w, m, 'hoard');
+    expect(marks(w)).toEqual({ '1,0': 'boss', '9,3': 'hoard' });
+  });
+
+  it('draws marks until the hoard is taken, and a beaten boss as its hoard', () => {
+    const { w, m } = waterworks();
+    ask(w, m, 'hoard');
+    ask(w, m, 'boss');
+    expect(locatedMarks(w, data)).toEqual([
+      { key: '1,0', x: 1, y: 0, what: 'boss' },
+      { key: '9,3', x: 9, y: 3, what: 'hoard' },
+    ]);
+    w.beaten.push('buried-waterworks/buried-waterworks-1/1,0');
+    w.caches.push('buried-waterworks/buried-waterworks-1/9,3');
+    expect(locatedMarks(w, data)).toEqual([{ key: '1,0', x: 1, y: 0, what: 'hoard' }]);
+    w.caches.push('buried-waterworks/buried-waterworks-1/1,0');
+    expect(locatedMarks(w, data)).toEqual([]);
+  });
+
+  it('has none above ground or on a level never asked of', () => {
+    expect(locatedMarks(world(), data)).toEqual([]);
+    expect(locatedMarks(below(), data)).toEqual([]);
+  });
+
+  it('gives older saves nothing located, underground or charted', () => {
+    const up = WORLD_MIGRATIONS[47] as (raw: Record<string, unknown>) => Record<string, unknown>;
+    expect(up({ schemaVersion: 47, dungeon: { seen: {} }, charted: { a: { seen: {} } } })).toEqual({
+      schemaVersion: 48,
+      dungeon: { seen: {}, located: {} },
+      charted: { a: { seen: {}, located: {} } },
+    });
+    expect(up({ schemaVersion: 47, dungeon: null, charted: {} })).toMatchObject({ dungeon: null });
   });
 });
 

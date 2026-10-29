@@ -83,6 +83,7 @@ test('lets the party wave the revive popup away, still offering it in the dock',
      save.fallen = { at: save.region + '/' + save.position.col + ',' + save.position.row, members: [snag.id] };`,
   );
   const ask = page.getByRole('dialog', { name: 'Revive the Fallen' });
+  await expect(ask).toContainText('Once the party moves on, Snag is gone for good.');
   await ask.getByRole('button', { name: 'Not now' }).click();
   await expect(ask).toHaveCount(0);
   const panel = page.getByRole('region', { name: 'Revive the Fallen' });
@@ -90,6 +91,29 @@ test('lets the party wave the revive popup away, still offering it in the dock',
   await expect(panel.getByRole('button', { name: 'Not now' })).toHaveCount(0);
   await panel.getByRole('button', { name: 'Revive Snag' }).click();
   await expect(panel).toHaveCount(0);
+});
+
+test('says why a Healer without Effort cannot revive, and does not ask', async ({ page }) => {
+  await begin(page);
+  await edit(
+    page,
+    `const fizz = save.members.find((m) => m.character.name === 'Fizzwick');
+     fizz.effortDay = 2;
+     Object.assign(fizz.character, {
+       classes: { current: 'healer-partial-mage', levels: { 'healer-partial-mage': 8 } },
+       spells: { known: [], prepared: [] },
+       arts: ['healing-touch', 'revive-the-fallen'],
+     });
+     fizz.character.skills.heal = 1;
+     const snag = save.members.find((m) => m.character.name === 'Snag');
+     snag.dead = true;
+     snag.character.hp.current = 0;
+     save.fallen = { at: save.region + '/' + save.position.col + ',' + save.position.row, members: [snag.id] };`,
+  );
+  const panel = page.getByRole('region', { name: 'Revive the Fallen' });
+  await expect(panel).toContainText('Fizzwick has no Effort left today.');
+  await expect(panel.getByRole('button', { name: 'Revive Snag' })).toBeDisabled();
+  await expect(page.getByRole('dialog', { name: 'Revive the Fallen' })).toHaveCount(0);
 });
 
 test('purges an ally of Frailty, spending Effort win or lose', async ({ page }) => {

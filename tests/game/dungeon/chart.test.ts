@@ -26,6 +26,7 @@ describe('charts (docs/rules-adaptation.md, Dungeon exploration: Charts)', () =>
     s.found = { 'barrow-upper': ['1,1,n'] };
     s.glimpsed = { 'barrow-upper': ['1,1,n'] };
     s.sensed = { 'barrow-upper': ['2,2'] };
+    s.located = { 'barrow-upper': { '3,1': 'hoard' } };
     s.dug = { 'barrow-upper': ['1,2,w'] };
     s.read = { 'barrow-upper': ['3,3'] };
     s.traps = { 'barrow-upper': { '4,4': 'disarmed', '5,5': 'noticed' } };
@@ -38,6 +39,7 @@ describe('charts (docs/rules-adaptation.md, Dungeon exploration: Charts)', () =>
       // A disarmed trap is remembered, and set again.
       traps: { 'barrow-upper': { '4,4': 'noticed', '5,5': 'noticed' } },
       sensed: { 'barrow-upper': ['2,2'] },
+      located: { 'barrow-upper': { '3,1': 'hoard' } },
     });
     w.quarter = 0;
     below(w);
@@ -45,6 +47,7 @@ describe('charts (docs/rules-adaptation.md, Dungeon exploration: Charts)', () =>
       seen,
       found: { 'barrow-upper': ['1,1,n'] },
       traps: { 'barrow-upper': { '4,4': 'noticed', '5,5': 'noticed' } },
+      located: { 'barrow-upper': { '3,1': 'hoard' } },
       // Dug passages close and messages wait to be read again.
       dug: {},
       read: {},

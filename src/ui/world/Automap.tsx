@@ -1,6 +1,7 @@
 import {
   automapLegend,
   LEGEND_HEIGHT,
+  LOCATED_ART,
   MAP_CELL,
   type Automap as AutomapData,
   type AutomapLegend,
@@ -8,8 +9,8 @@ import {
 import { furnitureParts } from '../../render/furniture-art.ts';
 
 /**
- * The dungeon automap: the cells seen on this level, their walls and doors, magic sensed, and the
- * party's arrow, with a scale and a compass under it (docs/presentation-plan.md, V4).
+ * The dungeon automap: the cells seen on this level, their walls and doors, magic sensed, what the
+ * dead have located, and the party's arrow, with a scale and a compass under it (docs/presentation-plan.md, V4).
  */
 export function Automap(props: { map: AutomapData; label: string }) {
   const { map } = props;
@@ -45,6 +46,20 @@ export function Automap(props: { map: AutomapData; label: string }) {
         >
           <title>A working of magic</title>
         </circle>
+      ))}
+      {map.located.map((m) => (
+        <svg
+          key={m.key}
+          class={`located ${m.what}`}
+          x={m.x * MAP_CELL + 2}
+          y={m.y * MAP_CELL + 2}
+          width={MAP_CELL - 4}
+          height={MAP_CELL - 4}
+          viewBox="0 0 12 12"
+        >
+          <title>{LOCATED_ART[m.what].title}</title>
+          <path d={LOCATED_ART[m.what].d} fill-rule="evenodd" />
+        </svg>
       ))}
       {map.furniture.map((f) => (
         <svg
