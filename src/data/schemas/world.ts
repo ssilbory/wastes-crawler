@@ -363,7 +363,7 @@ export const WorldSaveSchema = z.strictObject({
   loot: z.array(LootDiceSchema),
   /** Each visited town's spending and loot since its thresholds last reset. */
   towns: z.record(IdSchema, TownLedgerSchema),
-  /** What each settlement's shop has sold out of this month, by town. */
+  /** What each settlement's shop has sold out of since its economy reset, by town. */
   shops: z.record(IdSchema, ShopStateSchema),
   /** The day the economic climate last moved the purse. */
   climateDay: z.int().min(0),

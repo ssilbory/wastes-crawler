@@ -56,9 +56,9 @@ export const TownRulesSchema = z.strictObject({
   shop: z.strictObject({
     /** Light and crafting gear every shop always has, and never runs out of. */
     staples: z.array(IdSchema).min(1),
-    /** The share of the rest of the gear a shop stocks each month, by size. */
+    /** The share of the rest of the gear a shop stocks, by size, drawn when the town's economy resets. */
     stocked: z.record(TownSizeSchema, z.number().min(0).max(1)),
-    /** The chance, in whole percent, that a bought item is the last until the month turns. */
+    /** The chance, in whole percent, that a bought item is the last until the economy resets. */
     sellOutPercent: z.record(TownSizeSchema, z.int().min(0).max(100)),
   }),
   /** The economic climate's adjustment to the purse, in whole percent. */
@@ -74,9 +74,9 @@ export const TownRulesSchema = z.strictObject({
 });
 export type TownRules = z.infer<typeof TownRulesSchema>;
 
-/** A shop's month, once something has sold out: the month counted from the world's start. */
+/** What a shop has sold out of, and the day its town's economy last reset (its ledger's). */
 export const ShopStateSchema = z.strictObject({
-  month: z.int().min(0),
+  since: z.int().min(0),
   sold: z.array(IdSchema),
 });
 export type ShopState = z.infer<typeof ShopStateSchema>;

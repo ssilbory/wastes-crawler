@@ -99,7 +99,7 @@ export function buy(
   const price = shopPrice(w, data, itemId);
   if (!spend(w, data, listedPrice(data, itemId))) return no(`That costs ${price} crowns.`);
   m.character = { ...m.character, inventory };
-  if (afterSale(w, data, itemId)) note(w, `That was ${town.name}'s last ${name} this month.`);
+  if (afterSale(w, data, itemId)) note(w, `That was ${town.name}'s last ${name} for now.`);
   return { ok: true };
 }
 

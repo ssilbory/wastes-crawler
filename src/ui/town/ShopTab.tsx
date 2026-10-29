@@ -39,7 +39,7 @@ const CARRIER: Record<Carrier['kind'], string> = {
 };
 const LOCATIONS: ItemLocation[] = ['worn', 'readied', 'stowed'];
 
-/** The shop: this month's SRD gear at this town's prices, and each member's pack. */
+/** The shop: the SRD gear in stock at this town's prices, and each member's pack. */
 export function ShopTab(props: { world: World; act: Act }) {
   const w = props.world;
   const living = w.members.filter((m) => !m.dead);
@@ -64,7 +64,8 @@ export function ShopTab(props: { world: World; act: Act }) {
       <section class="panel" aria-label="Buy">
         <h2>Buy</h2>
         <p class="hint">
-          Light and crafting gear is always in. The rest changes each month and can sell out.
+          Light and crafting gear is always in. The rest changes when the town's prices reset and
+          can sell out.
         </p>
         <label>
           For{' '}

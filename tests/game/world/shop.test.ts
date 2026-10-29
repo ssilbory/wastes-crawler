@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Site } from '../../../src/data/schemas/index.ts';
 import { buyable } from '../../../src/game/character/items.ts';
 import { buy } from '../../../src/game/world/shop.ts';
-import { afterSale, drawnStock, shopMonth, shopStock } from '../../../src/game/world/shop-stock.ts';
+import { afterSale, drawnStock, shopStock } from '../../../src/game/world/shop-stock.ts';
 import { townHere } from '../../../src/game/world/town-prices.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { data, fullShop, member, world } from './helpers.ts';
@@ -54,16 +54,25 @@ describe("what a shop stocks (docs/rules-adaptation.md, Shop stock; Sam's calls)
     expect(others('city')).toBe(Math.round((rest * 3) / 4));
   });
 
-  it('draws the same stock all month, and afresh the next month or in another town', () => {
+  it("keeps its stock until the town's economy resets, and draws afresh then or in another town", () => {
     const w = world();
     const town = townHere(w, data);
     const first = ids(drawnStock(w, data, town));
-    w.day += 1;
+    w.day = 29;
     expect(ids(drawnStock(w, data, town))).toEqual(first);
-    w.day = 30 * (shopMonth(w, data) + 1);
-    expect(ids(drawnStock(w, data, town))).not.toEqual(first);
+    w.day = 30;
+    const next = ids(drawnStock(w, data, town));
+    expect(next).not.toEqual(first);
     w.day = 0;
     expect(ids(drawnStock(w, data, { ...town, id: 'elsewhere' }))).not.toEqual(first);
+    // A ledger opened mid-month holds its stock a month from then, not to the calendar's turn.
+    w.towns.westhold = { spent: 0, looted: 0, since: 12 };
+    w.day = 41;
+    const reopened = ids(drawnStock(w, data, town));
+    expect(reopened).not.toEqual(first);
+    expect(reopened).not.toEqual(next);
+    w.day = 42;
+    expect(ids(drawnStock(w, data, town))).not.toEqual(reopened);
   });
 
   it('moves nothing else the world rolls', () => {
@@ -92,20 +101,20 @@ describe('selling out', () => {
     expect(w.shops).toEqual({});
   });
 
-  it("sells out at or under the town's chance, until the month turns", () => {
+  it("sells out at or under the town's chance, until the town's economy resets", () => {
     const w = world();
     const percent = shop.sellOutPercent.town;
     w.rng = scriptedRng([percent + 1, percent, 1]);
     expect(afterSale(w, allStocked, 'crowbar')).toBe(false);
     expect(afterSale(w, allStocked, 'crowbar')).toBe(true);
     expect(afterSale(w, allStocked, 'mail-shirt')).toBe(true);
-    expect(w.shops.westhold).toEqual({ month: 0, sold: ['crowbar', 'mail-shirt'] });
+    expect(w.shops.westhold).toEqual({ since: 0, sold: ['crowbar', 'mail-shirt'] });
     expect(ids(shopStock(w, allStocked))).not.toContain('crowbar');
     w.day = 30;
     expect(ids(shopStock(w, allStocked))).toContain('crowbar');
     w.rng = scriptedRng([1]);
     afterSale(w, allStocked, 'dagger');
-    expect(w.shops.westhold).toEqual({ month: 1, sold: ['dagger'] });
+    expect(w.shops.westhold).toEqual({ since: 30, sold: ['dagger'] });
   });
 
   it("tells the party when it bought a shop's last one, and won't sell another", () => {
@@ -113,7 +122,7 @@ describe('selling out', () => {
     w.purse = 1000;
     w.rng = scriptedRng([1]);
     expect(buy(w, allStocked, 'm-0', 'crowbar')).toEqual({ ok: true });
-    expect(w.log.at(-1)).toMatch(/That was Rubblegate's last Crowbar this month.$/);
+    expect(w.log.at(-1)).toMatch(/That was Rubblegate's last Crowbar for now.$/);
     expect(buy(w, allStocked, 'm-0', 'crowbar')).toEqual({
       ok: false,
       reason: 'Rubblegate has no Crowbar for sale.',

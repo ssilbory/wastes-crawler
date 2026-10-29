@@ -98,7 +98,7 @@ export interface World {
   purse: number;
   loot: LootDice[];
   towns: Record<string, TownLedger>;
-  /** What each shop has sold out of this month, by town (shop-stock.ts). */
+  /** What each shop has sold out of since its town's economy reset (shop-stock.ts). */
   shops: Record<string, ShopState>;
   climateDay: number;
   encounter: PendingEncounter | null;
