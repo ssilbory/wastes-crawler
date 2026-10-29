@@ -7,6 +7,7 @@ import { FactionStateSchema } from './faction-content.ts';
 import { RegionSchema } from './overland-content.ts';
 import { LootDiceSchema, ShopStateSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
+import { ComponentTypeSchema } from './crafting-content.ts';
 
 export const WORLD_SCHEMA_VERSION = 48;
 
@@ -389,6 +390,8 @@ export const WorldSaveSchema = z.strictObject({
   workshops: z.array(IdSchema),
   /** Crafting components carried, by id; like loot dice they weigh nothing. */
   components: z.record(IdSchema, z.int().min(1)),
+  /** Salvaged fractions of a component, by type, short of a whole scrap part. */
+  scrap: z.partialRecord(ComponentTypeSchema, z.number().positive().lt(1)),
   /** Standing orders whose countersigns the party knows, and those it has ended (Phase 12b). */
   countersigns: z.array(IdSchema),
   ordersEnded: z.array(IdSchema),

@@ -15,7 +15,7 @@ import type { Member, World } from './types.ts';
 const no = (reason: string): TownResult => ({ ok: false, reason });
 
 /** Why gear can't change hands now, or the member and line to change. */
-function check(
+export function check(
   w: World,
   memberId: string,
   index: number,
@@ -31,7 +31,7 @@ function check(
 }
 
 /** Underground, sorting gear takes an exploration turn. */
-function done(w: World, data: GameData): TownResult {
+export function done(w: World, data: GameData): TownResult {
   if (w.dungeon) passTurn(w, data);
   return { ok: true };
 }

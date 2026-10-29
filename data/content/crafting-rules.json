@@ -114,7 +114,8 @@
     "componentPrices": {
       "common": 10,
       "uncommon": 25,
-      "rare": 60
+      "rare": 60,
+      "scrap": 1
     },
     "sellMarkup": 2,
     "thresholdShare": 0.25
@@ -167,5 +168,55 @@
     ],
     "lateArmor": ["plate-armor", "great-armor", "grand-plate"],
     "lootKept": 0.75
+  },
+  "salvage": {
+    "parts": {
+      "metal": "scrap-iron",
+      "wood": "salvaged-timber",
+      "hide": "scrap-leather"
+    },
+    "yields": {
+      "dagger": { "type": "metal", "amount": 0.25 },
+      "stiletto": { "type": "metal", "amount": 0.25 },
+      "throwing-blade": { "type": "metal", "amount": 0.25 },
+      "claw-blades": { "type": "metal", "amount": 0.25 },
+      "axe-hand": { "type": "metal", "amount": 0.5 },
+      "sword-short": { "type": "metal", "amount": 0.5 },
+      "mace": { "type": "metal", "amount": 0.5 },
+      "hammer-war": { "type": "metal", "amount": 0.5 },
+      "sword-long": { "type": "metal", "amount": 0.75 },
+      "axe-war": { "type": "metal", "amount": 1 },
+      "sword-great": { "type": "metal", "amount": 1 },
+      "hammer-great": { "type": "metal", "amount": 1 },
+      "halberd": { "type": "metal", "amount": 1 },
+      "club": { "type": "wood", "amount": 0.25 },
+      "club-great": { "type": "wood", "amount": 0.5 },
+      "staff": { "type": "wood", "amount": 0.5 },
+      "spear-light": { "type": "wood", "amount": 0.25 },
+      "spear-heavy": { "type": "wood", "amount": 0.5 },
+      "pike": { "type": "wood", "amount": 0.5 },
+      "bow-small": { "type": "wood", "amount": 0.5 },
+      "bow-large": { "type": "wood", "amount": 0.75 },
+      "crossbow": { "type": "wood", "amount": 0.5 },
+      "blackjack": { "type": "hide", "amount": 0.25 },
+      "war-shirt": { "type": "hide", "amount": 0.25 },
+      "buff-coat": { "type": "hide", "amount": 0.5 },
+      "linothorax": { "type": "hide", "amount": 0.5 },
+      "war-robe": { "type": "hide", "amount": 0.75 },
+      "pieced-armor": { "type": "metal", "amount": 1 },
+      "mail-shirt": { "type": "metal", "amount": 1 },
+      "cuirass-and-greaves": { "type": "metal", "amount": 1.5 },
+      "scaled-armor": { "type": "metal", "amount": 1.5 },
+      "mail-hauberk": { "type": "metal", "amount": 1.5 },
+      "plate-armor": { "type": "metal", "amount": 2 },
+      "great-armor": { "type": "metal", "amount": 2.5 },
+      "grand-plate": { "type": "metal", "amount": 2.5 },
+      "small-shield": { "type": "wood", "amount": 0.5 },
+      "large-shield": { "type": "wood", "amount": 0.75 },
+      "tower-shield": { "type": "wood", "amount": 1 },
+      "crowbar": { "type": "metal", "amount": 0.5 },
+      "iron-spikes-10": { "type": "metal", "amount": 0.5 },
+      "grappling-hook": { "type": "metal", "amount": 0.25 }
+    }
   }
 }

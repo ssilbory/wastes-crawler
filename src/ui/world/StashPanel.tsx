@@ -43,6 +43,12 @@ export function StashPanel(props: { world: World; onChange?: () => void }) {
           <dt>Components</dt>
           <dd>{view.components.length === 0 ? 'none' : view.components.join(', ')}</dd>
         </div>
+        {view.scrap && (
+          <div>
+            <dt>Scrap</dt>
+            <dd>{view.scrap}</dd>
+          </div>
+        )}
         <div>
           <dt>Load</dt>
           <dd>{view.weight}</dd>

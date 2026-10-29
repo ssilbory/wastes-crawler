@@ -4,6 +4,9 @@ import { GearSchema } from './gear.ts';
 
 const Crowns = z.number().min(0);
 
+export const ComponentTypeSchema = z.enum(['hide', 'wood', 'metal', 'gem', 'essence']);
+export type ComponentType = z.infer<typeof ComponentTypeSchema>;
+
 /** A crafted item's quality tier (SRD 2.8.1); normal gear carries no tier on the sheet. */
 export const QualitySchema = z.enum(['jury-rigged', 'mastercrafted']);
 export type Quality = z.infer<typeof QualitySchema>;
@@ -108,7 +111,12 @@ export const CraftingRulesSchema = z.strictObject({
     /** Components for sale each month. */
     partsStock: z.int().min(0),
     /** What a craftsman pays for a component of each rarity. */
-    componentPrices: z.strictObject({ common: Crowns, uncommon: Crowns, rare: Crowns }),
+    componentPrices: z.strictObject({
+      common: Crowns,
+      uncommon: Crowns,
+      rare: Crowns,
+      scrap: Crowns,
+    }),
     /** Components sell for this many times what craftsmen pay. */
     sellMarkup: z.number().min(1),
     /** The share of crowns spent with a craftsman that counts toward the town's threshold. */
@@ -120,18 +128,30 @@ export const CraftingRulesSchema = z.strictObject({
     /** Buying a town's workshop outright; then it is free to use. */
     price: Crowns,
   }),
+  /**
+   * Breaking gear down for parts (Sam's calls): what each salvageable item yields, in quarters of
+   * a component, and the scrap part each type's whole units become.
+   */
+  salvage: z.strictObject({
+    parts: z.partialRecord(ComponentTypeSchema, IdSchema),
+    yields: z.record(
+      IdSchema,
+      z.strictObject({
+        type: ComponentTypeSchema,
+        amount: z.number().positive().multipleOf(0.25),
+      }),
+    ),
+  }),
 });
 export type CraftingRules = z.infer<typeof CraftingRulesSchema>;
-
-export const ComponentTypeSchema = z.enum(['hide', 'wood', 'metal', 'gem', 'essence']);
-export type ComponentType = z.infer<typeof ComponentTypeSchema>;
 
 /** A crafting component, standing in for the SRD's arcane salvage (SRD 2.8.2). */
 export const ComponentSchema = z.strictObject({
   id: IdSchema,
   name: z.string().min(1),
   type: ComponentTypeSchema,
-  rarity: z.enum(['common', 'uncommon', 'rare']),
+  /** Scrap comes only from salvage; craftsmen never stock it. */
+  rarity: z.enum(['common', 'uncommon', 'rare', 'scrap']),
   /** Monsters that can drop it: each one beaten drops one with this percent chance. */
   sources: z.array(z.strictObject({ monster: IdSchema, chance: z.int().min(1).max(100) })),
 });

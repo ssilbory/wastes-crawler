@@ -64,6 +64,7 @@ import { magicReferenceErrors } from './magic-check.ts';
 import { magicEffectErrors } from './magic-effects-check.ts';
 import { overlandReferenceErrors } from './overland-check.ts';
 import { settingReferenceErrors } from './setting-check.ts';
+import { salvageReferenceErrors } from './salvage-check.ts';
 import { townReferenceErrors } from './town-check.ts';
 import { npcReferenceErrors } from './npc-check.ts';
 import { mountReferenceErrors } from './mount-check.ts';
@@ -278,6 +279,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...questReferenceErrors(srd, content),
     ...dungeonReferenceErrors(content),
     ...craftingReferenceErrors(srd, content),
+    ...salvageReferenceErrors(srd, content),
     ...alchemyReferenceErrors(srd, content),
     ...deviceReferenceErrors(srd, content),
     ...settingReferenceErrors(srd, content),

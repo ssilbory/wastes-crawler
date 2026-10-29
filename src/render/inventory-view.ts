@@ -1,9 +1,16 @@
 // A member's gear and load for the inventory panel (Phase 17): each line's encumbrance, the
-// Readied and Stowed totals against their limits, and who could take it. Pure.
+// Readied and Stowed totals against their limits, who could take it, and what salvaging it would
+// give (salvage.ts). Pure.
 import type { ItemLocation } from '../data/schemas/index.ts';
 import type { GameData } from '../game/character/context.ts';
-import { entryEncumbrance, findItem, lineLabel } from '../game/character/items.ts';
+import {
+  entryEncumbrance,
+  findItem,
+  lineLabel,
+  type InventoryEntry,
+} from '../game/character/items.ts';
 import { memberLoad, partyLoad } from '../game/world/party-load.ts';
+import { salvager, salvageYield } from '../game/world/salvage.ts';
 import type { World } from '../game/world/types.ts';
 import type { Load } from '../rules/encumbrance.ts';
 import { defenseStats } from './gear-view.ts';
@@ -17,6 +24,8 @@ export interface GearLine {
   encumbrance: number;
   /** Armor's and a shield's AC; null for other gear. */
   stats: string | null;
+  /** What one unit salvages into, "0.25 metal"; null if it can't be salvaged. */
+  salvage: string | null;
 }
 
 export interface InventoryView {
@@ -32,6 +41,8 @@ export interface InventoryView {
   blocked: string | null;
   /** Underground, each change takes an exploration turn. */
   costsTurn: boolean;
+  /** Who would salvage here, or why no one can. */
+  salvager: { name: string } | { why: string };
 }
 
 export function inventoryView(w: World, data: GameData, memberId: string): InventoryView | null {
@@ -52,6 +63,7 @@ export function inventoryView(w: World, data: GameData, memberId: string): Inven
         location: e.location,
         encumbrance: item ? entryEncumbrance(data, item, e) : 0,
         stats: defenseStats(data, item, e.bonus ?? 0),
+        salvage: salvageText(data, e),
       };
     }),
     others: w.members
@@ -59,7 +71,15 @@ export function inventoryView(w: World, data: GameData, memberId: string): Inven
       .map((x) => ({ id: x.id, name: x.character.name })),
     blocked: w.encounter ? 'Settle the encounter first.' : null,
     costsTurn: w.dungeon !== null,
+    salvager: ((s) => (typeof s === 'string' ? { why: s } : { name: s.character.name }))(
+      salvager(w, data),
+    ),
   };
+}
+
+function salvageText(data: GameData, e: InventoryEntry): string | null {
+  const y = salvageYield(data, e);
+  return y && `${y.amount} ${y.type}`;
 }
 
 /** The load in a line: "Readied 3/5, Stowed 8/10", and Overloaded or too heavy past them. */

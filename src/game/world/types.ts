@@ -16,6 +16,7 @@ import type {
   BrewOrder,
   Commission,
   CraftsmanState,
+  ComponentType,
   FactionState,
   Raising,
   ShopState,
@@ -114,6 +115,8 @@ export interface World {
   projects: Project[];
   workshops: string[];
   components: Record<string, number>;
+  /** Salvaged fractions of a component short of a whole scrap part, by type (salvage.ts). */
+  scrap: Partial<Record<ComponentType, number>>;
   countersigns: string[];
   /** Garrison posts beaten in a fight, by key (orders.ts). */
   beaten: string[];

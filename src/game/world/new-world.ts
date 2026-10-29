@@ -79,6 +79,7 @@ export function newWorld(
     projects: [],
     workshops: [],
     components: {},
+    scrap: {},
     countersigns: [],
     beaten: [],
     pieces: [],

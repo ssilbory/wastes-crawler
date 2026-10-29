@@ -1,6 +1,7 @@
 import { useState } from 'preact/hooks';
 import type { ItemLocation } from '../../data/schemas/index.ts';
 import { dropGear, giveGear, moveGear } from '../../game/world/inventory.ts';
+import { salvageGear } from '../../game/world/salvage.ts';
 import type { TownResult } from '../../game/world/services.ts';
 import type { World } from '../../game/world/types.ts';
 import { inventoryView, loadText, type GearLine } from '../../render/inventory-view.ts';
@@ -9,7 +10,7 @@ import { ConfirmButton } from '../confirm.tsx';
 
 const PLACES: ItemLocation[] = ['worn', 'readied', 'stowed'];
 
-/** A member's gear and load: move, split, give, and drop items (Phase 17). */
+/** A member's gear and load: move, split, give, drop, and salvage items (Phase 17). */
 export function InventoryPanel(props: {
   world: World;
   onChange: () => void;
@@ -51,6 +52,9 @@ export function InventoryPanel(props: {
         <p class="hint">Underground, each change takes a turn.</p>
       )}
       {view.lines.length === 0 && <p class="hint">{view.name} carries nothing.</p>}
+      {'why' in view.salvager && view.lines.some((l) => l.salvage) && (
+        <p class="hint">{view.salvager.why}</p>
+      )}
       <ul class="gear">
         {view.lines.map((line) => (
           <GearRow
@@ -58,10 +62,12 @@ export function InventoryPanel(props: {
             key={`${who}-${line.index}-${line.name}-${line.location}-${line.quantity}`}
             line={line}
             others={view.others}
+            salvager={'name' in view.salvager ? view.salvager.name : null}
             disabled={view.blocked !== null}
             onMove={(location, n) => run(() => moveGear(w, data, who, line.index, location, n))}
             onGive={(to, n) => run(() => giveGear(w, data, who, line.index, to, n))}
             onDrop={(n) => run(() => dropGear(w, data, who, line.index, n))}
+            onSalvage={(n) => run(() => salvageGear(w, data, who, line.index, n))}
           />
         ))}
       </ul>
@@ -73,10 +79,13 @@ export function InventoryPanel(props: {
 function GearRow(props: {
   line: GearLine;
   others: { id: string; name: string }[];
+  /** Who would salvage it; null if no one can here. */
+  salvager: string | null;
   disabled: boolean;
   onMove: (location: ItemLocation, quantity: number) => void;
   onGive: (to: string, quantity: number) => void;
   onDrop: (quantity: number) => void;
+  onSalvage: (quantity: number) => void;
 }) {
   const { line } = props;
   const [count, setCount] = useState(line.quantity);
@@ -135,6 +144,15 @@ function GearRow(props: {
       >
         Drop
       </ConfirmButton>
+      {line.salvage && props.salvager && (
+        <ConfirmButton
+          confirm={`${props.salvager} breaks it down`}
+          disabled={props.disabled}
+          onConfirm={() => props.onSalvage(n)}
+        >
+          Salvage ({line.salvage} each)
+        </ConfirmButton>
+      )}
     </li>
   );
 }

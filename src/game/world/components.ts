@@ -21,7 +21,10 @@ export function componentDrops(w: World, data: GameData, enemies: readonly strin
         }
 }
 
-/** The component ids that would pay for these needs, in content order, or null if short. */
+/**
+ * The component ids that would pay for these needs, salvaged scrap first and then in content order,
+ * or null if short.
+ */
 export function pickComponents(
   w: World,
   data: GameData,
@@ -29,11 +32,14 @@ export function pickComponents(
 ): string[] | null {
   const left = { ...w.components };
   const picked: string[] = [];
+  const all = data.content.components;
+  const order = [
+    ...all.filter((c) => c.rarity === 'scrap'),
+    ...all.filter((c) => c.rarity !== 'scrap'),
+  ];
   for (const need of needs)
     for (let i = 0; i < need.count; i++) {
-      const id = data.content.components.find(
-        (c) => c.type === need.type && (left[c.id] ?? 0) > 0,
-      )?.id;
+      const id = order.find((c) => c.type === need.type && (left[c.id] ?? 0) > 0)?.id;
       if (!id) return null;
       left[id] = (left[id] as number) - 1;
       picked.push(id);
