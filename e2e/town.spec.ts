@@ -45,6 +45,11 @@ test('rests at the inn, shops, and changes the party at the tavern', async ({ pa
   await pack.getByRole('listitem').filter({ hasText: 'Lantern' }).getByRole('button').click();
   await expect(pack).not.toContainText('Lantern');
   expect(await purse(page)).toBe(start - 11);
+  // Several of one thing in one purchase.
+  await page.getByRole('combobox', { name: 'Item' }).selectOption({ label: 'Torch (0.2 crowns)' });
+  await page.getByRole('spinbutton', { name: 'How many' }).fill('3');
+  await page.getByRole('button', { name: 'Buy', exact: true }).click();
+  await expect(pack).toContainText('Torch ×3 (stowed)');
   await page.screenshot({ path: testInfo.outputPath('town-shop.png'), fullPage: true });
 
   await page.getByRole('tab', { name: 'Tavern' }).click();

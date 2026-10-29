@@ -59,6 +59,8 @@ export interface InventoryEntry {
   /** A magic weapon's or armor's special ability, and flaws left by a forging (SRD 4.9.3, 4.10.0). */
   ability?: string | undefined;
   flaws?: string[] | undefined;
+  /** Each used quiver's ammo die in the line; a fresh one is a d12 (Resource dice). */
+  die?: 4 | 6 | 8 | 10 | undefined;
 }
 
 export interface InstalledMod {
@@ -226,6 +228,7 @@ export function lineLabel(data: GameData, e: InventoryEntry): string {
     ...flawsOf(data, e).map((f) => f.name),
     e.casterLevel && `caster level ${e.casterLevel}`,
     e.charges && `${e.charges} ${e.charges === 1 ? 'charge' : 'charges'}`,
+    e.die && `d${e.die} left`,
   ].filter(Boolean);
   return `${name}${e.bonus ? ` +${e.bonus}` : ''}${notes.length ? ` (${notes.join(', ')})` : ''}`;
 }

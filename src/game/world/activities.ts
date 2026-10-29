@@ -23,6 +23,7 @@ import {
 } from './members.ts';
 import { emit } from './bus.ts';
 import { craftShift } from './crafting.ts';
+import { fletchShift } from './fletch.ts';
 import { gatherFirewood } from './firewood.ts';
 import { memberLoad, partyLoad } from './party-load.ts';
 import { firstGuide, guideOf } from './npcs.ts';
@@ -191,6 +192,7 @@ export function camp(
   for (const m of doing('sleep')) restQuarter(m);
   for (const m of doing('sleep')) m.slept = true;
   for (const m of doing('craft')) craftShift(w, data, m);
+  for (const m of doing('fletch')) fletchShift(w, data, m);
   const builder = doing('make-camp')[0];
   if (builder && w.camp !== 'made') {
     if (inTown || memberCheck(w, data, builder, 'survive', ['wis'], terrain.survive).success) {

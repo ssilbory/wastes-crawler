@@ -7,7 +7,7 @@ import type { ComponentType } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
 import { findItem, type InventoryEntry } from '../character/items.ts';
 import { takeLine } from '../character/stacks.ts';
-import { componentName } from './components.ts';
+import { componentName, pickComponents, removeComponents } from './components.ts';
 import { canCraft, hasTools } from './crafting.ts';
 import { check, done } from './inventory.ts';
 import { note } from './members.ts';
@@ -21,6 +21,12 @@ const rules = (data: GameData) => data.content.craftingRules.salvage;
 export interface SalvageYield {
   type: ComponentType;
   amount: number;
+}
+
+/** Sets a type's scrap pool, dropping it at 0. */
+function setScrap(w: World, type: ComponentType, n: number): void {
+  const others = Object.entries(w.scrap).filter(([t]) => t !== type);
+  w.scrap = Object.fromEntries(n > 0 ? [...others, [type, n]] : others);
 }
 
 /** What one unit of a line yields, or null if it can't be salvaged: unlisted, magic, or modded. */
@@ -67,12 +73,31 @@ export function salvageGear(
   const whole = Math.floor(total);
   const part = rules(data).parts[y.type] as string;
   if (whole > 0) w.components[part] = (w.components[part] ?? 0) + whole;
-  const others = Object.entries(w.scrap).filter(([type]) => type !== y.type);
-  w.scrap = Object.fromEntries(total > whole ? [...others, [y.type, total - whole]] : others);
+  setScrap(w, y.type, total - whole);
   const made = whole > 0 ? `; that makes ${whole} ${componentName(data, part).toLowerCase()}` : '';
   note(
     w,
     `${who.character.name} salvages ${name}${taken.quantity > 1 ? ` × ${taken.quantity}` : ''} for ${gained} ${y.type}${made}.`,
   );
   return done(w, data);
+}
+
+/** The scrap pool and whole components of a type, in components. */
+export const scrapOn = (w: World, data: GameData, type: ComponentType) =>
+  (w.scrap[type] ?? 0) +
+  data.content.components
+    .filter((c) => c.type === type)
+    .reduce((n, c) => n + (w.components[c.id] ?? 0), 0);
+
+/**
+ * Spends part of a component of a type: from the scrap pool, breaking whole components into it as
+ * needed, scrap first. The party must have that much (scrapOn).
+ */
+export function spendScrap(w: World, data: GameData, type: ComponentType, amount: number): void {
+  let pool = w.scrap[type] ?? 0;
+  while (pool < amount) {
+    removeComponents(w, pickComponents(w, data, [{ type, count: 1 }]) as string[]);
+    pool += 1;
+  }
+  setScrap(w, type, pool - amount);
 }

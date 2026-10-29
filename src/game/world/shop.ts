@@ -73,9 +73,10 @@ export function inventoryProblem(
 export const fitSizeOf = (data: GameData, m: Member): Size => fitSize(peopleOf(data, m));
 
 /**
- * Sells one unit into a member's pack, if the shop has it (shop-stock.ts). Armor comes in either
- * size at the standard price; `size` defaults to the member's own. A stowed suit of either size is
- * carried by anyone.
+ * Sells `quantity` units into a member's pack, one at a time, if the shop has them
+ * (shop-stock.ts); a purchase cut short by the price, the load, or a sell-out keeps what was bought
+ * and says why. Armor comes in either size at the standard price; `size` defaults to the member's
+ * own. A stowed suit of either size is carried by anyone.
  */
 export function buy(
   w: World,
@@ -83,6 +84,30 @@ export function buy(
   memberId: string,
   itemId: string,
   size?: Size,
+  quantity = 1,
+): TownResult {
+  return repeat(w, quantity, () => buyOne(w, data, memberId, itemId, size));
+}
+
+/** Does `once` up to `quantity` times, stopping at the first refusal. */
+function repeat(w: World, quantity: number, once: () => TownResult): TownResult {
+  if (!Number.isInteger(quantity) || quantity < 1) return no('Choose how many.');
+  for (let done = 0; done < quantity; done++) {
+    const r = once();
+    if (r.ok) continue;
+    if (done === 0) return r;
+    note(w, `Only ${done} of ${quantity}: ${r.reason}`);
+    break;
+  }
+  return { ok: true };
+}
+
+function buyOne(
+  w: World,
+  data: GameData,
+  memberId: string,
+  itemId: string,
+  size: Size | undefined,
 ): TownResult {
   const m = member(w, memberId);
   const name = findItem(data, itemId)?.name ?? itemId;
@@ -114,7 +139,21 @@ export function sellPrice(w: World, data: GameData, entry: InventoryEntry): numb
   );
 }
 
-export function sell(w: World, data: GameData, memberId: string, index: number): TownResult {
+/** Sells `quantity` units of an inventory line, one at a time. */
+export function sell(
+  w: World,
+  data: GameData,
+  memberId: string,
+  index: number,
+  quantity = 1,
+): TownResult {
+  // Never past the line's own stack, onto the line after it.
+  const held = member(w, memberId).character.inventory[index]?.quantity ?? 1;
+  if (quantity > held) return no(`Choose from 1 to ${held}.`);
+  return repeat(w, quantity, () => sellOne(w, data, memberId, index));
+}
+
+function sellOne(w: World, data: GameData, memberId: string, index: number): TownResult {
   townHere(w, data);
   const m = member(w, memberId);
   const entry = m.character.inventory[index];

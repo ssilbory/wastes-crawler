@@ -24,6 +24,8 @@ test('sets out with the starter party and sorts gear on the inventory screen', a
   await expect(gear).toContainText(/Readied \d+\/\d+, Stowed \d+\/\d+/);
   const dagger = gear.getByRole('group', { name: 'Dagger' });
   await expect(dagger).toContainText('(enc 1)');
+  // Weapons show their fighting numbers, as armor does.
+  await expect(dagger).toContainText('1d4 damage');
   // Arming Drop and then moving the line disarms it, so the drop can't land on another line.
   await dagger.getByRole('button', { name: 'Drop' }).click();
   await expect(dagger.getByRole('button', { name: 'Drop for good' })).toBeVisible();

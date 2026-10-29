@@ -28,7 +28,7 @@ function healer(w: World, arts = ['healing-touch', 'revive-the-fallen']): Member
 
 /** A battle whose combatants line up with the members, in the given states. */
 const battleOf = (statuses: string[]) =>
-  ({ combatants: statuses.map((status) => ({ status })) }) as unknown as Battle;
+  ({ combatants: statuses.map((status) => ({ status, shot: [] })) }) as unknown as Battle;
 
 /** Snag slain in a fight just won, here. */
 function slainSnag(w: World): Member {

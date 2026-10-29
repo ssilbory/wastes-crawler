@@ -179,5 +179,19 @@ export const EquipmentRulesSchema = z.strictObject({
       '12': z.number().min(0),
     }),
   }),
+  /**
+   * Ammo by item (Resource dice and Ammo, docs/rules-adaptation.md; Sam's calls): the weapons that
+   * shoot it, and what fletching one costs in nights' firewood and metal, in quarters.
+   */
+  ammo: z.record(
+    IdSchema,
+    z.strictObject({
+      weapons: z.array(IdSchema).min(1),
+      fletch: z.strictObject({
+        firewood: z.int().min(0),
+        metal: z.number().min(0).multipleOf(0.25),
+      }),
+    }),
+  ),
 });
 export type EquipmentRules = z.infer<typeof EquipmentRulesSchema>;

@@ -40,6 +40,8 @@ export interface Attack {
   onHit: OnHit | null;
   /** A magic weapon's special ability (SRD 4.9.3). */
   magic: AbilityEffect | null;
+  /** The ammo a shot uses up, for a PC's bow, crossbow, or hurlant (Ammo). */
+  ammo?: string | undefined;
 }
 
 export interface CasterState {
@@ -107,6 +109,8 @@ export interface Combatant {
   lastStandUsed: boolean;
   /** Deadeye: hit modifier for two-handed ranged attacks in melee, or null if not allowed. */
   rangedInMelee: number | null;
+  /** The ammo this combatant has shot this fight, rolled for afterwards (Ammo). */
+  shot: string[];
   initiativeBonus: number;
   actsFirst: boolean;
   veteransLuck: boolean;

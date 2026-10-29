@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { toTenths } from '../../rules/economy.ts';
 import type { ItemLocation } from '../../data/schemas/index.ts';
 import type { CatalogItem } from '../../game/character/items.ts';
 import { carriers, stowWith, takeFrom, type Carrier } from '../../game/world/loads.ts';
@@ -49,6 +50,7 @@ export function ShopTab(props: { world: World; act: Act }) {
   // What was picked may have just sold out.
   const item = stock.some((i) => i.id === picked) ? picked : (stock[0]?.id ?? '');
   const [size, setSize] = useState<Size | null>(null);
+  const [count, setCount] = useState(1);
   const m = living.find((x) => x.id === who) ?? living[0];
   if (!m) return <p class="hint">No one living can shop.</p>;
   const armor = stock.find((i) => i.id === item)?.kind === 'armor';
@@ -117,10 +119,21 @@ export function ShopTab(props: { world: World; act: Act }) {
             </label>{' '}
           </>
         )}
+        <label>
+          How many{' '}
+          <input
+            type="number"
+            min={1}
+            value={count}
+            onInput={(e) => setCount(Number((e.target as HTMLInputElement).value))}
+          />
+        </label>{' '}
         <button
           type="button"
           onClick={() =>
-            props.act(() => cue(buy(w, data, m.id, item, armor ? shownSize : undefined), 'coin'))
+            props.act(() =>
+              cue(buy(w, data, m.id, item, armor ? shownSize : undefined, count), 'coin'),
+            )
           }
         >
           Buy
@@ -153,9 +166,14 @@ export function ShopTab(props: { world: World; act: Act }) {
                   </option>
                 ))}
               </select>
-              <button type="button" onClick={() => props.act(() => sell(w, data, m.id, i))}>
-                Sell ({crowns(sellPrice(w, data, entry))})
-              </button>
+              <SellButton
+                // A changed line starts its count afresh.
+                key={`${entry.id}-${entry.quantity}`}
+                name={entry.id}
+                held={entry.quantity}
+                each={sellPrice(w, data, entry)}
+                onSell={(n) => props.act(() => sell(w, data, m.id, i, n))}
+              />
               {others.length + porters.length > 0 && (
                 <select
                   aria-label={`Give ${entry.id} to`}
@@ -205,6 +223,34 @@ export function ShopTab(props: { world: World; act: Act }) {
           </ul>
         </section>
       ))}
+    </>
+  );
+}
+
+/** Sells one, or any number from a stack, at the line's price each. */
+function SellButton(props: {
+  name: string;
+  held: number;
+  each: number;
+  onSell: (quantity: number) => void;
+}) {
+  const [count, setCount] = useState(1);
+  const n = Math.min(Math.max(1, count), props.held);
+  return (
+    <>
+      {props.held > 1 && (
+        <input
+          type="number"
+          min={1}
+          max={props.held}
+          value={count}
+          aria-label={`How many ${props.name} to sell`}
+          onInput={(e) => setCount(Number((e.target as HTMLInputElement).value))}
+        />
+      )}
+      <button type="button" onClick={() => props.onSell(n)}>
+        Sell{n > 1 ? ` ${n}` : ''} ({crowns(toTenths(props.each * n))})
+      </button>
     </>
   );
 }

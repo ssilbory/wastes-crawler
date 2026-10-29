@@ -69,5 +69,15 @@
       "10": 3,
       "12": 4
     }
+  },
+  "ammo": {
+    "arrows-20": {
+      "weapons": ["bow-small", "bow-large", "crossbow"],
+      "fletch": { "firewood": 1, "metal": 0.25 }
+    },
+    "hurlant-bolts-20": {
+      "weapons": ["hurlant-hand", "hurlant-long", "hurlant-great"],
+      "fletch": { "firewood": 0, "metal": 0.5 }
+    }
   }
 }

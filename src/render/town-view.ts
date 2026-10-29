@@ -39,6 +39,7 @@ export function entryText(data: GameData, entry: InventoryEntry): string {
     entry.upkeep && (brokenEntry(data, entry) ? 'breaking down' : 'unmaintained'),
     entry.small && 'small',
     entry.barding && 'barding',
+    entry.die && `d${entry.die} left`,
     entry.location,
   ].filter(Boolean);
   const qty = entry.quantity > 1 ? ` ×${entry.quantity}` : '';

@@ -94,6 +94,11 @@ export const CharacterSchema = z.strictObject({
       /** A magic weapon's or armor's ability and a forging's flaws (SRD 4.9.3, 4.10.0). */
       ability: IdSchema.optional(),
       flaws: z.array(IdSchema).min(1).optional(),
+      /**
+       * Each used quiver's ammo die in the line; a fresh one is a d12 (Resource dice and Ammo,
+       * docs/rules-adaptation.md).
+       */
+      die: z.union([z.literal(4), z.literal(6), z.literal(8), z.literal(10)]).optional(),
     }),
   ),
   /** Money; 1 crown = 1 silver piece, so copper prices make tenths. */
