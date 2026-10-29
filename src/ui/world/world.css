@@ -163,6 +163,10 @@
   opacity: 0.85;
 }
 
+.automap.pickable {
+  cursor: pointer;
+}
+
 .automap .located {
   fill: #e0b84a;
 }

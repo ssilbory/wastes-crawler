@@ -3,6 +3,8 @@ import type { Command } from '../../game/combat/commands.ts';
 import { PRESET_NAMES } from '../../game/combat/defaults.ts';
 import type { Action } from '../../game/combat/types.ts';
 import { useKeys } from '../keys.ts';
+import { KeyHelp } from '../world/KeyHelp.tsx';
+import { FIGHT_KEYS } from '../../render/key-help.ts';
 
 interface CommandMenuProps {
   actorName: string;
@@ -63,7 +65,10 @@ export function CommandMenu(props: CommandMenuProps) {
   });
   return (
     <section class="commands" aria-label="Commands">
-      <h3>{props.actorName}’s turn</h3>
+      <div class="log-head">
+        <h3>{props.actorName}’s turn</h3>
+        <KeyHelp rows={FIGHT_KEYS} />
+      </div>
       <div class="default-row">
         <button type="button" aria-keyshortcuts="D" onClick={props.onDefault}>
           Default: {PRESET_NAMES[props.preset]}

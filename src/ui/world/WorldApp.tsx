@@ -5,6 +5,7 @@ import { coachQuarter } from '../../game/world/coach.ts';
 import { difficultySeed } from '../../game/world/difficulty.ts';
 import { encounterBattle, xpText } from '../../game/world/fight.ts';
 import { passQuarter, settleByFighting, settleByLeaving } from '../../game/world/quarter.ts';
+import { travelOn } from '../../game/world/travel-on.ts';
 import { realmEnding, seeRealmEnd } from '../../game/world/realm-end.ts';
 import { addStarterParty } from '../../game/character/roster.ts';
 import { mergeRoster, parseSave, savedMap, serializeBundle } from '../../game/world/bundle.ts';
@@ -291,6 +292,11 @@ function WorldScreens(props: {
       onPass={(plan) => {
         passQuarter(w, data, plan);
         changed();
+      }}
+      onTravel={() => {
+        const { stop } = travelOn(w, data);
+        changed();
+        return stop;
       }}
       onFight={startFight}
       onRide={() => {

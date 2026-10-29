@@ -186,3 +186,72 @@
   background: var(--panel-sunk);
   border-top: 1px solid var(--error);
 }
+
+/* A sheet over the whole screen for reading at length: the keys, the full journal. */
+.sheet-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  /* Over the notices too (.toasts): it owns the keyboard while open. */
+  z-index: 50;
+  background: rgb(0 0 0 / 60%);
+}
+
+.sheet-dialog {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  left: 16px;
+  max-height: calc(100% - 32px);
+  max-width: 900px;
+  margin: 0 auto;
+  overflow-y: auto;
+  box-shadow:
+    var(--bevel-out),
+    0 6px 24px rgb(0 0 0 / 60%);
+}
+
+.sheet-dialog-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.key-help {
+  border-collapse: collapse;
+}
+
+.key-help :is(th, td) {
+  padding: 4px 12px 4px 0;
+  text-align: left;
+  vertical-align: top;
+}
+
+.world .log-head h3 {
+  margin: 0;
+}
+
+.log-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.log-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+
+.full-log {
+  margin: 8px 0 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.full-log li {
+  padding: 2px 0;
+  border-bottom: 1px solid rgb(255 255 255 / 8%);
+}
