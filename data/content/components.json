@@ -150,5 +150,26 @@
         "chance": 100
       }
     ]
+  },
+  {
+    "id": "scrap-iron",
+    "name": "Scrap iron",
+    "type": "metal",
+    "rarity": "scrap",
+    "sources": []
+  },
+  {
+    "id": "salvaged-timber",
+    "name": "Salvaged timber",
+    "type": "wood",
+    "rarity": "scrap",
+    "sources": []
+  },
+  {
+    "id": "scrap-leather",
+    "name": "Scrap leather",
+    "type": "hide",
+    "rarity": "scrap",
+    "sources": []
   }
 ]

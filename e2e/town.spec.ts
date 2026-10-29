@@ -36,15 +36,22 @@ test('rests at the inn, shops, and changes the party at the tavern', async ({ pa
   );
 
   await page.getByRole('tab', { name: 'Shop', exact: true }).click();
-  await page.getByRole('combobox', { name: 'Item' }).selectOption({ label: 'Crowbar (4 crowns)' });
+  // A lantern is a staple: every shop has one, whatever else it stocks this month.
+  await page.getByRole('combobox', { name: 'Item' }).selectOption({ label: 'Lantern (10 crowns)' });
   await page.getByRole('button', { name: 'Buy', exact: true }).click();
   const pack = page.getByRole('region', { name: "Snag's pack" });
-  await expect(pack).toContainText('Crowbar (stowed)');
-  expect(await purse(page)).toBe(start - 10);
-  await pack.getByRole('listitem').filter({ hasText: 'Crowbar' }).getByRole('button').click();
-  await expect(pack).not.toContainText('Crowbar');
-  expect(await purse(page)).toBe(start - 8);
+  await expect(pack).toContainText('Lantern (stowed)');
+  expect(await purse(page)).toBe(start - 16);
+  await pack.getByRole('listitem').filter({ hasText: 'Lantern' }).getByRole('button').click();
+  await expect(pack).not.toContainText('Lantern');
+  expect(await purse(page)).toBe(start - 11);
+  // Several of one thing in one purchase.
+  await page.getByRole('combobox', { name: 'Item' }).selectOption({ label: 'Torch (0.2 crowns)' });
+  await page.getByRole('spinbutton', { name: 'How many' }).fill('3');
+  await page.getByRole('button', { name: 'Buy', exact: true }).click();
+  await expect(pack).toContainText('Torch ×3 (stowed)');
   // Gear in use asks before it sells (Sam's ask).
+  const before = await purse(page);
   const inUse = pack
     .getByRole('listitem')
     .filter({ hasText: /\((worn|readied)\)/ })
@@ -52,7 +59,7 @@ test('rests at the inn, shops, and changes the party at the tavern', async ({ pa
   await inUse.getByRole('button', { name: /^Sell / }).click();
   await expect(inUse.getByRole('button', { name: 'Sell for good' })).toBeVisible();
   await inUse.getByRole('button', { name: 'Keep' }).click();
-  expect(await purse(page)).toBe(start - 8);
+  expect(await purse(page)).toBe(before);
   await page.screenshot({ path: testInfo.outputPath('town-shop.png'), fullPage: true });
 
   await page.getByRole('tab', { name: 'Tavern' }).click();

@@ -5,10 +5,11 @@ import { CharacterSchema } from './character.ts';
 import { CellSchema, FacingSchema } from './dungeon-content.ts';
 import { FactionStateSchema } from './faction-content.ts';
 import { RegionSchema } from './overland-content.ts';
-import { LootDiceSchema } from './town-content.ts';
+import { LootDiceSchema, ShopStateSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
+import { ComponentTypeSchema } from './crafting-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 48;
+export const WORLD_SCHEMA_VERSION = 49;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -366,6 +367,8 @@ export const WorldSaveSchema = z.strictObject({
   loot: z.array(LootDiceSchema),
   /** Each visited town's spending and loot since its thresholds last reset. */
   towns: z.record(IdSchema, TownLedgerSchema),
+  /** What each settlement's shop has sold out of since its economy reset, by town. */
+  shops: z.record(IdSchema, ShopStateSchema),
   /** The day the economic climate last moved the purse. */
   climateDay: z.int().min(0),
   encounter: PendingEncounterSchema.nullable(),
@@ -390,6 +393,8 @@ export const WorldSaveSchema = z.strictObject({
   workshops: z.array(IdSchema),
   /** Crafting components carried, by id; like loot dice they weigh nothing. */
   components: z.record(IdSchema, z.int().min(1)),
+  /** Salvaged fractions of a component, by type, short of a whole scrap part. */
+  scrap: z.partialRecord(ComponentTypeSchema, z.number().positive().lt(1)),
   /** Standing orders whose countersigns the party knows, and those it has ended (Phase 12b). */
   countersigns: z.array(IdSchema),
   ordersEnded: z.array(IdSchema),

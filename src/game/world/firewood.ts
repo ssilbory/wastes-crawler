@@ -31,11 +31,14 @@ export function harshHere(w: World, data: GameData): boolean {
 export const exposedToCold = (w: World, data: GameData, m: Member): boolean =>
   !m.reviving && !firstPhysician(w, data) && !immuneTo(data, m, 'cold');
 
+/** Nights of firewood the party, its porters, pack beasts, and mounts carry. */
+export const firewoodCount = (w: World, data: GameData): number =>
+  [...alive(w).map((m) => m.character), ...carriers(w, data).map((c) => c.holder)]
+    .flatMap((h) => h.inventory.filter((e) => e.id === FIREWOOD))
+    .reduce((n, e) => n + e.quantity, 0);
+
 /** Whether anyone in the party, or a porter, pack beast, or mount, carries firewood. */
-export const carriesFirewood = (w: World, data: GameData): boolean =>
-  [...alive(w).map((m) => m.character), ...carriers(w, data).map((c) => c.holder)].some((h) =>
-    h.inventory.some((e) => e.id === FIREWOOD),
-  );
+export const carriesFirewood = (w: World, data: GameData): boolean => firewoodCount(w, data) > 0;
 
 /** Burns one night's firewood, from a member first, then a carrier; the burner's name. */
 export function burnFirewood(w: World, data: GameData): string | null {

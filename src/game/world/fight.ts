@@ -9,6 +9,7 @@ import { difficultyTier, type Difficulty } from './difficulty.ts';
 import { note } from './members.ts';
 import { moraleAfterFight, removeNpc } from './npcs.ts';
 import { carryBack, lastStandBack, npcsBack } from './carry-back.ts';
+import { ammoBack } from './ammo.ts';
 import { ailmentsBack } from './ailments.ts';
 import { winnings } from './winnings.ts';
 import { calmWarMounts, mountsBack, warMounts } from './mount-fights.ts';
@@ -133,6 +134,7 @@ export function applyBattle(
     carryBack(data, m, c);
     ailmentsBack(w, data, m, c);
     lastStandBack(w, m, c);
+    ammoBack(w, data, m, c);
   });
   recordFallen(w, fight.memberIds, fight.battle);
   // The fight ends the scene, and any Pact of Stone and Sea with it.

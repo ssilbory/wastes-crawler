@@ -126,6 +126,8 @@ function strike(
 ): void {
   if (!crossWall(b, actor, attack, target) || !cutVines(b, actor, attack, target)) return;
   if (!mantleCut(b, actor, target, attack)) return;
+  // The shot is loosed; the ammo die is rolled after the fight (Ammo).
+  if (attack.ammo && !actor.shot.includes(attack.ammo)) actor.shot.push(attack.ammo);
   provoke(actor, target);
   // Red Harvest's +4 is spent on the next hit roll (Phase 15).
   const harvest = actor.nextHitBonus;

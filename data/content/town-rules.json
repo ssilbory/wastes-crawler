@@ -18,6 +18,30 @@
   "lootThresholdFraction": 0.5,
   "surchargeRate": 0.5,
   "lootDropRate": 2,
+  "shop": {
+    "staples": [
+      "torch",
+      "candle",
+      "lantern",
+      "oil-one-pint",
+      "tinder-box",
+      "dungeoneering-kit",
+      "crafting-tools",
+      "alchemists-kit",
+      "writing-kit",
+      "artisans-equipment"
+    ],
+    "stocked": {
+      "village": 0.25,
+      "town": 0.5,
+      "city": 0.75
+    },
+    "sellOutPercent": {
+      "village": 70,
+      "town": 50,
+      "city": 25
+    }
+  },
   "climate": {
     "minPercent": -30,
     "maxPercent": 30

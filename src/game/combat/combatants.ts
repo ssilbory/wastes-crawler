@@ -9,6 +9,7 @@ import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
 import { activeEffects } from '../character/equipment.ts';
 import { armorFreeArts } from '../character/magic.ts';
+import { ammoFor, carriesAmmo } from '../character/ammo.ts';
 import { findItem } from '../character/items.ts';
 import type { Attack, Combatant } from './types.ts';
 
@@ -37,6 +38,7 @@ export function base(
     lastStand: false,
     lastStandUsed: false,
     rangedInMelee: null,
+    shot: [],
     initiativeBonus: 0,
     actsFirst: false,
     veteransLuck: false,
@@ -150,8 +152,16 @@ export function pcCombatant(
     const item = findItem(data, lineId);
     return item?.kind === 'weapon' ? item.weapon.traits : [];
   };
-  const attacks: Attack[] = sheet.equipment.attacks.map((a) => {
+  // A bow, crossbow, or hurlant with no ammo carried can't shoot (Ammo).
+  const ammoOf = (a: (typeof sheet.equipment.attacks)[number]) =>
+    a.mode === 'ranged' ? ammoFor(data, a.id) : null;
+  const shootable = sheet.equipment.attacks.filter((a) => {
+    const ammo = ammoOf(a);
+    return ammo === null || carriesAmmo(c, ammo);
+  });
+  const attacks: Attack[] = shootable.map((a) => {
     const traits = traitsOf(a.id);
+    const ammo = ammoOf(a);
     return {
       id: a.id,
       name: a.name,
@@ -168,6 +178,7 @@ export function pcCombatant(
       magic: a.ability
         ? (data.content.forging.abilities.find((x) => x.id === a.ability) as Ability).effect
         : null,
+      ...(ammo ? { ammo } : {}),
     };
   });
   const worn = c.inventory.filter((e) => e.location === 'worn').map((e) => findItem(data, e.id));

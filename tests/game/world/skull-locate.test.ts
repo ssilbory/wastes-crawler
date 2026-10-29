@@ -188,13 +188,13 @@ describe('locatedMarks', () => {
   });
 
   it('gives older saves nothing located, underground or charted', () => {
-    const up = WORLD_MIGRATIONS[47] as (raw: Record<string, unknown>) => Record<string, unknown>;
-    expect(up({ schemaVersion: 47, dungeon: { seen: {} }, charted: { a: { seen: {} } } })).toEqual({
-      schemaVersion: 48,
+    const up = WORLD_MIGRATIONS[48] as (raw: Record<string, unknown>) => Record<string, unknown>;
+    expect(up({ schemaVersion: 48, dungeon: { seen: {} }, charted: { a: { seen: {} } } })).toEqual({
+      schemaVersion: 49,
       dungeon: { seen: {}, located: {} },
       charted: { a: { seen: {}, located: {} } },
     });
-    expect(up({ schemaVersion: 47, dungeon: null, charted: {} })).toMatchObject({ dungeon: null });
+    expect(up({ schemaVersion: 48, dungeon: null, charted: {} })).toMatchObject({ dungeon: null });
   });
 });
 

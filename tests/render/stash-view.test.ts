@@ -11,6 +11,7 @@ describe('the party stash', () => {
       purse: `${w.purse} crowns`,
       loot: 'none',
       components: [],
+      scrap: null,
       weight: 'Weighs 0 Stowed items',
       dice: [],
       parts: [],

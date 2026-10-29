@@ -10,6 +10,7 @@ const ACTIVITIES: Record<Activity, string> = {
   hunt: 'Hunt or fish',
   firewood: 'Gather firewood',
   craft: 'Craft',
+  fletch: 'Fletch ammo',
   explore: 'Explore the hex',
 };
 
