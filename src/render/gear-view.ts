@@ -7,12 +7,13 @@ import type { GameData } from '../game/character/context.ts';
 
 const ATTRIBUTES = { str: 'Str', dex: 'Dex', con: 'Con', int: 'Int', wis: 'Wis', cha: 'Cha' };
 
-/** Armor's and a shield's AC for an inventory line, with a magic bonus; null for other gear. */
-export function defenseStats(data: GameData, item: CatalogItem | undefined, bonus = 0) {
-  return item && (item.kind === 'armor' || item.kind === 'shield')
-    ? itemStats(data, item, bonus)
-    : null;
-}
+/** An inventory line's fighting numbers, with a magic bonus; null for gear that has none. */
+export const lineStats = (data: GameData, item: CatalogItem | undefined, bonus = 0) =>
+  item ? itemStats(data, item, bonus) : null;
+
+/** Armor's and a shield's AC alone, for the town's shorter lines; null for other gear. */
+export const defenseStats = (data: GameData, item: CatalogItem | undefined, bonus = 0) =>
+  item?.kind === 'armor' || item?.kind === 'shield' ? itemStats(data, item, bonus) : null;
 
 /** "AC 14, medium", "AC 13, or +1 over better armor", "1d8 damage, Shock 2/AC 13, Str/Dex", or null. */
 export function itemStats(data: GameData, item: CatalogItem, bonus = 0): string | null {

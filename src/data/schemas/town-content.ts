@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { IdSchema } from './common.ts';
 
 /** Loot dice, carried unrolled until a town's loot exchange (docs/rules-adaptation.md). */
 export const LootDiceSchema = z.strictObject({
@@ -51,6 +52,15 @@ export const TownRulesSchema = z.strictObject({
   surchargeRate: z.number().min(0),
   /** Payout drop per unit of overage past the loot threshold. */
   lootDropRate: z.number().min(0),
+  /** What each settlement's shop carries (Sam's calls). */
+  shop: z.strictObject({
+    /** Light and crafting gear every shop always has, and never runs out of. */
+    staples: z.array(IdSchema).min(1),
+    /** The share of the rest of the gear a shop stocks, by size, drawn when the town's economy resets. */
+    stocked: z.record(TownSizeSchema, z.number().min(0).max(1)),
+    /** The chance, in whole percent, that a bought item is the last until the economy resets. */
+    sellOutPercent: z.record(TownSizeSchema, z.int().min(0).max(100)),
+  }),
   /** The economic climate's adjustment to the purse, in whole percent. */
   climate: z.strictObject({ minPercent: z.int().max(0), maxPercent: z.int().min(0) }),
   xp: z.strictObject({
@@ -63,3 +73,10 @@ export const TownRulesSchema = z.strictObject({
   }),
 });
 export type TownRules = z.infer<typeof TownRulesSchema>;
+
+/** What a shop has sold out of, and the day its town's economy last reset (its ledger's). */
+export const ShopStateSchema = z.strictObject({
+  since: z.int().min(0),
+  sold: z.array(IdSchema),
+});
+export type ShopState = z.infer<typeof ShopStateSchema>;

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { findItem, type CatalogItem } from '../../src/game/character/items.ts';
-import { defenseStats, itemStats } from '../../src/render/gear-view.ts';
+import { defenseStats, itemStats, lineStats } from '../../src/render/gear-view.ts';
 import { data } from '../game/combat/helpers.ts';
 
 const item = (id: string) => findItem(data, id) as CatalogItem;
@@ -11,7 +11,7 @@ describe('gear stats', () => {
     expect(itemStats(data, item('mail-shirt'), 1)).toBe('AC 15, medium');
     expect(itemStats(data, item('small-shield'))).toBe('AC 13, or +1 over better armor');
     expect(itemStats(data, item('tower-shield'))).toMatch(/, cover$/);
-    expect(defenseStats(data, item('small-shield'), 1)).toBe('AC 14, or +2 over better armor');
+    expect(lineStats(data, item('small-shield'), 1)).toBe('AC 14, or +2 over better armor');
   });
 
   it('gives weapons their damage, Shock, attributes, range, and traits', () => {
@@ -27,7 +27,11 @@ describe('gear stats', () => {
 
   it('gives other gear none, and the inventory only armor and shields', () => {
     expect(itemStats(data, item('arrows-20'))).toBeNull();
+    expect(lineStats(data, item('bow-large'))).toBe(itemStats(data, item('bow-large')));
+    expect(lineStats(data, item('torch'))).toBeNull();
+    expect(defenseStats(data, item('small-shield'))).toBe(lineStats(data, item('small-shield')));
     expect(defenseStats(data, item('bow-large'))).toBeNull();
     expect(defenseStats(data, undefined)).toBeNull();
+    expect(lineStats(data, undefined)).toBeNull();
   });
 });

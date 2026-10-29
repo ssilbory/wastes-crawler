@@ -55,7 +55,8 @@ export function visitCraftsman(w: World, data: GameData): TownResult {
     return { weapon, bonus: tier.bonus };
   });
   const parts: Record<string, number> = {};
-  const all = data.content.components;
+  // Scrap only comes from salvage.
+  const all = data.content.components.filter((c) => c.rarity !== 'scrap');
   for (let i = 0; i < rules(data).partsStock; i++) {
     const id = (all[w.rng.int(0, all.length - 1)] as (typeof all)[number]).id;
     parts[id] = (parts[id] ?? 0) + 1;

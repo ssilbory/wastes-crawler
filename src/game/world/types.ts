@@ -16,8 +16,10 @@ import type {
   BrewOrder,
   Commission,
   CraftsmanState,
+  ComponentType,
   FactionState,
   Raising,
+  ShopState,
   Region,
   TownLedger,
   WorldSave,
@@ -97,6 +99,8 @@ export interface World {
   purse: number;
   loot: LootDice[];
   towns: Record<string, TownLedger>;
+  /** What each shop has sold out of since its town's economy reset (shop-stock.ts). */
+  shops: Record<string, ShopState>;
   climateDay: number;
   encounter: PendingEncounter | null;
   coach: CoachTrip | null;
@@ -111,6 +115,8 @@ export interface World {
   projects: Project[];
   workshops: string[];
   components: Record<string, number>;
+  /** Salvaged fractions of a component short of a whole scrap part, by type (salvage.ts). */
+  scrap: Partial<Record<ComponentType, number>>;
   countersigns: string[];
   /** Garrison posts beaten in a fight, by key (orders.ts). */
   beaten: string[];
@@ -168,7 +174,16 @@ export const NO_LIGHT: World['light'] = {
 
 /** What a member does in a camp quarter (docs/rules-adaptation.md, Overland travel). */
 export type Activity =
-  'rest' | 'sleep' | 'forage' | 'hunt' | 'firewood' | 'make-camp' | 'watch' | 'craft' | 'explore';
+  | 'rest'
+  | 'sleep'
+  | 'forage'
+  | 'hunt'
+  | 'firewood'
+  | 'make-camp'
+  | 'watch'
+  | 'craft'
+  | 'fletch'
+  | 'explore';
 
 export type QuarterPlan =
   | { kind: 'hike'; leader: string | null; watcher: string | null }

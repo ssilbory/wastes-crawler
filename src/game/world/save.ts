@@ -49,6 +49,7 @@ export function serializeWorld(w: World): string {
     purse: w.purse,
     loot: w.loot,
     towns: w.towns,
+    shops: w.shops,
     climateDay: w.climateDay,
     encounter: w.encounter,
     coach: w.coach,
@@ -62,6 +63,7 @@ export function serializeWorld(w: World): string {
     projects: w.projects,
     workshops: w.workshops,
     components: w.components,
+    scrap: w.scrap,
     countersigns: w.countersigns,
     beaten: w.beaten,
     pieces: w.pieces,
@@ -192,6 +194,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
     projects: s.projects,
     workshops: s.workshops,
     components: s.components,
+    scrap: s.scrap,
     countersigns: s.countersigns,
     beaten: s.beaten,
     pieces: s.pieces,
@@ -238,6 +241,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
     purse: s.purse,
     loot: s.loot,
     towns: s.towns,
+    shops: s.shops,
     climateDay: s.climateDay,
   };
   if (world.dungeon && !standsIn(world.dungeon, data)) {

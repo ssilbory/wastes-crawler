@@ -26,11 +26,13 @@ export function HelpGameplay() {
       </p>
       <p>
         Camping, each character picks a job: Rest, Sleep, Make camp (shelter), Keep watch, Forage,
-        Hunt or fish, Gather firewood, or Craft. To recover overnight a character must have slept
-        that day, be sheltered (a good camp or a town), and be free of Hungry, Sleepless, and Cold.
-        On a harsh night, out in harsh land or any winter night, a party with no good camp needs a
-        fire, or it ends up Cold. Every quarter outside town can bring an encounter: fight, slip
-        away, or talk.
+        Hunt or fish, Gather firewood, Craft, or Fletch ammo (a quiver from a night's firewood and a
+        quarter of a metal part). Bows, crossbows, and hurlants need ammo to shoot; each fight
+        someone shoots, their quiver's die is rolled and can run down. To recover overnight a
+        character must have slept that day, be sheltered (a good camp or a town), and be free of
+        Hungry, Sleepless, and Cold. On a harsh night, out in harsh land or any winter night, a
+        party with no good camp needs a fire, or it ends up Cold. Every quarter outside town can
+        bring an encounter: fight, slip away, or talk.
       </p>
 
       <h3>Spells per day</h3>

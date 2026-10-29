@@ -10,7 +10,19 @@
       "wastes-bonefields",
       "wastes-sunscar"
     ],
-    "start": "wastes-fringe"
+    "start": "wastes-fringe",
+    "shop": [
+      "dagger",
+      "spear-light",
+      "axe-hand",
+      "sword-short",
+      "staff",
+      "bow-small",
+      "arrows-20",
+      "war-shirt",
+      "linothorax",
+      "small-shield"
+    ]
   },
   {
     "id": "sealed-vale",

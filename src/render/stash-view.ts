@@ -11,6 +11,8 @@ export interface StashView {
   loot: string;
   /** "Ironwood heart ×2", by name. */
   components: string[];
+  /** Salvaged fractions short of a whole part: "0.75 metal, 0.5 wood", or none. */
+  scrap: string | null;
   /** What the loot and components weigh, and how much is past what the party can carry. */
   weight: string;
   /** Each die size and component that can be left behind. */
@@ -25,6 +27,11 @@ export function stashView(w: World, data: GameData): StashView {
     components: Object.entries(w.components)
       .map(([id, n]) => `${componentName(data, id)}${n > 1 ? ` ×${n}` : ''}`)
       .sort(),
+    scrap:
+      Object.entries(w.scrap)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([type, n]) => `${n} ${type}`)
+        .join(', ') || null,
     weight: weightText(partyLoad(w, data)),
     dice: w.loot.map((d) => ({ sides: d.sides, label: `d${d.sides}` })),
     parts: Object.keys(w.components)

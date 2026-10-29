@@ -24,6 +24,8 @@ test('sets out with the starter party and sorts gear on the inventory screen', a
   await expect(gear).toContainText(/Readied \d+\/\d+, Stowed \d+\/\d+/);
   const dagger = gear.getByRole('group', { name: 'Dagger' });
   await expect(dagger).toContainText('(enc 1)');
+  // Weapons show their fighting numbers, as armor does.
+  await expect(dagger).toContainText('1d4 damage');
   // Arming Drop and then moving the line disarms it, so the drop can't land on another line.
   await dagger.getByRole('button', { name: 'Drop' }).click();
   await expect(dagger.getByRole('button', { name: 'Drop for good' })).toBeVisible();
@@ -36,10 +38,19 @@ test('sets out with the starter party and sorts gear on the inventory screen', a
   await dagger.getByRole('button', { name: 'Drop' }).click();
   await dagger.getByRole('button', { name: 'Drop for good' }).click();
   await expect(gear.getByRole('group', { name: 'Dagger' })).toHaveCount(0);
+  // A crafter in town breaks gear down at the workshop; the fraction waits in the stash (Salvage).
+  const spear = gear.getByRole('group', { name: 'Spear, Light' });
+  await spear.getByRole('button', { name: 'Salvage (0.25 wood each)' }).click();
+  await spear.getByRole('button', { name: /breaks it down$/ }).click();
+  await expect(gear.getByRole('group', { name: 'Spear, Light' })).toHaveCount(0);
+  await expect(page.getByRole('region', { name: 'Stash' })).toContainText('0.25 wood');
   await page.getByRole('button', { name: 'Back to the map' }).click();
   await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
     'Marsan leaves behind Dagger.',
+  );
+  await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
+    'salvages Spear, Light for 0.25 wood.',
   );
 });
 
