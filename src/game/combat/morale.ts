@@ -1,6 +1,7 @@
 // Morale per monster row (docs/rules-adaptation.md, Morale), checked as SRD 5.3.1 suggests: when a
-// group loses its first member, when the side starts visibly losing (half its number down), and,
-// in a boss fight, when the boss falls. Creatures that hold make an Instinct check (SRD 5.4.2).
+// group loses its first member, and when the side starts visibly losing (half its number down).
+// In a boss fight the boss never checks, and its side stands firmer while it stands (Sam's call:
+// boss fights should be hard). Creatures that hold make an Instinct check (SRD 5.4.2).
 // A row that breaks surrenders or tries to escape by SRD 2.6.1's foot chase (vendor/wwn-srd/2.0
 // The Rules of the Game/2.6.0 Chases and Pursuit.md; Phase 19: Morale, escape, and surrender).
 // Sides in the party formation don't check.
@@ -132,12 +133,6 @@ function checkSide(b: Battle, side: SideId): void {
   }
   if (!b.halfChecked.has(side) && members.filter(lost).length * 2 >= b.startCount[side]) {
     b.halfChecked.add(side);
-    for (const group of groups) checkGroup(b, side, group, boss);
-  }
-  // The boss's fall shakes every row of its side, which no longer stands firmer for it.
-  if (boss && !b.bossFell && lost(boss)) {
-    b.bossFell = true;
-    say(b, `${boss.name} has fallen.`);
     for (const group of groups) checkGroup(b, side, group, boss);
   }
 }

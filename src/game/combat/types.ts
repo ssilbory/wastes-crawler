@@ -370,11 +370,10 @@ export interface Battle {
   /** Sides that have rolled Morale for losing half their number. */
   halfChecked: Set<SideId>;
   /**
-   * Phase 19: the boss of a boss fight, by combatant id, whether its fall has been checked for, and
-   * the sides with someone who can talk to animals, to whom beasts can surrender.
+   * Phase 19: the boss of a boss fight, by combatant id, and the sides with someone who can talk
+   * to animals, to whom beasts can surrender.
    */
   boss: string | null;
-  bossFell: boolean;
   talksToBeasts: Record<SideId, boolean>;
   /** Each side's starting number of combatants. */
   startCount: Record<SideId, number>;

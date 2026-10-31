@@ -240,7 +240,6 @@ export function createBattle(s: BattleSetup): Battle {
     turnBegun: null,
     rowsChecked: new Set(),
     boss: null,
-    bossFell: false,
     talksToBeasts: { party: s.talksToBeasts ?? false, enemy: false },
     halfChecked: new Set(),
     startCount: { party: party.length, enemy: enemies.length },

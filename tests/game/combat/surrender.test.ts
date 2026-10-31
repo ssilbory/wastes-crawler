@@ -135,24 +135,24 @@ describe('bosses and their minions', () => {
     expect(b.boss).toBeNull();
   });
 
-  it('lends its side +2 Morale while it stands, and shakes every row when it falls', () => {
-    const b = standardBattle([thugs(2), ['gnoll']]);
+  it('lends its side +2 Morale while it stands, and nothing once it falls', () => {
+    const b = standardBattle([thugs(4), ['gnoll']]);
     markBoss(b);
-    const [t1, t2, gnoll] = foes(b) as [Combatant, Combatant, Combatant];
-    expect(moraleBonus(b, t2)).toBe(2);
-    expect(moraleBonus(b, gnoll)).toBe(0);
-    t1.status = 'dead';
-    // 5 + 5 holds at Morale 8 + 2; the thug then rolls Instinct (10: no).
-    b.rng = scriptedRng([5, 5, 10]);
+    const [t1, t2, t3, t4, gnoll] = foes(b) as Combatant[];
+    expect(moraleBonus(b, t2 as Combatant)).toBe(2);
+    expect(moraleBonus(b, gnoll as Combatant)).toBe(0);
+    (t1 as Combatant).status = 'dead';
+    // 5 + 5 holds at Morale 8 + 2; each thug then rolls Instinct (10: no).
+    b.rng = scriptedRng([5, 5, 10, 10, 10]);
     checkMorale(b);
-    expect(t2.status).toBe('active');
-    // The boss falls: the thug checks again without the bonus, 5 + 5 over 8, and surrenders.
-    gnoll.status = 'dead';
-    b.rng = scriptedRng([5, 5]);
+    expect([t2, t3, t4].every((t) => t?.status === 'active')).toBe(true);
+    // The boss's fall is no Morale check of its own (Sam's call: boss fights should be hard), but
+    // its side stands no firmer for it.
+    (gnoll as Combatant).status = 'dead';
+    b.rng = scriptedRng([]);
     checkMorale(b);
-    expect(b.bossFell).toBe(true);
-    expect(t2).toMatchObject({ status: 'fled', surrendered: true });
-    expect(moraleBonus(b, t2)).toBe(0);
+    expect(t2?.status).toBe('active');
+    expect(moraleBonus(b, t2 as Combatant)).toBe(0);
   });
 
   it('never checks Morale itself', () => {
