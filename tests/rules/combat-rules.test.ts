@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   actsOnInstinct,
+  footChase,
   killingBlowBonus,
   moraleHolds,
   partyActsFirst,
@@ -24,6 +25,32 @@ describe('combat checks', () => {
     expect(moraleHolds(scriptedRng([6, 6]), 12)).toBe(true);
     expect(actsOnInstinct(scriptedRng([3]), 3)).toBe(true);
     expect(actsOnInstinct(scriptedRng([4]), 3)).toBe(false);
+  });
+
+  it('adds a Morale bonus but never past 12', () => {
+    expect(moraleHolds(scriptedRng([5, 5]), 8, 2)).toBe(true);
+    expect(moraleHolds(scriptedRng([5, 6]), 8, 2)).toBe(false);
+    expect(moraleHolds(scriptedRng([6, 6]), 11, 5)).toBe(true);
+    expect(moraleHolds(scriptedRng([6, 6]), 9, 0)).toBe(false);
+  });
+
+  it('runs a foot chase from a standing start: the pursuers must beat the fleeing roll', () => {
+    // Flee 3+4+1 = 8; pursue 2+2+0+2 = 6: away.
+    expect(footChase(scriptedRng([3, 4, 2, 2]), 1, 0, false)).toEqual({
+      flee: 8,
+      pursue: 6,
+      caught: false,
+    });
+    // A tie lets them go: 4+4 against 3+3+0+2.
+    expect(footChase(scriptedRng([4, 4, 3, 3]), 0, 0, false).caught).toBe(false);
+    // One better catches them: 4+4 against 3+4+0+2.
+    expect(footChase(scriptedRng([4, 4, 3, 4]), 0, 0, false).caught).toBe(true);
+    // Outnumbering the fleeing costs the pursuers 1.
+    expect(footChase(scriptedRng([4, 4, 3, 4]), 0, 0, true)).toEqual({
+      flee: 8,
+      pursue: 8,
+      caught: false,
+    });
   });
 
   it('sets the stabilize difficulty and Killing Blow bonus', () => {

@@ -50,17 +50,26 @@ export function beastRefusal(w: World, data: GameData): string | null {
 export function acceptBeast(w: World, data: GameData, handlerId: string): TownResult {
   const e = w.encounter;
   if (!e?.beast) return no('No beast has offered to follow.');
+  const won = winBeast(w, data, handlerId, e.beast);
+  if (won.ok) delete e.beast;
+  return won;
+}
+
+/**
+ * A beast follows a handler with room, won over with a step of the rations die per hit die: one
+ * offered after a parley, or one that surrendered (Phase 19).
+ */
+export function winBeast(w: World, data: GameData, handlerId: string, beast: string): TownResult {
   const m = handlers(w, data).find((x) => x.id === handlerId);
   if (!m) return no('Choose someone with Animal Ken and room for another beast.');
-  const monster = monsterOf(data, e.beast);
+  const monster = monsterOf(data, beast);
   const steps = monster.hitDice;
   if (RESOURCE_DICE.indexOf(w.rations) < steps)
     return no(`Winning the ${monster.name} over takes ${steps} steps of the rations die.`);
-  const npc = addNpc(w, data, 'beast', e.beast, e.beast, freshName(w, monster.name), true);
+  const npc = addNpc(w, data, 'beast', beast, beast, freshName(w, monster.name), true);
   if (!npc) return no('There is no room in the party.');
   npc.master = m.id;
   w.rations = stepDie(w.rations, -steps);
-  delete e.beast;
   note(
     w,
     `The ${monster.name} follows ${m.character.name} now, won over with ${steps} steps of rations.`,

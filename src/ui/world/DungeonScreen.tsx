@@ -13,6 +13,7 @@ import { motionOf, type Motion, type PartyMove as Move } from '../../render/dung
 import { data } from '../builder/data.ts';
 import { PartyPanel } from './PartyPanel.tsx';
 import { HealerPanel, RevivePopOut, useReviveAsk } from './HealerPanel.tsx';
+import { SurrenderPopOut, surrenderOpen } from './SurrenderPanel.tsx';
 import { PurgePanel } from './PurgePanel.tsx';
 import { AntidotePanel } from './AntidotePanel.tsx';
 import { PotionPanel } from './PotionPanel.tsx';
@@ -257,6 +258,9 @@ export function DungeonScreen(props: {
           {revive.open && (
             <RevivePopOut world={w} onChange={props.onChange} onLeave={revive.dismiss} />
           )}
+          {!revive.open && surrenderOpen(w) && (
+            <SurrenderPopOut world={w} onChange={props.onChange} />
+          )}
         </div>
         <div class="dock">
           {map && (
@@ -270,7 +274,7 @@ export function DungeonScreen(props: {
               {!w.encounter && <p class="hint">Click a square you've seen to walk there.</p>}
             </section>
           )}
-          {!w.encounter && !revive.open && onSafeSquare(w, data) && (
+          {!w.encounter && !revive.open && !surrenderOpen(w) && onSafeSquare(w, data) && (
             <CampPanel world={w} onChange={props.onChange} />
           )}
           {/* Quests, then the party, then the panels of powers (Sam's call: one column). */}

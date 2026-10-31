@@ -12,11 +12,16 @@ import { say } from './damage.ts';
 import { echoes, landing, quickens, roundPasses, struggle, weakestSwing } from './conditions.ts';
 import { checkMorale } from './morale.ts';
 import { canAct, isUp, targets } from './targeting.ts';
-import type { Attack, Battle, Combatant, Controller, SideId } from './types.ts';
+import type { Action, Attack, Battle, Combatant, Controller, SideId } from './types.ts';
 import { followRiders, inSlot } from './mounted.ts';
+import { endCharms, raiseTheDead, throwOffCharms } from './charm.ts';
+import { bound, squeeze, startTurn, tearFree } from './creature-specials.ts';
 import { heedCall } from './companions.ts';
 
 export const MAX_ROUNDS = 100;
+
+/** Actions that take the whole Main Action, however many attacks a monster has. */
+const MAIN_ONLY = new Set<Action['kind']>(['cast', 'breath', 'gaze', 'web', 'self-heal']);
 
 const order = (list: Combatant[]) => [...list].sort((x, y) => x.row - y.row || x.column - y.column);
 
@@ -56,12 +61,15 @@ function checkEnd(b: Battle): void {
   // The Invincible Citadel ends the fight as a break-off, whoever is left standing.
   if (b.escaped) return;
   // The banished and the howled who will find their way back keep the fight going (Phase 18a).
-  const left = (c: Combatant) => canAct(c) || c.returnsRound > 0;
+  // The charmed fight for the other side for now (Phase 19).
+  const left = (c: Combatant) => (canAct(c) || c.returnsRound > 0) && !c.charm;
   if (!b.combatants.some((c) => c.side === 'enemy' && left(c))) b.outcome = 'party';
   else if (!b.combatants.some((c) => c.side === 'party' && left(c) && !c.noncombatant))
     b.outcome = 'enemy';
-  // Whatever is said once the fight is settled is no one's turn.
-  if (b.outcome) b.acting = null;
+  // Whatever is said once the fight is settled is no one's turn; charms end with the fight.
+  if (!b.outcome) return;
+  b.acting = null;
+  endCharms(b);
 }
 
 /**
@@ -75,11 +83,17 @@ export function currentActor(b: Battle): Combatant | null {
       b.queue.shift();
       continue;
     }
-    if (!actor.stunned) return actor;
+    // Webs and a hug take the turn for struggling (Phase 19).
+    const caught = bound(b, actor);
+    if (!actor.stunned && !caught) return actor;
     b.queue.shift();
     actor.totalDefense = false;
-    actor.stunned = false;
     b.acting = actor.side;
+    if (!actor.stunned) {
+      tearFree(b, actor);
+      continue;
+    }
+    actor.stunned = false;
     say(b, `${actor.name} is stunned and loses the action.`);
   }
   return null;
@@ -91,6 +105,7 @@ function beginTurn(b: Battle, actor: Combatant): void {
   if (b.turnBegun === actor.id) return;
   b.turnBegun = actor.id;
   actor.totalDefense = false;
+  startTurn(b, actor);
   // Wind Walking's mist can't cast (4.5.0). A held turn took its On Turn actions before holding.
   if (!actor.misted && !b.heldThisRound.has(actor.id)) freeActions(b, actor);
 }
@@ -117,8 +132,9 @@ export function takeTurn(b: Battle, actor: Combatant, controller: Controller): v
     act(b, actor, action);
     checkMorale(b);
     checkEnd(b);
-    // Casting or breathing is the Main Action, whatever the monster's number of attacks.
-    if (action.kind === 'cast' || action.kind === 'breath') break;
+    // Casting, breathing, a gaze, webs, or a heal is the Main Action, whatever the monster's number
+    // of attacks.
+    if (MAIN_ONLY.has(action.kind)) break;
   }
   quickened(b, actor, controller);
 }
@@ -213,6 +229,9 @@ export function endOfRound(b: Battle): void {
     const movers = monsters.filter((c) => c.side === side && c.rootedRounds === 0);
     while (movers.length > 0 && !frontHeld()) for (const e of movers) e.row -= 1;
   }
+  squeeze(b);
+  throwOffCharms(b);
+  raiseTheDead(b);
   b.stabilizedThisRound.clear();
   b.round += 1;
   roundPasses(b);
@@ -235,8 +254,9 @@ function closeRound(b: Battle): void {
   if (b.round > MAX_ROUNDS) b.outcome = 'draw';
 }
 
+/** The charmed are played as monsters are, never by the player (Phase 19). */
 const controllerFor = (c: Combatant, party: Controller, enemy: Controller) =>
-  c.kind === 'pc' ? party : enemy;
+  c.kind === 'pc' && !c.charm ? party : enemy;
 
 /**
  * Plays turns until one needs a player's command, returning that combatant, or null once the
@@ -251,7 +271,7 @@ export function advance(
   while (!b.outcome) {
     const actor = currentActor(b);
     if (!actor) closeRound(b);
-    else if (needsCommand(actor)) {
+    else if (needsCommand(actor) && !actor.charm) {
       beginTurn(b, actor);
       // A companion under its master's command has had Mind Call's Effort committed (1.5.4).
       if (actor.companion) heedCall(b, actor);

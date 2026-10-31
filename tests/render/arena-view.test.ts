@@ -65,6 +65,13 @@ describe('arena view', () => {
       expect(slotView(thug).gone).toBe(status === 'out' || status === 'fled');
     }
     expect(slotView({ ...snag, maxHp: 0 }).hpPercent).toBe(0);
+    const yielded = { ...who(b, 'foe-0-0'), status: 'fled' as const, surrendered: true };
+    expect(conditions(yielded)).toEqual(['surrendered']);
+    expect(slotView(yielded).gone).toBe(true);
+    const turned = { ...who(b, 'Grukk'), charm: { by: 'foe-0-0', side: 'enemy' as const } };
+    expect(conditions(turned)).toEqual(['charmed']);
+    const caught = { ...who(b, 'Grukk'), webbed: 8, heldBy: 'foe-0-0' };
+    expect(conditions(caught)).toEqual(['webbed', 'held in a hug']);
   });
 
   it('lays the party out in two rows of four', () => {

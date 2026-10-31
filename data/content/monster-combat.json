@@ -485,6 +485,7 @@
     "tags": ["large"],
     "mind": "animal",
     "figure": "great-beast",
+    "hug": { "strike": "Claw", "damage": { "count": 2, "sides": 8, "modifier": 0 }, "penalty": 4 },
     "routine": [
       {
         "name": "Claw",
@@ -517,6 +518,7 @@
     "tags": ["large"],
     "mind": "animal",
     "figure": "great-beast",
+    "hug": { "strike": "Claw", "damage": { "count": 2, "sides": 8, "modifier": 0 }, "penalty": 4 },
     "routine": [
       {
         "name": "Claw",
@@ -655,6 +657,7 @@
     "tags": [],
     "mind": "animal",
     "figure": "crawler",
+    "followUp": { "after": "Claw", "strike": "Sting", "hit": 2 },
     "routine": [
       {
         "name": "Claw",
@@ -706,6 +709,7 @@
     "tags": [],
     "mind": "animal",
     "figure": "crawler",
+    "webs": { "save": "evasion", "difficulty": 8 },
     "routine": [
       {
         "name": "Bite",
@@ -727,6 +731,8 @@
     "tags": ["large"],
     "mind": "monster",
     "figure": "unicorn",
+    "selfHeal": { "count": 2, "sides": 6, "modifier": 0 },
+    "blink": true,
     "routine": [
       {
         "name": "Hoof",
@@ -784,6 +790,8 @@
     },
     "mind": "sapient",
     "figure": "soldier",
+    "regenerate": 3,
+    "charm": { "save": "mental" },
     "onHit": {
       "kind": "drain",
       "dice": {

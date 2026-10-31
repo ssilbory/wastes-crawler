@@ -87,6 +87,10 @@ const answers: Record<SkullQuestion, (w: World, data: GameData) => string> = {
   hoard: (w, data) => locate(w, data, 'hoard'),
 };
 
+/** What the dead (or the surrendered, Phase 19) answer to one question where the party stands. */
+export const skullAnswer = (w: World, data: GameData, q: SkullQuestion): string =>
+  answers[q](w, data);
+
 /** Query the Skull: the corpses here answer the chosen questions, one per caster level. */
 export function queryTheSkull(
   w: World,

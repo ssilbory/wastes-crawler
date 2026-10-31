@@ -8,6 +8,7 @@ import type {
   Character,
   Dice,
   Element,
+  Mind,
   MonsterCombat,
   MonsterTag,
   OnHit,
@@ -99,6 +100,39 @@ export interface Combatant {
   tags: Set<MonsterTag>;
   morale: number;
   instinct: number;
+  /**
+   * Phase 19: Move in feet (PCs 30, SRD 2.4.4), a monster's stat-line skill bonus (0 for PCs), its
+   * kind of mind (people for PCs), and whether a row's failed Morale ended in surrender: such a
+   * combatant has `fled` status, as one that escaped does.
+   */
+  move: number;
+  skillBonus: number;
+  mind: Mind;
+  surrendered: boolean;
+  /**
+   * Phase 19 charm and possession: the charm on it (who cast it, and that one's side), the save
+   * its own charming gaze allows, whether it has used that gaze this fight, a disease it brought
+   * into the fight, and whether its corpse has risen.
+   */
+  charm: { by: string; side: SideId } | null;
+  charmSave: SaveType | null;
+  gazed: boolean;
+  carries: string | null;
+  rose: boolean;
+  /**
+   * Phase 19 creature specials: hit points regained each turn, webs not yet cast, the difficulty
+   * a webbed creature tears free against (0 for none), a heal not yet used, a blink, a hug and
+   * whose hug holds it, a strike that follows another more easily, and this turn's hits.
+   */
+  regenerate: number;
+  webs: { save: SaveType; difficulty: number } | null;
+  webbed: number;
+  selfHeal: Dice | null;
+  blink: boolean;
+  hug: { strike: string; damage: Dice; penalty: number } | null;
+  heldBy: string | null;
+  followUp: { after: string; strike: string; hit: number } | null;
+  turnHits: { strike: string; target: string }[];
   shield: boolean;
   towerShield: boolean;
   meleeShockImmune: boolean;
@@ -269,6 +303,11 @@ export type Action =
   | { kind: 'attack'; attack: number; target: string; smite?: true }
   | { kind: 'cast'; magic: string; target?: string; row?: number; strain?: boolean }
   | { kind: 'breath'; row: number }
+  /** A charming gaze at one foe (Phase 19: Charm and possession). */
+  | { kind: 'gaze'; target: string }
+  /** Creature specials (Phase 19): webs cast at a foe, and a creature healing itself. */
+  | { kind: 'web'; target: string }
+  | { kind: 'self-heal' }
   | { kind: 'total-defense' }
   | { kind: 'stabilize'; target: string }
   /** Into an empty slot, or trading places with the ally in it (docs/rules-adaptation.md, Swapping). */
@@ -330,6 +369,12 @@ export interface Battle {
   rowsChecked: Set<string>;
   /** Sides that have rolled Morale for losing half their number. */
   halfChecked: Set<SideId>;
+  /**
+   * Phase 19: the boss of a boss fight, by combatant id, and the sides with someone who can talk
+   * to animals, to whom beasts can surrender.
+   */
+  boss: string | null;
+  talksToBeasts: Record<SideId, boolean>;
   /** Each side's starting number of combatants. */
   startCount: Record<SideId, number>;
   stabilizedThisRound: Set<string>;

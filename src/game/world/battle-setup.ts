@@ -68,6 +68,8 @@ export interface PartySetup {
     /** Poisoned, and the penalty their poison and disease bring into the fight. */
     poisoned: boolean;
     ailPenalty: number;
+    /** The disease they carry into the fight, which may raise them if they die (Phase 19). */
+    disease: string | null;
     /** May bind a beast among the foes, and a companion sent away to howl for (1.5.4). */
     canBind: boolean;
     waiting: WaitingCompanion | null;
@@ -111,6 +113,7 @@ export function partySetup(
       committed: m === faith ? 1 : 0,
       pact: pactOf(w, m.id) ?? null,
       poisoned: m.poisoned,
+      disease: m.disease?.id ?? null,
       lastStandSpent: m.lastStandDay === w.day,
       ailPenalty: ailPenalty(data, m),
       canBind: m.character.arts.includes(BIND) && !companionOf(w, m),
@@ -159,6 +162,7 @@ export function battleFrom(data: GameData, rng: Rng, setup: PartySetup, log: boo
     c.frail = p.frail;
     c.pact = p.pact;
     c.poisoned = p.poisoned;
+    c.carries = p.disease;
     c.ailPenalty = p.ailPenalty;
     if (p.lastStandSpent) c.lastStand = false;
     if (c.caster) {

@@ -8,7 +8,9 @@ import { rollDie } from '../../rules/dice.ts';
 import { breathRow } from './specials.ts';
 import { potionAction } from './potions.ts';
 import { canUse, combatMagic } from './spells.ts';
-import { canAct, flying, inMelee, isUp, targets } from './targeting.ts';
+import { canAct, flying, inMelee, isUp, targets, turnsOnOwn } from './targeting.ts';
+import { gazeAction } from './charm.ts';
+import { specialAction } from './creature-specials.ts';
 import type { Action, Attack, Battle, Combatant } from './types.ts';
 
 const average = (d: Dice, bonus: number) => (d.count * (d.sides + 1)) / 2 + d.modifier + bonus;
@@ -37,6 +39,12 @@ export function monsterAction(b: Battle, actor: Combatant): Action {
   if (cursed) return cursed;
   const magic = actor.instinctive ? null : magicAction(b, actor);
   if (magic) return magic;
+  // A healing horn when badly hurt, or webs while they last (Phase 19).
+  const special = specialAction(b, actor);
+  if (special) return special;
+  // A charming gaze turns a foe while no one is under its spell (Phase 19).
+  const gazing = gazeAction(b, actor);
+  if (gazing) return gazing;
   // A breath weapon opens the turn while it lasts (Phase 14a).
   const row = actor.breathLeft > 0 && !actor.instinctive ? breathRow(b, actor) : null;
   if (row !== null) return { kind: 'breath', row };
@@ -60,15 +68,16 @@ export function monsterAction(b: Battle, actor: Combatant): Action {
  */
 function cursedAction(b: Battle, actor: Combatant): Action | null {
   if (actor.misted) return { kind: 'end-mist' };
-  if (actor.berserk || actor.compelled > 0) {
-    // The mad and the compelled strike at their own side with the swing their routine calls for,
-    // as reach allows; the compelled with no one to strike stand held.
+  if (turnsOnOwn(actor)) {
+    // The mad, the compelled, and the charmed strike at their own side with the swing their
+    // routine calls for, as reach allows; the compelled and the charmed with no one to strike
+    // stand idle.
     const indices = actor.forcedAttack !== null ? [actor.forcedAttack] : actor.attacks.keys();
     for (const index of indices) {
       const near = targets(b, actor, actor.attacks[index] as Attack, true);
       if (near.length > 0) return { kind: 'attack', attack: index, target: pickRandom(b, near).id };
     }
-    if (actor.compelled > 0) return { kind: 'wait' };
+    if (actor.compelled > 0 || actor.charm) return { kind: 'wait' };
   }
   const t = actor.torment;
   if (t && !t.tried && !t.lasting && t.damage >= actor.hp) return { kind: 'shake-off' };

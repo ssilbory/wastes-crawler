@@ -19,6 +19,7 @@ import { FactionsPanel } from './FactionsPanel.tsx';
 import { WarlordsPanel } from './WarlordsPanel.tsx';
 import { SettingPanel } from './SettingPanel.tsx';
 import { HealerPanel, RevivePopOut, useReviveAsk } from './HealerPanel.tsx';
+import { SurrenderPopOut, surrenderOpen } from './SurrenderPanel.tsx';
 import { PurgePanel } from './PurgePanel.tsx';
 import { AntidotePanel } from './AntidotePanel.tsx';
 import { PotionPanel } from './PotionPanel.tsx';
@@ -224,9 +225,12 @@ export function MapScreen(props: {
           {revive.open && (
             <RevivePopOut world={w} onChange={props.onChange} onLeave={revive.dismiss} />
           )}
+          {!revive.open && surrenderOpen(w) && (
+            <SurrenderPopOut world={w} onChange={props.onChange} />
+          )}
         </div>
         <div class="dock">
-          {w.encounter || revive.open ? null : w.coach ? (
+          {w.encounter || revive.open || surrenderOpen(w) ? null : w.coach ? (
             <CoachPanel world={w} onRide={props.onRide} />
           ) : (
             <QuarterPanel

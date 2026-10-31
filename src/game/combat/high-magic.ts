@@ -8,6 +8,7 @@ import { servantPlace } from '../../rules/formation.ts';
 import { roll, rollDie } from '../../rules/dice.ts';
 import type { SaveType } from '../../rules/saves.ts';
 import { harm, say } from './damage.ts';
+import { moraleBonus } from './morale.ts';
 import { save } from './saves.ts';
 import { monsterCombatant } from './monster-combatant.ts';
 import { dispel } from './conditions.ts';
@@ -67,8 +68,10 @@ function burst(
 }
 
 function fear(b: Battle, actor: Combatant, e: Effect<'fear'>, level: number): void {
-  for (const t of foesOf(b, actor).filter((x) => x.status === 'active' && x.morale < 12)) {
-    if (!moraleHolds(b.rng, t.morale - e.penalty)) {
+  // A boss never checks Morale; its side stands firmer while it does (Phase 19).
+  const shaken = foesOf(b, actor).filter((x) => x.status === 'active' && x.morale < 12);
+  for (const t of shaken.filter((x) => x.id !== b.boss)) {
+    if (!moraleHolds(b.rng, t.morale - e.penalty, moraleBonus(b, t))) {
       t.status = 'fled';
       say(b, `${t.name} flees in terror.`);
     } else if (t.hp <= level) {

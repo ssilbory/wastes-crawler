@@ -45,7 +45,8 @@ const STATUS_TAGS: Partial<Record<Combatant['status'], string>> = {
 
 export function conditions(c: Combatant): string[] {
   const tags: string[] = [];
-  const status = STATUS_TAGS[c.status];
+  // Those who gave up rather than ran (Phase 19).
+  const status = c.surrendered ? 'surrendered' : STATUS_TAGS[c.status];
   if (status) tags.push(status);
   if (c.frail) tags.push('frail');
   if (c.stunned) tags.push('stunned');
@@ -60,6 +61,9 @@ export function conditions(c: Combatant): string[] {
   if (c.sanctified) tags.push('sanctified');
   if (c.berserk) tags.push('mad');
   if (c.compelled > 0) tags.push('compelled');
+  if (c.charm) tags.push('charmed');
+  if (c.webbed > 0) tags.push('webbed');
+  if (c.heldBy) tags.push('held in a hug');
   if (c.mergedWith) tags.push('merged');
   if (c.amber) tags.push('frozen in amber');
   if (c.fleet) tags.push('fleet');

@@ -11,6 +11,7 @@ import { importCharacter } from '../../src/game/character/io.ts';
 import { runBattle } from '../../src/game/combat/battle.ts';
 import { carryBack } from '../../src/game/world/carry-back.ts';
 import { partyBattle } from '../../src/game/world/fight.ts';
+import { markBoss } from '../../src/game/combat/morale.ts';
 import { newWorld } from '../../src/game/world/new-world.ts';
 import type { Member } from '../../src/game/world/types.ts';
 import { roll } from '../../src/rules/dice.ts';
@@ -80,10 +81,12 @@ function survives(level: number, steps: Step[], run: number): boolean {
     (r, i) => (r.column = recruits.slice(0, i).filter((x) => x.row === r.row).length),
   );
   const w = newWorld(data, rng, recruits);
-  for (const step of steps) {
+  for (const [i, step] of steps.entries()) {
     const enemies = 'table' in step ? rollTable(rng, step.table) : step.enemies;
     if (w.members.every((m) => m.dead || m.character.hp.current <= 0)) return false;
     const fight = partyBattle(w, data, enemies, false, null);
+    // The gauntlet ends in the campaign fight itself, a boss fight (Phase 19).
+    if (i === steps.length - 1) markBoss(fight.battle);
     const result = runBattle(fight.battle);
     fight.memberIds.forEach((id, i) =>
       carryBack(
