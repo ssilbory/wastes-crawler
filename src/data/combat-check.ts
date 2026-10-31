@@ -5,7 +5,8 @@ import { gameSpells } from './spells.ts';
 
 /**
  * Every monster has combat data, Wpn monsters name a real weapon, routines make as many attacks as
- * the stat line, volleys come with a routine, and magic effects exist.
+ * the stat line, volleys come with a routine, hugs and follow-ups name its strikes, and magic
+ * effects exist.
  */
 export function combatReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const errors: string[] = [];
@@ -31,6 +32,11 @@ export function combatReferenceErrors(srd: SrdData, content: ContentData): strin
     if (m && swings !== undefined && swings !== m.attacks)
       errors.push(`monsterCombat/${c.id}: the routine makes ${swings} attacks, not ${m.attacks}`);
     if (c.volley && !c.routine) errors.push(`monsterCombat/${c.id}: a volley needs a routine`);
+    // A hug and a follow-up name strikes in the routine (Phase 19).
+    const strikes = new Set(c.routine?.map((st) => st.name));
+    for (const name of [c.hug?.strike, c.followUp?.after, c.followUp?.strike])
+      if (name !== undefined && !strikes.has(name))
+        errors.push(`monsterCombat/${c.id}: no ${name} in the routine`);
     // Beasts give rations instead of loot (Phase 17).
     if (c.mind === 'animal' && c.loot)
       errors.push(`monsterCombat/${c.id}: beasts give rations, not loot`);

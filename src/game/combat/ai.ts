@@ -10,6 +10,7 @@ import { potionAction } from './potions.ts';
 import { canUse, combatMagic } from './spells.ts';
 import { canAct, flying, inMelee, isUp, targets, turnsOnOwn } from './targeting.ts';
 import { gazeAction } from './charm.ts';
+import { specialAction } from './creature-specials.ts';
 import type { Action, Attack, Battle, Combatant } from './types.ts';
 
 const average = (d: Dice, bonus: number) => (d.count * (d.sides + 1)) / 2 + d.modifier + bonus;
@@ -38,6 +39,9 @@ export function monsterAction(b: Battle, actor: Combatant): Action {
   if (cursed) return cursed;
   const magic = actor.instinctive ? null : magicAction(b, actor);
   if (magic) return magic;
+  // A healing horn when badly hurt, or webs while they last (Phase 19).
+  const special = specialAction(b, actor);
+  if (special) return special;
   // A charming gaze turns a foe while no one is under its spell (Phase 19).
   const gazing = gazeAction(b, actor);
   if (gazing) return gazing;

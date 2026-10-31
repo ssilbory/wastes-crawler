@@ -119,6 +119,20 @@ export interface Combatant {
   charmTried: string[];
   carries: string | null;
   rose: boolean;
+  /**
+   * Phase 19 creature specials: hit points regained each turn, webs not yet cast, the difficulty
+   * a webbed creature tears free against (0 for none), a heal not yet used, a blink, a hug and
+   * whose hug holds it, a strike that follows another more easily, and this turn's hits.
+   */
+  regenerate: number;
+  webs: { save: SaveType; difficulty: number } | null;
+  webbed: number;
+  selfHeal: Dice | null;
+  blink: boolean;
+  hug: { strike: string; damage: Dice; penalty: number } | null;
+  heldBy: string | null;
+  followUp: { after: string; strike: string; hit: number } | null;
+  turnHits: { strike: string; target: string }[];
   shield: boolean;
   towerShield: boolean;
   meleeShockImmune: boolean;
@@ -291,6 +305,9 @@ export type Action =
   | { kind: 'breath'; row: number }
   /** A charming gaze at one foe (Phase 19: Charm and possession). */
   | { kind: 'gaze'; target: string }
+  /** Creature specials (Phase 19): webs cast at a foe, and a creature healing itself. */
+  | { kind: 'web'; target: string }
+  | { kind: 'self-heal' }
   | { kind: 'total-defense' }
   | { kind: 'stabilize'; target: string }
   /** Into an empty slot, or trading places with the ally in it (docs/rules-adaptation.md, Swapping). */

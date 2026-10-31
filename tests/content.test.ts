@@ -387,6 +387,8 @@ describe('combat content', () => {
           mind: 'mindless' as const,
           figure: 'ooze' as const,
           volley: [{ name: 'Spit', damage: { count: 1, sides: 4, modifier: 0 }, count: 1 }],
+          hug: { strike: 'Claw', damage: { count: 2, sides: 8, modifier: 0 }, penalty: 4 },
+          followUp: { after: 'Bite', strike: 'Spit', hit: 2 },
         },
         {
           id: 'dragon',
@@ -410,6 +412,9 @@ describe('combat content', () => {
       'monsterCombat: no entry for herd-beast',
       'monsterCombat/giant-ant: the routine makes 2 attacks, not 1',
       'monsterCombat/zombie: a volley needs a routine',
+      'monsterCombat/zombie: no Claw in the routine',
+      'monsterCombat/zombie: no Bite in the routine',
+      'monsterCombat/zombie: no Spit in the routine',
       'monsterCombat/dragon: unknown monster',
       'monsterCombat/dragon: unknown weapon breath',
       'combatMagic/elemental-blast: unknown skill blasting',

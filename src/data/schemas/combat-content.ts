@@ -89,6 +89,25 @@ export const MonsterCombatSchema = z.strictObject({
    * vampire).
    */
   charm: z.strictObject({ save: SaveKind }).optional(),
+  /**
+   * Creature specials from their descriptions (Phase 19; docs/rules-adaptation.md, Creature
+   * specials): hit points regained at the start of each turn; webs cast once a fight on a
+   * front-row foe, who saves or spends its turns tearing free against the difficulty; a heal
+   * once a fight at half hit points; a blink that always gets it away when its row breaks; a hug
+   * when every swing of one strike in a routine lands on the same foe, who takes its damage each
+   * round until it wins an opposed Str/Punch check at the penalty; and a strike that lands more
+   * easily once another has hit.
+   */
+  regenerate: z.int().min(1).optional(),
+  webs: z.strictObject({ save: SaveKind, difficulty: z.int().min(2) }).optional(),
+  selfHeal: DiceSchema.optional(),
+  blink: z.literal(true).optional(),
+  hug: z
+    .strictObject({ strike: z.string().min(1), damage: DiceSchema, penalty: z.int().min(0) })
+    .optional(),
+  followUp: z
+    .strictObject({ after: z.string().min(1), strike: z.string().min(1), hit: z.int().min(1) })
+    .optional(),
   /** The effect of any hit the monster lands that its routine strike doesn't set (a drain). */
   onHit: OnHitSchema.optional(),
   /**

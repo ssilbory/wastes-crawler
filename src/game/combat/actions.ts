@@ -12,6 +12,7 @@ import { castMagic, combatMagic } from './spells.ts';
 import { shakeOff, tormentStrike } from './conditions.ts';
 import { canAct, targets, turnsOnOwn } from './targeting.ts';
 import { gaze } from './charm.ts';
+import { selfHeal, spinWeb } from './creature-specials.ts';
 import type { Action, Battle, CasterState, Combatant } from './types.ts';
 import { followRiders, inSlot } from './mounted.ts';
 import { bind, howl } from './companions.ts';
@@ -94,6 +95,12 @@ export function act(b: Battle, actor: Combatant, action: Action): void {
       return;
     case 'gaze':
       gaze(b, actor, target);
+      return;
+    case 'web':
+      spinWeb(b, actor, target);
+      return;
+    case 'self-heal':
+      selfHeal(b, actor);
       return;
     case 'shake-off':
       shakeOff(b, actor);

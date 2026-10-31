@@ -70,6 +70,8 @@ describe('arena view', () => {
     expect(slotView(yielded).gone).toBe(true);
     const turned = { ...who(b, 'Grukk'), charm: { by: 'foe-0-0', side: 'enemy' as const } };
     expect(conditions(turned)).toEqual(['charmed']);
+    const caught = { ...who(b, 'Grukk'), webbed: 8, heldBy: 'foe-0-0' };
+    expect(conditions(caught)).toEqual(['webbed', 'held in a hug']);
   });
 
   it('lays the party out in two rows of four', () => {

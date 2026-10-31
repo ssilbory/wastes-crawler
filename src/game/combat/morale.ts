@@ -56,7 +56,12 @@ function surrender(b: Battle, list: Combatant[], how: string): void {
 }
 
 /** The broken row's runners try to get away; the caught give up or are cornered. */
-function escape(b: Battle, side: SideId, runners: Combatant[]): void {
+function escape(b: Battle, side: SideId, fleeing: Combatant[]): void {
+  // A blink always gets the creature away (Phase 19: the unicorn).
+  const blinkers = fleeing.filter((c) => c.blink);
+  for (const c of blinkers) c.status = 'fled';
+  if (blinkers.length > 0) say(b, `${names(blinkers)} blinks out of sight.`);
+  const runners = fleeing.filter((c) => !c.blink);
   if (runners.length === 0) return;
   const pursuers = fighters(b, side === 'party' ? 'enemy' : 'party');
   const chase = footChase(
@@ -87,7 +92,7 @@ function breakRow(b: Battle, side: SideId, members: Combatant[]): void {
     pursuers.length > 0 &&
     Math.min(...pursuers.map((c) => c.move)) > Math.max(...members.map((c) => c.move));
   const hopeless = outnumbered || outrun;
-  const givers = hopeless ? members.filter((c) => yields(b, c)) : [];
+  const givers = hopeless ? members.filter((c) => yields(b, c) && !c.blink) : [];
   surrender(b, givers, 'throw down their arms and surrender');
   escape(
     b,

@@ -22,6 +22,7 @@ import { counterAttack, hurl } from './vowed.ts';
 import { attackSteps, canAct, hitModifier, rangedModifier } from './targeting.ts';
 import type { Attack, Battle, Combatant } from './types.ts';
 import { recordBlow } from './log.ts';
+import { followUpBonus, noteHit } from './creature-specials.ts';
 import { knowsWeakSpot, provoke } from './companions.ts';
 
 export function shockContext(target: Combatant, attack: Attack): ShockContext {
@@ -134,7 +135,13 @@ function strike(
   actor.nextHitBonus = 0;
   const roll = attackRoll(
     b.rng,
-    attackInput(b, actor, attack, target, (boost?.hit ?? 0) + harvest),
+    attackInput(
+      b,
+      actor,
+      attack,
+      target,
+      (boost?.hit ?? 0) + harvest + followUpBonus(actor, attack),
+    ),
   );
   // Call of the Tomb: every blow lands on the doomed, for the most its dice can do (4.6.0).
   const doomed = target.doomedUntil >= b.round;
@@ -203,5 +210,6 @@ function strike(
   harm(b, target, damage);
   drink(b, actor, attack, target);
   afterHit(b, attack, target);
+  noteHit(b, actor, attack, target);
   hurl(b, actor, target);
 }

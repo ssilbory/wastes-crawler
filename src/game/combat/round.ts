@@ -12,12 +12,16 @@ import { say } from './damage.ts';
 import { echoes, landing, quickens, roundPasses, struggle, weakestSwing } from './conditions.ts';
 import { checkMorale } from './morale.ts';
 import { canAct, isUp, targets } from './targeting.ts';
-import type { Attack, Battle, Combatant, Controller, SideId } from './types.ts';
+import type { Action, Attack, Battle, Combatant, Controller, SideId } from './types.ts';
 import { followRiders, inSlot } from './mounted.ts';
 import { endCharms, raiseTheDead, throwOffCharms } from './charm.ts';
+import { bound, squeeze, startTurn, tearFree } from './creature-specials.ts';
 import { heedCall } from './companions.ts';
 
 export const MAX_ROUNDS = 100;
+
+/** Actions that take the whole Main Action, however many attacks a monster has. */
+const MAIN_ONLY = new Set<Action['kind']>(['cast', 'breath', 'gaze', 'web', 'self-heal']);
 
 const order = (list: Combatant[]) => [...list].sort((x, y) => x.row - y.row || x.column - y.column);
 
@@ -79,11 +83,17 @@ export function currentActor(b: Battle): Combatant | null {
       b.queue.shift();
       continue;
     }
-    if (!actor.stunned) return actor;
+    // Webs and a hug take the turn for struggling (Phase 19).
+    const caught = bound(b, actor);
+    if (!actor.stunned && !caught) return actor;
     b.queue.shift();
     actor.totalDefense = false;
-    actor.stunned = false;
     b.acting = actor.side;
+    if (!actor.stunned) {
+      tearFree(b, actor);
+      continue;
+    }
+    actor.stunned = false;
     say(b, `${actor.name} is stunned and loses the action.`);
   }
   return null;
@@ -95,6 +105,7 @@ function beginTurn(b: Battle, actor: Combatant): void {
   if (b.turnBegun === actor.id) return;
   b.turnBegun = actor.id;
   actor.totalDefense = false;
+  startTurn(b, actor);
   // Wind Walking's mist can't cast (4.5.0). A held turn took its On Turn actions before holding.
   if (!actor.misted && !b.heldThisRound.has(actor.id)) freeActions(b, actor);
 }
@@ -121,8 +132,9 @@ export function takeTurn(b: Battle, actor: Combatant, controller: Controller): v
     act(b, actor, action);
     checkMorale(b);
     checkEnd(b);
-    // Casting, breathing, or a gaze is the Main Action, whatever the monster's number of attacks.
-    if (action.kind === 'cast' || action.kind === 'breath' || action.kind === 'gaze') break;
+    // Casting, breathing, a gaze, webs, or a heal is the Main Action, whatever the monster's number
+    // of attacks.
+    if (MAIN_ONLY.has(action.kind)) break;
   }
   quickened(b, actor, controller);
 }
@@ -217,6 +229,7 @@ export function endOfRound(b: Battle): void {
     const movers = monsters.filter((c) => c.side === side && c.rootedRounds === 0);
     while (movers.length > 0 && !frontHeld()) for (const e of movers) e.row -= 1;
   }
+  squeeze(b);
   throwOffCharms(b);
   raiseTheDead(b);
   b.stabilizedThisRound.clear();
