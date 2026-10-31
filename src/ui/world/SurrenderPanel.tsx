@@ -13,6 +13,7 @@ import {
   surrenderQuestions,
 } from '../../game/world/surrender.ts';
 import type { SkullQuestion } from '../../game/world/skull.ts';
+import { cannotEnthrall, enthrall } from '../../game/world/thralls.ts';
 import type { World } from '../../game/world/types.ts';
 import { data } from '../builder/data.ts';
 import { PopOut } from './PopOut.tsx';
@@ -95,6 +96,24 @@ export function SurrenderPanel(props: { world: World; onChange: () => void }) {
           })}
         </div>
       )}
+      {/* Obnubilation of the Will, for each caster who could cast it on each prisoner (Phase 21). */}
+      <div class="actions" role="group" aria-label="Enthrall">
+        {w.members.flatMap((m) =>
+          foes.flatMap((id, i) =>
+            cannotEnthrall(w, data, m.id, i)
+              ? []
+              : [
+                  <button
+                    key={`${m.id}-${id}-${i}`}
+                    type="button"
+                    onClick={() => run(() => enthrall(w, data, m.id, i))}
+                  >
+                    {m.character.name}: enthrall the {monsterOf(data, id).name}
+                  </button>,
+                ],
+          ),
+        )}
+      </div>
       <div class="actions">
         <button type="button" onClick={() => run(() => releaseSurrendered(w, data))}>
           Let them go

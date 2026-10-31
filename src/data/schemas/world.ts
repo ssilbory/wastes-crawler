@@ -26,6 +26,7 @@ export const NpcSaveSchema = z.strictObject({
     'tree',
     'companion',
     'pack',
+    'thrall',
   ]),
   /**
    * The mount type of a pack beast, the hireling type, captive id, escort quest id, or the monster
@@ -480,6 +481,8 @@ export const WorldSaveSchema = z.strictObject({
       monsters: z.array(IdSchema),
       questioned: z.boolean(),
       recruited: z.boolean(),
+      /** Which of them made their save against Obnubilation of the Will, by place (Phase 21). */
+      immune: z.array(z.boolean()).optional(),
     })
     .nullable(),
   /** The day a member last played the inn's common room for the party's lodging. */
