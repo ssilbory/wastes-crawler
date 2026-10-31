@@ -224,6 +224,21 @@ describe('on-hit effects', () => {
     expect(zombie.caught).toBeNull();
   });
 
+  it('the Half-Dead save at +2, and at level 2 never sicken (Phase 20)', () => {
+    const b = standardBattle([['gnawing-dead']]);
+    const bite = at(who(b, 'foe-0-0'), 1);
+    const grukk = who(b, 'Grukk');
+    // Grave Rot saves at −1: a roll 1 short of the save, with −1 and +2, just makes it.
+    grukk.ailmentSave = 2;
+    b.rng = scriptedRng([grukk.saves.physical - 1]);
+    afterHit(b, bite, grukk);
+    expect(grukk.caught).toBeNull();
+    grukk.diseaseImmune = true;
+    b.rng = scriptedRng([]);
+    afterHit(b, bite, grukk);
+    expect(grukk.caught).toBeNull();
+  });
+
   it('paralysis: a Physical save or held, unable to act, for the rolled rounds', () => {
     const b = standardBattle([['grave-wyrm', 'zombie']]);
     const claw = at(who(b, 'foe-0-0'), 0);

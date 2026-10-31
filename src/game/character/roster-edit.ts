@@ -62,7 +62,7 @@ export function editPlan(entry: RosterEntry, data: GameData): EditPlan {
 /** The Constitution modifier starting HP was rolled with; foci bonuses are compared separately. */
 const conModifier = (c: Character) =>
   attributeModifier(
-    Object.values(c.attributes).reduce((sum, adjust) => sum + (adjust.con ?? 0), 0),
+    Object.values(c.attributes).reduce((sum, adjust) => sum + (adjust?.con ?? 0), 0),
   );
 
 /** Starting HP's inputs (SRD 1.7.1): the class hit die, Con modifier, and foci like Die Hard. */

@@ -59,11 +59,11 @@ test('the necromancer offers a raising quest, and its reward raises the dead', a
   await priest.getByRole('button', { name: /^Take on / }).click();
   await expect(log).toContainText('The party takes on');
 
-  // The crypt's own price is half what it was: 125 crowns a level.
+  // A crypt raises for half the usual 125 crowns a level, and says what it leaves (Phase 20).
   await page.getByRole('tab', { name: 'Inn and healer' }).click();
-  await expect(page.getByRole('region', { name: 'Crypt' })).toContainText(
-    'Raise Snag (125 crowns)',
-  );
+  const crypt = page.getByRole('region', { name: 'Crypt' });
+  await expect(crypt).toContainText('Raise Snag (62.5 crowns)');
+  await expect(crypt).toContainText('they return Half-Dead');
 
   // Its step done, the quest's only reward is raising Snag.
   await edit(page, `for (const id in save.quests) save.quests[id].status = 'ready';`);
@@ -73,5 +73,6 @@ test('the necromancer offers a raising quest, and its reward raises the dead', a
     .getByRole('button', { name: 'Raise Snag' })
     .click();
   await expect(log).toContainText('Ysolde the Necromancer raises Snag');
+  await expect(log).toContainText('Snag comes back Half-Dead.');
   await page.screenshot({ path: testInfo.outputPath('raising-done.png'), fullPage: true });
 });

@@ -17,6 +17,7 @@ import { SurrenderPopOut, surrenderOpen } from './SurrenderPanel.tsx';
 import { PurgePanel } from './PurgePanel.tsx';
 import { AntidotePanel } from './AntidotePanel.tsx';
 import { PotionPanel } from './PotionPanel.tsx';
+import { ScrollPanel } from './ScrollPanel.tsx';
 import { GreenwoodPanel } from './GreenwoodPanel.tsx';
 import { CompanionsPanel } from './CompanionsPanel.tsx';
 import { FormsPanel } from './FormsPanel.tsx';
@@ -292,6 +293,7 @@ export function DungeonScreen(props: {
           <PurgePanel world={w} onChange={props.onChange} />
           <AntidotePanel world={w} onChange={props.onChange} />
           <PotionPanel world={w} onChange={props.onChange} />
+          <ScrollPanel world={w} onChange={props.onChange} />
         </div>
       </div>
     </div>

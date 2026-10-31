@@ -204,15 +204,18 @@ describe('the healer, and the crypt or mortuary', () => {
     expect(raiseDead(w, data, 'm-0')).toEqual({ ok: false, reason: "Snag isn't dead." });
     Object.assign(snag, { dead: true, frail: true, pendingXp: 1.5 });
     snag.character = { ...snag.character, strain: { value: 22, broken: true } };
-    expect(raiseListed(data, snag)).toBe(125);
-    w.purse = 124;
+    // Rubblegate's raiser is Ysolde's crypt: half price (Phase 20).
+    expect(raiseListed(data, snag, 'crypt')).toBe(62.5);
+    expect(raiseListed(data, snag, 'mortuary')).toBe(125);
+    w.purse = 62.4;
     expect(raiseDead(w, data, 'm-0')).toMatchObject({ ok: false });
-    w.purse = 125;
+    w.purse = 62.5;
     expect(raiseDead(w, data, 'm-0')).toEqual({ ok: true });
     expect(snag).toMatchObject({ dead: false, frail: false, pendingXp: 0 });
     expect(snag.character).toMatchObject({ xp: 1.5, hp: { current: 1 }, strain: { value: 0 } });
     expect(w.purse).toBe(0);
-    expect(w.log.at(-1)).toContain('Ysolde the Necromancer raises Snag.');
+    expect(w.log.at(-2)).toContain('Ysolde the Necromancer raises Snag.');
+    expect(w.log.at(-1)).toContain('Snag comes back Half-Dead.');
     // A village has no crypt or mortuary.
     snag.dead = true;
     w.purse = 1000;

@@ -8,11 +8,10 @@
 // casting spends one of the day's spells.
 import type { Monster, MonsterCombat } from '../../data/schemas/index.ts';
 import { hexKey } from '../../rules/hex.ts';
-import { characterLevel } from '../../rules/progression.ts';
 import { rollSave } from '../../rules/saves.ts';
 import { findMonster, type GameData } from '../character/context.ts';
 import { classOption } from '../character/class-step.ts';
-import { cannotCast, spendCast } from './casting.ts';
+import { cannotCast, castLevel, spendCast } from './casting.ts';
 import { note } from './members.ts';
 import { addNpc, freshName, GRAVE_KNIGHT, npcMonster, npcRoom } from './npcs.ts';
 import type { TownResult } from './services.ts';
@@ -54,7 +53,6 @@ export function leaveCorpses(w: World, data: GameData, enemies: string[][]): voi
 export const corpsesHere = (w: World): number[] =>
   w.corpses?.at === placeKey(w) ? w.corpses.hitDice : [];
 
-const level = (m: Member) => characterLevel(m.character.classes);
 const servants = (w: World, m: Member) =>
   w.npcs.filter((n) => n.kind === 'undead' && n.master === m.id);
 const isRaised = (n: Npc) => Object.values<string>(RAISED).includes(n.type);
@@ -86,7 +84,7 @@ export function raiseCorpse(
   if (why) return no(why);
   const caster = m as Member;
   if (corpsesHere(w).length === 0) return no('There are no corpses here.');
-  if (servants(w, caster).filter(isRaised).length >= level(caster))
+  if (servants(w, caster).filter(isRaised).length >= castLevel(caster, 'raise-corpse'))
     return no(`${caster.character.name} can keep no more raised dead.`);
   if (!npcRoom(w, true)) return no('There is no room in the party.');
   spendCast(data, caster, 'raise-corpse');
@@ -144,11 +142,13 @@ export function commandTheDead(w: World, data: GameData, memberId: string): Town
   const e = w.encounter;
   if (!e || !e.enemies.flat().some((id) => tagged(data, id, 'undead')))
     return no('There are no undead here to command.');
+  // A scroll's level counts, read before the scroll is spent (Phase 21).
+  const level = castLevel(caster, 'command-the-dead');
   spendCast(data, caster, 'command-the-dead');
   const rest = laysToRest(data, caster);
   const bound = servants(w, caster).filter((n) => !isRaised(n) && n.type !== GRAVE_KNIGHT);
   let room =
-    2 * level(caster) - (rest ? 0 : bound.reduce((sum, n) => sum + npcMonster(data, n).hitDice, 0));
+    2 * level - (rest ? 0 : bound.reduce((sum, n) => sum + npcMonster(data, n).hitDice, 0));
   const penalty = caster.character.skills.magic ?? 0;
   const rows = e.enemies.map((row) =>
     row.filter((id) => {

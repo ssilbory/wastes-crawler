@@ -6,10 +6,9 @@
 // lay of the land around. The spell may not be cast twice on the same corpses.
 import { cellKey, FACINGS, type Cell } from '../../rules/grid.ts';
 import { distance, hexKey } from '../../rules/hex.ts';
-import { characterLevel } from '../../rules/progression.ts';
 import type { GameData } from '../character/context.ts';
 import { edgeKey } from '../dungeon/secrets.ts';
-import { cannotCast, spendCast } from './casting.ts';
+import { cannotCast, castLevel, spendCast } from './casting.ts';
 import { note } from './members.ts';
 import { corpsesHere } from './necromancy.ts';
 import { regionMap } from './region.ts';
@@ -36,7 +35,7 @@ export function cannotQuery(w: World, m: Member): string | null {
   const c = w.corpses;
   if (!c || corpsesHere(w).length === 0) return 'There are no corpses here.';
   if (c.queried) return 'These dead have already spoken.';
-  if (w.day - c.day > characterLevel(m.character.classes))
+  if (w.day - c.day > castLevel(m, QUERY_THE_SKULL))
     return 'These dead are too long gone to answer.';
   return null;
 }
@@ -111,7 +110,7 @@ export function queryTheSkull(
     return no('Ask the dead something they can answer here.');
   if (asked.filter(isLocate).length > 1)
     return no('The dead can locate only one of the boss, the vault, or a hoard.');
-  const level = characterLevel(caster.character.classes);
+  const level = castLevel(caster, QUERY_THE_SKULL);
   if (asked.length > level)
     return no(
       `${caster.character.name} can ask no more than ${level} question${level === 1 ? '' : 's'}.`,

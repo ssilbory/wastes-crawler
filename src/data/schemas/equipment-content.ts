@@ -112,6 +112,14 @@ export const FocusEffectSchema = z.discriminatedUnion('kind', [
     maxEncumbrance: z.int().min(0).nullable(),
     shields: z.boolean(),
   }),
+  /**
+   * Half-Dead (Phase 20, Raised by a necromancer): never Hungry, Sleepless, or Cold; Healing Touch
+   * does nothing; a bonus to saves against poison and disease; immune to both.
+   */
+  z.strictObject({ kind: z.literal('no-privation'), level: Level }),
+  z.strictObject({ kind: z.literal('no-healing-touch'), level: Level }),
+  z.strictObject({ kind: z.literal('ailment-save'), level: Level, amount: z.int().min(1) }),
+  z.strictObject({ kind: z.literal('ailment-immune'), level: Level }),
 ]);
 export type FocusEffect = z.infer<typeof FocusEffectSchema>;
 
