@@ -12,6 +12,11 @@ async function fightIfMet(page: Page): Promise<boolean> {
   await encounter.getByRole('button', { name: /^(Fight|Attack them)$/ }).click();
   await page.getByRole('button', { name: 'Auto-resolve' }).click();
   await page.getByRole('button', { name: 'Back to the map' }).click();
+  // Foes who surrendered wait on the party's word before the map is free (Phase 19).
+  const yielded = page.getByRole('dialog', { name: 'The surrendered' });
+  const plans = page.getByRole('button', { name: /for the quarter$/ });
+  await expect(yielded.or(plans).first()).toBeVisible();
+  if (await yielded.isVisible()) await yielded.getByRole('button', { name: 'Let them go' }).click();
   return true;
 }
 
