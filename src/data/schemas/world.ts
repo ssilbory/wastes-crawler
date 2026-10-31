@@ -108,6 +108,14 @@ export const MemberSaveSchema = z.strictObject({
   disease: z
     .strictObject({ id: IdSchema, nights: z.int().min(0), saves: z.int().min(0) })
     .nullable(),
+  /**
+   * A spell read from a scroll outside a fight, theirs to cast this quarter at the scroll's caster
+   * level (Phase 21: Scrolls outside fights).
+   */
+  unrolled: z
+    .strictObject({ spell: IdSchema, level: z.int().min(1) })
+    .nullable()
+    .optional(),
 });
 
 /** A riding or war mount the party keeps outside the NPC slots (docs/rules-adaptation.md, Mounts). */

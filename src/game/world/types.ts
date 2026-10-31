@@ -53,6 +53,8 @@ export interface Member {
   lastStandDay: number | null;
   /** A Beastmaster's companion sent away, ready to be called (1.5.4). */
   companion: NpcSave | null;
+  /** A spell read from a scroll outside a fight, cast at the scroll's level (Phase 21). */
+  unrolled?: { spell: string; level: number } | null | undefined;
   /** Hit points Feral Toughness adds to the maximum now (1.5.4). */
   toughness: number;
   purgeTries: string[];

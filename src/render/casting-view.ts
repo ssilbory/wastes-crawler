@@ -2,6 +2,8 @@
 // spell points (vendor/wwn-srd/1.0 Character Creation/1.5.0 Class List/1.5.11 The Invoker.md), or
 // a Blood Priest's miracles alone.
 import type { SheetMagic } from '../game/character/derived.ts';
+import { poolOf } from '../game/world/casting.ts';
+import type { Member } from '../game/world/types.ts';
 import type { CastingLevelRow } from '../rules/progression.ts';
 import type { SpellPool } from '../rules/spell-points.ts';
 
@@ -30,4 +32,11 @@ export function castsLeftText(pool: SpellPool, magic: SheetMagic): string {
     magic.points && plural(pool.pointsLeft, 'spell point'),
   ].filter(Boolean);
   return `${left.join(' and ')} left today`;
+}
+
+/** What a member has to cast with: their spells left, or a spell read from a scroll (Phase 21). */
+export function castsLeftFor(m: Member, magic: SheetMagic | null): string {
+  const own = magic ? castsLeftText(poolOf(m, magic), magic) : null;
+  const scroll = m.unrolled ? 'a spell read from a scroll' : null;
+  return [own, scroll].filter(Boolean).join('; ');
 }

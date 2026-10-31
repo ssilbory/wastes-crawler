@@ -9,7 +9,7 @@ import type { GameData } from '../character/context.ts';
 import { douse } from '../dungeon/light.ts';
 import { chartDungeon } from '../dungeon/chart.ts';
 import { emit } from './bus.ts';
-import { cannotCast, spendCast } from './casting.ts';
+import { cannotCast, spellReady, spendCast } from './casting.ts';
 import { remountOnSurface } from './companion-mounts.ts';
 import { hexesToAvoid } from './groves.ts';
 import { alive, note } from './members.ts';
@@ -28,7 +28,7 @@ const no = (reason: string): TownResult => ({ ok: false, reason });
 
 /** Living members with the spell prepared. */
 export const castersOf = (w: World, spell: string): Member[] =>
-  alive(w).filter((m) => m.character.spells.prepared.includes(spell));
+  alive(w).filter((m) => spellReady(m, spell));
 
 /** The caster, if they can cast the spell now; else why not. */
 function caster(w: World, data: GameData, memberId: string, spell: string): Member | string {

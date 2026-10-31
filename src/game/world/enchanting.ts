@@ -16,7 +16,7 @@ import { heldSpell } from '../character/spell-items.ts';
 import { putLine } from '../character/stacks.ts';
 import { casterLevelOf } from '../combat/combatants.ts';
 import { memberCheck, note } from './members.ts';
-import { scribable } from './scribing.ts';
+import { fightScribable } from './scribing.ts';
 import type { TownResult } from './services.ts';
 import type { Member, World } from './types.ts';
 import { daysText } from './wording.ts';
@@ -43,7 +43,8 @@ const levels = (data: GameData, spells: readonly string[]) =>
 export function spellsMisfit(data: GameData, d: Device, spells: readonly string[]): string | null {
   const dev = d.device;
   if (dev.kind === 'rod') return spells.length === 0 ? null : `A ${d.name} holds no spells.`;
-  const fits = new Set(scribable(data).map((s) => s.id));
+  // Devices hold only spells of fights (Phase 21: Scrolls outside fights).
+  const fits = new Set(fightScribable(data).map((s) => s.id));
   if (!spells.every((id) => fits.has(id)))
     return 'Only spells cast at a foe or friend in a fight fit.';
   if (new Set(spells).size !== spells.length) return 'Each spell goes in once.';
