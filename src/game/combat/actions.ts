@@ -10,7 +10,8 @@ import { say } from './damage.ts';
 import { breathe } from './specials.ts';
 import { castMagic, combatMagic } from './spells.ts';
 import { shakeOff, tormentStrike } from './conditions.ts';
-import { canAct, targets } from './targeting.ts';
+import { canAct, targets, turnsOnOwn } from './targeting.ts';
+import { gaze } from './charm.ts';
 import type { Action, Battle, CasterState, Combatant } from './types.ts';
 import { followRiders, inSlot } from './mounted.ts';
 import { bind, howl } from './companions.ts';
@@ -75,11 +76,7 @@ export function act(b: Battle, actor: Combatant, action: Action): void {
   switch (action.kind) {
     case 'attack': {
       const attack = actor.attacks[action.attack];
-      if (
-        !attack ||
-        !target ||
-        !targets(b, actor, attack, actor.berserk || actor.compelled > 0).includes(target)
-      )
+      if (!attack || !target || !targets(b, actor, attack, turnsOnOwn(actor)).includes(target))
         return;
       tormentStrike(b, actor);
       if (!canAct(actor)) return;
@@ -94,6 +91,9 @@ export function act(b: Battle, actor: Combatant, action: Action): void {
     case 'breath':
       tormentStrike(b, actor);
       if (canAct(actor)) breathe(b, actor, action.row);
+      return;
+    case 'gaze':
+      gaze(b, actor, target);
       return;
     case 'shake-off':
       shakeOff(b, actor);

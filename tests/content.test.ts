@@ -50,7 +50,15 @@ describe('data/content', () => {
       ailments: {
         ...content.ailments,
         antidote: { ...content.ailments.antidote, id: 'healers-pouch' },
-        diseases: [...content.ailments.diseases, content.ailments.diseases[0] as never],
+        diseases: [
+          ...content.ailments.diseases,
+          content.ailments.diseases[0] as never,
+          {
+            ...(content.ailments.diseases[0] as never as object),
+            id: 'ghoul-fever',
+            rises: 'no-such-dead',
+          } as never,
+        ],
       },
     };
     const errors = contentReferenceErrors(srd, broken).filter((e) =>
@@ -64,6 +72,7 @@ describe('data/content', () => {
         expect.stringMatching(/trap: unknown disease ooze$/),
         'monsterCombat/gnawing-dead Claw: unknown disease rot',
         "ailments: the antidote's id healers-pouch is SRD gear",
+        'ailments/ghoul-fever: unknown monster no-such-dead rises',
       ]),
     );
   });

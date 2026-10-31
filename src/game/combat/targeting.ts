@@ -13,6 +13,10 @@ export const isUp = (c: Combatant) => c.status === 'active' || c.status === 'asl
 /** Up, awake, not held by paralysis, and not frozen in amber. */
 export const canAct = (c: Combatant) => c.status === 'active' && c.heldRounds === 0 && !c.amber;
 
+/** Striking at its own side: the Prismatic Hemicycle's mad, the compelled, and the charmed. */
+export const turnsOnOwn = (c: Combatant): boolean =>
+  c.berserk || c.compelled > 0 || c.charm !== null;
+
 /** The other side. */
 export const foeSide = (c: Combatant): SideId => (c.side === 'party' ? 'enemy' : 'party');
 
@@ -94,7 +98,8 @@ export function targets(b: Battle, actor: Combatant, attack: Attack, mad = false
   // Sanctified Ward: foes look elsewhere unless acting on Instinct or out of other targets.
   // Beast Ward: an unprovoked beast leaves the warded be (1.5.4).
   const reached = foes.filter((t) => isUp(t) && reachable(t) && !wardedFrom(actor, t));
-  const unwarded = reached.filter((t) => !t.sanctified);
+  // The charmed fighting for the actor's side are left be too (Phase 19).
+  const unwarded = reached.filter((t) => !t.sanctified && t.charm?.side !== actor.side);
   const up = actor.instinctive || unwarded.length === 0 ? reached : unwarded;
   const fighting = up.filter((t) => !t.noncombatant);
   if (fighting.length > 0) return fighting;

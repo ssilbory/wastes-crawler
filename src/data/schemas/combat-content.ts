@@ -84,6 +84,11 @@ export const MonsterCombatSchema = z.strictObject({
   /** How it is drawn in a fight; presentation only. */
   figure: MonsterFigureSchema,
   caster: MonsterCasterSchema.optional(),
+  /**
+   * A gaze that charms one foe to fight its own side, resisted by this save (Phase 19: the
+   * vampire).
+   */
+  charm: z.strictObject({ save: SaveKind }).optional(),
   /** The effect of any hit the monster lands that its routine strike doesn't set (a drain). */
   onHit: OnHitSchema.optional(),
   /**

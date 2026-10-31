@@ -2,7 +2,7 @@ import type { ContentData, SrdData } from './schemas/index.ts';
 
 /**
  * Every disease a terrain, dungeon level, trap, or monster strike names exists, disease ids are
- * unique, and the antidote's id is free of the SRD's gear.
+ * unique, the monster a disease raises exists, and the antidote's id is free of the SRD's gear.
  */
 export function ailmentReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const errors: string[] = [];
@@ -24,6 +24,9 @@ export function ailmentReferenceErrors(srd: SrdData, content: ContentData): stri
   for (const m of content.monsterCombat)
     for (const s of m.routine ?? [])
       if (s.onHit?.kind === 'disease') check(`monsterCombat/${m.id} ${s.name}`, s.onHit.disease);
+  for (const d of content.ailments.diseases)
+    if (d.rises && !content.monsterCombat.some((m) => m.id === d.rises))
+      errors.push(`ailments/${d.id}: unknown monster ${d.rises} rises`);
   if (srd.gear.some((g) => g.id === content.ailments.antidote.id))
     errors.push(`ailments: the antidote's id ${content.ailments.antidote.id} is SRD gear`);
   return errors;

@@ -14,6 +14,7 @@ import { checkMorale } from './morale.ts';
 import { canAct, isUp, targets } from './targeting.ts';
 import type { Attack, Battle, Combatant, Controller, SideId } from './types.ts';
 import { followRiders, inSlot } from './mounted.ts';
+import { endCharms, raiseTheDead, throwOffCharms } from './charm.ts';
 import { heedCall } from './companions.ts';
 
 export const MAX_ROUNDS = 100;
@@ -56,12 +57,15 @@ function checkEnd(b: Battle): void {
   // The Invincible Citadel ends the fight as a break-off, whoever is left standing.
   if (b.escaped) return;
   // The banished and the howled who will find their way back keep the fight going (Phase 18a).
-  const left = (c: Combatant) => canAct(c) || c.returnsRound > 0;
+  // The charmed fight for the other side for now (Phase 19).
+  const left = (c: Combatant) => (canAct(c) || c.returnsRound > 0) && !c.charm;
   if (!b.combatants.some((c) => c.side === 'enemy' && left(c))) b.outcome = 'party';
   else if (!b.combatants.some((c) => c.side === 'party' && left(c) && !c.noncombatant))
     b.outcome = 'enemy';
-  // Whatever is said once the fight is settled is no one's turn.
-  if (b.outcome) b.acting = null;
+  // Whatever is said once the fight is settled is no one's turn; charms end with the fight.
+  if (!b.outcome) return;
+  b.acting = null;
+  endCharms(b);
 }
 
 /**
@@ -117,8 +121,8 @@ export function takeTurn(b: Battle, actor: Combatant, controller: Controller): v
     act(b, actor, action);
     checkMorale(b);
     checkEnd(b);
-    // Casting or breathing is the Main Action, whatever the monster's number of attacks.
-    if (action.kind === 'cast' || action.kind === 'breath') break;
+    // Casting, breathing, or a gaze is the Main Action, whatever the monster's number of attacks.
+    if (action.kind === 'cast' || action.kind === 'breath' || action.kind === 'gaze') break;
   }
   quickened(b, actor, controller);
 }
@@ -213,6 +217,8 @@ export function endOfRound(b: Battle): void {
     const movers = monsters.filter((c) => c.side === side && c.rootedRounds === 0);
     while (movers.length > 0 && !frontHeld()) for (const e of movers) e.row -= 1;
   }
+  throwOffCharms(b);
+  raiseTheDead(b);
   b.stabilizedThisRound.clear();
   b.round += 1;
   roundPasses(b);
@@ -235,8 +241,9 @@ function closeRound(b: Battle): void {
   if (b.round > MAX_ROUNDS) b.outcome = 'draw';
 }
 
+/** The charmed are played as monsters are, never by the player (Phase 19). */
 const controllerFor = (c: Combatant, party: Controller, enemy: Controller) =>
-  c.kind === 'pc' ? party : enemy;
+  c.kind === 'pc' && !c.charm ? party : enemy;
 
 /**
  * Plays turns until one needs a player's command, returning that combatant, or null once the
@@ -251,7 +258,7 @@ export function advance(
   while (!b.outcome) {
     const actor = currentActor(b);
     if (!actor) closeRound(b);
-    else if (needsCommand(actor)) {
+    else if (needsCommand(actor) && !actor.charm) {
       beginTurn(b, actor);
       // A companion under its master's command has had Mind Call's Effort committed (1.5.4).
       if (actor.companion) heedCall(b, actor);

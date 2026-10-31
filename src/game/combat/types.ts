@@ -109,6 +109,16 @@ export interface Combatant {
   skillBonus: number;
   mind: Mind;
   surrendered: boolean;
+  /**
+   * Phase 19 charm and possession: the charm on it (who cast it, and that one's side), the save
+   * its own charming gaze allows, those it has gazed at this fight, a disease it brought into the
+   * fight, and whether its corpse has risen.
+   */
+  charm: { by: string; side: SideId } | null;
+  charmSave: SaveType | null;
+  charmTried: string[];
+  carries: string | null;
+  rose: boolean;
   shield: boolean;
   towerShield: boolean;
   meleeShockImmune: boolean;
@@ -279,6 +289,8 @@ export type Action =
   | { kind: 'attack'; attack: number; target: string; smite?: true }
   | { kind: 'cast'; magic: string; target?: string; row?: number; strain?: boolean }
   | { kind: 'breath'; row: number }
+  /** A charming gaze at one foe (Phase 19: Charm and possession). */
+  | { kind: 'gaze'; target: string }
   | { kind: 'total-defense' }
   | { kind: 'stabilize'; target: string }
   /** Into an empty slot, or trading places with the ally in it (docs/rules-adaptation.md, Swapping). */

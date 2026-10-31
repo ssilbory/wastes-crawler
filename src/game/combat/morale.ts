@@ -15,9 +15,9 @@ export const MINION_MORALE = 2;
 
 const lost = (c: Combatant) => c.status === 'dead' || c.status === 'out' || c.status === 'fled';
 
-/** Those on a side still fighting: able to act, not captives or non-combat hirelings. */
+/** Those on a side still fighting for it: able to act, not captives or hirelings, nor charmed. */
 export const fighters = (b: Battle, side: SideId): Combatant[] =>
-  b.combatants.filter((c) => c.side === side && canAct(c) && !c.noncombatant);
+  b.combatants.filter((c) => c.side === side && canAct(c) && !c.noncombatant && !c.charm);
 
 /** A chase's Exert total: a character's Exert and better of Dex or Con, a monster's skill bonus. */
 export function exertTotal(c: Combatant): number {

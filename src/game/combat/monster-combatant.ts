@@ -121,6 +121,7 @@ export function monsterCombatant(
     mind: combat?.mind ?? 'monster',
     routine,
     volley,
+    charmSave: combat?.charm?.save ?? null,
     breath: combat?.breath ?? null,
     breathLeft: combat?.breath?.uses ?? 0,
     resist: combat?.resist ?? null,

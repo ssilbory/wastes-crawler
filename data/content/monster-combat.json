@@ -784,6 +784,7 @@
     },
     "mind": "sapient",
     "figure": "soldier",
+    "charm": { "save": "mental" },
     "onHit": {
       "kind": "drain",
       "dice": {

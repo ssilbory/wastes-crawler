@@ -29,6 +29,7 @@
       "savePenalty": 1,
       "harm": { "kind": "strain", "amount": 1 },
       "savesToRecover": 2,
+      "rises": "gnawing-dead",
       "purgeDifficulty": 8
     },
     {

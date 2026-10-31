@@ -26,6 +26,8 @@ export const DiseaseSchema = z.strictObject({
   harm: DiseaseHarmSchema,
   /** Successful night saves that end it. */
   savesToRecover: z.int().min(1),
+  /** Those who die in a fight carrying it rise as this monster on their foes' side (Phase 19). */
+  rises: IdSchema.optional(),
   /** Purge Ailment needs a Wis/Heal or Int/Heal check against it (1.5.9: 8 or more). */
   purgeDifficulty: z.int().min(8).nullable(),
 });
