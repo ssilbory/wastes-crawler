@@ -41,6 +41,8 @@ export const CharacterSchema = z.strictObject({
     background: Adjustments,
     /** Attribute boosts bought with skill points (SRD 2.7.1.5). */
     advancement: Adjustments,
+    /** Marks of being raised by a priest: Grave-touched, −1 Con each time (Phase 20). */
+    raised: Adjustments.optional(),
   }),
   /** Racial and class foci with their levels; Developed Attribute appears once per attribute. */
   foci: z.array(

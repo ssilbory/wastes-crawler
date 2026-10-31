@@ -10,13 +10,14 @@ import { rollSave } from '../../rules/saves.ts';
 import type { Combatant } from '../combat/types.ts';
 import type { GameData } from '../character/context.ts';
 import { addMemberStrain, alive, hurt, memberSheet, note } from './members.ts';
-import { findDisease, poisonProof } from './ailing.ts';
+import { diseaseProof, findDisease, poisonProof } from './ailing.ts';
+import { raisedMarks } from '../character/raised-marks.ts';
 import { regionMap } from './region.ts';
 import type { Member, World } from './types.ts';
 
 /** A lingering poison takes hold; a venom with a save penalty also adds System Strain. */
 export function poisonMember(w: World, data: GameData, m: Member, venomPenalty = 0): void {
-  if (poisonProof(m)) return;
+  if (poisonProof(data, m)) return;
   m.poisoned = true;
   const strain = data.content.ailments.poisoned.venomStrain;
   if (venomPenalty > 0 && strain > 0) addMemberStrain(w, data, m, strain, 'poison');
@@ -24,7 +25,7 @@ export function poisonMember(w: World, data: GameData, m: Member, venomPenalty =
 
 /** A disease is caught, unless the member already carries one. */
 export function infect(w: World, data: GameData, m: Member, id: string): void {
-  if (m.disease) return;
+  if (m.disease || diseaseProof(data, m)) return;
   m.disease = { id, nights: 0, saves: 0 };
   note(w, `${m.character.name} has caught ${findDisease(data, id).name}.`);
 }
@@ -41,9 +42,10 @@ export function exposureHere(w: World, data: GameData): Exposure | null {
   return map.terrainAt(w.position).exposure ?? null;
 }
 
+/** A save against poison or disease, with the Half-Dead's bonus (Phase 20). */
 const physical = (w: World, data: GameData, m: Member, penalty: number) =>
   rollSave(w.rng, memberSheet(data, m).saves.physical, {
-    modifier: -penalty,
+    modifier: raisedMarks(data, m.character).ailmentSave - penalty,
     steps: m.character.strain.broken ? -1 : 0,
   }).success;
 
@@ -92,7 +94,7 @@ function sicken(w: World, data: GameData, m: Member): void {
 /** What the fight left in a member who lived: the poison, a venom's strain, a disease caught. */
 export function ailmentsBack(w: World, data: GameData, m: Member, c: Combatant): void {
   if (m.dead) return;
-  if (c.poisoned && !poisonProof(m)) m.poisoned = true;
+  if (c.poisoned && !poisonProof(data, m)) m.poisoned = true;
   if (c.venom > 0) addMemberStrain(w, data, m, c.venom, 'poison');
   if (c.drained > 0) addMemberStrain(w, data, m, c.drained, 'monster');
   if (c.caught) infect(w, data, m, c.caught);

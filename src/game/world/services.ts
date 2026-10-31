@@ -3,12 +3,12 @@
 // 3.3.1 magical healing, which adds System Strain like any magical healing (vendor/wwn-srd/2.0
 // The Rules of the Game/2.5.0, 2.5.2), and magical curing of a disease; curing Frailty and
 // poison and raising the dead are house prices.
-import type { MissionGiver } from '../../data/schemas/index.ts';
+import type { MissionGiver, RaiserKind } from '../../data/schemas/index.ts';
 import { addStrain, fullRest } from '../../rules/strain.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
 import { cure } from './ailments.ts';
-import { revive } from './healer.ts';
+import { raiseMarked, raisePrice } from './raised.ts';
 import { endOfDay } from './day.ts';
 import { alive, cureFrailty, note, setHp } from './members.ts';
 import type { Member, World } from './types.ts';
@@ -62,8 +62,9 @@ const rules = (data: GameData) => data.content.townRules.healer;
 
 export const healListed = (data: GameData, m: Member) =>
   (m.character.hp.max - m.character.hp.current) * rules(data).perHp;
-export const raiseListed = (data: GameData, m: Member) =>
-  levelOf(data, m) * data.content.townRules.raisePerLevel;
+/** The price of raising a member at a place of this kind: a crypt asks half (Phase 20). */
+export const raiseListed = (data: GameData, m: Member, kind: RaiserKind) =>
+  raisePrice(data.content.townRules.raisePerLevel, levelOf(data, m), kind);
 
 /** The town's necromancer or death priest, if it has one; villages never do. */
 export function raiserHere(w: World, data: GameData): MissionGiver | undefined {
@@ -135,9 +136,10 @@ export function raiseDead(w: World, data: GameData, id: string): TownResult {
   if (!m.dead) return no(`${m.character.name} isn't dead.`);
   const raiser = raiserHere(w, data);
   if (!raiser) return no(`No one in ${townHere(w, data).name} raises the dead.`);
-  const paid = pay(w, data, raiseListed(data, m));
+  const kind = raiser.raises as RaiserKind;
+  const paid = pay(w, data, raiseListed(data, m, kind));
   if (!paid.ok) return paid;
-  revive(m);
   note(w, `${raiser.name} raises ${m.character.name}.`);
+  note(w, raiseMarked(data, m, kind));
   return OK;
 }

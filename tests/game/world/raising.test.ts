@@ -109,7 +109,10 @@ describe('raising quests (docs/rules-adaptation.md, Raising quests)', () => {
     expect(member(w, 'Grukk').character.xp).toBe(0);
     expect(w.purse).toBe(purse);
     expect(w.loot).toEqual([]);
-    expect(w.log.at(-1)).toContain('Ysolde the Necromancer raises Snag for The Corpse-Road.');
+    expect(w.log.at(-2)).toContain('Ysolde the Necromancer raises Snag for The Corpse-Road.');
+    // A crypt's raising quest leaves the crypt's mark (Phase 20).
+    expect(w.log.at(-1)).toContain('Snag comes back Half-Dead.');
+    expect(member(w, 'Snag').character.foci).toContainEqual({ id: 'half-dead', level: 1 });
     expect(standing(w, questOf(data, 'corpse-road'))).toBeUndefined();
   });
 

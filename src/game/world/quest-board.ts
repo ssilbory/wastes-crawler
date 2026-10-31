@@ -1,7 +1,7 @@
 // Mission givers in town (docs/rules-adaptation.md, Quests in Phase 6): quests on offer once their
 // prerequisites are met, accepted any number at a time, each run once, and turned in to the giver
 // for crowns, XP (SRD 2.7.0: three for an average mission), and loot.
-import type { MissionGiver, Quest, QuestState } from '../../data/schemas/index.ts';
+import type { MissionGiver, Quest, QuestState, RaiserKind } from '../../data/schemas/index.ts';
 import { toTenths } from '../../rules/economy.ts';
 import type { GameData } from '../character/context.ts';
 import { emit } from './bus.ts';
@@ -12,7 +12,7 @@ import { fulfilOrders, gainAuthority, learnCountersign } from './orders.ts';
 import { failQuest, giverName, payerName, payerOf, questOf } from './quests.ts';
 import { anyDead, isRaising, raisingBlocked } from './raising.ts';
 import type { TownResult } from './services.ts';
-import { revive } from './healer.ts';
+import { raiseMarked } from './raised.ts';
 import { addLoot } from './shop.ts';
 import { pickUp } from './party-load.ts';
 import type { World } from './types.ts';
@@ -97,8 +97,11 @@ export function turnInQuest(w: World, data: GameData, id: string, raise?: string
     const m = w.members.find((x) => x.id === raise);
     if (!m?.dead) return no('Choose a dead PC to raise.');
     (w.quests[id] as { status: string }).status = 'done';
-    revive(m);
     note(w, `${giverName(data, q)} raises ${m.character.name} for ${q.name}.`);
+    // The quest's raising leaves the mark its giver's place does (Phase 20).
+    // Content checks give a raising quest's giver a place that raises the dead.
+    const giver = data.content.missionGivers.find((g) => g.id === q.giver) as MissionGiver;
+    note(w, raiseMarked(data, m, giver.raises as RaiserKind));
     return { ok: true };
   }
   (w.quests[id] as { status: string }).status = 'done';

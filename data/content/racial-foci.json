@@ -343,5 +343,39 @@
         "actsFirst": false
       }
     ]
+  },
+  {
+    "id": "half-dead",
+    "name": "Half-Dead",
+    "description": "A necromancer brought you back, but not all the way. Your flesh is cool, your heart slow, and the grave still has a hand on you.",
+    "levels": [
+      {
+        "level": 1,
+        "text": "You never go Hungry, Sleepless, or Cold, though you still eat. Healing Touch finds no life in you to mend. You gain +2 to saves against poison and disease."
+      },
+      {
+        "level": 2,
+        "text": "Raised from the crypt a second time, you are immune to poison and disease."
+      }
+    ],
+    "effects": [
+      {
+        "kind": "no-privation",
+        "level": 1
+      },
+      {
+        "kind": "no-healing-touch",
+        "level": 1
+      },
+      {
+        "kind": "ailment-save",
+        "level": 1,
+        "amount": 2
+      },
+      {
+        "kind": "ailment-immune",
+        "level": 2
+      }
+    ]
   }
 ]

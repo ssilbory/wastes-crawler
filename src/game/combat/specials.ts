@@ -54,7 +54,11 @@ export function afterHit(b: Battle, attack: Attack, target: Combatant): void {
   if (!effect || target.status !== 'active') return;
   if (effect.kind === 'poison') {
     // Unaging: immune to poisons (Phase 15).
-    if (target.poisonImmune || save(b, target, 'physical', -effect.penalty).success) return;
+    if (
+      target.poisonImmune ||
+      save(b, target, 'physical', target.ailmentSave - effect.penalty).success
+    )
+      return;
     say(b, `${target.name} is poisoned.`);
     target.poisoned = true;
     if (effect.penalty > 0) target.venom += b.data.content.ailments.poisoned.venomStrain;
@@ -62,10 +66,10 @@ export function afterHit(b: Battle, attack: Attack, target: Combatant): void {
     return;
   }
   if (effect.kind === 'disease') {
-    // The unliving can't sicken; one disease is caught at a time.
-    if (target.tags.has('unliving') || target.caught) return;
+    // The unliving and the twice-raised Half-Dead can't sicken; one disease is caught at a time.
+    if (target.tags.has('unliving') || target.diseaseImmune || target.caught) return;
     const d = b.data.content.ailments.diseases.find((x) => x.id === effect.disease);
-    if (!d || save(b, target, 'physical', -d.savePenalty).success) return;
+    if (!d || save(b, target, 'physical', target.ailmentSave - d.savePenalty).success) return;
     target.caught = d.id;
     say(b, `${target.name} is sickened by the ${attack.name.toLowerCase()}.`);
     return;

@@ -11,6 +11,7 @@ import { activeEffects } from '../character/equipment.ts';
 import { armorFreeArts } from '../character/magic.ts';
 import { ammoFor, carriesAmmo } from '../character/ammo.ts';
 import { findItem } from '../character/items.ts';
+import { raisedMarks } from '../character/raised-marks.ts';
 import type { Attack, Combatant } from './types.ts';
 
 export function base(
@@ -96,6 +97,9 @@ export function base(
     harvestRound: 0,
     shockCap: null,
     poisonImmune: false,
+    touchless: false,
+    ailmentSave: 0,
+    diseaseImmune: false,
     poisoned: false,
     venom: 0,
     drained: 0,
@@ -160,6 +164,7 @@ export function pcCombatant(
   const sheet = characterSheet(c, data, form);
   const level = characterLevel(c.classes);
   const effects = activeEffects(data, c.foci);
+  const marks = raisedMarks(data, c);
   const abilities = new Set(
     Object.entries(c.classes.levels)
       .filter(([, l]) => l >= 1)
@@ -256,8 +261,14 @@ export function pcCombatant(
     form,
     // Cold Flesh: Shock of 2 at most, and a natural AC of 12 plus half the level (1.5.14).
     ...(c.arts.includes('cold-flesh') ? { shockCap: 2, acFloor: coldFleshAc(level) } : {}),
-    // Unaging and the Poisoner at level 2: immune to poisons (1.5.14, 1.6.0).
+    // Unaging and the Poisoner at level 2: immune to poisons (1.5.14, 1.6.0); and the Half-Dead
+    // at level 2 (Phase 20).
     poisonImmune:
-      c.arts.includes('unaging') || c.foci.some((f) => f.id === 'poisoner' && f.level >= 2),
+      c.arts.includes('unaging') ||
+      c.foci.some((f) => f.id === 'poisoner' && f.level >= 2) ||
+      marks.ailmentImmune,
+    touchless: marks.touchless,
+    ailmentSave: marks.ailmentSave,
+    diseaseImmune: marks.ailmentImmune,
   };
 }
