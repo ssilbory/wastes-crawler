@@ -105,6 +105,7 @@ export function newWorld(
     brewOrders: [],
     corpses: null,
     fallen: null,
+    surrendered: null,
     performedDay: null,
     bestiary: [],
     disguise: null,

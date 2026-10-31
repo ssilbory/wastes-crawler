@@ -150,6 +150,7 @@ export interface World {
   /** Corpses lying where the last won fight was (Phase 14b). */
   corpses: WorldSave['corpses'];
   fallen: WorldSave['fallen'];
+  surrendered: WorldSave['surrendered'];
   performedDay: number | null;
   bestiary: string[];
   /** Faction state by id (Phase 13). */

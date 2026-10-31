@@ -34,7 +34,7 @@ export interface ParleyReach {
 /** The kinds of minds the party can parley with, and whether even aggressive groups listen. */
 export function parleyReach(w: World, data: GameData): ParleyReach {
   const opens = effects(w, data).flatMap((e) => (e.kind === 'parley' ? [e] : []));
-  const beasts: Mind[] = beastSpeaker(w, data) ? ['animal'] : [];
+  const beasts: Mind[] = talksToBeasts(w, data) ? ['animal'] : [];
   return {
     minds: new Set<Mind>(['sapient', ...beasts, ...opens.flatMap((e) => e.minds)]),
     evenAggressive: opens.some((e) => e.evenAggressive),
@@ -45,7 +45,7 @@ export function parleyReach(w: World, data: GameData): ParleyReach {
  * Anyone awake with Animal Ken, who can talk to beasts (docs/rules-adaptation.md, Skills), or a
  * Beastmaster with Effort to commit to Tongue of the Beasts (1.5.4).
  */
-const beastSpeaker = (w: World, data: GameData) =>
+export const talksToBeasts = (w: World, data: GameData) =>
   w.members.some(
     (m) =>
       (awake(m) && m.character.skills[data.content.skillRules.animalKen.skill] !== undefined) ||

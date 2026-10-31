@@ -101,6 +101,8 @@ export interface BattleSetup {
   antiMagic?: boolean;
   /** Underground, where Deluge of Hell can't be cast. */
   indoors?: boolean;
+  /** Someone on the party's side can talk to animals, so beasts can surrender (Phase 19). */
+  talksToBeasts?: boolean;
   log?: boolean;
 }
 
@@ -237,6 +239,9 @@ export function createBattle(s: BattleSetup): Battle {
     heldThisRound: new Set(),
     turnBegun: null,
     rowsChecked: new Set(),
+    boss: null,
+    bossFell: false,
+    talksToBeasts: { party: s.talksToBeasts ?? false, enemy: false },
     halfChecked: new Set(),
     startCount: { party: party.length, enemy: enemies.length },
     stabilizedThisRound: new Set(),

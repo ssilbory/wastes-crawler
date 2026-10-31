@@ -23,6 +23,9 @@ import { freeCaptive } from './rescue.ts';
 import { wipe } from './town.ts';
 import type { Member, Npc, World } from './types.ts';
 import { keepSummons } from './summons.ts';
+import { takeSurrender } from './surrender.ts';
+import { talksToBeasts } from './minds.ts';
+import { markBoss } from '../combat/morale.ts';
 import { companionsBack, unbound } from './companion-fight.ts';
 import { riddenBack } from './companion-rider-fight.ts';
 import { unseat } from './companion-mounts.ts';
@@ -54,6 +57,8 @@ export interface WorldBattle {
 export function encounterBattle(w: World, data: GameData): WorldBattle {
   if (!w.encounter) throw new Error('no encounter to fight');
   const fight = partyBattle(w, data, w.encounter.enemies, true, w.encounter.captive);
+  // A quest's fixed fight, a vault's, or a hoard's guards have a boss (Phase 19).
+  if (w.encounter.quest || atGuardedHoard(w, data)) markBoss(fight.battle);
   return {
     ...fight,
     quest: w.encounter.quest,
@@ -84,8 +89,11 @@ export function partyBattle(
   const mounts = withNpcs ? calmWarMounts(w, data, fighters(w)) : [];
   const setup = partySetup(w, data, enemies, withNpcs, mounts);
   const npcs = withNpcs ? w.npcs.filter((n) => n.hp > 0) : [];
+  const battle = battleFrom(data, w.rng, setup, true);
+  // Beasts can surrender to a party that can talk to them (Phase 19).
+  battle.talksToBeasts.party = talksToBeasts(w, data);
   return {
-    battle: battleFrom(data, w.rng, setup, true),
+    battle,
     setup,
     memberIds: fighters(w).map((m) => m.id),
     npcIds: npcs.map((n) => n.id),
@@ -97,6 +105,17 @@ export function partyBattle(
     garrison: null,
     patrol: null,
   };
+}
+
+/** The enemy rows less one of each foe that fled the field, by escape or surrender. */
+function withoutFled(fight: WorldBattle, rows: string[][]): string[][] {
+  const left = rows.map((r) => [...r]);
+  for (const c of fight.battle.combatants) {
+    if (c.side !== 'enemy' || c.status !== 'fled' || !c.monster) continue;
+    const row = left.find((r) => r.includes(c.monster as string));
+    row?.splice(row.indexOf(c.monster), 1);
+  }
+  return left;
 }
 
 /** What a won fight of this difficulty is worth, as the journal and the fight log tell it. */
@@ -147,6 +166,7 @@ export function applyBattle(
   keepSummons(w, data, fight);
   companionsBack(w, data, fight);
   w.encounter = null;
+  w.surrendered = null;
   if (result.outcome === 'enemy') {
     // Pack beasts come back with the party, like mounts (docs/rules-adaptation.md, Mounts).
     for (const n of w.npcs.filter((x) => x.kind !== 'hireling' && x.kind !== 'pack')) {
@@ -181,7 +201,9 @@ export function applyBattle(
     const slain = unbound(fight);
     const xp = difficulty ? difficultyTier(data, difficulty).xp : 0;
     winnings(w, data, slain, { xp, boss: fight.quest !== null || atGuardedHoard(w, data) });
-    leaveCorpses(w, data, slain);
+    // The escaped and the surrendered pay as the beaten, but leave no corpse (Phase 19).
+    leaveCorpses(w, data, withoutFled(fight, slain));
+    takeSurrender(w, fight);
     if (difficulty) award(w, data, fight, difficulty);
     if (fight.captive) freeCaptive(w, data, fight.captive);
     emit(w, data, {

@@ -9,7 +9,7 @@ import { LootDiceSchema, ShopStateSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 import { ComponentTypeSchema } from './crafting-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 49;
+export const WORLD_SCHEMA_VERSION = 50;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -470,6 +470,18 @@ export const WorldSaveSchema = z.strictObject({
    * there before the party moves on or the day ends (Phase 14d).
    */
   fallen: z.strictObject({ at: z.string(), members: z.array(z.string()) }).nullable(),
+  /**
+   * Foes who surrendered in the party's last won fight, by monster id, and where: the party
+   * questions them once, recruits one, and releases or kills the rest (Phase 19).
+   */
+  surrendered: z
+    .strictObject({
+      at: z.string(),
+      monsters: z.array(IdSchema),
+      questioned: z.boolean(),
+      recruited: z.boolean(),
+    })
+    .nullable(),
   /** The day a member last played the inn's common room for the party's lodging. */
   performedDay: z.int().min(0).nullable(),
   /** Monsters the party has named with Know, whose statistics it can see. */

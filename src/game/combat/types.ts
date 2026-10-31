@@ -8,6 +8,7 @@ import type {
   Character,
   Dice,
   Element,
+  Mind,
   MonsterCombat,
   MonsterTag,
   OnHit,
@@ -99,6 +100,15 @@ export interface Combatant {
   tags: Set<MonsterTag>;
   morale: number;
   instinct: number;
+  /**
+   * Phase 19: Move in feet (PCs 30, SRD 2.4.4), a monster's stat-line skill bonus (0 for PCs), its
+   * kind of mind (people for PCs), and whether a row's failed Morale ended in surrender: such a
+   * combatant has `fled` status, as one that escaped does.
+   */
+  move: number;
+  skillBonus: number;
+  mind: Mind;
+  surrendered: boolean;
   shield: boolean;
   towerShield: boolean;
   meleeShockImmune: boolean;
@@ -330,6 +340,13 @@ export interface Battle {
   rowsChecked: Set<string>;
   /** Sides that have rolled Morale for losing half their number. */
   halfChecked: Set<SideId>;
+  /**
+   * Phase 19: the boss of a boss fight, by combatant id, whether its fall has been checked for, and
+   * the sides with someone who can talk to animals, to whom beasts can surrender.
+   */
+  boss: string | null;
+  bossFell: boolean;
+  talksToBeasts: Record<SideId, boolean>;
   /** Each side's starting number of combatants. */
   startCount: Record<SideId, number>;
   stabilizedThisRound: Set<string>;

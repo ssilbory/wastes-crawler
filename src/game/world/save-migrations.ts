@@ -288,4 +288,6 @@ export const WORLD_MIGRATIONS: Migrations = {
       ),
     };
   },
+  // Version 50 adds surrender (Phase 19): no one has surrendered yet.
+  49: (raw) => ({ ...raw, schemaVersion: 50, surrendered: null }),
 };
