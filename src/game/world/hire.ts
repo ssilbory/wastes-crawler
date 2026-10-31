@@ -65,7 +65,7 @@ export function dismiss(w: World, data: GameData, id: string): TownResult {
                   ? `${n.name} is let go and roots where it stands.`
                   : n.kind === 'thrall'
                     ? `${n.name} is released from the spell and slips away.`
-                  : `The party leaves ${n.name} behind.`,
+                    : `The party leaves ${n.name} behind.`,
     );
   if (n.kind === 'escort') emit(w, data, { kind: 'npc-died', npc: n });
   return { ok: true };
