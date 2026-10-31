@@ -12,9 +12,9 @@ import { save } from './saves.ts';
 import { foeSide, isUp } from './targeting.ts';
 import type { Action, Battle, Combatant } from './types.ts';
 
-/** Who the actor would gaze at now: the strongest it hasn't tried, while no one is under its charm. */
+/** Who the actor would gaze at now: the strongest foe standing, once a fight. */
 export function gazeTarget(b: Battle, actor: Combatant): Combatant | null {
-  if (!actor.charmSave || b.combatants.some((c) => c.charm?.by === actor.id)) return null;
+  if (!actor.charmSave || actor.gazed) return null;
   const open = b.combatants.filter(
     (c) =>
       c.side !== actor.side &&
@@ -22,8 +22,7 @@ export function gazeTarget(b: Battle, actor: Combatant): Combatant | null {
       !c.noncombatant &&
       !c.amber &&
       !c.misted &&
-      !c.tags.has('unliving') &&
-      !actor.charmTried.includes(c.id),
+      !c.tags.has('unliving'),
   );
   return open.reduce<Combatant | null>(
     (a, c) => (!a || c.hitDice > a.hitDice || (c.hitDice === a.hitDice && c.hp > a.hp) ? c : a),
@@ -40,7 +39,7 @@ export function gazeAction(b: Battle, actor: Combatant): Action | null {
 /** A charming gaze: the target saves or turns on its own side. */
 export function gaze(b: Battle, actor: Combatant, target: Combatant | undefined): void {
   if (!target || !actor.charmSave || target !== gazeTarget(b, actor)) return;
-  actor.charmTried.push(target.id);
+  actor.gazed = true;
   if (save(b, target, actor.charmSave).success) {
     say(b, `${target.name} meets ${actor.name}'s gaze and holds firm.`);
     return;

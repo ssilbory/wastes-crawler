@@ -111,12 +111,12 @@ export interface Combatant {
   surrendered: boolean;
   /**
    * Phase 19 charm and possession: the charm on it (who cast it, and that one's side), the save
-   * its own charming gaze allows, those it has gazed at this fight, a disease it brought into the
-   * fight, and whether its corpse has risen.
+   * its own charming gaze allows, whether it has used that gaze this fight, a disease it brought
+   * into the fight, and whether its corpse has risen.
    */
   charm: { by: string; side: SideId } | null;
   charmSave: SaveType | null;
-  charmTried: string[];
+  gazed: boolean;
   carries: string | null;
   rose: boolean;
   /**

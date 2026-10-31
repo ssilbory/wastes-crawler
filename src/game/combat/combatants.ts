@@ -37,7 +37,7 @@ export function base(
     surrendered: false,
     charm: null,
     charmSave: null,
-    charmTried: [],
+    gazed: false,
     carries: null,
     rose: false,
     regenerate: 0,

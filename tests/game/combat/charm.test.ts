@@ -38,11 +38,11 @@ describe("the vampire's gaze", () => {
     (fizzwick as Combatant).noncombatant = true;
     expect(gazeTarget(b, vampire(b))).toBe(lirael);
     (lirael as Combatant).tags = new Set(['unliving']);
-    vampire(b).charmTried.push((snag as Combatant).id);
+    (snag as Combatant).hp = 1;
     expect(gazeTarget(b, vampire(b))).toBe(grukk);
     expect(gazeAction(b, vampire(b))).toEqual({ kind: 'gaze', target: (grukk as Combatant).id });
-    // Not while someone is under its charm, and never for a creature with no gaze.
-    charmBy(b, grukk as Combatant);
+    // Once a fight, and never for a creature with no gaze.
+    vampire(b).gazed = true;
     expect(gazeTarget(b, vampire(b))).toBeNull();
     expect(gazeAction(b, vampire(b))).toBeNull();
     expect(gazeTarget(b, who(b, 'Snag'))).toBeNull();
@@ -55,17 +55,24 @@ describe("the vampire's gaze", () => {
     snag.hitDice = 3;
     b.rng = scriptedRng([20]);
     gaze(b, vampire(b), snag);
-    expect(snag.charm).toBeNull();
-    expect(vampire(b).charmTried).toEqual([snag.id]);
-    // Tried once, never again: the next strongest is gazed at instead.
-    const grukk = who(b, 'Grukk');
-    grukk.hitDice = 2;
+    expect([snag.charm, vampire(b).gazed]).toEqual([null, true]);
+    // Once a fight: no second gaze.
     gaze(b, vampire(b), snag);
-    expect(vampire(b).charmTried).toEqual([snag.id]);
-    b.rng = scriptedRng([1]);
-    act(b, vampire(b), { kind: 'gaze', target: grukk.id });
-    expect(grukk.charm).toEqual({ by: vampire(b).id, side: 'enemy' });
-    expect(b.log?.join(' ')).toContain('turns on their own side');
+    expect(b.log?.join(' ').match(/meets Vampire's gaze/g)).toHaveLength(1);
+    const c = standardBattle([['vampire']]);
+    for (const x of party(c)) x.hitDice = 1;
+    const grukk = who(c, 'Grukk');
+    grukk.hitDice = 2;
+    c.rng = scriptedRng([1]);
+    act(c, vampire(c), { kind: 'gaze', target: grukk.id });
+    expect(grukk.charm).toEqual({ by: vampire(c).id, side: 'enemy' });
+    expect(c.log?.join(' ')).toContain('turns on their own side');
+    // A gaze at someone else than the strongest is no gaze.
+    const d = standardBattle([['vampire']]);
+    for (const x of party(d)) x.hitDice = 1;
+    who(d, 'Grukk').hitDice = 2;
+    gaze(d, vampire(d), who(d, 'Snag'));
+    expect(vampire(d).gazed).toBe(false);
     gaze(b, vampire(b), undefined);
   });
 
