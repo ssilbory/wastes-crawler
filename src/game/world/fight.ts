@@ -107,11 +107,15 @@ export function partyBattle(
   };
 }
 
-/** The enemy rows less one of each foe that fled the field, by escape or surrender. */
-function withoutFled(fight: WorldBattle, rows: string[][]): string[][] {
+/**
+ * The enemy rows less one of each foe that fled the field: by escape or surrender, or with
+ * `surrendered` false, only those who got away.
+ */
+function withoutFled(fight: WorldBattle, rows: string[][], surrendered = true): string[][] {
   const left = rows.map((r) => [...r]);
   for (const c of fight.battle.combatants) {
     if (c.side !== 'enemy' || c.status !== 'fled' || !c.monster) continue;
+    if (c.surrendered && !surrendered) continue;
     const row = left.find((r) => r.includes(c.monster as string));
     row?.splice(row.indexOf(c.monster), 1);
   }
@@ -200,8 +204,12 @@ export function applyBattle(
     // A beast bound mid-fight is neither loot nor a corpse (1.5.4).
     const slain = unbound(fight);
     const xp = difficulty ? difficultyTier(data, difficulty).xp : 0;
-    winnings(w, data, slain, { xp, boss: fight.quest !== null || atGuardedHoard(w, data) });
-    // The escaped and the surrendered pay as the beaten, but leave no corpse (Phase 19).
+    // The escaped get away with what they carry; the surrendered hand theirs over (Phase 22).
+    const caught = withoutFled(fight, slain, false);
+    if (caught.flat().length < slain.flat().length)
+      note(w, 'Those who got away took what they carried.');
+    winnings(w, data, caught, { xp, boss: fight.quest !== null || atGuardedHoard(w, data) });
+    // Neither the escaped nor the surrendered leaves a corpse (Phase 19).
     leaveCorpses(w, data, withoutFled(fight, slain));
     takeSurrender(w, fight);
     if (difficulty) award(w, data, fight, difficulty);

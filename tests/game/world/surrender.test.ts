@@ -52,6 +52,9 @@ describe('after a won fight', () => {
     expect(surrenderedHere(w)).toEqual(['thug-or-militia']);
     // The slain thug and the veteran lie here: 1 hit die each.
     expect(w.corpses?.hitDice).toEqual([1, 1]);
+    // The gnoll got away with its 2d6; the surrendered thug handed over its 1d6 (Phase 22).
+    expect(w.loot).toEqual([{ count: 3, sides: 6 }]);
+    expect(w.log.join(' ')).toContain('Those who got away took what they carried.');
     // Elsewhere, no one waits.
     w.position = { col: w.position.col + 1, row: w.position.row };
     expect(surrenderedHere(w)).toEqual([]);
@@ -62,6 +65,8 @@ describe('after a won fight', () => {
     const w = world();
     win(w, [['thug-or-militia']], [0]);
     win(w, [['thug-or-militia']], []);
+    // No one got away, so nothing is said of it.
+    expect(w.log.join(' ')).not.toContain('got away');
     expect(w.surrendered).toBeNull();
     const fight = partyBattle(w, data, [['thug-or-militia']], false, null);
     takeSurrender(w, fight);
