@@ -90,6 +90,32 @@ export function locatedMarks(
   });
 }
 
+/** The cache nearest a cell, in squares across and down. */
+const nearestTo = (at: Cell, cells: Cache[]): Cache =>
+  cells.reduce((a, b) =>
+    Math.abs(b.at.x - at.x) + Math.abs(b.at.y - at.y) <
+    Math.abs(a.at.x - at.x) + Math.abs(a.at.y - at.y)
+      ? b
+      : a,
+  );
+
+/**
+ * One vault or hoard for the surrendered to name (Phase 22): the nearest the automap doesn't mark
+ * yet, which it then marks.
+ */
+export function locateTreasure(w: World, data: GameData): string {
+  const s = w.dungeon as Underground;
+  const left = cachesOf(data, s).filter((c) => !w.caches.includes(keyOf(s, c)));
+  if (left.length === 0) return 'They know of no vault or hoard left on this level.';
+  const marks = (s.located[s.level] ??= {});
+  const open = left.filter((c) => !marks[cellKey(c.at)]);
+  if (open.length === 0) return 'They know of nothing the party has not already marked.';
+  const c = nearestTo(s.at, open);
+  const what = c.vault ? 'vault' : 'hoard';
+  marks[cellKey(c.at)] = what;
+  return `They say a ${what} lies ${wayTo(s.at, c.at)}.`;
+}
+
 /** Answers one locating question, marking the squares it names on the automap. */
 export function locate(w: World, data: GameData, q: LocateQuestion): string {
   const s = w.dungeon as Underground;
@@ -102,13 +128,7 @@ export function locate(w: World, data: GameData, q: LocateQuestion): string {
       if (!was || WEIGHT[q] > WEIGHT[was]) marks[cellKey(c.at)] = q;
     }
   };
-  const nearest = (cells: Cache[]) =>
-    cells.reduce((a, b) =>
-      Math.abs(b.at.x - s.at.x) + Math.abs(b.at.y - s.at.y) <
-      Math.abs(a.at.x - s.at.x) + Math.abs(a.at.y - s.at.y)
-        ? b
-        : a,
-    );
+  const nearest = (cells: Cache[]) => nearestTo(s.at, cells);
   if (q === 'boss') {
     const boss = bossCache(caches);
     if (!boss) return 'The dead know of no boss on this level.';

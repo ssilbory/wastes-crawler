@@ -10,8 +10,7 @@ import { mindOf } from './minds.ts';
 import { leaveCorpses, placeKey } from './necromancy.ts';
 import { addNpc, monsterOf } from './npcs.ts';
 import type { TownResult } from './services.ts';
-import { skullAnswer, type SkullQuestion } from './skull.ts';
-import { LOCATE } from './skull-locate.ts';
+import { prisonerAnswer, prisonerQuestions, type PrisonerQuestion } from './prisoner-answers.ts';
 import { shareText } from './wording.ts';
 import type { World } from './types.ts';
 
@@ -34,9 +33,8 @@ export function takeSurrender(w: World, fight: WorldBattle): void {
 export const surrenderedHere = (w: World): string[] =>
   w.surrendered?.at === placeKey(w) ? w.surrendered.monsters : [];
 
-/** What the surrendered can tell: below ground the boss, a vault, or the hoards; above, the land. */
-export const surrenderQuestions = (w: World): SkullQuestion[] =>
-  w.dungeon ? [...LOCATE] : ['land'];
+/** What the surrendered can tell where the party stands (prisoner-answers.ts). */
+export const surrenderQuestions = (w: World): PrisonerQuestion[] => prisonerQuestions(w);
 
 const pending = (w: World) => {
   const s = w.surrendered;
@@ -44,14 +42,14 @@ const pending = (w: World) => {
 };
 
 /** Questions the surrendered, once, as Query the Skull's locating or land questions do. */
-export function questionSurrendered(w: World, data: GameData, q: SkullQuestion): TownResult {
+export function questionSurrendered(w: World, data: GameData, q: PrisonerQuestion): TownResult {
   const s = pending(w);
   if (!s) return no('No one here has surrendered.');
   if (s.questioned) return no('They have told all they will.');
   if (!surrenderQuestions(w).includes(q)) return no('They know nothing of that here.');
   s.questioned = true;
   note(w, 'The party questions the surrendered.');
-  note(w, skullAnswer(w, data, q).replace('The dead', 'They'));
+  note(w, prisonerAnswer(w, data, q));
   return { ok: true };
 }
 
