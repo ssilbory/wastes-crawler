@@ -84,8 +84,9 @@ export function HelpControls() {
 
       <h3>Saves</h3>
       <p>
-        The game autosaves into the slot chosen on the start screen. Export save downloads the world
-        and your characters; Load a save file on the Overland start screen reads one back.
+        The game autosaves into the slot chosen on the start screen. Export save (under More in the
+        bar) downloads the world and your characters; Load a save file on the Overland start screen
+        reads one back.
       </p>
     </details>
   );

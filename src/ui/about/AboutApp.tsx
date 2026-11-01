@@ -103,7 +103,7 @@ export function AboutApp() {
         <h2>Your saves</h2>
         <p>
           Saves live in this browser, on this device only. To move a game to another device, use
-          Export save on the map, then Load a save file on the other device.
+          More, then Export save on the map, then Load a save file on the other device.
         </p>
         <p class="hint">{storageNote(persisted)}</p>
         {persisted === false && (

@@ -2,8 +2,8 @@ import type { ComponentChildren } from 'preact';
 import { useId, useState } from 'preact/hooks';
 
 /**
- * The bar's rarely used actions (export, abandon). On a computer they sit in the bar like any
- * other; on a phone they fold behind a More button so the map starts higher (src/ui/theme/mobile.css).
+ * The bar's rarely used actions (export, abandon), folded behind a More button so the bar keeps to
+ * one row on a computer and the map starts higher on a phone (layout.css).
  */
 export function BarMore(props: { children: ComponentChildren }) {
   const [open, setOpen] = useState(false);

@@ -54,6 +54,7 @@ test('keeps worlds in three slots', async ({ page }) => {
 test('exports a full save and loads it back, roster and all', async ({ page }, testInfo) => {
   await begin(page, 'bundle-e2e');
   const download = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'More' }).click();
   await page.getByRole('button', { name: 'Export save' }).click();
   const file = testInfo.outputPath('wastes-crawler-save.json');
   await (await download).saveAs(file);
@@ -73,6 +74,9 @@ test('exports a save from town and from underground', async ({ page }) => {
   await begin(page, 'export-e2e');
   const exported = async () => {
     const download = page.waitForEvent('download');
+    // Export waits behind More; the fold stays open after.
+    const more = page.getByRole('button', { name: 'More' });
+    if ((await more.getAttribute('aria-expanded')) !== 'true') await more.click();
     await page.getByRole('button', { name: 'Export save' }).click();
     expect((await download).suggestedFilename()).toBe('wastes-crawler-save.json');
   };

@@ -1,0 +1,79 @@
+/* The party across the status bar (PartyPanel.tsx, as a strip): one small card a member with its
+   health, strain, and conditions, so they stay on screen on the map, in a town, and underground
+   while the docks scroll. Loaded after world.css; a phone's sizes are in mobile.css. */
+
+/* After the actions: where the readouts and the actions take a row each, it shares the actions'
+   row, no taller than a button, so the bar and the map under it keep their height. */
+.world-bar .party-strip {
+  flex: 1 1 26rem;
+  min-width: 0;
+}
+
+/* A wide screen: between the readouts and the actions, all in one row. */
+@media (min-width: 1600px) {
+  .world-bar .party-strip {
+    order: 1;
+  }
+
+  .world-bar .bar-actions {
+    order: 2;
+  }
+}
+
+.world-bar .party-strip ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: 4px 6px;
+}
+
+.world-bar .party-strip li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  /* Lines in whole pixels: a card is 30px tall, under a button's height (layout.css). */
+  line-height: 17px;
+  gap: 0 6px;
+  padding: 2px 8px;
+  background: var(--panel-sunk);
+  border: 1px solid var(--bevel-lo);
+  border-radius: var(--radius-control);
+  box-shadow: var(--bevel-in);
+}
+
+/* Name on the left, the numbers on the right, the gauge and any conditions under both. */
+.world-bar .party-strip .member-head {
+  display: contents;
+}
+
+.world-bar .party-strip strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.9rem;
+}
+
+.world-bar .party-strip .slot-stats {
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.world-bar .party-strip .hp-bar {
+  grid-column: 1 / -1;
+  height: 5px;
+}
+
+.world-bar .party-strip .conditions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 3px;
+}
+
+.world-bar .party-strip .chip {
+  font-size: 0.72rem;
+  line-height: 15px;
+}

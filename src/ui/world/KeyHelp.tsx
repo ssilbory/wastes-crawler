@@ -11,7 +11,7 @@ export function KeyHelp(props: { rows: readonly KeyRow[] }) {
     <>
       <button
         type="button"
-        class="secondary"
+        class="secondary key-help-toggle"
         aria-keyshortcuts="Shift+?"
         onClick={() => setOpen(true)}
       >

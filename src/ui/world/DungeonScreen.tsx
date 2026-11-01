@@ -5,9 +5,12 @@ import { describeDate } from '../../game/world/calendar.ts';
 import type { World } from '../../game/world/types.ts';
 import { automap, FACING_NAMES } from '../../render/automap-view.ts';
 import { Automap } from './Automap.tsx';
+import { automapWindow } from '../../render/automap-window.ts';
+import { PHONE, useMedia } from '../media.ts';
 import { dungeonView } from '../../render/dungeon-view.ts';
 import { lightView } from '../../render/dungeon-light.ts';
 import { DungeonView } from './DungeonView.tsx';
+import { DungeonControls } from './DungeonControls.tsx';
 import { encounterPortrait } from '../../render/encounter-portrait.ts';
 import { motionOf, type Motion, type PartyMove as Move } from '../../render/dungeon-motion.ts';
 import { data } from '../builder/data.ts';
@@ -62,7 +65,11 @@ const MOVES: Record<Exclude<KeyAction, 'search' | 'stairs'>, Move> = {
   'step-right': { step: 'right' },
 };
 
-/** First-person view, automap, and controls while the party is underground. */
+/**
+ * First-person view, automap, and controls while the party is underground. On a computer the map
+ * stands beside the view with the controls under it; on a phone the map comes first, as the main
+ * way about, with the view and the pad side by side under it (mobile.css).
+ */
 export function DungeonScreen(props: {
   world: World;
   version: number;
@@ -133,6 +140,8 @@ export function DungeonScreen(props: {
   const { level } = levelOf(data, s.dungeon, s.level);
   const stairs = stairsHere(w, data);
   const map = automap(w, data);
+  // On a phone the map follows the party, so its squares stay big enough to tap.
+  const phone = useMedia(PHONE);
   const stairsLabel = !stairs
     ? null
     : 'surface' in stairs.to
@@ -159,6 +168,7 @@ export function DungeonScreen(props: {
             </button>
           </BarMore>
         </span>
+        <PartyPanel members={w.members} strip />
       </div>
       <div class="world-main">
         <div class="world-left">
@@ -171,32 +181,25 @@ export function DungeonScreen(props: {
               light={lightView(w, data)}
               label="Dungeon view"
             />
-            <div class="dungeon-controls">
-              <p class="bump" aria-live="polite">
-                {bump ?? ' '}
-              </p>
-              <div class="moves" role="group" aria-label="Move">
-                <button type="button" onClick={() => move({ step: 'left' })}>
-                  Step left
-                </button>
-                <button type="button" onClick={() => move({ step: 'forward' })}>
-                  Forward
-                </button>
-                <button type="button" onClick={() => move({ step: 'right' })}>
-                  Step right
-                </button>
-                <button type="button" onClick={() => move({ turn: 'left' })}>
-                  Turn left
-                </button>
-                <button type="button" onClick={() => move({ step: 'back' })}>
-                  Back
-                </button>
-                <button type="button" onClick={() => move({ turn: 'right' })}>
-                  Turn right
-                </button>
-              </div>
+          </div>
+          <div class="dungeon-side">
+            {map && (
+              <section class="panel dungeon-map" aria-label="Automap">
+                <h3>Map</h3>
+                <Automap
+                  map={map}
+                  label={`Map of ${level.name}`}
+                  onPick={w.encounter ? undefined : walk.walkTo}
+                  window={phone ? automapWindow(map, s.at) : undefined}
+                />
+                {!w.encounter && (
+                  <p class="hint">Tap or click a square you've seen to walk there.</p>
+                )}
+              </section>
+            )}
+            <DungeonControls bump={bump} onMove={move}>
               {!w.encounter && (
-                <div class="actions" role="group" aria-label="Explore">
+                <>
                   <button type="button" onClick={() => act(() => search(w, data))}>
                     Search (1 turn)
                   </button>
@@ -231,7 +234,7 @@ export function DungeonScreen(props: {
                       </button>
                     </>
                   )}
-                </div>
+                </>
               )}
               {stairsAway && (
                 <button type="button" onClick={() => walk.walkTo(stairsAway)}>
@@ -243,7 +246,7 @@ export function DungeonScreen(props: {
                   {stairsLabel}
                 </button>
               )}
-            </div>
+            </DungeonControls>
           </div>
           <JournalPanel world={w} />
           {w.encounter && (
@@ -264,23 +267,11 @@ export function DungeonScreen(props: {
           )}
         </div>
         <div class="dock">
-          {map && (
-            <section class="panel" aria-label="Automap">
-              <h3>Map</h3>
-              <Automap
-                map={map}
-                label={`Map of ${level.name}`}
-                onPick={w.encounter ? undefined : walk.walkTo}
-              />
-              {!w.encounter && <p class="hint">Click a square you've seen to walk there.</p>}
-            </section>
-          )}
           {!w.encounter && !revive.open && !surrenderOpen(w) && onSafeSquare(w, data) && (
             <CampPanel world={w} onChange={props.onChange} />
           )}
-          {/* Quests, then the party, then the panels of powers (Sam's call: one column). */}
+          {/* Quests, then the panels of powers (Sam's call: one column); the party is in the bar. */}
           <QuestLog world={w} onChange={props.onChange} />
-          <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
           <CompanionsPanel world={w} onChange={props.onChange} />
           <NecromancyPanel world={w} onChange={props.onChange} />

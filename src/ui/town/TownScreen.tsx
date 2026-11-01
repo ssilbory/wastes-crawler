@@ -96,11 +96,12 @@ export function TownScreen(props: {
             </button>
           </BarMore>
           {!partyless && (
-            <button type="button" class="create" onClick={props.onLeave}>
+            <button type="button" class="create bar-go" onClick={props.onLeave}>
               Back to the map
             </button>
           )}
         </span>
+        {w.members.length > 0 && <PartyPanel members={w.members} strip />}
       </div>
       {partyless && (
         <p class="errors party-lost" role="alert">
@@ -151,7 +152,6 @@ export function TownScreen(props: {
           <JournalPanel world={w} lines={30} />
         </div>
         <div class="dock">
-          <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
           <MountsPanel world={w} onChange={props.onChange} />
         </div>

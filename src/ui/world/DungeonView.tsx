@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'preact/hooks';
+import { useId, useLayoutEffect, useRef } from 'preact/hooks';
 import { darkness, poolAt, type LightView } from '../../render/dungeon-light.ts';
 import { VIEW_HEIGHT, VIEW_WIDTH, type Panel } from '../../render/dungeon-view.ts';
 import type { Relief } from '../../render/dungeon-relief.ts';
@@ -107,6 +107,10 @@ export function DungeonView(props: {
   // Each move restarts the motion on the same scene: the view is patched, not rebuilt, so a step
   // changes a few attributes rather than recreating hundreds of nodes.
   const scene = useRef<SVGGElement>(null);
+  // The scene is clipped to the frame inside its moving group, so a turn or a step that shrinks or
+  // slides it shows the dark around it, never the cells drawn past the frame's edges (the ones
+  // beside the party, behind its side walls).
+  const frame = `dv-frame-${useId()}`;
   useLayoutEffect(() => {
     const g = scene.current;
     if (!g || !props.moves) return;
@@ -139,68 +143,73 @@ export function DungeonView(props: {
           </radialGradient>
         </defs>
       )}
+      <clipPath id={frame}>
+        <rect width={VIEW_WIDTH} height={VIEW_HEIGHT} />
+      </clipPath>
       <g class="scene" ref={scene}>
-        <rect class="ceiling" width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
-        <rect class="floor" y={VIEW_HEIGHT / 2} width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
-        {props.panels.map((p) =>
-          p.furniture ? (
-            <FurnitureShape key={p.key} panel={p} light={light} />
-          ) : p.occupant ? (
-            <OccupantShape key={p.key} panel={p} light={light} />
-          ) : (
-            <g
-              key={p.key}
-              class={`panel-${p.kind}`}
-              // A trap fades into the floor it lies on, which carries its own shadow.
-              opacity={p.trap && light ? 1 - darkness(light, p.span.near) : undefined}
-            >
-              {p.breach && (
-                <clipPath id={`dv-breach-${p.key}`}>
-                  <path d={p.breach.clip} clip-rule="evenodd" />
-                </clipPath>
-              )}
-              <g clip-path={p.breach ? `url(#dv-breach-${p.key})` : undefined}>
-                {(!p.trap || p.trap.plate) && <polygon points={p.points} fill={p.fill} />}
-                {p.trap && <TrapMarks art={p.trap} />}
-                {p.detail.patches && <path class="patches" d={p.detail.patches} />}
-                {p.detail.relief && <ReliefShapes relief={p.detail.relief} />}
-                {p.detail.lines && <path class="detail" d={p.detail.lines} />}
-                {p.frame && p.leaf && (
-                  <>
-                    <polygon class="door-frame" points={p.frame} fill={p.leaf.fill} />
-                    {p.leaf.detail.relief && <ReliefShapes relief={p.leaf.detail.relief} />}
-                    <path class="detail" d={p.leaf.detail.lines} />
-                    <path class="iron" d={p.leaf.detail.patches} />
-                  </>
+        <g clip-path={`url(#${frame})`}>
+          <rect class="ceiling" width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
+          <rect class="floor" y={VIEW_HEIGHT / 2} width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
+          {props.panels.map((p) =>
+            p.furniture ? (
+              <FurnitureShape key={p.key} panel={p} light={light} />
+            ) : p.occupant ? (
+              <OccupantShape key={p.key} panel={p} light={light} />
+            ) : (
+              <g
+                key={p.key}
+                class={`panel-${p.kind}`}
+                // A trap fades into the floor it lies on, which carries its own shadow.
+                opacity={p.trap && light ? 1 - darkness(light, p.span.near) : undefined}
+              >
+                {p.breach && (
+                  <clipPath id={`dv-breach-${p.key}`}>
+                    <path d={p.breach.clip} clip-rule="evenodd" />
+                  </clipPath>
                 )}
-                {light && !p.trap && <Pool panel={p} light={light} />}
-                {light && !p.trap && <Shadow panel={p} light={light} />}
-              </g>
-              {p.breach && (
-                // The broken rim and the rubble at its foot, dimmed with the wall they came from.
-                <g opacity={light ? 1 - darkness(light, p.span.near) : undefined}>
-                  <path class="rim" d={p.breach.rim} />
-                  <path class="rubble" d={p.breach.rubble} />
+                <g clip-path={p.breach ? `url(#dv-breach-${p.key})` : undefined}>
+                  {(!p.trap || p.trap.plate) && <polygon points={p.points} fill={p.fill} />}
+                  {p.trap && <TrapMarks art={p.trap} />}
+                  {p.detail.patches && <path class="patches" d={p.detail.patches} />}
+                  {p.detail.relief && <ReliefShapes relief={p.detail.relief} />}
+                  {p.detail.lines && <path class="detail" d={p.detail.lines} />}
+                  {p.frame && p.leaf && (
+                    <>
+                      <polygon class="door-frame" points={p.frame} fill={p.leaf.fill} />
+                      {p.leaf.detail.relief && <ReliefShapes relief={p.leaf.detail.relief} />}
+                      <path class="detail" d={p.leaf.detail.lines} />
+                      <path class="iron" d={p.leaf.detail.patches} />
+                    </>
+                  )}
+                  {light && !p.trap && <Pool panel={p} light={light} />}
+                  {light && !p.trap && <Shadow panel={p} light={light} />}
                 </g>
-              )}
-            </g>
-          ),
-        )}
-        {light &&
-          props.foes?.map((f) => (
-            <svg
-              key={f.key}
-              class="foe"
-              x={f.x}
-              y={f.y}
-              width={f.size}
-              height={f.size}
-              viewBox="0 0 48 48"
-              opacity={1 - darkness(light, f.depth)}
-            >
-              <FigureParts figure={f.figure} down={false} light={f.light} mirror={f.mirror} />
-            </svg>
-          ))}
+                {p.breach && (
+                  // The broken rim and the rubble at its foot, dimmed with the wall they came from.
+                  <g opacity={light ? 1 - darkness(light, p.span.near) : undefined}>
+                    <path class="rim" d={p.breach.rim} />
+                    <path class="rubble" d={p.breach.rubble} />
+                  </g>
+                )}
+              </g>
+            ),
+          )}
+          {light &&
+            props.foes?.map((f) => (
+              <svg
+                key={f.key}
+                class="foe"
+                x={f.x}
+                y={f.y}
+                width={f.size}
+                height={f.size}
+                viewBox="0 0 48 48"
+                opacity={1 - darkness(light, f.depth)}
+              >
+                <FigureParts figure={f.figure} down={false} light={f.light} mirror={f.mirror} />
+              </svg>
+            ))}
+        </g>
       </g>
       {light && <rect class="glow" width={VIEW_WIDTH} height={VIEW_HEIGHT} fill="url(#dv-glow)" />}
       {!light && (
