@@ -2,10 +2,10 @@
 // spells), as data for the panel. Pure.
 import type { GameData } from '../game/character/context.ts';
 import { characterSheet } from '../game/character/derived.ts';
-import { poolOf } from '../game/world/casting.ts';
+import { spellReady } from '../game/world/casting.ts';
 import { TREES, treesOf, type TreeSpell } from '../game/world/greenwood.ts';
 import type { World } from '../game/world/types.ts';
-import { castsLeftText } from './casting-view.ts';
+import { castsLeftFor } from './casting-view.ts';
 
 export interface TreeCasterView {
   id: string;
@@ -19,15 +19,14 @@ export interface TreeCasterView {
 export function greenwoodView(w: World, data: GameData): TreeCasterView[] {
   return w.members.flatMap((m): TreeCasterView[] => {
     const magic = characterSheet(m.character, data).magic;
-    const prepared = (Object.keys(TREES) as TreeSpell[]).filter((s) =>
-      m.character.spells.prepared.includes(s),
-    );
-    if (m.dead || !magic || prepared.length === 0) return [];
+    const prepared = (Object.keys(TREES) as TreeSpell[]).filter((s) => spellReady(m, s));
+    // A spell read from a scroll is a member's to cast without magic of their own (Phase 21).
+    if (m.dead || (!magic && !m.unrolled) || prepared.length === 0) return [];
     return [
       {
         id: m.id,
         name: m.character.name,
-        left: castsLeftText(poolOf(m, magic), magic),
+        left: castsLeftFor(m, magic),
         spells: prepared.map((spell) => ({
           spell,
           mend: treesOf(w, m, spell)

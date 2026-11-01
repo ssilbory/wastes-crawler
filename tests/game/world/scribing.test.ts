@@ -53,11 +53,12 @@ function scribe(faces: number[] = []): { w: World; fizz: Member } {
 }
 
 describe('writing scrolls (docs/rules-adaptation.md, Scrolls; SRD 4.9.1)', () => {
-  it('fits only spells cast at a target in a fight, and only those the scribe knows', () => {
+  it('fits spells cast at a target in a fight or outside fights, and only those known', () => {
     const ids = scribable(data).map((s) => s.id);
     expect(ids).toContain(COFFIN);
+    // Phase 21: spells cast only outside fights fit too; a fight spell with no target still waits.
+    expect(ids).toContain('the-excellent-transpicuous-transformation');
     expect(ids).not.toContain('prudentially-transient-abnegation-of-life');
-    expect(ids).not.toContain('the-excellent-transpicuous-transformation');
     const { w, fizz } = scribe();
     expect(canScribe(data, fizz)).toBe(true);
     expect(
@@ -73,7 +74,7 @@ describe('writing scrolls (docs/rules-adaptation.md, Scrolls; SRD 4.9.1)', () =>
     expect(scribeDifficulty(data, COFFIN)).toBe(8);
     expect(scrollListed(data, 'deluge-of-hell')).toBe(100);
     expect(scribeDifficulty(data, 'deluge-of-hell')).toBe(10);
-    expect(() => scrollListed(data, 'the-excellent-transpicuous-transformation')).toThrow();
+    expect(() => scrollListed(data, 'prudentially-transient-abnegation-of-life')).toThrow();
     // The party pays half, and a hide and an essence for every two spell levels (Sam's calls).
     expect(scrollCost(data, COFFIN)).toBe(10);
     expect(scrollCost(data, 'deluge-of-hell')).toBe(50);

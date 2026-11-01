@@ -10,6 +10,8 @@ import { MASTERS_VIGOR_QUARTER, mastersVigor } from './vowed-arts.ts';
 export function endQuarter(w: World, data: GameData): void {
   vigor(w, data, VIGOR_QUARTER);
   mastersVigor(w, data, MASTERS_VIGOR_QUARTER);
+  // A spell read from a scroll and not cast is lost with the quarter (Phase 21).
+  for (const m of w.members) m.unrolled = null;
   if (w.quarter < 3) {
     w.quarter += 1;
     return;

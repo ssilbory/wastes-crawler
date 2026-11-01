@@ -7,6 +7,7 @@
 import type { PendingEncounter } from '../../data/schemas/index.ts';
 import { roll } from '../../rules/dice.ts';
 import type { GameData } from '../character/context.ts';
+import { raisedMarks } from '../character/raised-marks.ts';
 import { alive, artUsable, awake, note, setHp } from './members.ts';
 
 export { artUsable };
@@ -41,6 +42,8 @@ export function immuneTo(
   condition: 'cold' | 'sleepless' | 'hungry',
 ): boolean {
   const arts = m.character.arts;
+  // The Half-Dead feel none of them (Phase 20).
+  if (raisedMarks(data, m.character).privationProof) return true;
   // Feral Toughness keeps off outdoor heat and cold (1.5.4).
   if (condition === 'cold')
     return (

@@ -4,9 +4,8 @@
 // walking tree, one at a time. Either works anywhere, from the land or a carried seed; cast on the
 // caster's own hurt tree of its kind, it makes it whole. The trees serve in the NPC slots, and each
 // casting spends one of the day's spells.
-import { characterLevel } from '../../rules/progression.ts';
 import type { GameData } from '../character/context.ts';
-import { cannotCast, spendCast } from './casting.ts';
+import { cannotCast, castLevel, spendCast } from './casting.ts';
 import { alive, note } from './members.ts';
 import { addNpc, freshName, monsterOf, npcRoom, removeNpc } from './npcs.ts';
 import type { TownResult } from './services.ts';
@@ -23,7 +22,7 @@ const no = (reason: string): TownResult => ({ ok: false, reason });
 
 /** How many of a tree the caster may keep: saplings to their level, elder trees one. */
 function limit(m: Member, spell: TreeSpell): number {
-  return spell === 'rouse-the-sapling' ? characterLevel(m.character.classes) : 1;
+  return spell === 'rouse-the-sapling' ? castLevel(m, spell) : 1;
 }
 
 export const treesOf = (w: World, m: Member, spell: TreeSpell): Npc[] =>

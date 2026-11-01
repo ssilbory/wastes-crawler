@@ -111,6 +111,7 @@ export const QuestSchema = z.strictObject({
 export type Quest = z.infer<typeof QuestSchema>;
 
 export const RaiserKindSchema = z.enum(['crypt', 'mortuary', 'temple']);
+export type RaiserKind = z.infer<typeof RaiserKindSchema>;
 
 /** Someone in a town who offers quests. */
 export const MissionGiverSchema = z.strictObject({

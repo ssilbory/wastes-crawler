@@ -150,6 +150,10 @@ describe('Healing Touch', () => {
     grukk.column = 3;
     const touch = combatMagic(b, 'healing-touch') as CombatMagic;
     expect(canUse(b, who(b, 'Snag'), touch, false, grukk.id)).toBe(true);
+    // The Half-Dead have no life in them for Healing Touch to mend (Phase 20).
+    grukk.touchless = true;
+    expect(canUse(b, who(b, 'Snag'), touch, false, grukk.id)).toBe(false);
+    grukk.touchless = false;
     b.rng = scriptedRng([1, 1]);
     expect(castMagic(b, who(b, 'Snag'), 'healing-touch', grukk.id, undefined)).toBe(true);
     expect(grukk.hp).toBe(4);

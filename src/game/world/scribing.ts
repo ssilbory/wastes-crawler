@@ -6,8 +6,8 @@
 // shifts with the kit, like any build. When
 // the work is done they roll Int/Scribing against 7 plus half the spell level, rounded up; another
 // member with Scribing helps, as the SRD's apprentice (4.10.0), for +1. A failed scroll is lost.
-// The scroll goes off at the scribe's caster level. Only spells the combat engine can cast at a
-// target fit on a scroll for now.
+// The scroll goes off at the scribe's caster level. Spells the combat engine casts at a target fit
+// on a scroll, and so do those cast only outside fights (Sam's call, Phase 21).
 import type { Project } from '../../data/schemas/index.ts';
 import { gameSpells, type GameSpell } from '../../data/spells.ts';
 import type { GameData } from '../character/context.ts';
@@ -25,14 +25,21 @@ import { priceHere, spend, townHere } from './town-prices.ts';
 const no = (reason: string): TownResult => ({ ok: false, reason });
 const rules = (data: GameData) => data.content.scrolls;
 
-/** Spells that fit on a scroll: those cast at a target or row in a fight, Smite aside. */
-export function scribable(data: GameData): GameSpell[] {
+/** Spells cast at a target or row in a fight, Smite aside: what fits in a wand or staff too. */
+export function fightScribable(data: GameData): GameSpell[] {
   const ids = new Set(
     data.content.combatMagic
       .filter((m) => m.source === 'spell' && m.target !== 'none')
       .map((m) => m.id),
   );
   return gameSpells(data.srd, data.content).filter((s) => ids.has(s.id));
+}
+
+/** Spells that fit on a scroll: those of fights, and those cast only outside them (Phase 21). */
+export function scribable(data: GameData): GameSpell[] {
+  const outside = new Set(data.content.spellRules.outsideCombat);
+  const spells = gameSpells(data.srd, data.content).filter((s) => outside.has(s.id));
+  return [...fightScribable(data), ...spells];
 }
 
 const spellOf = (data: GameData, id: string): GameSpell => {

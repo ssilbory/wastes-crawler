@@ -2,7 +2,7 @@
 import type { GameData } from '../game/character/context.ts';
 import { characterSheet } from '../game/character/derived.ts';
 import { BONESHAPER } from '../game/world/boneshaper.ts';
-import { poolOf } from '../game/world/casting.ts';
+import { castLevel, spellReady } from '../game/world/casting.ts';
 import { corpsesHere, RAISED } from '../game/world/necromancy.ts';
 import {
   cannotQuery,
@@ -11,8 +11,7 @@ import {
   type SkullQuestion,
 } from '../game/world/skull.ts';
 import type { World } from '../game/world/types.ts';
-import { characterLevel } from '../rules/progression.ts';
-import { castsLeftText } from './casting-view.ts';
+import { castsLeftFor } from './casting-view.ts';
 
 export interface CasterView {
   id: string;
@@ -53,23 +52,24 @@ export function necromancyView(
 ): { corpses: number; casters: CasterView[] } | null {
   const casters = w.members.flatMap((m): CasterView[] => {
     const magic = characterSheet(m.character, data).magic;
-    const prepared = m.character.spells.prepared;
+    const ready = (spell: string) => spellReady(m, spell);
     const shaped = w.members.flatMap((t) =>
       t.character.shaped?.by === m.character.id
         ? [{ id: t.id, name: t.character.name, changes: changeText(t.character.shaped.changes) }]
         : [],
     );
-    if (m.dead || !magic) return [];
-    if (!SPELLS.some((s) => prepared.includes(s)) && shaped.length === 0) return [];
-    const raise = prepared.includes('raise-corpse');
+    // A spell read from a scroll is a member's to cast without magic of their own (Phase 21).
+    if (m.dead || (!magic && !m.unrolled)) return [];
+    if (!SPELLS.some(ready) && shaped.length === 0) return [];
+    const raise = ready('raise-corpse');
     return [
       {
         id: m.id,
         name: m.character.name,
-        left: castsLeftText(poolOf(m, magic), magic),
+        left: castsLeftFor(m, magic),
         raise,
-        knight: prepared.includes('raise-grave-knight'),
-        command: prepared.includes('command-the-dead'),
+        knight: ready('raise-grave-knight'),
+        command: ready('command-the-dead'),
         mend: raise
           ? w.npcs
               .filter(
@@ -80,14 +80,14 @@ export function necromancyView(
               )
               .map((n) => ({ id: n.id, name: n.name }))
           : [],
-        query: prepared.includes(QUERY_THE_SKULL)
+        query: ready(QUERY_THE_SKULL)
           ? {
               questions: skullQuestions(w),
-              ask: characterLevel(m.character.classes),
+              ask: castLevel(m, QUERY_THE_SKULL),
               bar: cannotQuery(w, m),
             }
           : null,
-        shape: prepared.includes(BONESHAPER),
+        shape: ready(BONESHAPER),
         shaped,
       },
     ];

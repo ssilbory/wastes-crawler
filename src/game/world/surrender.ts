@@ -92,6 +92,7 @@ export function recruitSurrendered(
   }
   s.recruited = true;
   s.monsters.splice(index, 1);
+  s.immune?.splice(index, 1);
   if (s.monsters.length === 0) w.surrendered = null;
   return { ok: true };
 }

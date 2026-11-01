@@ -1,3 +1,5 @@
+import type { RaiserKind } from '../../data/schemas/index.ts';
+import { RAISING_MARK } from '../../game/world/raised.ts';
 import {
   cureFrail,
   cureSickness,
@@ -110,6 +112,7 @@ export function ServicesTab(props: { world: World; act: Act }) {
         <section class="panel" aria-label={RAISER_PLACE[raiser.raises ?? 'mortuary']}>
           <h2>{RAISER_PLACE[raiser.raises ?? 'mortuary']}</h2>
           <p class="hint">{raiser.text}</p>
+          <p class="hint">{RAISING_MARK[raiser.raises as RaiserKind]}</p>
           {shrine === raiser && <PrayerForm world={w} act={props.act} />}
           {dead.length === 0 && <p class="hint">No one in the party is dead.</p>}
           {dead.map((m) => (
@@ -118,7 +121,7 @@ export function ServicesTab(props: { world: World; act: Act }) {
               type="button"
               onClick={() => props.act(() => raiseDead(w, data, m.id))}
             >
-              Raise {m.character.name} ({price(raiseListed(data, m))})
+              Raise {m.character.name} ({price(raiseListed(data, m, raiser.raises as RaiserKind))})
             </button>
           ))}
         </section>

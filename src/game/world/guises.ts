@@ -5,9 +5,8 @@
 // so the caster's level must cover everyone in the party. The Jade Palanquin carries the party's
 // stowed gear until dusk or dawn, so it weighs on no one.
 import type { PendingEncounter } from '../../data/schemas/index.ts';
-import { characterLevel } from '../../rules/progression.ts';
 import type { GameData } from '../character/context.ts';
-import { cannotCast, spendCast } from './casting.ts';
+import { cannotCast, castLevel, spendCast } from './casting.ts';
 import { alive, note } from './members.ts';
 import type { TownResult } from './services.ts';
 import type { Member, World } from './types.ts';
@@ -31,7 +30,7 @@ export function adoptVisage(w: World, data: GameData, memberId: string): TownRes
   const m = caster(w, data, memberId, VISAGE);
   if (typeof m === 'string') return no(m);
   const ids = everyone(w);
-  const level = characterLevel(m.character.classes);
+  const level = castLevel(m, VISAGE);
   if (ids.length > level)
     return no(`${m.character.name} can change no more than ${level} of the party.`);
   spendCast(data, m, VISAGE);

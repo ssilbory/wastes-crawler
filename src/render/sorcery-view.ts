@@ -5,6 +5,7 @@ import { arcaneSeer } from '../game/dungeon/light.ts';
 import { gateTargets, LITHIC, PALLID_GATE } from '../game/dungeon/stonework.ts';
 import type { GameData } from '../game/character/context.ts';
 import { disguised, palanquinUp, PALANQUIN, VISAGE } from '../game/world/guises.ts';
+import { spellReady } from '../game/world/casting.ts';
 import { castersOf } from '../game/world/waygates.ts';
 import type { World } from '../game/world/types.ts';
 import { cellKey, type Cell } from '../rules/grid.ts';
@@ -63,7 +64,7 @@ export function sorceryView(w: World, data: GameData): SorceryView | null {
     : SPELLS.flatMap((spell) => castersOf(w, spell))
         .filter((m, i, all) => all.indexOf(m) === i)
         .map((m) => {
-          const has = (spell: string) => m.character.spells.prepared.includes(spell);
+          const has = (spell: string) => spellReady(m, spell);
           return {
             id: m.id,
             name: m.character.name,

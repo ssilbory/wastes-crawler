@@ -123,13 +123,14 @@ function nextName(w: World, data: GameData): string {
   return names.find((name) => !w.npcs.some((x) => x.name === name)) ?? (names[0] as string);
 }
 
-/** Fighting servants: raised undead, beasts, woken trees, kept summons, and companions. */
+/** Fighting servants: raised undead, beasts, woken trees, kept summons, companions, thralls. */
 export const isServant = (n: Pick<Npc, 'kind'>) =>
   n.kind === 'undead' ||
   n.kind === 'beast' ||
   n.kind === 'summon' ||
   n.kind === 'tree' ||
-  n.kind === 'companion';
+  n.kind === 'companion' ||
+  n.kind === 'thrall';
 
 /**
  * A servant's slot (docs/rules-adaptation.md, Formation rules: Servants): in front where it can,

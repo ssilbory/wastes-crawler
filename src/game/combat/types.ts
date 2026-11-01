@@ -203,6 +203,13 @@ export interface Combatant {
   shockCap: number | null;
   poisonImmune: boolean;
   /**
+   * Half-Dead (Phase 20): Healing Touch does nothing for it, a bonus to saves against poison and
+   * disease, and immunity to disease.
+   */
+  touchless: boolean;
+  ailmentSave: number;
+  diseaseImmune: boolean;
+  /**
    * Lingering poison and disease (docs/rules-adaptation.md, Poison and disease): Poisoned, the
    * strain a venom owes once the fight is over, a disease caught in this fight, and the penalty
    * to hit and to skill checks the PC's ailments bring into it.

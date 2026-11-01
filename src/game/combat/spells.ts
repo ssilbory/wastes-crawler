@@ -60,8 +60,9 @@ function fitsTarget(b: Battle, actor: Combatant, m: CombatMagic, id?: string): b
   if (m.effect.kind === 'companion-heal' && t.companion?.master !== actor.id) return false;
   // Healing the target couldn't bear is never offered (SRD 2.5.2).
   if (m.effect.kind === 'heal') return bearsHealing(t, m.effect.strain);
+  // Healing Touch finds no life to mend in the Half-Dead (Phase 20).
   if (m.effect.kind === 'touch-heal')
-    return touchReaches(b, actor, t) && bearsHealing(t, m.effect.strain);
+    return !t.touchless && touchReaches(b, actor, t) && bearsHealing(t, m.effect.strain);
   return m.effect.kind !== 'conjunct' || donorFor(b, t) !== null;
 }
 

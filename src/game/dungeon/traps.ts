@@ -114,7 +114,7 @@ function spring(w: World, data: GameData, trap: Trap): void {
       continue;
     }
     // Unaging and the Poisoner: immune to poisons (Phase 15; 1.6.0).
-    if (e.kind === 'poison' && poisonProof(m)) {
+    if (e.kind === 'poison' && poisonProof(data, m)) {
       note(w, `The poison does nothing to ${m.character.name}.`);
       continue;
     }

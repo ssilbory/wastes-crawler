@@ -21,7 +21,8 @@ function role(w: World, n: Npc): string {
     n.kind === 'beast' ||
     n.kind === 'summon' ||
     n.kind === 'tree' ||
-    n.kind === 'companion'
+    n.kind === 'companion' ||
+    n.kind === 'thrall'
   ) {
     const master = w.members.find((m) => m.id === n.master)?.character.name;
     const kind = {
@@ -29,6 +30,7 @@ function role(w: World, n: Npc): string {
       beast: 'beast, following',
       summon: 'summoned until dawn, serving',
       tree: 'woken tree, serving',
+      thrall: 'enthralled, serving',
       companion: n.chosen ? 'chosen friend of' : 'companion of',
     }[n.kind];
     return master ? `${kind} ${master}` : n.kind;
@@ -127,7 +129,7 @@ export function NpcPanel(props: { world: World; onChange: () => void }) {
 
 /** What parting with a follower is called, by what kind of follower they are. */
 function parting(n: Npc): string {
-  if (n.kind === 'undead' || n.kind === 'summon') return 'Release';
+  if (n.kind === 'undead' || n.kind === 'summon' || n.kind === 'thrall') return 'Release';
   if (n.kind === 'companion') return 'Send away';
   if (n.kind === 'beast' || n.kind === 'pack') return 'Set loose';
   if (n.kind === 'tree') return 'Let it root';

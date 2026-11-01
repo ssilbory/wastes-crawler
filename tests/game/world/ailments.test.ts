@@ -72,14 +72,14 @@ describe('the Poisoned condition', () => {
   it('never takes the Unaging or a level-2 Poisoner', () => {
     const { w, snag } = alone();
     poisoner(snag, 1);
-    expect(poisonProof(snag)).toBe(false);
+    expect(poisonProof(data, snag)).toBe(false);
     snag.character = { ...snag.character, foci: [{ id: 'poisoner', level: 2 }] };
-    expect(poisonProof(snag)).toBe(true);
+    expect(poisonProof(data, snag)).toBe(true);
     poisonMember(w, data, snag, 2);
     expect([snag.poisoned, strain(snag)]).toEqual([false, 0]);
     const other = alone();
     other.snag.character = { ...other.snag.character, arts: ['unaging'] };
-    expect(poisonProof(other.snag)).toBe(true);
+    expect(poisonProof(data, other.snag)).toBe(true);
   });
 
   it('is shaken off by a Physical save at night’s end, or stays', () => {
