@@ -12,20 +12,19 @@ import {
   surrenderedHere,
   surrenderQuestions,
 } from '../../game/world/surrender.ts';
-import type { SkullQuestion } from '../../game/world/skull.ts';
+import type { PrisonerQuestion } from '../../game/world/prisoner-answers.ts';
 import { cannotEnthrall, enthrall } from '../../game/world/thralls.ts';
 import type { World } from '../../game/world/types.ts';
 import { data } from '../builder/data.ts';
 import { PopOut } from './PopOut.tsx';
 
-const ASK: Record<SkullQuestion, string> = {
+const ASK: Record<PrisonerQuestion, string> = {
+  map: 'How is this level laid out?',
   boss: "Where is this level's boss?",
-  vault: 'Where is the vault?',
-  hoard: 'Where are the hoards?',
+  treasure: 'Where is a vault or hoard?',
   land: 'What lies about?',
-  map: '',
-  traps: '',
-  secrets: '',
+  town: 'Where is the nearest town?',
+  dungeon: 'Where is a way down?',
 };
 
 /** Whether the surrendered of the last fight wait on the party here (Phase 19). */

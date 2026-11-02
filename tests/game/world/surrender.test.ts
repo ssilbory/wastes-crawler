@@ -75,22 +75,22 @@ describe('after a won fight', () => {
 });
 
 describe('the surrendered', () => {
-  it('describe the land once above ground', () => {
+  it('answer one question above ground: the land, a town, or a way down', () => {
     const w = world();
     win(w, [['thug-or-militia']], [0]);
-    expect(surrenderQuestions(w)).toEqual(['land']);
+    expect(surrenderQuestions(w)).toEqual(['land', 'town', 'dungeon']);
     expect(questionSurrendered(w, data, 'boss')).toEqual(fail('They know nothing of that here.'));
     expect(questionSurrendered(w, data, 'land')).toEqual({ ok: true });
     expect(lastNote(w)).toBe('They describe the land about.');
     expect(questionSurrendered(w, data, 'land')).toEqual(fail('They have told all they will.'));
   });
 
-  it('locate the boss, a vault, or the hoards below ground', () => {
+  it('answer one question below ground: the layout, the boss, or a vault or hoard', () => {
     const w = below();
     Object.assign(state(w), { dungeon: 'buried-waterworks' });
     place(w, 'buried-waterworks-1', 4, 2, 'n');
     win(w, [['thug-or-militia']], [0]);
-    expect(surrenderQuestions(w)).toEqual(['boss', 'vault', 'hoard']);
+    expect(surrenderQuestions(w)).toEqual(['map', 'boss', 'treasure']);
     expect(questionSurrendered(w, data, 'boss')).toEqual({ ok: true });
     expect(lastNote(w)).toMatch(/^They (say|know)/);
   });

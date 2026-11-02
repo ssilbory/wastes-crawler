@@ -11,17 +11,18 @@ import { note } from './members.ts';
 import { mindOf } from './minds.ts';
 import { addNpc, freshName, monsterOf } from './npcs.ts';
 import type { TownResult } from './services.ts';
+import { prisonerAnswer, type PrisonerQuestion } from './prisoner-answers.ts';
 import { skullAnswer, type SkullQuestion } from './skull.ts';
 import { surrenderedHere } from './surrender.ts';
 import type { Member, Npc, World } from './types.ts';
 
 export const ENTHRALL = 'obnubilation-of-the-will';
 
-/** Everything a thrall tells: below ground the level and its prizes, above it the land about. */
-const TELLS: Record<'below' | 'above', SkullQuestion[]> = {
-  below: ['map', 'traps', 'secrets', 'boss', 'vault', 'hoard'],
-  above: ['land'],
-};
+/** Everything a thrall tells: below ground the level and its prizes, as the dead do. */
+const BELOW: SkullQuestion[] = ['map', 'traps', 'secrets', 'boss', 'vault', 'hoard'];
+
+/** Above ground, all a prisoner could: the land, a town, and a way down (Phase 22). */
+const ABOVE: PrisonerQuestion[] = ['land', 'town', 'dungeon'];
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 
@@ -70,8 +71,9 @@ export function enthrall(w: World, data: GameData, casterId: string, index: numb
     return { ok: true };
   }
   note(w, `The ${name.toLowerCase()} falls under ${caster.character.name}'s will.`);
-  for (const q of TELLS[w.dungeon ? 'below' : 'above'])
-    note(w, skullAnswer(w, data, q).replace('The dead', 'They'));
+  if (w.dungeon)
+    for (const q of BELOW) note(w, skullAnswer(w, data, q).replace('The dead', 'They'));
+  else for (const q of ABOVE) note(w, prisonerAnswer(w, data, q));
   s.questioned = true;
   const thrall = addNpc(w, data, 'thrall', monster, monster, freshName(w, name), true);
   if (!thrall) {
