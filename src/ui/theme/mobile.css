@@ -1,7 +1,8 @@
 /* Phones and touch screens. Loaded last so it overrides each screen's desktop layout, and every
    phone-width rule lives here, in the one 760px block below, rather than in each screen's file. On
    a phone the world screens stop fitting the window and become one column that scrolls: the main
-   view first, then the dock (the quarter's plans sit right under the map), then the journal. */
+   view first, then the dock (the quarter's plans sit right under the map), then the journal. The
+   status bar, with the party in it, stays pinned at the top while the rest scrolls under it. */
 
 /* Touch: no double-tap zoom delay on controls, and text fields at 16px so iOS doesn't zoom the
    page when one takes focus. */
@@ -31,6 +32,11 @@
   .app-menu-list .app-menu-item {
     padding: 10px 14px;
   }
+
+  /* No keyboard on a touch screen, as a rule, so no list of keys in the bar (? still opens it). */
+  .world-bar .key-help-toggle {
+    display: none;
+  }
 }
 
 @media (max-width: 760px) {
@@ -38,6 +44,14 @@
   .world {
     overflow-y: auto;
     overscroll-behavior: contain;
+  }
+
+  /* The bar, with the readouts and the party, stays on screen as the rest scrolls. */
+  .world-bar {
+    position: sticky;
+    top: -8px;
+    z-index: 10;
+    gap: 5px 6px;
   }
 
   /* The readouts take one row that scrolls sideways, so the map starts high on the screen. */
@@ -58,13 +72,45 @@
     height: calc(1.365rem + 4px);
   }
 
-  /* Export and Abandon fold behind More. */
-  .world-bar .bar-more-toggle {
-    display: inline-block;
+  /* The party's screens and More share one row; the way on (a town, a dungeon, the map) gets a
+     row of its own under them, as the screen's main action. */
+  .world-bar .bar-actions {
+    gap: 5px;
   }
 
-  .bar-more:not(.open) > .bar-more-items {
-    display: none;
+  .world-bar .bar-actions button {
+    padding: 4px 7px;
+    font-size: 0.85rem;
+  }
+
+  .world-bar .bar-go {
+    order: 1;
+    flex: 1 1 100%;
+  }
+
+  /* The party strip takes the last row, clear of the ☰ button, so it has the bar's full width,
+     with two members a row (party-strip.css). */
+  .world-bar .party-strip {
+    order: 3;
+    flex-basis: 100%;
+    margin-left: -46px;
+  }
+
+  .world-bar .party-strip ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .world-bar .party-strip li {
+    padding: 1px 6px 3px;
+  }
+
+  .world-bar .party-strip strong {
+    font-size: 0.85rem;
+  }
+
+  .world-bar .party-strip .slot-stats {
+    font-size: 0.75rem;
   }
 
   .world-bar .date {
@@ -110,34 +156,81 @@
     flex: none;
   }
 
-  /* The dungeon: the view at full width, then a thumb-sized movement pad. */
-  .dungeon-main {
-    display: flex;
-    flex-direction: column;
+  /* The dungeon (dungeon-screen.css): the map first and largest, as the main way about (tap a
+     square to walk there), then the view and the pad side by side, then why a move was refused and
+     what else the party can do, then the dock and the journal. */
+  .world.dungeon > .world-main {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
+    grid-template-rows: none;
+    grid-auto-rows: auto;
     align-items: center;
+    gap: 8px;
+  }
+
+  .dungeon .dungeon-side,
+  .dungeon .dungeon-controls {
+    display: contents;
+  }
+
+  .dungeon .world-main > .dock,
+  .dungeon .world-left > *,
+  .dungeon .world-left > .log {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  .dungeon .dungeon-map {
+    grid-column: 1 / -1;
+    order: -3;
+    padding: 6px 8px;
+  }
+
+  .dungeon .dungeon-map > h3 {
+    display: none;
+  }
+
+  .dungeon .dungeon-map .automap {
+    max-width: none;
+    width: 100%;
+    max-height: 50dvh;
+  }
+
+  .dungeon .dungeon-main {
+    grid-column: 1;
+    order: -2;
+  }
+
+  .dungeon .moves {
+    grid-column: 2;
+    order: -2;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .dungeon .moves button {
+    min-height: 3rem;
+    padding: 4px;
+  }
+
+  .dungeon .moves .move-word {
+    display: none;
+  }
+
+  .dungeon .move-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .dungeon .bump,
+  .dungeon-controls .actions {
+    grid-column: 1 / -1;
+    order: -1;
   }
 
   .dungeon-view {
     width: 100%;
     height: auto;
-  }
-
-  .dungeon-controls {
-    gap: 8px;
-  }
-
-  .dungeon .moves {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    width: min(100%, 22rem);
-    gap: 6px;
-  }
-
-  .dungeon .moves button {
-    min-height: 3.2rem;
-  }
-
-  .dungeon-controls .actions {
-    width: min(100%, 22rem);
   }
 
   .dungeon-controls .actions button {

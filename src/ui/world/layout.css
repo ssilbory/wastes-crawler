@@ -28,14 +28,15 @@
   box-shadow: var(--bevel-out);
 }
 
-/* The readouts' box and the More fold (BarMore.tsx) only matter on a phone (mobile.css). */
+/* The readouts' box only matters on a phone (mobile.css). The rarely used actions fold behind
+   More (BarMore.tsx), so the bar keeps to one row. */
 .bar-status,
 .bar-more,
 .bar-more-items {
   display: contents;
 }
 
-.bar-more-toggle {
+.bar-more:not(.open) > .bar-more-items {
   display: none;
 }
 

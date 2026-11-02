@@ -1,0 +1,111 @@
+/* The dungeon screen's layout (DungeonScreen.tsx) on a computer: the first-person view on the left
+   with the journal under it, and the map with the controls under it in a column beside them, so
+   the map, the pad, and the view are on screen together and the dock keeps its room for the rest.
+   A phone puts the map first instead (mobile.css). Loaded after world.css. */
+
+.dungeon .world-left {
+  /* The map at its full 320px, inside the panel's padding and border, so it draws (and
+     screenshots) unscaled. */
+  grid-template-columns: minmax(0, 1fr) 348px;
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+/* The bar's buttons in whole pixels, so the bar is a whole number of pixels tall and the view
+   under it draws on whole pixels (its screenshots in e2e/dungeon.spec.ts). */
+.dungeon .world-bar button {
+  line-height: 20px;
+}
+
+.dungeon-main {
+  grid-column: 1;
+  grid-row: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  justify-items: center;
+}
+
+.dungeon .world-left > .log {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+/* The map and the controls: the full height beside the view and the journal, scrolling inside
+   itself only in a window too short for both. */
+.dungeon-side {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  min-height: 0;
+  overflow-y: auto;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.dungeon-map > h3 {
+  margin-bottom: 4px;
+}
+
+.dungeon-map .hint {
+  margin: 4px 0 0;
+}
+
+.dungeon-controls {
+  display: grid;
+  gap: 6px;
+}
+
+.dungeon .bump {
+  min-height: 1.4em;
+  margin: 0;
+  color: var(--error);
+  text-align: center;
+}
+
+.dungeon .moves {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.dungeon .moves button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 4px 6px;
+  white-space: nowrap;
+}
+
+.move-icon {
+  flex: none;
+  width: 1.05em;
+  height: 1.05em;
+  fill: currentColor;
+}
+
+.dungeon-controls .actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+}
+
+.dungeon-controls .actions:empty {
+  display: none;
+}
+
+/* Search is the first action, not the screen's main one, so it isn't lit like one (controls.css). */
+.dungeon-controls .actions > button:first-child {
+  color: var(--ink);
+  font-weight: 400;
+  background: linear-gradient(180deg, var(--btn-top), var(--btn-bot));
+  box-shadow: var(--bevel-out);
+}
+
+/* A big screen: the view grows past its 640 by 480 to fill the room beside the map. */
+@media (min-width: 1600px) and (min-height: 1000px) {
+  .dungeon .dungeon-view {
+    max-height: none;
+  }
+}

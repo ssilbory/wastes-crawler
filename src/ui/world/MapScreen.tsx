@@ -165,6 +165,7 @@ export function MapScreen(props: {
           {town && !w.encounter && !w.coach && (
             <button
               type="button"
+              class="bar-go"
               aria-keyshortcuts={targeted ? 'T' : 'T Space'}
               onClick={props.onTown}
             >
@@ -174,6 +175,7 @@ export function MapScreen(props: {
           {way && !w.encounter && !w.coach && (
             <button
               type="button"
+              class="bar-go"
               aria-keyshortcuts={town || targeted ? undefined : 'Space'}
               onClick={props.onEnter}
             >
@@ -182,7 +184,7 @@ export function MapScreen(props: {
             </button>
           )}
           {road && !w.encounter && !w.coach && (
-            <button type="button" onClick={props.onCross}>
+            <button type="button" class="bar-go" onClick={props.onCross}>
               Take {road.name}
             </button>
           )}
@@ -197,6 +199,7 @@ export function MapScreen(props: {
             </ConfirmButton>
           </BarMore>
         </span>
+        <PartyPanel members={w.members} strip />
       </div>
       <div class="world-main">
         <div class="world-left">
@@ -252,9 +255,8 @@ export function MapScreen(props: {
               spacePlays={targeted}
             />
           )}
-          {/* Quests, then the party, then the panels of powers and places (Sam's call: one column). */}
+          {/* Quests, then the panels of powers and places (Sam's call: one column); the party is in the bar. */}
           <QuestLog world={w} onChange={props.onChange} />
-          <PartyPanel members={w.members} />
           <NpcPanel world={w} onChange={props.onChange} />
           <MountsPanel world={w} onChange={props.onChange} />
           <CompanionsPanel world={w} onChange={props.onChange} />

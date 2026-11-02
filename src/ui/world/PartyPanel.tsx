@@ -23,16 +23,26 @@ function tags(m: Member): string[] {
   ].filter((t): t is string => typeof t === 'string');
 }
 
-export function PartyPanel(props: { members: Member[] }) {
+/**
+ * Each member's health, strain, and conditions. As a `strip` it runs across the status bar, one
+ * small card a member, so it stays on screen while the rest scrolls (party-strip.css); the level
+ * line moves into each card's hover text there.
+ */
+export function PartyPanel(props: { members: Member[]; strip?: boolean }) {
+  const strip = props.strip === true;
   return (
-    <section class="panel party-panel" aria-label="Party">
-      <h2>Party</h2>
+    <section class={strip ? 'party-panel party-strip' : 'panel party-panel'} aria-label="Party">
+      <h2 class={strip ? 'sr-only' : undefined}>Party</h2>
       <ul>
         {props.members.map((m) => {
           const c = m.character;
           const max = characterSheet(c, data).strainMax;
           return (
-            <li key={m.id} class={m.dead ? 'gone' : undefined}>
+            <li
+              key={m.id}
+              class={m.dead ? 'gone' : undefined}
+              title={strip ? levelLine(data, c) : undefined}
+            >
               <span class="member-head">
                 <strong>{c.name}</strong>
                 <span class="slot-stats">
@@ -42,7 +52,7 @@ export function PartyPanel(props: { members: Member[] }) {
               <span class={`hp-bar ${hpLevel(percent(c))}`} aria-hidden="true">
                 <span style={{ width: `${percent(c)}%` }} />
               </span>
-              <span class="slot-stats">{levelLine(data, c)}</span>
+              {!strip && <span class="slot-stats">{levelLine(data, c)}</span>}
               {tags(m).length > 0 && (
                 <span class="conditions">
                   {tags(m).map((t) => (

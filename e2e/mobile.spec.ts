@@ -132,14 +132,42 @@ test.describe('on a phone', () => {
     await page.getByRole('button', { name: 'Continue journey' }).click();
     await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
 
-    // The view fills the width and the movement pad is big enough to tap.
+    // The map comes first and spans the screen, framed close enough that a square takes a
+    // fingertip; the view and the pad share the row under it, and the pad is big enough to tap.
+    const automap = page.getByRole('img', { name: 'Map of The Upper Barrow' });
+    const mapBox = await automap.boundingBox();
+    expect(mapBox?.width).toBeGreaterThan(350);
+    expect(await automap.getAttribute('class')).toContain('windowed');
     const view = await page.getByRole('img', { name: 'Dungeon view' }).boundingBox();
-    expect(view?.width).toBeGreaterThan(350);
+    expect(view?.y).toBeGreaterThan((mapBox?.y ?? 0) + (mapBox?.height ?? 0));
     const forward = page.getByRole('button', { name: 'Forward' });
-    expect((await forward.boundingBox())?.height).toBeGreaterThanOrEqual(44);
+    const pad = await forward.boundingBox();
+    expect(pad?.height).toBeGreaterThanOrEqual(44);
+    expect(pad?.x).toBeGreaterThan((view?.x ?? 0) + (view?.width ?? 0));
+    expect(pad?.y).toBeLessThan((view?.y ?? 0) + (view?.height ?? 0));
+    await expect(page.getByRole('button', { name: 'Keys' })).toBeHidden();
     await forward.tap();
     await expect(page.locator('.world-bar')).toContainText('step 2 of 12');
     await fitsWidth(page);
+
+    // Tapping a square seen ahead on the map walks the party there.
+    await page.locator('.dungeon-map').scrollIntoViewIfNeeded();
+    const at = await page.evaluate(() => {
+      const svg = document.querySelector<SVGSVGElement>('.automap');
+      const party = svg?.querySelector('.party')?.getBoundingClientRect();
+      const square = svg?.querySelector('.seen')?.getBoundingClientRect().width ?? 0;
+      return party && { x: party.x + party.width / 2, y: party.y + party.height / 2, square };
+    });
+    expect(at?.square).toBeGreaterThanOrEqual(40);
+    // The barrow is entered facing north, so the square two up from the party lies ahead.
+    await page.touchscreen.tap(at?.x ?? 0, (at?.y ?? 0) - 2 * (at?.square ?? 0));
+    await expect(page.locator('.world-bar')).not.toContainText('step 2 of 12');
+
+    // Scrolled to the journal, the bar and the party in it stay on screen.
+    await page.getByRole('region', { name: 'Journey log' }).scrollIntoViewIfNeeded();
+    const bar = await page.locator('.world-bar').boundingBox();
+    expect(bar?.y).toBeLessThanOrEqual(0 + 1);
+    await expect(page.getByRole('region', { name: 'Party' })).toBeInViewport();
   });
 });
 

@@ -74,61 +74,6 @@
   font-size: 0.9em;
 }
 
-/* The first-person view on top, scaled to the room left over by the movement pad and actions. */
-.dungeon-main {
-  min-height: 0;
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: 8px;
-  justify-items: center;
-}
-
-.dungeon-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 16px;
-  align-items: start;
-  justify-content: center;
-  width: 100%;
-  max-width: 644px;
-}
-
-.dungeon-controls .bump {
-  flex: 1 1 100%;
-  text-align: center;
-}
-
-.dungeon-controls .actions {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin: 0;
-}
-
-.dungeon-controls .actions > button:first-child {
-  color: var(--ink);
-  font-weight: 400;
-  background: linear-gradient(180deg, var(--btn-top), var(--btn-bot));
-  box-shadow: var(--bevel-out);
-}
-
-.dungeon .bump {
-  min-height: 1.4em;
-  margin: 0;
-  color: var(--error);
-}
-
-.dungeon .moves {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 7.5em));
-  gap: 4px;
-}
-
-/* Room for the automap at its full 320px, so it draws (and screenshots) unscaled. */
-.dungeon .world-main {
-  grid-auto-columns: minmax(250px, 360px);
-}
-
 .automap {
   display: block;
   width: 100%;
