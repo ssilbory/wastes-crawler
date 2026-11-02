@@ -64,6 +64,16 @@
     scrollbar-width: none;
   }
 
+  /* The date, then rations and water, ahead of where the party is, so the supplies show without
+     scrolling the row. */
+  .world-bar .bar-status > .date {
+    order: -2;
+  }
+
+  .world-bar .bar-status > .supply {
+    order: -1;
+  }
+
   .world-bar > span:not(.bar-actions),
   .world-bar .bar-status > span {
     flex: none;
