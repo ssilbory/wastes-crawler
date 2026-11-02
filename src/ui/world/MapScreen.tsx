@@ -156,8 +156,8 @@ export function MapScreen(props: {
           <span>
             {here} ({hexKey(w.position)})
           </span>
-          <span>Rations: {w.rations === 0 ? 'none' : `d${w.rations}`}</span>
-          <span>Water: {w.water === 0 ? 'none' : `d${w.water}`}</span>
+          <span class="supply">Rations: {w.rations === 0 ? 'none' : `d${w.rations}`}</span>
+          <span class="supply">Water: {w.water === 0 ? 'none' : `d${w.water}`}</span>
           <span>Purse: {crowns(w.purse)}</span>
           <span>Loot: {lootText(w.loot)}</span>
         </div>
