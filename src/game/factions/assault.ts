@@ -2,8 +2,9 @@
 // side fields one fighter per hit point of its assets there: the attackers as their assets'
 // patrol monsters, the defenders as militia with the holder's Force assets as veterans, besides
 // the militia the settlement raises. Behind walls only half of each attacking group comes on,
-// unless Siege Experts lead it. The auto-combat simulator fights it out, and every fighter who
-// falls, runs, or surrenders costs its side 1 hit point.
+// unless Siege Experts lead it. The auto-combat simulator fights it out. Every attacker or holder's
+// fighter who falls, runs, or surrenders costs its side 1 hit point; the militia cost nothing, but
+// an assault lost costs the holder 2 more (Sam's calls on siege balance).
 import type { Siege } from '../../data/schemas/index.ts';
 import { runBattle } from '../combat/aftermath.ts';
 import { createBattle } from '../combat/battle.ts';
@@ -65,11 +66,14 @@ function fightersOf(data: GameData, attacker: string, held: HeldAsset, halve: bo
   return halve ? all.slice(0, Math.ceil(all.length / 2)) : all;
 }
 
+/** The militia the settlement raises, by its size; a place on no map raises a village's. */
+const militiaOf = (data: GameData, s: Siege) =>
+  rules(data).militia[settlementOf(data, s.town)?.site.size ?? 'village'];
+
 /** The defenders: the settlement's militia, then a fighter per hit point of the holder's assets. */
 export function defenders(w: World, data: GameData, s: Siege): string[] {
-  const size = settlementOf(data, s.town)?.site.size ?? 'village';
   const r = rules(data);
-  const militia = Array.from({ length: r.militia[size] }, () => r.militiaMonster);
+  const militia = Array.from({ length: militiaOf(data, s) }, () => r.militiaMonster);
   const held = holders(w, s).flatMap((a) =>
     Array.from({ length: a.hp }, () =>
       srdAsset(data, a.asset).attribute === 'force' ? r.forceMonster : r.militiaMonster,
@@ -78,10 +82,17 @@ export function defenders(w: World, data: GameData, s: Siege): string[] {
   return [...militia, ...held];
 }
 
-/** Losses among one side's fighters: those no longer standing. */
-const lost = (b: Battle, side: 'party' | 'enemy') =>
-  b.combatants.filter((c) => c.side === side && c.status !== 'active' && c.status !== 'asleep')
-    .length;
+/** Fighters no longer standing: fallen, fled, or surrendered. */
+const down = (c: Battle['combatants'][number]) => c.status !== 'active' && c.status !== 'asleep';
+
+/** The attackers lost, and the holder's own fighters lost; the militia, first in line, cost none. */
+function losses(b: Battle, militia: number): { attackers: number; holder: number } {
+  const side = (id: 'party' | 'enemy') => b.combatants.filter((c) => c.side === id);
+  return {
+    attackers: side('enemy').filter(down).length,
+    holder: side('party').slice(militia).filter(down).length,
+  };
+}
 
 /** Spreads `n` hit points of losses over assets, the sturdiest first, then the base at `at`. */
 function spread(
@@ -136,7 +147,14 @@ export function assault(
   const attackers = sim.flatMap((a) => fightersOf(data, s.attacker, a, halve));
   const defending = defenders(w, data, s);
   if (attackers.length === 0) return { held: true, turned: false };
-  if (defending.length === 0) return { held: false, turned: false };
+  const strike = strikesFor(w, data, s.attacker);
+  if (defending.length === 0) {
+    // No one left to defend it: each attacker costs the base a hit point (Sam's call).
+    const hurt = spread(w, data, s.defender, [], attackers.length, s.town);
+    strike(s.defender, s.town, { hit: hurt.razed, dealt: hurt.dealt, razed: hurt.razed });
+    news(w, `${attacker} storms ${town}, and no one stands to defend it.`);
+    return { held: false, turned: false };
+  }
   const b = createBattle({
     data,
     rng: w.rng,
@@ -145,15 +163,13 @@ export function assault(
     enemies: toRows(attackers),
     sideNames: { party: 'the defenders', enemy: 'the attackers' },
   });
-  const { outcome } = runBattle(b);
-  spread(w, data, s.attacker, sim, lost(b, 'enemy'), null);
-  const hurt = spread(w, data, s.defender, holders(w, s), lost(b, 'party'), s.town);
-  strikesFor(w, data, s.attacker)(s.defender, s.town, {
-    hit: hurt.razed,
-    dealt: hurt.dealt,
-    razed: hurt.razed,
-  });
-  const held = outcome !== 'enemy';
+  const held = runBattle(b).outcome !== 'enemy';
+  const lost = losses(b, militiaOf(data, s));
+  spread(w, data, s.attacker, sim, lost.attackers, null);
+  // An assault lost costs the holder its overrun loss besides its own fighters (Sam's call).
+  const toll = lost.holder + (held ? 0 : rules(data).overrun);
+  const hurt = spread(w, data, s.defender, holders(w, s), toll, s.town);
+  strike(s.defender, s.town, { hit: hurt.razed, dealt: hurt.dealt, razed: hurt.razed });
   news(w, `${attacker} storms ${town}; the defenders ${held ? 'hold' : 'are overrun'}.`);
   return { held, turned: false };
 }

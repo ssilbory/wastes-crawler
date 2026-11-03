@@ -9,6 +9,7 @@
   "militiaMonster": "thug-or-militia",
   "forceMonster": "veteran-soldier",
   "ignoreWalls": ["siege-experts"],
+  "overrun": 2,
   "strain": 3,
   "renown": 2,
   "surcharge": 0.5

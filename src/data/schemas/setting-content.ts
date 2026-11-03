@@ -46,6 +46,8 @@ export const SiegeRulesSchema = z.strictObject({
   forceMonster: IdSchema,
   /** Faction assets whose sieges walls don't slow (Siege Experts). */
   ignoreWalls: z.array(IdSchema),
+  /** Hit points an assault lost costs the holder, besides its own fighters lost; militia are free. */
+  overrun: z.int().min(0),
   /** System Strain each PC takes when an assault is lost with the party in it. */
   strain: z.int().min(0),
   /** Renown for an ally's siege lifted after the party fought in it. */

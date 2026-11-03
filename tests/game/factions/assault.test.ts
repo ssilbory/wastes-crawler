@@ -112,6 +112,34 @@ describe('a siege’s assault (docs/rules-adaptation.md, Sieges: The battle, Wal
     const bare = { ...data, content: { ...data.content, siegeRules: none } };
     faction(empty, 'settlements').assets = [];
     expect(assault(empty, bare, s, null)).toEqual({ held: false, turned: false });
+    // Each of the 14 attackers costs the undefended base a hit point: its 2 are gone.
+    expect(faction(empty, 'settlements').bases.some((b) => b.at === 'lanternfall')).toBe(false);
+    expect(empty.log.join('\n')).toContain(
+      "Grisk's Warhost storms Lanternfall, and no one stands to defend it.",
+    );
+  });
+
+  it('costs the holder nothing for its militia, and 2 more for an assault lost', () => {
+    // Cinderhold's 8 militia, alone, against the armed guards: they hold, and the base is whole.
+    const w = before('cinderhold');
+    const free = faction(w, 'settlements');
+    free.assets = free.assets.filter((a) => a.at !== 'cinderhold');
+    const warhost = faction(w, 'warhost');
+    warhost.assets = warhost.assets.filter((a) => a.asset === 'armed-guards');
+    w.rng = createRng('militia');
+    expect(assault(w, data, siege({ town: 'cinderhold' }), null).held).toBe(true);
+    expect(free.bases.find((b) => b.at === 'cinderhold')?.hp).toBe(17);
+    // Lanternfall's 4 militia, alone, against the whole warhost and more: overrun, the base pays 2.
+    const v = before('lanternfall');
+    const village = faction(v, 'settlements');
+    village.assets = village.assets.filter((a) => a.at !== 'lanternfall');
+    const base = village.bases.find((b) => b.at === 'lanternfall');
+    if (base) base.hp = 10;
+    for (const asset of ['infantry', 'infantry', 'scouts', 'scouts'])
+      addAsset(data, faction(v, 'warhost'), asset, 'lanternfall');
+    v.rng = createRng('overrun');
+    expect(assault(v, data, siege({ town: 'lanternfall' }), null).held).toBe(false);
+    expect(base?.hp).toBe(8);
   });
 
   it('fights the rest out and costs each side a hit point per fighter lost', () => {
