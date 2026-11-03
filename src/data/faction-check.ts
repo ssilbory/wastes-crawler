@@ -7,7 +7,7 @@ const MAGIC: readonly FactionMagic[] = ['none', 'low', 'medium', 'high'];
  * Factions (Phase 13) stand on map hexes, buy SRD assets from the curated list that their ratings
  * and Magic allow (vendor/wwn-srd/6.0 Factions/Faction Turn Actions.md, Create Asset), start with
  * no more assets of an attribute than its rating, name real rivals, and send patrols of known
- * monsters; the raiding faction exists.
+ * monsters; the sieges' ally exists.
  */
 export function factionReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const errors: string[] = [];
@@ -61,7 +61,9 @@ export function factionReferenceErrors(srd: SrdData, content: ContentData): stri
         if (!monsters.has(id)) errors.push(`${where}: patrol of unknown monster ${id}`);
     }
   }
-  if (!ids.has(content.raidRules.faction))
-    errors.push(`raidRules: unknown faction ${content.raidRules.faction}`);
+  if (!ids.has(content.siegeRules.ally))
+    errors.push(`siegeRules: unknown ally ${content.siegeRules.ally}`);
+  for (const id of content.siegeRules.ignoreWalls)
+    if (!curated.has(id)) errors.push(`siegeRules: unknown asset ${id}`);
   return errors;
 }

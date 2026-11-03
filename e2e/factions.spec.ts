@@ -1,8 +1,8 @@
 import { expect, test, type Page } from '@playwright/test';
 
 // Phase 13: the Dark Lands' factions take a turn as each month begins; the party hears of them in
-// the Factions panel and the journal, and the Dawnwall Bastion's attack on a settlement comes as a
-// raid with a week's warning.
+// the Factions panel and the journal. Since Phase 23a a faction's attack on a settlement lays siege
+// to it, and a siege on the party's ally is heard of at once.
 const starters = ['snag', 'grukk'].map((n) => `tools/sim/parties/starter/${n}.json`);
 const WORLD_KEY = 'wastes-crawler.world';
 
@@ -27,7 +27,7 @@ async function nightAtTheInn(page: Page) {
   await page.getByRole('button', { name: 'Back to the map' }).click();
 }
 
-test('follows the factions month by month, and hears of a Bastion raid', async ({
+test('follows the factions month by month, and hears of a Bastion siege', async ({
   page,
 }, testInfo) => {
   await page.goto('/#/arena');
@@ -68,16 +68,22 @@ test('follows the factions month by month, and hears of a Bastion raid', async (
   // The Bastion's raiders stand in Cinderhold when the next month turns.
   await edit(
     page,
-    `save.day = 59; save.raid = null;
+    `save.day = 59; save.sieges = [];
      Object.assign(save.factions.bastion, { hp: 17, idle: false,
        assets: [{ uid: 'a1', asset: 'infantry', at: 'cinderhold', hp: 6 }] });
      save.factions.settlements.assets = save.factions.settlements.assets.filter((a) => a.at !== 'cinderhold');`,
   );
   await nightAtTheInn(page);
-  await expect(page.getByRole('region', { name: 'Orders and raids' })).toContainText(
-    'Raiders will strike Cinderhold at the end of day 67.',
+  // The party is inside, so it is in the siege, and the assault comes the next night.
+  await expect(page.getByRole('region', { name: 'Orders and sieges' })).toContainText(
+    'The Dawnwall Bastion besieges Cinderhold, held by The Free Settlements, with 1 camp: the next assault comes at the end of day 61. The party has fought in it.',
   );
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
-    'Word comes that The Dawnwall Bastion will strike Cinderhold within 7 days.',
+    'The Dawnwall Bastion lays siege to Cinderhold, held by The Free Settlements. The assault comes tonight.',
   );
+  await expect(page.getByText('Siege: Cinderhold')).toBeVisible();
+  // Its one camp is marked on the map beside the town.
+  await expect(
+    page.locator('use.camp', { hasText: "The Dawnwall Bastion's camp before Cinderhold" }),
+  ).toHaveCount(1);
 });

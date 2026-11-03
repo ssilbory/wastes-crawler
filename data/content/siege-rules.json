@@ -1,0 +1,15 @@
+{
+  "ally": "settlements",
+  "firstAssault": 7,
+  "militia": {
+    "village": 4,
+    "town": 8,
+    "city": 8
+  },
+  "militiaMonster": "thug-or-militia",
+  "forceMonster": "veteran-soldier",
+  "ignoreWalls": ["siege-experts"],
+  "strain": 3,
+  "renown": 2,
+  "surcharge": 0.5
+}

@@ -16,6 +16,7 @@ import { enterTown } from './town.ts';
 import { priceHere, spend, townHere } from './town-prices.ts';
 import type { World } from './types.ts';
 import { coachRoutes } from './project-effects.ts';
+import { besieged } from './siege-state.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 
@@ -41,7 +42,8 @@ export function routesFrom(
           ? route.towns[0]
           : null;
     const to = other === null ? undefined : map.sites.find((s) => s.id === other);
-    return to ? [{ route, to }] : [];
+    // No coach leaves or reaches a besieged town (docs/rules-adaptation.md, Sieges: Blockade).
+    return to && !besieged(w, townId) && !besieged(w, to.id) ? [{ route, to }] : [];
   });
 }
 

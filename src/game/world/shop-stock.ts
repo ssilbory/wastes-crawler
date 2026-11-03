@@ -8,13 +8,18 @@ import type { Site } from '../../data/schemas/index.ts';
 import { createRng } from '../../rules/rng.ts';
 import type { GameData } from '../character/context.ts';
 import { buyable, type CatalogItem } from '../character/items.ts';
+import { siegesOf } from './siege-state.ts';
 import { currentLedger, townHere } from './town-prices.ts';
 import type { World } from './types.ts';
 
 const rules = (data: GameData) => data.content.townRules.shop;
 
-/** The day the town's economy last reset; its shop restocks with it. */
-const stockedSince = (w: World, data: GameData, town: Site) => currentLedger(w, data, town).since;
+/**
+ * The day the town's economy last reset; its shop restocks with it, except under siege, when it
+ * sells only what it had (docs/rules-adaptation.md, Sieges: Blockade).
+ */
+const stockedSince = (w: World, data: GameData, town: Site) =>
+  siegesOf(w, town.id)[0]?.stock ?? currentLedger(w, data, town).since;
 
 /** What a town's shop puts out until its economy resets, before anything sells out. */
 export function drawnStock(w: World, data: GameData, town: Site): CatalogItem[] {

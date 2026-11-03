@@ -24,3 +24,15 @@ export function held(w: World, id: string, asset: string) {
   if (!a) throw new Error(`${id} holds no ${asset}`);
   return a;
 }
+
+/**
+ * The content with settlements' sites taken off their maps, so faction Attacks there strike as at
+ * any other location instead of laying siege (docs/rules-adaptation.md, Sieges).
+ */
+export function unsettled(...towns: string[]): typeof data {
+  const regions = data.content.regions.map((r) => ({
+    ...r,
+    sites: r.sites.filter((s) => !towns.includes(s.id)),
+  }));
+  return { ...data, content: { ...data.content, regions } };
+}

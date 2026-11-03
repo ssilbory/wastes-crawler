@@ -43,7 +43,7 @@ async function inCinderhold(page: Page, seed: string, extra: string) {
 
 test("sells crafter's notes to a warlord's agent", async ({ page }) => {
   await inCinderhold(page, 'notes-e2e', `save.notes = { 'vats-notes': 'found' };`);
-  const panel = page.getByRole('region', { name: 'Orders and raids' });
+  const panel = page.getByRole('region', { name: 'Orders and sieges' });
   const notes = panel.getByRole('group', { name: "the vat-master's notes" });
   await expect(notes).toContainText("The party carries the vat-master's notes.");
   await notes.getByRole('button', { name: "Sell to a warlord's agent" }).click();
@@ -67,7 +67,7 @@ test('destroys the Seal of Command, and the epilogue follows', async ({ page }, 
   await page.screenshot({ path: testInfo.outputPath('seal-choice.png'), fullPage: true });
   await seal.getByRole('button', { name: 'Destroy the seal' }).click();
   await expect(seal).toHaveCount(0);
-  await expect(page.getByRole('region', { name: 'Orders and raids' })).toContainText(
+  await expect(page.getByRole('region', { name: 'Orders and sieges' })).toContainText(
     "The seal cracks in Cinderhold's forge fire.",
   );
 });

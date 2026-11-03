@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { warnRaid } from '../../../src/game/factions/raid.ts';
+import { beginSiege } from '../../../src/game/factions/siege.ts';
 import { sack } from '../../../src/game/factions/strikes.ts';
 import { emit } from '../../../src/game/world/bus.ts';
 import { coachRoute } from '../../../src/game/world/coach.ts';
@@ -234,15 +234,12 @@ describe('a Working under way (Sam’s calls: the calendar, then one check)', ()
 });
 
 describe('what standing Workings do', () => {
-  it('watch-lamps warn of a raid two weeks ahead', () => {
+  it('watch-lamps put a siege’s first assault off two weeks', () => {
     const w = lanternfall();
     stands(w, 'watch-lamps', 'lanternfall');
-    const company = w.factions.bastion?.assets.find((a) => a.uid === 'a1');
-    if (!company) throw new Error('no company');
-    company.at = 'lanternfall';
-    expect(warnRaid(w, data, 'bastion')).toBe('lanternfall');
-    expect(w.raid?.day).toBe(w.day + 1 + 14);
-    expect(w.log.at(-1)).toContain('within 14 days');
+    w.position = { col: 2, row: 2 };
+    expect(beginSiege(w, data, 'bastion', 'lanternfall', 'settlements').next).toBe(w.day + 14);
+    expect(w.log.at(-1)).toContain('The first assault comes in 14 days.');
   });
 
   it('a wall-ward adds to the walls, and waystones quiet the coach road', () => {

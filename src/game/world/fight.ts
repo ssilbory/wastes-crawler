@@ -3,6 +3,7 @@
 // the party back to the last town (docs/plan.md, Combat → Town). The line-up is battle-setup.ts.
 import type { BattleResult } from '../combat/battle.ts';
 import type { Battle } from '../combat/types.ts';
+import type { SiegeFight } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
 import { battleFrom, fighters, partySetup, riders, type PartySetup } from './battle-setup.ts';
 import { difficultyTier, type Difficulty } from './difficulty.ts';
@@ -52,6 +53,8 @@ export interface WorldBattle {
   garrison: string | null;
   /** The faction patrol they are, as faction:uid, if any (Phase 13b). */
   patrol: string | null;
+  /** The part of a siege this fight is, if any (Phase 23a). */
+  siege?: SiegeFight | null;
 }
 
 export function encounterBattle(w: World, data: GameData): WorldBattle {
@@ -64,6 +67,7 @@ export function encounterBattle(w: World, data: GameData): WorldBattle {
     quest: w.encounter.quest,
     garrison: w.encounter.garrison ?? null,
     patrol: w.encounter.patrol ?? null,
+    siege: w.encounter.siege ?? null,
   };
 }
 
@@ -219,8 +223,14 @@ export function applyBattle(
       quest: fight.quest,
       garrison: fight.garrison,
       patrol: fight.patrol,
+      siege: fight.siege ?? null,
     });
   }
+  emit(w, data, {
+    kind: 'fight-over',
+    won: result.outcome === 'party',
+    siege: fight.siege ?? null,
+  });
   const tier = difficulty && difficultyTier(data, difficulty).name;
   const dangerous = tier !== null && data.content.npcRules.moraleTiers.includes(tier);
   if (dangerous || npcLost || result.deaths > 0) moraleAfterFight(w, data);

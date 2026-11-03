@@ -317,4 +317,11 @@ export const WORLD_MIGRATIONS: Migrations = {
   }),
   // Version 54 adds Workings (Phase 22d): none under way.
   53: (raw) => ({ ...raw, schemaVersion: 54, workings: [] }),
+  // Version 55 turns raids into sieges (Phase 23a): a pending raid is dropped, and its faction's
+  // next Attack on the settlement begins a siege instead.
+  54: (raw) => {
+    const out: Raw = { ...raw, schemaVersion: 55, sieges: [] };
+    delete out.raid;
+    return out;
+  },
 };

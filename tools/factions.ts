@@ -1,17 +1,17 @@
 // pnpm factions: the faction turn run headless for two years, many times over (Phase 13). It
 // reports, every six months, how often each faction still stands, its bases and assets on
-// average, and where the warlord's clock sits, with no party in the world to change anything:
-// every raid comes undefended.
+// average, where the warlord's clock sits, and how the sieges went, with no party in the world
+// to change anything: every assault is fought without it (Phase 23a).
 //
 //   pnpm factions -- --runs 200 --seed factions --months 24
 import { loadContent } from '../src/data/content.ts';
 import { loadSrd } from '../src/data/load.ts';
-import { resolveRaid } from '../src/game/factions/raid.ts';
 import { startFactions } from '../src/game/factions/state.ts';
 import { factionTurn } from '../src/game/factions/turn.ts';
 import type { World } from '../src/game/world/types.ts';
 import { createRng } from '../src/rules/rng.ts';
 import { WORLD_LISTENERS } from '../src/game/world/listeners.ts';
+import { siegesListener } from '../src/game/world/sieges.ts';
 
 const arg = (name: string, fallback: string) => {
   const i = process.argv.indexOf(`--${name}`);
@@ -27,6 +27,7 @@ const checkpoints = Array.from({ length: Math.floor(MONTHS / 6) }, (_, i) => (i 
 type Tally = { alive: number; bases: number; assets: number };
 const tally = new Map<string, Tally>();
 const clocks = new Map<number, number[]>();
+const ended = { begun: 0, lifted: 0, fallen: 0 };
 
 for (let run = 0; run < RUNS; run++) {
   // Only what the faction turn touches; the party plays no part.
@@ -36,17 +37,33 @@ for (let run = 0; run < RUNS; run++) {
     clock: 0,
     day: 0,
     log: [],
-    raid: null,
+    sieges: [],
     raided: {},
+    towns: {},
+    majorProjects: {},
+    workings: [],
+    members: [],
+    dungeon: null,
+    encounter: null,
+    renown: 0,
+    region: 'dark-lands',
+    position: { col: -1, row: -1 },
   };
   const world = w as unknown as World;
   startFactions(world, data);
   for (let month = 1; month <= MONTHS; month++) {
     world.log = [];
-    // A raid announced last month has come and gone, undefended.
-    if (world.raid) resolveRaid(world, data, world.raid.town);
-    world.raid = null;
     factionTurn(world, data);
+    // The month's days, each with any assault due.
+    for (let d = 0; d < data.content.overlandRules.daysPerMonth; d++) {
+      siegesListener(world, data, { kind: 'day-passed' });
+      world.day += 1;
+    }
+    for (const line of world.log) {
+      if (line.includes('lays siege to')) ended.begun += 1;
+      if (line.includes('is lifted')) ended.lifted += 1;
+      if (/ falls to /.test(line)) ended.fallen += 1;
+    }
     if (!checkpoints.includes(month)) continue;
     clocks.set(month, [...(clocks.get(month) ?? []), world.clock]);
     for (const id of ids) {
@@ -75,4 +92,7 @@ for (const id of ids) {
 const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)];
 console.log(
   `| clock (median) | ${checkpoints.map((m) => median(clocks.get(m) ?? [])).join(' | ')} |`,
+);
+console.log(
+  `Sieges per run: ${avg(ended.begun)} begun, ${avg(ended.lifted)} lifted, ${avg(ended.fallen)} fallen.`,
 );

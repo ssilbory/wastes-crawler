@@ -61,7 +61,7 @@ test('climbs out of Grisk’s Hold, turns the warlord in, and keeps the seal', a
   const seal = elder.getByRole('group', { name: 'The Seal of Command' });
   await seal.getByRole('button', { name: 'Keep it' }).click();
   await expect(seal).toHaveCount(0);
-  const panel = page.getByRole('region', { name: 'Orders and raids' });
+  const panel = page.getByRole('region', { name: 'Orders and sieges' });
   await expect(panel).toContainText('The party keeps the seal.');
   await expect(panel).toContainText('lie 1 sets of crafter');
   await expect(panel).toContainText('Carrying The Seal of Command.');

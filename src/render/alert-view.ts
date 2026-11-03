@@ -1,11 +1,13 @@
-// The pop-up notices beside the screen: strain taken while time passes, quests changing, and how a
-// show at the inn went. Pure
+// The pop-up notices beside the screen: strain taken while time passes, quests changing, how a show
+// at the inn went, and an ally's siege begun (Phase 23a). Pure
 // reads of game state: the UI takes a snapshot before each change and compares after it.
 import type { GameData } from '../game/character/context.ts';
 import { itemsTaken, payerName, questOf } from '../game/world/quests.ts';
 import { memberSheet } from '../game/world/members.ts';
 import type { World } from '../game/world/types.ts';
 import { questStatus } from './quest-view.ts';
+import { allied } from '../game/factions/siege.ts';
+import { factionOf, locationName } from '../game/factions/state.ts';
 
 export type AlertSnapshot = {
   /** The day, quarter, and dungeon turn: strain only warns when time has moved on. */
@@ -15,9 +17,11 @@ export type AlertSnapshot = {
   performedDay: number | null;
   /** How long the journal was, so a show's lines can be found among the new ones. */
   logLength: number;
+  /** The sieges under way, as town:attacker (Phase 23a). */
+  sieges: string[];
 };
 
-export type Alert = { kind: 'strain' | 'quest' | 'inn'; title: string; text: string };
+export type Alert = { kind: 'strain' | 'quest' | 'inn' | 'siege'; title: string; text: string };
 
 /** One line in the strain window. */
 export type Entry = { title: string; text: string };
@@ -84,6 +88,7 @@ export function alertSnapshot(w: World): AlertSnapshot {
     ),
     performedDay: w.performedDay,
     logLength: w.log.length,
+    sieges: w.sieges.map(siegeKey),
   };
 }
 
@@ -93,6 +98,7 @@ export function alertsSince(before: AlertSnapshot, w: World, data: GameData): Al
     ...strainAlerts(before, w, data),
     ...questAlerts(before, w, data),
     ...innAlerts(before, w),
+    ...siegeAlerts(before, w, data),
   ];
 }
 
@@ -160,4 +166,21 @@ const undated = (line: string) => line.replace(/^Day \d+, [^:]+: /, '');
 /** The newest journal line about `subject`, without its date. */
 function lastNote(w: World, subject: string): string {
   return undated([...w.log].reverse().find((l) => l.includes(subject)) ?? '');
+}
+
+const siegeKey = (s: World['sieges'][number]) => `${s.town}:${s.attacker}`;
+
+/**
+ * A siege begun with the party's ally as attacker or defender, heard of at once wherever the party
+ * is (docs/rules-adaptation.md, Sieges: Alerts).
+ */
+function siegeAlerts(before: AlertSnapshot, w: World, data: GameData): Alert[] {
+  const was = new Set(before.sieges);
+  return w.sieges
+    .filter((s) => !was.has(siegeKey(s)) && allied(data, s))
+    .map((s) => ({
+      kind: 'siege',
+      title: `Siege: ${locationName(data, s.town)}`,
+      text: `${factionOf(data, s.attacker).name} besieges ${locationName(data, s.town)}, held by ${factionOf(data, s.defender).name}. The first assault comes at the end of day ${s.next + 1}.`,
+    }));
 }

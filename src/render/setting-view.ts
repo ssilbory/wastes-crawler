@@ -1,11 +1,12 @@
-// What the party knows of the Dark Lands' standing orders, raids (Phase 12b), and the endgame (Phase
-// 12d), as text. Pure.
+// What the party knows of the Dark Lands' standing orders (Phase 12b), sieges and sackings (Phase
+// 23a), and the endgame (Phase 12d), as text. Pure.
 import type { GameData } from '../game/character/context.ts';
 import { authorityFor, orderOf, pendingOrder } from '../game/world/orders.ts';
 import { pendingNotes, setName } from '../game/world/notes.ts';
 import { epilogue, sealBlocked } from '../game/world/seal.ts';
 import type { World } from '../game/world/types.ts';
 import { isRaided } from '../game/world/town-prices.ts';
+import { siegeLines } from './siege-view.ts';
 
 const siteName = (data: GameData, id: string) =>
   data.content.regions.flatMap((r) => r.sites).find((s) => s.id === id)?.name ?? id;
@@ -20,15 +21,10 @@ export function settingNotes(w: World, data: GameData): string[] {
     lines.push(
       `The warlord's clock: ${w.clock} of ${segments}. Every ${perTier} segments, bolder patrols.`,
     );
-  if (w.raid)
-    lines.push(
-      w.raid.fighting
-        ? `Raiders are at the gates of ${siteName(data, w.raid.town)}.`
-        : `Raiders will strike ${siteName(data, w.raid.town)} at the end of day ${w.raid.day}.`,
-    );
+  lines.push(...siegeLines(w, data));
   for (const [town, until] of Object.entries(w.raided))
     if (isRaided(w, town))
-      lines.push(`${siteName(data, town)} was raided: prices are up until day ${until + 1}.`);
+      lines.push(`${siteName(data, town)} was sacked: prices are up until day ${until + 1}.`);
   for (const id of w.countersigns) {
     const o = orderOf(data, id);
     const ended = w.ordersEnded.includes(id) ? ' (ended)' : '';
@@ -61,9 +57,9 @@ export function orderChoices(w: World, data: GameData): OrderChoices | null {
   };
 }
 
-/** The raided surcharge, for the town bar. */
+/** The sacked surcharge, for the town bar. */
 export function raidedText(w: World, town: string): string | null {
-  return isRaided(w, town) ? 'Raided: prices up' : null;
+  return isRaided(w, town) ? 'Sacked: prices up' : null;
 }
 
 /** Notes waiting for the party's decision, and whether an agent can buy them here. */

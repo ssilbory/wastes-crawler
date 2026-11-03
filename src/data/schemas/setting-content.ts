@@ -34,20 +34,26 @@ export const AuthoritySchema = z.strictObject({
 export type Authority = z.infer<typeof AuthoritySchema>;
 
 /** The monthly raid threat on the Dark Lands' settlements (Sam's call). */
-export const RaidRulesSchema = z.strictObject({
-  /** The faction whose attacks on the region's settlements come as raids (Phase 13b). */
-  faction: IdSchema,
-  /** The region whose settlements are raided. */
-  region: IdSchema,
-  /** Days from the warning to the raid. */
-  warningDays: z.int().min(1),
-  raiders: z.array(z.array(IdSchema).min(1).max(8)).min(1).max(3),
-  /** Crowns the settlement pays defenders. */
-  reward: z.number().min(0),
-  /** A raided town's prices rise by this fraction for a month. */
+export const SiegeRulesSchema = z.strictObject({
+  /** The party's ally: sieges it fights in are alerted at once, and lifting one pays Renown. */
+  ally: IdSchema,
+  /** Days from a siege's start to its first assault, unless the party joins sooner. */
+  firstAssault: z.int().min(1),
+  /** Militia a settlement raises by its size, besides the holder's assets there. */
+  militia: z.strictObject({ village: z.int().min(0), town: z.int().min(0), city: z.int().min(0) }),
+  /** The defenders' militia (the Guard's stat line), and the holder's Force assets' fighters. */
+  militiaMonster: IdSchema,
+  forceMonster: IdSchema,
+  /** Faction assets whose sieges walls don't slow (Siege Experts). */
+  ignoreWalls: z.array(IdSchema),
+  /** System Strain each PC takes when an assault is lost with the party in it. */
+  strain: z.int().min(0),
+  /** Renown for an ally's siege lifted after the party fought in it. */
+  renown: z.int().min(0),
+  /** A sacked or besieged settlement's prices rise by this fraction. */
   surcharge: z.number().min(0),
 });
-export type RaidRules = z.infer<typeof RaidRulesSchema>;
+export type SiegeRules = z.infer<typeof SiegeRulesSchema>;
 
 /**
  * The campaign's endgame (Phase 12d; Sam's calls): the warlord's clock, crafter's notes, and the

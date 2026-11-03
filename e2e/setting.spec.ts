@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
-// Phase 12b: a bound garrison stands down for its countersign and offers a recruit, and raiders
-// fall on a Dark Lands settlement while the party stays the night.
+// Phase 12b: a bound garrison stands down for its countersign and offers a recruit; since Phase
+// 23a, a siege's assault falls on a Dark Lands settlement while the party stays the night.
 const starters = ['snag', 'grukk'].map((n) => `tools/sim/parties/starter/${n}.json`);
 const WORLD_KEY = 'wastes-crawler.world';
 
@@ -67,7 +67,7 @@ test('gives a garrison its countersign, and takes on the guard it offers', async
   await expect(panel.getByRole('group', { name: 'Standing order' })).toContainText(
     'Hold the Ruinfield Gate',
   );
-  await expect(page.getByRole('region', { name: 'Orders and raids' })).toContainText(
+  await expect(page.getByRole('region', { name: 'Orders and sieges' })).toContainText(
     '"The ash remembers"',
   );
   await page.screenshot({ path: testInfo.outputPath('garrison.png'), fullPage: true });
@@ -76,11 +76,18 @@ test('gives a garrison its countersign, and takes on the guard it offers', async
   await panel.getByRole('button', { name: 'Take them on' }).click();
   await expect(page.getByRole('region', { name: 'NPCs' })).toContainText('Guard');
   await panel.getByRole('button', { name: 'Let them pass' }).click();
-  await expect(page.getByRole('region', { name: 'Orders and raids' })).toContainText('(ended)');
+  await expect(page.getByRole('region', { name: 'Orders and sieges' })).toContainText('(ended)');
 });
 
-test('meets raiders at the gates of Cinderhold after a night at the inn', async ({ page }) => {
-  await darkLands(page, 'raids-e2e');
+async function nightAtTheInn(page: Page) {
+  await page.getByRole('button', { name: 'Visit Cinderhold' }).click();
+  await page.getByRole('tab', { name: 'Inn and healer' }).click();
+  await page.getByRole('button', { name: /Stay the night/ }).click();
+}
+
+test('fights its share of an assault on Cinderhold after a night at the inn', async ({ page }) => {
+  await darkLands(page, 'sieges-e2e');
+  // The month turns on the first night, and the factions take the field.
   await edit(page, (save) => {
     Object.assign(save, {
       region: 'dark-lands',
@@ -88,20 +95,41 @@ test('meets raiders at the gates of Cinderhold after a night at the inn', async 
       visited: ['6,12'],
       position: { col: 6, row: 12 },
       purse: 100,
-      raid: { town: 'cinderhold', day: 5, fighting: false },
+      day: 29,
     });
   });
-  await expect(page.getByRole('region', { name: 'Orders and raids' })).toContainText(
-    'Raiders will strike Cinderhold at the end of day 5.',
+  await nightAtTheInn(page);
+  await page.getByRole('button', { name: 'Back to the map' }).click();
+  // Grisk's warband camps before Cinderhold, and its assault comes tonight.
+  await edit(page, (save) => {
+    const factions = save.factions as Record<string, { assets: unknown[] }>;
+    (factions.warhost as { assets: unknown[] }).assets = [
+      { uid: 'a1', asset: 'infantry', at: 'cinderhold', hp: 6 },
+    ];
+    save.sieges = [
+      {
+        town: 'cinderhold',
+        attacker: 'warhost',
+        defender: 'settlements',
+        began: save.day,
+        next: save.day,
+        camps: [{ uid: 'a1', col: 7, row: 12 }],
+        joined: true,
+        pass: false,
+        stock: 0,
+        gate: null,
+      },
+    ];
+  });
+  await expect(page.getByRole('region', { name: 'Orders and sieges' })).toContainText(
+    "Grisk's Warhost besieges Cinderhold, held by The Free Settlements, with 1 camp",
   );
-  await page.getByRole('button', { name: 'Visit Cinderhold' }).click();
-  await page.getByRole('tab', { name: 'Inn and healer' }).click();
-  await page.getByRole('button', { name: /Stay the night/ }).click();
+  await nightAtTheInn(page);
   const alarm = page.getByRole('alert');
-  await expect(alarm).toContainText('Raiders fall on Cinderhold!');
+  await expect(alarm).toContainText("Grisk's Warhost's Beastman Warband storms the gates!");
   await alarm.getByRole('button', { name: 'To the gates' }).click();
   const panel = page.getByRole('region', { name: 'Encounter' });
-  await expect(panel).toContainText('Raiders fall on Cinderhold!');
+  await expect(panel).toContainText('storms the gates!');
   await expect(panel.getByRole('button', { name: 'Fight' })).toBeVisible();
   await expect(panel.getByRole('button', { name: 'Slip away' })).toHaveCount(0);
 });

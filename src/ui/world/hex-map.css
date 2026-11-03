@@ -265,8 +265,24 @@
 .hex .dungeon,
 .hex .grove,
 .hex .lair,
+.hex .camp,
 .hex .exit {
   pointer-events: none;
+}
+
+#hi-camp .tent {
+  fill: #8a3b2a;
+  stroke: #2a1d14;
+  stroke-width: 0.08;
+}
+
+#hi-camp .flap {
+  fill: #140d08;
+}
+
+#hi-camp .pole {
+  stroke: #2a1d14;
+  stroke-width: 0.1;
 }
 
 #hi-lair .den {

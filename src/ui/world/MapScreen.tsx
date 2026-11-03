@@ -51,6 +51,7 @@ import { typeOf } from '../../game/world/npcs.ts';
 import { entrancesIn, wayDownHere } from '../../game/dungeon/ruins.ts';
 import type { QuarterPlan } from '../../game/world/types.ts';
 import { grovesHere } from '../../game/world/groves.ts';
+import { campMarkers } from '../../render/siege-view.ts';
 
 const stampOf = (w: World) => `${w.day}/${w.quarter}/${hexKey(w.position)}`;
 
@@ -114,6 +115,7 @@ export function MapScreen(props: {
         grovesHere(w, data),
         revealedHexes(w, data),
         found.filter((s) => s.kind === 'lair'),
+        campMarkers(w, data),
       ),
     [w, props.version],
   );

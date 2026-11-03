@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { rollPatrol } from '../../../src/game/factions/patrols.ts';
-import { resolveRaid } from '../../../src/game/factions/raid.ts';
+import { assault } from '../../../src/game/factions/assault.ts';
+import { beginSiege } from '../../../src/game/factions/siege.ts';
 import { startFactions } from '../../../src/game/factions/state.ts';
 import { sack } from '../../../src/game/factions/strikes.ts';
 import { coachRoute, routesFrom } from '../../../src/game/world/coach.ts';
@@ -46,16 +47,19 @@ describe('walls (docs/rules-adaptation.md, Major projects: Project kinds)', () =
     expect(wallsHold(w, data, 'lanternfall')).toBe(50);
   });
 
-  it('turn the raiders back on the raid’s day, or let them through', () => {
+  it('turn a siege’s assault back, or let it through', () => {
     const w = on('dark-lands', 10, 4);
     finish(w, 'wall-lanternfall');
+    const s = beginSiege(w, data, 'bastion', 'lanternfall', 'settlements');
     w.rng = scriptedRng([30]);
-    expect(resolveRaid(w, data, 'lanternfall')).toBe(false);
-    expect(w.log.at(-1)).toContain('the walls of Lanternfall turned the raiders back');
-    // Past the walls, the raid goes on as before; with no raiders there, nothing hits.
+    expect(assault(w, data, s, null)).toEqual({ held: true, turned: true });
+    expect(w.log.at(-1)).toContain(
+      "the walls of Lanternfall turned The Dawnwall Bastion's assault back",
+    );
+    // Past the walls, the assault goes on; with no besiegers there, nothing is fought.
     const lines = w.log.length;
     w.rng = scriptedRng([80]);
-    expect(resolveRaid(w, data, 'lanternfall')).toBe(false);
+    expect(assault(w, data, s, null)).toEqual({ held: true, turned: false });
     expect(w.log.length).toBe(lines);
   });
 

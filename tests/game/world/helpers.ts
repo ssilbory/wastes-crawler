@@ -1,4 +1,4 @@
-import type { PendingEncounter } from '../../../src/data/schemas/index.ts';
+import type { PendingEncounter, Siege } from '../../../src/data/schemas/index.ts';
 import type { GameData } from '../../../src/game/character/context.ts';
 import { newWorld } from '../../../src/game/world/new-world.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
@@ -71,6 +71,23 @@ export function encounter(
     hostile: true,
     spotted: false,
     text: '',
+    ...over,
+  };
+}
+
+/** A siege of Cinderhold by Grisk's Warhost, a week from its first assault, unless overridden. */
+export function siege(over: Partial<Siege> = {}): Siege {
+  return {
+    town: 'cinderhold',
+    attacker: 'warhost',
+    defender: 'settlements',
+    began: 0,
+    next: 7,
+    camps: [],
+    joined: false,
+    pass: false,
+    stock: 0,
+    gate: null,
     ...over,
   };
 }

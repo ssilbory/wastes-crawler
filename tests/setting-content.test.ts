@@ -8,7 +8,7 @@ const srd = loadSrd();
 const content = loadContent();
 
 describe('setting content (Phase 12b)', () => {
-  it('loads clean standing orders, authorities, garrisons, and raids', () => {
+  it('loads clean standing orders, authorities, garrisons, and sieges', () => {
     expect(settingReferenceErrors(srd, content)).toEqual([]);
     expect(content.standingOrders.map((o) => o.id)).toEqual([
       'ruinfield-gate',
@@ -24,7 +24,7 @@ describe('setting content (Phase 12b)', () => {
       'spire-watch',
       'warden-seal',
     ]);
-    expect(content.raidRules.region).toBe('dark-lands');
+    expect(content.siegeRules.ally).toBe('settlements');
   });
 
   it('reports what points nowhere', () => {
@@ -94,12 +94,7 @@ describe('setting content (Phase 12b)', () => {
         },
       ],
       quests: [{ ...quest, reward: { ...quest.reward, countersigns: ['lost'], authority: 'z' } }],
-      raidRules: {
-        ...content.raidRules,
-        region: 'atlantis',
-        warningDays: 30,
-        raiders: [['dragon']],
-      },
+      siegeRules: { ...content.siegeRules, firstAssault: 30, forceMonster: 'dragon' },
     };
     // The campaign's own references are checked below.
     expect(
@@ -128,9 +123,8 @@ describe('setting content (Phase 12b)', () => {
       `dungeons/${dungeon.id}/${level.id}: the garrison at 99,0: unknown monster dragon`,
       `quests/${quest.id}: unknown order lost`,
       `quests/${quest.id}: unknown authority z`,
-      'raidRules: unknown region atlantis',
-      'raidRules: the warning must come within the month',
-      'raidRules: unknown monster dragon',
+      'siegeRules: the first assault must come within the month',
+      'siegeRules: unknown monster dragon',
     ]);
     const campaign = content.campaign;
     const lostCampaign: ContentData = {
@@ -167,12 +161,6 @@ describe('setting content (Phase 12b)', () => {
     ]);
     expect(lost).toContain('quests/warlord-falls: unknown monster dragon');
     expect(lost).toContain('encounterTables/dl-plains: a patrol needs more than 1 segments');
-    const empty = { ...dark, sites: [] };
-    expect(
-      settingReferenceErrors(srd, { ...content, regions: [empty] }).filter((e) =>
-        e.startsWith('raidRules'),
-      ),
-    ).toEqual(['raidRules: dark-lands has no settlements']);
   });
 
   it('reports ruins in the wrong places or pointing nowhere', () => {

@@ -45,7 +45,7 @@ import testParty from '../../data/content/test-party.json';
 import settingMonsters from '../../data/content/setting-monsters.json';
 import standingOrders from '../../data/content/standing-orders.json';
 import authorities from '../../data/content/authorities.json';
-import raidRules from '../../data/content/raid-rules.json';
+import siegeRules from '../../data/content/siege-rules.json';
 import campaign from '../../data/content/campaign.json';
 import ruins from '../../data/content/ruins.json';
 import ruinTraps from '../../data/content/ruin-traps.json';
@@ -133,7 +133,7 @@ export const SHIPPED_CONTENT: Record<keyof ContentData, unknown> = {
   settingMonsters,
   standingOrders,
   authorities,
-  raidRules,
+  siegeRules,
   campaign,
   ruins,
   ruinTraps,

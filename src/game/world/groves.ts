@@ -8,6 +8,7 @@ import type { GameData } from '../character/context.ts';
 import type { WorldEvent } from './bus.ts';
 import { startEncounter } from './encounters.ts';
 import { note } from './members.ts';
+import { campsHere } from './siege-state.ts';
 import type { World } from './types.ts';
 
 export const groveKey = (g: Grove) => `grove:${g.id}`;
@@ -16,7 +17,10 @@ export const groveKey = (g: Grove) => `grove:${g.id}`;
 export const grovesHere = (w: World, data: GameData): Grove[] =>
   data.content.groves.filter((g) => g.region === w.region && !w.beaten.includes(groveKey(g)));
 
-/** The hexes a route should go around: every uncleared grove but the one it heads for. */
+/**
+ * The hexes a route should go around: every uncleared grove, and every siege camp on the map
+ * (docs/rules-adaptation.md, Sieges), but the one it heads for.
+ */
 export function hexesToAvoid(
   w: World,
   data: GameData,
@@ -24,9 +28,7 @@ export function hexesToAvoid(
 ): Set<string> {
   const goal = to && hexKey(to);
   return new Set(
-    grovesHere(w, data)
-      .map(hexKey)
-      .filter((k) => k !== goal),
+    [...grovesHere(w, data), ...campsHere(w, data)].map(hexKey).filter((k) => k !== goal),
   );
 }
 

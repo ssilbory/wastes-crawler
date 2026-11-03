@@ -96,7 +96,6 @@ describe('faction content (Phase 13)', () => {
       'factions/settlements: bad rival bastion',
       'factions/settlements: a second base at its HQ',
       'factions/settlements: bad rival bastion',
-      'raidRules: unknown faction bastion',
     ]);
     // Magic: the settlements have none.
     expect(
@@ -108,13 +107,18 @@ describe('faction content (Phase 13)', () => {
       'factions/settlements: witch-hunters needs low magic',
       'factions/settlements: bad rival warhost',
       'factions/settlements: bad rival bastion',
-      'raidRules: unknown faction bastion',
     ]);
   });
 
-  it('needs the raiding faction to exist', () => {
-    const broken = { ...content, raidRules: { ...content.raidRules, faction: 'pirates' } };
-    expect(factionReferenceErrors(srd, broken)).toEqual(['raidRules: unknown faction pirates']);
+  it("needs the sieges' ally and wall-breaking assets to exist", () => {
+    const broken = {
+      ...content,
+      siegeRules: { ...content.siegeRules, ally: 'pirates', ignoreWalls: ['trebuchets'] },
+    };
+    expect(factionReferenceErrors(srd, broken)).toEqual([
+      'siegeRules: unknown ally pirates',
+      'siegeRules: unknown asset trebuchets',
+    ]);
   });
 
   it('needs the clock faction to exist', () => {

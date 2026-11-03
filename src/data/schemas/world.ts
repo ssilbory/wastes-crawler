@@ -8,8 +8,9 @@ import { RegionSchema } from './overland-content.ts';
 import { LootDiceSchema, ShopStateSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 import { ComponentTypeSchema } from './crafting-content.ts';
+import { SiegeFightSchema, SiegeSchema } from './siege-state.ts';
 
-export const WORLD_SCHEMA_VERSION = 54;
+export const WORLD_SCHEMA_VERSION = 55;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -169,6 +170,8 @@ export const PendingEncounterSchema = z.strictObject({
   garrison: z.string().optional(),
   /** The faction asset this patrol belongs to, as faction:uid (Phase 13b). */
   patrol: z.string().optional(),
+  /** The part of a siege this fight is (Phase 23a). */
+  siege: SiegeFightSchema.optional(),
 });
 
 /** Crowns spent and loot cashed in at one town, at listed value, since `since` (a day). */
@@ -487,17 +490,9 @@ export const WorldSaveSchema = z.strictObject({
   ending: z.enum(['destroy', 'give', 'keep']).nullable(),
   /** Tokens of command authority the party carries. */
   authority: z.array(IdSchema),
-  /** The settlement raiders mean to hit, the day they strike, and whether the party is fighting them. */
-  raid: z
-    .strictObject({
-      town: IdSchema,
-      day: z.int().min(0),
-      fighting: z.boolean(),
-      /** The raiding faction's asset that leads it (Phase 13b). */
-      asset: z.string().optional(),
-    })
-    .nullable(),
-  /** Raided settlements and the day their prices recover. */
+  /** Sieges under way (Phase 23a). */
+  sieges: z.array(SiegeSchema),
+  /** Sacked settlements and the day their prices recover. */
   raided: z.record(IdSchema, z.int().min(0)),
   /** Each craftsman's month, by id, once the party has visited. */
   craftsmen: z.record(IdSchema, CraftsmanStateSchema),

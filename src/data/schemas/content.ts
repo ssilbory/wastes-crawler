@@ -29,7 +29,7 @@ import { SettingsDefaultsSchema, SoundCueSchema } from './settings.ts';
 import {
   AuthoritySchema,
   CampaignSchema,
-  RaidRulesSchema,
+  SiegeRulesSchema,
   StandingOrderSchema,
 } from './setting-content.ts';
 import { RuinSchema } from './ruin-content.ts';
@@ -221,7 +221,7 @@ export const ContentSchemas = {
   settingMonsters: z.array(SettingMonsterSchema),
   standingOrders: z.array(StandingOrderSchema),
   authorities: z.array(AuthoritySchema),
-  raidRules: RaidRulesSchema,
+  siegeRules: SiegeRulesSchema,
   campaign: CampaignSchema,
   ruins: z.array(RuinSchema),
   /** The kinds of trap the ruin generators draw from. */

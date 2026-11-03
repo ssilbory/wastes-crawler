@@ -7,6 +7,7 @@ import type {
   Light,
   MajorProjectState,
   WorkingState,
+  Siege,
   DefaultPreset,
   LootDice,
   MountSave,
@@ -151,7 +152,8 @@ export interface World {
   rumors: string[];
   ordersEnded: string[];
   authority: string[];
-  raid: WorldSave['raid'];
+  /** Sieges under way (Phase 23a; src/game/factions/siege.ts). */
+  sieges: Siege[];
   raided: Record<string, number>;
   craftsmen: Record<string, CraftsmanState>;
   commissions: Commission[];

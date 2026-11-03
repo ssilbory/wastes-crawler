@@ -100,7 +100,7 @@ export function newWorld(
     rumors: [],
     ordersEnded: [],
     authority: [],
-    raid: null,
+    sieges: [],
     raided: {},
     craftsmen: {},
     commissions: [],

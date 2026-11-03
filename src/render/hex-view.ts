@@ -31,6 +31,8 @@ export interface HexCell {
   grove: string | null;
   /** A lair found by exploring and not yet cleared (hidden-sites.ts). */
   lair: string | null;
+  /** A besieging army's camp (Phase 23a), shown even under fog, since word of the siege spreads. */
+  camp: string | null;
 }
 
 const SQRT3 = Math.sqrt(3);
@@ -69,7 +71,10 @@ export function hexCells(
   revealed: readonly Hex[] = [],
   /** Lairs found by exploring and not yet cleared. */
   lairs: readonly (Hex & { name: string })[] = [],
+  /** Besieging armies' camps. */
+  camps: readonly (Hex & { name: string })[] = [],
 ): HexCell[] {
+  const tents = new Map(camps.map((c) => [hexKey(c), c.name]));
   const dens = new Map(lairs.map((l) => [hexKey(l), l.name]));
   const quests = new Set(questHexes.map(hexKey));
   const ways = new Map(entrances.map((e) => [hexKey(e), e]));
@@ -106,6 +111,7 @@ export function hexCells(
         exit: known ? (map.exitAt(h)?.name ?? null) : null,
         grove: known ? (woods.get(key) ?? null) : null,
         lair: dens.get(key) ?? null,
+        camp: tents.get(key) ?? null,
       });
     }
   }

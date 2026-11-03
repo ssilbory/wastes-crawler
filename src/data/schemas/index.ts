@@ -59,6 +59,7 @@ export * from './weapons.ts';
 export * from './roster.ts';
 export * from './overland-content.ts';
 export * from './world.ts';
+export * from './siege-state.ts';
 export * from './town-content.ts';
 export * from './skill-content.ts';
 export * from './grove-content.ts';

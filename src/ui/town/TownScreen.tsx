@@ -15,6 +15,7 @@ import { ProjectsPanel } from '../world/ProjectsPanel.tsx';
 import { WorkingsPanel } from '../world/WorkingsPanel.tsx';
 import { SettingPanel } from '../world/SettingPanel.tsx';
 import { raidedText } from '../../render/setting-view.ts';
+import { blockadeText } from '../../render/siege-view.ts';
 import { PartyPanel } from '../world/PartyPanel.tsx';
 import { PurgePanel } from '../world/PurgePanel.tsx';
 import { AntidotePanel } from '../world/AntidotePanel.tsx';
@@ -87,6 +88,7 @@ export function TownScreen(props: {
         <div class="bar-status">
           <span>Purse: {crowns(w.purse)}</span>
           <span>Loot: {lootText(w.loot)}</span>
+          {blockadeText(w, town.id) && <span class="raided">{blockadeText(w, town.id)}</span>}
           {raidedText(w, town.id) && <span class="raided">{raidedText(w, town.id)}</span>}
           {tradeText(w, data) && <span class="trade">{tradeText(w, data)}</span>}
         </div>

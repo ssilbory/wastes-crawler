@@ -3,7 +3,7 @@ import { pickGoal } from '../../../src/game/factions/goals.ts';
 import { factionTurn, takeAction } from '../../../src/game/factions/turn.ts';
 import { emit } from '../../../src/game/world/bus.ts';
 import type { Rng } from '../../../src/rules/rng.ts';
-import { data, faction, factionWorld, held } from './helpers.ts';
+import { data, faction, factionWorld, held, unsettled } from './helpers.ts';
 
 /** Every die rolls its highest face: initiative goes in content order, and checks to the higher rating. */
 const highRolls: Rng = {
@@ -59,7 +59,9 @@ describe('a faction action (6.6.0)', () => {
     held(w, 'warhost', 'infantry').at = 'cinderhold';
     const struck: string[] = [];
     expect(takeAction(w, data, 'warhost', (v) => struck.push(v))).toBe(true);
-    expect(struck).toEqual(['settlements']);
+    // Cinderhold is a settlement: the attack lays siege to it rather than striking.
+    expect(struck).toEqual([]);
+    expect(w.sieges.map((x) => x.town)).toEqual(['cinderhold']);
     // Short of fighters: build one.
     s.assets = [];
     s.treasure = 6;
@@ -107,6 +109,8 @@ describe('the faction turn (6.2.0)', () => {
 
   it('earns Treasure, and the clock moves when the warhost takes a base or meets a goal', () => {
     const w = factionWorld();
+    // Off the map, the villages are struck rather than besieged.
+    const plain = unsettled('lanternfall', 'mirewatch');
     w.rng = highRolls;
     faction(w, 'loyalists').hp = 0;
     const s = faction(w, 'warhost');
@@ -116,7 +120,7 @@ describe('the faction turn (6.2.0)', () => {
     faction(w, 'settlements').assets = faction(w, 'settlements').assets.filter(
       (a) => a.at !== 'lanternfall',
     );
-    factionTurn(w, data);
+    factionTurn(w, plain);
     // Income 4 plus 2 from the breeding pens (a 6), on top of the 4 it had.
     expect(s.treasure).toBe(10);
     expect(w.clock).toBe(2);
@@ -127,7 +131,7 @@ describe('the faction turn (6.2.0)', () => {
     held(w, 'warhost', 'infantry').at = 'mirewatch';
     faction(w, 'settlements').assets = [];
     for (const x of faction(w, 'settlements').bases) if (x.at === 'mirewatch') x.hp = 20;
-    factionTurn(w, data);
+    factionTurn(w, plain);
     expect(s.goal?.progress).toBe(8);
   });
 });

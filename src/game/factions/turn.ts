@@ -26,7 +26,6 @@ import {
 } from './actions.ts';
 import { checkGoal, pickGoal, weakestBase } from './goals.ts';
 import { patrolBeaten } from './patrols.ts';
-import { warnRaid } from './raid.ts';
 import { hurtAsset } from './combat.ts';
 import { strikesFor } from './strikes.ts';
 import {
@@ -78,7 +77,7 @@ export function takeAction(w: World, data: GameData, id: string, onStrike: OnStr
     return false;
   }
   if (readyAttackers(w, data, id).length > 0) {
-    attackAction(w, data, id, onStrike, warnRaid(w, data, id));
+    attackAction(w, data, id, onStrike);
     return true;
   }
   // Build up first while short of fighters or flush with Treasure, then march.

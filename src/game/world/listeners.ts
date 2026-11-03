@@ -11,7 +11,7 @@ import { notesListener } from './notes.ts';
 import { sharesListener } from './shares.ts';
 import { ordersListener } from './orders.ts';
 import { questListener } from './quests.ts';
-import { raidsListener } from './raids.ts';
+import { siegesListener } from './sieges.ts';
 import { raisingListener } from './raising.ts';
 import { rescueListener } from '../dungeon/rescues.ts';
 import { ruinsListener } from '../dungeon/ruins.ts';
@@ -31,7 +31,7 @@ const ALL: readonly Listener[] = [
   craftingListener,
   maintenanceListener,
   ordersListener,
-  raidsListener,
+  siegesListener,
   factionsListener,
   clockListener,
   notesListener,
@@ -48,14 +48,14 @@ const ALL: readonly Listener[] = [
 ];
 
 /**
- * The campaign's own story: its raids, factions, warlord's clock, crafter's notes, and major
+ * The campaign's own story: its sieges, factions, warlord's clock, crafter's notes, and major
  * projects (Renown is earned only where projects can be spent on), all tied to
  * the campaign's towns. A world on a custom map or a realm has none of it (Sam's call). Standing
  * orders run everywhere: the Sealed Vale's posts hold its pass and tower, and the same listener
  * records every won post and hoard fight (docs/rules-adaptation.md, Shipped worlds).
  */
 const CAMPAIGN: ReadonlySet<Listener> = new Set([
-  raidsListener,
+  siegesListener,
   factionsListener,
   clockListener,
   notesListener,

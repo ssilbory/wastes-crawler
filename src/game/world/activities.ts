@@ -30,6 +30,7 @@ import { memberLoad, partyLoad } from './party-load.ts';
 import { firstGuide, guideOf } from './npcs.ts';
 import { hexesToAvoid } from './groves.ts';
 import { pathToward, regionMap, knownHexes } from './region.ts';
+import { breakOut } from './sieges.ts';
 import { enterTown } from './town.ts';
 import type { Activity, Member, World } from './types.ts';
 
@@ -123,6 +124,8 @@ export function hike(w: World, data: GameData, leaderId: string | null, dark: bo
   const plan = () =>
     w.destination &&
     pathToward(map, w.position, w.destination, knownHexes(map, w), hexesToAvoid(w, data));
+  // A besieged town is left only through its siege lines (sieges.ts).
+  if (w.destination && breakOut(w, data)) return 0;
   let path = plan();
   if (!path) {
     w.destination = null;

@@ -135,6 +135,11 @@ export function HexArtDefs() {
         <path class="mouth" d="M-0.4,0.75Q-0.35,0.05 0,0.05Q0.35,0.05 0.4,0.75Z" />
         <path class="bones" d="M-0.7,0.85L-0.2,0.6M0.25,0.6L0.7,0.85" />
       </symbol>
+      <symbol id="hi-camp" viewBox="-1 -1 2 2">
+        <path class="tent" d="M-0.85,0.8L0,-0.75L0.85,0.8Z" />
+        <path class="flap" d="M-0.2,0.8L0,0.25L0.2,0.8Z" />
+        <path class="pole" d="M0,-0.75V-0.95" />
+      </symbol>
       <symbol id="hi-exit" viewBox="-1 -1 2 2">
         <path class="post" d="M-0.55,0.95V-0.6" />
         <path class="sign" d="M-0.75,-0.65H0.5L0.9,-0.3L0.5,0.05H-0.75Z" />

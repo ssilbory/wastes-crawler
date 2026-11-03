@@ -1,6 +1,7 @@
 // The world's event bus (docs/plan.md, Quest: driven by an event bus from the game layer). The
 // game layer emits what happened; listeners, the quests for now, react to it. The listeners are
 // assembled in listeners.ts and reach emit through GameData, so no listener imports the others.
+import type { SiegeFight } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
 import { isCampaign } from './region.ts';
 import type { Npc, World } from './types.ts';
@@ -11,7 +12,16 @@ export type WorldEvent =
   | { kind: 'town-entered'; town: string }
   /** A won fight, the quest whose fixed encounter it was, the garrison post it held, and the
    * faction patrol it was (Phase 13b). */
-  | { kind: 'fight-won'; quest: string | null; garrison: string | null; patrol?: string | null }
+  | {
+      kind: 'fight-won';
+      quest: string | null;
+      garrison: string | null;
+      patrol?: string | null;
+      /** The part of a siege it was (Phase 23a). */
+      siege?: SiegeFight | null;
+    }
+  /** A fight the party came out of, won or broken off, and the part of a siege it was. */
+  | { kind: 'fight-over'; won: boolean; siege: SiegeFight | null }
   | { kind: 'npc-died'; npc: Npc }
   /** A day has ended. */
   | { kind: 'day-passed' }

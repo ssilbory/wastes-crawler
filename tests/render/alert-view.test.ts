@@ -10,7 +10,8 @@ import {
   type Alert,
 } from '../../src/render/alert-view.ts';
 import { below, place } from '../game/dungeon/helpers.ts';
-import { data, member, world } from '../game/world/helpers.ts';
+import { data, member, siege, world } from '../game/world/helpers.ts';
+import { startFactions } from '../../src/game/factions/state.ts';
 
 describe('alerts', () => {
   it('warns of strain taken while time passes, with Broken and death', () => {
@@ -178,6 +179,27 @@ describe('the inn notice', () => {
     w.performedDay = w.day;
     w.log.push('Day 1, Evening: The party sleeps.');
     expect(alertsSince(before, w, data)).toEqual([]);
+  });
+});
+
+describe('the siege notice (Phase 23a)', () => {
+  it('tells at once of a siege the ally is in, and nothing of rivals’ sieges', () => {
+    const w = world();
+    startFactions(w, data);
+    const before = alertSnapshot(w);
+    w.sieges = [
+      siege({ next: 12 }),
+      siege({ town: 'gutterwick', attacker: 'bastion', defender: 'warhost' }),
+    ];
+    expect(alertsSince(before, w, data)).toEqual([
+      {
+        kind: 'siege',
+        title: 'Siege: Cinderhold',
+        text: "Grisk's Warhost besieges Cinderhold, held by The Free Settlements. The first assault comes at the end of day 13.",
+      },
+    ]);
+    // Heard once only.
+    expect(alertsSince(alertSnapshot(w), w, data)).toEqual([]);
   });
 });
 
