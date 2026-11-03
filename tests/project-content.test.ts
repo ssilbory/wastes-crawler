@@ -85,8 +85,15 @@ describe('project content (docs/rules-adaptation.md, Major projects; Sam’s cal
         patrolPercent: 1,
       },
     };
-    const water: Project = { ...first, id: 'water', effect: { kind: 'water', at: 'westhold' } };
-    expect(projectReferenceErrors(srd, with_({ projects: [lost, coach, tithe, water] }))).toEqual([
+    // A project waiting on another that exists is fine.
+    const water: Project = {
+      ...first,
+      id: 'water',
+      after: [first.id],
+      effect: { kind: 'water', at: 'westhold' },
+    };
+    const projects = [first, lost, coach, tithe, water];
+    expect(projectReferenceErrors(srd, with_({ projects }))).toEqual([
       'projects/lost: unknown region atlantis',
       'projects/lost: lanternfall is not a site in atlantis',
       'projects/lost: lanternfall is not a site in atlantis',
