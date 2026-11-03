@@ -9,7 +9,7 @@ import { LootDiceSchema, ShopStateSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 import { ComponentTypeSchema } from './crafting-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 53;
+export const WORLD_SCHEMA_VERSION = 54;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -207,6 +207,22 @@ export const MajorProjectStateSchema = z.strictObject({
   specialist: z.string().min(1).nullable(),
 });
 export type MajorProjectState = z.infer<typeof MajorProjectStateSchema>;
+
+/** A Working under way or standing (docs/rules-adaptation.md, Major projects: Workings). */
+export const WorkingStateSchema = z.strictObject({
+  working: IdSchema,
+  /** The settlement it stands in. */
+  town: IdSchema,
+  /** The member who leads its building. */
+  lead: z.string().min(1),
+  /** Days of building left; at 0 the lead makes the final check each day until it holds. */
+  daysLeft: z.int().min(0),
+  /** Days in a row the lead has been off the Working's map. */
+  away: z.int().min(0),
+  /** The day it was finished, or null while under way. */
+  done: z.int().min(0).nullable(),
+});
+export type WorkingState = z.infer<typeof WorkingStateSchema>;
 
 /** An item being crafted (docs/rules-adaptation.md, Crafting and modifying gear). */
 export const ProjectSchema = z.strictObject({
@@ -440,6 +456,8 @@ export const WorldSaveSchema = z.strictObject({
   renown: z.int().min(0),
   /** Major projects under way or finished, by id. */
   majorProjects: z.record(IdSchema, MajorProjectStateSchema),
+  /** Workings under way or standing (Phase 22d). */
+  workings: z.array(WorkingStateSchema),
   /** The warlord's clock, in segments (Phase 12d). */
   clock: z.int().min(0),
   /** Crafter's notes found, by set, and what became of them. */

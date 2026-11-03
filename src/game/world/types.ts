@@ -6,6 +6,7 @@ import type {
   DungeonState,
   Light,
   MajorProjectState,
+  WorkingState,
   DefaultPreset,
   LootDice,
   MountSave,
@@ -131,6 +132,8 @@ export interface World {
   renown: number;
   /** Major projects under way or finished, by id. */
   majorProjects: Record<string, MajorProjectState>;
+  /** Workings under way or standing (workings.ts). */
+  workings: WorkingState[];
   /** The warlord's clock, crafter's notes, and the seal's fate (Phase 12d). */
   clock: number;
   notes: Record<string, 'found' | 'burned' | 'sold' | 'kept' | 'paid'>;

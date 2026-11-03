@@ -202,8 +202,14 @@ export const ProjectContentSchema = z.strictObject({
   recruitMonster: IdSchema,
   /** SRD 4.8.2 at 1/50. */
   workingCrownsPerPoint: z.int().min(1),
-  /** A hired mage's help with a design: the hireling, the fee, and the points they add. */
-  hiredMage: z.strictObject({ hireling: IdSchema, fee: z.int().min(1), points: z.int().min(1) }),
+  /** A hired mage's help with a design: the hireling, the fee, the points they add, and how many
+   * one Working may take. */
+  hiredMage: z.strictObject({
+    hireling: IdSchema,
+    fee: z.int().min(1),
+    points: z.int().min(1),
+    most: z.int().min(0),
+  }),
   projects: z.array(ProjectSchema),
   institutions: z.array(InstitutionSchema),
   workings: z.array(WorkingSchema),

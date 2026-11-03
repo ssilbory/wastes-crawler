@@ -2,6 +2,7 @@
 // the whole party can wait in town while its crafters work, a day's rent and a night at the inn at a
 // time, or a crafter can stay behind to finish alone, with the rent paid up front.
 import { findItem } from '../character/items.ts';
+import { workingAt } from './working-effects.ts';
 import type { GameData } from '../character/context.ts';
 import { daysText, tierName, workOn, workshopHere } from './crafting.ts';
 import { note } from './members.ts';
@@ -29,7 +30,9 @@ export function workDay(w: World, data: GameData): TownResult {
   if (total > w.purse) return no(`A day's work and a night at the inn cost ${total} crowns.`);
   spend(w, data, listed);
   note(w, `The party spends the day at the workshop in ${town.name}.`);
-  for (const p of working) workOn(w, data, p);
+  // Heatless lamps let the work run on into the night (working-effects.ts).
+  const pace = 1 + workingAt(w, data, 'workshop-pace', town.id) / 100;
+  for (const p of working) workOn(w, data, p, pace);
   return stayAtInn(w, data);
 }
 

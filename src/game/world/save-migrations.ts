@@ -315,4 +315,6 @@ export const WORLD_MIGRATIONS: Migrations = {
       ]),
     ),
   }),
+  // Version 54 adds Workings (Phase 22d): none under way.
+  53: (raw) => ({ ...raw, schemaVersion: 54, workings: [] }),
 };

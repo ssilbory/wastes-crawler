@@ -85,3 +85,37 @@ test('founds a workshop in a village and hires its smith in a town', async ({ pa
     'journeyman, bound for Grimcairn to run a workshop',
   );
 });
+
+test('begins a Working led by a 6th-level mage', async ({ page }) => {
+  const three = ['snag', 'grukk', 'fizzwick'].map((n) => `tools/sim/parties/starter/${n}.json`);
+  await page.goto('/#/arena');
+  await page.getByLabel('Import character files').setInputFiles(three);
+  await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(3);
+  await page.goto('/#/world');
+  await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();
+  await page.getByRole('combobox', { name: 'Front row, slot 1' }).selectOption({ label: 'Snag' });
+  await page.getByRole('combobox', { name: 'Front row, slot 2' }).selectOption({ label: 'Grukk' });
+  await page
+    .getByRole('combobox', { name: 'Rear row, slot 1' })
+    .selectOption({ label: 'Fizzwick' });
+  await page.getByRole('button', { name: 'Start a new world' }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
+  // Fizzwick is a 6th-level High Mage with Magic-1, and the purse is full.
+  await page.evaluate((key) => {
+    const save = JSON.parse(localStorage.getItem(key) as string);
+    for (const m of save.members)
+      if (m.character.name === 'Fizzwick') {
+        m.character.classes.levels = { 'full-high-mage': 6 };
+        m.character.skills.magic = 1;
+      }
+    save.purse = 1000;
+    localStorage.setItem(key, JSON.stringify(save));
+  }, WORLD_KEY);
+  await page.reload();
+  await page.getByRole('button', { name: 'Continue journey' }).click();
+  const panel = page.getByRole('region', { name: 'Workings' });
+  await panel.getByText('Watch-lamps', { exact: true }).click();
+  await expect(panel).toContainText('Fizzwick leads: 12 points');
+  await panel.getByRole('button', { name: 'Begin (240 crowns, 51 days)' }).click();
+  await expect(panel).toContainText('Watch-lamps, Rubblegate: Fizzwick, 51 days left');
+});

@@ -1,10 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import {
+  designable,
+  designScore,
   factionHelp,
   greatestOpposition,
   loweredDifficulty,
   projectDifficulty,
   renownPrice,
+  workingCheck,
+  workingDays,
+  workingDifficulty,
 } from '../../src/rules/projects.ts';
 
 // SRD 7.5.0's table at 1/50 (data/content/projects.json).
@@ -88,5 +93,43 @@ describe('major projects (vendor/wwn-srd/7.0 Major Projects/)', () => {
     expect(factionHelp(free, false)).toBe(6);
     expect(factionHelp(free, true)).toBe(12);
     expect(factionHelp({ force: 1, cunning: 1, wealth: 2 }, false)).toBe(2);
+  });
+});
+
+describe('magical Workings (vendor/wwn-srd/4.0 Magic and Spellcasting/4.8.0)', () => {
+  it('multiplies a Working’s points by its area', () => {
+    expect(workingDifficulty(3, 'room')).toBe(3);
+    expect(workingDifficulty(6, 'village')).toBe(96);
+    // The SRD's example: 16 points over a whole tower.
+    expect(workingDifficulty(16, 'building')).toBe(64);
+    expect(workingDifficulty(2, 'city')).toBe(128);
+    expect(workingDifficulty(1, 'region')).toBe(256);
+  });
+
+  it('scores a designer by level and Magic, never below nothing', () => {
+    // The SRD's 6th-level High Mage with Magic-3.
+    expect(designScore(6, 3)).toBe(36);
+    expect(designScore(6, 0)).toBe(0);
+    expect(designScore(6, -1)).toBe(0);
+  });
+
+  it('designs alone at the full difficulty, with help from half, never below half', () => {
+    expect(designable(96, 0, 96)).toBe(true);
+    expect(designable(48, 48, 96)).toBe(true);
+    expect(designable(48, 47, 96)).toBe(false);
+    expect(designable(47, 60, 96)).toBe(false);
+  });
+
+  it('takes a month and a week a 5 points, halved at double the cost', () => {
+    expect(workingDays(12, 30, false)).toBe(30 + 21);
+    expect(workingDays(10, 30, false)).toBe(30 + 14);
+    expect(workingDays(96, 30, false)).toBe(30 + 140);
+    expect(workingDays(12, 30, true)).toBe(26);
+  });
+
+  it('checks at 8 plus the degree', () => {
+    expect(workingCheck('trivial')).toBe(8);
+    expect(workingCheck('minor')).toBe(9);
+    expect(workingCheck('supreme')).toBe(12);
   });
 });

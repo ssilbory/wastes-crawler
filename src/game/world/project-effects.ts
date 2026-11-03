@@ -4,6 +4,7 @@
 // restored land eases foraging and waters the hexes around it. A strike after lingering trouble
 // shuts a project's effect for a month (project-help.ts).
 import type { CoachRoute } from '../../data/schemas/index.ts';
+import { standingWorkings, workingAt } from './working-effects.ts';
 import type { Project, ProjectEffect } from '../../data/schemas/project-content.ts';
 import { distance } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
@@ -30,16 +31,17 @@ function working<K extends ProjectEffect['kind']>(
 
 /** Percent of raids on a settlement its walls turn back before they are fought; 0 unwalled. */
 export function wallsHold(w: World, data: GameData, town: string): number {
-  return Math.min(
-    100,
-    working(w, data, 'raid-guard')
-      .filter((x) => x.effect.at === town)
-      .reduce((sum, x) => sum + x.effect.percent, 0),
-  );
+  const walls = working(w, data, 'raid-guard')
+    .filter((x) => x.effect.at === town)
+    .reduce((sum, x) => sum + x.effect.percent, 0);
+  // A ward laid on the walls adds its share (working-effects.ts).
+  return Math.min(100, walls + workingAt(w, data, 'raid-guard', town));
 }
 
 /** A coach route with its secured road's ambush die and fare. */
 function secured(w: World, data: GameData, route: CoachRoute): CoachRoute {
+  // Waystones at either stop keep the road quieter too.
+  const stones = Math.max(...route.towns.map((t) => workingAt(w, data, 'road', t)));
   return working(w, data, 'road')
     .filter((x) => x.effect.route === route.id)
     .reduce(
@@ -48,7 +50,7 @@ function secured(w: World, data: GameData, route: CoachRoute): CoachRoute {
         ambushDie: Math.max(r.ambushDie, effect.ambushDie),
         fare: Math.max(1, r.fare - effect.fareCut),
       }),
-      route,
+      { ...route, ambushDie: Math.max(route.ambushDie, stones) },
     );
 }
 
@@ -93,7 +95,12 @@ export function forageBonus(w: World, data: GameData): number {
 
 /** Whether restored water reaches the party's hex: it fills the water die and isn't dry land. */
 export function watered(w: World, data: GameData): boolean {
-  return working(w, data, 'water').some((x) =>
-    inReach(w, data, x.project, x.effect.at, x.effect.radius),
+  const spring = standingWorkings(w, data, 'water').some(({ town, amount }) => {
+    const site = w.dungeon ? undefined : regionMap(data, w.region).sites.find((s) => s.id === town);
+    return site !== undefined && distance(site, w.position) <= amount;
+  });
+  return (
+    spring ||
+    working(w, data, 'water').some((x) => inReach(w, data, x.project, x.effect.at, x.effect.radius))
   );
 }

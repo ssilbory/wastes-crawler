@@ -130,7 +130,7 @@ describe('project content (docs/rules-adaptation.md, Major projects; Sam’s cal
       buildAttributes: noExert,
       institutions: [workshop, twice, trading],
       help: { faction: 'no', suits: [] },
-      hiredMage: { hireling: 'no', fee: 1, points: 1 },
+      hiredMage: { hireling: 'no', fee: 1, points: 1, most: 2 },
     });
     expect(projectReferenceErrors(srd, broken)).toEqual([
       'projects/institutions/workshop: listed twice',

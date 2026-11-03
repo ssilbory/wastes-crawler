@@ -5,6 +5,7 @@
 // done and its building work, if any, is finished (project-building.ts). A project pushed through
 // a faction still standing against it leaves lingering trouble (project-help.ts).
 import type { AnyProject, Project } from '../../data/schemas/project-content.ts';
+import { standingWorkings } from './working-effects.ts';
 import { institutionProject, isInstitutionId } from './institution-projects.ts';
 import {
   greatestOpposition,
@@ -125,7 +126,11 @@ export function adventuresDone(w: World, data: GameData, p: AnyProject): number 
  * shares and the help factions have given (SRD 7.9.0).
  */
 export function difficultyNow(w: World, data: GameData, p: AnyProject): number {
-  const left = standing(w, data, p.difficulty.opposition).map((o) => o.level);
+  // A grave-ward on the crypt there keeps the Faithful from opposing one founded beside it.
+  const warded =
+    p.id === `inst-crypt-${p.at}` &&
+    standingWorkings(w, data, 'grave-ward').some((x) => x.town === p.at);
+  const left = warded ? [] : standing(w, data, p.difficulty.opposition).map((o) => o.level);
   const full = projectDifficulty({ ...p.difficulty, opposition: greatestOpposition(left) });
   const help = progressOf(w, p.id).help.reduce((sum, h) => sum + h.points, 0);
   return loweredDifficulty(full, adventuresDone(w, data, p), help);

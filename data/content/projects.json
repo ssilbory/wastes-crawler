@@ -53,7 +53,8 @@
   "hiredMage": {
     "hireling": "mage-of-minor-abilities",
     "fee": 100,
-    "points": 6
+    "points": 6,
+    "most": 2
   },
   "projects": [
     {

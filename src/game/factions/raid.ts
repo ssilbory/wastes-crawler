@@ -4,6 +4,7 @@
 // meets the leading asset's patrol at the gates; beating it destroys that asset. Otherwise the
 // faction's assets in the settlement attack as usual, and a hit sacks it.
 import type { GameData } from '../character/context.ts';
+import { workingAt } from '../world/working-effects.ts';
 import { note } from '../world/members.ts';
 import type { World } from '../world/types.ts';
 import { readyAttackers, victimAt } from './actions.ts';
@@ -26,15 +27,17 @@ export function warnRaid(w: World, data: GameData, id: string): string | null {
   if (id !== rules(data).faction || w.raid) return null;
   const leader = readyAttackers(w, data, id).find((a) => isRaidable(data, a.at));
   if (!leader) return null;
+  // Watch-lamps there give longer warning (working-effects.ts).
+  const warning = Math.max(rules(data).warningDays, workingAt(w, data, 'raid-warning', leader.at));
   w.raid = {
     town: leader.at,
-    day: w.day + 1 + rules(data).warningDays,
+    day: w.day + 1 + warning,
     fighting: false,
     asset: leader.uid,
   };
   note(
     w,
-    `Word comes that ${factionOf(data, id).name} will strike ${locationName(data, leader.at)} within ${rules(data).warningDays} days.`,
+    `Word comes that ${factionOf(data, id).name} will strike ${locationName(data, leader.at)} within ${warning} days.`,
   );
   return leader.at;
 }

@@ -86,6 +86,7 @@ export function newWorld(
     warlords: [],
     renown: 0,
     majorProjects: {},
+    workings: [],
     clock: 0,
     notes: {},
     ending: null,

@@ -3,6 +3,7 @@
 // rival out of a location, and a settlement sacked when the blow lands on the faction that holds
 // it, raising its prices for a month as a raid does (docs/rules-adaptation.md, Raids).
 import type { FactionState } from '../../data/schemas/index.ts';
+import { destroyWorkings } from '../world/workings.ts';
 import type { GameData } from '../character/context.ts';
 import { moveClock } from '../world/clock.ts';
 import { note } from '../world/members.ts';
@@ -25,6 +26,7 @@ export function sack(w: World, data: GameData, at: string): void {
     w,
     `${site.name} is sacked. Prices there are up for ${walled ? 'half a month' : 'a month'}.`,
   );
+  destroyWorkings(w, data, at);
 }
 
 /** The strike hook for faction `id`'s attacks. */

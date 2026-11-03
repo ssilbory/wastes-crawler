@@ -99,3 +99,43 @@ export function factionHelp(
   const half = Math.ceil((ratings.force + ratings.cunning + ratings.wealth) / 2);
   return suits ? half * 2 : half;
 }
+
+// Magical Workings (vendor/wwn-srd/4.0 Magic and Spellcasting/4.8.0 Building Magical Workings.md;
+// docs/rules-adaptation.md, Major projects: Workings, Designing, Building a Working).
+
+export type Degree = 'trivial' | 'minor' | 'major' | 'great' | 'supreme';
+export type WorkingArea = 'room' | 'building' | 'village' | 'city' | 'region';
+
+/** SRD 4.8.2's table: the multiplier for the biggest area a Working touches. */
+export const WORKING_AREA: Record<WorkingArea, number> = {
+  room: 1,
+  building: 4,
+  village: 16,
+  city: 64,
+  region: 256,
+};
+
+/** SRD 4.8.1: a Working's difficulty, its points times its area's multiplier. */
+export const workingDifficulty = (points: number, area: WorkingArea) => points * WORKING_AREA[area];
+
+/** SRD 4.8.1: what a mage brings to a design, character level times Magic skill times two. */
+export const designScore = (level: number, magic: number) => level * Math.max(0, magic) * 2;
+
+/**
+ * SRD 4.8.1: whether a design can be made: alone at the full difficulty, with help at half or more
+ * (the lead's share), and never below half.
+ */
+export function designable(lead: number, help: number, difficulty: number): boolean {
+  return lead * 2 >= difficulty && lead + help >= difficulty;
+}
+
+/** SRD 4.8.2: one month and a week for every 5 points or part of 5, halved at double the cost. */
+export function workingDays(difficulty: number, month: number, double: boolean): number {
+  const days = month + 7 * Math.ceil(difficulty / 5);
+  return double ? Math.ceil(days / 2) : days;
+}
+
+/** Sam's call: the lead's final Int/Magic check, 8 plus the degree (trivial 0 to supreme 4). */
+export function workingCheck(degree: Degree): number {
+  return 8 + ['trivial', 'minor', 'major', 'great', 'supreme'].indexOf(degree);
+}
