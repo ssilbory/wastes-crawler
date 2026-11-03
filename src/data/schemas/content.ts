@@ -20,6 +20,7 @@ import {
 } from './overland-content.ts';
 import { GroveSchema } from './grove-content.ts';
 import { WarlordContentSchema } from './warlord-content.ts';
+import { ProjectContentSchema } from './project-content.ts';
 import { HiddenSiteContentSchema } from './hidden-site-content.ts';
 import { AilmentContentSchema } from './ailment-content.ts';
 import { SkillRulesSchema, SpellRulesSchema } from './skill-content.ts';
@@ -227,6 +228,8 @@ export const ContentSchemas = {
   ruinTraps: z.array(RuinTrapSchema).min(1),
   groves: z.array(GroveSchema),
   warlords: WarlordContentSchema,
+  /** Major projects, institutions, recruits, and Workings (not played yet). */
+  projects: ProjectContentSchema,
   hiddenSites: HiddenSiteContentSchema,
   factions: FactionContentSchema,
   ailments: AilmentContentSchema,

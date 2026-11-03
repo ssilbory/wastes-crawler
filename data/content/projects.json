@@ -1,0 +1,759 @@
+{
+  "renown": {
+    "quest": 1,
+    "boss": 1,
+    "captive": 1,
+    "warlord": 2
+  },
+  "buying": [
+    {
+      "points": 4,
+      "crowns": 10
+    },
+    {
+      "points": 4,
+      "crowns": 40
+    },
+    {
+      "points": 8,
+      "crowns": 80
+    },
+    {
+      "points": 16,
+      "crowns": 160
+    },
+    {
+      "points": 32,
+      "crowns": 320
+    },
+    {
+      "points": 64,
+      "crowns": 640
+    }
+  ],
+  "help": {
+    "faction": "settlements",
+    "suits": ["fortify", "road", "restore"]
+  },
+  "workingCrownsPerPoint": 20,
+  "hiredMage": {
+    "hireling": "mage-of-minor-abilities",
+    "fee": 100,
+    "points": 6
+  },
+  "projects": [
+    {
+      "id": "wall-lanternfall",
+      "name": "Wall Lanternfall",
+      "kind": "fortify",
+      "region": "dark-lands",
+      "at": "lanternfall",
+      "text": "Lanternfall lies open on every side. A ditch, a palisade, and a watch on the road would turn the Bastion's raiders back before they reach the granary.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the Dawnwall Bastion",
+            "level": "local",
+            "beaten": {
+              "kind": "faction-gone",
+              "faction": "bastion",
+              "at": "dawnwall"
+            }
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 150,
+        "days": 20,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "raid-guard",
+        "at": "lanternfall",
+        "percent": 50
+      },
+      "ending": "Lanternfall's palisade still stands, and its watch still calls the hours."
+    },
+    {
+      "id": "wall-mirewatch",
+      "name": "Wall Mirewatch",
+      "kind": "fortify",
+      "region": "dark-lands",
+      "at": "mirewatch",
+      "text": "Mirewatch is reed and mud on stilts. Stakes in the water and a gate on the causeway would make the raiders wade for it.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the Dawnwall Bastion",
+            "level": "local",
+            "beaten": {
+              "kind": "faction-gone",
+              "faction": "bastion",
+              "at": "dawnwall"
+            }
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 150,
+        "days": 20,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [
+        {
+          "quest": "cistern-hydra",
+          "percent": 25
+        }
+      ],
+      "after": [],
+      "effect": {
+        "kind": "raid-guard",
+        "at": "mirewatch",
+        "percent": 50
+      },
+      "ending": "The stakes of Mirewatch still stand in the water, and no raider has waded them since."
+    },
+    {
+      "id": "wall-gutterwick",
+      "name": "Wall Gutterwick",
+      "kind": "fortify",
+      "region": "dark-lands",
+      "at": "gutterwick",
+      "text": "Gutterwick sprawls past its old wall. Closing the gaps and mounting a watch on the gates would keep the Free Settlements' biggest town from being sacked.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "city",
+        "opposition": [
+          {
+            "name": "the Dawnwall Bastion",
+            "level": "local",
+            "beaten": {
+              "kind": "faction-gone",
+              "faction": "bastion",
+              "at": "dawnwall"
+            }
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 300,
+        "days": 30,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "raid-guard",
+        "at": "gutterwick",
+        "percent": 50
+      },
+      "ending": "Gutterwick's gaps are closed, and its gates are shut at dusk."
+    },
+    {
+      "id": "secure-ash-road",
+      "name": "Secure the Ash Road",
+      "kind": "road",
+      "region": "dark-lands",
+      "at": "cinderhold",
+      "text": "The coach between Cinderhold and Gutterwick runs a gauntlet of Warhost patrols and the old goblin pickets. Clear them and post a watch, and the carts would roll safe.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "city",
+        "opposition": [
+          {
+            "name": "Grisk's Warhost",
+            "level": "major",
+            "beaten": {
+              "kind": "faction-gone",
+              "faction": "warhost",
+              "at": "grisks-hold"
+            }
+          },
+          {
+            "name": "the old goblin patrols",
+            "level": "minor",
+            "beaten": {
+              "kind": "quest",
+              "quest": "ash-road-relief"
+            }
+          }
+        ],
+        "popular": false
+      },
+      "adventures": [
+        {
+          "quest": "ash-road-relief",
+          "percent": 25
+        }
+      ],
+      "after": [],
+      "effect": {
+        "kind": "road",
+        "route": "ash-road",
+        "ambushDie": 8,
+        "fareCut": 5
+      },
+      "ending": "The Ash Road coach runs on time, and its drivers have stopped carrying spears."
+    },
+    {
+      "id": "secure-west-road",
+      "name": "Secure the West Road",
+      "kind": "road",
+      "region": "borderlands",
+      "at": "westhold",
+      "text": "Raiders from the coast prey on the road between Rubblegate and Scrapmarch. Break them and the coach need not pay for guards.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "city",
+        "opposition": [
+          {
+            "name": "the coast raiders",
+            "level": "minor",
+            "beaten": {
+              "kind": "quest",
+              "quest": "bandit-camp"
+            }
+          }
+        ],
+        "popular": false
+      },
+      "adventures": [
+        {
+          "quest": "bandit-camp",
+          "percent": 25
+        }
+      ],
+      "after": [],
+      "effect": {
+        "kind": "road",
+        "route": "west-road",
+        "ambushDie": 10,
+        "fareCut": 5
+      },
+      "ending": "The West Road is safe enough that children walk it to market."
+    },
+    {
+      "id": "saltwick-coach",
+      "name": "A Coach to Thornwatch",
+      "kind": "road",
+      "region": "pale-reach",
+      "at": "saltwick",
+      "text": "No coach crosses the Pale Reach. A waystation, a driver, and the hydras of the mere put down would give Saltwick and Thornwatch a road.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "city",
+        "opposition": [
+          {
+            "name": "the hydras of the Pale Mere",
+            "level": "minor",
+            "beaten": {
+              "kind": "quest",
+              "quest": "mere-hydra"
+            }
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 200,
+        "days": 15,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [
+        {
+          "quest": "mere-hydra",
+          "percent": 25
+        }
+      ],
+      "after": [],
+      "effect": {
+        "kind": "coach",
+        "towns": ["saltwick", "thornwatch"],
+        "fare": 10,
+        "ambushDie": 6
+      },
+      "ending": "A coach crosses the Pale Reach twice a week, and the salt goes by wagon."
+    },
+    {
+      "id": "grimcairn-coach",
+      "name": "A Coach to Grimcairn",
+      "kind": "road",
+      "region": "borderlands",
+      "at": "eastmarch",
+      "text": "Grimcairn sits high in the hills above Scrapmarch. A coach up the pass would need the beastmen of the old watchtower gone.",
+      "difficulty": {
+        "probability": "improbable",
+        "scope": "city",
+        "opposition": [
+          {
+            "name": "the beastmen of the watchtower",
+            "level": "minor",
+            "beaten": {
+              "kind": "quest",
+              "quest": "watchtower"
+            }
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 200,
+        "days": 15,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [
+        {
+          "quest": "watchtower",
+          "percent": 25
+        }
+      ],
+      "after": [],
+      "effect": {
+        "kind": "coach",
+        "towns": ["eastmarch", "highcairn"],
+        "fare": 15,
+        "ambushDie": 6
+      },
+      "ending": "A coach climbs the pass to Grimcairn, and the pilgrims to the cairns ride it."
+    },
+    {
+      "id": "end-grisks-tithe",
+      "name": "End Grisk's Tithe",
+      "kind": "grip",
+      "region": "dark-lands",
+      "at": "cinderhold",
+      "text": "Every village in the Dark Lands pays the Warhost in grain and bodies. Ending it means Grisk dead and his bands broken.",
+      "difficulty": {
+        "probability": "improbable",
+        "scope": "region",
+        "opposition": [
+          {
+            "name": "Warlord Grisk",
+            "level": "major",
+            "beaten": {
+              "kind": "quest",
+              "quest": "warlord-falls"
+            }
+          },
+          {
+            "name": "the Warhost's leftover bands",
+            "level": "minor",
+            "beaten": {
+              "kind": "faction-gone",
+              "faction": "warhost",
+              "at": "grisks-hold"
+            }
+          }
+        ],
+        "popular": false
+      },
+      "adventures": [
+        {
+          "quest": "mire-slavers",
+          "percent": 25
+        }
+      ],
+      "after": [],
+      "effect": {
+        "kind": "tithe",
+        "region": "dark-lands",
+        "faction": "warhost",
+        "sellPercent": 20,
+        "patrolPercent": 50
+      },
+      "ending": "The Dark Lands pay no tithe, and their villages keep what they grow."
+    },
+    {
+      "id": "end-salt-tithe",
+      "name": "End the Salt Tithe",
+      "kind": "grip",
+      "region": "pale-reach",
+      "at": "thornwatch",
+      "text": "Thornwatch still pays bread for the Saltgate's garrison, under orders from a lord long dead. Countermand the order and the bread stays home.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the Saltgate garrison",
+            "level": "local",
+            "beaten": {
+              "kind": "quest",
+              "quest": "the-countermand"
+            }
+          }
+        ],
+        "popular": false
+      },
+      "adventures": [
+        {
+          "quest": "salt-tithe",
+          "percent": 25
+        }
+      ],
+      "after": [],
+      "effect": {
+        "kind": "tithe",
+        "region": "pale-reach",
+        "sellPercent": 20,
+        "patrolPercent": 100
+      },
+      "ending": "Thornwatch bakes for itself now, and the Saltgate's old soldiers come down to buy."
+    },
+    {
+      "id": "scrapmarch-pumps",
+      "name": "Restart the Scrapmarch Pumps",
+      "kind": "restore",
+      "region": "borderlands",
+      "at": "eastmarch",
+      "text": "The old pumps under Scrapmarch could draw clean water again with a gnome engineer and a month of hard work.",
+      "difficulty": {
+        "probability": "improbable",
+        "scope": "city",
+        "opposition": [
+          {
+            "name": "the scrap-thieves in the pump halls",
+            "level": "minor"
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 250,
+        "days": 25,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [
+        {
+          "quest": "surveyor",
+          "percent": 50
+        }
+      ],
+      "after": [],
+      "effect": {
+        "kind": "water",
+        "at": "eastmarch"
+      },
+      "ending": "Scrapmarch's pumps still thump, and the town drinks clean water."
+    },
+    {
+      "id": "cinderhold-cisterns",
+      "name": "Reopen the Cinderhold Cisterns",
+      "kind": "restore",
+      "region": "dark-lands",
+      "at": "cinderhold",
+      "text": "The imperial cisterns could water Cinderhold again, if the thing with too many heads were gone from them.",
+      "difficulty": {
+        "probability": "improbable",
+        "scope": "city",
+        "opposition": [
+          {
+            "name": "the cistern hydra",
+            "level": "minor",
+            "beaten": {
+              "kind": "quest",
+              "quest": "cistern-hydra"
+            }
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 200,
+        "days": 20,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [
+        {
+          "dungeon": "drowned-cisterns",
+          "percent": 25
+        }
+      ],
+      "after": [],
+      "effect": {
+        "kind": "water",
+        "at": "cinderhold"
+      },
+      "ending": "The cisterns under Cinderhold fill with every rain, and the town never goes dry."
+    },
+    {
+      "id": "mirewatch-drains",
+      "name": "Drain the Mirewatch Fields",
+      "kind": "restore",
+      "region": "dark-lands",
+      "at": "mirewatch",
+      "text": "Ditches and sluices would turn the mire around Mirewatch into fields and fish ponds.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [],
+        "popular": false
+      },
+      "build": {
+        "crowns": 80,
+        "days": 10,
+        "skill": "survive",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "forage",
+        "at": "mirewatch",
+        "radius": 3,
+        "bonus": 1
+      },
+      "ending": "Mirewatch's drained fields feed the town, and the fish ponds feed the rest."
+    },
+    {
+      "id": "thornwatch-grove",
+      "name": "Replant the Thornwatch Grove",
+      "kind": "restore",
+      "region": "pale-reach",
+      "at": "thornwatch",
+      "text": "The grove the woodcutters felled could be replanted, if whatever is hunting them in the trees were put down.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the Red Hunger",
+            "level": "minor",
+            "beaten": {
+              "kind": "quest",
+              "quest": "red-hunger"
+            }
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 60,
+        "days": 10,
+        "skill": "survive",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "forage",
+        "at": "thornwatch",
+        "radius": 3,
+        "bonus": 1
+      },
+      "ending": "The grove at Thornwatch grows again, and the woodcutters come home."
+    }
+  ],
+  "institutions": [
+    {
+      "service": "workshop",
+      "build": {
+        "crowns": 300,
+        "days": 30,
+        "skill": "craft",
+        "exert": true
+      },
+      "probability": "plausible",
+      "opposition": [],
+      "specialist": {
+        "name": "a journeyman smith",
+        "hireFee": 100,
+        "captives": ["held-crafter"]
+      }
+    },
+    {
+      "service": "arena",
+      "build": {
+        "crowns": 400,
+        "days": 30,
+        "skill": "craft",
+        "exert": true
+      },
+      "probability": "plausible",
+      "opposition": [],
+      "specialist": {
+        "name": "an arena master",
+        "hireFee": 80,
+        "captives": ["chained-deserter"]
+      }
+    },
+    {
+      "service": "alchemist",
+      "build": {
+        "crowns": 250,
+        "days": 20,
+        "skill": "alchemy",
+        "exert": false
+      },
+      "probability": "plausible",
+      "opposition": [],
+      "specialist": {
+        "name": "a journeyman alchemist",
+        "hireFee": 120,
+        "captives": ["scholar", "dl-scholar"]
+      }
+    },
+    {
+      "service": "crypt",
+      "build": {
+        "crowns": 200,
+        "days": 20,
+        "skill": "magic",
+        "exert": false
+      },
+      "probability": "plausible",
+      "opposition": [
+        {
+          "name": "the Faithful",
+          "level": "local",
+          "beaten": {
+            "kind": "faction-gone",
+            "faction": "loyalists",
+            "at": "ember-shrine"
+          }
+        }
+      ],
+      "specialist": {
+        "name": "a necromancer of the Lady",
+        "hireFee": 150,
+        "captives": ["grave-digger", "taken-mourner"]
+      }
+    },
+    {
+      "service": "mortuary",
+      "build": {
+        "crowns": 200,
+        "days": 20,
+        "skill": "pray",
+        "exert": false
+      },
+      "probability": "plausible",
+      "opposition": [],
+      "specialist": {
+        "name": "a Priest of Death",
+        "hireFee": 150,
+        "captives": ["grey-priest", "pilgrim"]
+      }
+    },
+    {
+      "service": "temple",
+      "build": {
+        "crowns": 250,
+        "days": 20,
+        "skill": "pray",
+        "exert": false
+      },
+      "probability": "plausible",
+      "opposition": [],
+      "specialist": {
+        "name": "a Blood Priest",
+        "hireFee": 150,
+        "captives": ["dl-pilgrim"]
+      }
+    }
+  ],
+  "workings": [
+    {
+      "id": "watch-lamps",
+      "name": "Watch-lamps",
+      "degree": "trivial",
+      "points": 3,
+      "area": "building",
+      "needs": {
+        "kind": "settlement"
+      },
+      "text": "Lamps on the gatehouse that light by themselves when armed men come near.",
+      "effect": "raid-warning",
+      "amount": 14,
+      "ending": "The watch-lamps still flare when strangers come in arms."
+    },
+    {
+      "id": "heatless-lamps",
+      "name": "Heatless lamps",
+      "degree": "trivial",
+      "points": 2,
+      "area": "building",
+      "needs": {
+        "kind": "service",
+        "service": "workshop"
+      },
+      "text": "Lamps that burn without heat or smoke, so the workshop works through the night.",
+      "effect": "workshop-pace",
+      "amount": 25,
+      "ending": "The workshop's lamps have never gone out."
+    },
+    {
+      "id": "waystones",
+      "name": "Waystones",
+      "degree": "trivial",
+      "points": 4,
+      "area": "building",
+      "needs": {
+        "kind": "coach-stop"
+      },
+      "text": "Standing stones at the coach stop that light the yard and turn travellers' fear into calm.",
+      "effect": "road",
+      "amount": 8,
+      "ending": "The waystones still glow at the coach stop, and the drivers rest easy there."
+    },
+    {
+      "id": "unfailing-spring",
+      "name": "Unfailing spring",
+      "degree": "minor",
+      "points": 6,
+      "area": "building",
+      "needs": {
+        "kind": "settlement"
+      },
+      "text": "A well that never runs dry, whatever the season.",
+      "effect": "water",
+      "amount": 0,
+      "ending": "The well never ran dry, not even in the drought years."
+    },
+    {
+      "id": "grave-ward",
+      "name": "Grave-ward",
+      "degree": "minor",
+      "points": 6,
+      "area": "building",
+      "needs": {
+        "kind": "service",
+        "service": "crypt"
+      },
+      "text": "A ward on the crypt: its dead rise only when their keeper calls, and no one carries them off.",
+      "effect": "grave-ward",
+      "amount": 0,
+      "ending": "The crypt's dead sleep under the ward, and the Faithful never had them."
+    },
+    {
+      "id": "wall-ward",
+      "name": "Wall-ward",
+      "degree": "minor",
+      "points": 6,
+      "area": "village",
+      "needs": {
+        "kind": "walled"
+      },
+      "text": "A ward laid on a finished wall: raiders find their ladders slip and their courage fails.",
+      "effect": "raid-guard",
+      "amount": 25,
+      "ending": "The warded wall has never been climbed."
+    }
+  ]
+}
