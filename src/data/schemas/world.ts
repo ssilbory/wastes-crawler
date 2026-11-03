@@ -9,7 +9,7 @@ import { LootDiceSchema, ShopStateSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 import { ComponentTypeSchema } from './crafting-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 50;
+export const WORLD_SCHEMA_VERSION = 51;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -184,6 +184,17 @@ export const QuestStateSchema = z.strictObject({
   acceptedDay: z.int().min(0),
 });
 export type QuestState = z.infer<typeof QuestStateSchema>;
+
+/** A major project the party has put Renown into (docs/rules-adaptation.md, Major projects). */
+export const MajorProjectStateSchema = z.strictObject({
+  /** Renown put in, bought points included. */
+  renown: z.int().min(0),
+  /** Points bought with crowns, which set the next point's price. */
+  bought: z.int().min(0),
+  /** The day it was finished, or null while under way. */
+  done: z.int().min(0).nullable(),
+});
+export type MajorProjectState = z.infer<typeof MajorProjectStateSchema>;
 
 /** An item being crafted (docs/rules-adaptation.md, Crafting and modifying gear). */
 export const ProjectSchema = z.strictObject({
@@ -413,6 +424,10 @@ export const WorldSaveSchema = z.strictObject({
   pieces: z.array(z.string()),
   /** The Wastes warlords fallen (docs/rules-adaptation.md, The Wastes: A warlord falls). */
   warlords: z.array(IdSchema),
+  /** The party's Renown, not yet put into a project (Phase 22: Major projects). */
+  renown: z.int().min(0),
+  /** Major projects under way or finished, by id. */
+  majorProjects: z.record(IdSchema, MajorProjectStateSchema),
   /** The warlord's clock, in segments (Phase 12d). */
   clock: z.int().min(0),
   /** Crafter's notes found, by set, and what became of them. */

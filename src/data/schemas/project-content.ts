@@ -3,7 +3,7 @@ import { IdSchema } from './common.ts';
 
 // Major projects, institutions, recruits, and Workings (docs/rules-adaptation.md, Major projects,
 // institutions, and recruits; vendor/wwn-srd/7.0 Major Projects/, vendor/wwn-srd/4.0 Magic and
-// Spellcasting/4.8.0 Building Magical Workings.md). Content only so far: nothing plays it yet.
+// Spellcasting/4.8.0 Building Magical Workings.md). Projects and Renown play from Phase 22a.
 
 /** SRD 7.2.0: how likely the change is (base difficulty 1, 2, 4). */
 export const ProbabilitySchema = z.enum(['plausible', 'improbable', 'impossible']);
@@ -18,7 +18,7 @@ const BeatenSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('faction-gone'), faction: IdSchema, at: IdSchema }),
   /** That quest is turned in. */
   z.strictObject({ kind: z.literal('quest'), quest: IdSchema }),
-  /** That dungeon's boss or guarded hoard is taken. */
+  /** Every loot cache in that hand-made dungeon is taken: it is cleared. */
   z.strictObject({ kind: z.literal('dungeon'), dungeon: IdSchema }),
 ]);
 

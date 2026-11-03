@@ -5,6 +5,7 @@ import type {
   DungeonChart,
   DungeonState,
   Light,
+  MajorProjectState,
   DefaultPreset,
   LootDice,
   MountSave,
@@ -126,6 +127,10 @@ export interface World {
   pieces: string[];
   /** The Wastes warlords fallen, by id (warlords.ts). */
   warlords: string[];
+  /** The party's Renown, not yet put into a project (major-projects.ts). */
+  renown: number;
+  /** Major projects under way or finished, by id. */
+  majorProjects: Record<string, MajorProjectState>;
   /** The warlord's clock, crafter's notes, and the seal's fate (Phase 12d). */
   clock: number;
   notes: Record<string, 'found' | 'burned' | 'sold' | 'kept' | 'paid'>;

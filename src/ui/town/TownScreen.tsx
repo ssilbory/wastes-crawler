@@ -11,6 +11,7 @@ import { QuestLog } from '../world/QuestLog.tsx';
 import { PartyButtons, type PartyScreen } from '../world/PartyButtons.tsx';
 import { JournalPanel } from '../world/JournalPanel.tsx';
 import { FactionsPanel } from '../world/FactionsPanel.tsx';
+import { ProjectsPanel } from '../world/ProjectsPanel.tsx';
 import { SettingPanel } from '../world/SettingPanel.tsx';
 import { raidedText } from '../../render/setting-view.ts';
 import { PartyPanel } from '../world/PartyPanel.tsx';
@@ -157,6 +158,7 @@ export function TownScreen(props: {
         </div>
         <div class="dock">
           <QuestLog world={w} onChange={props.onChange} />
+          <ProjectsPanel world={w} onChange={props.onChange} />
           <CompanionsPanel world={w} onChange={props.onChange} />
           <SettingPanel world={w} inTown onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />

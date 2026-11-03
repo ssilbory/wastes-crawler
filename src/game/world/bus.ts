@@ -20,6 +20,8 @@ export type WorldEvent =
   | { kind: 'cell-entered' }
   /** A captive was freed into the party, or went their own way. */
   | { kind: 'captive-freed'; captive: string }
+  /** A freed captive reached the town they were bound for (Phase 22: Renown). */
+  | { kind: 'captive-home'; captive: string }
   /** A quest was turned in to its giver (Phase 12d). */
   | { kind: 'quest-done'; quest: string }
   /** A standing order ended, by countersign, token, quest, or its keeper's fall. */

@@ -84,6 +84,8 @@ export function newWorld(
     beaten: [],
     pieces: [],
     warlords: [],
+    renown: 0,
+    majorProjects: {},
     clock: 0,
     notes: {},
     ending: null,

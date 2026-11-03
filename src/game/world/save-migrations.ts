@@ -290,4 +290,7 @@ export const WORLD_MIGRATIONS: Migrations = {
   },
   // Version 50 adds surrender (Phase 19): no one has surrendered yet.
   49: (raw) => ({ ...raw, schemaVersion: 50, surrendered: null }),
+  // Version 51 adds major projects (Phase 22): none under way. The Renown already earned is counted
+  // on loading, where the content is known (save.ts, Sam's call: count what's done).
+  50: (raw) => ({ ...raw, schemaVersion: 51, renown: 0, majorProjects: {} }),
 };

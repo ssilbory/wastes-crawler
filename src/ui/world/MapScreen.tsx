@@ -17,6 +17,7 @@ import { PartyPanel } from './PartyPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
 import { FactionsPanel } from './FactionsPanel.tsx';
 import { WarlordsPanel } from './WarlordsPanel.tsx';
+import { ProjectsPanel } from './ProjectsPanel.tsx';
 import { SettingPanel } from './SettingPanel.tsx';
 import { HealerPanel, RevivePopOut, useReviveAsk } from './HealerPanel.tsx';
 import { SurrenderPopOut, surrenderOpen } from './SurrenderPanel.tsx';
@@ -257,6 +258,7 @@ export function MapScreen(props: {
           )}
           {/* Quests, then the panels of powers and places (Sam's call: one column); the party is in the bar. */}
           <QuestLog world={w} onChange={props.onChange} />
+          <ProjectsPanel world={w} onChange={props.onChange} />
           <NpcPanel world={w} onChange={props.onChange} />
           <MountsPanel world={w} onChange={props.onChange} />
           <CompanionsPanel world={w} onChange={props.onChange} />

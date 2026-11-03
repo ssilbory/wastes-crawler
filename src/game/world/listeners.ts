@@ -19,6 +19,7 @@ import { realmEndListener } from './realm-end.ts';
 import { sitesListener } from './hidden-sites.ts';
 import { waterListener } from './water.ts';
 import { warlordsListener } from './warlords.ts';
+import { majorProjectsListener } from './major-projects.ts';
 
 const ALL: readonly Listener[] = [
   questListener,
@@ -37,12 +38,14 @@ const ALL: readonly Listener[] = [
   sitesListener,
   waterListener,
   warlordsListener,
+  majorProjectsListener,
   // Last, so the fight's garrison is recorded before the ending checks the hex.
   realmEndListener,
 ];
 
 /**
- * The campaign's own story: its raids, factions, warlord's clock, and crafter's notes, all tied to
+ * The campaign's own story: its raids, factions, warlord's clock, crafter's notes, and major
+ * projects (Renown is earned only where projects can be spent on), all tied to
  * the campaign's towns. A world on a custom map or a realm has none of it (Sam's call). Standing
  * orders run everywhere: the Sealed Vale's posts hold its pass and tower, and the same listener
  * records every won post and hoard fight (docs/rules-adaptation.md, Shipped worlds).
@@ -52,6 +55,7 @@ const CAMPAIGN: ReadonlySet<Listener> = new Set([
   factionsListener,
   clockListener,
   notesListener,
+  majorProjectsListener,
 ]);
 
 export const WORLD_LISTENERS: WorldListeners = { all: ALL, campaign: CAMPAIGN };

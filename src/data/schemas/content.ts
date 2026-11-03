@@ -228,7 +228,7 @@ export const ContentSchemas = {
   ruinTraps: z.array(RuinTrapSchema).min(1),
   groves: z.array(GroveSchema),
   warlords: WarlordContentSchema,
-  /** Major projects, institutions, recruits, and Workings (not played yet). */
+  /** Major projects, institutions, recruits, and Workings (Phase 22). */
   projects: ProjectContentSchema,
   hiddenSites: HiddenSiteContentSchema,
   factions: FactionContentSchema,
