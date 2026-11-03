@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { IdSchema } from './common.ts';
+import { AttributeSchema, IdSchema } from './common.ts';
 
 // Major projects, institutions, recruits, and Workings (docs/rules-adaptation.md, Major projects,
 // institutions, and recruits; vendor/wwn-srd/7.0 Major Projects/, vendor/wwn-srd/4.0 Magic and
@@ -74,8 +74,8 @@ export const ProjectEffectSchema = z.discriminatedUnion('kind', [
     radius: z.int().min(1),
     bonus: z.int().min(1),
   }),
-  /** Water dice refill to the top at the settlement for nothing. */
-  z.strictObject({ kind: z.literal('water'), at: IdSchema }),
+  /** Hexes within `radius` of the settlement fill the water die and aren't dry land (Sam's call). */
+  z.strictObject({ kind: z.literal('water'), at: IdSchema, radius: z.int().min(1) }),
   /** Work days at the party's workshop there go this much faster. */
   z.strictObject({ kind: z.literal('workshop-pace'), at: IdSchema, percent: z.int().min(1) }),
   /** The Faithful can't empty that crypt, and oppose no crypt there. */
@@ -174,6 +174,11 @@ export const WorkingSchema = z.strictObject({
 export type Working = z.infer<typeof WorkingSchema>;
 
 export const ProjectContentSchema = z.strictObject({
+  /** Each PC's building check, and the XP each pass earns (Building work). */
+  buildDifficulty: z.int().min(1),
+  buildXp: z.number().min(0),
+  /** The attributes each building skill is rolled with (Building work). */
+  buildAttributes: z.record(IdSchema, z.array(AttributeSchema).min(1)),
   /** Renown for each (Earning Renown). */
   renown: z.strictObject({
     quest: z.int().min(0),

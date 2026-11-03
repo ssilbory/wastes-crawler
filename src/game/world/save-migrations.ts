@@ -293,4 +293,15 @@ export const WORLD_MIGRATIONS: Migrations = {
   // Version 51 adds major projects (Phase 22): none under way. The Renown already earned is counted
   // on loading, where the content is known (save.ts, Sam's call: count what's done).
   50: (raw) => ({ ...raw, schemaVersion: 51, renown: 0, majorProjects: {} }),
+  // Version 52 adds building work, faction help, and lingering trouble to major projects (Phase 22b).
+  51: (raw) => ({
+    ...raw,
+    schemaVersion: 52,
+    majorProjects: Object.fromEntries(
+      Object.entries((raw.majorProjects ?? {}) as Record<string, Raw>).map(([id, p]) => [
+        id,
+        { ...p, daysLeft: null, help: [], trouble: null, shutUntil: null },
+      ]),
+    ),
+  }),
 };

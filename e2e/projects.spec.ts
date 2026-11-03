@@ -50,3 +50,20 @@ test('puts Renown and crowns into a project, and finishes it once covered', asyn
     'Secure the West Road is done.',
   );
 });
+
+test('pays for a project’s materials on site and spends a day building', async ({ page }) => {
+  await begin(page);
+  // Scrapmarch, where the pumps are worked from.
+  await patch(page, { purse: 400, position: { col: 20, row: 8 }, visited: ['3,8', '20,8'] });
+  const panel = page.getByRole('region', { name: 'Projects' });
+  await panel.getByText('Restart the Scrapmarch Pumps').click();
+  await expect(panel).toContainText('When done: Hexes within 3 of Scrapmarch fill the water die');
+  const build = panel.getByRole('group', { name: 'Build Restart the Scrapmarch Pumps' });
+  await expect(build).toContainText('250 crowns of materials, then 25 days');
+  await build.getByRole('button', { name: 'Pay for the materials' }).click();
+  await expect(build).toContainText('25 days');
+  await build.getByRole('button', { name: 'Spend a day building' }).click();
+  const log = page.getByRole('region', { name: 'Journey log' });
+  await expect(log).toContainText('The party works on Restart the Scrapmarch Pumps');
+  await expect(log).toContainText('stays the night at the inn in Scrapmarch');
+});

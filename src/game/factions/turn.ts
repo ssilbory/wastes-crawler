@@ -7,6 +7,7 @@
 // builds while short of fighters or flush with Treasure, and otherwise marches on its target. The warlord's clock moves with
 // the clock faction's goals (Phase 12d's monthly tick, replaced).
 import type { FactionState } from '../../data/schemas/index.ts';
+import { projectTurn } from '../world/project-help.ts';
 import { rollDie } from '../../rules/dice.ts';
 import { factionIncome, factionMaxHp } from '../../rules/factions.ts';
 import type { GameData } from '../character/context.ts';
@@ -104,7 +105,8 @@ export function factionTurn(w: World, data: GameData): void {
     s.treasure += factionIncome(ratings(s));
     assetIncome(w, data, s);
     const onStrike = strikesFor(w, data, id);
-    const attacked = takeAction(w, data, id, onStrike);
+    // A strike over a project pushed through it, or help it promised, takes the action.
+    const attacked = projectTurn(w, data, id) ? false : takeAction(w, data, id, onStrike);
     if (checkGoal(w, data, id, attacked) && id === clockFaction)
       moveClock(w, data, 1, `${factionOf(data, id).name} grows stronger.`);
   }

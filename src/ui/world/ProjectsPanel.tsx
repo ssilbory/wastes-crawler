@@ -1,5 +1,7 @@
 import { useState } from 'preact/hooks';
 import { buyRenown, spendRenown } from '../../game/world/major-projects.ts';
+import { buildDay, startBuild } from '../../game/world/project-building.ts';
+import { askHelp } from '../../game/world/project-help.ts';
 import type { World } from '../../game/world/types.ts';
 import { projectsView } from '../../render/project-view.ts';
 import { data } from '../builder/data.ts';
@@ -35,7 +37,14 @@ export function ProjectsPanel(props: { world: World; onChange: () => void }) {
                 </span>
               </summary>
               {p.done ? (
-                <p>{p.ending}</p>
+                <>
+                  <p>{p.ending}</p>
+                  <p class="hint">
+                    {p.shut ? 'Shut by a strike for now: ' : ''}
+                    {p.effect}
+                  </p>
+                  {p.trouble && <p class="bump">{p.trouble} mean to strike back.</p>}
+                </>
               ) : (
                 <>
                   <p>{p.text}</p>
@@ -52,7 +61,43 @@ export function ProjectsPanel(props: { world: World; onChange: () => void }) {
                       ))}
                     </ul>
                   )}
-                  {p.build && <p class="hint">Also needs {p.build}.</p>}
+                  <p class="hint">When done: {p.effect}</p>
+                  {p.help && (
+                    <p class="hint">
+                      {view.ally}' help: {p.help}.
+                    </p>
+                  )}
+                  {p.build && (
+                    <div class="actions" role="group" aria-label={`Build ${p.name}`}>
+                      <p class="hint">
+                        Building work:{' '}
+                        {p.build.daysLeft === null
+                          ? `${p.build.crowns} crowns of materials, then ${p.build.days} days`
+                          : p.build.daysLeft === 0
+                            ? 'done'
+                            : `${p.build.daysLeft} of ${p.build.days} days left`}
+                        .
+                      </p>
+                      {p.build.blocked ? (
+                        <p class="hint">{p.build.blocked}</p>
+                      ) : p.build.daysLeft === null ? (
+                        <button type="button" onClick={() => act(startBuild(w, data, p.id))}>
+                          Pay for the materials
+                        </button>
+                      ) : (
+                        p.build.daysLeft > 0 && (
+                          <button type="button" onClick={() => act(buildDay(w, data, p.id))}>
+                            Spend a day building
+                          </button>
+                        )
+                      )}
+                    </div>
+                  )}
+                  {!p.askBlocked && (
+                    <button type="button" onClick={() => act(askHelp(w, data, p.id))}>
+                      Ask {view.ally} to help
+                    </button>
+                  )}
                   {p.blocked ? (
                     <p class="hint">{p.blocked}</p>
                   ) : (

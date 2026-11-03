@@ -2,7 +2,8 @@
 // calls; vendor/wwn-srd/7.0 Major Projects/): the party earns Renown as one pool, puts it or crowns
 // into projects from any settlement on the project's map, and a project is finished the moment its
 // Renown covers its difficulty, which falls as its opposition is beaten and its tied adventures are
-// done. Building work, effects, and faction help come in later steps (Phase 22b).
+// done and its building work, if any, is finished (project-building.ts). A project pushed through
+// a faction still standing against it leaves lingering trouble (project-help.ts).
 import type { Project } from '../../data/schemas/project-content.ts';
 import {
   greatestOpposition,
@@ -33,9 +34,24 @@ export function projectOf(data: GameData, id: string): Project {
   return p;
 }
 
-/** A project's progress, empty before any Renown goes in. */
+/** A project's progress, empty before any Renown, crowns, or help goes in. */
 export const progressOf = (w: World, id: string): MajorProjectState =>
-  w.majorProjects[id] ?? { renown: 0, bought: 0, done: null };
+  w.majorProjects[id] ?? {
+    renown: 0,
+    bought: 0,
+    done: null,
+    daysLeft: null,
+    help: [],
+    trouble: null,
+    shutUntil: null,
+  };
+
+/** A project's progress, stored so it can be changed. */
+export function progressFor(w: World, id: string): MajorProjectState {
+  const s = progressOf(w, id);
+  w.majorProjects[id] = s;
+  return s;
+}
 
 /**
  * Whether a won fight's key (`dungeon/level/x,y`) names a guarded hoard or a ruin's vault: a boss
@@ -91,11 +107,15 @@ export function adventuresDone(w: World, data: GameData, p: Project): number {
     .reduce((sum, a) => sum + a.percent, 0);
 }
 
-/** A project's difficulty as things stand: its greatest standing opposition, less adventures. */
+/**
+ * A project's difficulty as things stand: its greatest standing opposition, less its adventures'
+ * shares and the help factions have given (SRD 7.9.0).
+ */
 export function difficultyNow(w: World, data: GameData, p: Project): number {
   const left = standing(w, data, p.difficulty.opposition).map((o) => o.level);
   const full = projectDifficulty({ ...p.difficulty, opposition: greatestOpposition(left) });
-  return loweredDifficulty(full, adventuresDone(w, data, p), 0);
+  const help = progressOf(w, p.id).help.reduce((sum, h) => sum + h.points, 0);
+  return loweredDifficulty(full, adventuresDone(w, data, p), help);
 }
 
 /** Why the party can't work on a project here and now, or null if it can. */
@@ -108,8 +128,9 @@ export function cannotWork(w: World, data: GameData, p: Project): string | null 
 
 /** Records Renown put into a project, then finishes it if that covers it. */
 function putIn(w: World, data: GameData, p: Project, renown: number, bought: number): void {
-  const s = progressOf(w, p.id);
-  w.majorProjects[p.id] = { ...s, renown: s.renown + renown, bought: s.bought + bought };
+  const s = progressFor(w, p.id);
+  s.renown += renown;
+  s.bought += bought;
   finishCovered(w, data);
 }
 
@@ -153,15 +174,25 @@ export function buyRenown(w: World, data: GameData, id: string, points: number):
   return { ok: true };
 }
 
+/** The faction still standing against a project, if any: it holds a grudge once it is done. */
+function grudge(w: World, data: GameData, p: Project): string | null {
+  for (const o of standing(w, data, p.difficulty.opposition))
+    for (const b of o.beaten) if (b.kind === 'faction-gone') return b.faction;
+  return null;
+}
+
 /**
- * Finishes every project whose Renown covers it now; one with building work waits for it (Phase
- * 22b). A project finished past opposition still standing paid its way through (SRD 7.6.0).
+ * Finishes every project whose Renown covers it now and whose building work, if any, is done. One
+ * pushed through a faction still standing against it paid its way through (SRD 7.6.0): that faction
+ * strikes the place on its next turn (Sam's call: lingering trouble; project-help.ts).
  */
 export function finishCovered(w: World, data: GameData): void {
   for (const p of data.content.projects.projects) {
     const s = w.majorProjects[p.id];
-    if (!s || s.done !== null || p.build || s.renown < difficultyNow(w, data, p)) continue;
+    if (!s || s.done !== null || (p.build && s.daysLeft !== 0)) continue;
+    if (s.renown < difficultyNow(w, data, p)) continue;
     s.done = w.day;
+    s.trouble = grudge(w, data, p);
     note(w, `${p.name} is done. ${p.ending}`);
   }
 }

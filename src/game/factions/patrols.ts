@@ -2,6 +2,7 @@
 // encounter within the content's radius of an asset that sends patrols is that asset's patrol one
 // time in `chance`. Beating a patrol costs its asset half its hit points, rounded up.
 import { rollDie } from '../../rules/dice.ts';
+import { patrolsLeft } from '../world/project-effects.ts';
 import { distance } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
 import { note } from '../world/members.ts';
@@ -41,7 +42,10 @@ export function nearbyPatrols(w: World, data: GameData): Patrol[] {
 export function rollPatrol(w: World, data: GameData): Patrol | null {
   const near = nearbyPatrols(w, data);
   if (near.length === 0 || rollDie(w.rng, data.content.factions.patrol.chance) !== 1) return null;
-  return near[rollDie(w.rng, near.length) - 1] as Patrol;
+  const patrol = near[rollDie(w.rng, near.length) - 1] as Patrol;
+  // A tithe ended on this map thins its faction's patrols (Major projects: Project kinds).
+  const left = patrolsLeft(w, data, patrol.key.slice(0, patrol.key.indexOf(':')));
+  return left >= 100 || rollDie(w.rng, 100) <= left ? patrol : null;
 }
 
 /** The party beat a patrol: its asset loses half its hit points, rounded up. */

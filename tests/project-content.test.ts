@@ -96,7 +96,7 @@ describe('project content (docs/rules-adaptation.md, Major projects; Sam’s cal
       ...first,
       id: 'water',
       after: [first.id],
-      effect: { kind: 'water', at: 'westhold' },
+      effect: { kind: 'water', at: 'westhold', radius: 3 },
     };
     const projects = [first, lost, coach, tithe, water];
     expect(projectReferenceErrors(srd, with_({ projects }))).toEqual([
@@ -118,8 +118,17 @@ describe('project content (docs/rules-adaptation.md, Major projects; Sam’s cal
       build: { ...workshop.build, skill: 'juggling' },
       specialist: { ...workshop.specialist, captives: ['nobody'] },
     };
+    const trading = {
+      ...workshop,
+      service: 'arena' as const,
+      build: { ...workshop.build, skill: 'trade' },
+    };
+    const noExert = Object.fromEntries(
+      Object.entries(p.buildAttributes).filter(([skill]) => skill !== 'exert'),
+    );
     const broken = with_({
-      institutions: [workshop, twice],
+      buildAttributes: noExert,
+      institutions: [workshop, twice, trading],
       help: { faction: 'no', suits: [] },
       hiredMage: { hireling: 'no', fee: 1, points: 1 },
     });
@@ -127,6 +136,8 @@ describe('project content (docs/rules-adaptation.md, Major projects; Sam’s cal
       'projects/institutions/workshop: listed twice',
       'projects/institutions/workshop: unknown skill juggling',
       'projects/institutions/workshop: unknown captive nobody',
+      'projects/institutions/arena: no attributes for trade',
+      'projects/buildAttributes: no attributes for exert',
       'projects/help: unknown faction no',
       'projects/hiredMage: unknown hireling no',
     ]);

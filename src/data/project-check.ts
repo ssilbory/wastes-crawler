@@ -38,6 +38,7 @@ export function projectReferenceErrors(srd: SrdData, content: ContentData): stri
   };
   const skill = (where: string, id: string) => {
     if (!skills.has(id)) errors.push(`${where}: unknown skill ${id}`);
+    else if (!p.buildAttributes[id]) errors.push(`${where}: no attributes for ${id}`);
   };
   const site = (where: string, id: string, region: string) => {
     if (sites.get(id) !== region) errors.push(`${where}: ${id} is not a site in ${region}`);
@@ -78,6 +79,7 @@ export function projectReferenceErrors(srd: SrdData, content: ContentData): stri
     for (const c of i.specialist.captives)
       if (!captives.has(c)) errors.push(`${where}: unknown captive ${c}`);
   }
+  if (!p.buildAttributes.exert) errors.push('projects/buildAttributes: no attributes for exert');
   if (!factions.has(p.help.faction))
     errors.push(`projects/help: unknown faction ${p.help.faction}`);
   if (!content.npcRules.hirelings.some((h) => h.id === p.hiredMage.hireling))

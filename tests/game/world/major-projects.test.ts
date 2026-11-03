@@ -135,6 +135,26 @@ describe('earning Renown (docs/rules-adaptation.md, Major projects: Earning Reno
     expect(loaded.ok && loaded.world.majorProjects).toEqual({});
     const fresh = parseWorld(serializeWorld(w), data);
     expect(fresh.ok && fresh.world.renown).toBe(0);
+    // A version 51 save's projects gain building work, help, and trouble, none of them yet.
+    const v51 = JSON.parse(serializeWorld(w)) as Record<string, unknown>;
+    v51.schemaVersion = 51;
+    v51.majorProjects = { 'wall-lanternfall': { renown: 3, bought: 1, done: null } };
+    const up = parseWorld(JSON.stringify(v51), data);
+    expect(up.ok && up.world.majorProjects).toEqual({
+      'wall-lanternfall': {
+        renown: 3,
+        bought: 1,
+        done: null,
+        daysLeft: null,
+        help: [],
+        trouble: null,
+        shutUntil: null,
+      },
+    });
+    // One without any comes through with none.
+    delete v51.majorProjects;
+    const bare = parseWorld(JSON.stringify(v51), data);
+    expect(bare.ok && bare.world.majorProjects).toEqual({});
   });
 });
 
@@ -206,7 +226,15 @@ describe('working on projects (Sam’s calls: any settlement on its map, finishe
     w.position = { col: 7, row: 12 };
     expect(cannotWork(w, data, wall)).toBe('Projects are worked from a settlement.');
     w.position = { col: 6, row: 12 };
-    w.majorProjects[wall.id] = { renown: 8, bought: 0, done: 3 };
+    w.majorProjects[wall.id] = {
+      renown: 8,
+      bought: 0,
+      done: 3,
+      daysLeft: null,
+      help: [],
+      trouble: null,
+      shutUntil: null,
+    };
     expect(cannotWork(w, data, wall)).toBe('Wall Lanternfall is finished.');
     expect(spendRenown(w, data, wall.id, 1)).toEqual({
       ok: false,
@@ -228,11 +256,11 @@ describe('working on projects (Sam’s calls: any settlement on its map, finishe
     });
     w.renown = 10;
     expect(spendRenown(w, data, 'end-grisks-tithe', 3)).toEqual({ ok: true });
-    expect(progressOf(w, 'end-grisks-tithe')).toEqual({ renown: 3, bought: 0, done: null });
+    expect(progressOf(w, 'end-grisks-tithe')).toMatchObject({ renown: 3, bought: 0, done: null });
     expect(w.renown).toBe(7);
     // The drains need building work (Phase 22b): covered, but not yet done.
     expect(spendRenown(w, data, drains.id, 5)).toEqual({ ok: true });
-    expect(progressOf(w, drains.id)).toEqual({ renown: 2, bought: 0, done: null });
+    expect(progressOf(w, drains.id)).toMatchObject({ renown: 2, bought: 0, done: null });
     expect(spendRenown(w, data, drains.id, 1)).toEqual({
       ok: false,
       reason: 'Drain the Mirewatch Fields has all the Renown it needs.',
@@ -263,10 +291,18 @@ describe('working on projects (Sam’s calls: any settlement on its map, finishe
     });
     expect(buyRenown(w, data, 'end-grisks-tithe', 4)).toEqual({ ok: true });
     expect(w.purse).toBe(10);
-    expect(progressOf(w, 'end-grisks-tithe')).toEqual({ renown: 4, bought: 4, done: null });
+    expect(progressOf(w, 'end-grisks-tithe')).toMatchObject({ renown: 4, bought: 4, done: null });
     expect(w.log.at(-1)).toContain("40 crowns on End Grisk's Tithe: 4 Renown");
     // Past the table, more is not for sale.
-    w.majorProjects['end-grisks-tithe'] = { renown: 4, bought: 128, done: null };
+    w.majorProjects['end-grisks-tithe'] = {
+      renown: 4,
+      bought: 128,
+      done: null,
+      daysLeft: null,
+      help: [],
+      trouble: null,
+      shutUntil: null,
+    };
     expect(buyRenown(w, data, 'end-grisks-tithe', 1)).toEqual({
       ok: false,
       reason: 'No more Renown can be bought for it.',

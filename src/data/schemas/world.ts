@@ -9,7 +9,7 @@ import { LootDiceSchema, ShopStateSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 import { ComponentTypeSchema } from './crafting-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 51;
+export const WORLD_SCHEMA_VERSION = 52;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -193,6 +193,14 @@ export const MajorProjectStateSchema = z.strictObject({
   bought: z.int().min(0),
   /** The day it was finished, or null while under way. */
   done: z.int().min(0).nullable(),
+  /** Building work days left once its crowns are paid, or null before (Phase 22b). */
+  daysLeft: z.int().min(0).nullable(),
+  /** Factions asked for help, and what each took off once it gave it (0 while asked). */
+  help: z.array(z.strictObject({ faction: IdSchema, points: z.int().min(0) })),
+  /** The faction set to strike the place after it was pushed through (lingering trouble). */
+  trouble: IdSchema.nullable(),
+  /** The day its effect comes back after a strike shut it, or null. */
+  shutUntil: z.int().min(0).nullable(),
 });
 export type MajorProjectState = z.infer<typeof MajorProjectStateSchema>;
 

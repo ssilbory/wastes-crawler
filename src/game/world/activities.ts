@@ -2,6 +2,7 @@
 // Exert check past two quarters a day, and camp quarters of resting, sleeping, foraging, hunting,
 // making camp, keeping watch, and crafting (Sam's call). Forage difficulties follow SRD 2.12.5.
 import { explore } from './hidden-sites.ts';
+import { forageBonus } from './project-effects.ts';
 import type { Mishap } from '../../data/schemas/index.ts';
 import { npcCheck } from '../../rules/checks.ts';
 import { roll } from '../../rules/dice.ts';
@@ -204,11 +205,13 @@ export function camp(
     }
   }
   const rules = data.content.overlandRules;
+  // Land a project restored nearby is easier to live off (Major projects: Project kinds).
+  const eased = forageBonus(w, data);
   const food = (who: Member[], difficulty: number | null, steps: number, verb: string) => {
     const best = bestAt(data, who, 'survive', ['wis']);
     if (!best || difficulty === null || inTown) return;
     extraChecks += 1;
-    const ok = memberCheck(w, data, best, 'survive', ['wis'], difficulty).success;
+    const ok = memberCheck(w, data, best, 'survive', ['wis'], difficulty - eased).success;
     if (ok) w.rations = stepDie(w.rations, steps);
     note(w, ok ? `${best.character.name} ${verb} food.` : `${best.character.name} finds nothing.`);
   };

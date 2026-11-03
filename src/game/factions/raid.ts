@@ -11,6 +11,7 @@ import { hurtAsset, strike } from './combat.ts';
 import { patrolOf } from './patrols.ts';
 import { factionOf, isActive, locationName, news } from './state.ts';
 import { strikesFor } from './strikes.ts';
+import { wallsHold } from '../world/project-effects.ts';
 
 const rules = (data: GameData) => data.content.raidRules;
 
@@ -48,10 +49,18 @@ export function raidParty(w: World, data: GameData): string[][] {
   return patrol ? patrol.enemies : rules(data).raiders;
 }
 
-/** The raid's day: the faction's assets in the settlement attack. Returns whether any hit. */
+/**
+ * The raid's day: the faction's assets in the settlement attack, unless its walls turn them back
+ * first (docs/rules-adaptation.md, Major projects: Project kinds). Returns whether any hit.
+ */
 export function resolveRaid(w: World, data: GameData, town: string): boolean {
   const id = rules(data).faction;
   if (!isActive(w.factions[id])) return false;
+  const walls = wallsHold(w, data, town);
+  if (walls > 0 && w.rng.int(1, 100) <= walls) {
+    news(w, `the walls of ${locationName(data, town)} turned the raiders back.`);
+    return false;
+  }
   const onStrike = strikesFor(w, data, id);
   let hit = false;
   for (const held of readyAttackers(w, data, id).filter((a) => a.at === town)) {
