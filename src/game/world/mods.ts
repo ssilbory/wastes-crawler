@@ -18,6 +18,7 @@ import { daysText } from './wording.ts';
 import type { TownResult } from './services.ts';
 import type { Member, World } from './types.ts';
 import { priceHere, spend, townHere } from './town-prices.ts';
+import { builtWorkshop } from './built-services.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 
@@ -194,7 +195,8 @@ export function startStrip(
 ): TownResult {
   // Stripping is workshop work alone, never camp work (SRD 2.8.1).
   const town = townHere(w, data);
-  if (town.size === 'village') return no(`${town.name} has no workshop.`);
+  if (town.size === 'village' && !builtWorkshop(w, town.id))
+    return no(`${town.name} has no workshop.`);
   const work = prepare(w, data, crafterId, ownerId, index, modId);
   if ('ok' in work) return work;
   if (!work.entry.mods?.some((m) => m.id === modId)) return no(`It has no ${work.mod.name}.`);

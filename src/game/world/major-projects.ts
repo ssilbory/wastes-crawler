@@ -4,7 +4,8 @@
 // Renown covers its difficulty, which falls as its opposition is beaten and its tied adventures are
 // done and its building work, if any, is finished (project-building.ts). A project pushed through
 // a faction still standing against it leaves lingering trouble (project-help.ts).
-import type { Project } from '../../data/schemas/project-content.ts';
+import type { AnyProject, Project } from '../../data/schemas/project-content.ts';
+import { institutionProject, isInstitutionId } from './institution-projects.ts';
 import {
   greatestOpposition,
   loweredDifficulty,
@@ -28,10 +29,21 @@ type Beaten = Opposition['beaten'][number];
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 
-export function projectOf(data: GameData, id: string): Project {
-  const p = data.content.projects.projects.find((x) => x.id === id);
+/** A project from the list, or an institution founded in a settlement (institution-projects.ts). */
+export function projectOf(data: GameData, id: string): AnyProject {
+  const p = data.content.projects.projects.find((x) => x.id === id) ?? institutionProject(data, id);
   if (!p) throw new Error(`unknown project ${id}`);
   return p;
+}
+
+/** Every project in play: the list's, and the institutions the party has founded. */
+export function allProjects(w: World, data: GameData): AnyProject[] {
+  return [
+    ...data.content.projects.projects,
+    ...Object.keys(w.majorProjects)
+      .filter(isInstitutionId)
+      .map((id) => projectOf(data, id)),
+  ];
 }
 
 /** A project's progress, empty before any Renown, crowns, or help goes in. */
@@ -44,6 +56,7 @@ export const progressOf = (w: World, id: string): MajorProjectState =>
     help: [],
     trouble: null,
     shutUntil: null,
+    specialist: null,
   };
 
 /** A project's progress, stored so it can be changed. */
@@ -97,7 +110,7 @@ export function standing(w: World, data: GameData, list: readonly Opposition[]):
 }
 
 /** The share of the goal its tied adventures have taken off, in percent (SRD 7.5.0). */
-export function adventuresDone(w: World, data: GameData, p: Project): number {
+export function adventuresDone(w: World, data: GameData, p: AnyProject): number {
   return p.adventures
     .filter((a) =>
       a.quest
@@ -111,7 +124,7 @@ export function adventuresDone(w: World, data: GameData, p: Project): number {
  * A project's difficulty as things stand: its greatest standing opposition, less its adventures'
  * shares and the help factions have given (SRD 7.9.0).
  */
-export function difficultyNow(w: World, data: GameData, p: Project): number {
+export function difficultyNow(w: World, data: GameData, p: AnyProject): number {
   const left = standing(w, data, p.difficulty.opposition).map((o) => o.level);
   const full = projectDifficulty({ ...p.difficulty, opposition: greatestOpposition(left) });
   const help = progressOf(w, p.id).help.reduce((sum, h) => sum + h.points, 0);
@@ -119,7 +132,7 @@ export function difficultyNow(w: World, data: GameData, p: Project): number {
 }
 
 /** Why the party can't work on a project here and now, or null if it can. */
-export function cannotWork(w: World, data: GameData, p: Project): string | null {
+export function cannotWork(w: World, data: GameData, p: AnyProject): string | null {
   if (progressOf(w, p.id).done !== null) return `${p.name} is finished.`;
   if (w.dungeon || !currentTown(w, data)) return 'Projects are worked from a settlement.';
   if (w.region !== p.region) return `${p.name} is worked from a settlement on its own map.`;
@@ -127,7 +140,7 @@ export function cannotWork(w: World, data: GameData, p: Project): string | null 
 }
 
 /** Records Renown put into a project, then finishes it if that covers it. */
-function putIn(w: World, data: GameData, p: Project, renown: number, bought: number): void {
+function putIn(w: World, data: GameData, p: AnyProject, renown: number, bought: number): void {
   const s = progressFor(w, p.id);
   s.renown += renown;
   s.bought += bought;
@@ -135,7 +148,7 @@ function putIn(w: World, data: GameData, p: Project, renown: number, bought: num
 }
 
 /** Renown still needed to cover a project now. */
-export const renownNeeded = (w: World, data: GameData, p: Project) =>
+export const renownNeeded = (w: World, data: GameData, p: AnyProject) =>
   Math.max(0, difficultyNow(w, data, p) - progressOf(w, p.id).renown);
 
 /** Puts `points` of the party's Renown into a project, no more than it still needs. */
@@ -175,7 +188,7 @@ export function buyRenown(w: World, data: GameData, id: string, points: number):
 }
 
 /** The faction still standing against a project, if any: it holds a grudge once it is done. */
-function grudge(w: World, data: GameData, p: Project): string | null {
+function grudge(w: World, data: GameData, p: AnyProject): string | null {
   for (const o of standing(w, data, p.difficulty.opposition))
     for (const b of o.beaten) if (b.kind === 'faction-gone') return b.faction;
   return null;
@@ -187,7 +200,7 @@ function grudge(w: World, data: GameData, p: Project): string | null {
  * strikes the place on its next turn (Sam's call: lingering trouble; project-help.ts).
  */
 export function finishCovered(w: World, data: GameData): void {
-  for (const p of data.content.projects.projects) {
+  for (const p of allProjects(w, data)) {
     const s = w.majorProjects[p.id];
     if (!s || s.done !== null || (p.build && s.daysLeft !== 0)) continue;
     if (s.renown < difficultyNow(w, data, p)) continue;

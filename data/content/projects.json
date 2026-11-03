@@ -45,6 +45,10 @@
     "faction": "settlements",
     "suits": ["fortify", "road", "restore"]
   },
+  "growAt": 3,
+  "arenaSharePercent": 25,
+  "ownRaisePercent": 50,
+  "recruitMonster": "peaceful-human",
   "workingCrownsPerPoint": 20,
   "hiredMage": {
     "hireling": "mage-of-minor-abilities",
@@ -602,6 +606,7 @@
   "institutions": [
     {
       "service": "workshop",
+      "name": "a workshop",
       "build": {
         "crowns": 300,
         "days": 30,
@@ -618,6 +623,7 @@
     },
     {
       "service": "arena",
+      "name": "an arena",
       "build": {
         "crowns": 400,
         "days": 30,
@@ -634,6 +640,7 @@
     },
     {
       "service": "alchemist",
+      "name": "an alchemist's shop",
       "build": {
         "crowns": 250,
         "days": 20,
@@ -650,6 +657,7 @@
     },
     {
       "service": "crypt",
+      "name": "a crypt",
       "build": {
         "crowns": 200,
         "days": 20,
@@ -682,6 +690,7 @@
     },
     {
       "service": "mortuary",
+      "name": "a mortuary",
       "build": {
         "crowns": 200,
         "days": 20,
@@ -698,6 +707,7 @@
     },
     {
       "service": "temple",
+      "name": "a temple",
       "build": {
         "crowns": 250,
         "days": 20,

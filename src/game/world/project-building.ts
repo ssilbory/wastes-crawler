@@ -5,7 +5,7 @@
 // each pass takes a day off and earns half an XP, and the party sleeps at the inn. Hirelings don't
 // build.
 import type { Attribute } from '../../data/schemas/index.ts';
-import type { Project } from '../../data/schemas/project-content.ts';
+import type { AnyProject } from '../../data/schemas/project-content.ts';
 import type { GameData } from '../character/context.ts';
 import { finishCovered, progressFor, progressOf, projectOf } from './major-projects.ts';
 import { alive, checkBonus, memberCheck, note } from './members.ts';
@@ -21,7 +21,7 @@ const placeName = (data: GameData, id: string) =>
   data.content.regions.flatMap((r) => r.sites).find((s) => s.id === id)?.name as string;
 
 /** Why the party can't build on a project here and now, or null if it can. */
-export function cannotBuild(w: World, data: GameData, p: Project): string | null {
+export function cannotBuild(w: World, data: GameData, p: AnyProject): string | null {
   if (!p.build) return `${p.name} needs no building work.`;
   if (progressOf(w, p.id).done !== null) return `${p.name} is finished.`;
   if (w.dungeon || currentTown(w, data)?.id !== p.at)
@@ -34,7 +34,7 @@ export function startBuild(w: World, data: GameData, id: string): TownResult {
   const p = projectOf(data, id);
   const why = cannotBuild(w, data, p);
   if (why) return no(why);
-  const build = p.build as NonNullable<Project['build']>;
+  const build = p.build as NonNullable<AnyProject['build']>;
   if (progressOf(w, id).daysLeft !== null) return no(`The work on ${p.name} is under way.`);
   const price = priceHere(w, data, build.crowns);
   if (!spend(w, data, build.crowns)) return no(`The materials cost ${price} crowns.`);
@@ -47,9 +47,9 @@ export function startBuild(w: World, data: GameData, id: string): TownResult {
 function builderSkill(
   data: GameData,
   m: Member,
-  p: Project,
+  p: AnyProject,
 ): { skill: string; attrs: Attribute[] } {
-  const build = p.build as NonNullable<Project['build']>;
+  const build = p.build as NonNullable<AnyProject['build']>;
   const attrsOf = (skill: string) => data.content.projects.buildAttributes[skill] as Attribute[];
   const own = { skill: build.skill, attrs: attrsOf(build.skill) };
   if (!build.exert) return own;

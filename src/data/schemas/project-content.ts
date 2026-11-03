@@ -132,6 +132,8 @@ export const ServiceSchema = z.enum([
 /** An institution any settlement lacking it can build, with the specialist who runs it. */
 export const InstitutionSchema = z.strictObject({
   service: ServiceSchema,
+  /** As the project screen names it: "a workshop". */
+  name: z.string().min(1),
   build: BuildSchema,
   probability: ProbabilitySchema,
   opposition: z.array(OppositionSchema),
@@ -190,6 +192,14 @@ export const ProjectContentSchema = z.strictObject({
   buying: z.array(z.strictObject({ points: z.int().min(1), crowns: z.int().min(1) })).min(1),
   /** The allied faction whose help halves (Faction help), and the kinds it suits. */
   help: z.strictObject({ faction: IdSchema, suits: z.array(z.string().min(1)) }),
+  /** A village with this many services the party built and staffed grows into a town (Growth). */
+  growAt: z.int().min(1),
+  /** The share of a month of its card's fees the party's own arena pays it as each month begins. */
+  arenaSharePercent: z.int().min(0).max(100),
+  /** What the party's own crypt, mortuary, or temple charges it, in percent of the price. */
+  ownRaisePercent: z.int().min(0).max(100),
+  /** The stat line a journeyman travels as, out of fights. */
+  recruitMonster: IdSchema,
   /** SRD 4.8.2 at 1/50. */
   workingCrownsPerPoint: z.int().min(1),
   /** A hired mage's help with a design: the hireling, the fee, and the points they add. */
@@ -199,3 +209,12 @@ export const ProjectContentSchema = z.strictObject({
   workings: z.array(WorkingSchema),
 });
 export type ProjectContent = z.infer<typeof ProjectContentSchema>;
+
+/**
+ * A project as the game plays it: one from the list, or an institution founded in a settlement
+ * (game/world/institution-projects.ts), which has no effect of its own beyond the service it opens.
+ */
+export type AnyProject = Omit<Project, 'kind' | 'effect'> & {
+  kind: Project['kind'] | 'institution';
+  effect: ProjectEffect | null;
+};

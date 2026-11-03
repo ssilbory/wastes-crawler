@@ -3,6 +3,7 @@
 // and after a month; spending past the threshold pays a surcharge, a raided settlement charges more
 // for a month (Raids in Phase 12b), and a good trader haggles. Arriving in town is town.ts.
 import type { Site, TownLedger } from '../../data/schemas/index.ts';
+import { grownSize } from './institution-projects.ts';
 import { surchargedCost, toTenths } from '../../rules/economy.ts';
 import { RESOURCE_DICE } from '../../rules/resource-die.ts';
 import type { GameData } from '../character/context.ts';
@@ -12,9 +13,10 @@ import type { World } from './types.ts';
 
 export const FULL_RATIONS = RESOURCE_DICE[RESOURCE_DICE.length - 1] as 12;
 
-/** The town the party stands in, if any. */
+/** The town the party stands in, if any, at its size as things stand (a village may have grown). */
 export function currentTown(w: World, data: GameData): Site | undefined {
-  return regionMap(data, w.region).siteAt(w.position);
+  const site = regionMap(data, w.region).siteAt(w.position);
+  return site && { ...site, size: grownSize(w, data, site) };
 }
 
 export function townHere(w: World, data: GameData): Site {

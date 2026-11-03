@@ -149,6 +149,7 @@ describe('earning Renown (docs/rules-adaptation.md, Major projects: Earning Reno
         help: [],
         trouble: null,
         shutUntil: null,
+        specialist: null,
       },
     });
     // One without any comes through with none.
@@ -234,6 +235,7 @@ describe('working on projects (Sam’s calls: any settlement on its map, finishe
       help: [],
       trouble: null,
       shutUntil: null,
+      specialist: null,
     };
     expect(cannotWork(w, data, wall)).toBe('Wall Lanternfall is finished.');
     expect(spendRenown(w, data, wall.id, 1)).toEqual({
@@ -302,6 +304,7 @@ describe('working on projects (Sam’s calls: any settlement on its map, finishe
       help: [],
       trouble: null,
       shutUntil: null,
+      specialist: null,
     };
     expect(buyRenown(w, data, 'end-grisks-tithe', 1)).toEqual({
       ok: false,

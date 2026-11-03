@@ -2,6 +2,7 @@ import { useState } from 'preact/hooks';
 import { buyRenown, spendRenown } from '../../game/world/major-projects.ts';
 import { buildDay, startBuild } from '../../game/world/project-building.ts';
 import { askHelp } from '../../game/world/project-help.ts';
+import { foundInstitution, hireJourneyman, settleCaptive } from '../../game/world/institutions.ts';
 import type { World } from '../../game/world/types.ts';
 import { projectsView } from '../../render/project-view.ts';
 import { data } from '../builder/data.ts';
@@ -26,6 +27,20 @@ export function ProjectsPanel(props: { world: World; onChange: () => void }) {
       <p>
         <strong>Renown: {view.renown}</strong>
       </p>
+      {view.foundable.length > 0 && (
+        <div class="actions" role="group" aria-label="Found an institution here">
+          {view.foundable.map((f) => (
+            <button
+              key={f.service}
+              type="button"
+              class="secondary"
+              onClick={() => act(foundInstitution(w, data, f.service))}
+            >
+              Found {f.name}
+            </button>
+          ))}
+        </div>
+      )}
       <ul class="project-list">
         {view.projects.map((p) => (
           <li key={p.id} class={p.done ? 'gone' : undefined}>
@@ -44,6 +59,9 @@ export function ProjectsPanel(props: { world: World; onChange: () => void }) {
                     {p.effect}
                   </p>
                   {p.trouble && <p class="bump">{p.trouble} mean to strike back.</p>}
+                  {p.institution && !p.institution.specialist && (
+                    <p class="hint">It opens once {p.institution.wanted} settles there.</p>
+                  )}
                 </>
               ) : (
                 <>
@@ -62,6 +80,33 @@ export function ProjectsPanel(props: { world: World; onChange: () => void }) {
                     </ul>
                   )}
                   <p class="hint">When done: {p.effect}</p>
+                  {p.institution && (
+                    <div class="actions" role="group" aria-label={`Staff ${p.name}`}>
+                      <p class="hint">
+                        {p.institution.specialist
+                          ? `${p.institution.specialist} will run it.`
+                          : `Needs ${p.institution.wanted}.`}
+                      </p>
+                      {!p.institution.specialist &&
+                        (p.institution.hireBlocked ? (
+                          <p class="hint">{p.institution.hireBlocked}</p>
+                        ) : (
+                          <button type="button" onClick={() => act(hireJourneyman(w, data, p.id))}>
+                            Hire {p.institution.wanted} ({p.institution.fee} crowns)
+                          </button>
+                        ))}
+                      {!p.institution.specialist &&
+                        p.institution.settlers.map((n) => (
+                          <button
+                            key={n.id}
+                            type="button"
+                            onClick={() => act(settleCaptive(w, data, n.id, p.id))}
+                          >
+                            Ask {n.name} to stay and run it
+                          </button>
+                        ))}
+                    </div>
+                  )}
                   {p.help && (
                     <p class="hint">
                       {view.ally}' help: {p.help}.

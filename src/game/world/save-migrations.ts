@@ -304,4 +304,15 @@ export const WORLD_MIGRATIONS: Migrations = {
       ]),
     ),
   }),
+  // Version 53 adds institutions' specialists (Phase 22c): none settled yet.
+  52: (raw) => ({
+    ...raw,
+    schemaVersion: 53,
+    majorProjects: Object.fromEntries(
+      Object.entries(raw.majorProjects as Record<string, Raw>).map(([id, p]) => [
+        id,
+        { ...p, specialist: null },
+      ]),
+    ),
+  }),
 };

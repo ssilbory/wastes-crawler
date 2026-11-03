@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { effectText } from '../../src/render/project-effect-text.ts';
+import { effectText, serviceText } from '../../src/render/project-effect-text.ts';
 import { data } from '../game/world/helpers.ts';
 
 describe('project effects in words (docs/rules-adaptation.md, Major projects: Project kinds)', () => {
@@ -48,6 +48,21 @@ describe('project effects in words (docs/rules-adaptation.md, Major projects: Pr
     );
     expect(effectText(data, { kind: 'grave-ward', at: 'cinderhold' })).toBe(
       "The Faithful can't empty the crypt in Cinderhold.",
+    );
+  });
+
+  it('says what each institution opens', () => {
+    expect(serviceText(data, 'arena')).toBe(
+      "An arena with bouts, paying the party 25% of a month's entry fees as each month begins.",
+    );
+    expect(serviceText(data, 'alchemist')).toBe(
+      'An alchemist who sells potions and brews them to order.',
+    );
+    expect(serviceText(data, 'crypt')).toBe(
+      "A crypt that raises the party's dead at 50% of the price, Half-Dead.",
+    );
+    expect(serviceText(data, 'temple')).toBe(
+      "A temple that raises the party's dead at 50% of the price, Grave-touched.",
     );
   });
 });

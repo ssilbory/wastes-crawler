@@ -5,6 +5,7 @@
 // Spellcasting/4.10.0 Creating Magic Items.md), to be collected in their town. Purchases and
 // orders are town purchases, through the spending threshold.
 import type { Alchemist, AlchemistState } from '../../data/schemas/index.ts';
+import { builtAlchemist } from './built-services.ts';
 import type { GameData } from '../character/context.ts';
 import { putLine } from '../character/stacks.ts';
 import { brewItem, reagentsListed, recipeOf } from './brewing.ts';
@@ -19,7 +20,8 @@ const rules = (data: GameData) => data.content.alchemy;
 
 export function alchemistHere(w: World, data: GameData): Alchemist | undefined {
   const town = currentTown(w, data);
-  return rules(data).alchemists.find((a) => a.town === town?.id);
+  if (!town) return undefined;
+  return rules(data).alchemists.find((a) => a.town === town.id) ?? builtAlchemist(w, data, town.id);
 }
 
 /** This month's state, or null before the party has called on them this month. */

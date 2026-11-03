@@ -4,6 +4,7 @@ import { enterRegion } from '../../src/game/world/enter-region.ts';
 import { newWorld } from '../../src/game/world/new-world.ts';
 import type { World } from '../../src/game/world/types.ts';
 import { progressOf } from '../../src/game/world/major-projects.ts';
+import { addNpc } from '../../src/game/world/npcs.ts';
 import { projectsView } from '../../src/render/project-view.ts';
 import { createRng } from '../../src/rules/rng.ts';
 import { data, starter, world } from '../game/world/helpers.ts';
@@ -100,6 +101,7 @@ describe('projects view (docs/rules-adaptation.md, Major projects)', () => {
       help: [],
       trouble: null,
       shutUntil: null,
+      specialist: null,
     };
     w.quests['ash-road-relief'] = { status: 'done', step: 0, acceptedDay: 0 };
     const v = projectsView(w, data);
@@ -116,5 +118,45 @@ describe('projects view (docs/rules-adaptation.md, Major projects)', () => {
     const w = newWorld(data, createRng('realm'), party, undefined, null, 'wastes');
     w.renown = 5;
     expect(projectsView(w, data)).toMatchObject({ renown: 0, projects: [] });
+  });
+});
+
+describe('institutions in the projects view (Major projects: Institutions)', () => {
+  it('offers what the settlement lacks, and shows each institution’s specialist', () => {
+    const w = world();
+    enterRegion(w, 'dark-lands', { col: 10, row: 4 });
+    w.position = { col: 10, row: 4 };
+    expect(projectsView(w, data).foundable.map((f) => f.service)).toEqual([
+      'workshop',
+      'arena',
+      'alchemist',
+      'crypt',
+      'mortuary',
+      'temple',
+    ]);
+    w.majorProjects['inst-workshop-lanternfall'] = progressOf(w, 'inst-workshop-lanternfall');
+    const v = projectsView(w, data);
+    expect(v.foundable.map((f) => f.service)).not.toContain('workshop');
+    const shop = v.projects.find((p) => p.id === 'inst-workshop-lanternfall');
+    expect(shop).toMatchObject({
+      name: 'A workshop in Lanternfall',
+      effect:
+        'A workshop the party uses for nothing, and a smith who trades and takes commissions.',
+      institution: {
+        specialist: null,
+        wanted: 'a journeyman smith',
+        fee: 100,
+        hireBlocked: 'Hire a journeyman smith in a town that has a workshop.',
+        settlers: [],
+      },
+    });
+    // A freed captive who could run it is offered.
+    const tamsin = addNpc(w, data, 'captive', 'held-crafter', 'peaceful-human', 'Tamsin', false);
+    expect(
+      projectsView(w, data).projects.find((p) => p.id === 'inst-workshop-lanternfall')?.institution
+        ?.settlers,
+    ).toEqual([{ id: tamsin?.id, name: 'Tamsin' }]);
+    // Other projects have no institution.
+    expect(v.projects.find((p) => p.id === 'wall-lanternfall')?.institution).toBeNull();
   });
 });

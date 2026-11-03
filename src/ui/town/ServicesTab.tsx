@@ -1,5 +1,6 @@
 import type { RaiserKind } from '../../data/schemas/index.ts';
 import { RAISING_MARK } from '../../game/world/raised.ts';
+import { isInstitutionId } from '../../game/world/institution-projects.ts';
 import {
   cureFrail,
   cureSickness,
@@ -121,7 +122,9 @@ export function ServicesTab(props: { world: World; act: Act }) {
               type="button"
               onClick={() => props.act(() => raiseDead(w, data, m.id))}
             >
-              Raise {m.character.name} ({price(raiseListed(data, m, raiser.raises as RaiserKind))})
+              Raise {m.character.name} (
+              {price(raiseListed(data, m, raiser.raises as RaiserKind, isInstitutionId(raiser.id)))}
+              )
             </button>
           ))}
         </section>

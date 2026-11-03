@@ -4,6 +4,9 @@
 // The Rules of the Game/2.5.0, 2.5.2), and magical curing of a disease; curing Frailty and
 // poison and raising the dead are house prices.
 import type { MissionGiver, RaiserKind } from '../../data/schemas/index.ts';
+import { builtRaiser } from './built-services.ts';
+import { isInstitutionId } from './institution-projects.ts';
+import { toTenths } from '../../rules/economy.ts';
 import { addStrain, fullRest } from '../../rules/strain.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
@@ -62,14 +65,21 @@ const rules = (data: GameData) => data.content.townRules.healer;
 
 export const healListed = (data: GameData, m: Member) =>
   (m.character.hp.max - m.character.hp.current) * rules(data).perHp;
-/** The price of raising a member at a place of this kind: a crypt asks half (Phase 20). */
-export const raiseListed = (data: GameData, m: Member, kind: RaiserKind) =>
-  raisePrice(data.content.townRules.raisePerLevel, levelOf(data, m), kind);
+/**
+ * The price of raising a member at a place of this kind: a crypt asks half (Phase 20), and the
+ * party's own place its share (Major projects: Owner perks).
+ */
+export const raiseListed = (data: GameData, m: Member, kind: RaiserKind, own = false) => {
+  const price = raisePrice(data.content.townRules.raisePerLevel, levelOf(data, m), kind);
+  return own ? toTenths((price * data.content.projects.ownRaisePercent) / 100) : price;
+};
 
 /** The town's necromancer or death priest, if it has one; villages never do. */
 export function raiserHere(w: World, data: GameData): MissionGiver | undefined {
   const town = townHere(w, data).id;
-  return data.content.missionGivers.find((g) => g.town === town && g.raises);
+  return (
+    data.content.missionGivers.find((g) => g.town === town && g.raises) ?? builtRaiser(w, town)
+  );
 }
 
 function member(w: World, id: string): Member {
@@ -137,7 +147,7 @@ export function raiseDead(w: World, data: GameData, id: string): TownResult {
   const raiser = raiserHere(w, data);
   if (!raiser) return no(`No one in ${townHere(w, data).name} raises the dead.`);
   const kind = raiser.raises as RaiserKind;
-  const paid = pay(w, data, raiseListed(data, m, kind));
+  const paid = pay(w, data, raiseListed(data, m, kind, isInstitutionId(raiser.id)));
   if (!paid.ok) return paid;
   note(w, `${raiser.name} raises ${m.character.name}.`);
   note(w, raiseMarked(data, m, kind));

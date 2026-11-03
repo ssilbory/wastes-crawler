@@ -41,3 +41,21 @@ export function effectText(data: GameData, e: ProjectEffect): string {
       return `The Faithful can't empty the crypt in ${site(data, e.at)}.`;
   }
 }
+
+/** What an institution opens once it is built and staffed (Major projects: Institutions). */
+export function serviceText(data: GameData, service: string): string {
+  const { arenaSharePercent: share, ownRaisePercent: raise } = data.content.projects;
+  const raising = `raises the party's dead at ${raise}% of the price`;
+  switch (service) {
+    case 'workshop':
+      return 'A workshop the party uses for nothing, and a smith who trades and takes commissions.';
+    case 'arena':
+      return `An arena with bouts, paying the party ${share}% of a month's entry fees as each month begins.`;
+    case 'alchemist':
+      return 'An alchemist who sells potions and brews them to order.';
+    case 'crypt':
+      return `A crypt that ${raising}, Half-Dead.`;
+    default:
+      return `A ${service} that ${raising}, Grave-touched.`;
+  }
+}

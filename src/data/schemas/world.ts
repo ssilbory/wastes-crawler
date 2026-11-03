@@ -9,7 +9,7 @@ import { LootDiceSchema, ShopStateSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 import { ComponentTypeSchema } from './crafting-content.ts';
 
-export const WORLD_SCHEMA_VERSION = 52;
+export const WORLD_SCHEMA_VERSION = 53;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -27,9 +27,11 @@ export const NpcSaveSchema = z.strictObject({
     'companion',
     'pack',
     'thrall',
+    'recruit',
   ]),
   /**
-   * The mount type of a pack beast, the hireling type, captive id, escort quest id, or the monster
+   * The mount type of a pack beast, the hireling type, captive id, escort quest id, the institution
+   * a journeyman is bound for (Phase 22c), or the monster
    * id of an undead servant, a beast, a summoned servant (gone at dawn, Phase 18a), a woken tree, or
    * a Beastmaster's companion.
    */
@@ -201,6 +203,8 @@ export const MajorProjectStateSchema = z.strictObject({
   trouble: IdSchema.nullable(),
   /** The day its effect comes back after a strike shut it, or null. */
   shutUntil: z.int().min(0).nullable(),
+  /** An institution's specialist, by name, once settled there (Phase 22c); null for any other. */
+  specialist: z.string().min(1).nullable(),
 });
 export type MajorProjectState = z.infer<typeof MajorProjectStateSchema>;
 

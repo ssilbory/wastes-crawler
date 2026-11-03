@@ -20,6 +20,7 @@ import { sitesListener } from './hidden-sites.ts';
 import { waterListener } from './water.ts';
 import { warlordsListener } from './warlords.ts';
 import { majorProjectsListener } from './major-projects.ts';
+import { institutionsListener } from './institutions.ts';
 
 const ALL: readonly Listener[] = [
   questListener,
@@ -39,6 +40,7 @@ const ALL: readonly Listener[] = [
   waterListener,
   warlordsListener,
   majorProjectsListener,
+  institutionsListener,
   // Last, so the fight's garrison is recorded before the ending checks the hex.
   realmEndListener,
 ];
@@ -56,6 +58,7 @@ const CAMPAIGN: ReadonlySet<Listener> = new Set([
   clockListener,
   notesListener,
   majorProjectsListener,
+  institutionsListener,
 ]);
 
 export const WORLD_LISTENERS: WorldListeners = { all: ALL, campaign: CAMPAIGN };

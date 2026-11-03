@@ -10,7 +10,13 @@ import { factionHelp } from '../../rules/projects.ts';
 import type { GameData } from '../character/context.ts';
 import { factionOf, isActive, locationName, news, ratings } from '../factions/state.ts';
 import { sack } from '../factions/strikes.ts';
-import { finishCovered, progressFor, progressOf, projectOf } from './major-projects.ts';
+import {
+  allProjects,
+  finishCovered,
+  progressFor,
+  progressOf,
+  projectOf,
+} from './major-projects.ts';
 import { note } from './members.ts';
 import type { TownResult } from './services.ts';
 import { currentTown } from './town-prices.ts';
@@ -51,7 +57,7 @@ export function askHelp(w: World, data: GameData, id: string): TownResult {
 
 /** The faction strikes the place of a project pushed through it; true if it did. */
 function strikeBack(w: World, data: GameData, id: string): boolean {
-  const target = data.content.projects.projects.find((p) => progressOf(w, p.id).trouble === id);
+  const target = allProjects(w, data).find((p) => progressOf(w, p.id).trouble === id);
   if (!target) return false;
   const s = progressFor(w, target.id);
   s.trouble = null;
@@ -81,7 +87,7 @@ function strikeBack(w: World, data: GameData, id: string): boolean {
 /** The faction gives the help it was asked for, if it has the Treasure; true if it did. */
 function giveHelp(w: World, data: GameData, id: string): boolean {
   const self = w.factions[id] as NonNullable<World['factions'][string]>;
-  for (const p of data.content.projects.projects) {
+  for (const p of allProjects(w, data)) {
     const s = progressOf(w, p.id);
     const asked = s.help.find((h) => h.faction === id && h.points === 0);
     if (!asked || s.done !== null) continue;

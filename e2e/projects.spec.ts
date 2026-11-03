@@ -67,3 +67,21 @@ test('pays for a project’s materials on site and spends a day building', async
   await expect(log).toContainText('The party works on Restart the Scrapmarch Pumps');
   await expect(log).toContainText('stays the night at the inn in Scrapmarch');
 });
+
+test('founds a workshop in a village and hires its smith in a town', async ({ page }) => {
+  await begin(page);
+  // Grimcairn, a village with no workshop.
+  await patch(page, { purse: 400, position: { col: 17, row: 4 }, visited: ['3,8', '17,4'] });
+  const panel = page.getByRole('region', { name: 'Projects' });
+  await panel.getByRole('button', { name: 'Found a workshop' }).click();
+  await panel.getByText('A workshop in Grimcairn', { exact: true }).click();
+  await expect(panel).toContainText('Needs a journeyman smith.');
+  await expect(panel).toContainText('Hire a journeyman smith in a town that has a workshop.');
+  // Back in Rubblegate, which has one.
+  await patch(page, { position: { col: 3, row: 8 } });
+  await panel.getByText('A workshop in Grimcairn', { exact: true }).click();
+  await panel.getByRole('button', { name: 'Hire a journeyman smith (100 crowns)' }).click();
+  await expect(page.getByRole('region', { name: 'NPCs' })).toContainText(
+    'journeyman, bound for Grimcairn to run a workshop',
+  );
+});

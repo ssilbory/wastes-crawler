@@ -2,6 +2,7 @@
 // mortuary, never a necromancer's crypt. A heard prayer eases the one praying of 1 System Strain or
 // lifts one member's Frailty.
 import type { MissionGiver } from '../../data/schemas/index.ts';
+import { builtRaiser } from './built-services.ts';
 import type { GameData } from '../character/context.ts';
 import { alive, awake, cureFrailty, memberCheck, note } from './members.ts';
 import type { TownResult } from './services.ts';
@@ -16,8 +17,11 @@ const no = (reason: string): TownResult => ({ ok: false, reason });
 export function shrineHere(w: World, data: GameData): MissionGiver | undefined {
   const town = townHere(w, data).id;
   const places = data.content.skillRules.prayer.places;
-  return data.content.missionGivers.find(
-    (g) => g.town === town && g.raises !== undefined && places.includes(g.raises),
+  const own = builtRaiser(w, town);
+  return (
+    data.content.missionGivers.find(
+      (g) => g.town === town && g.raises !== undefined && places.includes(g.raises),
+    ) ?? (own?.raises && places.includes(own.raises) ? own : undefined)
   );
 }
 
