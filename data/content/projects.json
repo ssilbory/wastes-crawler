@@ -56,11 +56,13 @@
           {
             "name": "the Dawnwall Bastion",
             "level": "local",
-            "beaten": {
-              "kind": "faction-gone",
-              "faction": "bastion",
-              "at": "dawnwall"
-            }
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "bastion",
+                "at": "dawnwall"
+              }
+            ]
           }
         ],
         "popular": false
@@ -94,11 +96,13 @@
           {
             "name": "the Dawnwall Bastion",
             "level": "local",
-            "beaten": {
-              "kind": "faction-gone",
-              "faction": "bastion",
-              "at": "dawnwall"
-            }
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "bastion",
+                "at": "dawnwall"
+              }
+            ]
           }
         ],
         "popular": false
@@ -137,11 +141,13 @@
           {
             "name": "the Dawnwall Bastion",
             "level": "local",
-            "beaten": {
-              "kind": "faction-gone",
-              "faction": "bastion",
-              "at": "dawnwall"
-            }
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "bastion",
+                "at": "dawnwall"
+              }
+            ]
           }
         ],
         "popular": false
@@ -175,19 +181,23 @@
           {
             "name": "Grisk's Warhost",
             "level": "major",
-            "beaten": {
-              "kind": "faction-gone",
-              "faction": "warhost",
-              "at": "grisks-hold"
-            }
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "warhost",
+                "at": "grisks-hold"
+              }
+            ]
           },
           {
             "name": "the old goblin patrols",
             "level": "minor",
-            "beaten": {
-              "kind": "quest",
-              "quest": "ash-road-relief"
-            }
+            "beaten": [
+              {
+                "kind": "quest",
+                "quest": "ash-road-relief"
+              }
+            ]
           }
         ],
         "popular": false
@@ -221,10 +231,12 @@
           {
             "name": "the coast raiders",
             "level": "minor",
-            "beaten": {
-              "kind": "quest",
-              "quest": "bandit-camp"
-            }
+            "beaten": [
+              {
+                "kind": "quest",
+                "quest": "bandit-camp"
+              }
+            ]
           }
         ],
         "popular": false
@@ -258,10 +270,12 @@
           {
             "name": "the hydras of the Pale Mere",
             "level": "minor",
-            "beaten": {
-              "kind": "quest",
-              "quest": "mere-hydra"
-            }
+            "beaten": [
+              {
+                "kind": "quest",
+                "quest": "mere-hydra"
+              }
+            ]
           }
         ],
         "popular": false
@@ -301,10 +315,12 @@
           {
             "name": "the beastmen of the watchtower",
             "level": "minor",
-            "beaten": {
-              "kind": "quest",
-              "quest": "watchtower"
-            }
+            "beaten": [
+              {
+                "kind": "quest",
+                "quest": "watchtower"
+              }
+            ]
           }
         ],
         "popular": false
@@ -344,19 +360,23 @@
           {
             "name": "Warlord Grisk",
             "level": "major",
-            "beaten": {
-              "kind": "quest",
-              "quest": "warlord-falls"
-            }
+            "beaten": [
+              {
+                "kind": "quest",
+                "quest": "warlord-falls"
+              }
+            ]
           },
           {
             "name": "the Warhost's leftover bands",
             "level": "minor",
-            "beaten": {
-              "kind": "faction-gone",
-              "faction": "warhost",
-              "at": "grisks-hold"
-            }
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "warhost",
+                "at": "grisks-hold"
+              }
+            ]
           }
         ],
         "popular": false
@@ -391,10 +411,12 @@
           {
             "name": "the Saltgate garrison",
             "level": "local",
-            "beaten": {
-              "kind": "quest",
-              "quest": "the-countermand"
-            }
+            "beaten": [
+              {
+                "kind": "quest",
+                "quest": "the-countermand"
+              }
+            ]
           }
         ],
         "popular": false
@@ -427,7 +449,8 @@
         "opposition": [
           {
             "name": "the scrap-thieves in the pump halls",
-            "level": "minor"
+            "level": "minor",
+            "beaten": []
           }
         ],
         "popular": false
@@ -465,10 +488,12 @@
           {
             "name": "the cistern hydra",
             "level": "minor",
-            "beaten": {
-              "kind": "quest",
-              "quest": "cistern-hydra"
-            }
+            "beaten": [
+              {
+                "kind": "quest",
+                "quest": "cistern-hydra"
+              }
+            ]
           }
         ],
         "popular": false
@@ -535,10 +560,12 @@
           {
             "name": "the Red Hunger",
             "level": "minor",
-            "beaten": {
-              "kind": "quest",
-              "quest": "red-hunger"
-            }
+            "beaten": [
+              {
+                "kind": "quest",
+                "quest": "red-hunger"
+              }
+            ]
           }
         ],
         "popular": false
@@ -622,11 +649,17 @@
         {
           "name": "the Faithful",
           "level": "local",
-          "beaten": {
-            "kind": "faction-gone",
-            "faction": "loyalists",
-            "at": "ember-shrine"
-          }
+          "beaten": [
+            {
+              "kind": "faction-gone",
+              "faction": "loyalists",
+              "at": "ember-shrine"
+            },
+            {
+              "kind": "quest",
+              "quest": "hollow-throne"
+            }
+          ]
         }
       ],
       "specialist": {

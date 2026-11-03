@@ -26,8 +26,8 @@ export const OppositionSchema = z.strictObject({
   /** As the project screen names it: "the Dawnwall Bastion". */
   name: z.string().min(1),
   level: OppositionLevelSchema,
-  /** None: only paying through it (SRD 7.6.0, lingering trouble) gets past it. */
-  beaten: BeatenSchema.optional(),
+  /** Any one of these beats it; none: only paying through it (SRD 7.6.0, lingering trouble). */
+  beaten: z.array(BeatenSchema),
 });
 
 export const DifficultySchema = z.strictObject({

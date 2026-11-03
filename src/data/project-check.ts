@@ -25,15 +25,14 @@ export function projectReferenceErrors(srd: SrdData, content: ContentData): stri
   const ids = new Set(p.projects.map((x) => x.id));
 
   const opposition = (where: string, list: Opposition[]) => {
-    for (const o of list) {
-      const b = o.beaten;
-      if (b?.kind === 'faction-gone') {
+    for (const b of list.flatMap((o) => o.beaten)) {
+      if (b.kind === 'faction-gone') {
         if (!factions.has(b.faction)) errors.push(`${where}: unknown faction ${b.faction}`);
         if (!locations.has(b.at)) errors.push(`${where}: unknown faction location ${b.at}`);
       }
-      if (b?.kind === 'quest' && !quests.has(b.quest))
+      if (b.kind === 'quest' && !quests.has(b.quest))
         errors.push(`${where}: unknown quest ${b.quest}`);
-      if (b?.kind === 'dungeon' && !dungeons.has(b.dungeon))
+      if (b.kind === 'dungeon' && !dungeons.has(b.dungeon))
         errors.push(`${where}: unknown dungeon ${b.dungeon}`);
     }
   };

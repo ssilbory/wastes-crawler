@@ -30,6 +30,8 @@ describe('project content (docs/rules-adaptation.md, Major projects; Sam’s cal
     // The Faithful oppose every new crypt.
     const crypt = p.institutions.find((i) => i.service === 'crypt');
     expect(crypt?.opposition.map((o) => o.level)).toEqual(['local']);
+    // Beaten either way: nothing left at the Ember Shrine, or The Hollow Throne turned in.
+    expect(crypt?.opposition[0]?.beaten.map((b) => b.kind)).toEqual(['faction-gone', 'quest']);
   });
 
   it('reports a project off the campaign, unknown places, and unknown references', () => {
@@ -41,9 +43,13 @@ describe('project content (docs/rules-adaptation.md, Major projects; Sam’s cal
       difficulty: {
         ...first.difficulty,
         opposition: [
-          { name: 'a', level: 'minor', beaten: { kind: 'faction-gone', faction: 'no', at: 'no' } },
-          { name: 'b', level: 'minor', beaten: { kind: 'quest', quest: 'no' } },
-          { name: 'c', level: 'minor', beaten: { kind: 'dungeon', dungeon: 'no' } },
+          {
+            name: 'a',
+            level: 'minor',
+            beaten: [{ kind: 'faction-gone', faction: 'no', at: 'no' }],
+          },
+          { name: 'b', level: 'minor', beaten: [{ kind: 'quest', quest: 'no' }] },
+          { name: 'c', level: 'minor', beaten: [{ kind: 'dungeon', dungeon: 'no' }] },
         ],
       },
       build: { crowns: 1, days: 1, skill: 'juggling', exert: false },
