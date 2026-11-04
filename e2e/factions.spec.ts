@@ -120,3 +120,21 @@ test('storms a held settlement, with only its shop and inn open (Phase 23b)', as
   await storm.getByRole('button', { name: "Storm Grisk's Warhost's Beastman Warband" }).click();
   await expect(page.getByRole('heading', { name: 'To arms' })).toBeVisible();
 });
+
+test('waits free at an ally’s inn for a siege (Phase 23c)', async ({ page }) => {
+  await startWorld(page);
+  await edit(
+    page,
+    `Object.assign(save, { region: 'dark-lands', elsewhere: { borderlands: save.visited },
+      visited: ['6,12'], position: { col: 6, row: 12 }, day: 25, purse: 100 });`,
+  );
+  await page.getByRole('button', { name: 'Visit Cinderhold' }).click();
+  await page.getByRole('tab', { name: 'Inn and healer' }).click();
+  await page.getByRole('button', { name: 'Wait for a siege (free)' }).click();
+  const log = page.getByRole('region', { name: 'Journey log' });
+  await expect(log).toContainText(
+    "The party waits in Cinderhold for a siege, the Free Settlements' guests.",
+  );
+  await expect(log).toContainText(/the wait ends|ends the wait/);
+  await expect(page.getByText('Purse: 100')).toBeVisible();
+});

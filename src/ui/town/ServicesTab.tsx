@@ -20,7 +20,9 @@ import { data } from '../builder/data.ts';
 import { SellLootForm } from './SellLootForm.tsx';
 import { PerformForm, PrayerForm } from './SkillServices.tsx';
 import type { Act } from './TownScreen.tsx';
-import { priceHere } from '../../game/world/town-prices.ts';
+import { priceHere, townHere } from '../../game/world/town-prices.ts';
+import { allyHosts, waitForSiege } from '../../game/world/siege-wait.ts';
+import { besieged } from '../../game/world/siege-state.ts';
 
 /** Where each kind of raiser works (Phase 14d adds the Blood Priest temple). */
 const RAISER_PLACE = { crypt: 'Crypt', mortuary: 'Mortuary', temple: 'Temple' } as const;
@@ -34,6 +36,8 @@ export function ServicesTab(props: { world: World; act: Act; held?: boolean }) {
   const raiser = raiserHere(w, data);
   const shrine = shrineHere(w, data);
   const dead = w.members.filter((m) => m.dead);
+  // Waiting for a siege as the ally's guests (Phase 23c).
+  const waitable = allyHosts(w, data) && !besieged(w, townHere(w, data).id);
   return (
     <>
       <section class="panel" aria-label="Inn">
@@ -45,6 +49,17 @@ export function ServicesTab(props: { world: World; act: Act; held?: boolean }) {
         <button type="button" onClick={() => props.act(() => stayAtInn(w, data))}>
           Stay the night ({price(innListed(w, data))})
         </button>
+        {waitable && (
+          <>
+            <p class="hint">
+              The Free Settlements put the party up free while it waits for a siege, its crafters
+              working, until a siege or other news of them comes, or a month turns.
+            </p>
+            <button type="button" onClick={() => props.act(() => waitForSiege(w, data))}>
+              Wait for a siege (free)
+            </button>
+          </>
+        )}
         <PerformForm world={w} act={props.act} />
       </section>
       {!props.held && (

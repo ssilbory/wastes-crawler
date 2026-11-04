@@ -232,7 +232,7 @@ const projectTools = (data: GameData, p: Pick<Project, 'kind'>): string =>
       ? data.content.scrolls.kit
       : data.content.craftingRules.tools.id;
 
-const carriesFor = (data: GameData, m: Member, p: Project) =>
+export const carriesFor = (data: GameData, m: Member, p: Project) =>
   m.character.inventory.some((e) => e.id === projectTools(data, p));
 
 /**
