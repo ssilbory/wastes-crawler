@@ -12,9 +12,16 @@ import { note } from './members.ts';
 import { removeNpc } from './npcs.ts';
 import type { World } from './types.ts';
 import { levelOf } from '../dungeon/levels.ts';
+import { freeQuest } from './free-quests.ts';
+import { settlementOf } from './siege-state.ts';
+
+/** A settlement's name; a freeing step's town is always one (free-quests.ts). */
+const townName = (data: GameData, town: string) =>
+  (settlementOf(data, town) as NonNullable<ReturnType<typeof settlementOf>>).site.name;
 
 export function questOf(data: GameData, id: string): Quest {
-  const q = data.content.quests.find((x) => x.id === id);
+  // A quest to free a held settlement is built from its id (free-quests.ts).
+  const q = data.content.quests.find((x) => x.id === id) ?? freeQuest(data, id);
   if (!q) throw new Error(`unknown quest ${id}`);
   return q;
 }
@@ -143,6 +150,11 @@ function onStep(w: World, data: GameData, id: string, e: WorldEvent): void {
         note(w, `The party takes ${o.item}.`);
         advance(w, data, id);
       } else springSlay(w, data, id);
+      return;
+    case 'town-freed':
+      if (o.kind !== 'free' || o.town !== e.town) return;
+      if (e.party) advance(w, data, id);
+      else failQuest(w, data, id, `${townName(data, o.town)} was freed without the party.`);
       return;
     case 'npc-died':
       if (e.npc.kind === 'escort' && e.npc.type === id)

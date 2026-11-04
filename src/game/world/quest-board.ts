@@ -10,6 +10,7 @@ import { note } from './members.ts';
 import { addNpc } from './npcs.ts';
 import { fulfilOrders, gainAuthority, learnCountersign } from './orders.ts';
 import { failQuest, giverName, payerName, payerOf, questOf } from './quests.ts';
+import { freeQuestsFrom, isFreeing } from './free-quests.ts';
 import { anyDead, isRaising, raisingBlocked } from './raising.ts';
 import type { TownResult } from './services.ts';
 import { raiseMarked } from './raised.ts';
@@ -26,10 +27,14 @@ export function giversHere(w: World, data: GameData): MissionGiver[] {
   return data.content.missionGivers.filter((g) => g.town === town.id);
 }
 
-/** A quest's standing state: a raising quest done or failed before can be taken again. */
+/**
+ * A quest's standing state: a raising quest, or a quest to free a held town (Phase 23e), done or
+ * failed before can be taken again.
+ */
 export function standing(w: World, q: Quest): QuestState | undefined {
   const st = w.quests[q.id];
-  return isRaising(q) && (st?.status === 'done' || st?.status === 'failed') ? undefined : st;
+  const again = isRaising(q) || isFreeing(q);
+  return again && (st?.status === 'done' || st?.status === 'failed') ? undefined : st;
 }
 
 /** Why a quest can't be taken now, or null if it can. */
@@ -37,6 +42,9 @@ export function cannotAccept(w: World, data: GameData, q: Quest): string | null 
   if (standing(w, q)) return 'Already taken.';
   const raising = isRaising(q) ? raisingBlocked(w, q) : null;
   if (raising) return raising;
+  // A freeing quest is offered only while its town is held and no one else's is under way.
+  if (isFreeing(q) && !freeQuestsFrom(w, data, q.giver).some((x) => x.id === q.id))
+    return 'No longer offered.';
   const needed = q.prerequisites.quests.filter((id) => w.quests[id]?.status !== 'done');
   if (needed.length > 0) return `First: ${needed.map((id) => questOf(data, id).name).join(', ')}.`;
   if (partyLevel(w, data) < q.prerequisites.minLevel)
@@ -60,6 +68,7 @@ export function questBoard(w: World, data: GameData, giverId: string): Quest[] {
       (q) => !isRaising(q) || standing(w, q) || (w.raising.offer === q.id && anyDead(w)),
     ),
     ...data.content.quests.filter((q) => q.payer === giverId && underWay(q)),
+    ...freeQuestsFrom(w, data, giverId),
   ];
 }
 

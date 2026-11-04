@@ -164,3 +164,27 @@ test('picks a side in a rivals’ siege of a held settlement (Phase 23d)', async
     'The party keeps out of the siege of Lanternfall.',
   );
 });
+
+test('offers a quest to free a held settlement (Phase 23e)', async ({ page }) => {
+  await startWorld(page);
+  await edit(
+    page,
+    `Object.assign(save, { region: 'dark-lands', elsewhere: { borderlands: save.visited },
+      visited: ['6,12'], position: { col: 6, row: 12 }, day: 29, purse: 100 });
+     const free = save.factions.settlements;
+     free.assets = free.assets.filter((a) => a.at !== 'lanternfall');
+     free.bases = free.bases.filter((b) => b.at !== 'lanternfall');
+     save.factions.warhost.bases.push({ at: 'lanternfall', hp: 2, max: 2 });`,
+  );
+  await page.getByRole('button', { name: 'Visit Cinderhold' }).click();
+  await page.getByRole('tab', { name: 'Quests' }).click();
+  const gorvash = page.getByRole('region', { name: 'Elder Gorvash' });
+  await gorvash.getByRole('button', { name: 'Take on Free Lanternfall' }).click();
+  await expect(gorvash).toContainText(
+    "Free Lanternfall: storm it, or fight in the Free Settlements' siege of it.",
+  );
+  // Taken from Gorvash, it leaves Vashti's board.
+  await expect(
+    page.getByRole('region', { name: 'Vashti of the Pits' }).getByText('Free Lanternfall'),
+  ).toHaveCount(0);
+});

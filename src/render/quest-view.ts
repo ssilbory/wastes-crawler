@@ -39,8 +39,9 @@ export function questTarget(w: World, data: GameData, id: string): Hex | null {
   const o = currentStep(w, data, id);
   if (!o) return null;
   if (o.kind === 'slay' || o.kind === 'scout') return o.region === w.region ? o.hex : null;
-  if (o.kind === 'escort' || o.kind === 'deliver') {
-    const town = regionMap(data, w.region).sites.find((s) => s.id === o.to);
+  if (o.kind === 'escort' || o.kind === 'deliver' || o.kind === 'free') {
+    const to = o.kind === 'free' ? o.town : o.to;
+    const town = regionMap(data, w.region).sites.find((s) => s.id === to);
     return town ? { col: town.col, row: town.row } : null;
   }
   // A delve step marks its dungeon's entrance; content checks guarantee the dungeon.

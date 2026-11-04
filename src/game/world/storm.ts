@@ -6,7 +6,7 @@
 // Storming joins any siege the ally has laid there.
 import type { FactionState, SiegeFight } from '../../data/schemas/index.ts';
 import { groupOf, toRows } from '../factions/assault.ts';
-import { reclaim, retaken } from '../factions/capture.ts';
+import { reclaim } from '../factions/capture.ts';
 import { hurtAsset, hurtBase } from '../factions/combat.ts';
 import { settle } from '../factions/siege.ts';
 import { assetName, factionOf, locationName } from '../factions/state.ts';
@@ -87,5 +87,5 @@ export function stormWon(w: World, data: GameData, f: SiegeFight): void {
   if (base) hurtBase(w, data, f.attacker, f.town, base.hp);
   // A siege the ally laid there ends with the holder gone, and pays for the party's part in it.
   for (const siege of w.sieges.filter((x) => x.town === f.town)) settle(w, data, siege);
-  if (reclaim(w, data, f.town)) retaken(w, data, f.town);
+  reclaim(w, data, f.town, true);
 }

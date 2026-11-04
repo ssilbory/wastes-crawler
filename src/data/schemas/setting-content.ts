@@ -34,6 +34,8 @@ export const AuthoritySchema = z.strictObject({
 export type Authority = z.infer<typeof AuthoritySchema>;
 
 /** The monthly raid threat on the Dark Lands' settlements (Sam's call). */
+const FreeRewardSchema = z.strictObject({ crowns: z.number().min(0), xp: z.number().min(0) });
+
 export const SiegeRulesSchema = z.strictObject({
   /** The party's ally: sieges it fights in are alerted at once, and lifting one pays Renown. */
   ally: IdSchema,
@@ -56,6 +58,20 @@ export const SiegeRulesSchema = z.strictObject({
   heldPrice: z.number().min(1),
   /** A sacked or besieged settlement's prices rise by this fraction. */
   surcharge: z.number().min(0),
+  /**
+   * The quest to free a held settlement (Phase 23e), offered by every giver in the ally's free
+   * settlements: `{town}` in its texts names the held one; the reward goes by its size.
+   */
+  freeQuest: z.strictObject({
+    name: z.string().min(1),
+    summary: z.string().min(1),
+    text: z.string().min(1),
+    reward: z.strictObject({
+      village: FreeRewardSchema,
+      town: FreeRewardSchema,
+      city: FreeRewardSchema,
+    }),
+  }),
 });
 export type SiegeRules = z.infer<typeof SiegeRulesSchema>;
 

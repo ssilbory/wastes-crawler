@@ -8,6 +8,7 @@
 import type { FactionState } from '../../data/schemas/index.ts';
 import { factionMaxHp } from '../../rules/factions.ts';
 import type { GameData } from '../character/context.ts';
+import { emit } from '../world/bus.ts';
 import { allProjects, projectOf } from '../world/major-projects.ts';
 import { note } from '../world/members.ts';
 import { allyTowns, besieged, holderOf } from '../world/siege-state.ts';
@@ -60,14 +61,17 @@ export function capture(w: World, data: GameData, attacker: string, town: string
 
 /**
  * The ally takes back a settlement of its own that has neither its base nor a holder's: a new
- * base there, and its services open again. Returns whether it did.
+ * base there, and its services open again. With the party's part in it, the town pays Renown, and
+ * either way its freeing quests hear of it (Phase 23e). Returns whether it did.
  */
-export function reclaim(w: World, data: GameData, town: string): boolean {
+export function reclaim(w: World, data: GameData, town: string, party = false): boolean {
   const s = w.factions[ally(data)];
   if (!allyTowns(data).includes(town) || !isActive(s)) return false;
   if (s.bases.some((b) => b.at === town) || holderOf(w, data, town)) return false;
   plant(data, s, town);
   note(w, `${locationName(data, town)} is free again: ${factionOf(data, ally(data)).name} return.`);
+  if (party) retaken(w, data, town);
+  emit(w, data, { kind: 'town-freed', town, party });
   return true;
 }
 

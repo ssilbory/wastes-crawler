@@ -34,6 +34,8 @@ export type WorldEvent =
   | { kind: 'captive-home'; captive: string }
   /** A quest was turned in to its giver (Phase 12d). */
   | { kind: 'quest-done'; quest: string }
+  /** One of the ally's held settlements freed, with or without the party's part (Phase 23e). */
+  | { kind: 'town-freed'; town: string; party: boolean }
   /** A standing order ended, by countersign, token, quest, or its keeper's fall. */
   | { kind: 'order-ended'; order: string };
 

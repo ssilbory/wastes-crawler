@@ -13,5 +13,24 @@
   "strain": 3,
   "renown": 2,
   "surcharge": 0.5,
-  "heldPrice": 2
+  "heldPrice": 2,
+  "freeQuest": {
+    "name": "Free {town}",
+    "summary": "{town} is held against the Free Settlements. Drive its holder out, storming the town alone or fighting in the Free Settlements' siege of it, and come back for the reward.",
+    "text": "Free {town}: storm it, or fight in the Free Settlements' siege of it.",
+    "reward": {
+      "village": {
+        "crowns": 100,
+        "xp": 3
+      },
+      "town": {
+        "crowns": 200,
+        "xp": 4
+      },
+      "city": {
+        "crowns": 200,
+        "xp": 4
+      }
+    }
+  }
 }
