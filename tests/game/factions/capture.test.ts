@@ -198,6 +198,28 @@ describe('capture (docs/rules-adaptation.md, Sieges: Capture; Phase 23b)', () =>
     expect(settle(w, data, s)).toBe('fallen');
     expect(holderOf(w, data, 'lanternfall')).toBe('bastion');
   });
+
+  it('gives a town two sieges take at once to the first, the other going on against it', () => {
+    const w = factionWorld();
+    w.position = { col: 2, row: 2 };
+    for (const a of faction(w, 'warhost').assets) a.at = 'lanternfall';
+    for (const a of faction(w, 'bastion').assets) a.at = 'lanternfall';
+    const first = beginSiege(w, data, 'warhost', 'lanternfall', 'settlements');
+    const second = beginSiege(w, data, 'bastion', 'lanternfall', 'settlements');
+    free(w).assets = free(w).assets.filter((a) => a.at !== 'lanternfall');
+    free(w).bases = free(w).bases.filter((b) => b.at !== 'lanternfall');
+    const elsewhere = { ...first, town: 'mirewatch', attacker: 'loyalists' };
+    w.sieges.push(elsewhere);
+    expect(settle(w, data, first)).toBe('fallen');
+    expect(holderOf(w, data, 'lanternfall')).toBe('warhost');
+    expect(second.defender).toBe('warhost');
+    expect(elsewhere.defender).toBe('settlements');
+    // The warhost's new base stands, so the Bastion's siege goes on.
+    expect(settle(w, data, second)).toBeNull();
+    expect(faction(w, 'bastion').bases.some((b) => b.at === 'lanternfall')).toBe(false);
+    // Nor can a second attacker take a town another already holds.
+    expect(capture(w, data, 'bastion', 'lanternfall')).toBe(false);
+  });
 });
 
 const free = (w: World) => faction(w, 'settlements');

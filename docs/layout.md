@@ -28,21 +28,21 @@ Snapshot: 2026-10-26, about 1,120 tracked files.
 
 ## Scripts (`pnpm <name>`)
 
-| Script                     | Runs                                                                                 |
-| -------------------------- | ------------------------------------------------------------------------------------ |
-| `dev`, `build`, `preview`  | Vite                                                                                 |
-| `typecheck`, `lint`        | `tsc --noEmit`, `eslint .`                                                           |
-| `format`, `format:check`   | Prettier                                                                             |
-| `test`, `test:coverage`    | Vitest over `tests/**/*.test.ts` and `src/**/*.test.ts`                              |
-| `test:e2e`                 | Playwright over `e2e/`                                                               |
-| `srd:extract`, `srd:check` | `tools/srd-extract`: regenerate `data/srd/`, or verify it matches the vendored SRD   |
-| `license:check`            | `tools/check-licenses.ts`: shipped deps must be MIT/BSD/Apache/ISC/zlib/CC0/OFL      |
-| `sim`                      | `tools/sim`: auto-combat of exported characters vs SRD monsters                      |
-| `economy`                  | `tools/economy.ts`: Phase 9 economy validator, driven by `data/economy-sim.json`     |
-| `balance`                  | `tools/balance.ts`: campaign fights against the auto-levelled starter party          |
-| `playtest`                 | `tools/playtest.ts`: a cautious bot plays the starter party's early game, many seeds |
-| `factions`                 | `tools/factions.ts`: faction turns run headless for two years, many seeds            |
-| `validate:levels`          | `tools/validate-levels.ts`: every dungeon level parses, connects, and completes      |
+| Script                     | Runs                                                                                                                                                        |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dev`, `build`, `preview`  | Vite                                                                                                                                                        |
+| `typecheck`, `lint`        | `tsc --noEmit`, `eslint .`                                                                                                                                  |
+| `format`, `format:check`   | Prettier                                                                                                                                                    |
+| `test`, `test:coverage`    | Vitest over `tests/**/*.test.ts` and `src/**/*.test.ts`                                                                                                     |
+| `test:e2e`                 | Playwright over `e2e/`                                                                                                                                      |
+| `srd:extract`, `srd:check` | `tools/srd-extract`: regenerate `data/srd/`, or verify it matches the vendored SRD                                                                          |
+| `license:check`            | `tools/check-licenses.ts`: shipped deps must be MIT/BSD/Apache/ISC/zlib/CC0/OFL                                                                             |
+| `sim`                      | `tools/sim`: auto-combat of exported characters vs SRD monsters                                                                                             |
+| `economy`                  | `tools/economy.ts`: Phase 9 economy validator, driven by `data/economy-sim.json`                                                                            |
+| `balance`                  | `tools/balance.ts`: campaign fights against the auto-levelled starter party                                                                                 |
+| `playtest`                 | `tools/playtest.ts`: a cautious bot plays the starter party's early game, many seeds                                                                        |
+| `factions`                 | `tools/factions.ts`: faction turns run headless for two years, many seeds; `--party` adds the siege bot (`tools/factions/party-bot.ts`) at the levels given |
+| `validate:levels`          | `tools/validate-levels.ts`: every dungeon level parses, connects, and completes                                                                             |
 
 ## docs/
 

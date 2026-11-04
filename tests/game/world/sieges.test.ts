@@ -3,6 +3,7 @@ import { addAsset } from '../../../src/game/factions/state.ts';
 import { emit } from '../../../src/game/world/bus.ts';
 import { progressOf } from '../../../src/game/world/major-projects.ts';
 import { nearbyHex } from '../../../src/game/world/sieges.ts';
+import { stayAtInn } from '../../../src/game/world/services.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { data, encounter, member } from './helpers.ts';
 import {
@@ -120,6 +121,20 @@ describe('a siege’s assaults with the party there (docs/rules-adaptation.md, S
     emit(w, bare, { kind: 'day-passed' });
     expect(w.position).not.toEqual(LANTERNFALL);
     expect(member(w, 'Grukk').character.strain.value).toBe(3);
+  });
+
+  it('drives a party sleeping at the inn out, unrested, when the town falls that night', () => {
+    const { w, s } = besieged();
+    undefended(w);
+    s.next = w.day;
+    const day = w.day;
+    member(w, 'Snag').character.strain.value = 1;
+    expect(stayAtInn(w, bare)).toEqual({ ok: true });
+    expect(w.day).toBe(day + 1);
+    expect(w.position).not.toEqual(LANTERNFALL);
+    // Driven out by the lost assault: 3 strain on top, and no night's rest to clear it.
+    expect(member(w, 'Snag').character.strain.value).toBe(4);
+    expect(w.log.join('\n')).not.toContain('stays the night at the inn in Lanternfall');
   });
 
   it('gives no share once the night’s assault has ended the siege', () => {

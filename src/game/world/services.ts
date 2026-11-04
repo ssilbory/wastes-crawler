@@ -15,7 +15,7 @@ import { raiseMarked, raisePrice } from './raised.ts';
 import { endOfDay } from './day.ts';
 import { alive, cureFrailty, note, setHp } from './members.ts';
 import type { Member, World } from './types.ts';
-import { FULL_RATIONS, priceHere, spend, townHere } from './town-prices.ts';
+import { currentTown, FULL_RATIONS, priceHere, spend, townHere } from './town-prices.ts';
 
 export type TownResult = { ok: true } | { ok: false; reason: string };
 
@@ -49,15 +49,19 @@ export function restAtInn(w: World, data: GameData): void {
   w.noRecovery = false;
   // A night that wipes the party out ends at the last town, with no inn stay to note.
   if (endOfDay(w, data)) return;
-  for (const m of alive(w)) {
-    const s = m.character.strain;
-    const rested = fullRest({ strain: s.value, max: 0, broken: s.broken });
-    m.character = { ...m.character, strain: { value: rested.strain, broken: rested.broken } };
+  // A town that falls in the night drives the party out before morning, unrested (Sieges).
+  const town = currentTown(w, data);
+  if (town) {
+    for (const m of alive(w)) {
+      const s = m.character.strain;
+      const rested = fullRest({ strain: s.value, max: 0, broken: s.broken });
+      m.character = { ...m.character, strain: { value: rested.strain, broken: rested.broken } };
+    }
+    w.rations = FULL_RATIONS;
   }
-  w.rations = FULL_RATIONS;
   w.day += 1;
   w.quarter = 0;
-  note(w, `The party stays the night at the inn in ${townHere(w, data).name}.`);
+  if (town) note(w, `The party stays the night at the inn in ${town.name}.`);
 }
 
 const levelOf = (data: GameData, m: Member) => characterSheet(m.character, data).level;

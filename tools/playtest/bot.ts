@@ -42,7 +42,7 @@ export interface Run {
 
 const STARTERS = ['snag', 'grukk', 'lirael', 'fizzwick'];
 
-function party(data: GameData) {
+export function party(data: GameData) {
   return STARTERS.map((file, i) => {
     const r = importCharacter(readFileSync(`tools/sim/parties/starter/${file}.json`, 'utf8'), data);
     if (!r.ok) throw new Error(`${file}: ${r.errors.join('; ')}`);

@@ -52,10 +52,14 @@ export function loseBuilt(w: World, data: GameData, town: string): void {
 export function capture(w: World, data: GameData, attacker: string, town: string): boolean {
   const s = w.factions[attacker];
   if (!allyTowns(data).includes(town) || !isActive(s) || attacker === ally(data)) return false;
-  if (s.bases.some((b) => b.at === town)) return false;
+  // One holder at a time: a town another rival already took is that rival's to lose.
+  if (s.bases.some((b) => b.at === town) || holderOf(w, data, town) !== null) return false;
   plant(data, s, town);
   note(w, `${factionOf(data, attacker).name} now holds ${locationName(data, town)}.`);
   loseBuilt(w, data, town);
+  // Other sieges of the town go on against its new holder (Phase 23f); its own has ended.
+  for (const other of w.sieges)
+    if (other.town === town) other.defender = attacker;
   return true;
 }
 
