@@ -58,8 +58,7 @@ export function capture(w: World, data: GameData, attacker: string, town: string
   note(w, `${factionOf(data, attacker).name} now holds ${locationName(data, town)}.`);
   loseBuilt(w, data, town);
   // Other sieges of the town go on against its new holder (Phase 23f); its own has ended.
-  for (const other of w.sieges)
-    if (other.town === town) other.defender = attacker;
+  for (const other of w.sieges) if (other.town === town) other.defender = attacker;
   return true;
 }
 
