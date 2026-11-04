@@ -9,11 +9,11 @@ import { groupOf, toRows } from '../factions/assault.ts';
 import { reclaim, retaken } from '../factions/capture.ts';
 import { hurtAsset, hurtBase } from '../factions/combat.ts';
 import { settle } from '../factions/siege.ts';
-import { assetName, factionOf } from '../factions/state.ts';
+import { assetName, factionOf, locationName } from '../factions/state.ts';
 import type { GameData } from '../character/context.ts';
 import { meetGroup } from './encounters.ts';
 import type { TownResult } from './services.ts';
-import { holderOf, partyIn } from './siege-state.ts';
+import { holderOf, partyIn, partySide } from './siege-state.ts';
 import { currentTown } from './town-prices.ts';
 import type { World } from './types.ts';
 
@@ -26,33 +26,41 @@ export interface StormTarget {
   rows: string[][];
 }
 
-/** Whom the party would fight storming the settlement it stands in, if a rival holds it. */
-export function stormTarget(w: World, data: GameData): StormTarget | null {
-  const town = w.dungeon ? undefined : currentTown(w, data);
-  const holder = town && partyIn(w, data, town.id) ? holderOf(w, data, town.id) : null;
-  if (!town || !holder) return null;
-  // holderOf names only a standing faction with a base here.
+/**
+ * The holder's sturdiest asset in a town as its patrol group, or, with none there, its base's
+ * guard: a militia per base hit point, up to 8. The party faces it storming the town, or in an
+ * assault fought on the besiegers' side (sieges.ts).
+ */
+export function holdTarget(w: World, data: GameData, town: string, holder: string): StormTarget {
+  // Only a standing faction with a base here holds a town.
   const s = w.factions[holder] as FactionState;
-  const here = s.assets.filter((a) => a.at === town.id);
+  const here = s.assets.filter((a) => a.at === town);
   const who = factionOf(data, holder).name;
   if (here.length > 0) {
     const held = here.reduce((a, b) => (b.hp > a.hp ? b : a));
     return {
-      town: town.id,
+      town,
       holder,
       uid: held.uid,
       name: `${who}'s ${assetName(data, holder, held.asset)}`,
       rows: groupOf(data, holder, held),
     };
   }
-  const guard = Math.min(8, ...s.bases.filter((b) => b.at === town.id).map((b) => b.hp));
+  const guard = Math.min(8, ...s.bases.filter((b) => b.at === town).map((b) => b.hp));
   return {
-    town: town.id,
+    town,
     holder,
     uid: 'base',
-    name: `${who}'s hold on ${town.name}`,
+    name: `${who}'s hold on ${locationName(data, town)}`,
     rows: toRows(Array.from({ length: guard }, () => data.content.siegeRules.militiaMonster)),
   };
+}
+
+/** Whom the party would fight storming the settlement it stands in, if a rival holds it. */
+export function stormTarget(w: World, data: GameData): StormTarget | null {
+  const town = w.dungeon ? undefined : currentTown(w, data);
+  const holder = town && partyIn(w, data, town.id) ? holderOf(w, data, town.id) : null;
+  return town && holder ? holdTarget(w, data, town.id, holder) : null;
 }
 
 /** The party storms the holder's sturdiest asset in town, or its base's guard. */
@@ -60,8 +68,8 @@ export function storm(w: World, data: GameData): TownResult {
   if (w.encounter) return { ok: false, reason: 'Settle the encounter first.' };
   const t = stormTarget(w, data);
   if (!t) return { ok: false, reason: 'No rival holds this town.' };
-  // Storming the town fights the ally's siege of it, if one is laid.
-  for (const s of w.sieges.filter((x) => x.town === t.town)) {
+  // Storming the town fights in any siege of it the party is on the besiegers' side of.
+  for (const s of w.sieges.filter((x) => x.town === t.town && partySide(data, x) === 'attacker')) {
     s.joined = true;
     s.next = Math.min(s.next, w.day);
   }

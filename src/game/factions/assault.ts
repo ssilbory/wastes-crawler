@@ -70,15 +70,25 @@ function fightersOf(data: GameData, attacker: string, held: HeldAsset, halve: bo
 const militiaOf = (data: GameData, s: Siege) =>
   rules(data).militia[settlementOf(data, s.town)?.site.size ?? 'village'];
 
-/** The defenders: the settlement's militia, then a fighter per hit point of the holder's assets. */
-export function defenders(w: World, data: GameData, s: Siege): string[] {
+/**
+ * The defenders: the settlement's militia, then a fighter per hit point of the holder's assets,
+ * but `away`, the one the party fights alone from the besiegers' side.
+ */
+export function defenders(
+  w: World,
+  data: GameData,
+  s: Siege,
+  away: HeldAsset | null = null,
+): string[] {
   const r = rules(data);
   const militia = Array.from({ length: militiaOf(data, s) }, () => r.militiaMonster);
-  const held = holders(w, s).flatMap((a) =>
-    Array.from({ length: a.hp }, () =>
-      srdAsset(data, a.asset).attribute === 'force' ? r.forceMonster : r.militiaMonster,
-    ),
-  );
+  const held = holders(w, s)
+    .filter((a) => a !== away)
+    .flatMap((a) =>
+      Array.from({ length: a.hp }, () =>
+        srdAsset(data, a.asset).attribute === 'force' ? r.forceMonster : r.militiaMonster,
+      ),
+    );
   return [...militia, ...held];
 }
 
@@ -126,7 +136,8 @@ export interface AssaultResult {
 }
 
 /**
- * One assault, every besieger in it but `share`, the asset the party fights alone. The walls may
+ * One assault, every besieger in it but `share`, the asset the party fights alone, and every
+ * holder's asset but `away`, the one it fights from the besiegers' side (Phase 23d). The walls may
  * turn it back first, as they did a raid (Major projects: Project kinds; Working effects).
  */
 export function assault(
@@ -134,6 +145,7 @@ export function assault(
   data: GameData,
   s: Siege,
   share: HeldAsset | null,
+  away: HeldAsset | null = null,
 ): AssaultResult {
   const town = locationName(data, s.town);
   const attacker = factionOf(data, s.attacker).name;
@@ -145,7 +157,7 @@ export function assault(
   const halve = walled(w, data, s);
   const sim = besiegers(w, data, s).filter((a) => a !== share);
   const attackers = sim.flatMap((a) => fightersOf(data, s.attacker, a, halve));
-  const defending = defenders(w, data, s);
+  const defending = defenders(w, data, s, away);
   if (attackers.length === 0) return { held: true, turned: false };
   const strike = strikesFor(w, data, s.attacker);
   if (defending.length === 0) {
@@ -168,7 +180,8 @@ export function assault(
   spread(w, data, s.attacker, sim, lost.attackers, null);
   // An assault lost costs the holder its overrun loss besides its own fighters (Sam's call).
   const toll = lost.holder + (held ? 0 : rules(data).overrun);
-  const hurt = spread(w, data, s.defender, holders(w, s), toll, s.town);
+  const kept = holders(w, s).filter((a) => a !== away);
+  const hurt = spread(w, data, s.defender, kept, toll, s.town);
   strike(s.defender, s.town, { hit: hurt.razed, dealt: hurt.dealt, razed: hurt.razed });
   news(w, `${attacker} storms ${town}; the defenders ${held ? 'hold' : 'are overrun'}.`);
   return { held, turned: false };

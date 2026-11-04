@@ -15,6 +15,7 @@ import { ProjectsPanel } from '../world/ProjectsPanel.tsx';
 import { WorkingsPanel } from '../world/WorkingsPanel.tsx';
 import { SettingPanel } from '../world/SettingPanel.tsx';
 import { raidedText } from '../../render/setting-view.ts';
+import { SidePanel } from './SidePanel.tsx';
 import { blockadeText, heldText, stormView } from '../../render/siege-view.ts';
 import { storm } from '../../game/world/storm.ts';
 import { PartyPanel } from '../world/PartyPanel.tsx';
@@ -119,6 +120,7 @@ export function TownScreen(props: {
           new characters.
         </p>
       )}
+      {!partyless && <SidePanel world={w} act={act} />}
       {stormable && !partyless && !w.encounter && (
         <section class="panel" aria-label="Storm the town">
           <p class="hint">

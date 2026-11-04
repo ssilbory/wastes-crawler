@@ -10,8 +10,11 @@ export const SiegeFightSchema = z.strictObject({
   attacker: IdSchema,
   /** The besieging asset the party faces. */
   uid: z.string(),
-  /** A held town stormed by the party alone (Phase 23b): its holder's asset, or `base`. */
-  kind: z.enum(['camp', 'enter', 'exit', 'assault', 'storm']),
+  /**
+   * A held town stormed by the party alone (Phase 23b): its holder's asset, or `base`. A breach is
+   * the party's share of an assault fought on the besiegers' side: the holder's asset, or `base`.
+   */
+  kind: z.enum(['camp', 'enter', 'exit', 'assault', 'storm', 'breach']),
 });
 export type SiegeFight = z.infer<typeof SiegeFightSchema>;
 
@@ -33,7 +36,15 @@ export const SiegeSchema = z.strictObject({
   pass: z.boolean(),
   /** The day the shop last stocked when it began: it sells only what it had. */
   stock: z.int().min(0),
-  /** The party's share of tonight's assault, until fought: whether the rest of it was lost. */
+  /**
+   * The side the party took in a siege between two rivals (Phase 23d): with the besiegers, the
+   * holder, or neither. Unset until it picks; a siege on or by the ally needs no pick.
+   */
+  side: z.enum(['attacker', 'defender', 'out']).optional(),
+  /**
+   * The party's share of tonight's assault, until fought: whether it is driven out after it (the
+   * assault lost by the side the party is on).
+   */
   gate: z.strictObject({ uid: z.string(), size: z.int().min(1), lost: z.boolean() }).nullable(),
 });
 export type Siege = z.infer<typeof SiegeSchema>;

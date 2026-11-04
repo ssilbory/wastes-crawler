@@ -3,12 +3,13 @@
 // share alone, against the sturdiest besieger's patrol group, while the rest is simulated. The
 // party enters or leaves a besieged settlement, or attacks a camp, only by beating a camp's group,
 // which destroys that asset; either joins the siege and brings the first assault at once. An
-// assault lost with the party inside drives it to a hex beside the town, strained. The ally's own
-// sieges of a town held against it (Phase 23b) the party joins from inside, storming the town.
+// assault lost with the party inside drives it to a hex beside the town, strained. In the ally's own
+// siege of a town held against it (Phase 23b), or a rival's the party sided with (Phase 23d), the
+// party inside fights the holder's sturdiest asset instead, and the lines don't bar its way.
 import type { Siege, SiegeFight } from '../../data/schemas/index.ts';
 import { hexKey, type Hex } from '../../rules/hex.ts';
 import { assault, groupOf, halveRows, walled } from '../factions/assault.ts';
-import { hurtAsset } from '../factions/combat.ts';
+import { hurtAsset, hurtBase } from '../factions/combat.ts';
 import { reclaimAll } from '../factions/capture.ts';
 import { besiegers, campHexes, pitchCamps, settle } from '../factions/siege.ts';
 import { assetName, factionOf, locationName, type HeldAsset } from '../factions/state.ts';
@@ -16,17 +17,17 @@ import type { GameData } from '../character/context.ts';
 import type { WorldEvent } from './bus.ts';
 import { meetGroup } from './encounters.ts';
 import { addMemberStrain, alive, note } from './members.ts';
-import { partyIn, settlementOf } from './siege-state.ts';
-import { stormWon } from './storm.ts';
+import { partyIn, partySide, settlementOf } from './siege-state.ts';
+import { holdTarget, stormWon } from './storm.ts';
 import type { World } from './types.ts';
 
 const rules = (data: GameData) => data.content.siegeRules;
 
 /**
- * Whether the party stands against the siege's attacker: every siege but the ally's own, whose
- * lines let the party through and whose assaults it joins by storming the town (storm.ts).
+ * Whether the party stands against the siege's attacker, its lines barring the party's way: a
+ * siege on the ally, or a rival's siege the party took the holder's side in (Phase 23d).
  */
-const opposed = (data: GameData, s: Siege) => s.attacker !== rules(data).ally;
+const opposed = (data: GameData, s: Siege) => partySide(data, s) === 'defender';
 
 const find = (w: World, f: SiegeFight) =>
   w.sieges.find((s) => s.town === f.town && s.attacker === f.attacker);
@@ -81,23 +82,45 @@ function driveOut(w: World, data: GameData, s: Siege, strained: boolean): void {
 /** The sturdiest besieger, whose group the party fights in an assault; a siege still on has one. */
 const sturdiest = (assets: HeldAsset[]) => assets.reduce((a, b) => (b.hp > a.hp ? b : a));
 
-/** Tonight's assault, if due. */
+/**
+ * Tonight's assault, if due. A party inside on the holder's side fights the sturdiest besieger's
+ * group; on the besiegers' side (Phase 23d), the holder's sturdiest asset or its base's guard.
+ */
 function assaultDue(w: World, data: GameData, s: Siege): void {
   if (s.gate && !w.encounter) s.gate = null;
   if (w.day < s.next) return;
   s.next = w.day + 1;
-  const inside = partyIn(w, data, s.town) && opposed(data, s);
-  const share = inside && !w.encounter ? sturdiest(besiegers(w, data, s)) : null;
-  const r = assault(w, data, s, share);
+  const side = partySide(data, s);
+  const inside = partyIn(w, data, s.town) && (side === 'defender' || side === 'attacker');
+  const free = inside && !w.encounter;
+  const share = free && side === 'defender' ? sturdiest(besiegers(w, data, s)) : null;
+  const hold = free && side === 'attacker' ? holdTarget(w, data, s.town, s.defender) : null;
+  const away = w.factions[s.defender]?.assets.find((a) => a.uid === hold?.uid) ?? null;
+  const r = assault(w, data, s, share, away);
   if (inside) s.joined = true;
   if (r.turned) return;
   const ended = settle(w, data, s);
+  // The party's side lost the night: the town overrun, or the assault thrown back.
+  const lost = side === 'defender' ? !r.held : r.held;
   if (share && !ended && share.hp > 0) {
     const group = groupOf(data, s.attacker, share);
     const rows = walled(w, data, s) ? halveRows(group) : group;
-    s.gate = { uid: share.uid, size: rows.flat().length, lost: !r.held };
+    s.gate = { uid: share.uid, size: rows.flat().length, lost };
     fight(w, data, s, share, 'assault', rows, `${name(data, s, share)} storms the gates!`);
-  } else if (inside && !r.held) driveOut(w, data, s, true);
+  } else if (hold && !ended) {
+    // The holder's asset sat the night out, and its base can't fall while the siege goes on.
+    s.gate = { uid: hold.uid, size: hold.rows.flat().length, lost };
+    const e = meetGroup(
+      w,
+      data,
+      hold.rows,
+      'hostile',
+      null,
+      null,
+      `The party falls on ${hold.name}!`,
+    );
+    e.siege = { town: s.town, attacker: s.attacker, uid: hold.uid, kind: 'breach' };
+  } else if (inside && lost) driveOut(w, data, s, true);
 }
 
 /** Arriving at a besieged town: through the lines with a pass, else a camp's group bars the way. */
@@ -160,6 +183,10 @@ export function breakOut(w: World, data: GameData): boolean {
 /** A won siege fight: a camp's group beaten destroys its asset; the party's share costs its own. */
 function won(w: World, data: GameData, f: SiegeFight): void {
   const s = find(w, f);
+  if (s && f.kind === 'breach') {
+    breached(w, data, s, f.uid);
+    return;
+  }
   const held = assetOf(w, f);
   if (!s || !held) return;
   if (f.kind === 'assault') {
@@ -178,12 +205,23 @@ function won(w: World, data: GameData, f: SiegeFight): void {
   settle(w, data, s);
 }
 
+/** The party's share on the besiegers' side beaten: a hit point of the holder's a fighter. */
+function breached(w: World, data: GameData, s: Siege, uid: string): void {
+  // A share whose night has been cleared away costs nothing more.
+  if (!s.gate) return;
+  const size = s.gate.size;
+  const held = w.factions[s.defender]?.assets.find((a) => a.uid === uid);
+  if (held) hurtAsset(w, data, s.defender, held, size);
+  if (uid === 'base') hurtBase(w, data, s.defender, s.town, size);
+  settle(w, data, s);
+}
+
 /** A siege fight over, won or not: turned back from the gates, or caught in a lost assault. */
 function over(w: World, data: GameData, f: SiegeFight, won: boolean): void {
   const s = find(w, f);
   if (!s) return;
   if (f.kind === 'enter' && !won) driveOut(w, data, s, false);
-  if (f.kind !== 'assault') return;
+  if (f.kind !== 'assault' && f.kind !== 'breach') return;
   const lost = s.gate?.lost === true;
   s.gate = null;
   if (lost && partyIn(w, data, s.town)) driveOut(w, data, s, true);

@@ -9,7 +9,7 @@ import { raidedCost } from '../../../src/game/world/town-prices.ts';
 import type { World } from '../../../src/game/world/types.ts';
 import { heldText, siegeLines, stormView } from '../../../src/render/siege-view.ts';
 import { data, encounter } from './helpers.ts';
-import { HILLS, heldTown, LANTERNFALL } from './siege-helpers.ts';
+import { HILLS, heldTown } from './siege-helpers.ts';
 
 const holder = (w: World) => w.factions.warhost?.assets ?? [];
 const won = (uid: string) =>
@@ -121,16 +121,25 @@ describe('storming a held settlement (Sam’s call: the party may retake it alon
   });
 });
 
-describe('the ally’s own siege of a held settlement, with the party inside', () => {
-  it('gives the party no share, no gate fight, and no camps to fall on', () => {
+describe('the ally’s own siege of a held settlement, with the party inside (Phase 23d)', () => {
+  it('gives the party the holder’s sturdiest asset to fight, and no lines or camps to fight', () => {
     const w = heldTown();
     for (const a of w.factions.settlements?.assets ?? []) a.at = 'lanternfall';
+    // A sturdy base, so the night's assault can't end the siege first.
+    const base = w.factions.warhost?.bases.find((b) => b.at === 'lanternfall');
+    if (base) Object.assign(base, { hp: 20, max: 20 });
     pickGoal(w, data, 'settlements', 0);
     const s = beginSiege(w, data, 'settlements', 'lanternfall', 'warhost');
     s.next = w.day;
     emit(w, data, { kind: 'day-passed' });
-    expect(w.encounter?.siege?.kind).not.toBe('assault');
-    expect(w.position).toEqual(LANTERNFALL);
+    expect(w.encounter?.siege).toEqual({
+      town: 'lanternfall',
+      attacker: 'settlements',
+      uid: 'a1',
+      kind: 'breach',
+    });
+    expect(w.log.at(-1)).toContain("The party falls on Grisk's Warhost's Beastman Warband!");
+    expect(s.gate).toMatchObject({ uid: 'a1', size: 4 });
     w.encounter = null;
     emit(w, data, { kind: 'town-entered', town: 'lanternfall' });
     expect(w.encounter).toBeNull();

@@ -80,7 +80,10 @@ export function beginSiege(
   const at = settlementOf(data, town);
   if (!at) throw new Error(`no settlement ${town}`);
   const delay = Math.max(rules(data).firstAssault, workingAt(w, data, 'raid-warning', town));
-  const inside = partyIn(w, data, town);
+  const here = partyIn(w, data, town);
+  const ally = rules(data).ally;
+  // A party inside is in a siege on or by the ally at once; a rivals' siege waits on its pick.
+  const inside = here && (attacker === ally || defender === ally);
   const s: Siege = {
     town,
     attacker,
@@ -101,6 +104,7 @@ export function beginSiege(
       w,
       `${text} ${inside ? 'The assault comes tonight.' : `The first assault comes in ${delay} days.`}`,
     );
+  else if (here) note(w, `${text} The party may take a side, or keep out of it.`);
   else news(w, text);
   return s;
 }

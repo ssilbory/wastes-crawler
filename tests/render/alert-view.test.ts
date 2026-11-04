@@ -227,6 +227,27 @@ describe('the capture notices (Phase 23b)', () => {
       { kind: 'siege', title: 'Freed: Lanternfall', text: 'Lanternfall is free again.' },
     ]);
   });
+
+  it('tells of a held settlement changing hands, not of it freed (Phase 23d)', () => {
+    const w = world();
+    startFactions(w, data);
+    const free = w.factions.settlements;
+    const warhost = w.factions.warhost;
+    const bastion = w.factions.bastion;
+    if (!free || !warhost || !bastion) throw new Error('no factions');
+    free.bases = free.bases.filter((b) => b.at !== 'lanternfall');
+    warhost.bases.push({ at: 'lanternfall', hp: 1, max: 2 });
+    const held = alertSnapshot(w, data);
+    warhost.bases = warhost.bases.filter((b) => b.at !== 'lanternfall');
+    bastion.bases.push({ at: 'lanternfall', hp: 1, max: 2 });
+    expect(alertsSince(held, w, data)).toEqual([
+      {
+        kind: 'siege',
+        title: 'Changed hands: Lanternfall',
+        text: "The Dawnwall Bastion takes Lanternfall from Grisk's Warhost. Only its shop and inn still serve the party.",
+      },
+    ]);
+  });
 });
 
 describe('the strain window (Sam’s ask)', () => {

@@ -138,3 +138,29 @@ test('waits free at an ally’s inn for a siege (Phase 23c)', async ({ page }) =
   await expect(log).toContainText(/the wait ends|ends the wait/);
   await expect(page.getByText('Purse: 100')).toBeVisible();
 });
+
+test('picks a side in a rivals’ siege of a held settlement (Phase 23d)', async ({ page }) => {
+  await startWorld(page);
+  await edit(
+    page,
+    `Object.assign(save, { region: 'dark-lands', elsewhere: { borderlands: save.visited },
+      visited: ['6,12', '10,4'], position: { col: 10, row: 4 }, day: 29, purse: 100 });
+     const free = save.factions.settlements;
+     free.assets = free.assets.filter((a) => a.at !== 'lanternfall');
+     free.bases = free.bases.filter((b) => b.at !== 'lanternfall');
+     save.factions.warhost.bases.push({ at: 'lanternfall', hp: 20, max: 20 });
+     save.factions.bastion.assets.push({ uid: 'b9', asset: 'infantry', at: 'lanternfall', hp: 6 });
+     save.sieges = [{ town: 'lanternfall', attacker: 'bastion', defender: 'warhost', began: 28,
+       next: 35, camps: [], joined: false, pass: false, stock: 0, gate: null }];`,
+  );
+  await page.getByRole('button', { name: 'Visit Lanternfall' }).click();
+  const sides = page.getByRole('region', { name: 'Take a side' });
+  await expect(sides).toContainText(
+    "The Dawnwall Bastion besieges the town, held by Grisk's Warhost.",
+  );
+  await sides.getByRole('button', { name: 'Keep out of it' }).click();
+  await expect(sides).toHaveCount(0);
+  await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
+    'The party keeps out of the siege of Lanternfall.',
+  );
+});

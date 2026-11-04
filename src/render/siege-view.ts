@@ -4,6 +4,7 @@ import { besiegers } from '../game/factions/siege.ts';
 import { factionOf, locationName } from '../game/factions/state.ts';
 import type { GameData } from '../game/character/context.ts';
 import { allyTowns, besieged, holderOf, settlementOf } from '../game/world/siege-state.ts';
+import { undecided } from '../game/world/siege-sides.ts';
 import { stormTarget } from '../game/world/storm.ts';
 import type { World } from '../game/world/types.ts';
 import type { Hex } from '../rules/hex.ts';
@@ -21,10 +22,15 @@ export function siegeLines(w: World, data: GameData): string[] {
     ...w.sieges.map((s) => {
       const camps = besiegers(w, data, s).length;
       const fought = s.joined ? ' The party has fought in it.' : '';
-      return `${factionOf(data, s.attacker).name} besieges ${locationName(data, s.town)}, held by ${factionOf(data, s.defender).name}, with ${camps} camp${camps === 1 ? '' : 's'}: the next assault comes at the end of day ${Math.max(s.next, w.day) + 1}.${fought}`;
+      const sided = s.side ? sideText(data, s.side === 'out' ? null : s[s.side]) : '';
+      return `${factionOf(data, s.attacker).name} besieges ${locationName(data, s.town)}, held by ${factionOf(data, s.defender).name}, with ${camps} camp${camps === 1 ? '' : 's'}: the next assault comes at the end of day ${Math.max(s.next, w.day) + 1}.${fought}${sided}`;
     }),
   ];
 }
+
+/** The side the party took in a rivals' siege (Phase 23d), or that it keeps out of it. */
+const sideText = (data: GameData, with_: string | null) =>
+  with_ ? ` The party sides with ${factionOf(data, with_).name}.` : ' The party keeps out of it.';
 
 /** The besiegers' camps on the party's map, named for the map's tooltips. */
 export function campMarkers(w: World, data: GameData): (Hex & { name: string })[] {
@@ -56,3 +62,18 @@ export function stormView(w: World, data: GameData): { name: string; fighters: n
   const t = stormTarget(w, data);
   return t ? { name: t.name, fighters: t.rows.flat().length } : null;
 }
+
+/** A rivals' siege of the party's town it may take a side in (Phase 23d). */
+export interface SideChoice {
+  attacker: string;
+  besiegers: string;
+  holder: string;
+}
+
+/** The rivals' sieges of the town the party stands in, each a side to pick. */
+export const sideChoices = (w: World, data: GameData): SideChoice[] =>
+  undecided(w, data).map((s) => ({
+    attacker: s.attacker,
+    besiegers: factionOf(data, s.attacker).name,
+    holder: factionOf(data, s.defender).name,
+  }));

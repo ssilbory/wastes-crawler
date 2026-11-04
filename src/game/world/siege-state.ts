@@ -60,3 +60,14 @@ export function holderOf(w: World, data: GameData, town: string): string | null 
   );
   return holder ? holder[0] : null;
 }
+
+/**
+ * The side the party is on in a siege (Phase 23d): against a siege on the ally, with the ally's
+ * own, and in one between two rivals the side it picked; null until it picks.
+ */
+export function partySide(data: GameData, s: Siege): 'attacker' | 'defender' | 'out' | null {
+  const ally = data.content.siegeRules.ally;
+  if (s.attacker === ally) return 'attacker';
+  if (s.defender === ally) return 'defender';
+  return s.side ?? null;
+}

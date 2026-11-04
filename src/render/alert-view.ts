@@ -197,22 +197,31 @@ const heldKeys = (w: World, data: GameData) =>
     return holder ? [`${town}:${holder}`] : [];
   });
 
-/** An ally's settlement taken, or taken back (Phase 23b). */
+/** An ally's settlement taken, taken back, or taken by one holder from another (Phase 23b, 23d). */
 function heldAlerts(before: AlertSnapshot, w: World, data: GameData): Alert[] {
   const now = heldKeys(w, data);
-  const name = (key: string) => locationName(data, key.slice(0, key.indexOf(':')));
+  const town = (key: string) => key.slice(0, key.indexOf(':'));
+  const holder = (key: string) => factionOf(data, key.slice(key.indexOf(':') + 1)).name;
+  const name = (key: string) => locationName(data, town(key));
+  const was = (key: string) => before.held.find((k) => town(k) === town(key));
   const taken = now
     .filter((k) => !before.held.includes(k))
     .map((k): Alert => {
-      const holder = factionOf(data, k.slice(k.indexOf(':') + 1)).name;
-      return {
-        kind: 'siege',
-        title: `Captured: ${name(k)}`,
-        text: `${holder} now holds ${name(k)}. Only its shop and inn still serve the party.`,
-      };
+      const from = was(k);
+      return from
+        ? {
+            kind: 'siege',
+            title: `Changed hands: ${name(k)}`,
+            text: `${holder(k)} takes ${name(k)} from ${holder(from)}. Only its shop and inn still serve the party.`,
+          }
+        : {
+            kind: 'siege',
+            title: `Captured: ${name(k)}`,
+            text: `${holder(k)} now holds ${name(k)}. Only its shop and inn still serve the party.`,
+          };
     });
   const freed = before.held
-    .filter((k) => !now.includes(k))
+    .filter((k) => !now.some((n) => town(n) === town(k)))
     .map((k): Alert => ({
       kind: 'siege',
       title: `Freed: ${name(k)}`,
