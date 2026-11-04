@@ -12,5 +12,6 @@
   "overrun": 2,
   "strain": 3,
   "renown": 2,
-  "surcharge": 0.5
+  "surcharge": 0.5,
+  "heldPrice": 2
 }

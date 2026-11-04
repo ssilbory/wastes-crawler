@@ -67,3 +67,25 @@ export const undefended = (w: World) => {
   if (!free) throw new Error('no settlements');
   free.assets = free.assets.filter((a) => a.at !== 'lanternfall');
 };
+
+/**
+ * Lanternfall held by Grisk's Warhost (Phase 23b): the Free Settlements' base and farms there gone,
+ * the warband standing in it, and the party inside unless asked to stand elsewhere.
+ */
+export function heldTown(at = LANTERNFALL): World {
+  const w = world();
+  enterRegion(w, 'dark-lands', HILLS);
+  startFactions(w, data);
+  pickGoal(w, data, 'warhost', 0);
+  const free = w.factions.settlements;
+  const holder = w.factions.warhost;
+  if (!free || !holder) throw new Error('no factions');
+  free.assets = free.assets.filter((a) => a.at !== 'lanternfall');
+  free.bases = free.bases.filter((b) => b.at !== 'lanternfall');
+  holder.bases.push({ at: 'lanternfall', hp: 2, max: 2 });
+  const band = holder.assets.find((a) => a.asset === 'infantry');
+  if (band) band.at = 'lanternfall';
+  w.position = { ...at };
+  w.rng = createRng('held');
+  return w;
+}

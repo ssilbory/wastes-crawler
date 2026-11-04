@@ -10,7 +10,8 @@ export const SiegeFightSchema = z.strictObject({
   attacker: IdSchema,
   /** The besieging asset the party faces. */
   uid: z.string(),
-  kind: z.enum(['camp', 'enter', 'exit', 'assault']),
+  /** A held town stormed by the party alone (Phase 23b): its holder's asset, or `base`. */
+  kind: z.enum(['camp', 'enter', 'exit', 'assault', 'storm']),
 });
 export type SiegeFight = z.infer<typeof SiegeFightSchema>;
 

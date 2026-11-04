@@ -11,7 +11,7 @@ import type { GameData } from '../character/context.ts';
 import { regionMap } from './region.ts';
 import { tradePercent } from './trade.ts';
 import type { World } from './types.ts';
-import { besieged } from './siege-state.ts';
+import { besieged, holderOf } from './siege-state.ts';
 
 export const FULL_RATIONS = RESOURCE_DICE[RESOURCE_DICE.length - 1] as 12;
 
@@ -68,8 +68,13 @@ export function spend(w: World, data: GameData, listed: number): boolean {
 /** Whether a settlement's prices are up after a sacking. */
 export const isRaided = (w: World, town: string) => (w.raided[town] ?? -1) > w.day;
 
-/** The surcharge on top of `cost` in a town sacked or besieged (Sieges: Blockade); they don't stack. */
+/**
+ * The surcharge on top of `cost` in a town sacked or besieged (Sieges: Blockade), or the held
+ * town's price (A held settlement, Phase 23b); none of them stack, the dearest counting.
+ */
 export function raidedCost(w: World, data: GameData, town: string, cost: number): number {
+  const rules = data.content.siegeRules;
+  if (holderOf(w, data, town)) return toTenths(cost * rules.heldPrice);
   const up = isRaided(w, town) || besieged(w, town);
-  return up ? toTenths(cost * (1 + data.content.siegeRules.surcharge)) : cost;
+  return up ? toTenths(cost * (1 + rules.surcharge)) : cost;
 }

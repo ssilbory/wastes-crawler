@@ -4,13 +4,7 @@ import { enterRegion } from '../../../src/game/world/enter-region.ts';
 import { WORLD_MIGRATIONS } from '../../../src/game/world/save-migrations.ts';
 import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
 import { shopStock } from '../../../src/game/world/shop-stock.ts';
-import {
-  besieged,
-  partyIn,
-  settlementOf,
-  siegeHere,
-  siegesOf,
-} from '../../../src/game/world/siege-state.ts';
+import { besieged, partyIn, settlementOf, siegesOf } from '../../../src/game/world/siege-state.ts';
 import { priceHere, raidedCost } from '../../../src/game/world/town-prices.ts';
 import type { World } from '../../../src/game/world/types.ts';
 import { data, encounter, siege, world } from './helpers.ts';
@@ -28,12 +22,12 @@ function inCinderhold(): World {
 describe('a besieged settlement (docs/rules-adaptation.md, Sieges: Blockade)', () => {
   it('knows its sieges, and whether the party stands in one', () => {
     const w = inCinderhold();
-    expect([besieged(w, 'cinderhold'), siegeHere(w, data)]).toEqual([false, undefined]);
+    expect(besieged(w, 'cinderhold')).toBe(false);
     const s = siege();
     w.sieges = [s, siege({ town: 'gutterwick' })];
     expect(besieged(w, 'cinderhold')).toBe(true);
     expect(siegesOf(w, 'cinderhold')).toEqual([s]);
-    expect(siegeHere(w, data)).toBe(s);
+    expect(partyIn(w, data, 'cinderhold')).toBe(true);
     expect(settlementOf(data, 'cinderhold')).toMatchObject({ region: 'dark-lands' });
     expect(settlementOf(data, 'dawnwall')).toBeUndefined();
     expect(partyIn(w, data, 'dawnwall')).toBe(false);

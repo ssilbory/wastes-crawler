@@ -26,6 +26,7 @@ import {
 } from './actions.ts';
 import { checkGoal, pickGoal, weakestBase } from './goals.ts';
 import { patrolBeaten } from './patrols.ts';
+import { growBases, retakeGoal } from './capture.ts';
 import { hurtAsset } from './combat.ts';
 import { strikesFor } from './strikes.ts';
 import {
@@ -103,6 +104,9 @@ export function factionTurn(w: World, data: GameData): void {
     if (!s.goal) pickGoal(w, data, id, 0);
     s.treasure += factionIncome(ratings(s));
     assetIncome(w, data, s);
+    // Bases taken or retaken are bought up, and a held settlement of the ally's comes first for it.
+    growBases(s);
+    if (id === data.content.siegeRules.ally) retakeGoal(w, data);
     const onStrike = strikesFor(w, data, id);
     // A strike over a project pushed through it, or help it promised, takes the action.
     const attacked = projectTurn(w, data, id) ? false : takeAction(w, data, id, onStrike);

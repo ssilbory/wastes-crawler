@@ -7,6 +7,7 @@ import { memberSheet } from '../game/world/members.ts';
 import type { World } from '../game/world/types.ts';
 import { questStatus } from './quest-view.ts';
 import { allied } from '../game/factions/siege.ts';
+import { allyTowns, holderOf } from '../game/world/siege-state.ts';
 import { factionOf, locationName } from '../game/factions/state.ts';
 
 export type AlertSnapshot = {
@@ -19,6 +20,8 @@ export type AlertSnapshot = {
   logLength: number;
   /** The sieges under way, as town:attacker (Phase 23a). */
   sieges: string[];
+  /** The ally's settlements held against it, as town:holder (Phase 23b). */
+  held: string[];
 };
 
 export type Alert = { kind: 'strain' | 'quest' | 'inn' | 'siege'; title: string; text: string };
@@ -74,7 +77,7 @@ export function addAlerts(
 
 const timeOf = (w: World) => `${w.day}:${w.quarter}:${w.dungeon?.turn ?? ''}`;
 
-export function alertSnapshot(w: World): AlertSnapshot {
+export function alertSnapshot(w: World, data: GameData): AlertSnapshot {
   return {
     time: timeOf(w),
     members: Object.fromEntries(
@@ -89,6 +92,7 @@ export function alertSnapshot(w: World): AlertSnapshot {
     performedDay: w.performedDay,
     logLength: w.log.length,
     sieges: w.sieges.map(siegeKey),
+    held: heldKeys(w, data),
   };
 }
 
@@ -99,6 +103,7 @@ export function alertsSince(before: AlertSnapshot, w: World, data: GameData): Al
     ...questAlerts(before, w, data),
     ...innAlerts(before, w),
     ...siegeAlerts(before, w, data),
+    ...heldAlerts(before, w, data),
   ];
 }
 
@@ -183,4 +188,35 @@ function siegeAlerts(before: AlertSnapshot, w: World, data: GameData): Alert[] {
       title: `Siege: ${locationName(data, s.town)}`,
       text: `${factionOf(data, s.attacker).name} besieges ${locationName(data, s.town)}, held by ${factionOf(data, s.defender).name}. The first assault comes at the end of day ${s.next + 1}.`,
     }));
+}
+
+/** The ally's settlements held against it, as town:holder. */
+const heldKeys = (w: World, data: GameData) =>
+  allyTowns(data).flatMap((town) => {
+    const holder = holderOf(w, data, town);
+    return holder ? [`${town}:${holder}`] : [];
+  });
+
+/** An ally's settlement taken, or taken back (Phase 23b). */
+function heldAlerts(before: AlertSnapshot, w: World, data: GameData): Alert[] {
+  const now = heldKeys(w, data);
+  const name = (key: string) => locationName(data, key.slice(0, key.indexOf(':')));
+  const taken = now
+    .filter((k) => !before.held.includes(k))
+    .map((k): Alert => {
+      const holder = factionOf(data, k.slice(k.indexOf(':') + 1)).name;
+      return {
+        kind: 'siege',
+        title: `Captured: ${name(k)}`,
+        text: `${holder} now holds ${name(k)}. Only its shop and inn still serve the party.`,
+      };
+    });
+  const freed = before.held
+    .filter((k) => !now.includes(k))
+    .map((k): Alert => ({
+      kind: 'siege',
+      title: `Freed: ${name(k)}`,
+      text: `${name(k)} is free again.`,
+    }));
+  return [...taken, ...freed];
 }

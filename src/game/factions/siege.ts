@@ -12,6 +12,7 @@ import { partyIn, settlementOf } from '../world/siege-state.ts';
 import { currentLedger } from '../world/town-prices.ts';
 import type { World } from '../world/types.ts';
 import { workingAt } from '../world/working-effects.ts';
+import { capture, reclaim, retaken } from './capture.ts';
 import { factionOf, hasDamage, locationName, news, type HeldAsset } from './state.ts';
 
 const rules = (data: GameData) => data.content.siegeRules;
@@ -120,6 +121,9 @@ export function settle(w: World, data: GameData, s: Siege): 'lifted' | 'fallen' 
   const town = locationName(data, s.town);
   if (end === 'fallen') {
     note(w, `${town} falls to ${factionOf(data, s.attacker).name}.`);
+    // The ally's settlement is taken (Capture), or, the holder driven out, the ally returns.
+    if (!capture(w, data, s.attacker, s.town) && reclaim(w, data, s.town) && s.joined)
+      retaken(w, data, s.town);
     return end;
   }
   note(w, `The siege of ${town} is lifted.`);

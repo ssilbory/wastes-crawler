@@ -28,7 +28,7 @@ export function useAlerts() {
   const [shown, setShown] = useState<Shown[]>([]);
   const track = (w: World, fresh = false) => {
     const before = last.current;
-    last.current = alertSnapshot(w);
+    last.current = alertSnapshot(w, data);
     if (fresh || !before) return;
     const found = alertsSince(before, w, data);
     if (found.length === 0) return;

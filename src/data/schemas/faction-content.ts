@@ -97,7 +97,15 @@ export const FactionStateSchema = z.strictObject({
   hp: z.int().min(0),
   treasure: z.int().min(0),
   xp: z.int().min(0),
-  bases: z.array(z.strictObject({ at: IdSchema, hp: z.int().min(1), max: z.int().min(1) })),
+  bases: z.array(
+    z.strictObject({
+      at: IdSchema,
+      hp: z.int().min(1),
+      max: z.int().min(1),
+      /** A base taken or retaken in a siege, still bought up to its size (Phase 23b). */
+      growing: z.boolean().optional(),
+    }),
+  ),
   assets: z.array(
     z.strictObject({ uid: z.string().min(1), asset: IdSchema, at: IdSchema, hp: z.int().min(1) }),
   ),

@@ -27,9 +27,8 @@ async function nightAtTheInn(page: Page) {
   await page.getByRole('button', { name: 'Back to the map' }).click();
 }
 
-test('follows the factions month by month, and hears of a Bastion siege', async ({
-  page,
-}, testInfo) => {
+/** Starts a world with Snag and Grukk in front, on the factions seed. */
+async function startWorld(page: Page) {
   await page.goto('/#/arena');
   await page.getByLabel('Import character files').setInputFiles(starters);
   await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(
@@ -44,6 +43,12 @@ test('follows the factions month by month, and hears of a Bastion siege', async 
   await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('factions-e2e');
   await page.getByRole('button', { name: 'Start a new world' }).click();
   await page.getByRole('button', { name: 'Begin the journey' }).click();
+}
+
+test('follows the factions month by month, and hears of a Bastion siege', async ({
+  page,
+}, testInfo) => {
+  await startWorld(page);
   // The Borderlands have no factions.
   await expect(page.getByRole('region', { name: 'Factions' })).toHaveCount(0);
   await edit(
@@ -86,4 +91,32 @@ test('follows the factions month by month, and hears of a Bastion siege', async 
   await expect(
     page.locator('use.camp', { hasText: "The Dawnwall Bastion's camp before Cinderhold" }),
   ).toHaveCount(1);
+});
+
+test('storms a held settlement, with only its shop and inn open (Phase 23b)', async ({ page }) => {
+  await startWorld(page);
+  await edit(
+    page,
+    `Object.assign(save, { region: 'dark-lands', elsewhere: { borderlands: save.visited },
+      visited: ['6,12'], position: { col: 6, row: 12 }, day: 29, purse: 100 });`,
+  );
+  // The month turns, and the warhost picks its goal.
+  await nightAtTheInn(page);
+  await edit(
+    page,
+    `save.sieges = []; save.position = { col: 10, row: 4 }; save.visited.push('10,4');
+     const free = save.factions.settlements;
+     free.assets = free.assets.filter((a) => a.at !== 'lanternfall');
+     free.bases = free.bases.filter((b) => b.at !== 'lanternfall');
+     save.factions.warhost.bases.push({ at: 'lanternfall', hp: 2, max: 2 });
+     save.factions.warhost.assets.push({ uid: 'held1', asset: 'infantry', at: 'lanternfall', hp: 6 });`,
+  );
+  await page.getByRole('button', { name: 'Visit Lanternfall' }).click();
+  await expect(page.getByRole('tab')).toHaveCount(2);
+  await expect(page.getByRole('tab', { name: 'Inn and healer' })).toBeVisible();
+  await expect(page.getByText("Held by Grisk's Warhost: shop and inn only")).toBeVisible();
+  const storm = page.getByRole('region', { name: 'Storm the town' });
+  await expect(storm).toContainText("Grisk's Warhost's Beastman Warband (4 fighters)");
+  await storm.getByRole('button', { name: "Storm Grisk's Warhost's Beastman Warband" }).click();
+  await expect(page.getByRole('heading', { name: 'To arms' })).toBeVisible();
 });

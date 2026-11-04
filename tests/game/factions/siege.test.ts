@@ -155,7 +155,9 @@ describe('sieges (docs/rules-adaptation.md, Sieges)', () => {
     expect(settle(w, data, s)).toBeNull();
     free.bases = free.bases.filter((b) => b.at !== 'lanternfall');
     expect(settle(w, data, s)).toBe('fallen');
-    expect(w.log.at(-1)).toContain("Lanternfall falls to Grisk's Warhost.");
+    expect(w.log.join('\n')).toContain("Lanternfall falls to Grisk's Warhost.");
+    // The warhost holds it now (capture.ts).
+    expect(w.log.at(-1)).toContain("Grisk's Warhost now holds Lanternfall.");
     expect(w.sieges).toEqual([]);
   });
 });

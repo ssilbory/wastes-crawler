@@ -52,6 +52,8 @@ export const SiegeRulesSchema = z.strictObject({
   strain: z.int().min(0),
   /** Renown for an ally's siege lifted after the party fought in it. */
   renown: z.int().min(0),
+  /** A held settlement's shop and inn charge this many times their price (Phase 23b). */
+  heldPrice: z.number().min(1),
   /** A sacked or besieged settlement's prices rise by this fraction. */
   surcharge: z.number().min(0),
 });

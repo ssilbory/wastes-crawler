@@ -3,21 +3,30 @@
 // share alone, against the sturdiest besieger's patrol group, while the rest is simulated. The
 // party enters or leaves a besieged settlement, or attacks a camp, only by beating a camp's group,
 // which destroys that asset; either joins the siege and brings the first assault at once. An
-// assault lost with the party inside drives it to a hex beside the town, strained.
+// assault lost with the party inside drives it to a hex beside the town, strained. The ally's own
+// sieges of a town held against it (Phase 23b) the party joins from inside, storming the town.
 import type { Siege, SiegeFight } from '../../data/schemas/index.ts';
 import { hexKey, type Hex } from '../../rules/hex.ts';
 import { assault, groupOf, halveRows, walled } from '../factions/assault.ts';
 import { hurtAsset } from '../factions/combat.ts';
+import { reclaimAll } from '../factions/capture.ts';
 import { besiegers, campHexes, pitchCamps, settle } from '../factions/siege.ts';
 import { assetName, factionOf, locationName, type HeldAsset } from '../factions/state.ts';
 import type { GameData } from '../character/context.ts';
 import type { WorldEvent } from './bus.ts';
 import { meetGroup } from './encounters.ts';
 import { addMemberStrain, alive, note } from './members.ts';
-import { partyIn, settlementOf, siegeHere } from './siege-state.ts';
+import { partyIn, settlementOf } from './siege-state.ts';
+import { stormWon } from './storm.ts';
 import type { World } from './types.ts';
 
 const rules = (data: GameData) => data.content.siegeRules;
+
+/**
+ * Whether the party stands against the siege's attacker: every siege but the ally's own, whose
+ * lines let the party through and whose assaults it joins by storming the town (storm.ts).
+ */
+const opposed = (data: GameData, s: Siege) => s.attacker !== rules(data).ally;
 
 const find = (w: World, f: SiegeFight) =>
   w.sieges.find((s) => s.town === f.town && s.attacker === f.attacker);
@@ -77,7 +86,7 @@ function assaultDue(w: World, data: GameData, s: Siege): void {
   if (s.gate && !w.encounter) s.gate = null;
   if (w.day < s.next) return;
   s.next = w.day + 1;
-  const inside = partyIn(w, data, s.town);
+  const inside = partyIn(w, data, s.town) && opposed(data, s);
   const share = inside && !w.encounter ? sturdiest(besiegers(w, data, s)) : null;
   const r = assault(w, data, s, share);
   if (inside) s.joined = true;
@@ -93,7 +102,7 @@ function assaultDue(w: World, data: GameData, s: Siege): void {
 
 /** Arriving at a besieged town: through the lines with a pass, else a camp's group bars the way. */
 function arrive(w: World, data: GameData, town: string): void {
-  const s = w.sieges.find((x) => x.town === town);
+  const s = w.sieges.find((x) => x.town === town && opposed(data, x));
   if (!s || w.encounter) return;
   join(w, s);
   if (s.pass) {
@@ -115,7 +124,7 @@ function attackCamp(w: World, data: GameData): void {
   if (w.encounter || w.dungeon) return;
   for (const s of w.sieges) {
     const at = settlementOf(data, s.town);
-    if (at?.region !== w.region) continue;
+    if (at?.region !== w.region || !opposed(data, s)) continue;
     const camp = s.camps.find((c) => c.col === w.position.col && c.row === w.position.row);
     const held = camp && w.factions[s.attacker]?.assets.find((a) => a.uid === camp.uid);
     if (!held) continue;
@@ -131,7 +140,7 @@ function attackCamp(w: World, data: GameData): void {
  * Returns whether the march must wait for it.
  */
 export function breakOut(w: World, data: GameData): boolean {
-  const s = siegeHere(w, data);
+  const s = w.sieges.find((x) => partyIn(w, data, x.town) && opposed(data, x));
   if (!s || w.encounter) return false;
   if (s.pass) {
     s.pass = false;
@@ -183,6 +192,8 @@ function over(w: World, data: GameData, f: SiegeFight, won: boolean): void {
 /** The sieges' bus listener. */
 export function siegesListener(w: World, data: GameData, e: WorldEvent): void {
   if (e.kind === 'day-passed') {
+    // A settlement of the ally's no one holds any more is taken back (capture.ts).
+    reclaimAll(w, data);
     for (const s of [...w.sieges]) {
       pitchCamps(w, data, s);
       if (settle(w, data, s)) continue;
@@ -190,6 +201,7 @@ export function siegesListener(w: World, data: GameData, e: WorldEvent): void {
     }
   } else if (e.kind === 'town-entered') arrive(w, data, e.town);
   else if (e.kind === 'hex-entered') attackCamp(w, data);
-  else if (e.kind === 'fight-won' && e.siege) won(w, data, e.siege);
+  else if (e.kind === 'fight-won' && e.siege)
+    (e.siege.kind === 'storm' ? stormWon : won)(w, data, e.siege);
   else if (e.kind === 'fight-over' && e.siege) over(w, data, e.siege, e.won);
 }
