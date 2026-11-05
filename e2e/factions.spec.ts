@@ -116,8 +116,13 @@ test('storms a held settlement, with only its shop and inn open (Phase 23b)', as
   await expect(page.getByRole('tab', { name: 'Inn and healer' })).toBeVisible();
   await expect(page.getByText("Held by Grisk's Warhost: shop and inn only")).toBeVisible();
   const storm = page.getByRole('region', { name: 'Storm the town' });
-  await expect(storm).toContainText("Grisk's Warhost's Beastman Warband (4 fighters)");
-  await storm.getByRole('button', { name: "Storm Grisk's Warhost's Beastman Warband" }).click();
+  // The base's guard stands beside the warband (Phase 23g).
+  await expect(storm).toContainText(
+    "Grisk's Warhost's Beastman Warband and the guard (6 fighters)",
+  );
+  await storm
+    .getByRole('button', { name: "Storm Grisk's Warhost's Beastman Warband and the guard" })
+    .click();
   await expect(page.getByRole('heading', { name: 'To arms' })).toBeVisible();
 });
 
