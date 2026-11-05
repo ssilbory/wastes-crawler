@@ -8,6 +8,8 @@ import type { GameData } from '../character/context.ts';
 import type { WorldEvent } from './bus.ts';
 import { note } from './members.ts';
 import type { World } from './types.ts';
+import { titheSpoils } from './project-effects.ts';
+import { regionMap } from './region.ts';
 
 /** The warlord whose hoard a won fight's key names (`dungeon/level/x,y`), if any. */
 export function warlordOfHoard(data: GameData, key: string): Warlord | undefined {
@@ -34,12 +36,15 @@ export function warbandWeights(
   return encounterWeights(entries, fallen, thinned, hostilePercent);
 }
 
-/** How many percent more the villages on the party's map pay, once its warlord has fallen. */
+/**
+ * How many percent more the villages on the party's map pay, once its warlord has fallen, and in
+ * a village, once a tithe there is ended (project-effects.ts).
+ */
 export function spoils(w: World, data: GameData): number {
   const { warlords, spoilsPercent } = data.content.warlords;
-  return warlords.some((l) => l.region === w.region && w.warlords.includes(l.id))
-    ? spoilsPercent
-    : 0;
+  const fallen = warlords.some((l) => l.region === w.region && w.warlords.includes(l.id));
+  const village = !w.dungeon && regionMap(data, w.region).siteAt(w.position)?.size === 'village';
+  return (fallen ? spoilsPercent : 0) + (village ? titheSpoils(w, data) : 0);
 }
 
 /** The warlords' bus listener: a won hoard whose boss is a warlord is that warlord's fall. */

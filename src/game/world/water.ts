@@ -8,6 +8,7 @@ import type { WorldEvent } from './bus.ts';
 import { note } from './members.ts';
 import { regionMap } from './region.ts';
 import type { World } from './types.ts';
+import { watered } from './project-effects.ts';
 
 const FULL = 12;
 
@@ -16,11 +17,13 @@ export function waterHere(w: World, data: GameData): void {
   if (w.dungeon) return;
   const map = regionMap(data, w.region);
   const terrain = map.terrainAt(w.position);
-  if ((terrain.water || map.siteAt(w.position)) && w.water < FULL) {
+  // Water a project restored reaches out from its settlement (Major projects: Project kinds).
+  const near = watered(w, data);
+  if ((terrain.water || map.siteAt(w.position) || near) && w.water < FULL) {
     w.water = FULL;
     note(w, 'The party fills its water.');
   }
-  if (terrain.dry && !map.siteAt(w.position)) w.dryDay = true;
+  if (terrain.dry && !map.siteAt(w.position) && !near) w.dryDay = true;
 }
 
 /** The bus listener: every hex entered, and every town, may fill the water or dry the day. */

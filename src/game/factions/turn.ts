@@ -7,6 +7,7 @@
 // builds while short of fighters or flush with Treasure, and otherwise marches on its target. The warlord's clock moves with
 // the clock faction's goals (Phase 12d's monthly tick, replaced).
 import type { FactionState } from '../../data/schemas/index.ts';
+import { projectTurn } from '../world/project-help.ts';
 import { rollDie } from '../../rules/dice.ts';
 import { factionIncome, factionMaxHp } from '../../rules/factions.ts';
 import type { GameData } from '../character/context.ts';
@@ -25,7 +26,7 @@ import {
 } from './actions.ts';
 import { checkGoal, pickGoal, weakestBase } from './goals.ts';
 import { patrolBeaten } from './patrols.ts';
-import { warnRaid } from './raid.ts';
+import { growBases, retakeGoal } from './capture.ts';
 import { hurtAsset } from './combat.ts';
 import { strikesFor } from './strikes.ts';
 import {
@@ -77,7 +78,7 @@ export function takeAction(w: World, data: GameData, id: string, onStrike: OnStr
     return false;
   }
   if (readyAttackers(w, data, id).length > 0) {
-    attackAction(w, data, id, onStrike, warnRaid(w, data, id));
+    attackAction(w, data, id, onStrike);
     return true;
   }
   // Build up first while short of fighters or flush with Treasure, then march.
@@ -103,8 +104,12 @@ export function factionTurn(w: World, data: GameData): void {
     if (!s.goal) pickGoal(w, data, id, 0);
     s.treasure += factionIncome(ratings(s));
     assetIncome(w, data, s);
+    // Bases taken or retaken are bought up, and a held settlement of the ally's comes first for it.
+    growBases(s);
+    if (id === data.content.siegeRules.ally) retakeGoal(w, data);
     const onStrike = strikesFor(w, data, id);
-    const attacked = takeAction(w, data, id, onStrike);
+    // A strike over a project pushed through it, or help it promised, takes the action.
+    const attacked = projectTurn(w, data, id) ? false : takeAction(w, data, id, onStrike);
     if (checkGoal(w, data, id, attacked) && id === clockFaction)
       moveClock(w, data, 1, `${factionOf(data, id).name} grows stronger.`);
   }

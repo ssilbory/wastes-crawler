@@ -290,4 +290,38 @@ export const WORLD_MIGRATIONS: Migrations = {
   },
   // Version 50 adds surrender (Phase 19): no one has surrendered yet.
   49: (raw) => ({ ...raw, schemaVersion: 50, surrendered: null }),
+  // Version 51 adds major projects (Phase 22): none under way. The Renown already earned is counted
+  // on loading, where the content is known (save.ts, Sam's call: count what's done).
+  50: (raw) => ({ ...raw, schemaVersion: 51, renown: 0, majorProjects: {} }),
+  // Version 52 adds building work, faction help, and lingering trouble to major projects (Phase 22b).
+  51: (raw) => ({
+    ...raw,
+    schemaVersion: 52,
+    majorProjects: Object.fromEntries(
+      Object.entries((raw.majorProjects ?? {}) as Record<string, Raw>).map(([id, p]) => [
+        id,
+        { ...p, daysLeft: null, help: [], trouble: null, shutUntil: null },
+      ]),
+    ),
+  }),
+  // Version 53 adds institutions' specialists (Phase 22c): none settled yet.
+  52: (raw) => ({
+    ...raw,
+    schemaVersion: 53,
+    majorProjects: Object.fromEntries(
+      Object.entries(raw.majorProjects as Record<string, Raw>).map(([id, p]) => [
+        id,
+        { ...p, specialist: null },
+      ]),
+    ),
+  }),
+  // Version 54 adds Workings (Phase 22d): none under way.
+  53: (raw) => ({ ...raw, schemaVersion: 54, workings: [] }),
+  // Version 55 turns raids into sieges (Phase 23a): a pending raid is dropped, and its faction's
+  // next Attack on the settlement begins a siege instead.
+  54: (raw) => {
+    const out: Raw = { ...raw, schemaVersion: 55, sieges: [] };
+    delete out.raid;
+    return out;
+  },
 };

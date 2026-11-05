@@ -1,11 +1,14 @@
-// The pop-up notices beside the screen: strain taken while time passes, quests changing, and how a
-// show at the inn went. Pure
+// The pop-up notices beside the screen: strain taken while time passes, quests changing, how a show
+// at the inn went, and an ally's siege begun (Phase 23a). Pure
 // reads of game state: the UI takes a snapshot before each change and compares after it.
 import type { GameData } from '../game/character/context.ts';
 import { itemsTaken, payerName, questOf } from '../game/world/quests.ts';
 import { memberSheet } from '../game/world/members.ts';
 import type { World } from '../game/world/types.ts';
 import { questStatus } from './quest-view.ts';
+import { allied } from '../game/factions/siege.ts';
+import { allyTowns, holderOf } from '../game/world/siege-state.ts';
+import { factionOf, locationName } from '../game/factions/state.ts';
 
 export type AlertSnapshot = {
   /** The day, quarter, and dungeon turn: strain only warns when time has moved on. */
@@ -15,9 +18,13 @@ export type AlertSnapshot = {
   performedDay: number | null;
   /** How long the journal was, so a show's lines can be found among the new ones. */
   logLength: number;
+  /** The sieges under way, as town:attacker (Phase 23a). */
+  sieges: string[];
+  /** The ally's settlements held against it, as town:holder (Phase 23b). */
+  held: string[];
 };
 
-export type Alert = { kind: 'strain' | 'quest' | 'inn'; title: string; text: string };
+export type Alert = { kind: 'strain' | 'quest' | 'inn' | 'siege'; title: string; text: string };
 
 /** One line in the strain window. */
 export type Entry = { title: string; text: string };
@@ -70,7 +77,7 @@ export function addAlerts(
 
 const timeOf = (w: World) => `${w.day}:${w.quarter}:${w.dungeon?.turn ?? ''}`;
 
-export function alertSnapshot(w: World): AlertSnapshot {
+export function alertSnapshot(w: World, data: GameData): AlertSnapshot {
   return {
     time: timeOf(w),
     members: Object.fromEntries(
@@ -84,6 +91,8 @@ export function alertSnapshot(w: World): AlertSnapshot {
     ),
     performedDay: w.performedDay,
     logLength: w.log.length,
+    sieges: w.sieges.map(siegeKey),
+    held: heldKeys(w, data),
   };
 }
 
@@ -93,6 +102,8 @@ export function alertsSince(before: AlertSnapshot, w: World, data: GameData): Al
     ...strainAlerts(before, w, data),
     ...questAlerts(before, w, data),
     ...innAlerts(before, w),
+    ...siegeAlerts(before, w, data),
+    ...heldAlerts(before, w, data),
   ];
 }
 
@@ -160,4 +171,61 @@ const undated = (line: string) => line.replace(/^Day \d+, [^:]+: /, '');
 /** The newest journal line about `subject`, without its date. */
 function lastNote(w: World, subject: string): string {
   return undated([...w.log].reverse().find((l) => l.includes(subject)) ?? '');
+}
+
+const siegeKey = (s: World['sieges'][number]) => `${s.town}:${s.attacker}`;
+
+/**
+ * A siege begun with the party's ally as attacker or defender, heard of at once wherever the party
+ * is (docs/rules-adaptation.md, Sieges: Alerts).
+ */
+function siegeAlerts(before: AlertSnapshot, w: World, data: GameData): Alert[] {
+  const was = new Set(before.sieges);
+  return w.sieges
+    .filter((s) => !was.has(siegeKey(s)) && allied(data, s))
+    .map((s) => ({
+      kind: 'siege',
+      title: `Siege: ${locationName(data, s.town)}`,
+      text: `${factionOf(data, s.attacker).name} besieges ${locationName(data, s.town)}, held by ${factionOf(data, s.defender).name}. The first assault comes at the end of day ${s.next + 1}.`,
+    }));
+}
+
+/** The ally's settlements held against it, as town:holder. */
+const heldKeys = (w: World, data: GameData) =>
+  allyTowns(data).flatMap((town) => {
+    const holder = holderOf(w, data, town);
+    return holder ? [`${town}:${holder}`] : [];
+  });
+
+/** An ally's settlement taken, taken back, or taken by one holder from another (Phase 23b, 23d). */
+function heldAlerts(before: AlertSnapshot, w: World, data: GameData): Alert[] {
+  const now = heldKeys(w, data);
+  const town = (key: string) => key.slice(0, key.indexOf(':'));
+  const holder = (key: string) => factionOf(data, key.slice(key.indexOf(':') + 1)).name;
+  const name = (key: string) => locationName(data, town(key));
+  const was = (key: string) => before.held.find((k) => town(k) === town(key));
+  const taken = now
+    .filter((k) => !before.held.includes(k))
+    .map((k): Alert => {
+      const from = was(k);
+      return from
+        ? {
+            kind: 'siege',
+            title: `Changed hands: ${name(k)}`,
+            text: `${holder(k)} takes ${name(k)} from ${holder(from)}. Only its shop and inn still serve the party.`,
+          }
+        : {
+            kind: 'siege',
+            title: `Captured: ${name(k)}`,
+            text: `${holder(k)} now holds ${name(k)}. Only its shop and inn still serve the party.`,
+          };
+    });
+  const freed = before.held
+    .filter((k) => !now.some((n) => town(n) === town(k)))
+    .map((k): Alert => ({
+      kind: 'siege',
+      title: `Freed: ${name(k)}`,
+      text: `${name(k)} is free again.`,
+    }));
+  return [...taken, ...freed];
 }

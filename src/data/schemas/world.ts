@@ -8,8 +8,9 @@ import { RegionSchema } from './overland-content.ts';
 import { LootDiceSchema, ShopStateSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 import { ComponentTypeSchema } from './crafting-content.ts';
+import { SiegeFightSchema, SiegeSchema } from './siege-state.ts';
 
-export const WORLD_SCHEMA_VERSION = 50;
+export const WORLD_SCHEMA_VERSION = 55;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -27,9 +28,11 @@ export const NpcSaveSchema = z.strictObject({
     'companion',
     'pack',
     'thrall',
+    'recruit',
   ]),
   /**
-   * The mount type of a pack beast, the hireling type, captive id, escort quest id, or the monster
+   * The mount type of a pack beast, the hireling type, captive id, escort quest id, the institution
+   * a journeyman is bound for (Phase 22c), or the monster
    * id of an undead servant, a beast, a summoned servant (gone at dawn, Phase 18a), a woken tree, or
    * a Beastmaster's companion.
    */
@@ -167,6 +170,8 @@ export const PendingEncounterSchema = z.strictObject({
   garrison: z.string().optional(),
   /** The faction asset this patrol belongs to, as faction:uid (Phase 13b). */
   patrol: z.string().optional(),
+  /** The part of a siege this fight is (Phase 23a). */
+  siege: SiegeFightSchema.optional(),
 });
 
 /** Crowns spent and loot cashed in at one town, at listed value, since `since` (a day). */
@@ -184,6 +189,43 @@ export const QuestStateSchema = z.strictObject({
   acceptedDay: z.int().min(0),
 });
 export type QuestState = z.infer<typeof QuestStateSchema>;
+
+/** A major project the party has put Renown into (docs/rules-adaptation.md, Major projects). */
+export const MajorProjectStateSchema = z.strictObject({
+  /** Renown put in, bought points included. */
+  renown: z.int().min(0),
+  /** Points bought with crowns, which set the next point's price. */
+  bought: z.int().min(0),
+  /** The day it was finished, or null while under way. */
+  done: z.int().min(0).nullable(),
+  /** Building work days left once its crowns are paid, or null before (Phase 22b). */
+  daysLeft: z.int().min(0).nullable(),
+  /** Factions asked for help, and what each took off once it gave it (0 while asked). */
+  help: z.array(z.strictObject({ faction: IdSchema, points: z.int().min(0) })),
+  /** The faction set to strike the place after it was pushed through (lingering trouble). */
+  trouble: IdSchema.nullable(),
+  /** The day its effect comes back after a strike shut it, or null. */
+  shutUntil: z.int().min(0).nullable(),
+  /** An institution's specialist, by name, once settled there (Phase 22c); null for any other. */
+  specialist: z.string().min(1).nullable(),
+});
+export type MajorProjectState = z.infer<typeof MajorProjectStateSchema>;
+
+/** A Working under way or standing (docs/rules-adaptation.md, Major projects: Workings). */
+export const WorkingStateSchema = z.strictObject({
+  working: IdSchema,
+  /** The settlement it stands in. */
+  town: IdSchema,
+  /** The member who leads its building. */
+  lead: z.string().min(1),
+  /** Days of building left; at 0 the lead makes the final check each day until it holds. */
+  daysLeft: z.int().min(0),
+  /** Days in a row the lead has been off the Working's map. */
+  away: z.int().min(0),
+  /** The day it was finished, or null while under way. */
+  done: z.int().min(0).nullable(),
+});
+export type WorkingState = z.infer<typeof WorkingStateSchema>;
 
 /** An item being crafted (docs/rules-adaptation.md, Crafting and modifying gear). */
 export const ProjectSchema = z.strictObject({
@@ -413,6 +455,12 @@ export const WorldSaveSchema = z.strictObject({
   pieces: z.array(z.string()),
   /** The Wastes warlords fallen (docs/rules-adaptation.md, The Wastes: A warlord falls). */
   warlords: z.array(IdSchema),
+  /** The party's Renown, not yet put into a project (Phase 22: Major projects). */
+  renown: z.int().min(0),
+  /** Major projects under way or finished, by id. */
+  majorProjects: z.record(IdSchema, MajorProjectStateSchema),
+  /** Workings under way or standing (Phase 22d). */
+  workings: z.array(WorkingStateSchema),
   /** The warlord's clock, in segments (Phase 12d). */
   clock: z.int().min(0),
   /** Crafter's notes found, by set, and what became of them. */
@@ -442,17 +490,9 @@ export const WorldSaveSchema = z.strictObject({
   ending: z.enum(['destroy', 'give', 'keep']).nullable(),
   /** Tokens of command authority the party carries. */
   authority: z.array(IdSchema),
-  /** The settlement raiders mean to hit, the day they strike, and whether the party is fighting them. */
-  raid: z
-    .strictObject({
-      town: IdSchema,
-      day: z.int().min(0),
-      fighting: z.boolean(),
-      /** The raiding faction's asset that leads it (Phase 13b). */
-      asset: z.string().optional(),
-    })
-    .nullable(),
-  /** Raided settlements and the day their prices recover. */
+  /** Sieges under way (Phase 23a). */
+  sieges: z.array(SiegeSchema),
+  /** Sacked settlements and the day their prices recover. */
   raided: z.record(IdSchema, z.int().min(0)),
   /** Each craftsman's month, by id, once the party has visited. */
   craftsmen: z.record(IdSchema, CraftsmanStateSchema),

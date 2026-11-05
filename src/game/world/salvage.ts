@@ -8,7 +8,7 @@ import type { GameData } from '../character/context.ts';
 import { findItem, type InventoryEntry } from '../character/items.ts';
 import { takeLine } from '../character/stacks.ts';
 import { componentName, pickComponents, removeComponents } from './components.ts';
-import { canCraft, hasTools } from './crafting.ts';
+import { canCraft, hasTools, workshopHere } from './crafting.ts';
 import { check, done } from './inventory.ts';
 import { note } from './members.ts';
 import type { TownResult } from './services.ts';
@@ -41,7 +41,7 @@ export function salvager(w: World, data: GameData): Member | string {
   if (crafters.length === 0) return 'Salvage needs someone with Craft or the Artisan focus.';
   // A town's workshop serves without tools; villages have none.
   const town = w.dungeon ? undefined : currentTown(w, data);
-  const workshop = town !== undefined && town.size !== 'village';
+  const workshop = town !== undefined && workshopHere(w, data) !== null;
   return (
     crafters.find((m) => workshop || hasTools(data, m)) ??
     "Salvage needs crafting tools or a town's workshop."

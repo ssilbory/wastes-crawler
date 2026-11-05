@@ -4,6 +4,7 @@
 // pulled out with 1 HP and Frail (SRD 2.5.1's stabilized state). Bouts against monsters are to
 // the death, though handlers drag out anyone still breathing. One bout a day; no XP or loot.
 import type { ArenaBout } from '../../data/schemas/index.ts';
+import { builtArena } from './built-services.ts';
 import { toTenths } from '../../rules/economy.ts';
 import type { BattleResult } from '../combat/battle.ts';
 import type { Battle } from '../combat/types.ts';
@@ -17,7 +18,11 @@ import { priceHere, spend, townHere } from './town-prices.ts';
 
 export function arenaCard(w: World, data: GameData): ArenaBout[] {
   const town = townHere(w, data);
-  return data.content.arenaCards.find((c) => c.town === town.id)?.bouts ?? [];
+  return (
+    data.content.arenaCards.find((c) => c.town === town.id)?.bouts ??
+    builtArena(w, data, town.id) ??
+    []
+  );
 }
 
 /** Why the party can't fight a bout today, or null if it can. */

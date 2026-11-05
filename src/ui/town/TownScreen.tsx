@@ -11,8 +11,13 @@ import { QuestLog } from '../world/QuestLog.tsx';
 import { PartyButtons, type PartyScreen } from '../world/PartyButtons.tsx';
 import { JournalPanel } from '../world/JournalPanel.tsx';
 import { FactionsPanel } from '../world/FactionsPanel.tsx';
+import { ProjectsPanel } from '../world/ProjectsPanel.tsx';
+import { WorkingsPanel } from '../world/WorkingsPanel.tsx';
 import { SettingPanel } from '../world/SettingPanel.tsx';
 import { raidedText } from '../../render/setting-view.ts';
+import { SidePanel } from './SidePanel.tsx';
+import { blockadeText, heldText, stormView } from '../../render/siege-view.ts';
+import { storm } from '../../game/world/storm.ts';
 import { PartyPanel } from '../world/PartyPanel.tsx';
 import { PurgePanel } from '../world/PurgePanel.tsx';
 import { AntidotePanel } from '../world/AntidotePanel.tsx';
@@ -70,8 +75,12 @@ export function TownScreen(props: {
   const town = townHere(w, data);
   // With the party lost (town.ts, wipe), the tavern is the one way on, until someone is recruited.
   const partyless = w.members.length === 0;
-  const tab = partyless ? 'tavern' : props.tab;
-  const tabs = (Object.keys(TABS) as Tab[]).filter((t) => !partyless || t === 'tavern');
+  // A held settlement keeps only its shop and inn for the party (Sieges: A held settlement).
+  const held = heldText(w, data, town.id);
+  const stormable = stormView(w, data);
+  const open = (t: Tab) => (partyless ? t === 'tavern' : !held || t === 'shop' || t === 'services');
+  const tab = partyless ? 'tavern' : open(props.tab) ? props.tab : 'services';
+  const tabs = (Object.keys(TABS) as Tab[]).filter(open);
   const [message, setMessage] = useState<string | null>(null);
   const act: Act = (action) => {
     const r = action();
@@ -85,6 +94,8 @@ export function TownScreen(props: {
         <div class="bar-status">
           <span>Purse: {crowns(w.purse)}</span>
           <span>Loot: {lootText(w.loot)}</span>
+          {blockadeText(w, town.id) && <span class="raided">{blockadeText(w, town.id)}</span>}
+          {held && <span class="raided">{held}</span>}
           {raidedText(w, town.id) && <span class="raided">{raidedText(w, town.id)}</span>}
           {tradeText(w, data) && <span class="trade">{tradeText(w, data)}</span>}
         </div>
@@ -109,10 +120,22 @@ export function TownScreen(props: {
           new characters.
         </p>
       )}
+      {!partyless && <SidePanel world={w} act={act} />}
+      {stormable && !partyless && !w.encounter && (
+        <section class="panel" aria-label="Storm the town">
+          <p class="hint">
+            The party can drive the holders out alone: next, {stormable.name} ({stormable.fighters}{' '}
+            {stormable.fighters === 1 ? 'fighter' : 'fighters'}).
+          </p>
+          <button type="button" class="create" onClick={() => act(() => storm(w, data))}>
+            Storm {stormable.name}
+          </button>
+        </section>
+      )}
       {w.encounter && (
-        <PopOut label="Raid">
+        <PopOut label="To arms">
           <div class="raid-alarm" role="alert">
-            <h2>Raid</h2>
+            <h2>To arms</h2>
             <p>{w.encounter.text}</p>
             <button type="button" class="create" onClick={props.onLeave}>
               To the gates
@@ -138,7 +161,7 @@ export function TownScreen(props: {
         <div class="world-left">
           <div class="town-main" {...panelProps('town', tab)}>
             {tab === 'quests' && <QuestsTab world={w} act={act} />}
-            {tab === 'services' && <ServicesTab world={w} act={act} />}
+            {tab === 'services' && <ServicesTab world={w} act={act} held={held !== null} />}
             {tab === 'shop' && <ShopTab world={w} act={act} />}
             {tab === 'stable' && <StableTab world={w} act={act} />}
             {tab === 'tavern' && <TavernTab world={w} roster={props.roster} act={act} />}
@@ -157,6 +180,8 @@ export function TownScreen(props: {
         </div>
         <div class="dock">
           <QuestLog world={w} onChange={props.onChange} />
+          <ProjectsPanel world={w} onChange={props.onChange} />
+          <WorkingsPanel world={w} onChange={props.onChange} />
           <CompanionsPanel world={w} onChange={props.onChange} />
           <SettingPanel world={w} inTown onChange={props.onChange} />
           <PurgePanel world={w} onChange={props.onChange} />

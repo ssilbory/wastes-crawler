@@ -44,7 +44,7 @@ describe('emit', () => {
 describe('WORLD_LISTENERS', () => {
   it('ends with the realm ending, and its campaign-only listeners are among them', () => {
     expect(WORLD_LISTENERS.all.at(-1)).toBe(realmEndListener);
-    expect(WORLD_LISTENERS.campaign.size).toBe(4);
+    expect(WORLD_LISTENERS.campaign.size).toBe(7);
     for (const l of WORLD_LISTENERS.campaign) expect(WORLD_LISTENERS.all).toContain(l);
   });
 

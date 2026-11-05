@@ -15,11 +15,14 @@ import { emit } from './bus.ts';
 import { enterTown } from './town.ts';
 import { priceHere, spend, townHere } from './town-prices.ts';
 import type { World } from './types.ts';
+import { coachRoutes } from './project-effects.ts';
+import { besieged, holderOf } from './siege-state.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 
-export function coachRoute(data: GameData, id: string): CoachRoute {
-  const r = data.content.coachRoutes.find((x) => x.id === id);
+/** A coach route running now, with any secured road's ambush die and fare (project-effects.ts). */
+export function coachRoute(w: World, data: GameData, id: string): CoachRoute {
+  const r = coachRoutes(w, data).find((x) => x.id === id);
   if (!r) throw new Error(`unknown coach route ${id}`);
   return r;
 }
@@ -31,7 +34,7 @@ export function routesFrom(
   townId: string,
 ): { route: CoachRoute; to: Site }[] {
   const map = regionMap(data, w.region);
-  return data.content.coachRoutes.flatMap((route) => {
+  return coachRoutes(w, data).flatMap((route) => {
     const other =
       route.towns[0] === townId
         ? route.towns[1]
@@ -39,7 +42,9 @@ export function routesFrom(
           ? route.towns[0]
           : null;
     const to = other === null ? undefined : map.sites.find((s) => s.id === other);
-    return to ? [{ route, to }] : [];
+    // No coach leaves or reaches a besieged or held town (docs/rules-adaptation.md, Sieges).
+    const shut = (t: string) => besieged(w, t) || holderOf(w, data, t) !== null;
+    return to && !shut(townId) && !shut(to.id) ? [{ route, to }] : [];
   });
 }
 
@@ -47,7 +52,7 @@ export function routesFrom(
 export const passengers = (w: World) => alive(w).length + w.npcs.length;
 
 export const fareListed = (w: World, data: GameData, routeId: string) =>
-  coachRoute(data, routeId).fare * passengers(w);
+  coachRoute(w, data, routeId).fare * passengers(w);
 
 function roadPath(map: RegionMap, from: Hex, to: Hex): Hex[] | null {
   const road = new Set<string>();
@@ -113,7 +118,7 @@ export function coachQuarter(w: World, data: GameData): boolean {
   if (travelQuarters.includes(w.quarter)) {
     if (trip.checkedDay !== w.day) {
       trip.checkedDay = w.day;
-      if (w.rng.int(1, coachRoute(data, trip.route).ambushDie) === 1) {
+      if (w.rng.int(1, coachRoute(w, data, trip.route).ambushDie) === 1) {
         ambush(w, data);
         return true;
       }

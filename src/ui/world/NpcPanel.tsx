@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import { firstAid, healers } from '../../game/world/first-aid.ts';
+import { parseInstitutionId } from '../../game/world/institution-projects.ts';
 import { dismiss } from '../../game/world/hire.ts';
 import { captiveOf, MAX_NPCS, typeOf } from '../../game/world/npcs.ts';
 import type { TownResult } from '../../game/world/services.ts';
@@ -36,6 +37,10 @@ function role(w: World, n: Npc): string {
     return master ? `${kind} ${master}` : n.kind;
   }
   if (n.kind === 'pack') return 'pack beast';
+  if (n.kind === 'recruit') {
+    const found = parseInstitutionId(data, n.type);
+    return `journeyman, bound for ${found?.site.name} to run ${found?.institution.name}`;
+  }
   if (t) return `${t.name}, ${shareText(t.share)}${n.owed > 0 ? `, owed ${n.owed} crowns` : ''}`;
   const to = n.kind === 'captive' ? captiveOf(data, n.type).destination : escortTo(n.type);
   const town = townName(data, to);

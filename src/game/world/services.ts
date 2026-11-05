@@ -4,15 +4,19 @@
 // The Rules of the Game/2.5.0, 2.5.2), and magical curing of a disease; curing Frailty and
 // poison and raising the dead are house prices.
 import type { MissionGiver, RaiserKind } from '../../data/schemas/index.ts';
+import { builtRaiser } from './built-services.ts';
+import { isInstitutionId } from './institution-projects.ts';
+import { toTenths } from '../../rules/economy.ts';
 import { addStrain, fullRest } from '../../rules/strain.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
 import { cure } from './ailments.ts';
 import { raiseMarked, raisePrice } from './raised.ts';
 import { endOfDay } from './day.ts';
+import { besieged } from './siege-state.ts';
 import { alive, cureFrailty, note, setHp } from './members.ts';
 import type { Member, World } from './types.ts';
-import { FULL_RATIONS, priceHere, spend, townHere } from './town-prices.ts';
+import { currentTown, FULL_RATIONS, priceHere, spend, townHere } from './town-prices.ts';
 
 export type TownResult = { ok: true } | { ok: false; reason: string };
 
@@ -43,18 +47,30 @@ export function stayAtInn(w: World, data: GameData): TownResult {
 export function restAtInn(w: World, data: GameData): void {
   for (const m of alive(w)) m.slept = true;
   w.camp = 'made';
-  w.noRecovery = false;
+  // Sam's call (Phase 23g, worn down): no one recovers in a town under siege, night after night.
+  const siege = besieged(w, townHere(w, data).id);
+  w.noRecovery = siege;
   // A night that wipes the party out ends at the last town, with no inn stay to note.
   if (endOfDay(w, data)) return;
-  for (const m of alive(w)) {
-    const s = m.character.strain;
-    const rested = fullRest({ strain: s.value, max: 0, broken: s.broken });
-    m.character = { ...m.character, strain: { value: rested.strain, broken: rested.broken } };
+  // A town that falls in the night drives the party out before morning, unrested (Sieges).
+  const town = currentTown(w, data);
+  if (town && !siege) {
+    for (const m of alive(w)) {
+      const s = m.character.strain;
+      const rested = fullRest({ strain: s.value, max: 0, broken: s.broken });
+      m.character = { ...m.character, strain: { value: rested.strain, broken: rested.broken } };
+    }
+    w.rations = FULL_RATIONS;
   }
-  w.rations = FULL_RATIONS;
   w.day += 1;
   w.quarter = 0;
-  note(w, `The party stays the night at the inn in ${townHere(w, data).name}.`);
+  if (town)
+    note(
+      w,
+      siege
+        ? `The party stays the night at the inn in ${town.name}, but the siege lets no one rest.`
+        : `The party stays the night at the inn in ${town.name}.`,
+    );
 }
 
 const levelOf = (data: GameData, m: Member) => characterSheet(m.character, data).level;
@@ -62,14 +78,21 @@ const rules = (data: GameData) => data.content.townRules.healer;
 
 export const healListed = (data: GameData, m: Member) =>
   (m.character.hp.max - m.character.hp.current) * rules(data).perHp;
-/** The price of raising a member at a place of this kind: a crypt asks half (Phase 20). */
-export const raiseListed = (data: GameData, m: Member, kind: RaiserKind) =>
-  raisePrice(data.content.townRules.raisePerLevel, levelOf(data, m), kind);
+/**
+ * The price of raising a member at a place of this kind: a crypt asks half (Phase 20), and the
+ * party's own place its share (Major projects: Owner perks).
+ */
+export const raiseListed = (data: GameData, m: Member, kind: RaiserKind, own = false) => {
+  const price = raisePrice(data.content.townRules.raisePerLevel, levelOf(data, m), kind);
+  return own ? toTenths((price * data.content.projects.ownRaisePercent) / 100) : price;
+};
 
 /** The town's necromancer or death priest, if it has one; villages never do. */
 export function raiserHere(w: World, data: GameData): MissionGiver | undefined {
   const town = townHere(w, data).id;
-  return data.content.missionGivers.find((g) => g.town === town && g.raises);
+  return (
+    data.content.missionGivers.find((g) => g.town === town && g.raises) ?? builtRaiser(w, town)
+  );
 }
 
 function member(w: World, id: string): Member {
@@ -137,7 +160,7 @@ export function raiseDead(w: World, data: GameData, id: string): TownResult {
   const raiser = raiserHere(w, data);
   if (!raiser) return no(`No one in ${townHere(w, data).name} raises the dead.`);
   const kind = raiser.raises as RaiserKind;
-  const paid = pay(w, data, raiseListed(data, m, kind));
+  const paid = pay(w, data, raiseListed(data, m, kind, isInstitutionId(raiser.id)));
   if (!paid.ok) return paid;
   note(w, `${raiser.name} raises ${m.character.name}.`);
   note(w, raiseMarked(data, m, kind));

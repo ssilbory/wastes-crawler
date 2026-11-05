@@ -63,7 +63,7 @@ describe('worlds on custom maps (Sam’s calls)', () => {
     tour(w);
     expect(w.day).toBeGreaterThan(7);
     expect(w.log.some((l) => l.includes('Word spreads') || l.includes('Word comes'))).toBe(false);
-    expect([w.clock, w.raid]).toEqual([0, null]);
+    expect([w.clock, w.sieges]).toEqual([0, []]);
   });
 
   it('meet no captives bound for the campaign’s towns', () => {

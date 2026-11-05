@@ -6,7 +6,7 @@
 import type { GameData } from '../character/context.ts';
 import { ammoFor, ammoName } from '../character/ammo.ts';
 import { putLine } from '../character/stacks.ts';
-import { canCraft, hasTools } from './crafting.ts';
+import { canCraft, hasTools, workshopHere } from './crafting.ts';
 import { burnFirewood, firewoodCount } from './firewood.ts';
 import { alive, note } from './members.ts';
 import { scrapOn, spendScrap } from './salvage.ts';
@@ -34,7 +34,7 @@ export function fletchShift(w: World, data: GameData, m: Member): void {
   const name = m.character.name;
   if (!canFletch(m)) return note(w, `${name} doesn't know how to fletch.`);
   const town = currentTown(w, data);
-  if (!hasTools(data, m) && (!town || town.size === 'village'))
+  if (!hasTools(data, m) && (!town || !workshopHere(w, data)))
     return note(w, `${name} has no crafting tools to fletch with.`);
   const ammo = fletchFor(w, data, m);
   if (!ammo) return note(w, `No one in the party shoots anything ${name} could fletch.`);

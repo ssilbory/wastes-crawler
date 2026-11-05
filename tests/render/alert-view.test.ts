@@ -10,12 +10,13 @@ import {
   type Alert,
 } from '../../src/render/alert-view.ts';
 import { below, place } from '../game/dungeon/helpers.ts';
-import { data, member, world } from '../game/world/helpers.ts';
+import { data, member, siege, world } from '../game/world/helpers.ts';
+import { startFactions } from '../../src/game/factions/state.ts';
 
 describe('alerts', () => {
   it('warns of strain taken while time passes, with Broken and death', () => {
     const w = world();
-    const before = alertSnapshot(w);
+    const before = alertSnapshot(w, data);
     w.quarter += 1;
     addMemberStrain(w, data, member(w, 'Snag'), 1, 'condition');
     expect(alertsSince(before, w, data)).toEqual([
@@ -25,13 +26,13 @@ describe('alerts', () => {
         text: expect.stringMatching(/^Strain 1\/\d+\.$/),
       },
     ]);
-    const later = alertSnapshot(w);
+    const later = alertSnapshot(w, data);
     w.quarter += 1;
     const snag = member(w, 'Snag');
     snag.character = { ...snag.character, strain: { value: 9, broken: true } };
     expect(alertsSince(later, w, data)[0]?.text).toMatch(/Snag is Broken\.$/);
     w.quarter += 1;
-    const last = alertSnapshot(w);
+    const last = alertSnapshot(w, data);
     w.quarter += 1;
     snag.dead = true;
     w.log.push('Day 1, Morning: Snag dies of exhaustion and privation.');
@@ -39,15 +40,15 @@ describe('alerts', () => {
       { kind: 'strain', title: 'Snag has died', text: 'Snag dies of exhaustion and privation.' },
     ]);
     // The dead give no more warnings.
-    expect(alertsSince(alertSnapshot(w), w, data)).toEqual([]);
+    expect(alertsSince(alertSnapshot(w, data), w, data)).toEqual([]);
   });
 
   it('says nothing of strain when no time passed, or strain went down', () => {
     const w = world();
-    const before = alertSnapshot(w);
+    const before = alertSnapshot(w, data);
     addMemberStrain(w, data, member(w, 'Snag'), 1, 'push');
     expect(alertsSince(before, w, data)).toEqual([]);
-    const strained = alertSnapshot(w);
+    const strained = alertSnapshot(w, data);
     w.quarter += 1;
     const snag = member(w, 'Snag');
     snag.character = { ...snag.character, strain: { value: 0, broken: false } };
@@ -57,7 +58,7 @@ describe('alerts', () => {
   it('passes over the dead and anyone who joined since, and dates nothing it cannot find', () => {
     const w = world();
     const snag = member(w, 'Snag');
-    const before = alertSnapshot(w);
+    const before = alertSnapshot(w, data);
     w.quarter += 1;
     w.members.push({
       ...snag,
@@ -70,7 +71,7 @@ describe('alerts', () => {
     expect(alertsSince(before, w, data)).toEqual([
       { kind: 'strain', title: 'Snag has died', text: '' },
     ]);
-    const dead = alertSnapshot(w);
+    const dead = alertSnapshot(w, data);
     w.quarter += 1;
     snag.character = { ...snag.character, strain: { value: 3, broken: false } };
     expect(alertsSince(dead, w, data)).toEqual([]);
@@ -78,7 +79,7 @@ describe('alerts', () => {
 
   it('tells of quests taken, moved on, done, paid, and failed', () => {
     const w = world();
-    let before = alertSnapshot(w);
+    let before = alertSnapshot(w, data);
     w.quests['bandit-camp'] = { status: 'active', step: 0, acceptedDay: 0 };
     expect(alertsSince(before, w, data)).toEqual([
       {
@@ -87,7 +88,7 @@ describe('alerts', () => {
         text: expect.stringContaining('Break the raider camp'),
       },
     ]);
-    before = alertSnapshot(w);
+    before = alertSnapshot(w, data);
     expect(alertsSince(before, w, data)).toEqual([]);
     w.quests['bandit-camp'] = { status: 'ready', step: 1, acceptedDay: 0 };
     expect(alertsSince(before, w, data)).toEqual([
@@ -97,11 +98,11 @@ describe('alerts', () => {
         text: expect.stringMatching(/^Return to .+ for the reward\.$/),
       },
     ]);
-    before = alertSnapshot(w);
+    before = alertSnapshot(w, data);
     w.quests['bandit-camp'] = { status: 'done', step: 1, acceptedDay: 0 };
     expect(alertsSince(before, w, data)[0]?.title).toBe('Quest complete: The Raider Camp');
     w.quests.surveyor = { status: 'active', step: 0, acceptedDay: 0 };
-    before = alertSnapshot(w);
+    before = alertSnapshot(w, data);
     expect(abandonQuest(w, data, 'surveyor')).toEqual({ ok: true });
     expect(alertsSince(before, w, data)).toEqual([
       {
@@ -115,7 +116,7 @@ describe('alerts', () => {
   it('tells of a quest moved on a step', () => {
     const w = world();
     w.quests['barrow-torc'] = { status: 'active', step: 0, acceptedDay: 0 };
-    const before = alertSnapshot(w);
+    const before = alertSnapshot(w, data);
     w.quests['barrow-torc'] = { status: 'active', step: 1, acceptedDay: 0 };
     expect(alertsSince(before, w, data)).toEqual([
       {
@@ -129,7 +130,7 @@ describe('alerts', () => {
   it('names the quest item the party picks up', () => {
     const w = place(below(), 'barrow-upper', 4, 0, 'e');
     w.quests['barrow-torc'] = { status: 'active', step: 2, acceptedDay: 0 };
-    const before = alertSnapshot(w);
+    const before = alertSnapshot(w, data);
     expect(step(w, data, 'forward')).toEqual({ ok: true });
     expect(alertsSince(before, w, data)).toContainEqual({
       kind: 'quest',
@@ -144,7 +145,7 @@ describe('alerts', () => {
 describe('the inn notice', () => {
   it('says whether a show paid for the beds, with any tips', () => {
     const w = world();
-    let before = alertSnapshot(w);
+    let before = alertSnapshot(w, data);
     w.performedDay = w.day;
     w.log.push(
       'Day 1, Evening: Grukk plays the common room, and the inn gives the party its beds for the night.',
@@ -158,9 +159,9 @@ describe('the inn notice', () => {
       },
     ]);
     // Nothing more until the next night's show.
-    expect(alertsSince(alertSnapshot(w), w, data)).toEqual([]);
+    expect(alertsSince(alertSnapshot(w, data), w, data)).toEqual([]);
     w.day += 1;
-    before = alertSnapshot(w);
+    before = alertSnapshot(w, data);
     w.performedDay = w.day;
     w.log.push('Day 2, Evening: Grukk plays to a cold room. The inn still wants paying.');
     expect(alertsSince(before, w, data)).toEqual([
@@ -174,10 +175,78 @@ describe('the inn notice', () => {
 
   it('says nothing when the journal holds no show for the night', () => {
     const w = world();
-    const before = alertSnapshot(w);
+    const before = alertSnapshot(w, data);
     w.performedDay = w.day;
     w.log.push('Day 1, Evening: The party sleeps.');
     expect(alertsSince(before, w, data)).toEqual([]);
+  });
+});
+
+describe('the siege notice (Phase 23a)', () => {
+  it('tells at once of a siege the ally is in, and nothing of rivals’ sieges', () => {
+    const w = world();
+    startFactions(w, data);
+    const before = alertSnapshot(w, data);
+    w.sieges = [
+      siege({ next: 12 }),
+      siege({ town: 'gutterwick', attacker: 'bastion', defender: 'warhost' }),
+    ];
+    expect(alertsSince(before, w, data)).toEqual([
+      {
+        kind: 'siege',
+        title: 'Siege: Cinderhold',
+        text: "Grisk's Warhost besieges Cinderhold, held by The Free Settlements. The first assault comes at the end of day 13.",
+      },
+    ]);
+    // Heard once only.
+    expect(alertsSince(alertSnapshot(w, data), w, data)).toEqual([]);
+  });
+});
+
+describe('the capture notices (Phase 23b)', () => {
+  it('tells of an ally’s settlement taken, and of it freed', () => {
+    const w = world();
+    startFactions(w, data);
+    const before = alertSnapshot(w, data);
+    const free = w.factions.settlements;
+    const holder = w.factions.warhost;
+    if (!free || !holder) throw new Error('no factions');
+    free.bases = free.bases.filter((b) => b.at !== 'lanternfall');
+    holder.bases.push({ at: 'lanternfall', hp: 1, max: 2, growing: true });
+    expect(alertsSince(before, w, data)).toEqual([
+      {
+        kind: 'siege',
+        title: 'Captured: Lanternfall',
+        text: "Grisk's Warhost now holds Lanternfall. Only its shop and inn still serve the party.",
+      },
+    ]);
+    const held = alertSnapshot(w, data);
+    holder.bases = holder.bases.filter((b) => b.at !== 'lanternfall');
+    free.bases.push({ at: 'lanternfall', hp: 1, max: 2 });
+    expect(alertsSince(held, w, data)).toEqual([
+      { kind: 'siege', title: 'Freed: Lanternfall', text: 'Lanternfall is free again.' },
+    ]);
+  });
+
+  it('tells of a held settlement changing hands, not of it freed (Phase 23d)', () => {
+    const w = world();
+    startFactions(w, data);
+    const free = w.factions.settlements;
+    const warhost = w.factions.warhost;
+    const bastion = w.factions.bastion;
+    if (!free || !warhost || !bastion) throw new Error('no factions');
+    free.bases = free.bases.filter((b) => b.at !== 'lanternfall');
+    warhost.bases.push({ at: 'lanternfall', hp: 1, max: 2 });
+    const held = alertSnapshot(w, data);
+    warhost.bases = warhost.bases.filter((b) => b.at !== 'lanternfall');
+    bastion.bases.push({ at: 'lanternfall', hp: 1, max: 2 });
+    expect(alertsSince(held, w, data)).toEqual([
+      {
+        kind: 'siege',
+        title: 'Changed hands: Lanternfall',
+        text: "The Dawnwall Bastion takes Lanternfall from Grisk's Warhost. Only its shop and inn still serve the party.",
+      },
+    ]);
   });
 });
 

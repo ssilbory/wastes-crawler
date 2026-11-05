@@ -93,6 +93,7 @@ describe('quest content', () => {
         },
         { kind: 'deliver', item: 'x', to: 'atlantis', text: 'x' },
         { kind: 'escort', name: 'x', monster: 'dragon', to: 'westhold', text: 'x' },
+        { kind: 'free', town: 'atlantis', text: 'x' },
       ],
       reward: { crowns: 0, xp: 0, loot: [] },
     };
@@ -118,6 +119,7 @@ describe('quest content', () => {
       'quests/odd: step 3 goes to unknown town atlantis',
       'quests/odd: an escort must be the first step',
       'quests/odd: unknown monster dragon',
+      'quests/odd: step 5 frees unknown town atlantis',
       'quests/odd: needs itself',
       'quests/loop-b: step 1 is not on passable land',
       'quests/loop-b: needs itself',

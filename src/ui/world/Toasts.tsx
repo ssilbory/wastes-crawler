@@ -16,7 +16,7 @@ import { data } from '../builder/data.ts';
  */
 const LIFE_MS = 10_000;
 const MOST = 5;
-const ICONS: Record<Alert['kind'], string> = { strain: '⚠', quest: '✦', inn: '♪' };
+const ICONS: Record<Alert['kind'], string> = { strain: '⚠', quest: '✦', inn: '♪', siege: '⚔' };
 
 /**
  * The notices beside the screen. `track` runs after every change to the world and raises a notice
@@ -28,7 +28,7 @@ export function useAlerts() {
   const [shown, setShown] = useState<Shown[]>([]);
   const track = (w: World, fresh = false) => {
     const before = last.current;
-    last.current = alertSnapshot(w);
+    last.current = alertSnapshot(w, data);
     if (fresh || !before) return;
     const found = alertsSince(before, w, data);
     if (found.length === 0) return;

@@ -50,6 +50,8 @@ export function questReferenceErrors(srd: SrdData, content: ContentData): string
         errors.push(`${where}: step ${i + 1} is not on passable land`);
       if ((o.kind === 'deliver' || o.kind === 'escort') && !towns.has(o.to))
         errors.push(`${where}: step ${i + 1} goes to unknown town ${o.to}`);
+      if (o.kind === 'free' && !towns.has(o.town))
+        errors.push(`${where}: step ${i + 1} frees unknown town ${o.town}`);
       if (o.kind === 'escort' && i > 0) errors.push(`${where}: an escort must be the first step`);
       if (o.kind === 'reach' || o.kind === 'guardian' || o.kind === 'retrieve') {
         const level = content.dungeons

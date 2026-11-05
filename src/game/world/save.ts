@@ -14,6 +14,8 @@ import { importCharacter, type Raw } from '../character/io.ts';
 import { ruinOfDungeon } from '../dungeon/hidden-ruins.ts';
 import { note } from './members.ts';
 import { WORLD_MIGRATIONS } from './save-migrations.ts';
+import { renownEarned } from './major-projects.ts';
+import { isCampaign } from './region.ts';
 import type { Member, World } from './types.ts';
 
 /** The log kept in saves; older lines are dropped. */
@@ -68,6 +70,9 @@ export function serializeWorld(w: World): string {
     beaten: w.beaten,
     pieces: w.pieces,
     warlords: w.warlords,
+    renown: w.renown,
+    majorProjects: w.majorProjects,
+    workings: w.workings,
     clock: w.clock,
     notes: w.notes,
     ending: w.ending,
@@ -80,7 +85,7 @@ export function serializeWorld(w: World): string {
     rumors: w.rumors,
     ordersEnded: w.ordersEnded,
     authority: w.authority,
-    raid: w.raid,
+    sieges: w.sieges,
     raided: w.raided,
     craftsmen: w.craftsmen,
     commissions: w.commissions,
@@ -145,6 +150,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
   } catch {
     return { ok: false, errors: ['not valid JSON'] };
   }
+  const before = (raw as Raw | null)?.schemaVersion;
   const doc = migrate(raw);
   if (typeof doc === 'string') return { ok: false, errors: [doc] };
   const parsed = WorldSaveSchema.safeParse(doc);
@@ -200,6 +206,9 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
     beaten: s.beaten,
     pieces: s.pieces,
     warlords: s.warlords,
+    renown: s.renown,
+    majorProjects: s.majorProjects,
+    workings: s.workings,
     clock: s.clock,
     notes: s.notes,
     ending: s.ending,
@@ -212,7 +221,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
     rumors: s.rumors,
     ordersEnded: s.ordersEnded,
     authority: s.authority,
-    raid: s.raid,
+    sieges: s.sieges,
     raided: s.raided,
     craftsmen: s.craftsmen,
     commissions: s.commissions,
@@ -253,5 +262,8 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
       'The way down has changed beyond knowing; the party finds itself back on the surface.',
     );
   }
+  // A campaign from before major projects counts the Renown it had already earned (Sam's call).
+  if (typeof before === 'number' && before < 51 && isCampaign(world))
+    world.renown = renownEarned(world, data);
   return { ok: true, world };
 }

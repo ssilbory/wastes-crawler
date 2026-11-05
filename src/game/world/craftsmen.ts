@@ -5,6 +5,7 @@
 // back into the pool, and a quarter of it counts toward the town's spending threshold. The month's
 // stock is drawn when the party calls on them, so arriving in town rolls nothing.
 import type { Cost, Craftsman, CraftsmanState } from '../../data/schemas/index.ts';
+import { builtCraftsman } from './built-services.ts';
 import { roll } from '../../rules/dice.ts';
 import { toTenths } from '../../rules/economy.ts';
 import type { GameData } from '../character/context.ts';
@@ -31,7 +32,9 @@ export const kindWord = (data: GameData, id: string) =>
 
 export function craftsmanHere(w: World, data: GameData): Craftsman | undefined {
   const town = currentTown(w, data);
-  return data.content.craftsmen.find((c) => c.town === town?.id);
+  if (!town) return undefined;
+  // The party's own workshop brings a smith (built-services.ts).
+  return data.content.craftsmen.find((c) => c.town === town.id) ?? builtCraftsman(w, data, town.id);
 }
 
 /** This month's state, or null before the party has called on them this month. */

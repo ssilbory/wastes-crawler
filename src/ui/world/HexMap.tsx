@@ -197,6 +197,18 @@ export function HexMap(props: {
                 <title>{c.lair}</title>
               </use>
             )}
+            {c.camp && (
+              <use
+                class="camp"
+                href="#hi-camp"
+                x={c.cx - SIZE * 0.4}
+                y={c.cy - SIZE * 0.4}
+                width={SIZE * 0.8}
+                height={SIZE * 0.8}
+              >
+                <title>{c.camp}</title>
+              </use>
+            )}
             {c.exit && (
               <use
                 class="exit"

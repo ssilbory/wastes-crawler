@@ -5,8 +5,8 @@ import { RUIN_SIZES, type ContentData, type SrdData } from './schemas/index.ts';
 /**
  * Phase 12b and 12c's setting systems point at things that exist: standing orders at quests and
  * hireling types; authorities, garrisons (overland and underground), and clues at orders; messages
- * at peoples; raids at a region with settlements; and garrisons and raiders at known monsters and
- * at hexes or floor cells on the map.
+ * at peoples; a siege's first assault within the month; and garrisons and militia at known
+ * monsters and at hexes or floor cells on the map.
  */
 export function settingReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const errors: string[] = [];
@@ -86,13 +86,10 @@ export function settingReferenceErrors(srd: SrdData, content: ContentData): stri
   }
   errors.push(...campaignErrors(content, monsters));
   errors.push(...ruinErrors(content, monsters));
-  const raid = content.raidRules;
-  const region = content.regions.find((r) => r.id === raid.region);
-  if (!region) errors.push(`raidRules: unknown region ${raid.region}`);
-  else if (region.sites.length === 0) errors.push(`raidRules: ${raid.region} has no settlements`);
-  if (raid.warningDays >= content.overlandRules.daysPerMonth)
-    errors.push('raidRules: the warning must come within the month');
-  unknownMonsters('raidRules', raid.raiders);
+  const siege = content.siegeRules;
+  if (siege.firstAssault >= content.overlandRules.daysPerMonth)
+    errors.push('siegeRules: the first assault must come within the month');
+  unknownMonsters('siegeRules', [[siege.militiaMonster, siege.forceMonster]]);
   return errors;
 }
 

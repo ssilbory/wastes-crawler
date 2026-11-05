@@ -3,19 +3,30 @@
 // rival out of a location, and a settlement sacked when the blow lands on the faction that holds
 // it, raising its prices for a month as a raid does (docs/rules-adaptation.md, Raids).
 import type { FactionState } from '../../data/schemas/index.ts';
+import { destroyWorkings } from '../world/workings.ts';
 import type { GameData } from '../character/context.ts';
 import { moveClock } from '../world/clock.ts';
 import { note } from '../world/members.ts';
 import type { World } from '../world/types.ts';
 import type { OnStrike } from './actions.ts';
 import { factionOf, locationName } from './state.ts';
+import { wallsHold } from '../world/project-effects.ts';
 
-/** Raises a settlement's prices for a month, if `at` is a settlement on any map. */
+/**
+ * Raises a settlement's prices for a month, if `at` is a settlement on any map; behind walls the
+ * party built, for half a month (Sam's call: Major projects).
+ */
 export function sack(w: World, data: GameData, at: string): void {
   const site = data.content.regions.flatMap((r) => r.sites).find((s) => s.id === at);
   if (!site) return;
-  w.raided[at] = w.day + 1 + data.content.overlandRules.daysPerMonth;
-  note(w, `${site.name} is sacked. Prices there are up for a month.`);
+  const month = data.content.overlandRules.daysPerMonth;
+  const walled = wallsHold(w, data, at) > 0;
+  w.raided[at] = w.day + 1 + (walled ? Math.ceil(month / 2) : month);
+  note(
+    w,
+    `${site.name} is sacked. Prices there are up for ${walled ? 'half a month' : 'a month'}.`,
+  );
+  destroyWorkings(w, data, at);
 }
 
 /** The strike hook for faction `id`'s attacks. */

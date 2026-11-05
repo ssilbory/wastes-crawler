@@ -47,7 +47,9 @@ describe('the road to the next map', () => {
     const purse = w.purse;
     expect(turnInQuest(w, data, 'east-road')).toEqual({ ok: true });
     expect(w.purse).toBe(purse + 50);
-    expect(w.log.at(-1)).toContain('Elder Gorvash pays for The East Road');
+    // The quest's Renown follows the payment in the journal (major-projects.ts).
+    expect(w.log.at(-2)).toContain('Elder Gorvash pays for The East Road');
+    expect(w.log.at(-1)).toContain('1 Renown');
     // Once paid for, it leaves the payer's board.
     expect(questBoard(w, data, 'elder-gorvash').map((q) => q.id)).not.toContain('east-road');
   });

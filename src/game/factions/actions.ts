@@ -6,8 +6,10 @@
 import type { FactionState } from '../../data/schemas/index.ts';
 import { assetRepair, factionMaxHp, factionRepair } from '../../rules/factions.ts';
 import type { GameData } from '../character/context.ts';
+import { settlementOf } from '../world/siege-state.ts';
 import type { World } from '../world/types.ts';
 import { defenderAt, strike, type StrikeResult } from './combat.ts';
+import { beginSiege, pitchCamps, siegeOf } from './siege.ts';
 import {
   addAsset,
   assetName,
@@ -42,19 +44,22 @@ export function readyAttackers(w: World, data: GameData, id: string) {
   return s.assets.filter((a) => hasDamage(data, a.asset) && victimAt(w, data, id, a.at));
 }
 
-/** Attack: every ready asset strikes once, except any held back at `holdAt` for a raid. */
-export function attackAction(
-  w: World,
-  data: GameData,
-  id: string,
-  onStrike: OnStrike,
-  holdAt: string | null = null,
-): void {
+/**
+ * Attack: every ready asset strikes once, except at a settlement, where the attack becomes a siege
+ * (docs/rules-adaptation.md, Sieges): its assets there camp around it, and the siege's assaults
+ * (assault.ts) do the fighting from then on.
+ */
+export function attackAction(w: World, data: GameData, id: string, onStrike: OnStrike): void {
   const stolen = new Set<string>();
-  for (const held of readyAttackers(w, data, id).filter((a) => a.at !== holdAt)) {
+  for (const held of readyAttackers(w, data, id)) {
     // An earlier strike may have razed or destroyed everything here.
     const victim = victimAt(w, data, id, held.at);
     if (!victim) continue;
+    if (settlementOf(data, held.at)) {
+      const s = siegeOf(w, held.at, id) ?? beginSiege(w, data, id, held.at, victim);
+      pitchCamps(w, data, s);
+      continue;
+    }
     news(
       w,
       `${factionOf(data, id).name}'s ${assetName(data, id, held.asset)} strikes at ${factionOf(data, victim).name} in ${locationName(data, held.at)}.`,

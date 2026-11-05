@@ -1,20 +1,24 @@
 // What things cost in town (docs/rules-adaptation.md, Progression and economy): each town keeps a
 // ledger of crowns spent and loot cashed in against its thresholds, which reset on the first visit
-// and after a month; spending past the threshold pays a surcharge, a raided settlement charges more
-// for a month (Raids in Phase 12b), and a good trader haggles. Arriving in town is town.ts.
+// and after a month; spending past the threshold pays a surcharge, a sacked settlement charges more
+// for a month (Raids in Phase 12b) and a besieged one while the siege lasts (Sieges in Phase 23a),
+// and a good trader haggles. Arriving in town is town.ts.
 import type { Site, TownLedger } from '../../data/schemas/index.ts';
+import { grownSize } from './institution-projects.ts';
 import { surchargedCost, toTenths } from '../../rules/economy.ts';
 import { RESOURCE_DICE } from '../../rules/resource-die.ts';
 import type { GameData } from '../character/context.ts';
 import { regionMap } from './region.ts';
 import { tradePercent } from './trade.ts';
 import type { World } from './types.ts';
+import { besieged, holderOf } from './siege-state.ts';
 
 export const FULL_RATIONS = RESOURCE_DICE[RESOURCE_DICE.length - 1] as 12;
 
-/** The town the party stands in, if any. */
+/** The town the party stands in, if any, at its size as things stand (a village may have grown). */
 export function currentTown(w: World, data: GameData): Site | undefined {
-  return regionMap(data, w.region).siteAt(w.position);
+  const site = regionMap(data, w.region).siteAt(w.position);
+  return site && { ...site, size: grownSize(w, data, site) };
 }
 
 export function townHere(w: World, data: GameData): Site {
@@ -61,10 +65,16 @@ export function spend(w: World, data: GameData, listed: number): boolean {
   return true;
 }
 
-/** Whether a settlement's prices are up after a raid. */
+/** Whether a settlement's prices are up after a sacking. */
 export const isRaided = (w: World, town: string) => (w.raided[town] ?? -1) > w.day;
 
-/** The raided surcharge on top of `cost`. */
+/**
+ * The surcharge on top of `cost` in a town sacked or besieged (Sieges: Blockade), or the held
+ * town's price (A held settlement, Phase 23b); none of them stack, the dearest counting.
+ */
 export function raidedCost(w: World, data: GameData, town: string, cost: number): number {
-  return isRaided(w, town) ? toTenths(cost * (1 + data.content.raidRules.surcharge)) : cost;
+  const rules = data.content.siegeRules;
+  if (holderOf(w, data, town)) return toTenths(cost * rules.heldPrice);
+  const up = isRaided(w, town) || besieged(w, town);
+  return up ? toTenths(cost * (1 + rules.surcharge)) : cost;
 }

@@ -20,6 +20,7 @@ import {
 } from './overland-content.ts';
 import { GroveSchema } from './grove-content.ts';
 import { WarlordContentSchema } from './warlord-content.ts';
+import { ProjectContentSchema } from './project-content.ts';
 import { HiddenSiteContentSchema } from './hidden-site-content.ts';
 import { AilmentContentSchema } from './ailment-content.ts';
 import { SkillRulesSchema, SpellRulesSchema } from './skill-content.ts';
@@ -28,7 +29,7 @@ import { SettingsDefaultsSchema, SoundCueSchema } from './settings.ts';
 import {
   AuthoritySchema,
   CampaignSchema,
-  RaidRulesSchema,
+  SiegeRulesSchema,
   StandingOrderSchema,
 } from './setting-content.ts';
 import { RuinSchema } from './ruin-content.ts';
@@ -220,13 +221,15 @@ export const ContentSchemas = {
   settingMonsters: z.array(SettingMonsterSchema),
   standingOrders: z.array(StandingOrderSchema),
   authorities: z.array(AuthoritySchema),
-  raidRules: RaidRulesSchema,
+  siegeRules: SiegeRulesSchema,
   campaign: CampaignSchema,
   ruins: z.array(RuinSchema),
   /** The kinds of trap the ruin generators draw from. */
   ruinTraps: z.array(RuinTrapSchema).min(1),
   groves: z.array(GroveSchema),
   warlords: WarlordContentSchema,
+  /** Major projects, institutions, recruits, and Workings (Phase 22). */
+  projects: ProjectContentSchema,
   hiddenSites: HiddenSiteContentSchema,
   factions: FactionContentSchema,
   ailments: AilmentContentSchema,

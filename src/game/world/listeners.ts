@@ -11,7 +11,7 @@ import { notesListener } from './notes.ts';
 import { sharesListener } from './shares.ts';
 import { ordersListener } from './orders.ts';
 import { questListener } from './quests.ts';
-import { raidsListener } from './raids.ts';
+import { siegesListener } from './sieges.ts';
 import { raisingListener } from './raising.ts';
 import { rescueListener } from '../dungeon/rescues.ts';
 import { ruinsListener } from '../dungeon/ruins.ts';
@@ -19,6 +19,9 @@ import { realmEndListener } from './realm-end.ts';
 import { sitesListener } from './hidden-sites.ts';
 import { waterListener } from './water.ts';
 import { warlordsListener } from './warlords.ts';
+import { majorProjectsListener } from './major-projects.ts';
+import { institutionsListener } from './institutions.ts';
+import { workingsListener } from './workings.ts';
 
 const ALL: readonly Listener[] = [
   questListener,
@@ -28,7 +31,7 @@ const ALL: readonly Listener[] = [
   craftingListener,
   maintenanceListener,
   ordersListener,
-  raidsListener,
+  siegesListener,
   factionsListener,
   clockListener,
   notesListener,
@@ -37,21 +40,28 @@ const ALL: readonly Listener[] = [
   sitesListener,
   waterListener,
   warlordsListener,
+  majorProjectsListener,
+  institutionsListener,
+  workingsListener,
   // Last, so the fight's garrison is recorded before the ending checks the hex.
   realmEndListener,
 ];
 
 /**
- * The campaign's own story: its raids, factions, warlord's clock, and crafter's notes, all tied to
+ * The campaign's own story: its sieges, factions, warlord's clock, crafter's notes, and major
+ * projects (Renown is earned only where projects can be spent on), all tied to
  * the campaign's towns. A world on a custom map or a realm has none of it (Sam's call). Standing
  * orders run everywhere: the Sealed Vale's posts hold its pass and tower, and the same listener
  * records every won post and hoard fight (docs/rules-adaptation.md, Shipped worlds).
  */
 const CAMPAIGN: ReadonlySet<Listener> = new Set([
-  raidsListener,
+  siegesListener,
   factionsListener,
   clockListener,
   notesListener,
+  majorProjectsListener,
+  institutionsListener,
+  workingsListener,
 ]);
 
 export const WORLD_LISTENERS: WorldListeners = { all: ALL, campaign: CAMPAIGN };

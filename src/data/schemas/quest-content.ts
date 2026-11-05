@@ -56,6 +56,15 @@ export const ObjectiveSchema = z.discriminatedUnion('kind', [
     reinforce: IdSchema.optional(),
     text: z.string().min(1),
   }),
+  /**
+   * Free a settlement held against the party's ally (Phase 23e): done when it is freed with the
+   * party's part in it, failed when it is freed without.
+   */
+  z.strictObject({
+    kind: z.literal('free'),
+    town: IdSchema,
+    text: z.string().min(1),
+  }),
   /** Pick up a quest item lying on a dungeon cell. */
   z.strictObject({
     kind: z.literal('retrieve'),

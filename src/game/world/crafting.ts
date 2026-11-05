@@ -5,6 +5,7 @@
 // The work goes on in a town's workshop, or in camp shifts out in the wilds for a crafter carrying
 // crafting tools, a portable workshop in the SRD's sense (Sam's calls).
 import type { People, Project } from '../../data/schemas/index.ts';
+import { builtWorkshop } from './built-services.ts';
 import { gameSpells, type GameSpell } from '../../data/spells.ts';
 import type { GameData } from '../character/context.ts';
 import { fitSize, sizedLine, type Size } from '../character/gear.ts';
@@ -198,9 +199,10 @@ export function abandonProject(w: World, data: GameData, crafterId: string): Tow
   return { ok: true };
 }
 
-/** A town's workshop; villages have none. */
+/** A town's workshop; villages have none but one the party built, which is its own to use. */
 export function workshopHere(w: World, data: GameData): { owned: boolean } | null {
   const town = townHere(w, data);
+  if (builtWorkshop(w, town.id)) return { owned: true };
   return town.size === 'village' ? null : { owned: w.workshops.includes(town.id) };
 }
 
@@ -230,7 +232,7 @@ const projectTools = (data: GameData, p: Pick<Project, 'kind'>): string =>
       ? data.content.scrolls.kit
       : data.content.craftingRules.tools.id;
 
-const carriesFor = (data: GameData, m: Member, p: Project) =>
+export const carriesFor = (data: GameData, m: Member, p: Project) =>
   m.character.inventory.some((e) => e.id === projectTools(data, p));
 
 /**

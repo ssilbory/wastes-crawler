@@ -45,12 +45,13 @@ import testParty from '../../data/content/test-party.json';
 import settingMonsters from '../../data/content/setting-monsters.json';
 import standingOrders from '../../data/content/standing-orders.json';
 import authorities from '../../data/content/authorities.json';
-import raidRules from '../../data/content/raid-rules.json';
+import siegeRules from '../../data/content/siege-rules.json';
 import campaign from '../../data/content/campaign.json';
 import ruins from '../../data/content/ruins.json';
 import ruinTraps from '../../data/content/ruin-traps.json';
 import groves from '../../data/content/groves.json';
 import warlords from '../../data/content/warlords.json';
+import projects from '../../data/content/projects.json';
 import hiddenSites from '../../data/content/hidden-sites.json';
 import factions from '../../data/content/factions.json';
 import ailments from '../../data/content/ailments.json';
@@ -81,6 +82,7 @@ import { spellRuleErrors } from './spells.ts';
 import { groveReferenceErrors } from './grove-check.ts';
 import { ailmentReferenceErrors } from './ailment-check.ts';
 import { warlordReferenceErrors } from './warlord-check.ts';
+import { projectReferenceErrors } from './project-check.ts';
 
 /** Every shipped content file, by its key in ContentData, before parsing. */
 export const SHIPPED_CONTENT: Record<keyof ContentData, unknown> = {
@@ -131,12 +133,13 @@ export const SHIPPED_CONTENT: Record<keyof ContentData, unknown> = {
   settingMonsters,
   standingOrders,
   authorities,
-  raidRules,
+  siegeRules,
   campaign,
   ruins,
   ruinTraps,
   groves,
   warlords,
+  projects,
   hiddenSites,
   factions,
   ailments,
@@ -179,6 +182,7 @@ export function dungeonContentErrors(
     ...settingReferenceErrors(srd, content),
     ...ailmentReferenceErrors(srd, content),
     ...warlordReferenceErrors(content),
+    ...projectReferenceErrors(srd, content),
   ];
 }
 
@@ -251,6 +255,8 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['standingOrders', content.standingOrders],
     ['authorities', content.authorities],
     ['groves', content.groves],
+    ['projects', content.projects.projects],
+    ['projects/workings', content.projects.workings],
     ...content.dungeons.map((d): [string, { id: string }[]] => [
       `dungeons/${d.id} levels`,
       d.levels,

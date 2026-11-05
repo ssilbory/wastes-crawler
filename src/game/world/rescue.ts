@@ -44,5 +44,6 @@ export function arriveNpcs(w: World, data: GameData, townId: string): void {
       else m.character = { ...m.character, xp: m.character.xp + c.xp };
     }
     note(w, `${n.name} is home safe: a reward of ${c.reward} crowns, and ${c.xp} XP each.`);
+    emit(w, data, { kind: 'captive-home', captive: c.id });
   }
 }

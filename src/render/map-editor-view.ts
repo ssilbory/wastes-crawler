@@ -44,6 +44,7 @@ export function editorHexCells(
         exit: map.exitAt(h)?.name ?? null,
         grove: null,
         lair: null,
+        camp: null,
       });
     }
   return cells;

@@ -5,7 +5,7 @@ import { notesChoices, settingNotes } from '../../render/setting-view.ts';
 import { data } from '../builder/data.ts';
 
 /**
- * Raids threatened and suffered, countersigns learned, tokens carried (Phase 12b), and the
+ * Sieges under way and sackings suffered (Phase 23a), countersigns learned, tokens carried (Phase 12b), and the
  * warlord's clock, crafter's notes awaiting a decision, and the ending (Phase 12d).
  */
 export function SettingPanel(props: { world: World; inTown: boolean; onChange: () => void }) {
@@ -18,8 +18,8 @@ export function SettingPanel(props: { world: World; inTown: boolean; onChange: (
     props.onChange();
   };
   return (
-    <section class="panel" aria-label="Orders and raids">
-      <h3>Orders and raids</h3>
+    <section class="panel" aria-label="Orders and sieges">
+      <h3>Orders and sieges</h3>
       <ul class="setting-notes">
         {lines.map((l) => (
           <li key={l}>{l}</li>

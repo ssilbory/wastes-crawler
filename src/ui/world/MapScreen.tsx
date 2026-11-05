@@ -17,6 +17,8 @@ import { PartyPanel } from './PartyPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
 import { FactionsPanel } from './FactionsPanel.tsx';
 import { WarlordsPanel } from './WarlordsPanel.tsx';
+import { ProjectsPanel } from './ProjectsPanel.tsx';
+import { WorkingsPanel } from './WorkingsPanel.tsx';
 import { SettingPanel } from './SettingPanel.tsx';
 import { HealerPanel, RevivePopOut, useReviveAsk } from './HealerPanel.tsx';
 import { SurrenderPopOut, surrenderOpen } from './SurrenderPanel.tsx';
@@ -49,6 +51,7 @@ import { typeOf } from '../../game/world/npcs.ts';
 import { entrancesIn, wayDownHere } from '../../game/dungeon/ruins.ts';
 import type { QuarterPlan } from '../../game/world/types.ts';
 import { grovesHere } from '../../game/world/groves.ts';
+import { campMarkers } from '../../render/siege-view.ts';
 
 const stampOf = (w: World) => `${w.day}/${w.quarter}/${hexKey(w.position)}`;
 
@@ -112,6 +115,7 @@ export function MapScreen(props: {
         grovesHere(w, data),
         revealedHexes(w, data),
         found.filter((s) => s.kind === 'lair'),
+        campMarkers(w, data),
       ),
     [w, props.version],
   );
@@ -257,6 +261,8 @@ export function MapScreen(props: {
           )}
           {/* Quests, then the panels of powers and places (Sam's call: one column); the party is in the bar. */}
           <QuestLog world={w} onChange={props.onChange} />
+          <ProjectsPanel world={w} onChange={props.onChange} />
+          <WorkingsPanel world={w} onChange={props.onChange} />
           <NpcPanel world={w} onChange={props.onChange} />
           <MountsPanel world={w} onChange={props.onChange} />
           <CompanionsPanel world={w} onChange={props.onChange} />

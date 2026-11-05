@@ -38,8 +38,8 @@ describe('coach routes (docs/rules-adaptation.md, Coach routes)', () => {
     expect(routesFrom(w, data, 'westhold').map((r) => r.to.name)).toEqual(['Scrapmarch']);
     expect(routesFrom(w, data, 'eastmarch').map((r) => r.to.name)).toEqual(['Rubblegate']);
     expect(routesFrom(w, data, 'highcairn')).toEqual([]);
-    expect(coachRoute(data, 'west-road').fare).toBe(15);
-    expect(() => coachRoute(data, 'sky-road')).toThrow('unknown coach route sky-road');
+    expect(coachRoute(w, data, 'west-road').fare).toBe(15);
+    expect(() => coachRoute(w, data, 'sky-road')).toThrow('unknown coach route sky-road');
     member(w, 'Fizzwick').dead = true;
     addNpc(w, data, 'hireling', 'guard', 'thug-or-militia', 'Aldo', true);
     expect(passengers(w)).toBe(4);

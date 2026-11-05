@@ -11,7 +11,7 @@ import {
 } from '../../../src/game/factions/actions.ts';
 import { checkGoal, pickGoal, weakestBase } from '../../../src/game/factions/goals.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
-import { data, faction, factionWorld, held } from './helpers.ts';
+import { data, faction, factionWorld, held, unsettled } from './helpers.ts';
 
 describe('faction actions (6.6.0)', () => {
   it('finds the rival that answers an attack: the goal target first, then rivals in order', () => {
@@ -35,13 +35,31 @@ describe('faction actions (6.6.0)', () => {
     const w = factionWorld();
     const s = faction(w, 'warhost');
     for (const a of s.assets) a.at = 'lanternfall';
-    // The band hits the farm at Lanternfall for 8 and kills it, the pack razes the 2-hp base with
-    // 2d4, and the guards find nothing left.
+    // Lanternfall off the map is a location like any other. The band hits the farm there for 8
+    // and kills it, the pack razes the 2-hp base with 2d4, and the guards find nothing left.
     w.rng = scriptedRng([10, 1, 1, 8, 10, 1, 1, 3, 2]);
     const hits: string[] = [];
-    attackAction(w, data, 'warhost', (victim, at, r) => hits.push(`${victim}@${at}:${r.dealt}`));
+    attackAction(w, unsettled('lanternfall'), 'warhost', (victim, at, r) =>
+      hits.push(`${victim}@${at}:${r.dealt}`),
+    );
     expect(hits).toEqual(['settlements@lanternfall:4', 'settlements@lanternfall:2']);
     expect(faction(w, 'settlements').bases.some((b) => b.at === 'lanternfall')).toBe(false);
+  });
+
+  it('lays siege to a settlement instead of striking it, once', () => {
+    const w = factionWorld();
+    const s = faction(w, 'warhost');
+    for (const a of s.assets) a.at = 'lanternfall';
+    const hits: string[] = [];
+    attackAction(w, data, 'warhost', (victim) => hits.push(victim));
+    attackAction(w, data, 'warhost', (victim) => hits.push(victim));
+    expect(hits).toEqual([]);
+    expect(w.sieges).toHaveLength(1);
+    expect(w.sieges[0]).toMatchObject({ town: 'lanternfall', attacker: 'warhost' });
+    // Every besieger that can attack has a camp beside the village.
+    expect(w.sieges[0]?.camps).toHaveLength(
+      s.assets.filter((a) => a.asset !== 'manufactory').length,
+    );
   });
 
   it('repairs the faction once and each hurt asset once while Treasure lasts', () => {

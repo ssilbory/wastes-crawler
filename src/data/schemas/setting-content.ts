@@ -34,20 +34,58 @@ export const AuthoritySchema = z.strictObject({
 export type Authority = z.infer<typeof AuthoritySchema>;
 
 /** The monthly raid threat on the Dark Lands' settlements (Sam's call). */
-export const RaidRulesSchema = z.strictObject({
-  /** The faction whose attacks on the region's settlements come as raids (Phase 13b). */
-  faction: IdSchema,
-  /** The region whose settlements are raided. */
-  region: IdSchema,
-  /** Days from the warning to the raid. */
-  warningDays: z.int().min(1),
-  raiders: z.array(z.array(IdSchema).min(1).max(8)).min(1).max(3),
-  /** Crowns the settlement pays defenders. */
-  reward: z.number().min(0),
-  /** A raided town's prices rise by this fraction for a month. */
+const FreeRewardSchema = z.strictObject({ crowns: z.number().min(0), xp: z.number().min(0) });
+
+export const SiegeRulesSchema = z.strictObject({
+  /** The party's ally: sieges it fights in are alerted at once, and lifting one pays Renown. */
+  ally: IdSchema,
+  /** Days from a siege's start to its first assault, unless the party joins sooner. */
+  firstAssault: z.int().min(1),
+  /** Militia a settlement raises by its size, besides the holder's assets there. */
+  militia: z.strictObject({ village: z.int().min(0), town: z.int().min(0), city: z.int().min(0) }),
+  /** The defenders' militia (the Guard's stat line), and the holder's Force assets' fighters. */
+  militiaMonster: IdSchema,
+  forceMonster: IdSchema,
+  /** Faction assets whose sieges walls don't slow (Siege Experts). */
+  ignoreWalls: z.array(IdSchema),
+  /** Hit points an assault lost costs the holder, besides its own fighters lost; militia are free. */
+  overrun: z.int().min(0),
+  /** System Strain each PC takes when an assault is lost with the party in it. */
+  strain: z.int().min(0),
+  /** Renown for an ally's siege lifted after the party fought in it. */
+  renown: z.int().min(0),
+  /** A held settlement's shop and inn charge this many times their price (Phase 23b). */
+  heldPrice: z.number().min(1),
+  /** A sacked or besieged settlement's prices rise by this fraction. */
   surcharge: z.number().min(0),
+  /**
+   * Sam's call (Phase 23g): the party's share of an assault is this many of the sturdiest groups
+   * on the other side, fought together.
+   */
+  shareGroups: z.int().min(1),
+  /** Sam's call (Phase 23g): storming a held town faces the base's guard beside its asset. */
+  stormGuard: z.boolean(),
+  /**
+   * Sam's call (Phase 23h): every siege fight the party is in gains this many fighters per level
+   * of the party, rounded down, drawn from the group's own monsters (at most 24 a side).
+   */
+  levelScale: z.number().min(0),
+  /**
+   * The quest to free a held settlement (Phase 23e), offered by every giver in the ally's free
+   * settlements: `{town}` in its texts names the held one; the reward goes by its size.
+   */
+  freeQuest: z.strictObject({
+    name: z.string().min(1),
+    summary: z.string().min(1),
+    text: z.string().min(1),
+    reward: z.strictObject({
+      village: FreeRewardSchema,
+      town: FreeRewardSchema,
+      city: FreeRewardSchema,
+    }),
+  }),
 });
-export type RaidRules = z.infer<typeof RaidRulesSchema>;
+export type SiegeRules = z.infer<typeof SiegeRulesSchema>;
 
 /**
  * The campaign's endgame (Phase 12d; Sam's calls): the warlord's clock, crafter's notes, and the
