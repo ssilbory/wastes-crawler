@@ -15,6 +15,8 @@ export const SiegeFightSchema = z.strictObject({
    * the party's share of an assault fought on the besiegers' side: the holder's asset, or `base`.
    */
   kind: z.enum(['camp', 'enter', 'exit', 'assault', 'storm', 'breach']),
+  /** A storm's base guard fought beside the asset, a militia a hit point of base (Phase 23g). */
+  guard: z.int().min(1).optional(),
 });
 export type SiegeFight = z.infer<typeof SiegeFightSchema>;
 
@@ -45,6 +47,14 @@ export const SiegeSchema = z.strictObject({
    * The party's share of tonight's assault, until fought: whether it is driven out after it (the
    * assault lost by the side the party is on).
    */
-  gate: z.strictObject({ uid: z.string(), size: z.int().min(1), lost: z.boolean() }).nullable(),
+  gate: z
+    .strictObject({
+      uid: z.string(),
+      size: z.int().min(1),
+      lost: z.boolean(),
+      /** The other groups in a share of more than one (Phase 23g), each with its fighters. */
+      also: z.array(z.strictObject({ uid: z.string(), size: z.int().min(1) })).optional(),
+    })
+    .nullable(),
 });
 export type Siege = z.infer<typeof SiegeSchema>;

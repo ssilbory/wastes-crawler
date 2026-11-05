@@ -13,6 +13,7 @@ import { characterSheet } from '../character/derived.ts';
 import { cure } from './ailments.ts';
 import { raiseMarked, raisePrice } from './raised.ts';
 import { endOfDay } from './day.ts';
+import { besieged } from './siege-state.ts';
 import { alive, cureFrailty, note, setHp } from './members.ts';
 import type { Member, World } from './types.ts';
 import { currentTown, FULL_RATIONS, priceHere, spend, townHere } from './town-prices.ts';
@@ -46,12 +47,14 @@ export function stayAtInn(w: World, data: GameData): TownResult {
 export function restAtInn(w: World, data: GameData): void {
   for (const m of alive(w)) m.slept = true;
   w.camp = 'made';
-  w.noRecovery = false;
+  // Sam's call (Phase 23g, worn down): no one recovers in a town under siege, night after night.
+  const siege = besieged(w, townHere(w, data).id);
+  w.noRecovery = siege;
   // A night that wipes the party out ends at the last town, with no inn stay to note.
   if (endOfDay(w, data)) return;
   // A town that falls in the night drives the party out before morning, unrested (Sieges).
   const town = currentTown(w, data);
-  if (town) {
+  if (town && !siege) {
     for (const m of alive(w)) {
       const s = m.character.strain;
       const rested = fullRest({ strain: s.value, max: 0, broken: s.broken });
@@ -61,7 +64,13 @@ export function restAtInn(w: World, data: GameData): void {
   }
   w.day += 1;
   w.quarter = 0;
-  if (town) note(w, `The party stays the night at the inn in ${town.name}.`);
+  if (town)
+    note(
+      w,
+      siege
+        ? `The party stays the night at the inn in ${town.name}, but the siege lets no one rest.`
+        : `The party stays the night at the inn in ${town.name}.`,
+    );
 }
 
 const levelOf = (data: GameData, m: Member) => characterSheet(m.character, data).level;

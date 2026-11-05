@@ -59,6 +59,13 @@ export const SiegeRulesSchema = z.strictObject({
   /** A sacked or besieged settlement's prices rise by this fraction. */
   surcharge: z.number().min(0),
   /**
+   * Sam's call (Phase 23g): the party's share of an assault is this many of the sturdiest groups
+   * on the other side, fought together.
+   */
+  shareGroups: z.int().min(1),
+  /** Sam's call (Phase 23g): storming a held town faces the base's guard beside its asset. */
+  stormGuard: z.boolean(),
+  /**
    * The quest to free a held settlement (Phase 23e), offered by every giver in the ally's free
    * settlements: `{town}` in its texts names the held one; the reward goes by its size.
    */

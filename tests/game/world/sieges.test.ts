@@ -54,6 +54,49 @@ describe('a siege’s assaults with the party there (docs/rules-adaptation.md, S
     expect(asset(w, 'a1')?.hp).toBe(2);
   });
 
+  it('gives a party two besiegers’ groups at once, each paying for its own (Phase 23g)', () => {
+    const { w, s } = besieged();
+    // A sturdy base, so the night's simulated assault can't end the siege first.
+    const base = w.factions.settlements?.bases.find((b) => b.at === 'lanternfall');
+    if (base) Object.assign(base, { hp: 20, max: 20 });
+    s.next = w.day;
+    emit(w, data, { kind: 'day-passed' });
+    // The warband (6) and the scouts (5), the two sturdiest of three.
+    expect(s.gate).toMatchObject({ uid: 'a1', size: 4, also: [{ uid: 'a2' }] });
+    const scouts = s.gate?.also?.[0]?.size ?? 0;
+    expect(w.encounter?.enemies.flat()).toHaveLength(4 + scouts);
+    expect(w.log.at(-1)).toMatch(
+      /Grisk's Warhost's Beastman Warband and Grisk's Warhost's .+ storm the gates!/,
+    );
+    const before = asset(w, 'a2')?.hp ?? 0;
+    const gate = s.gate;
+    emit(w, data, won(fightOf(s, 'a1', 'assault')));
+    expect(asset(w, 'a1')?.hp).toBe(2);
+    expect(asset(w, 'a2')?.hp ?? 0).toBe(Math.max(0, before - scouts));
+    // A group already gone from the share costs nothing more.
+    s.gate = gate;
+    const warhost = w.factions.warhost;
+    if (warhost) warhost.assets = warhost.assets.filter((a) => a.uid !== 'a2');
+    emit(w, data, won(fightOf(s, 'a1', 'assault')));
+    expect(asset(w, 'a1')).toBeUndefined();
+  });
+
+  it('rests no one at the inn of a besieged town (Phase 23g: worn down)', () => {
+    const { w } = besieged();
+    const snag = member(w, 'Snag');
+    snag.character = {
+      ...snag.character,
+      hp: { ...snag.character.hp, current: 1 },
+      strain: { ...snag.character.strain, value: 2 },
+    };
+    expect(stayAtInn(w, data)).toEqual({ ok: true });
+    expect(member(w, 'Snag').character.hp.current).toBe(1);
+    expect(member(w, 'Snag').character.strain.value).toBe(2);
+    expect(w.log.at(-1)).toContain(
+      'The party stays the night at the inn in Lanternfall, but the siege lets no one rest.',
+    );
+  });
+
   it('gives the party the sturdiest besieger, wherever it stands in the line', () => {
     const { w, s } = besieged();
     // The warband is worn to 2, so the 5-hp scouts are the sturdiest; a garrison holds the rest.

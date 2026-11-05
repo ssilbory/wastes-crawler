@@ -116,10 +116,10 @@ function withParty(): void {
   const days = data.content.overlandRules.daysPerMonth;
   console.log(`${RUNS} runs a level, seed "${SEED}"; level 0 is no party.`);
   console.log(
-    `| Level | ${checkpoints.map((m) => `Settlements, month ${m}`).join(' | ')} | Sieges begun, lifted, fallen | Party wiped (median month) | Fights (siege), won | Towns freed by the party | Freeing quests paid |`,
+    `| Level | ${checkpoints.map((m) => `Settlements, month ${m}`).join(' | ')} | Sieges begun, lifted, fallen | Party wiped (median month) | Fights (siege), won | Siege fights won | Towns freed by the party | Freeing quests paid |`,
   );
   console.log(
-    `| --- | ${checkpoints.map(() => '---').join(' | ')} | --- | --- | --- | --- | --- |`,
+    `| --- | ${checkpoints.map(() => '---').join(' | ')} | --- | --- | --- | --- | --- | --- |`,
   );
   for (const level of levels) {
     const standing = new Map<number, number>();
@@ -128,6 +128,7 @@ function withParty(): void {
     let fights = 0;
     let siegeFights = 0;
     let won = 0;
+    let siegeWon = 0;
     let freed = 0;
     let quests = 0;
     for (let run = 0; run < RUNS; run++) {
@@ -148,15 +149,17 @@ function withParty(): void {
       fights += r.fights;
       siegeFights += r.siegeFights;
       won += r.won;
+      siegeWon += r.siegeWon;
       freed += r.freed;
       quests += r.quests;
     }
     const wiped =
       level === 0 ? '-' : `${pct(wipes.length)} (${wipes.length > 0 ? median(wipes) : '-'})`;
+    const share = siegeFights === 0 ? '-' : `${Math.round((100 * siegeWon) / siegeFights)}%`;
     const party =
       level === 0
-        ? '- | - | -'
-        : `${avg(fights)} (${avg(siegeFights)}), ${avg(won)} | ${avg(freed)} | ${avg(quests)}`;
+        ? '- | - | - | -'
+        : `${avg(fights)} (${avg(siegeFights)}), ${avg(won)} | ${share} | ${avg(freed)} | ${avg(quests)}`;
     console.log(
       `| ${level} | ${checkpoints.map((m) => pct(standing.get(m) ?? 0)).join(' | ')} | ${avg(sieges.begun)}, ${avg(sieges.lifted)}, ${avg(sieges.fallen)} | ${wiped} | ${party} |`,
     );

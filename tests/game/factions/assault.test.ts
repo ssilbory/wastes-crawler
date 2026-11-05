@@ -4,6 +4,7 @@ import {
   defenders,
   groupOf,
   halveRows,
+  mergeGroups,
   toRows,
   walled,
 } from '../../../src/game/factions/assault.ts';
@@ -41,6 +42,17 @@ describe('a siege’s assault (docs/rules-adaptation.md, Sieges: The battle, Wal
     expect(toRows(ids(20)).map((r) => r.length)).toEqual([8, 8, 4]);
     expect(toRows(ids(30)).map((r) => r.length)).toEqual([8, 8, 8]);
     expect(toRows([])).toEqual([]);
+  });
+
+  it('fights groups as one, row by row, in rows of eight, at most three (Phase 23g)', () => {
+    const band = [['a', 'a', 'a'], ['p']];
+    expect(mergeGroups([band])).toEqual(band);
+    expect(mergeGroups([band, [['m', 'm']]])).toEqual([['a', 'a', 'a', 'm', 'm'], ['p']]);
+    const eight = Array.from({ length: 8 }, () => 'x');
+    expect(mergeGroups([[eight], [['y']]])).toEqual([eight, ['y']]);
+    // Past three rows, they are lined up again in rows of eight.
+    expect(mergeGroups([[['a'], ['b'], ['c'], ['d']]])).toEqual([['a', 'b', 'c', 'd']]);
+    expect(mergeGroups([])).toEqual([]);
   });
 
   it('halves a group, rounding up, from the front rows', () => {
@@ -93,7 +105,7 @@ describe('a siege’s assault (docs/rules-adaptation.md, Sieges: The battle, Wal
     const w = before('lanternfall');
     walls(w);
     w.rng = scriptedRng([50]);
-    expect(assault(w, data, siege({ town: 'lanternfall' }), null)).toEqual({
+    expect(assault(w, data, siege({ town: 'lanternfall' }), [])).toEqual({
       held: true,
       turned: true,
     });
@@ -106,12 +118,12 @@ describe('a siege’s assault (docs/rules-adaptation.md, Sieges: The battle, Wal
     const w = before('lanternfall');
     const s = siege({ town: 'lanternfall' });
     faction(w, 'warhost').assets = [];
-    expect(assault(w, data, s, null)).toEqual({ held: true, turned: false });
+    expect(assault(w, data, s, [])).toEqual({ held: true, turned: false });
     const empty = before('lanternfall');
     const none = { ...data.content.siegeRules, militia: { village: 0, town: 0, city: 0 } };
     const bare = { ...data, content: { ...data.content, siegeRules: none } };
     faction(empty, 'settlements').assets = [];
-    expect(assault(empty, bare, s, null)).toEqual({ held: false, turned: false });
+    expect(assault(empty, bare, s, [])).toEqual({ held: false, turned: false });
     // Each of the 14 attackers costs the undefended base a hit point: its 2 are gone.
     expect(faction(empty, 'settlements').bases.some((b) => b.at === 'lanternfall')).toBe(false);
     expect(empty.log.join('\n')).toContain(
@@ -127,7 +139,7 @@ describe('a siege’s assault (docs/rules-adaptation.md, Sieges: The battle, Wal
     const warhost = faction(w, 'warhost');
     warhost.assets = warhost.assets.filter((a) => a.asset === 'armed-guards');
     w.rng = createRng('militia');
-    expect(assault(w, data, siege({ town: 'cinderhold' }), null).held).toBe(true);
+    expect(assault(w, data, siege({ town: 'cinderhold' }), []).held).toBe(true);
     expect(free.bases.find((b) => b.at === 'cinderhold')?.hp).toBe(17);
     // Lanternfall's 4 militia, alone, against the whole warhost and more: overrun, the base pays 2.
     const v = before('lanternfall');
@@ -138,7 +150,7 @@ describe('a siege’s assault (docs/rules-adaptation.md, Sieges: The battle, Wal
     for (const asset of ['infantry', 'infantry', 'scouts', 'scouts'])
       addAsset(data, faction(v, 'warhost'), asset, 'lanternfall');
     v.rng = createRng('overrun');
-    expect(assault(v, data, siege({ town: 'lanternfall' }), null).held).toBe(false);
+    expect(assault(v, data, siege({ town: 'lanternfall' }), []).held).toBe(false);
     expect(base?.hp).toBe(8);
   });
 
@@ -149,7 +161,7 @@ describe('a siege’s assault (docs/rules-adaptation.md, Sieges: The battle, Wal
     const share = held(w, 'warhost', 'infantry');
     const attackers = hp(w, 'warhost', 'cinderhold');
     const holders = hp(w, 'settlements', 'cinderhold');
-    const r = assault(w, data, s, share);
+    const r = assault(w, data, s, [share]);
     expect(r.turned).toBe(false);
     // The party's share sat it out.
     expect(share.hp).toBe(6);
@@ -167,7 +179,7 @@ describe('a siege’s assault (docs/rules-adaptation.md, Sieges: The battle, Wal
     const warhost = faction(w, 'warhost');
     warhost.assets = warhost.assets.filter((a) => a.asset === 'armed-guards');
     w.rng = createRng('hold');
-    expect(assault(w, data, siege({ town: 'cinderhold' }), null)).toEqual({
+    expect(assault(w, data, siege({ town: 'cinderhold' }), [])).toEqual({
       held: true,
       turned: false,
     });
@@ -191,7 +203,7 @@ describe('a siege’s assault (docs/rules-adaptation.md, Sieges: The battle, Wal
       },
     };
     const lines = w.log.length;
-    assault(w, data, siege({ town: 'lanternfall' }), null);
+    assault(w, data, siege({ town: 'lanternfall' }), []);
     expect(w.log.length).toBeGreaterThan(lines);
     expect(held(w, 'warhost', 'infantry').hp).toBeGreaterThanOrEqual(3);
   });
@@ -202,7 +214,7 @@ describe('a siege’s assault (docs/rules-adaptation.md, Sieges: The battle, Wal
     for (const asset of ['infantry', 'infantry', 'scouts', 'scouts'])
       addAsset(data, faction(w, 'warhost'), asset, 'lanternfall');
     w.rng = createRng('raze');
-    const r = assault(w, data, siege({ town: 'lanternfall' }), null);
+    const r = assault(w, data, siege({ town: 'lanternfall' }), []);
     expect(r).toEqual({ held: false, turned: false });
     expect(faction(w, 'settlements').bases.some((b) => b.at === 'lanternfall')).toBe(false);
     expect(w.raided.lanternfall).toBeGreaterThan(w.day);
@@ -216,7 +228,7 @@ describe('a siege’s assault (docs/rules-adaptation.md, Sieges: The battle, Wal
     free.bases = free.bases.filter((b) => b.at !== 'lanternfall');
     const before_ = free.hp;
     w.rng = createRng('raze');
-    assault(w, data, siege({ town: 'lanternfall' }), null);
+    assault(w, data, siege({ town: 'lanternfall' }), []);
     expect(free.hp).toBe(before_);
     expect(w.raided.lanternfall).toBeUndefined();
   });

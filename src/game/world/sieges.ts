@@ -8,7 +8,7 @@
 // party inside fights the holder's sturdiest asset instead, and the lines don't bar its way.
 import type { Siege, SiegeFight } from '../../data/schemas/index.ts';
 import { hexKey, type Hex } from '../../rules/hex.ts';
-import { assault, groupOf, halveRows, walled } from '../factions/assault.ts';
+import { assault, groupOf, halveRows, mergeGroups, walled } from '../factions/assault.ts';
 import { hurtAsset, hurtBase } from '../factions/combat.ts';
 import { reclaimAll } from '../factions/capture.ts';
 import { besiegers, campHexes, pitchCamps, settle } from '../factions/siege.ts';
@@ -79,8 +79,12 @@ function driveOut(w: World, data: GameData, s: Siege, strained: boolean): void {
   for (const m of alive(w)) addMemberStrain(w, data, m, rules(data).strain, 'condition');
 }
 
-/** The sturdiest besieger, whose group the party fights in an assault; a siege still on has one. */
-const sturdiest = (assets: HeldAsset[]) => assets.reduce((a, b) => (b.hp > a.hp ? b : a));
+/**
+ * The sturdiest besiegers, as many as a share holds (Sam's call, Phase 23g: siegeRules.shareGroups),
+ * whose groups the party fights together in an assault; a siege still on has one.
+ */
+const sturdiest = (data: GameData, assets: HeldAsset[]) =>
+  [...assets].sort((a, b) => b.hp - a.hp).slice(0, rules(data).shareGroups);
 
 /**
  * Tonight's assault, if due. A party inside on the holder's side fights the sturdiest besieger's
@@ -93,7 +97,7 @@ function assaultDue(w: World, data: GameData, s: Siege): void {
   const side = partySide(data, s);
   const inside = partyIn(w, data, s.town) && (side === 'defender' || side === 'attacker');
   const free = inside && !w.encounter;
-  const share = free && side === 'defender' ? sturdiest(besiegers(w, data, s)) : null;
+  const share = free && side === 'defender' ? sturdiest(data, besiegers(w, data, s)) : [];
   const hold = free && side === 'attacker' ? holdTarget(w, data, s.town, s.defender) : null;
   const away = w.factions[s.defender]?.assets.find((a) => a.uid === hold?.uid) ?? null;
   const r = assault(w, data, s, share, away);
@@ -102,11 +106,19 @@ function assaultDue(w: World, data: GameData, s: Siege): void {
   const ended = settle(w, data, s);
   // The party's side lost the night: the town overrun, or the assault thrown back.
   const lost = side === 'defender' ? !r.held : r.held;
-  if (share && !ended && share.hp > 0) {
-    const group = groupOf(data, s.attacker, share);
-    const rows = walled(w, data, s) ? halveRows(group) : group;
-    s.gate = { uid: share.uid, size: rows.flat().length, lost };
-    fight(w, data, s, share, 'assault', rows, `${name(data, s, share)} storms the gates!`);
+  const [first, ...rest] = share;
+  if (first && !ended) {
+    // The groups the party fights, each halved behind walls, then lined up as one.
+    const groups = share.map((a) => {
+      const group = groupOf(data, s.attacker, a);
+      return walled(w, data, s) ? halveRows(group) : group;
+    });
+    const size = (i: number) => (groups[i] as string[][]).flat().length;
+    const also = rest.map((a, i) => ({ uid: a.uid, size: size(i + 1) }));
+    s.gate = { uid: first.uid, size: size(0), lost, ...(also.length > 0 ? { also } : {}) };
+    const who = share.map((a) => name(data, s, a)).join(' and ');
+    const lead = `${who} ${share.length === 1 ? 'storms' : 'storm'} the gates!`;
+    fight(w, data, s, first, 'assault', mergeGroups(groups), lead);
   } else if (hold && !ended) {
     // The holder's asset sat the night out, and its base can't fall while the siege goes on.
     s.gate = { uid: hold.uid, size: hold.rows.flat().length, lost };
@@ -190,7 +202,12 @@ function won(w: World, data: GameData, f: SiegeFight): void {
   const held = assetOf(w, f);
   if (!s || !held) return;
   if (f.kind === 'assault') {
+    // Each group in the share costs its own asset a hit point a fighter.
     hurtAsset(w, data, f.attacker, held, s.gate?.size ?? 0);
+    for (const part of s.gate?.also ?? []) {
+      const other = w.factions[f.attacker]?.assets.find((a) => a.uid === part.uid);
+      if (other) hurtAsset(w, data, f.attacker, other, part.size);
+    }
   } else {
     note(w, `${name(data, s, held)} is broken.`);
     hurtAsset(w, data, f.attacker, held, held.hp);

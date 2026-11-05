@@ -37,7 +37,7 @@ describe('a held settlement (docs/rules-adaptation.md, Sieges: A held settlement
 });
 
 describe('storming a held settlement (Sam’s call: the party may retake it alone)', () => {
-  it('faces the holder’s sturdiest asset there, then the base’s guard', () => {
+  it('faces the holder’s sturdiest asset there with the base’s guard, then the guard alone', () => {
     const w = heldTown();
     // The scouts, weaker, stand in town too: the party meets the warband.
     const scouts = holder(w).find((a) => a.asset === 'scouts');
@@ -46,10 +46,32 @@ describe('storming a held settlement (Sam’s call: the party may retake it alon
       town: 'lanternfall',
       holder: 'warhost',
       uid: 'a1',
+      // Sam's call (Phase 23g): the base's 2 hit points of guard stand beside the warband.
+      name: "Grisk's Warhost's Beastman Warband and the guard",
+      rows: [
+        [
+          'beastman-trooper',
+          'beastman-trooper',
+          'beastman-trooper',
+          'thug-or-militia',
+          'thug-or-militia',
+        ],
+        ['predator-beastman'],
+      ],
+      guard: 2,
+    });
+    expect(stormView(w, data)).toEqual({
+      name: "Grisk's Warhost's Beastman Warband and the guard",
+      fighters: 6,
+    });
+    // Without the guard, as content may set it, the warband stands alone.
+    const alone = { ...data.content.siegeRules, stormGuard: false };
+    expect(
+      stormTarget(w, { ...data, content: { ...data.content, siegeRules: alone } }),
+    ).toMatchObject({
       name: "Grisk's Warhost's Beastman Warband",
       rows: [['beastman-trooper', 'beastman-trooper', 'beastman-trooper'], ['predator-beastman']],
     });
-    expect(stormView(w, data)).toEqual({ name: "Grisk's Warhost's Beastman Warband", fighters: 4 });
     // Worn to 2, the warband gives way to the sturdier scouts.
     const band = holder(w).find((a) => a.asset === 'infantry');
     if (band) band.hp = 2;
@@ -86,10 +108,24 @@ describe('storming a held settlement (Sam’s call: the party may retake it alon
       attacker: 'warhost',
       uid: 'a1',
       kind: 'storm',
+      guard: 2,
     });
-    expect(w.log.at(-1)).toContain("The party storms Grisk's Warhost's Beastman Warband!");
+    expect(w.log.at(-1)).toContain(
+      "The party storms Grisk's Warhost's Beastman Warband and the guard!",
+    );
     expect(siege).toMatchObject({ joined: true, next: w.day });
     expect(storm(w, data)).toEqual({ ok: false, reason: 'Settle the encounter first.' });
+    // Its last asset gone, the base's guard stands alone, no guard beside anything.
+    const bare = heldTown();
+    const s = bare.factions.warhost;
+    if (s) s.assets = s.assets.filter((a) => a.at !== 'lanternfall');
+    storm(bare, data);
+    expect(bare.encounter?.siege).toEqual({
+      town: 'lanternfall',
+      attacker: 'warhost',
+      uid: 'base',
+      kind: 'storm',
+    });
   });
 
   it('breaks the asset, then razes the base, and the town is free: Renown', () => {
@@ -102,6 +138,22 @@ describe('storming a held settlement (Sam’s call: the party may retake it alon
     expect(holderOf(w, data, 'lanternfall')).toBeNull();
     expect(w.factions.settlements?.bases.some((b) => b.at === 'lanternfall')).toBe(true);
     expect(w.renown).toBe(2);
+  });
+
+  it('costs the base a hit point for each of its guard beaten beside the asset (Phase 23g)', () => {
+    const w = heldTown();
+    const base = w.factions.warhost?.bases.find((b) => b.at === 'lanternfall');
+    if (base) Object.assign(base, { hp: 5, max: 5 });
+    stormWon(w, data, {
+      town: 'lanternfall',
+      attacker: 'warhost',
+      uid: 'a1',
+      kind: 'storm',
+      guard: 3,
+    });
+    expect(holder(w).some((a) => a.uid === 'a1')).toBe(false);
+    expect(base?.hp).toBe(2);
+    expect(holderOf(w, data, 'lanternfall')).toBe('warhost');
   });
 
   it('pays once when the ally’s siege there ends with it', () => {

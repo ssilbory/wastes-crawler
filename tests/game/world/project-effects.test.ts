@@ -52,14 +52,14 @@ describe('walls (docs/rules-adaptation.md, Major projects: Project kinds)', () =
     finish(w, 'wall-lanternfall');
     const s = beginSiege(w, data, 'bastion', 'lanternfall', 'settlements');
     w.rng = scriptedRng([30]);
-    expect(assault(w, data, s, null)).toEqual({ held: true, turned: true });
+    expect(assault(w, data, s, [])).toEqual({ held: true, turned: true });
     expect(w.log.at(-1)).toContain(
       "the walls of Lanternfall turned The Dawnwall Bastion's assault back",
     );
     // Past the walls, the assault goes on; with no besiegers there, nothing is fought.
     const lines = w.log.length;
     w.rng = scriptedRng([80]);
-    expect(assault(w, data, s, null)).toEqual({ held: true, turned: false });
+    expect(assault(w, data, s, [])).toEqual({ held: true, turned: false });
     expect(w.log.length).toBe(lines);
   });
 

@@ -33,6 +33,8 @@ export interface PartyRun {
   fights: number;
   siegeFights: number;
   won: number;
+  /** Siege fights won (Phase 23g: kept at 80% or under). */
+  siegeWon: number;
   freed: number;
   quests: number;
 }
@@ -102,10 +104,12 @@ function meet(w: World, data: GameData, r: PartyRun): void {
     return;
   }
   r.fights += 1;
-  if (e.siege) r.siegeFights += 1;
+  const siege = e.siege !== undefined && e.siege !== null;
+  if (siege) r.siegeFights += 1;
   const fight = encounterBattle(w, data);
   const result = runBattle(fight.battle);
   if (result.outcome === 'party') r.won += 1;
+  if (result.outcome === 'party' && siege) r.siegeWon += 1;
   // Fixed level: no XP is reckoned.
   settleByFighting(w, data, fight, result, null);
 }
@@ -141,6 +145,7 @@ export const newRun = (w: World): PartyRun => ({
   fights: 0,
   siegeFights: 0,
   won: 0,
+  siegeWon: 0,
   freed: 0,
   quests: 0,
 });

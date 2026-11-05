@@ -136,7 +136,19 @@ export interface AssaultResult {
 }
 
 /**
- * One assault, every besieger in it but `share`, the asset the party fights alone, and every
+ * Groups fought as one, row by row side by side, in rows of eight, at most three (Phase 23g: the
+ * party's share of more than one group). A single group keeps its rows.
+ */
+export function mergeGroups(groups: string[][][]): string[][] {
+  const depth = Math.max(0, ...groups.map((g) => g.length));
+  const lined = Array.from({ length: depth }, (_, i) => groups.flatMap((g) => g[i] ?? []));
+  // A row past eight spills into rows of its own; past three rows, all are lined up again.
+  const rows = lined.flatMap((r) => toRows(r));
+  return rows.length <= 3 ? rows : toRows(rows.flat());
+}
+
+/**
+ * One assault, every besieger in it but `share`, the assets the party fights, and every
  * holder's asset but `away`, the one it fights from the besiegers' side (Phase 23d). The walls may
  * turn it back first, as they did a raid (Major projects: Project kinds; Working effects).
  */
@@ -144,7 +156,7 @@ export function assault(
   w: World,
   data: GameData,
   s: Siege,
-  share: HeldAsset | null,
+  share: readonly HeldAsset[],
   away: HeldAsset | null = null,
 ): AssaultResult {
   const town = locationName(data, s.town);
@@ -155,7 +167,7 @@ export function assault(
     return { held: true, turned: true };
   }
   const halve = walled(w, data, s);
-  const sim = besiegers(w, data, s).filter((a) => a !== share);
+  const sim = besiegers(w, data, s).filter((a) => !share.includes(a));
   const attackers = sim.flatMap((a) => fightersOf(data, s.attacker, a, halve));
   const defending = defenders(w, data, s, away);
   if (attackers.length === 0) return { held: true, turned: false };

@@ -32,5 +32,7 @@
         "xp": 4
       }
     }
-  }
+  },
+  "shareGroups": 2,
+  "stormGuard": true
 }
