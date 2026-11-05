@@ -54,6 +54,12 @@ export const fightOf = (s: Siege, uid: string, kind: SiegeFight['kind']): SiegeF
 export const won = (siege: SiegeFight) =>
   ({ kind: 'fight-won', quest: null, garrison: null, siege }) as const;
 
+/** Content whose siege fights don't grow with the party's level (Phase 23h), to read them plainly. */
+export const unscaled = {
+  ...data,
+  content: { ...data.content, siegeRules: { ...data.content.siegeRules, levelScale: 0 } },
+};
+
 /** Content whose settlements raise no militia, so an undefended assault is lost at once. */
 export const bare = {
   ...data,

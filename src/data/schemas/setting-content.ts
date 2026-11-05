@@ -66,6 +66,11 @@ export const SiegeRulesSchema = z.strictObject({
   /** Sam's call (Phase 23g): storming a held town faces the base's guard beside its asset. */
   stormGuard: z.boolean(),
   /**
+   * Sam's call (Phase 23h): every siege fight the party is in gains this many fighters per level
+   * of the party, rounded down, drawn from the group's own monsters (at most 24 a side).
+   */
+  levelScale: z.number().min(0),
+  /**
    * The quest to free a held settlement (Phase 23e), offered by every giver in the ally's free
    * settlements: `{town}` in its texts names the held one; the reward goes by its size.
    */

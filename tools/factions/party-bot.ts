@@ -124,6 +124,19 @@ function step(w: World, data: GameData, r: PartyRun): void {
   const here = w.dungeon ? undefined : currentTown(w, data)?.id;
   if (here) errands(w, data, r);
   const worn = hpShare(w) < 0.7 || w.members.some((m) => !m.dead && m.character.strain.value > 0);
+  // No one rests under siege (Phase 23g): a worn party goes to heal in a quiet ally town first.
+  const restful = (t: string) => !besieged(w, t) && holderOf(w, data, t) === null;
+  if (worn && !(here && restful(here))) {
+    const quiet = allyTowns(data).filter(restful);
+    const near = quiet.sort(
+      (a, b) => distance(hexOf(data, a), w.position) - distance(hexOf(data, b), w.position),
+    )[0];
+    if (near) {
+      setDestination(w, data, hexOf(data, near));
+      passQuarter(w, data, suggestPlan(w, data));
+      return;
+    }
+  }
   if (here === goal) {
     if (holderOf(w, data, here) && !worn && stormTarget(w, data)) storm(w, data);
     else if (!worn && allyHosts(w, data) && !besieged(w, here)) waitForSiege(w, data);

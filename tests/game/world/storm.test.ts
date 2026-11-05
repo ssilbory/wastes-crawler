@@ -9,7 +9,7 @@ import { raidedCost } from '../../../src/game/world/town-prices.ts';
 import type { World } from '../../../src/game/world/types.ts';
 import { heldText, siegeLines, stormView } from '../../../src/render/siege-view.ts';
 import { data, encounter } from './helpers.ts';
-import { HILLS, heldTown } from './siege-helpers.ts';
+import { HILLS, heldTown, unscaled } from './siege-helpers.ts';
 
 const holder = (w: World) => w.factions.warhost?.assets ?? [];
 const won = (uid: string) =>
@@ -42,7 +42,7 @@ describe('storming a held settlement (Sam’s call: the party may retake it alon
     // The scouts, weaker, stand in town too: the party meets the warband.
     const scouts = holder(w).find((a) => a.asset === 'scouts');
     if (scouts) scouts.at = 'lanternfall';
-    expect(stormTarget(w, data)).toMatchObject({
+    expect(stormTarget(w, unscaled)).toMatchObject({
       town: 'lanternfall',
       holder: 'warhost',
       uid: 'a1',
@@ -60,14 +60,14 @@ describe('storming a held settlement (Sam’s call: the party may retake it alon
       ],
       guard: 2,
     });
-    expect(stormView(w, data)).toEqual({
+    expect(stormView(w, unscaled)).toEqual({
       name: "Grisk's Warhost's Beastman Warband and the guard",
       fighters: 6,
     });
     // Without the guard, as content may set it, the warband stands alone.
-    const alone = { ...data.content.siegeRules, stormGuard: false };
+    const alone = { ...unscaled.content.siegeRules, stormGuard: false };
     expect(
-      stormTarget(w, { ...data, content: { ...data.content, siegeRules: alone } }),
+      stormTarget(w, { ...unscaled, content: { ...unscaled.content, siegeRules: alone } }),
     ).toMatchObject({
       name: "Grisk's Warhost's Beastman Warband",
       rows: [['beastman-trooper', 'beastman-trooper', 'beastman-trooper'], ['predator-beastman']],
@@ -75,10 +75,10 @@ describe('storming a held settlement (Sam’s call: the party may retake it alon
     // Worn to 2, the warband gives way to the sturdier scouts.
     const band = holder(w).find((a) => a.asset === 'infantry');
     if (band) band.hp = 2;
-    expect(stormTarget(w, data)?.uid).toBe(scouts?.uid);
+    expect(stormTarget(w, unscaled)?.uid).toBe(scouts?.uid);
     const s = w.factions.warhost;
     if (s) s.assets = s.assets.filter((a) => a.at !== 'lanternfall');
-    expect(stormTarget(w, data)).toMatchObject({
+    expect(stormTarget(w, unscaled)).toMatchObject({
       uid: 'base',
       name: "Grisk's Warhost's hold on Lanternfall",
       rows: [['thug-or-militia', 'thug-or-militia']],

@@ -34,5 +34,6 @@
     }
   },
   "shareGroups": 2,
-  "stormGuard": true
+  "stormGuard": true,
+  "levelScale": 2
 }

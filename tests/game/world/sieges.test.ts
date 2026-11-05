@@ -15,6 +15,7 @@ import {
   HILLS,
   LANTERNFALL,
   undefended,
+  unscaled,
   warbandOnly,
   won,
 } from './siege-helpers.ts';
@@ -36,7 +37,7 @@ describe('a siege’s assaults with the party there (docs/rules-adaptation.md, S
     const { w, s } = besieged();
     warbandOnly(w);
     s.next = w.day;
-    emit(w, data, { kind: 'day-passed' });
+    emit(w, unscaled, { kind: 'day-passed' });
     expect(s.joined).toBe(true);
     expect(w.encounter?.siege).toEqual(fightOf(s, 'a1', 'assault'));
     expect(w.encounter?.enemies).toEqual([
@@ -46,11 +47,11 @@ describe('a siege’s assaults with the party there (docs/rules-adaptation.md, S
     expect(s.gate).toMatchObject({ uid: 'a1', size: 4 });
     expect(w.log.at(-1)).toContain("Grisk's Warhost's Beastman Warband storms the gates!");
     // Beating them costs the warband a hit point a fighter.
-    emit(w, data, won(fightOf(s, 'a1', 'assault')));
+    emit(w, unscaled, won(fightOf(s, 'a1', 'assault')));
     expect(asset(w, 'a1')?.hp).toBe(2);
     // A share whose night has been cleared away costs nothing more.
     s.gate = null;
-    emit(w, data, won(fightOf(s, 'a1', 'assault')));
+    emit(w, unscaled, won(fightOf(s, 'a1', 'assault')));
     expect(asset(w, 'a1')?.hp).toBe(2);
   });
 
@@ -60,7 +61,7 @@ describe('a siege’s assaults with the party there (docs/rules-adaptation.md, S
     const base = w.factions.settlements?.bases.find((b) => b.at === 'lanternfall');
     if (base) Object.assign(base, { hp: 20, max: 20 });
     s.next = w.day;
-    emit(w, data, { kind: 'day-passed' });
+    emit(w, unscaled, { kind: 'day-passed' });
     // The warband (6) and the scouts (5), the two sturdiest of three.
     expect(s.gate).toMatchObject({ uid: 'a1', size: 4, also: [{ uid: 'a2' }] });
     const scouts = s.gate?.also?.[0]?.size ?? 0;
@@ -70,14 +71,14 @@ describe('a siege’s assaults with the party there (docs/rules-adaptation.md, S
     );
     const before = asset(w, 'a2')?.hp ?? 0;
     const gate = s.gate;
-    emit(w, data, won(fightOf(s, 'a1', 'assault')));
+    emit(w, unscaled, won(fightOf(s, 'a1', 'assault')));
     expect(asset(w, 'a1')?.hp).toBe(2);
     expect(asset(w, 'a2')?.hp ?? 0).toBe(Math.max(0, before - scouts));
     // A group already gone from the share costs nothing more.
     s.gate = gate;
     const warhost = w.factions.warhost;
     if (warhost) warhost.assets = warhost.assets.filter((a) => a.uid !== 'a2');
-    emit(w, data, won(fightOf(s, 'a1', 'assault')));
+    emit(w, unscaled, won(fightOf(s, 'a1', 'assault')));
     expect(asset(w, 'a1')).toBeUndefined();
   });
 
@@ -117,7 +118,7 @@ describe('a siege’s assaults with the party there (docs/rules-adaptation.md, S
     // The walls don't turn this one back.
     w.rng = firstRoll(99);
     s.next = w.day;
-    emit(w, data, { kind: 'day-passed' });
+    emit(w, unscaled, { kind: 'day-passed' });
     expect(w.encounter?.enemies).toEqual([['beastman-trooper', 'beastman-trooper']]);
     expect(s.gate?.size).toBe(2);
   });

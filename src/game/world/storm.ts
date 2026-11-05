@@ -13,6 +13,7 @@ import { assetName, factionOf, locationName } from '../factions/state.ts';
 import type { GameData } from '../character/context.ts';
 import { meetGroup } from './encounters.ts';
 import type { TownResult } from './services.ts';
+import { scaledRows } from './siege-scale.ts';
 import { holderOf, partyIn, partySide } from './siege-state.ts';
 import { currentTown } from './town-prices.ts';
 import type { World } from './types.ts';
@@ -77,7 +78,10 @@ export function holdTarget(
 export function stormTarget(w: World, data: GameData): StormTarget | null {
   const town = w.dungeon ? undefined : currentTown(w, data);
   const holder = town && partyIn(w, data, town.id) ? holderOf(w, data, town.id) : null;
-  return town && holder ? holdTarget(w, data, town.id, holder, true) : null;
+  if (!town || !holder) return null;
+  // The party's level brings more to the fight (siege-scale.ts).
+  const t = holdTarget(w, data, town.id, holder, true);
+  return { ...t, rows: scaledRows(w, data, t.rows) };
 }
 
 /** The party storms the holder's sturdiest asset in town, or its base's guard. */

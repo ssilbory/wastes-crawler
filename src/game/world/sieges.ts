@@ -18,6 +18,7 @@ import type { WorldEvent } from './bus.ts';
 import { meetGroup } from './encounters.ts';
 import { addMemberStrain, alive, note } from './members.ts';
 import { partyIn, partySide, settlementOf } from './siege-state.ts';
+import { scaledRows } from './siege-scale.ts';
 import { holdTarget, stormWon } from './storm.ts';
 import type { World } from './types.ts';
 
@@ -51,7 +52,7 @@ function fight(
   rows: string[][],
   lead: string,
 ): void {
-  const e = meetGroup(w, data, rows, 'hostile', null, null, lead);
+  const e = meetGroup(w, data, scaledRows(w, data, rows), 'hostile', null, null, lead);
   e.siege = { town: s.town, attacker: s.attacker, uid: held.uid, kind };
 }
 
@@ -125,7 +126,7 @@ function assaultDue(w: World, data: GameData, s: Siege): void {
     const e = meetGroup(
       w,
       data,
-      hold.rows,
+      scaledRows(w, data, hold.rows),
       'hostile',
       null,
       null,
