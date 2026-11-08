@@ -5,7 +5,7 @@ import { emit } from '../../../src/game/world/bus.ts';
 import { crossOver } from '../../../src/game/world/crossing.ts';
 import { rollEnemies } from '../../../src/game/world/encounters.ts';
 import { newWorld } from '../../../src/game/world/new-world.ts';
-import { isCampaign, regionMap } from '../../../src/game/world/region.ts';
+import { isCampaign, regionMap, worldIntro } from '../../../src/game/world/region.ts';
 import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
 import { slotSummary } from '../../../src/render/save-view.ts';
 import { createRng } from '../../../src/rules/rng.ts';
@@ -44,6 +44,17 @@ describe('realms (Sam’s call)', () => {
     expect(() => newWorld(data, createRng('c'), party, undefined, null, 'atlantis')).toThrow(
       'unknown realm atlantis',
     );
+  });
+
+  it('open with their own introduction, the campaign with its own, a custom map with none', () => {
+    expect(worldIntro(start(), data)?.title).toBe('The Wastes');
+    const vale = newWorld(data, createRng('v'), party, undefined, null, 'sealed-vale');
+    expect(worldIntro(vale, data)?.title).toBe('The Sealed Vale');
+    const campaign = newWorld(data, createRng('c'), party);
+    expect(worldIntro(campaign, data)).toBe(data.content.campaign.intro);
+    const map = data.content.regions.find((r) => r.id === 'wastes-fringe') ?? null;
+    expect(worldIntro({ map, realm: null }, data)).toBeNull();
+    expect(worldIntro({ map: null, realm: 'atlantis' }, data)).toBeNull();
   });
 
   it('meet no captives bound for the campaign’s towns', () => {

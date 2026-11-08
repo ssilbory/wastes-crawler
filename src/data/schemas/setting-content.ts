@@ -87,16 +87,20 @@ export const SiegeRulesSchema = z.strictObject({
 });
 export type SiegeRules = z.infer<typeof SiegeRulesSchema>;
 
+/** A world's setting in brief, shown once when a new world starts: a title and a few paragraphs. */
+export const IntroSchema = z.strictObject({
+  title: z.string().min(1),
+  paragraphs: z.array(z.string().min(1)).min(1).max(6),
+});
+export type Intro = z.infer<typeof IntroSchema>;
+
 /**
  * The campaign's endgame (Phase 12d; Sam's calls): the warlord's clock, crafter's notes, and the
  * party's choice over the Seal of Command.
  */
 export const CampaignSchema = z.strictObject({
   /** The setting in brief, shown once when a new world starts (Phase 16; docs/setting.md). */
-  intro: z.strictObject({
-    title: z.string().min(1),
-    paragraphs: z.array(z.string().min(1)).min(1).max(6),
-  }),
+  intro: IntroSchema,
   clock: z.strictObject({
     /** The faction whose met goals advance the clock (Phase 13). */
     faction: IdSchema,

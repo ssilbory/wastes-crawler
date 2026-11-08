@@ -15,7 +15,7 @@ import type { World } from '../../game/world/types.ts';
 import { createRng } from '../../rules/rng.ts';
 import { data, freshRng } from '../builder/data.ts';
 import { loadPlayable } from '../playable-store.ts';
-import { isCampaign } from '../../game/world/region.ts';
+import { worldIntro } from '../../game/world/region.ts';
 import {
   SLOTS,
   activeSlot,
@@ -135,8 +135,8 @@ function WorldScreens(props: {
     const rng = seed.trim() ? createRng(seed.trim()) : freshRng();
     world.current = newWorld(data, rng, party, undefined, map, realm);
     setErrors([]);
-    // The campaign's introduction names its own lands; a custom map or a realm starts on the map.
-    setScreen(isCampaign(world.current) ? 'intro' : 'map');
+    // The campaign and a realm with an introduction begin with it; a custom map starts on the map.
+    setScreen(worldIntro(world.current, data) ? 'intro' : 'map');
     changed(true);
   };
 
@@ -207,7 +207,12 @@ function WorldScreens(props: {
       />
     );
   if (screen === 'intro')
-    return <IntroScreen intro={data.content.campaign.intro} onBegin={() => setScreen('map')} />;
+    return (
+      <IntroScreen
+        intro={(world.current && worldIntro(world.current, data)) || data.content.campaign.intro}
+        onBegin={() => setScreen('map')}
+      />
+    );
   if (fight)
     return (
       <WorldFight

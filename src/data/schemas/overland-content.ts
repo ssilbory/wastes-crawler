@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { ExposureSchema } from './ailment-content.ts';
 import { DiceSchema, IdSchema } from './common.ts';
+import { IntroSchema } from './setting-content.ts';
 import { TownSizeSchema } from './town-content.ts';
 
 /**
@@ -104,6 +105,8 @@ export const RealmSchema = z.strictObject({
   ally: IdSchema.optional(),
   /** A settlement held against the ally is shut to the party: no shop, inn, or other service. */
   heldShut: z.boolean().optional(),
+  /** What the party is told as a new world in the realm starts (Sam's call), as the campaign's. */
+  intro: IntroSchema.optional(),
   /**
    * Where the realm's journey ends (Sam's call): reaching this hex with no fight pending shows the
    * ending once, and the party can go back to the title screen or keep adventuring.

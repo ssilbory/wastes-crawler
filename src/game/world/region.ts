@@ -227,3 +227,12 @@ export function nearestTown(
   }
   return near;
 }
+
+/**
+ * What the party is told as a new world starts: the campaign's introduction, or its realm's (Sam's
+ * call: the Wastes and the Sealed Vale); none on a custom map.
+ */
+export function worldIntro(w: { map: Region | null; realm: string | null }, data: GameData) {
+  if (isCampaign(w)) return data.content.campaign.intro;
+  return (w.map === null && data.content.realms.find((r) => r.id === w.realm)?.intro) || null;
+}

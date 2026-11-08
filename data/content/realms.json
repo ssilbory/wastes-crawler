@@ -24,7 +24,17 @@
       "small-shield"
     ],
     "ally": "well-keepers",
-    "heldShut": true
+    "heldShut": true,
+    "intro": {
+      "title": "The Wastes",
+      "paragraphs": [
+        "Long ago the Sun King called down a fire to win a war, and it burned his empire to glass and sand. What is left is five maps of desert, each harder than the last, joined by a single road.",
+        "The Wastes do not forgive. Water runs out between wells, the nights in the open turn bitter, and nothing grows that will burn. A handful of tiny villages around the last good wells are the only safe places to rest, eat, and fill the waterskins.",
+        "Five warlords rule the Wastes, one to a map, each in a stronghold they never leave: the Scrap King, the Salt Baron, the Dune Khan, the Tallyman, and the Sunlord, the Sun King himself, whom all the others answer to.",
+        "The warlords want the wells. Month by month their followers lay siege to the villages on their maps, and a village they take shuts its gates to you until you drive them out or the warlord who holds it falls. Left alone, they will have nearly every well within a year.",
+        "Your party sets out from Dustwell, on the Dust Fringe, where the Well-Keepers still hold the gate. Defend the villages, climb the ladder of warlords, and bring down the Sunlord in his throne city."
+      ]
+    }
   },
   {
     "id": "sealed-vale",
@@ -41,6 +51,16 @@
         "The last post of the Throat is behind you, and the road east runs open under a grey sky. For the first time in twenty years, someone walks out of the Sealed Vale.",
         "Behind you, the ash settles over Harrowmere's streets. Ahead lie the lands beyond the peaks, and whatever the world became while the vale slept.",
         "Your journey through the Sealed Vale is done. Return to the title screen, or keep adventuring in the vale with this party."
+      ]
+    },
+    "intro": {
+      "title": "The Sealed Vale",
+      "paragraphs": [
+        "Twenty years ago the Dark Lord sealed this vale, and his Warden still keeps it sealed. Peaks no one can climb ring it on every side. Lastward, the one town left inside, has known nothing of the world beyond since.",
+        "One pass leads out, east along the Throat, held by five bound posts sworn to hold it until relieved. Each is worse than the last, and the outermost is beyond any party that has not grown strong in the vale. No one has walked out alive.",
+        "North-east of Lastward lie the ruins of Harrowmere: its ash-choked streets, three levels of sewers beneath them, and the Warden's six-floor tower, reached only from the deepest sewer. Every floor of the tower is trapped and guarded, and the Warden waits at the top with his hoard.",
+        "The Warden can be fought, or stood down with his countersign, if you can find it: it was split into three pieces and hidden across the streets, the sewers, and the tower. When his order ends, the posts he set stand down with it.",
+        "Your party starts in Lastward. Grow strong in Harrowmere, break the Warden's seal, and clear the pass."
       ]
     }
   }

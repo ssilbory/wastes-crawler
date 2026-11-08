@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test';
 
 // Worlds on custom maps (Sam's calls): create a new world on the Overland start screen, or pick a
-// map saved in the map editor, and play on it without the campaign's story.
+// map saved in the map editor, and play on it without the campaign's story. The shipped realms
+// open with an introduction of their own; a custom map starts on the map.
 const starters = ['snag', 'grukk'].map((n) => `tools/sim/parties/starter/${n}.json`);
 
 async function party(page: import('@playwright/test').Page) {
@@ -53,8 +54,13 @@ test('plays the Sealed Vale, a world shipped beside the campaign', async ({ page
   await world.getByRole('combobox', { name: 'Play on' }).selectOption({ label: 'The Sealed Vale' });
   await expect(world).toContainText('ringed by impassable peaks');
   await page.getByRole('button', { name: /Start a new world/ }).click();
+  // The vale's introduction: the seal, the pass, and Harrowmere.
+  const intro = page.getByRole('region', { name: 'Introduction' });
+  await expect(intro.getByRole('heading', { name: 'The Sealed Vale' })).toBeVisible();
+  await expect(intro).toContainText('his Warden still keeps it sealed');
+  await expect(intro).toContainText('the ruins of Harrowmere');
+  await intro.getByRole('button', { name: 'Begin the journey' }).click();
   await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Begin the journey' })).toHaveCount(0);
   await page.reload();
   await expect(page.getByText(/Slot 1: .* · The Sealed Vale · /)).toBeVisible();
   await page.getByRole('button', { name: 'Continue journey' }).click();
@@ -68,6 +74,7 @@ test('ends the Sealed Vale at the pass, then keeps adventuring or goes to the ti
   const world = page.getByRole('group', { name: 'World' });
   await world.getByRole('combobox', { name: 'Play on' }).selectOption({ label: 'The Sealed Vale' });
   await page.getByRole('button', { name: /Start a new world/ }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
   await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
   // As if the party had just cleared the pass's last post.
   const reach = () =>
@@ -102,8 +109,13 @@ test('plays the Wastes, a shipped realm of five maps', async ({ page }) => {
   await world.getByRole('combobox', { name: 'Play on' }).selectOption({ label: 'The Wastes' });
   await expect(world).toContainText('Five desert maps under a dead sun');
   await page.getByRole('button', { name: /Start a new world/ }).click();
+  // The Wastes' introduction: water, cold, and the warlords taking the wells.
+  const intro = page.getByRole('region', { name: 'Introduction' });
+  await expect(intro.getByRole('heading', { name: 'The Wastes' })).toBeVisible();
+  await expect(intro).toContainText('The Wastes do not forgive.');
+  await expect(intro).toContainText('shuts its gates to you');
+  await intro.getByRole('button', { name: 'Begin the journey' }).click();
   await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Begin the journey' })).toHaveCount(0);
   await expect(page.getByRole('region', { name: 'Warlords' })).toContainText(
     "The Scrap King, The Dust Fringe: holds The Scrap King's Pumpworks",
   );
@@ -116,6 +128,7 @@ test('bars a Wastes village a warlord holds, leaving only the storm', async ({ p
   const world = page.getByRole('group', { name: 'World' });
   await world.getByRole('combobox', { name: 'Play on' }).selectOption({ label: 'The Wastes' });
   await page.getByRole('button', { name: /Start a new world/ }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
   await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
   // As if the Scrap King's Riders had taken Dustwell, the party's own village.
   await page.evaluate(() => {
