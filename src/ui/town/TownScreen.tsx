@@ -16,7 +16,7 @@ import { WorkingsPanel } from '../world/WorkingsPanel.tsx';
 import { SettingPanel } from '../world/SettingPanel.tsx';
 import { raidedText } from '../../render/setting-view.ts';
 import { SidePanel } from './SidePanel.tsx';
-import { blockadeText, heldText, stormView } from '../../render/siege-view.ts';
+import { blockadeText, heldText, shutView, stormView } from '../../render/siege-view.ts';
 import { storm } from '../../game/world/storm.ts';
 import { PartyPanel } from '../world/PartyPanel.tsx';
 import { PurgePanel } from '../world/PurgePanel.tsx';
@@ -75,10 +75,15 @@ export function TownScreen(props: {
   const town = townHere(w, data);
   // With the party lost (town.ts, wipe), the tavern is the one way on, until someone is recruited.
   const partyless = w.members.length === 0;
-  // A held settlement keeps only its shop and inn for the party (Sieges: A held settlement).
+  // A held settlement keeps only its shop and inn for the party (Sieges: A held settlement), or in
+  // a realm that shuts them, nothing at all (Sam's call: the Wastes).
   const held = heldText(w, data, town.id);
+  const shut = shutView(w, data, town.id);
   const stormable = stormView(w, data);
-  const open = (t: Tab) => (partyless ? t === 'tavern' : !held || t === 'shop' || t === 'services');
+  const open = (t: Tab) =>
+    partyless ? t === 'tavern' : !held || (!shut && (t === 'shop' || t === 'services'));
+  // Shut out: no tab at all, only the way back out or the storm.
+  const shutOut = shut && !partyless;
   const tab = partyless ? 'tavern' : open(props.tab) ? props.tab : 'services';
   const tabs = (Object.keys(TABS) as Tab[]).filter(open);
   const [message, setMessage] = useState<string | null>(null);
@@ -143,35 +148,44 @@ export function TownScreen(props: {
           </div>
         </PopOut>
       )}
-      <Tabs
-        id="town"
-        class="town-tabs"
-        label="Town"
-        tabs={tabs.map((t) => ({ key: t, label: TABS[t] }))}
-        selected={tab}
-        onSelect={(t) => {
-          props.onTab(t);
-          setMessage(null);
-        }}
-      />
+      {!shutOut && (
+        <Tabs
+          id="town"
+          class="town-tabs"
+          label="Town"
+          tabs={tabs.map((t) => ({ key: t, label: TABS[t] }))}
+          selected={tab}
+          onSelect={(t) => {
+            props.onTab(t);
+            setMessage(null);
+          }}
+        />
+      )}
       <p class="town-message" aria-live="polite">
         {message}
       </p>
       <div class="world-main">
         <div class="world-left">
-          <div class="town-main" {...panelProps('town', tab)}>
-            {tab === 'quests' && <QuestsTab world={w} act={act} />}
-            {tab === 'services' && <ServicesTab world={w} act={act} held={held !== null} />}
-            {tab === 'shop' && <ShopTab world={w} act={act} />}
-            {tab === 'stable' && <StableTab world={w} act={act} />}
-            {tab === 'tavern' && <TavernTab world={w} roster={props.roster} act={act} />}
-            {tab === 'training' && <TrainingTab world={w} act={act} />}
-            {tab === 'workshop' && <WorkshopTab world={w} act={act} />}
-            {tab === 'craftsman' && <CraftsmanTab world={w} act={act} />}
-            {tab === 'alchemist' && <AlchemistTab world={w} act={act} />}
-            {tab === 'travel' && <TravelTab world={w} act={act} onBoard={props.onLeave} />}
-            {tab === 'arena' && <ArenaTab world={w} act={act} onBout={props.onBout} />}
-          </div>
+          {shutOut ? (
+            <p class="hint town-shut">
+              The gates are barred against the party. Drive the holders out, or bring down the
+              warlord who sent them.
+            </p>
+          ) : (
+            <div class="town-main" {...panelProps('town', tab)}>
+              {tab === 'quests' && <QuestsTab world={w} act={act} />}
+              {tab === 'services' && <ServicesTab world={w} act={act} held={held !== null} />}
+              {tab === 'shop' && <ShopTab world={w} act={act} />}
+              {tab === 'stable' && <StableTab world={w} act={act} />}
+              {tab === 'tavern' && <TavernTab world={w} roster={props.roster} act={act} />}
+              {tab === 'training' && <TrainingTab world={w} act={act} />}
+              {tab === 'workshop' && <WorkshopTab world={w} act={act} />}
+              {tab === 'craftsman' && <CraftsmanTab world={w} act={act} />}
+              {tab === 'alchemist' && <AlchemistTab world={w} act={act} />}
+              {tab === 'travel' && <TravelTab world={w} act={act} onBoard={props.onLeave} />}
+              {tab === 'arena' && <ArenaTab world={w} act={act} onBout={props.onBout} />}
+            </div>
+          )}
           <JournalPanel world={w} lines={30} />
         </div>
         <div class="dock">

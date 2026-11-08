@@ -12,6 +12,8 @@ export const WarlordSchema = z.strictObject({
   region: IdSchema,
   /** The map's tables their warband rides and their fall thins: open, rough, and oasis land. */
   tables: z.array(IdSchema).min(1),
+  /** Their faction (data/content/factions.json), broken when they fall. */
+  faction: IdSchema.optional(),
   /** The journal's line when they fall. */
   fall: z.string().min(1),
 });

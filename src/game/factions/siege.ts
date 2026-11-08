@@ -7,8 +7,8 @@ import type { Siege } from '../../data/schemas/index.ts';
 import { hexKey, neighbors, type Hex } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
 import { note } from '../world/members.ts';
-import { regionMap } from '../world/region.ts';
-import { partyIn, settlementOf } from '../world/siege-state.ts';
+import { isCampaign, regionMap } from '../world/region.ts';
+import { isAlly, partyIn, settlementOf } from '../world/siege-state.ts';
 import { currentLedger } from '../world/town-prices.ts';
 import type { World } from '../world/types.ts';
 import { workingAt } from '../world/working-effects.ts';
@@ -34,7 +34,7 @@ export const baseStands = (w: World, s: Siege) =>
 
 /** Whether the siege touches the party's ally, so the party hears of it at once. */
 export const allied = (data: GameData, s: Siege) =>
-  s.attacker === rules(data).ally || s.defender === rules(data).ally;
+  isAlly(data, s.attacker) || isAlly(data, s.defender);
 
 /** The hexes beside a settlement an army can camp on: on the map, passable, and no settlement. */
 export function campHexes(data: GameData, town: string): Hex[] {
@@ -81,9 +81,8 @@ export function beginSiege(
   if (!at) throw new Error(`no settlement ${town}`);
   const delay = Math.max(rules(data).firstAssault, workingAt(w, data, 'raid-warning', town));
   const here = partyIn(w, data, town);
-  const ally = rules(data).ally;
   // A party inside is in a siege on or by the ally at once; a rivals' siege waits on its pick.
-  const inside = here && (attacker === ally || defender === ally);
+  const inside = here && (isAlly(data, attacker) || isAlly(data, defender));
   const s: Siege = {
     town,
     attacker,
@@ -130,7 +129,8 @@ export function settle(w: World, data: GameData, s: Siege): 'lifted' | 'fallen' 
     return end;
   }
   note(w, `The siege of ${town} is lifted.`);
-  if (s.joined && s.defender === rules(data).ally) {
+  // Renown is spent only on the campaign's major projects.
+  if (s.joined && isAlly(data, s.defender) && isCampaign(w)) {
     w.renown += rules(data).renown;
     note(w, `${town} remembers who stood with it: ${rules(data).renown} Renown.`);
   }

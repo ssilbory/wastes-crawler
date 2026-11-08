@@ -7,7 +7,7 @@ import { memberSheet } from '../game/world/members.ts';
 import type { World } from '../game/world/types.ts';
 import { questStatus } from './quest-view.ts';
 import { allied } from '../game/factions/siege.ts';
-import { allyTowns, holderOf } from '../game/world/siege-state.ts';
+import { allyTowns, heldShut, holderOf } from '../game/world/siege-state.ts';
 import { factionOf, locationName } from '../game/factions/state.ts';
 
 export type AlertSnapshot = {
@@ -200,6 +200,9 @@ const heldKeys = (w: World, data: GameData) =>
 /** An ally's settlement taken, taken back, or taken by one holder from another (Phase 23b, 23d). */
 function heldAlerts(before: AlertSnapshot, w: World, data: GameData): Alert[] {
   const now = heldKeys(w, data);
+  const serves = heldShut(w, data)
+    ? 'It is shut to the party.'
+    : 'Only its shop and inn still serve the party.';
   const town = (key: string) => key.slice(0, key.indexOf(':'));
   const holder = (key: string) => factionOf(data, key.slice(key.indexOf(':') + 1)).name;
   const name = (key: string) => locationName(data, town(key));
@@ -212,12 +215,12 @@ function heldAlerts(before: AlertSnapshot, w: World, data: GameData): Alert[] {
         ? {
             kind: 'siege',
             title: `Changed hands: ${name(k)}`,
-            text: `${holder(k)} takes ${name(k)} from ${holder(from)}. Only its shop and inn still serve the party.`,
+            text: `${holder(k)} takes ${name(k)} from ${holder(from)}. ${serves}`,
           }
         : {
             kind: 'siege',
             title: `Captured: ${name(k)}`,
-            text: `${holder(k)} now holds ${name(k)}. Only its shop and inn still serve the party.`,
+            text: `${holder(k)} now holds ${name(k)}. ${serves}`,
           };
     });
   const freed = before.held

@@ -12,6 +12,7 @@ import type {
 import { factionMaxHp, type Ratings } from '../../rules/factions.ts';
 import type { GameData } from '../character/context.ts';
 import { note } from '../world/members.ts';
+import { worldFactions } from '../world/region.ts';
 import type { World } from '../world/types.ts';
 
 export type HeldAsset = FactionState['assets'][number];
@@ -79,7 +80,8 @@ function startState(data: GameData, f: Faction): FactionState {
 
 /** Starts any faction the world doesn't have yet: a new world, or an older save. */
 export function startFactions(w: World, data: GameData): void {
-  for (const f of data.content.factions.factions) w.factions[f.id] ??= startState(data, f);
+  for (const f of worldFactions(w, data.content.factions.factions))
+    w.factions[f.id] ??= startState(data, f);
 }
 
 /** A line of faction news in the journey log. */

@@ -30,6 +30,7 @@ import { memberLoad, partyLoad } from './party-load.ts';
 import { firstGuide, guideOf } from './npcs.ts';
 import { hexesToAvoid } from './groves.ts';
 import { pathToward, regionMap, knownHexes } from './region.ts';
+import { servedHere } from './siege-state.ts';
 import { breakOut } from './sieges.ts';
 import { enterTown } from './town.ts';
 import type { Activity, Member, World } from './types.ts';
@@ -189,7 +190,7 @@ export function camp(
 ): { extraChecks: number; watcher: Member | undefined } {
   const map = regionMap(data, w.region);
   const terrain = map.terrainAt(w.position);
-  const inTown = map.siteAt(w.position) !== undefined;
+  const inTown = servedHere(w, data);
   const doing = (a: Activity) => alive(w).filter((m) => activities[m.id] === a);
   let extraChecks = 0;
   for (const m of doing('rest')) restQuarter(m);

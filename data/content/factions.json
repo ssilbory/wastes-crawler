@@ -48,6 +48,118 @@
       "region": "dark-lands",
       "col": 5,
       "row": 4
+    },
+    {
+      "id": "dustwell",
+      "name": "Dustwell",
+      "region": "wastes-fringe",
+      "col": 4,
+      "row": 6
+    },
+    {
+      "id": "cistern-rest",
+      "name": "Cistern Rest",
+      "region": "wastes-fringe",
+      "col": 16,
+      "row": 11
+    },
+    {
+      "id": "tinkers-oasis",
+      "name": "Tinker's Oasis",
+      "region": "wastes-fringe",
+      "col": 27,
+      "row": 14
+    },
+    {
+      "id": "scrap-kings-pumpworks",
+      "name": "the Scrap King's Pumpworks",
+      "region": "wastes-fringe",
+      "col": 22,
+      "row": 8
+    },
+    {
+      "id": "saltcross",
+      "name": "Saltcross",
+      "region": "wastes-glass",
+      "col": 6,
+      "row": 16
+    },
+    {
+      "id": "glasswater",
+      "name": "Glasswater",
+      "region": "wastes-glass",
+      "col": 23,
+      "row": 5
+    },
+    {
+      "id": "salt-keep",
+      "name": "the Salt Keep",
+      "region": "wastes-glass",
+      "col": 25,
+      "row": 13
+    },
+    {
+      "id": "last-palm",
+      "name": "Last Palm",
+      "region": "wastes-dunes",
+      "col": 12,
+      "row": 16
+    },
+    {
+      "id": "anchorage",
+      "name": "Anchorage",
+      "region": "wastes-dunes",
+      "col": 18,
+      "row": 8
+    },
+    {
+      "id": "khans-barge",
+      "name": "the Khan's Barge",
+      "region": "wastes-dunes",
+      "col": 16,
+      "row": 12
+    },
+    {
+      "id": "marrowgate",
+      "name": "Marrowgate",
+      "region": "wastes-bonefields",
+      "col": 13,
+      "row": 4
+    },
+    {
+      "id": "ash-hollow",
+      "name": "Ash Hollow",
+      "region": "wastes-bonefields",
+      "col": 18,
+      "row": 19
+    },
+    {
+      "id": "tallymans-ossuary",
+      "name": "the Tallyman's Ossuary",
+      "region": "wastes-bonefields",
+      "col": 24,
+      "row": 10
+    },
+    {
+      "id": "emberwatch",
+      "name": "Emberwatch",
+      "region": "wastes-sunscar",
+      "col": 13,
+      "row": 12
+    },
+    {
+      "id": "final-well",
+      "name": "Final Well",
+      "region": "wastes-sunscar",
+      "col": 18,
+      "row": 4
+    },
+    {
+      "id": "sunscar-throne-city",
+      "name": "the Throne City",
+      "region": "wastes-sunscar",
+      "col": 3,
+      "row": 21
     }
   ],
   "patrol": {
@@ -450,6 +562,472 @@
         {
           "asset": "armed-guards",
           "enemies": [["faithful-acolyte", "faithful-acolyte"]]
+        }
+      ]
+    },
+    {
+      "id": "well-keepers",
+      "name": "The Well-Keepers",
+      "realm": "wastes",
+      "text": "The wardens of the Wastes' last wells, from Dustwell to Final Well: every village pays them a cup in ten, and they keep the gates.",
+      "force": 6,
+      "cunning": 4,
+      "wealth": 6,
+      "magic": "none",
+      "tags": ["populist"],
+      "hq": "dustwell",
+      "treasure": 2,
+      "bases": [
+        {
+          "at": "cistern-rest",
+          "hp": 2
+        },
+        {
+          "at": "tinkers-oasis",
+          "hp": 2
+        },
+        {
+          "at": "saltcross",
+          "hp": 3
+        },
+        {
+          "at": "glasswater",
+          "hp": 3
+        },
+        {
+          "at": "last-palm",
+          "hp": 3
+        },
+        {
+          "at": "anchorage",
+          "hp": 3
+        },
+        {
+          "at": "marrowgate",
+          "hp": 4
+        },
+        {
+          "at": "ash-hollow",
+          "hp": 4
+        },
+        {
+          "at": "emberwatch",
+          "hp": 4
+        },
+        {
+          "at": "final-well",
+          "hp": 4
+        }
+      ],
+      "assets": [
+        {
+          "asset": "local-guard",
+          "at": "dustwell"
+        },
+        {
+          "asset": "local-guard",
+          "at": "glasswater"
+        },
+        {
+          "asset": "farmers",
+          "at": "last-palm"
+        },
+        {
+          "asset": "farmers",
+          "at": "marrowgate"
+        }
+      ],
+      "buys": [
+        "local-guard",
+        "reserve-corps",
+        "infantry",
+        "armed-guards",
+        "farmers",
+        "front-merchant",
+        "worker-mob"
+      ],
+      "goals": ["peaceable-kingdom"],
+      "enemies": ["scrap-riders", "salt-packs", "dune-horde", "the-count", "sun-host"],
+      "raise": ["wealth", "force", "cunning"],
+      "names": {
+        "local-guard": "Well Wardens",
+        "reserve-corps": "Old Caravaneers",
+        "infantry": "Wellsworn Levy",
+        "armed-guards": "Water-Cart Guards",
+        "farmers": "Date Groves",
+        "front-merchant": "Water Traders",
+        "worker-mob": "Well Diggers"
+      },
+      "patrols": []
+    },
+    {
+      "id": "scrap-riders",
+      "name": "The Scrap King's Riders",
+      "realm": "wastes",
+      "reach": "home",
+      "text": "The Scrap King's raiders out of the Pumpworks, who sell the Fringe its own water back by the cup.",
+      "force": 3,
+      "cunning": 1,
+      "wealth": 2,
+      "magic": "none",
+      "tags": ["martial"],
+      "hq": "scrap-kings-pumpworks",
+      "treasure": 0,
+      "bases": [],
+      "assets": [
+        {
+          "asset": "thugs",
+          "at": "scrap-kings-pumpworks"
+        }
+      ],
+      "buys": ["thugs", "reserve-corps", "scouts", "infantry", "armed-guards", "worker-mob"],
+      "goals": ["root-out", "blood-the-enemy"],
+      "enemies": ["well-keepers"],
+      "raise": ["force", "wealth", "cunning"],
+      "names": {
+        "thugs": "Scrap Gangs",
+        "reserve-corps": "Pump Wardens",
+        "scouts": "Dust Outriders",
+        "infantry": "Raider Band",
+        "armed-guards": "Pumpworks Guards",
+        "worker-mob": "Scrap Haulers"
+      },
+      "patrols": [
+        {
+          "asset": "thugs",
+          "enemies": [["dust-raider", "dust-raider", "dust-raider"]]
+        },
+        {
+          "asset": "reserve-corps",
+          "enemies": [["dust-raider", "dust-raider"]]
+        },
+        {
+          "asset": "scouts",
+          "enemies": [["dust-raider", "dust-raider"]]
+        },
+        {
+          "asset": "infantry",
+          "enemies": [["dust-raider", "dust-raider", "dust-raider"], ["scrap-prince"]]
+        }
+      ]
+    },
+    {
+      "id": "salt-packs",
+      "name": "The Salt Baron's Packs",
+      "realm": "wastes",
+      "reach": "home",
+      "text": "Vesk's gnoll packs, fed on salt-tithe and whatever the Glassed Flats' villages can't hide.",
+      "force": 4,
+      "cunning": 2,
+      "wealth": 3,
+      "magic": "none",
+      "tags": ["martial"],
+      "hq": "salt-keep",
+      "treasure": 0,
+      "bases": [],
+      "assets": [
+        {
+          "asset": "thugs",
+          "at": "salt-keep"
+        }
+      ],
+      "buys": [
+        "thugs",
+        "reserve-corps",
+        "scouts",
+        "infantry",
+        "temple-fanatics",
+        "cavalry",
+        "armed-guards",
+        "front-merchant",
+        "worker-mob"
+      ],
+      "goals": ["root-out", "blood-the-enemy"],
+      "enemies": ["well-keepers"],
+      "raise": ["force", "wealth", "cunning"],
+      "names": {
+        "thugs": "Gnoll Rabble",
+        "reserve-corps": "Keep Packs",
+        "scouts": "Hunting Packs",
+        "infantry": "Gnoll Warpack",
+        "temple-fanatics": "Blood-Mad Gnolls",
+        "cavalry": "Hyena Riders",
+        "armed-guards": "Salt Guards",
+        "front-merchant": "Salt Factors",
+        "worker-mob": "Salt Slaves"
+      },
+      "patrols": [
+        {
+          "asset": "thugs",
+          "enemies": [["gnoll", "gnoll", "gnoll"]]
+        },
+        {
+          "asset": "reserve-corps",
+          "enemies": [["gnoll", "gnoll"]]
+        },
+        {
+          "asset": "scouts",
+          "enemies": [["gnoll", "gnoll"]]
+        },
+        {
+          "asset": "infantry",
+          "enemies": [["gnoll", "gnoll", "gnoll"], ["gnoll-packlord"]]
+        },
+        {
+          "asset": "temple-fanatics",
+          "enemies": [["gnoll", "gnoll", "gnoll", "gnoll"]]
+        },
+        {
+          "asset": "cavalry",
+          "enemies": [["gnoll", "gnoll", "gnoll", "gnoll"]]
+        }
+      ]
+    },
+    {
+      "id": "dune-horde",
+      "name": "The Dune Khan's Horde",
+      "realm": "wastes",
+      "reach": "home",
+      "text": "Oduran's lizardfolk sand-riders and their drakes, who take a tribute of water from every well on the Red Dune Sea.",
+      "force": 5,
+      "cunning": 2,
+      "wealth": 3,
+      "magic": "none",
+      "tags": ["martial"],
+      "hq": "khans-barge",
+      "treasure": 0,
+      "bases": [],
+      "assets": [
+        {
+          "asset": "infantry",
+          "at": "khans-barge"
+        }
+      ],
+      "buys": [
+        "thugs",
+        "reserve-corps",
+        "scouts",
+        "infantry",
+        "temple-fanatics",
+        "cavalry",
+        "siege-experts",
+        "armed-guards",
+        "worker-mob"
+      ],
+      "goals": ["root-out", "blood-the-enemy"],
+      "enemies": ["well-keepers"],
+      "raise": ["force", "wealth", "cunning"],
+      "names": {
+        "thugs": "Barge Rabble",
+        "reserve-corps": "Barge Riders",
+        "scouts": "Dune Scouts",
+        "infantry": "Sand-Rider Host",
+        "temple-fanatics": "Khan's Zealots",
+        "cavalry": "Drake Riders",
+        "siege-experts": "Drake Rams",
+        "armed-guards": "Barge Guards",
+        "worker-mob": "Sand Slaves"
+      },
+      "patrols": [
+        {
+          "asset": "thugs",
+          "enemies": [["sand-rider", "sand-rider", "sand-rider"]]
+        },
+        {
+          "asset": "reserve-corps",
+          "enemies": [["sand-rider", "sand-rider"]]
+        },
+        {
+          "asset": "scouts",
+          "enemies": [["sand-drake", "sand-drake"]]
+        },
+        {
+          "asset": "infantry",
+          "enemies": [
+            ["sand-drake", "sand-drake"],
+            ["sand-rider", "sand-rider"]
+          ]
+        },
+        {
+          "asset": "temple-fanatics",
+          "enemies": [["sand-rider", "sand-rider", "sand-rider", "sand-rider"]]
+        },
+        {
+          "asset": "cavalry",
+          "enemies": [["sand-drake", "sand-drake", "sand-drake"], ["khan-heir"]]
+        },
+        {
+          "asset": "siege-experts",
+          "enemies": [
+            ["sand-drake", "sand-drake"],
+            ["sand-rider", "sand-rider"]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "the-count",
+      "name": "The Tallyman's Count",
+      "realm": "wastes",
+      "reach": "home",
+      "text": "The Bonefields' dead, raised and numbered by the Tallyman, and the living who keep his ledgers.",
+      "force": 5,
+      "cunning": 3,
+      "wealth": 2,
+      "magic": "medium",
+      "tags": ["machiavellian"],
+      "hq": "tallymans-ossuary",
+      "treasure": 0,
+      "bases": [],
+      "assets": [
+        {
+          "asset": "infantry",
+          "at": "tallymans-ossuary"
+        }
+      ],
+      "buys": [
+        "thugs",
+        "reserve-corps",
+        "infantry",
+        "temple-fanatics",
+        "enchanted-elites",
+        "witch-hunters",
+        "cavalry",
+        "siege-experts",
+        "spymaster",
+        "armed-guards"
+      ],
+      "goals": ["root-out", "blood-the-enemy"],
+      "enemies": ["well-keepers"],
+      "raise": ["force", "cunning", "wealth"],
+      "names": {
+        "thugs": "Tallied Rabble",
+        "reserve-corps": "Ossuary Dead",
+        "infantry": "Tallied Host",
+        "temple-fanatics": "Bone Reavers",
+        "enchanted-elites": "Throne Champions",
+        "witch-hunters": "Ledger-Keepers",
+        "cavalry": "Bone Riders",
+        "siege-experts": "Ossuary Engines",
+        "spymaster": "The Tallyman's Clerk",
+        "armed-guards": "Ossuary Guards"
+      },
+      "patrols": [
+        {
+          "asset": "thugs",
+          "enemies": [["tallied-dead", "tallied-dead", "tallied-dead", "tallied-dead"]]
+        },
+        {
+          "asset": "reserve-corps",
+          "enemies": [["tallied-dead", "tallied-dead", "tallied-dead"]]
+        },
+        {
+          "asset": "infantry",
+          "enemies": [
+            ["tallied-dead", "tallied-dead", "tallied-dead", "tallied-dead"],
+            ["bone-reaver"]
+          ]
+        },
+        {
+          "asset": "temple-fanatics",
+          "enemies": [["bone-reaver", "bone-reaver"]]
+        },
+        {
+          "asset": "enchanted-elites",
+          "enemies": [["bone-reaver", "bone-reaver"], ["throne-champion"]]
+        },
+        {
+          "asset": "witch-hunters",
+          "enemies": [["bone-reaver", "bone-reaver"]]
+        },
+        {
+          "asset": "cavalry",
+          "enemies": [["bone-reaver", "bone-reaver", "bone-reaver"]]
+        },
+        {
+          "asset": "siege-experts",
+          "enemies": [
+            ["tallied-dead", "tallied-dead", "tallied-dead", "tallied-dead"],
+            ["bone-reaver"]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sun-host",
+      "name": "The Sunlord's Host",
+      "realm": "wastes",
+      "reach": "home",
+      "text": "The Sun King's own host out of the Throne City: desert giants, ettins, and the heralds who speak for the Sunlord.",
+      "force": 6,
+      "cunning": 4,
+      "wealth": 4,
+      "magic": "none",
+      "tags": ["martial"],
+      "hq": "sunscar-throne-city",
+      "treasure": 0,
+      "bases": [],
+      "assets": [
+        {
+          "asset": "infantry",
+          "at": "sunscar-throne-city"
+        }
+      ],
+      "buys": [
+        "thugs",
+        "reserve-corps",
+        "scouts",
+        "infantry",
+        "temple-fanatics",
+        "cavalry",
+        "siege-experts",
+        "spymaster",
+        "armed-guards",
+        "worker-mob"
+      ],
+      "goals": ["root-out", "blood-the-enemy"],
+      "enemies": ["well-keepers"],
+      "raise": ["force", "cunning", "wealth"],
+      "names": {
+        "thugs": "Throne Rabble",
+        "reserve-corps": "Sun Guard",
+        "scouts": "Herald's Outriders",
+        "infantry": "Giant Host",
+        "temple-fanatics": "Sunsworn",
+        "cavalry": "Ettin Vanguard",
+        "siege-experts": "Giant Rams",
+        "spymaster": "The Sunlord's Eyes",
+        "armed-guards": "Throne Guards",
+        "worker-mob": "Sunscar Thralls"
+      },
+      "patrols": [
+        {
+          "asset": "thugs",
+          "enemies": [["desert-giant"]]
+        },
+        {
+          "asset": "reserve-corps",
+          "enemies": [["desert-giant", "desert-giant"]]
+        },
+        {
+          "asset": "scouts",
+          "enemies": [["ettin"]]
+        },
+        {
+          "asset": "infantry",
+          "enemies": [["desert-giant", "desert-giant"], ["sunlord-herald"]]
+        },
+        {
+          "asset": "temple-fanatics",
+          "enemies": [["desert-giant", "desert-giant"]]
+        },
+        {
+          "asset": "cavalry",
+          "enemies": [["ettin", "ettin"]]
+        },
+        {
+          "asset": "siege-experts",
+          "enemies": [["desert-giant", "desert-giant"], ["ettin"]]
         }
       ]
     }

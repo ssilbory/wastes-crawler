@@ -10,6 +10,7 @@ import { alive, bestAt, checkBonus } from './members.ts';
 import { firstGuide } from './npcs.ts';
 import { hexesToAvoid } from './groves.ts';
 import { nearestTown, pathToward, regionMap, knownHexes } from './region.ts';
+import { servedHere } from './siege-state.ts';
 import type { Activity, Member, QuarterPlan, World } from './types.ts';
 
 /** Sets a destination the party can head toward, even under fog; false if it can get no closer. */
@@ -52,7 +53,7 @@ function others(list: Member[], ...skip: (Member | undefined)[]): Member[] {
 /** The suggested plan; `prefer` asks for a hike (given a destination) or a camp regardless. */
 export function suggestPlan(w: World, data: GameData, prefer?: QuarterPlan['kind']): QuarterPlan {
   const party = able(w);
-  const inTown = regionMap(data, w.region).siteAt(w.position) !== undefined;
+  const inTown = servedHere(w, data);
   const leader = bestAt(data, party, 'survive', ['wis']);
   if (w.destination && prefer !== 'camp' && (w.quarter < 2 || prefer === 'hike')) {
     const watcher = bestAt(data, others(party, leader), 'notice', ['wis']) ?? leader;

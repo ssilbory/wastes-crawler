@@ -54,6 +54,10 @@ export const FactionSchema = z.strictObject({
   id: IdSchema,
   name: z.string().min(1),
   text: z.string().min(1),
+  /** The realm it belongs to (data/content/realms.json); none for the campaign's own. */
+  realm: IdSchema.optional(),
+  /** `home`: it goes after rivals' bases on its headquarters' map only (Sam's call: warlords). */
+  reach: z.literal('home').optional(),
   force: Rating,
   cunning: Rating,
   wealth: Rating,

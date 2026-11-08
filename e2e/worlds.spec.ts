@@ -110,3 +110,28 @@ test('plays the Wastes, a shipped realm of five maps', async ({ page }) => {
   await page.reload();
   await expect(page.getByText(/Slot 1: .* · The Wastes · Dustwell · /)).toBeVisible();
 });
+
+test('bars a Wastes village a warlord holds, leaving only the storm', async ({ page }) => {
+  await party(page);
+  const world = page.getByRole('group', { name: 'World' });
+  await world.getByRole('combobox', { name: 'Play on' }).selectOption({ label: 'The Wastes' });
+  await page.getByRole('button', { name: /Start a new world/ }).click();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
+  // As if the Scrap King's Riders had taken Dustwell, the party's own village.
+  await page.evaluate(() => {
+    const key = 'wastes-crawler.world';
+    const save = JSON.parse(localStorage.getItem(key) as string);
+    const keepers = save.factions['well-keepers'];
+    keepers.assets = keepers.assets.filter((a: { at: string }) => a.at !== 'dustwell');
+    keepers.bases = keepers.bases.filter((b: { at: string }) => b.at !== 'dustwell');
+    save.factions['scrap-riders'].bases.push({ at: 'dustwell', hp: 2, max: 2 });
+    localStorage.setItem(key, JSON.stringify(save));
+  });
+  await page.reload();
+  await page.getByRole('button', { name: 'Continue journey' }).click();
+  await page.getByRole('button', { name: 'Visit Dustwell' }).click();
+  await expect(page.getByText("Held by The Scrap King's Riders: shut to the party")).toBeVisible();
+  await expect(page.getByText('The gates are barred against the party.')).toBeVisible();
+  await expect(page.getByRole('tab')).toHaveCount(0);
+  await expect(page.getByRole('region', { name: 'Storm the town' })).toBeVisible();
+});

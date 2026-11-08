@@ -20,7 +20,7 @@ import { wakeRevived } from './healer.ts';
 import { nightForMounts } from './mounts.ts';
 import { burnFirewood, exposedToCold, harshHere } from './firewood.ts';
 import { firstPhysician, nightForNpcs } from './npcs.ts';
-import { regionMap } from './region.ts';
+import { servedHere } from './siege-state.ts';
 import type { Member, World } from './types.ts';
 import { wipe } from './town.ts';
 import { purifiedNeeds, purifyBodies } from './vowed-arts.ts';
@@ -32,8 +32,7 @@ import { drinkForDay } from './water.ts';
  * already moves the day on, so the caller must not advance it again.
  */
 export function endOfDay(w: World, data: GameData, waystation = false): boolean {
-  const map = regionMap(data, w.region);
-  const inTown = waystation || map.siteAt(w.position) !== undefined;
+  const inTown = waystation || servedHere(w, data);
   // Transubstantiation's sacred blood feeds the party in place of the rations (Phase 15).
   const fedFree = inTown || sacredBlood(w, data);
   let fed = fedFree;

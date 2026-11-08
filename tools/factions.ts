@@ -7,8 +7,12 @@
 // each level given, the starters at that level played by the siege bot (tools/factions/
 // party-bot.ts; Phase 23f), to show what the party changes.
 //
+// With --realm, the no-party years are a realm's factions instead (the Wastes' warlords and
+// Well-Keepers), with how many of its villages are held at the end.
+//
 //   pnpm factions -- --runs 200 --seed factions --months 24
 //   pnpm factions -- --runs 50 --party 3,6,9
+//   pnpm factions -- --runs 200 --realm wastes
 import { loadContent } from '../src/data/content.ts';
 import { loadSrd } from '../src/data/load.ts';
 import { startFactions } from '../src/game/factions/state.ts';
@@ -16,6 +20,8 @@ import { factionTurn } from '../src/game/factions/turn.ts';
 import type { World } from '../src/game/world/types.ts';
 import { createRng } from '../src/rules/rng.ts';
 import { WORLD_LISTENERS } from '../src/game/world/listeners.ts';
+import { worldFactions } from '../src/game/world/region.ts';
+import { allyTowns, holderOf } from '../src/game/world/siege-state.ts';
 import { siegesListener } from '../src/game/world/sieges.ts';
 import { newRun, playUntil, siegeWorld } from './factions/party-bot.ts';
 
@@ -27,17 +33,18 @@ const RUNS = Number(arg('runs', '200'));
 const SEED = arg('seed', 'factions');
 const MONTHS = Number(arg('months', '24'));
 const PARTY = arg('party', '');
+const REALM = arg('realm', '') || null;
 const pct = (n: number) => `${Math.round((100 * n) / RUNS)}%`;
 const avg = (n: number) => (n / RUNS).toFixed(1);
 const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)];
 
 const data = { srd: loadSrd(), content: loadContent(), listeners: WORLD_LISTENERS };
-const ids = data.content.factions.factions.map((f) => f.id);
+const ids = worldFactions({ realm: REALM }, data.content.factions.factions).map((f) => f.id);
 const checkpoints = Array.from({ length: Math.floor(MONTHS / 6) }, (_, i) => (i + 1) * 6);
 type Tally = { alive: number; bases: number; assets: number };
 const tally = new Map<string, Tally>();
 const clocks = new Map<number, number[]>();
-const ended = { begun: 0, lifted: 0, fallen: 0 };
+const ended = { begun: 0, lifted: 0, fallen: 0, held: 0 };
 
 if (PARTY) {
   withParty();
@@ -62,6 +69,8 @@ for (let run = 0; run < RUNS; run++) {
     dungeon: null,
     encounter: null,
     renown: 0,
+    realm: REALM,
+    map: null,
     region: 'dark-lands',
     position: { col: -1, row: -1 },
   };
@@ -80,6 +89,8 @@ for (let run = 0; run < RUNS; run++) {
       if (line.includes('is lifted')) ended.lifted += 1;
       if (/ falls to /.test(line)) ended.fallen += 1;
     }
+    if (month === MONTHS)
+      ended.held += allyTowns(data).filter((t) => holderOf(world, data, t) !== null).length;
     if (!checkpoints.includes(month)) continue;
     clocks.set(month, [...(clocks.get(month) ?? []), world.clock]);
     for (const id of ids) {
@@ -107,7 +118,7 @@ console.log(
   `| clock (median) | ${checkpoints.map((m) => median(clocks.get(m) ?? [])).join(' | ')} |`,
 );
 console.log(
-  `Sieges per run: ${avg(ended.begun)} begun, ${avg(ended.lifted)} lifted, ${avg(ended.fallen)} fallen.`,
+  `Sieges per run: ${avg(ended.begun)} begun, ${avg(ended.lifted)} lifted, ${avg(ended.fallen)} fallen; ${avg(ended.held)} settlements held at the end.`,
 );
 
 /** The --party report: the Settlements, the sieges, and the party, with no party and at each level. */

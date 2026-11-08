@@ -2,7 +2,7 @@
   {
     "id": "wastes",
     "name": "The Wastes",
-    "text": "Five desert maps under a dead sun, each harder than the last: tiny villages, ruined towns crawling with monsters, one deep dungeon a map with a boss on every level, and a warlord on each map holding a stronghold, all of them answering to the Sunlord. No quests, factions, or raids.",
+    "text": "Five desert maps under a dead sun, each harder than the last: tiny villages, ruined towns crawling with monsters, one deep dungeon a map with a boss on every level, and a warlord on each map holding a stronghold, all of them answering to the Sunlord. No quests. The warlords' factions besiege the villages, and hold any they take until their warlord falls.",
     "regions": [
       "wastes-fringe",
       "wastes-glass",
@@ -22,7 +22,9 @@
       "war-shirt",
       "linothorax",
       "small-shield"
-    ]
+    ],
+    "ally": "well-keepers",
+    "heldShut": true
   },
   {
     "id": "sealed-vale",

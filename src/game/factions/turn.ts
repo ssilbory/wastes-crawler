@@ -14,6 +14,8 @@ import type { GameData } from '../character/context.ts';
 import type { WorldEvent } from '../world/bus.ts';
 import { moveClock } from '../world/clock.ts';
 import { note } from '../world/members.ts';
+import { worldFactions } from '../world/region.ts';
+import { isAlly } from '../world/siege-state.ts';
 import type { World } from '../world/types.ts';
 import {
   attackAction,
@@ -29,6 +31,7 @@ import { patrolBeaten } from './patrols.ts';
 import { growBases, retakeGoal } from './capture.ts';
 import { hurtAsset } from './combat.ts';
 import { strikesFor } from './strikes.ts';
+import { warlordFalls } from './warlord-fall.ts';
 import {
   assetName,
   assetRule,
@@ -94,7 +97,7 @@ export function takeAction(w: World, data: GameData, id: string, onStrike: OnStr
 export function factionTurn(w: World, data: GameData): void {
   startFactions(w, data);
   const clockFaction = data.content.campaign.clock.faction;
-  const order = data.content.factions.factions
+  const order = worldFactions(w, data.content.factions.factions)
     .map((f, i) => ({ id: f.id, i, roll: rollDie(w.rng, 8) }))
     .sort((a, b) => b.roll - a.roll || a.i - b.i)
     .map((x) => x.id);
@@ -106,7 +109,7 @@ export function factionTurn(w: World, data: GameData): void {
     assetIncome(w, data, s);
     // Bases taken or retaken are bought up, and a held settlement of the ally's comes first for it.
     growBases(s);
-    if (id === data.content.siegeRules.ally) retakeGoal(w, data);
+    if (isAlly(data, id)) retakeGoal(w, data, id);
     const onStrike = strikesFor(w, data, id);
     // A strike over a project pushed through it, or help it promised, takes the action.
     const attacked = projectTurn(w, data, id) ? false : takeAction(w, data, id, onStrike);
@@ -132,15 +135,17 @@ function knockBack(w: World, data: GameData): void {
 }
 
 /**
- * The factions' bus listener: a turn as each month begins, a beaten patrol's asset hurt, and the
- * clock faction hurt by a knock back.
+ * The factions' bus listener: a turn as each month begins, a beaten patrol's asset hurt, a Wastes
+ * warlord's faction broken by their fall, and the clock faction hurt by a knock back.
  */
 export function factionsListener(w: World, data: GameData, e: WorldEvent): void {
   const { knockback } = data.content.campaign.clock;
   if (e.kind === 'day-passed' && (w.day + 1) % data.content.overlandRules.daysPerMonth === 0)
     factionTurn(w, data);
-  else if (e.kind === 'fight-won' && e.patrol) patrolBeaten(w, data, e.patrol);
-  else if (
+  else if (e.kind === 'fight-won' && (e.patrol || e.garrison)) {
+    if (e.patrol) patrolBeaten(w, data, e.patrol);
+    if (e.garrison) warlordFalls(w, data, e.garrison);
+  } else if (
     (e.kind === 'quest-done' && knockback.quests.includes(e.quest)) ||
     (e.kind === 'captive-freed' && knockback.captives.includes(e.captive))
   )

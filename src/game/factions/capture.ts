@@ -11,16 +11,15 @@ import type { GameData } from '../character/context.ts';
 import { emit } from '../world/bus.ts';
 import { allProjects, projectOf } from '../world/major-projects.ts';
 import { note } from '../world/members.ts';
-import { allyTowns, besieged, holderOf } from '../world/siege-state.ts';
+import { isCampaign } from '../world/region.ts';
+import { allyOf, allyTowns, besieged, holderOf, isAlly } from '../world/siege-state.ts';
 import type { World } from '../world/types.ts';
 import { destroyWorkings } from '../world/workings.ts';
 import { factionOf, isActive, locationName } from './state.ts';
 
-const ally = (data: GameData) => data.content.siegeRules.ally;
-
 /** The size of the ally's base in one of its settlements, as content starts it. */
 export function baseSize(data: GameData, town: string): number {
-  const f = factionOf(data, ally(data));
+  const f = factionOf(data, allyOf(data, town) ?? data.content.siegeRules.ally);
   return town === f.hq ? factionMaxHp(f) : (f.bases.find((b) => b.at === town)?.hp ?? 1);
 }
 
@@ -51,7 +50,7 @@ export function loseBuilt(w: World, data: GameData, town: string): void {
  */
 export function capture(w: World, data: GameData, attacker: string, town: string): boolean {
   const s = w.factions[attacker];
-  if (!allyTowns(data).includes(town) || !isActive(s) || attacker === ally(data)) return false;
+  if (!allyTowns(data).includes(town) || !isActive(s) || isAlly(data, attacker)) return false;
   // One holder at a time: a town another rival already took is that rival's to lose.
   if (s.bases.some((b) => b.at === town) || holderOf(w, data, town) !== null) return false;
   plant(data, s, town);
@@ -68,11 +67,12 @@ export function capture(w: World, data: GameData, attacker: string, town: string
  * either way its freeing quests hear of it (Phase 23e). Returns whether it did.
  */
 export function reclaim(w: World, data: GameData, town: string, party = false): boolean {
-  const s = w.factions[ally(data)];
-  if (!allyTowns(data).includes(town) || !isActive(s)) return false;
+  const ally = allyOf(data, town);
+  const s = ally === null ? undefined : w.factions[ally];
+  if (ally === null || !isActive(s)) return false;
   if (s.bases.some((b) => b.at === town) || holderOf(w, data, town)) return false;
   plant(data, s, town);
-  note(w, `${locationName(data, town)} is free again: ${factionOf(data, ally(data)).name} return.`);
+  note(w, `${locationName(data, town)} is free again: ${factionOf(data, ally).name} return.`);
   if (party) retaken(w, data, town);
   emit(w, data, { kind: 'town-freed', town, party });
   return true;
@@ -80,6 +80,8 @@ export function reclaim(w: World, data: GameData, town: string, party = false): 
 
 /** The party helped take a settlement back: Renown (Sieges: Rewards). */
 export function retaken(w: World, data: GameData, town: string): void {
+  // Renown is spent only on the campaign's major projects.
+  if (!isCampaign(w)) return;
   const renown = data.content.siegeRules.renown;
   w.renown += renown;
   note(w, `${locationName(data, town)} thanks the party for its freedom: ${renown} Renown.`);
@@ -105,10 +107,10 @@ export function growBases(s: FactionState): void {
  * While a settlement of its own is held, the ally's goal is to root its holder out of it (Sam's
  * call: retaking comes first).
  */
-export function retakeGoal(w: World, data: GameData): void {
-  const s = w.factions[ally(data)];
+export function retakeGoal(w: World, data: GameData, ally: string): void {
+  const s = w.factions[ally];
   if (!isActive(s)) return;
-  for (const town of allyTowns(data)) {
+  for (const town of allyTowns(data).filter((t) => allyOf(data, t) === ally)) {
     const holder = holderOf(w, data, town);
     if (!holder) continue;
     const t = s.goal?.target;

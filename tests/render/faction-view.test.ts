@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { pickGoal } from '../../src/game/factions/goals.ts';
+import { startFactions } from '../../src/game/factions/state.ts';
 import { factionViews } from '../../src/render/faction-view.ts';
 import { data, world } from '../game/world/helpers.ts';
 import { enterRegion } from '../../src/game/world/enter-region.ts';
@@ -17,6 +18,17 @@ describe('faction view (Phase 13)', () => {
     ]);
     w.factions = {};
     expect(factionViews(w, data)).toEqual([]);
+  });
+
+  it('shows the Well-Keepers on every Wastes map, beside that map’s warlord', () => {
+    const w = world();
+    w.realm = 'wastes';
+    w.factions = {};
+    startFactions(w, data);
+    w.region = 'wastes-glass';
+    expect(factionViews(w, data).map((v) => v.id)).toEqual(['well-keepers', 'salt-packs']);
+    w.region = 'wastes-sunscar';
+    expect(factionViews(w, data).map((v) => v.id)).toEqual(['well-keepers', 'sun-host']);
   });
 
   it('gives standing, goal, and holdings by place, or the collapse', () => {

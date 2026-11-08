@@ -7,6 +7,7 @@
       "name": "The Scrap King",
       "region": "wastes-fringe",
       "tables": ["wastes-1-open", "wastes-1-rough", "wastes-1-oasis"],
+      "faction": "scrap-riders",
       "fall": "The Scrap King is dead. His pumps run for whoever holds them now, and his son's riders scatter across the Fringe with no one to pay them."
     },
     {
@@ -14,6 +15,7 @@
       "name": "Vesk, the Salt Baron",
       "region": "wastes-glass",
       "tables": ["wastes-2-open", "wastes-2-rough", "wastes-2-oasis"],
+      "faction": "salt-packs",
       "fall": "Vesk the Salt Baron is dead. The gnolls have no one to feed them, and the villages of the Glassed Flats keep their own salt for the first time in a generation."
     },
     {
@@ -21,6 +23,7 @@
       "name": "Oduran, the Dune Khan",
       "region": "wastes-dunes",
       "tables": ["wastes-3-open", "wastes-3-rough", "wastes-3-oasis"],
+      "faction": "dune-horde",
       "fall": "Oduran the Dune Khan is dead. His heir's sand-riders turn their drakes loose, and the Red Dune Sea goes quiet."
     },
     {
@@ -28,6 +31,7 @@
       "name": "The Tallyman",
       "region": "wastes-bonefields",
       "tables": ["wastes-4-open", "wastes-4-rough", "wastes-4-oasis"],
+      "faction": "the-count",
       "fall": "The Tallyman is dead, and his count with him. The tallied dead lie down where they stand across the Bonefields."
     },
     {
@@ -35,6 +39,7 @@
       "name": "The Sunlord",
       "region": "wastes-sunscar",
       "tables": ["wastes-5-open", "wastes-5-rough", "wastes-5-oasis"],
+      "faction": "sun-host",
       "fall": "The Sunlord falls in his own throne hall, and every warlord left in the Wastes has no one to answer to. Below the city, something of the Sun King still waits in his tomb."
     }
   ]

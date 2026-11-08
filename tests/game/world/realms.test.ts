@@ -23,12 +23,22 @@ if (!realm) throw new Error('missing content');
 const start = () => newWorld(data, createRng('wastes'), party, undefined, null, 'wastes');
 
 describe('realms (Sam’s call)', () => {
-  it('start in the realm’s first map, without the campaign’s factions', () => {
+  it('start in the realm’s first map, with its own factions and not the campaign’s', () => {
     const w = start();
     expect([w.realm, w.map, w.region]).toEqual(['wastes', null, realm.start]);
     const map = regionMap(data, realm.start);
     expect(w.position).toEqual({ col: map.start.col, row: map.start.row });
-    expect(w.factions).toEqual({});
+    expect(Object.keys(w.factions)).toEqual([
+      'well-keepers',
+      'scrap-riders',
+      'salt-packs',
+      'dune-horde',
+      'the-count',
+      'sun-host',
+    ]);
+    expect(newWorld(data, createRng('v'), party, undefined, null, 'sealed-vale').factions).toEqual(
+      {},
+    );
     expect(isCampaign(w)).toBe(false);
     expect(isCampaign(newWorld(data, createRng('c'), party))).toBe(true);
     expect(() => newWorld(data, createRng('c'), party, undefined, null, 'atlantis')).toThrow(
