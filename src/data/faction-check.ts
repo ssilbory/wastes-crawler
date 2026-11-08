@@ -71,8 +71,8 @@ export function factionReferenceErrors(srd: SrdData, content: ContentData): stri
 
 /**
  * A realm's factions (Sam's call: the Wastes' factions) stand on its own maps and name only each
- * other as rivals; its ally is one of them; each warlord's faction is the realm's and keeps its
- * headquarters on the warlord's map.
+ * other as rivals; its ally is one of them; each warlord's faction keeps its headquarters on the
+ * warlord's map.
  */
 function realmFactionErrors(content: ContentData): string[] {
   const errors: string[] = [];
@@ -101,9 +101,8 @@ function realmFactionErrors(content: ContentData): string[] {
   for (const l of content.warlords.warlords) {
     if (!l.faction) continue;
     const f = factions.find((x) => x.id === l.faction);
-    const realm = content.realms.find((r) => r.regions.includes(l.region));
     if (!f) errors.push(`warlords/${l.id}: unknown faction ${l.faction}`);
-    else if ((f.realm ?? null) !== (realm?.id ?? null) || regionOf(f.hq) !== l.region)
+    else if (regionOf(f.hq) !== l.region)
       errors.push(`warlords/${l.id}: faction ${f.id} is not headquartered on ${l.region}`);
   }
   return errors;

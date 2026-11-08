@@ -169,7 +169,6 @@ describe('faction content (Phase 13)', () => {
       'factions/scrap-riders: unknown realm atlantis',
       'factions/scrap-riders: rival well-keepers is in another world',
       'realms/sealed-vale: ally warhost is not one of its factions',
-      'warlords/scrap-king: faction scrap-riders is not headquartered on wastes-fringe',
       'warlords/baron-vesk: faction salt-packs is not headquartered on wastes-glass',
     ]);
     const unallied = {
@@ -178,6 +177,21 @@ describe('faction content (Phase 13)', () => {
     };
     expect(factionReferenceErrors(srd, unallied)).toEqual([
       'realms/sealed-vale: shuts held settlements with no ally',
+    ]);
+    const [first, second, ...rest] = content.warlords.warlords;
+    if (!first || !second) throw new Error('missing content');
+    const unbound = Object.fromEntries(
+      Object.entries(first).filter(([k]) => k !== 'faction'),
+    ) as typeof first;
+    const lords = {
+      ...content,
+      warlords: {
+        ...content.warlords,
+        warlords: [unbound, { ...second, faction: 'nobody' }, ...rest],
+      },
+    };
+    expect(factionReferenceErrors(srd, lords)).toEqual([
+      'warlords/baron-vesk: unknown faction nobody',
     ]);
   });
 });
