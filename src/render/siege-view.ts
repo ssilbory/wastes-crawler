@@ -3,7 +3,14 @@
 import { besiegers } from '../game/factions/siege.ts';
 import { factionOf, locationName } from '../game/factions/state.ts';
 import type { GameData } from '../game/character/context.ts';
-import { allyTowns, besieged, holderOf, settlementOf } from '../game/world/siege-state.ts';
+import {
+  allyTowns,
+  besieged,
+  heldShut,
+  holderOf,
+  settlementOf,
+  shutTo,
+} from '../game/world/siege-state.ts';
 import { undecided } from '../game/world/siege-sides.ts';
 import { stormTarget } from '../game/world/storm.ts';
 import type { World } from '../game/world/types.ts';
@@ -52,10 +59,15 @@ export const blockadeText = (w: World, town: string): string | null =>
 /** A held settlement's state, for the town bar (A held settlement, Phase 23b). */
 export function heldText(w: World, data: GameData, town: string): string | null {
   const holder = holderOf(w, data, town);
-  return holder
-    ? `Held by ${factionOf(data, holder).name}: shop and inn only, at ${data.content.siegeRules.heldPrice} times the price`
-    : null;
+  if (!holder) return null;
+  const name = factionOf(data, holder).name;
+  return heldShut(w, data)
+    ? `Held by ${name}: shut to the party`
+    : `Held by ${name}: shop and inn only, at ${data.content.siegeRules.heldPrice} times the price`;
 }
+
+/** Whether the town the party stands in is held and shut to it (Sam's call: the Wastes). */
+export const shutView = (w: World, data: GameData, town: string): boolean => shutTo(w, data, town);
 
 /** What the party would storm in a held settlement it stands in, with the fight's size. */
 export function stormView(w: World, data: GameData): { name: string; fighters: number } | null {

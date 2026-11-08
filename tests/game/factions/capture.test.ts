@@ -147,21 +147,21 @@ describe('capture (docs/rules-adaptation.md, Sieges: Capture; Phase 23b)', () =>
     const w = bare();
     const free = faction(w, 'settlements');
     free.goal = { kind: 'peaceable-kingdom', target: null, progress: 2 };
-    retakeGoal(w, data);
+    retakeGoal(w, data, 'settlements');
     expect(free.goal.kind).toBe('peaceable-kingdom');
     capture(w, data, 'warhost', 'lanternfall');
-    retakeGoal(w, data);
+    retakeGoal(w, data, 'settlements');
     expect(free.goal).toEqual({
       kind: 'root-out',
       target: { faction: 'warhost', at: 'lanternfall' },
       progress: 0,
     });
     free.goal.progress = 1;
-    retakeGoal(w, data);
+    retakeGoal(w, data, 'settlements');
     expect(free.goal.progress).toBe(1);
     free.hp = 0;
     free.goal = null;
-    retakeGoal(w, data);
+    retakeGoal(w, data, 'settlements');
     expect(free.goal).toBeNull();
   });
 

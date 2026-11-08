@@ -7,7 +7,7 @@
 // builds these quests from their ids, `free-<town>-by-<giver>`, so they live in no content file.
 import type { Quest } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
-import { allyTowns, holderOf, settlementOf } from './siege-state.ts';
+import { allyOf, allyTowns, holderOf, settlementOf } from './siege-state.ts';
 import type { World } from './types.ts';
 
 const PREFIX = 'free-';
@@ -47,8 +47,9 @@ export function freeQuest(data: GameData, id: string): Quest | null {
 /** Whether a giver stands in one of the ally's settlements that the ally still holds. */
 function freeGiver(w: World, data: GameData, giver: string): boolean {
   const town = data.content.missionGivers.find((g) => g.id === giver)?.town;
-  const ally = w.factions[data.content.siegeRules.ally];
-  return town !== undefined && ally?.bases.some((b) => b.at === town) === true;
+  const id = town === undefined ? null : allyOf(data, town);
+  const ally = id === null ? undefined : w.factions[id];
+  return ally?.bases.some((b) => b.at === town) === true;
 }
 
 /** A freeing quest for this town under way, from any giver. */

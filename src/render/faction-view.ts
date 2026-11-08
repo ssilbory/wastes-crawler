@@ -40,11 +40,15 @@ function places(data: GameData, id: string, s: FactionState): FactionView['place
   return [...byPlace].map(([at, holdings]) => ({ name: locationName(data, at), holdings }));
 }
 
-/** Every faction of the region the party is in, in content order. */
+/**
+ * Every faction of the region the party is in, in content order: headquartered there, or holding
+ * a base there (the Wastes' Well-Keepers keep villages on every map).
+ */
 export function factionViews(w: World, data: GameData): FactionView[] {
+  const here = (at: string) => locationOf(data, at).region === w.region;
   return data.content.factions.factions.flatMap((f) => {
     const s = w.factions[f.id];
-    if (!s || locationOf(data, f.hq).region !== w.region) return [];
+    if (!s || !(here(f.hq) || s.bases.some((b) => here(b.at)))) return [];
     const standing =
       s.hp > 0
         ? `Force ${s.force}, Cunning ${s.cunning}, Wealth ${s.wealth}; ${s.hp} of ${factionMaxHp(s)} hit points, ${s.treasure} Treasure`

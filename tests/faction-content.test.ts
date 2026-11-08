@@ -8,19 +8,27 @@ import type { ContentData, Faction } from '../src/data/schemas/index.ts';
 const srd = loadSrd();
 const content = loadContent();
 
+/** The Wastes' factions, kept beside a test's own so the realm and warlords still find theirs. */
+const wastes = content.factions.factions.filter((f) => f.realm === 'wastes');
+
 const withFactions = (f: Partial<ContentData['factions']>): ContentData => ({
   ...content,
   factions: { ...content.factions, ...f },
 });
 
 describe('faction content (Phase 13)', () => {
-  it('loads four factions on Dark Lands hexes', () => {
+  it('loads four campaign factions and the Wastes’ six', () => {
     expect(factionReferenceErrors(srd, content)).toEqual([]);
-    expect(content.factions.factions.map((f) => f.id)).toEqual([
-      'warhost',
-      'settlements',
-      'bastion',
-      'loyalists',
+    const ids = (realm: string | undefined) =>
+      content.factions.factions.filter((f) => f.realm === realm).map((f) => f.id);
+    expect(ids(undefined)).toEqual(['warhost', 'settlements', 'bastion', 'loyalists']);
+    expect(ids('wastes')).toEqual([
+      'well-keepers',
+      'scrap-riders',
+      'salt-packs',
+      'dune-horde',
+      'the-count',
+      'sun-host',
     ]);
     expect(content.campaign.clock.faction).toBe('warhost');
   });
@@ -73,7 +81,12 @@ describe('faction content (Phase 13)', () => {
       factionReferenceErrors(
         srd,
         withFactions({
-          factions: [bad, settlements, { ...settlements, bases: [{ at: 'cinderhold', hp: 2 }] }],
+          factions: [
+            bad,
+            settlements,
+            { ...settlements, bases: [{ at: 'cinderhold', hp: 2 }] },
+            ...wastes,
+          ],
         }),
       ),
     ).toEqual([
@@ -101,7 +114,7 @@ describe('faction content (Phase 13)', () => {
     expect(
       factionReferenceErrors(
         srd,
-        withFactions({ factions: [{ ...settlements, buys: ['witch-hunters'] }] }),
+        withFactions({ factions: [{ ...settlements, buys: ['witch-hunters'] }, ...wastes] }),
       ),
     ).toEqual([
       'factions/settlements: witch-hunters needs low magic',
@@ -127,5 +140,58 @@ describe('faction content (Phase 13)', () => {
       campaign: { ...content.campaign, clock: { ...content.campaign.clock, faction: 'nobody' } },
     };
     expect(settingReferenceErrors(srd, broken)).toContain('campaign: unknown faction nobody');
+  });
+
+  it('keeps a realm’s factions on its maps, its ally among them, and each warlord’s at home', () => {
+    const [keepers, riders, packs] = wastes as [Faction, Faction, Faction];
+    const broken: ContentData = {
+      ...withFactions({
+        factions: [
+          ...content.factions.factions.filter((f) => f.realm !== 'wastes'),
+          {
+            ...keepers,
+            enemies: ['warhost', 'scrap-riders'],
+            bases: [{ at: 'gutterwick', hp: 1 }],
+          },
+          { ...riders, realm: 'atlantis' },
+          { ...packs, hq: 'scrap-kings-pumpworks' },
+          ...wastes.slice(3),
+        ],
+      }),
+      realms: content.realms.map((r) =>
+        r.id === 'sealed-vale' ? { ...r, ally: 'warhost', heldShut: true } : r,
+      ),
+    };
+    expect(factionReferenceErrors(srd, broken)).toEqual([
+      'factions/well-keepers: rival warhost is in another world',
+      'factions/well-keepers: rival scrap-riders is in another world',
+      'factions/well-keepers: gutterwick is outside wastes',
+      'factions/scrap-riders: unknown realm atlantis',
+      'factions/scrap-riders: rival well-keepers is in another world',
+      'realms/sealed-vale: ally warhost is not one of its factions',
+      'warlords/baron-vesk: faction salt-packs is not headquartered on wastes-glass',
+    ]);
+    const unallied = {
+      ...content,
+      realms: content.realms.map((r) => (r.id === 'sealed-vale' ? { ...r, heldShut: true } : r)),
+    };
+    expect(factionReferenceErrors(srd, unallied)).toEqual([
+      'realms/sealed-vale: shuts held settlements with no ally',
+    ]);
+    const [first, second, ...rest] = content.warlords.warlords;
+    if (!first || !second) throw new Error('missing content');
+    const unbound = Object.fromEntries(
+      Object.entries(first).filter(([k]) => k !== 'faction'),
+    ) as typeof first;
+    const lords = {
+      ...content,
+      warlords: {
+        ...content.warlords,
+        warlords: [unbound, { ...second, faction: 'nobody' }, ...rest],
+      },
+    };
+    expect(factionReferenceErrors(srd, lords)).toEqual([
+      'warlords/baron-vesk: unknown faction nobody',
+    ]);
   });
 });

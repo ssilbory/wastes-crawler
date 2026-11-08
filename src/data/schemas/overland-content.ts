@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { ExposureSchema } from './ailment-content.ts';
 import { DiceSchema, IdSchema } from './common.ts';
+import { IntroSchema } from './setting-content.ts';
 import { TownSizeSchema } from './town-content.ts';
 
 /**
@@ -97,6 +98,15 @@ export const RealmSchema = z.strictObject({
   start: IdSchema,
   /** The only gear its shops sell besides the staples, all of it in every settlement (Sam's call). */
   shop: z.array(IdSchema).min(1).optional(),
+  /**
+   * The faction its villages answer to, the party's ally there (Sam's call: the Wastes' factions);
+   * a realm without one has no faction turn or sieges.
+   */
+  ally: IdSchema.optional(),
+  /** A settlement held against the ally is shut to the party: no shop, inn, or other service. */
+  heldShut: z.boolean().optional(),
+  /** What the party is told as a new world in the realm starts (Sam's call), as the campaign's. */
+  intro: IntroSchema.optional(),
   /**
    * Where the realm's journey ends (Sam's call): reaching this hex with no fight pending shows the
    * ending once, and the party can go back to the title screen or keep adventuring.

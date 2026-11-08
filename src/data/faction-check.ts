@@ -7,7 +7,7 @@ const MAGIC: readonly FactionMagic[] = ['none', 'low', 'medium', 'high'];
  * Factions (Phase 13) stand on map hexes, buy SRD assets from the curated list that their ratings
  * and Magic allow (vendor/wwn-srd/6.0 Factions/Faction Turn Actions.md, Create Asset), start with
  * no more assets of an attribute than its rating, name real rivals, and send patrols of known
- * monsters; the sieges' ally exists.
+ * monsters; the sieges' ally exists, and each realm's factions keep to the realm.
  */
 export function factionReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const errors: string[] = [];
@@ -63,7 +63,47 @@ export function factionReferenceErrors(srd: SrdData, content: ContentData): stri
   }
   if (!ids.has(content.siegeRules.ally))
     errors.push(`siegeRules: unknown ally ${content.siegeRules.ally}`);
+  errors.push(...realmFactionErrors(content));
   for (const id of content.siegeRules.ignoreWalls)
     if (!curated.has(id)) errors.push(`siegeRules: unknown asset ${id}`);
+  return errors;
+}
+
+/**
+ * A realm's factions (Sam's call: the Wastes' factions) stand on its own maps and name only each
+ * other as rivals; its ally is one of them; each warlord's faction keeps its headquarters on the
+ * warlord's map.
+ */
+function realmFactionErrors(content: ContentData): string[] {
+  const errors: string[] = [];
+  const { locations, factions } = content.factions;
+  const realmOf = new Map(factions.map((f) => [f.id, f.realm ?? null]));
+  const regionOf = (at: string) => locations.find((l) => l.id === at)?.region;
+  for (const f of factions) {
+    const where = `factions/${f.id}`;
+    const realm = f.realm === undefined ? null : content.realms.find((r) => r.id === f.realm);
+    if (realm === undefined) errors.push(`${where}: unknown realm ${f.realm}`);
+    for (const e of f.enemies)
+      if (realmOf.has(e) && realmOf.get(e) !== (f.realm ?? null))
+        errors.push(`${where}: rival ${e} is in another world`);
+    if (!realm) continue;
+    for (const at of [f.hq, ...f.bases.map((b) => b.at), ...f.assets.map((a) => a.at)]) {
+      const region = regionOf(at);
+      if (region && !realm.regions.includes(region))
+        errors.push(`${where}: ${at} is outside ${realm.id}`);
+    }
+  }
+  for (const r of content.realms) {
+    if (r.ally && realmOf.get(r.ally) !== r.id)
+      errors.push(`realms/${r.id}: ally ${r.ally} is not one of its factions`);
+    if (r.heldShut && !r.ally) errors.push(`realms/${r.id}: shuts held settlements with no ally`);
+  }
+  for (const l of content.warlords.warlords) {
+    if (!l.faction) continue;
+    const f = factions.find((x) => x.id === l.faction);
+    if (!f) errors.push(`warlords/${l.id}: unknown faction ${l.faction}`);
+    else if (regionOf(f.hq) !== l.region)
+      errors.push(`warlords/${l.id}: faction ${f.id} is not headquartered on ${l.region}`);
+  }
   return errors;
 }

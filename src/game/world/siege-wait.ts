@@ -9,7 +9,7 @@ import { carriesFor, workOn, workshopHere } from './crafting.ts';
 import { note } from './members.ts';
 import type { TownResult } from './services.ts';
 import { restAtInn } from './services.ts';
-import { allyTowns, besieged, holderOf } from './siege-state.ts';
+import { allyOf, allyTowns, besieged, holderOf, isAlly } from './siege-state.ts';
 import { currentTown, month, townHere } from './town-prices.ts';
 import type { World } from './types.ts';
 import { workingAt } from './working-effects.ts';
@@ -19,16 +19,16 @@ const no = (reason: string): TownResult => ({ ok: false, reason });
 /** Whether the party stands in a settlement of the ally's that the ally still holds. */
 export function allyHosts(w: World, data: GameData): boolean {
   const town = w.dungeon ? undefined : currentTown(w, data)?.id;
-  const s = w.factions[data.content.siegeRules.ally];
+  const ally = town === undefined ? null : allyOf(data, town);
+  const s = ally === null ? undefined : w.factions[ally];
   if (!town || w.members.length === 0 || !isActive(s)) return false;
-  return allyTowns(data).includes(town) && s.bases.some((b) => b.at === town);
+  return s.bases.some((b) => b.at === town);
 }
 
 /** What the party hears of the ally: the sieges on it and its held settlements, as one key. */
 export function allyNews(w: World, data: GameData): string {
-  const ally = data.content.siegeRules.ally;
   const sieges = w.sieges
-    .filter((s) => s.attacker === ally || s.defender === ally)
+    .filter((s) => isAlly(data, s.attacker) || isAlly(data, s.defender))
     .map((s) => `${s.attacker}>${s.town}`);
   const held = allyTowns(data).filter((t) => holderOf(w, data, t) !== null);
   return [...sieges.sort(), '|', ...held].join(',');

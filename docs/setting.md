@@ -288,6 +288,12 @@ The Wastes have no quest givers. Their story is the road: a ladder of warlords, 
 
 Each warlord holds a stronghold on their map and stays in it. Their warband rides the map, led by a lieutenant or one of the warlord's sons, and each map's warband is of a different people. Every warlord answers to the Sunlord: the Sun King himself, risen from under his throne city in the Sunscar, the last and worst of them.
 
+### The factions
+
+Every village pays a cup in ten to the Well-Keepers, the wardens of the last good wells, who keep each village's gate from Dustwell, their seat, to Final Well. They are the party's friends in the Wastes, such as they are.
+
+Each warlord's following is a faction of its own, and each wants the wells on its map: the Scrap King's Riders out of the Pumpworks, the Salt Baron's gnoll Packs, the Dune Khan's Horde of sand-riders and drakes, the Tallyman's Count of numbered dead, and the Sunlord's Host of giants and ettins. A warlord's faction lays siege to its own map's villages and holds what it takes, gates barred against outsiders, until the warlord falls and their following breaks apart.
+
 ## The Sealed Vale
 
 A world of one map, played on its own (docs/rules-adaptation.md, Shipped worlds), built for one great dungeon: Harrowmere. Its story lives inside that dungeon, told on the way down through the streets, the sewers, and the Warden's Tower. The Warden sealed the vale on the Dark Lord's word and still keeps it sealed. He can be fought, or stood down with his countersign, found in three pieces across the streets, the sewers, and the tower. Either way his fall releases his household and the bound holding the pass. The vale's epilogue plays when the party reaches its exit.

@@ -3,7 +3,7 @@
 // assembled in listeners.ts and reach emit through GameData, so no listener imports the others.
 import type { SiegeFight } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
-import { isCampaign } from './region.ts';
+import { hasFactions, isCampaign } from './region.ts';
 import type { Npc, World } from './types.ts';
 
 export type WorldEvent =
@@ -41,10 +41,14 @@ export type WorldEvent =
 
 export type Listener = (w: World, data: GameData, e: WorldEvent) => void;
 
-/** Every listener, in the order each event reaches them, and the campaign-only ones among them. */
+/**
+ * Every listener, in the order each event reaches them, the campaign-only ones among them, and
+ * those that run wherever the world has factions (the campaign, or a realm with an ally).
+ */
 export interface WorldListeners {
   all: readonly Listener[];
   campaign: ReadonlySet<Listener>;
+  factions?: ReadonlySet<Listener>;
 }
 
 export function emit(w: World, data: GameData, e: WorldEvent): void {
@@ -52,6 +56,8 @@ export function emit(w: World, data: GameData, e: WorldEvent): void {
   // A GameData built without the table would drop every event; built from untyped code it fails.
   if (!listeners) throw new Error('GameData has no world listeners (src/game/world/listeners.ts)');
   const story = isCampaign(w);
+  const factions = hasFactions(w, data);
   for (const listen of listeners.all)
-    if (story || !listeners.campaign.has(listen)) listen(w, data, e);
+    if (story || (listeners.factions?.has(listen) ? factions : !listeners.campaign.has(listen)))
+      listen(w, data, e);
 }

@@ -5,6 +5,7 @@ import type { Siege } from '../../data/schemas/index.ts';
 import type { Hex } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
 import { factionOf } from '../factions/state.ts';
+import { regionMap } from './region.ts';
 import type { World } from './types.ts';
 
 /** The sieges of a settlement. */
@@ -39,22 +40,40 @@ export const campsHere = (w: World, data: GameData): Hex[] =>
     .filter((s) => settlementOf(data, s.town)?.region === w.region)
     .flatMap((s) => s.camps.map((c) => ({ col: c.col, row: c.row })));
 
-/** The party's ally's own settlements: its HQ and its bases in content (Phase 23b). */
-export function allyTowns(data: GameData): string[] {
-  const ally = factionOf(data, data.content.siegeRules.ally);
+/**
+ * The parties' allies: the campaign's (the Free Settlements) and each realm's that has one (the
+ * Wastes' Well-Keepers). Their settlements never overlap, so a town names its own ally.
+ */
+export function allyIds(data: GameData): string[] {
+  const realms = data.content.realms.flatMap((r) => (r.ally ? [r.ally] : []));
+  return [data.content.siegeRules.ally, ...realms];
+}
+
+export const isAlly = (data: GameData, id: string) => allyIds(data).includes(id);
+
+/** One ally's own settlements: its HQ and its bases in content. */
+function townsOf(data: GameData, id: string): string[] {
+  const ally = factionOf(data, id);
   return [ally.hq, ...ally.bases.map((b) => b.at)].filter(
     (at) => settlementOf(data, at) !== undefined,
   );
 }
 
+/** The allies' own settlements: their HQs and their bases in content (Phase 23b). */
+export const allyTowns = (data: GameData): string[] =>
+  allyIds(data).flatMap((id) => townsOf(data, id));
+
+/** The ally a settlement belongs to, if any. */
+export const allyOf = (data: GameData, town: string): string | null =>
+  allyIds(data).find((id) => townsOf(data, id).includes(town)) ?? null;
+
 /**
- * The faction holding one of the ally's settlements (Sieges: Capture): the ally has no base there
+ * The faction holding one of an ally's settlements (Sieges: Capture): the ally has no base there
  * and a standing rival has one. Null for a settlement the ally holds, or that no one does.
  */
 export function holderOf(w: World, data: GameData, town: string): string | null {
-  const ally = data.content.siegeRules.ally;
-  if (!allyTowns(data).includes(town) || w.factions[ally]?.bases.some((b) => b.at === town))
-    return null;
+  const ally = allyOf(data, town);
+  if (!ally || w.factions[ally]?.bases.some((b) => b.at === town)) return null;
   const holder = Object.entries(w.factions).find(
     ([id, s]) => id !== ally && s.hp > 0 && s.bases.some((b) => b.at === town),
   );
@@ -66,8 +85,24 @@ export function holderOf(w: World, data: GameData, town: string): string | null 
  * own, and in one between two rivals the side it picked; null until it picks.
  */
 export function partySide(data: GameData, s: Siege): 'attacker' | 'defender' | 'out' | null {
-  const ally = data.content.siegeRules.ally;
-  if (s.attacker === ally) return 'attacker';
-  if (s.defender === ally) return 'defender';
+  if (isAlly(data, s.attacker)) return 'attacker';
+  if (isAlly(data, s.defender)) return 'defender';
   return s.side ?? null;
+}
+
+/** Whether the world's realm shuts its held settlements to the party (Sam's call: the Wastes). */
+export const heldShut = (w: World, data: GameData): boolean =>
+  data.content.realms.some((r) => r.id === w.realm && r.heldShut === true);
+
+/** Whether a settlement is held and shut to the party: no shop, inn, meals, or shelter. */
+export const shutTo = (w: World, data: GameData, town: string): boolean =>
+  heldShut(w, data) && holderOf(w, data, town) !== null;
+
+/**
+ * Whether the party stands, above ground, in a settlement that serves it: meals and shelter for
+ * the night, and a town's plans. A shut held settlement is open ground (Sam's call: the Wastes).
+ */
+export function servedHere(w: World, data: GameData): boolean {
+  const site = regionMap(data, w.region).siteAt(w.position);
+  return site !== undefined && !shutTo(w, data, site.id);
 }

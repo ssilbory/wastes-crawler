@@ -9,6 +9,7 @@ import {
   STRAIN_WINDOW,
   type Alert,
 } from '../../src/render/alert-view.ts';
+import { heldText, shutView } from '../../src/render/siege-view.ts';
 import { below, place } from '../game/dungeon/helpers.ts';
 import { data, member, siege, world } from '../game/world/helpers.ts';
 import { startFactions } from '../../src/game/factions/state.ts';
@@ -204,6 +205,32 @@ describe('the siege notice (Phase 23a)', () => {
 });
 
 describe('the capture notices (Phase 23b)', () => {
+  it('tells of a Wastes village taken as shut to the party', () => {
+    const w = world();
+    w.realm = 'wastes';
+    w.region = 'wastes-fringe';
+    w.factions = {};
+    startFactions(w, data);
+    const before = alertSnapshot(w, data);
+    const keepers = w.factions['well-keepers'];
+    const riders = w.factions['scrap-riders'];
+    if (!keepers || !riders) throw new Error('no factions');
+    keepers.bases = keepers.bases.filter((b) => b.at !== 'cistern-rest');
+    riders.bases.push({ at: 'cistern-rest', hp: 1, max: 2, growing: true });
+    expect(alertsSince(before, w, data)).toEqual([
+      {
+        kind: 'siege',
+        title: 'Captured: Cistern Rest',
+        text: "The Scrap King's Riders now holds Cistern Rest. It is shut to the party.",
+      },
+    ]);
+    expect(heldText(w, data, 'cistern-rest')).toBe(
+      "Held by The Scrap King's Riders: shut to the party",
+    );
+    expect(shutView(w, data, 'cistern-rest')).toBe(true);
+    expect(shutView(w, data, 'dustwell')).toBe(false);
+  });
+
   it('tells of an ally’s settlement taken, and of it freed', () => {
     const w = world();
     startFactions(w, data);

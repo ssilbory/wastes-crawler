@@ -5,7 +5,7 @@ import { emit } from '../../../src/game/world/bus.ts';
 import { crossOver } from '../../../src/game/world/crossing.ts';
 import { rollEnemies } from '../../../src/game/world/encounters.ts';
 import { newWorld } from '../../../src/game/world/new-world.ts';
-import { isCampaign, regionMap } from '../../../src/game/world/region.ts';
+import { isCampaign, regionMap, worldIntro } from '../../../src/game/world/region.ts';
 import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
 import { slotSummary } from '../../../src/render/save-view.ts';
 import { createRng } from '../../../src/rules/rng.ts';
@@ -23,17 +23,38 @@ if (!realm) throw new Error('missing content');
 const start = () => newWorld(data, createRng('wastes'), party, undefined, null, 'wastes');
 
 describe('realms (Sam’s call)', () => {
-  it('start in the realm’s first map, without the campaign’s factions', () => {
+  it('start in the realm’s first map, with its own factions and not the campaign’s', () => {
     const w = start();
     expect([w.realm, w.map, w.region]).toEqual(['wastes', null, realm.start]);
     const map = regionMap(data, realm.start);
     expect(w.position).toEqual({ col: map.start.col, row: map.start.row });
-    expect(w.factions).toEqual({});
+    expect(Object.keys(w.factions)).toEqual([
+      'well-keepers',
+      'scrap-riders',
+      'salt-packs',
+      'dune-horde',
+      'the-count',
+      'sun-host',
+    ]);
+    expect(newWorld(data, createRng('v'), party, undefined, null, 'sealed-vale').factions).toEqual(
+      {},
+    );
     expect(isCampaign(w)).toBe(false);
     expect(isCampaign(newWorld(data, createRng('c'), party))).toBe(true);
     expect(() => newWorld(data, createRng('c'), party, undefined, null, 'atlantis')).toThrow(
       'unknown realm atlantis',
     );
+  });
+
+  it('open with their own introduction, the campaign with its own, a custom map with none', () => {
+    expect(worldIntro(start(), data)?.title).toBe('The Wastes');
+    const vale = newWorld(data, createRng('v'), party, undefined, null, 'sealed-vale');
+    expect(worldIntro(vale, data)?.title).toBe('The Sealed Vale');
+    const campaign = newWorld(data, createRng('c'), party);
+    expect(worldIntro(campaign, data)).toBe(data.content.campaign.intro);
+    const map = data.content.regions.find((r) => r.id === 'wastes-fringe') ?? null;
+    expect(worldIntro({ map, realm: null }, data)).toBeNull();
+    expect(worldIntro({ map: null, realm: 'atlantis' }, data)).toBeNull();
   });
 
   it('meet no captives bound for the campaign’s towns', () => {

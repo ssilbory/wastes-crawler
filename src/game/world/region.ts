@@ -54,6 +54,19 @@ export function withWorldMap<D extends Pick<GameData, 'content'>>(data: D, map: 
 export const isCampaign = (w: { map: Region | null; realm: string | null }) =>
   w.map === null && w.realm === null;
 
+/**
+ * Whether the world runs a faction turn and its sieges: the campaign, or a realm with an ally of
+ * its own (Sam's call: the Wastes' factions).
+ */
+export const hasFactions = (w: { map: Region | null; realm: string | null }, data: GameData) =>
+  isCampaign(w) || (w.map === null && data.content.realms.some((r) => r.id === w.realm && r.ally));
+
+/** The factions that belong to the world: the campaign's, or its realm's. */
+export const worldFactions = <F extends { realm?: string | undefined }>(
+  w: { realm: string | null },
+  factions: readonly F[],
+): F[] => factions.filter((f) => (f.realm ?? null) === (w.realm ?? null));
+
 /** A region's map from its record, for regions that aren't in the content, such as an editor's. */
 export function regionMapOf(terrains: readonly Terrain[], r: Region): RegionMap {
   const glyphs = new Map(terrains.map((t) => [t.glyph, t]));
@@ -213,4 +226,13 @@ export function nearestTown(
     if (cost > 0 && cost < least) [near, least] = [s, cost];
   }
   return near;
+}
+
+/**
+ * What the party is told as a new world starts: the campaign's introduction, or its realm's (Sam's
+ * call: the Wastes and the Sealed Vale); none on a custom map.
+ */
+export function worldIntro(w: { map: Region | null; realm: string | null }, data: GameData) {
+  if (isCampaign(w)) return data.content.campaign.intro;
+  return (w.map === null && data.content.realms.find((r) => r.id === w.realm)?.intro) || null;
 }

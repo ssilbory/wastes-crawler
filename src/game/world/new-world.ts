@@ -6,7 +6,7 @@ import type { Rng } from '../../rules/rng.ts';
 import type { GameData } from '../character/context.ts';
 import { startFactions } from '../factions/state.ts';
 import { newMember, note } from './members.ts';
-import { isCampaign, regionMap, withWorldMap } from './region.ts';
+import { hasFactions, regionMap, withWorldMap } from './region.ts';
 import { enterTown } from './town.ts';
 import { FULL_RATIONS } from './town-prices.ts';
 import { NO_LIGHT, type World } from './types.ts';
@@ -123,7 +123,7 @@ export function newWorld(
     encounter: null,
     log: [],
   };
-  if (isCampaign(w)) startFactions(w, data);
+  if (hasFactions(w, data)) startFactions(w, data);
   note(w, `The party gathers in ${map.start.name}.`);
   enterTown(w, data, map.start.id, true);
   return w;

@@ -6,7 +6,7 @@ import type { FactionGoalKind, FactionState } from '../../data/schemas/index.ts'
 import { bloodTarget, factionMaxHp, raiseCost, rootOutDifficulty } from '../../rules/factions.ts';
 import type { GameData } from '../character/context.ts';
 import type { World } from '../world/types.ts';
-import { factionOf, isActive, locationName, news, ratings } from './state.ts';
+import { factionOf, isActive, locationName, locationOf, news, ratings } from './state.ts';
 
 /** Turns without an Attack for Peaceable Kingdom. */
 export const PEACEABLE_TURNS = 4;
@@ -17,11 +17,19 @@ export const GOAL_NAMES: Record<FactionGoalKind, string> = {
   'peaceable-kingdom': 'Peaceable Kingdom',
 };
 
-/** The weakest Base of Influence among the faction's active rivals. */
+/**
+ * The weakest Base of Influence among the faction's active rivals; for a faction of `home` reach,
+ * among those on its headquarters' map (Sam's call: each Wastes warlord keeps to their own map).
+ */
 export function weakestBase(w: World, data: GameData, id: string) {
-  const bases = factionOf(data, id).enemies.flatMap((e) => {
+  const f = factionOf(data, id);
+  const home = locationOf(data, f.hq).region;
+  const inReach = (at: string) => f.reach !== 'home' || locationOf(data, at).region === home;
+  const bases = f.enemies.flatMap((e) => {
     const s = w.factions[e];
-    return isActive(s) ? s.bases.map((b) => ({ faction: e, at: b.at, hp: b.hp })) : [];
+    return isActive(s)
+      ? s.bases.filter((b) => inReach(b.at)).map((b) => ({ faction: e, at: b.at, hp: b.hp }))
+      : [];
   });
   if (bases.length === 0) return null;
   const weakest = bases.reduce((a, b) => (b.hp < a.hp ? b : a));

@@ -48,15 +48,13 @@ const ALL: readonly Listener[] = [
 ];
 
 /**
- * The campaign's own story: its sieges, factions, warlord's clock, crafter's notes, and major
+ * The campaign's own story: its warlord's clock, crafter's notes, and major
  * projects (Renown is earned only where projects can be spent on), all tied to
  * the campaign's towns. A world on a custom map or a realm has none of it (Sam's call). Standing
  * orders run everywhere: the Sealed Vale's posts hold its pass and tower, and the same listener
  * records every won post and hoard fight (docs/rules-adaptation.md, Shipped worlds).
  */
 const CAMPAIGN: ReadonlySet<Listener> = new Set([
-  siegesListener,
-  factionsListener,
   clockListener,
   notesListener,
   majorProjectsListener,
@@ -64,4 +62,14 @@ const CAMPAIGN: ReadonlySet<Listener> = new Set([
   workingsListener,
 ]);
 
-export const WORLD_LISTENERS: WorldListeners = { all: ALL, campaign: CAMPAIGN };
+/**
+ * The faction turn and its sieges, which run in the campaign and in a realm with factions of its
+ * own (Sam's call: the Wastes' warlords take its villages).
+ */
+const FACTIONS: ReadonlySet<Listener> = new Set([siegesListener, factionsListener]);
+
+export const WORLD_LISTENERS: WorldListeners = {
+  all: ALL,
+  campaign: CAMPAIGN,
+  factions: FACTIONS,
+};
