@@ -1,6 +1,7 @@
 // Factions and major projects (docs/rules-adaptation.md, Major projects: Faction help and
 // Opposition; Sam's calls, Phase 22b; vendor/wwn-srd/7.0 Major Projects/Player Run Factions and
-// Major Projects.md, 7.9.0). The party asks the allied faction for help in a town it holds; on its
+// Major Projects.md, 7.9.0). The party asks the allied faction (the Wastes' Well-Keepers in the
+// Wastes) for help in a town it holds; on its
 // next turn it spends that turn's action and 1 Treasure to cut the project by half its ratings,
 // doubled when the project suits it. A project pushed through a faction still standing against it
 // leaves lingering trouble: on that faction's next turn it strikes the place, and a hit sacks it
@@ -18,6 +19,7 @@ import {
   projectOf,
 } from './major-projects.ts';
 import { note } from './members.ts';
+import { helpFaction } from './region.ts';
 import type { TownResult } from './services.ts';
 import { currentTown } from './town-prices.ts';
 import type { World } from './types.ts';
@@ -27,7 +29,7 @@ const no = (reason: string): TownResult => ({ ok: false, reason });
 /** Why the party can't ask the allied faction to help with a project here, or null if it can. */
 export function cannotAsk(w: World, data: GameData, id: string): string | null {
   const p = projectOf(data, id);
-  const ally = data.content.projects.help.faction;
+  const ally = helpFaction(w, data);
   const name = factionOf(data, ally).name;
   const s = progressOf(w, id);
   if (s.done !== null) return `${p.name} is finished.`;
@@ -46,7 +48,7 @@ export function cannotAsk(w: World, data: GameData, id: string): string | null {
 export function askHelp(w: World, data: GameData, id: string): TownResult {
   const why = cannotAsk(w, data, id);
   if (why) return no(why);
-  const ally = data.content.projects.help.faction;
+  const ally = helpFaction(w, data);
   progressFor(w, id).help.push({ faction: ally, points: 0 });
   note(
     w,

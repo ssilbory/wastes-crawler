@@ -61,6 +61,21 @@ export const isCampaign = (w: { map: Region | null; realm: string | null }) =>
 export const hasFactions = (w: { map: Region | null; realm: string | null }, data: GameData) =>
   isCampaign(w) || (w.map === null && data.content.realms.some((r) => r.id === w.realm && r.ally));
 
+/**
+ * Whether the party can build in the world, earning Renown and spending it on major projects and
+ * institutions: the campaign, or a realm that allows it (Sam's call: the Wastes).
+ */
+export const hasProjects = (w: { map: Region | null; realm: string | null }, data: GameData) =>
+  isCampaign(w) ||
+  (w.map === null && data.content.realms.some((r) => r.id === w.realm && r.projects === true));
+
+/**
+ * The faction that helps the party's projects: the campaign's (projects.json), or the realm's
+ * ally (Sam's call: the Wastes' Well-Keepers).
+ */
+export const helpFaction = (w: { realm: string | null }, data: GameData): string =>
+  data.content.realms.find((r) => r.id === w.realm)?.ally ?? data.content.projects.help.faction;
+
 /** The factions that belong to the world: the campaign's, or its realm's. */
 export const worldFactions = <F extends { realm?: string | undefined }>(
   w: { realm: string | null },

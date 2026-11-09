@@ -67,10 +67,12 @@ describe('emit', () => {
 describe('WORLD_LISTENERS', () => {
   it('ends with the realm ending, and its campaign-only and faction listeners are among them', () => {
     expect(WORLD_LISTENERS.all.at(-1)).toBe(realmEndListener);
-    expect(WORLD_LISTENERS.campaign.size).toBe(5);
+    expect(WORLD_LISTENERS.campaign.size).toBe(3);
     expect(WORLD_LISTENERS.factions?.size).toBe(2);
+    expect(WORLD_LISTENERS.projects?.size).toBe(2);
     for (const l of WORLD_LISTENERS.campaign) expect(WORLD_LISTENERS.all).toContain(l);
     for (const l of WORLD_LISTENERS.factions ?? []) expect(WORLD_LISTENERS.all).toContain(l);
+    for (const l of WORLD_LISTENERS.projects ?? []) expect(WORLD_LISTENERS.all).toContain(l);
   });
 
   it('is what the shared test data carries', () => {

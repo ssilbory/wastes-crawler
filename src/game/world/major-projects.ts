@@ -67,21 +67,29 @@ export function progressFor(w: World, id: string): MajorProjectState {
   return s;
 }
 
-/**
- * Whether a won fight's key (`dungeon/level/x,y`) names a guarded hoard or a ruin's vault: a boss
- * fight (docs/rules-adaptation.md, Bosses). Garrison posts' keys name no cache.
- */
-export function isGuardedHoard(data: GameData, key: string): boolean {
+/** The loot cache a won fight's key (`dungeon/level/x,y`) names, if any. */
+function cacheOf(data: GameData, key: string) {
   const [dungeon, level, cell] = key.split('/');
-  if (!dungeon || !level || !cell) return false;
+  if (!dungeon || !level || !cell) return undefined;
   if (!data.content.dungeons.some((d) => d.id === dungeon) && !ruinOfDungeon(data, dungeon))
-    return false;
+    return undefined;
   const [x, y] = cell.split(',').map(Number);
   const special = dungeonOf(data, dungeon)
     .levels.find((l) => l.id === level)
     ?.specials.find((s) => s.kind === 'cache' && s.at.x === x && s.at.y === y);
-  return special?.kind === 'cache' && special.guards !== undefined;
+  return special?.kind === 'cache' ? special : undefined;
 }
+
+/**
+ * Whether a won fight's key (`dungeon/level/x,y`) names a guarded hoard or a ruin's vault: a boss
+ * fight (docs/rules-adaptation.md, Bosses). Garrison posts' keys name no cache.
+ */
+export const isGuardedHoard = (data: GameData, key: string): boolean =>
+  cacheOf(data, key)?.guards !== undefined;
+
+/** Whether a won fight's key names a Wastes warlord's own hoard: their fall (warlords.ts). */
+const isWarlordHoard = (data: GameData, key: string): boolean =>
+  cacheOf(data, key)?.warlord !== undefined;
 
 /** Whether every loot cache in a hand-made dungeon has been taken: the dungeon is cleared. */
 function cleared(w: World, data: GameData, dungeon: string): boolean {
@@ -223,15 +231,18 @@ function earn(w: World, points: number, why: string): void {
 }
 
 /**
- * The bus listener (campaign only): Renown for a quest turned in, the campaign warlord's fall (the
- * Seal's quest), a guarded hoard won, and a captive brought home; then any project these finish.
+ * The bus listener (wherever the party can build): Renown for a quest turned in, the campaign
+ * warlord's fall (the Seal's quest), a guarded hoard won (a Wastes warlord's own hoard is their
+ * fall, paid as a warlord's), and a captive brought home; then any project these finish.
  */
 export function majorProjectsListener(w: World, data: GameData, e: WorldEvent): void {
   const r = data.content.projects.renown;
   if (e.kind === 'quest-done') {
     earn(w, r.quest, 'The quest is told in every tavern');
     if (e.quest === data.content.campaign.seal.quest) earn(w, r.warlord, 'The warlord is dead');
-  } else if (e.kind === 'fight-won' && e.garrison && isGuardedHoard(data, e.garrison))
+  } else if (e.kind === 'fight-won' && e.garrison && isWarlordHoard(data, e.garrison))
+    earn(w, r.warlord, 'The warlord is dead');
+  else if (e.kind === 'fight-won' && e.garrison && isGuardedHoard(data, e.garrison))
     earn(w, r.boss, 'Word of the hoard spreads');
   else if (e.kind === 'captive-home') earn(w, r.captive, 'A captive tells of their rescue');
   else return;

@@ -8,11 +8,13 @@
 // party-bot.ts; Phase 23f), to show what the party changes.
 //
 // With --realm, the no-party years are a realm's factions instead (the Wastes' warlords and
-// Well-Keepers), with how many of its villages are held at the end.
+// Well-Keepers), with how many of its villages are held at the end. With --walls, every wall
+// project on the world's maps stands finished from the first day.
 //
 //   pnpm factions -- --runs 200 --seed factions --months 24
 //   pnpm factions -- --runs 50 --party 3,6,9
 //   pnpm factions -- --runs 200 --realm wastes
+//   pnpm factions -- --runs 200 --realm wastes --walls
 import { loadContent } from '../src/data/content.ts';
 import { loadSrd } from '../src/data/load.ts';
 import { startFactions } from '../src/game/factions/state.ts';
@@ -20,6 +22,7 @@ import { factionTurn } from '../src/game/factions/turn.ts';
 import type { World } from '../src/game/world/types.ts';
 import { createRng } from '../src/rules/rng.ts';
 import { WORLD_LISTENERS } from '../src/game/world/listeners.ts';
+import { progressOf } from '../src/game/world/major-projects.ts';
 import { worldFactions } from '../src/game/world/region.ts';
 import { allyTowns, holderOf } from '../src/game/world/siege-state.ts';
 import { siegesListener } from '../src/game/world/sieges.ts';
@@ -34,6 +37,7 @@ const SEED = arg('seed', 'factions');
 const MONTHS = Number(arg('months', '24'));
 const PARTY = arg('party', '');
 const REALM = arg('realm', '') || null;
+const WALLS = process.argv.includes('--walls');
 const pct = (n: number) => `${Math.round((100 * n) / RUNS)}%`;
 const avg = (n: number) => (n / RUNS).toFixed(1);
 const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)];
@@ -75,6 +79,8 @@ for (let run = 0; run < RUNS; run++) {
     position: { col: -1, row: -1 },
   };
   const world = w as unknown as World;
+  if (WALLS)
+    for (const id of walls()) world.majorProjects[id] = { ...progressOf(world, id), done: 0 };
   startFactions(world, data);
   for (let month = 1; month <= MONTHS; month++) {
     world.log = [];
@@ -120,6 +126,16 @@ console.log(
 console.log(
   `Sieges per run: ${avg(ended.begun)} begun, ${avg(ended.lifted)} lifted, ${avg(ended.fallen)} fallen; ${avg(ended.held)} settlements held at the end.`,
 );
+
+/** The wall projects on the no-party world's maps: the realm's, or the campaign's. */
+function walls(): string[] {
+  const realm = data.content.realms.find((r) => r.id === REALM);
+  const realmMaps = new Set(data.content.realms.flatMap((r) => r.regions));
+  return data.content.projects.projects
+    .filter((p) => p.kind === 'fortify')
+    .filter((p) => (realm ? realm.regions.includes(p.region) : !realmMaps.has(p.region)))
+    .map((p) => p.id);
+}
 
 /** The --party report: the Settlements, the sieges, and the party, with no party and at each level. */
 function withParty(): void {

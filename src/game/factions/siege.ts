@@ -7,7 +7,7 @@ import type { Siege } from '../../data/schemas/index.ts';
 import { hexKey, neighbors, type Hex } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
 import { note } from '../world/members.ts';
-import { isCampaign, regionMap } from '../world/region.ts';
+import { hasProjects, regionMap } from '../world/region.ts';
 import { isAlly, partyIn, settlementOf } from '../world/siege-state.ts';
 import { currentLedger } from '../world/town-prices.ts';
 import type { World } from '../world/types.ts';
@@ -129,8 +129,8 @@ export function settle(w: World, data: GameData, s: Siege): 'lifted' | 'fallen' 
     return end;
   }
   note(w, `The siege of ${town} is lifted.`);
-  // Renown is spent only on the campaign's major projects.
-  if (s.joined && isAlly(data, s.defender) && isCampaign(w)) {
+  // Renown is earned only where major projects spend it.
+  if (s.joined && isAlly(data, s.defender) && hasProjects(w, data)) {
     w.renown += rules(data).renown;
     note(w, `${town} remembers who stood with it: ${rules(data).renown} Renown.`);
   }

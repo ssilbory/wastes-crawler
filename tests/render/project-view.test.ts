@@ -111,13 +111,35 @@ describe('projects view (docs/rules-adaptation.md, Major projects)', () => {
     expect(v.projects.find((p) => p.id === 'secure-ash-road')?.adventures[0]?.done).toBe(true);
   });
 
-  it('shows nothing outside the campaign', () => {
+  it('shows nothing in a realm without projects (the Sealed Vale)', () => {
+    const party = [
+      { character: starter('snag'), row: 0, column: 0, defaultAction: 'auto' as const },
+    ];
+    const w = newWorld(data, createRng('realm'), party, undefined, null, 'sealed-vale');
+    w.renown = 5;
+    expect(projectsView(w, data)).toMatchObject({ renown: 0, projects: [] });
+  });
+
+  it('shows the Wastes’ own projects on the party’s map, helped by the Well-Keepers', () => {
     const party = [
       { character: starter('snag'), row: 0, column: 0, defaultAction: 'auto' as const },
     ];
     const w = newWorld(data, createRng('realm'), party, undefined, null, 'wastes');
     w.renown = 5;
-    expect(projectsView(w, data)).toMatchObject({ renown: 0, projects: [] });
+    const v = projectsView(w, data);
+    expect(v.renown).toBe(5);
+    expect(v.ally).toBe('The Well-Keepers');
+    expect(v.projects.map((p) => p.id)).toEqual([
+      'wall-dustwell',
+      'wall-cistern-rest',
+      'wall-tinkers-oasis',
+      'well-cistern-rest',
+      'tithe-wastes-fringe',
+    ]);
+    expect(v.projects[0]).toMatchObject({
+      difficulty: 8,
+      opposition: "the Scrap King's Riders (local leaders)",
+    });
   });
 });
 

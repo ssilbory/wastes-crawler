@@ -34,11 +34,11 @@ describe('project content (docs/rules-adaptation.md, Major projects; Sam’s cal
     expect(crypt?.opposition[0]?.beaten.map((b) => b.kind)).toEqual(['faction-gone', 'quest']);
   });
 
-  it('reports a project off the campaign, unknown places, and unknown references', () => {
+  it('reports a project in a realm without projects, unknown places, and unknown references', () => {
     const broken: Project = {
       ...first,
       id: 'broken',
-      region: 'wastes-fringe',
+      region: 'sealed-vale',
       at: 'nowhere',
       difficulty: {
         ...first.difficulty,
@@ -58,8 +58,8 @@ describe('project content (docs/rules-adaptation.md, Major projects; Sam’s cal
       effect: { kind: 'road', route: 'no', ambushDie: 8, fareCut: 0 },
     };
     expect(projectReferenceErrors(srd, with_({ projects: [broken] }))).toEqual([
-      'projects/broken: wastes-fringe is not a campaign map',
-      'projects/broken: nowhere is not a site in wastes-fringe',
+      'projects/broken: sealed-vale is in a realm without projects',
+      'projects/broken: nowhere is not a site in sealed-vale',
       'projects/broken: unknown faction no',
       'projects/broken: unknown faction location no',
       'projects/broken: unknown quest no',
@@ -70,6 +70,38 @@ describe('project content (docs/rules-adaptation.md, Major projects; Sam’s cal
       'projects/broken: unknown dungeon no',
       'projects/broken: unknown project no',
       'projects/broken: unknown coach route no',
+    ]);
+  });
+
+  it('reports a project opposed or tithed by another world’s faction', () => {
+    const wastes = content.projects.projects.find((x) => x.id === 'tithe-wastes-fringe') as Project;
+    const crossed: Project = {
+      ...wastes,
+      id: 'crossed',
+      difficulty: {
+        ...wastes.difficulty,
+        opposition: [
+          {
+            name: 'a',
+            level: 'minor',
+            beaten: [{ kind: 'faction-gone', faction: 'settlements', at: 'dustwell' }],
+          },
+        ],
+      },
+      effect: { ...wastes.effect, kind: 'tithe', region: 'wastes-fringe', faction: 'warhost' },
+    } as Project;
+    expect(projectReferenceErrors(srd, with_({ projects: [crossed] }))).toEqual([
+      "projects/crossed: settlements is not of its map's world",
+      "projects/crossed: warhost is not of its map's world",
+    ]);
+  });
+
+  it('reports a realm with projects but no ally to help them', () => {
+    const realms = content.realms.map((r) =>
+      r.id === 'sealed-vale' ? { ...r, projects: true } : r,
+    );
+    expect(projectReferenceErrors(srd, { ...content, realms })).toEqual([
+      'realms/sealed-vale: projects need an ally to ask for help',
     ]);
   });
 

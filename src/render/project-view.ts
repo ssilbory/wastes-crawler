@@ -17,7 +17,7 @@ import {
 } from '../game/world/major-projects.ts';
 import { cannotBuild } from '../game/world/project-building.ts';
 import { cannotAsk } from '../game/world/project-help.ts';
-import { isCampaign } from '../game/world/region.ts';
+import { hasProjects, helpFaction } from '../game/world/region.ts';
 import { effectText, serviceText } from './project-effect-text.ts';
 import { parseInstitutionId } from '../game/world/institution-projects.ts';
 import type { World } from '../game/world/types.ts';
@@ -155,14 +155,13 @@ function view(w: World, data: GameData, p: AnyProject): ProjectView {
 }
 
 /**
- * The party's Renown and the projects on its map, unfinished first; none outside the campaign,
- * which alone has projects (Sam's call).
+ * The party's Renown and the projects on its map, unfinished first; none in a world where the
+ * party can't build (Sam's calls: the campaign and the Wastes can).
  */
 export function projectsView(w: World, data: GameData): ProjectsView {
-  const ally = data.content.factions.factions.find(
-    (f) => f.id === data.content.projects.help.faction,
-  )?.name as string;
-  if (!isCampaign(w)) return { renown: 0, foundable: [], ally, projects: [] };
+  const help = helpFaction(w, data);
+  const ally = data.content.factions.factions.find((f) => f.id === help)?.name as string;
+  if (!hasProjects(w, data)) return { renown: 0, foundable: [], ally, projects: [] };
   const here = allProjects(w, data)
     .filter((p) => p.region === w.region)
     .map((p) => view(w, data, p));

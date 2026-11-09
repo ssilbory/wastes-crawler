@@ -40,6 +40,8 @@ export function institutionProject(data: GameData, id: string): AnyProject | und
   const found = parseInstitutionId(data, id);
   if (!found) return undefined;
   const { institution: i, site, region } = found;
+  // The campaign's powers (the Faithful against crypts) don't reach a realm (Sam's call: the Wastes).
+  const realm = data.content.realms.some((r) => r.regions.includes(region));
   return {
     id,
     name: `${capital(i.name)} in ${site.name}`,
@@ -50,7 +52,7 @@ export function institutionProject(data: GameData, id: string): AnyProject | und
     difficulty: {
       probability: i.probability,
       scope: site.size === 'village' ? 'village' : 'city',
-      opposition: i.opposition,
+      opposition: realm ? [] : i.opposition,
       popular: false,
     },
     build: i.build,
