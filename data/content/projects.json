@@ -602,6 +602,796 @@
         "bonus": 1
       },
       "ending": "The grove at Thornwatch grows again, and the woodcutters come home."
+    },
+    {
+      "id": "wall-dustwell",
+      "name": "Wall Dustwell",
+      "kind": "fortify",
+      "region": "wastes-fringe",
+      "at": "dustwell",
+      "text": "Dustwell's well-house has a gate and nothing else. A mud-brick wall around the whole village, with a fighting step and a watch on the road, would keep the Riders off the well itself.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the Scrap King's Riders",
+            "level": "local",
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "scrap-riders",
+                "at": "scrap-kings-pumpworks"
+              }
+            ]
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 150,
+        "days": 20,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "raid-guard",
+        "at": "dustwell",
+        "percent": 50
+      },
+      "ending": "Dustwell's mud-brick wall still stands, and the Well-Keepers still walk it at dusk."
+    },
+    {
+      "id": "wall-cistern-rest",
+      "name": "Wall Cistern Rest",
+      "kind": "fortify",
+      "region": "wastes-fringe",
+      "at": "cistern-rest",
+      "text": "Cistern Rest sits on its cistern like a lid, open to anyone with a rope. A ring of scrap and stone with one gate would make the Riders pay for every cup.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the Scrap King's Riders",
+            "level": "local",
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "scrap-riders",
+                "at": "scrap-kings-pumpworks"
+              }
+            ]
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 150,
+        "days": 20,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "raid-guard",
+        "at": "cistern-rest",
+        "percent": 50
+      },
+      "ending": "Cistern Rest's scrap ring still stands, its one gate still barred at night."
+    },
+    {
+      "id": "wall-tinkers-oasis",
+      "name": "Wall Tinker's Oasis",
+      "kind": "fortify",
+      "region": "wastes-fringe",
+      "at": "tinkers-oasis",
+      "text": "The tinkers keep their palms behind a line of rusted carts. Welded into a proper wall, with a watch on the dunes, the carts would turn the Riders back.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the Scrap King's Riders",
+            "level": "local",
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "scrap-riders",
+                "at": "scrap-kings-pumpworks"
+              }
+            ]
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 150,
+        "days": 20,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "raid-guard",
+        "at": "tinkers-oasis",
+        "percent": 50
+      },
+      "ending": "Tinker's Oasis still hides behind its welded wall of old carts."
+    },
+    {
+      "id": "wall-saltcross",
+      "name": "Wall Saltcross",
+      "kind": "fortify",
+      "region": "wastes-glass",
+      "at": "saltcross",
+      "text": "Saltcross lies at a crossing of salt roads with no wall at all. Salt-brick laid around it, and a watch on both roads, would keep the Packs at a distance.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the Salt Baron's Packs",
+            "level": "local",
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "salt-packs",
+                "at": "salt-keep"
+              }
+            ]
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 150,
+        "days": 20,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "raid-guard",
+        "at": "saltcross",
+        "percent": 50
+      },
+      "ending": "Saltcross's salt-brick wall still stands at the crossing, white against the glass."
+    },
+    {
+      "id": "wall-glasswater",
+      "name": "Wall Glasswater",
+      "kind": "fortify",
+      "region": "wastes-glass",
+      "at": "glasswater",
+      "text": "Glasswater's pool lies in a hollow of fused glass, easy to ring. A wall of glass shards set in mortar would cut any gnoll who tried to climb it.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the Salt Baron's Packs",
+            "level": "local",
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "salt-packs",
+                "at": "salt-keep"
+              }
+            ]
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 150,
+        "days": 20,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "raid-guard",
+        "at": "glasswater",
+        "percent": 50
+      },
+      "ending": "Glasswater's shard wall still glitters around its pool, and no gnoll has climbed it yet."
+    },
+    {
+      "id": "wall-last-palm",
+      "name": "Wall Last Palm",
+      "kind": "fortify",
+      "region": "wastes-dunes",
+      "at": "last-palm",
+      "text": "Last Palm's grove is the last shade on the Red Dune Sea, and the Horde rides straight through it. A palisade of palm trunks and a ditch the drakes can't jump would hold them off.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the Dune Khan's Horde",
+            "level": "local",
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "dune-horde",
+                "at": "khans-barge"
+              }
+            ]
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 150,
+        "days": 20,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "raid-guard",
+        "at": "last-palm",
+        "percent": 50
+      },
+      "ending": "Last Palm's palisade still stands, and its ditch is still kept clear of sand."
+    },
+    {
+      "id": "wall-anchorage",
+      "name": "Wall Anchorage",
+      "kind": "fortify",
+      "region": "wastes-dunes",
+      "at": "anchorage",
+      "text": "Anchorage is built from a beached sand-ship's ribs. Plank them over and raise a watch on the old mast, and the sand-riders would have to stop at the hull.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the Dune Khan's Horde",
+            "level": "local",
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "dune-horde",
+                "at": "khans-barge"
+              }
+            ]
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 150,
+        "days": 20,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "raid-guard",
+        "at": "anchorage",
+        "percent": 50
+      },
+      "ending": "Anchorage's planked hull still keeps the sand-riders out, and its mast-watch still calls the dunes."
+    },
+    {
+      "id": "wall-marrowgate",
+      "name": "Wall Marrowgate",
+      "kind": "fortify",
+      "region": "wastes-bonefields",
+      "at": "marrowgate",
+      "text": "Marrowgate's gate is all it has: the wall it was named for fell long ago. Rebuilt on the old footings, it would keep the Count's dead outside.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the Tallyman's Count",
+            "level": "local",
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "the-count",
+                "at": "tallymans-ossuary"
+              }
+            ]
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 150,
+        "days": 20,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "raid-guard",
+        "at": "marrowgate",
+        "percent": 50
+      },
+      "ending": "Marrowgate has its wall again, and the dead still knock at it in vain."
+    },
+    {
+      "id": "wall-ash-hollow",
+      "name": "Wall Ash Hollow",
+      "kind": "fortify",
+      "region": "wastes-bonefields",
+      "at": "ash-hollow",
+      "text": "Ash Hollow hides in a fold of grey ash, and the dead walk down into it at night. A wall across the fold's mouth, with a watch-fire, would turn them back.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the Tallyman's Count",
+            "level": "local",
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "the-count",
+                "at": "tallymans-ossuary"
+              }
+            ]
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 150,
+        "days": 20,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "raid-guard",
+        "at": "ash-hollow",
+        "percent": 50
+      },
+      "ending": "Ash Hollow's wall still closes the fold, and its watch-fire still burns all night."
+    },
+    {
+      "id": "wall-emberwatch",
+      "name": "Wall Emberwatch",
+      "kind": "fortify",
+      "region": "wastes-sunscar",
+      "at": "emberwatch",
+      "text": "Emberwatch was a signal post before it was a village, and its tower is still sound. A curtain wall from the tower around the houses would give the Host's giants something to break their clubs on.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the Sunlord's Host",
+            "level": "local",
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "sun-host",
+                "at": "sunscar-throne-city"
+              }
+            ]
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 150,
+        "days": 20,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "raid-guard",
+        "at": "emberwatch",
+        "percent": 50
+      },
+      "ending": "Emberwatch's curtain wall still runs from its tower, scarred where the giants struck it."
+    },
+    {
+      "id": "wall-final-well",
+      "name": "Wall Final Well",
+      "kind": "fortify",
+      "region": "wastes-sunscar",
+      "at": "final-well",
+      "text": "Final Well is the last water before the Throne City, and the Host takes from it when it likes. A thick stone wall and a barred well-house would make the Sunlord's people fight for it.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the Sunlord's Host",
+            "level": "local",
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "sun-host",
+                "at": "sunscar-throne-city"
+              }
+            ]
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 150,
+        "days": 20,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "raid-guard",
+        "at": "final-well",
+        "percent": 50
+      },
+      "ending": "Final Well's stone wall still stands within sight of the Throne City."
+    },
+    {
+      "id": "well-cistern-rest",
+      "name": "Clear the Old Cistern",
+      "kind": "restore",
+      "region": "wastes-fringe",
+      "at": "cistern-rest",
+      "text": "Below Cistern Rest's working cistern lies an older one, choked with sand and worse. Dug out and lined again, it would wet the ground for miles around.",
+      "difficulty": {
+        "probability": "improbable",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the things nesting in the old cistern",
+            "level": "minor",
+            "beaten": []
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 200,
+        "days": 20,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "water",
+        "at": "cistern-rest",
+        "radius": 3
+      },
+      "ending": "Cistern Rest's old cistern runs again, and the Fringe around it is a little less dry."
+    },
+    {
+      "id": "well-glasswater",
+      "name": "Sink a Shaft at Glasswater",
+      "kind": "restore",
+      "region": "wastes-glass",
+      "at": "glasswater",
+      "text": "Glasswater's pool is the top of a deep spring sealed under the glass. Breaking a shaft down through it would bring water up into the flats around.",
+      "difficulty": {
+        "probability": "improbable",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the glass-cutters who sell Glasswater its water",
+            "level": "minor",
+            "beaten": []
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 200,
+        "days": 20,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "water",
+        "at": "glasswater",
+        "radius": 3
+      },
+      "ending": "Glasswater's shaft still brings the deep spring up through the glass."
+    },
+    {
+      "id": "well-last-palm",
+      "name": "Dig Last Palm's Channels",
+      "kind": "restore",
+      "region": "wastes-dunes",
+      "at": "last-palm",
+      "text": "Last Palm's spring feeds one grove. Cut channels out into the dunes and line them with palm-wood, and it could water the sand for miles.",
+      "difficulty": {
+        "probability": "improbable",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the dune-worms that follow the water",
+            "level": "minor",
+            "beaten": []
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 200,
+        "days": 20,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "water",
+        "at": "last-palm",
+        "radius": 3
+      },
+      "ending": "Last Palm's channels still carry water out into the Red Dune Sea."
+    },
+    {
+      "id": "well-ash-hollow",
+      "name": "Wash Out Ash Hollow's Well",
+      "kind": "restore",
+      "region": "wastes-bonefields",
+      "at": "ash-hollow",
+      "text": "Ash Hollow's well is half ash and tastes of the dead. Washed out and capped, it would give clean water to the whole fold and the fields beyond.",
+      "difficulty": {
+        "probability": "improbable",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the restless dead in the well-shaft",
+            "level": "minor",
+            "beaten": []
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 200,
+        "days": 20,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "water",
+        "at": "ash-hollow",
+        "radius": 3
+      },
+      "ending": "Ash Hollow's well runs clean, and the Bonefields around it are a little less dry."
+    },
+    {
+      "id": "well-final-well",
+      "name": "Open the Deep Well",
+      "kind": "restore",
+      "region": "wastes-sunscar",
+      "at": "final-well",
+      "text": "Under Final Well lies the Sun King's own deep well, bricked up since the fire. Opened again, it would water the Sunscar for miles.",
+      "difficulty": {
+        "probability": "improbable",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "the Sunlord's well-wardens",
+            "level": "minor",
+            "beaten": []
+          }
+        ],
+        "popular": false
+      },
+      "build": {
+        "crowns": 200,
+        "days": 20,
+        "skill": "craft",
+        "exert": true
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "water",
+        "at": "final-well",
+        "radius": 3
+      },
+      "ending": "Final Well's deep well runs again, under the Sunlord's own nose."
+    },
+    {
+      "id": "tithe-wastes-fringe",
+      "name": "End the Water Tithe",
+      "kind": "grip",
+      "region": "wastes-fringe",
+      "at": "dustwell",
+      "text": "The Riders sell the Fringe its own water back by the cup. Turn the villages against paying, and the Riders' patrols would find little worth riding for.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "The Scrap King",
+            "level": "major",
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "scrap-riders",
+                "at": "scrap-kings-pumpworks"
+              }
+            ]
+          }
+        ],
+        "popular": false
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "tithe",
+        "region": "wastes-fringe",
+        "faction": "scrap-riders",
+        "sellPercent": 20,
+        "patrolPercent": 50
+      },
+      "ending": "The Fringe no longer pays the Scrap King for its own water."
+    },
+    {
+      "id": "tithe-wastes-glass",
+      "name": "End the Salt Tithe",
+      "kind": "grip",
+      "region": "wastes-glass",
+      "at": "saltcross",
+      "text": "Vesk's packs take a share of every salt load that crosses the flats. Stop it at Saltcross, and the Glassed Flats' villages keep what they dig.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "The Salt Baron",
+            "level": "major",
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "salt-packs",
+                "at": "salt-keep"
+              }
+            ]
+          }
+        ],
+        "popular": false
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "tithe",
+        "region": "wastes-glass",
+        "faction": "salt-packs",
+        "sellPercent": 20,
+        "patrolPercent": 50
+      },
+      "ending": "The Glassed Flats' villages keep their salt, and the Packs ride out less."
+    },
+    {
+      "id": "tithe-wastes-dunes",
+      "name": "End the Khan's Tribute",
+      "kind": "grip",
+      "region": "wastes-dunes",
+      "at": "anchorage",
+      "text": "Oduran takes water from every well on the Red Dune Sea. Hold Anchorage against the tribute-riders, and the rest will stop paying too.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "The Dune Khan",
+            "level": "major",
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "dune-horde",
+                "at": "khans-barge"
+              }
+            ]
+          }
+        ],
+        "popular": false
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "tithe",
+        "region": "wastes-dunes",
+        "faction": "dune-horde",
+        "sellPercent": 20,
+        "patrolPercent": 50
+      },
+      "ending": "The Red Dune Sea pays no tribute to the Khan's riders."
+    },
+    {
+      "id": "tithe-wastes-bonefields",
+      "name": "Burn the Tallyman's Ledgers",
+      "kind": "grip",
+      "region": "wastes-bonefields",
+      "at": "marrowgate",
+      "text": "The Tallyman counts every living soul on the Bonefields, and takes his tithe in bodies. Burn his ledgers at Marrowgate, and the villages fall off his count.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "The Tallyman",
+            "level": "major",
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "the-count",
+                "at": "tallymans-ossuary"
+              }
+            ]
+          }
+        ],
+        "popular": false
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "tithe",
+        "region": "wastes-bonefields",
+        "faction": "the-count",
+        "sellPercent": 20,
+        "patrolPercent": 50
+      },
+      "ending": "The Tallyman's ledgers are ash, and the Bonefields' villages are off his count."
+    },
+    {
+      "id": "tithe-wastes-sunscar",
+      "name": "Refuse the Sunlord's Due",
+      "kind": "grip",
+      "region": "wastes-sunscar",
+      "at": "emberwatch",
+      "text": "The Sunlord's heralds take the Sunscar's due in water and grain. Refuse it at Emberwatch, and the Host has to come for it in person.",
+      "difficulty": {
+        "probability": "plausible",
+        "scope": "village",
+        "opposition": [
+          {
+            "name": "The Sunlord",
+            "level": "major",
+            "beaten": [
+              {
+                "kind": "faction-gone",
+                "faction": "sun-host",
+                "at": "sunscar-throne-city"
+              }
+            ]
+          }
+        ],
+        "popular": false
+      },
+      "adventures": [],
+      "after": [],
+      "effect": {
+        "kind": "tithe",
+        "region": "wastes-sunscar",
+        "faction": "sun-host",
+        "sellPercent": 20,
+        "patrolPercent": 50
+      },
+      "ending": "Emberwatch refused the Sunlord's due, and the Sunscar pays it no more."
     }
   ],
   "institutions": [

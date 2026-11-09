@@ -11,7 +11,7 @@ import type { GameData } from '../character/context.ts';
 import { emit } from '../world/bus.ts';
 import { allProjects, projectOf } from '../world/major-projects.ts';
 import { note } from '../world/members.ts';
-import { isCampaign } from '../world/region.ts';
+import { hasProjects } from '../world/region.ts';
 import { allyOf, allyTowns, besieged, holderOf, isAlly } from '../world/siege-state.ts';
 import type { World } from '../world/types.ts';
 import { destroyWorkings } from '../world/workings.ts';
@@ -80,8 +80,8 @@ export function reclaim(w: World, data: GameData, town: string, party = false): 
 
 /** The party helped take a settlement back: Renown (Sieges: Rewards). */
 export function retaken(w: World, data: GameData, town: string): void {
-  // Renown is spent only on the campaign's major projects.
-  if (!isCampaign(w)) return;
+  // Renown is earned only where major projects spend it.
+  if (!hasProjects(w, data)) return;
   const renown = data.content.siegeRules.renown;
   w.renown += renown;
   note(w, `${locationName(data, town)} thanks the party for its freedom: ${renown} Renown.`);

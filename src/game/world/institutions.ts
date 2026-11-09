@@ -20,7 +20,7 @@ import {
 import { progressFor, progressOf } from './major-projects.ts';
 import { note } from './members.ts';
 import { addNpc, captiveOf, removeNpc } from './npcs.ts';
-import { isCampaign } from './region.ts';
+import { hasProjects } from './region.ts';
 import type { TownResult } from './services.ts';
 import { currentTown, priceHere, spend } from './town-prices.ts';
 import type { World } from './types.ts';
@@ -46,8 +46,8 @@ export function hasService(w: World, data: GameData, town: string, service: Serv
 
 /** Why the party can't found an institution for this service where it stands, or null. */
 export function cannotFound(w: World, data: GameData, service: Service): string | null {
-  const town = w.dungeon || !isCampaign(w) ? undefined : currentTown(w, data);
-  if (!town) return 'Institutions are founded in a settlement on the campaign.';
+  const town = w.dungeon || !hasProjects(w, data) ? undefined : currentTown(w, data);
+  if (!town) return 'Institutions are founded in a settlement where the party can build.';
   const i = data.content.projects.institutions.find((x) => x.service === service);
   const name = i?.name as string;
   const id = institutionId(service, town.id);
@@ -86,9 +86,29 @@ export function cannotHire(w: World, data: GameData, id: string): string | null 
   if (w.npcs.some((n) => n.kind === 'recruit' && n.type === id))
     return `${i.specialist.name} is already on the way.`;
   const town = w.dungeon ? undefined : currentTown(w, data);
-  if (!town || town.id === site.id || !hasService(w, data, town.id, i.service))
-    return `Hire ${i.specialist.name} in a town that has ${i.name}.`;
+  const fromAny = !servedInRealm(w, data, site.id, i.service);
+  if (!town || town.id === site.id || !(fromAny || hasService(w, data, town.id, i.service)))
+    return fromAny
+      ? `Hire ${i.specialist.name} in another settlement.`
+      : `Hire ${i.specialist.name} in a town that has ${i.name}.`;
   return null;
+}
+
+/**
+ * Whether a journeyman for an institution in a realm's settlement can be found where the service
+ * stands (true everywhere outside a realm). A realm none of whose other settlements has the
+ * service sends for one from any of them instead (Sam's call: the Wastes have no workshop to
+ * hire a smith from).
+ */
+function servedInRealm(w: World, data: GameData, site: string, service: Service): boolean {
+  const c = data.content;
+  const region = c.regions.find((r) => r.sites.some((s) => s.id === site))?.id;
+  const realm = c.realms.find((r) => region !== undefined && r.regions.includes(region));
+  if (!realm) return true;
+  return c.regions
+    .filter((r) => realm.regions.includes(r.id))
+    .flatMap((r) => r.sites)
+    .some((s) => s.kind === 'town' && s.id !== site && hasService(w, data, s.id, service));
 }
 
 /** Hires a journeyman, who travels with the party to the institution and settles there. */

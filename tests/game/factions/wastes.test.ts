@@ -155,15 +155,15 @@ describe('the Wastes’ factions (Sam’s calls)', () => {
     expect(w.log).toHaveLength(before);
   });
 
-  it('pay no Renown, which only the campaign’s projects spend', () => {
+  it('pay Renown for the Wastes’ own projects (Sam’s call): a village retaken, a siege lifted', () => {
     const w = takenCisternRest();
     retaken(w, data, 'cistern-rest');
-    expect(w.renown).toBe(0);
+    expect(w.renown).toBe(2);
     const s = beginSiege(w, data, 'scrap-riders', 'tinkers-oasis', 'well-keepers');
     s.joined = true;
     faction(w, 'scrap-riders').assets = [];
     expect(settle(w, data, s)).toBe('lifted');
-    expect(w.renown).toBe(0);
+    expect(w.renown).toBe(4);
   });
 
   it('give a village back to the Well-Keepers, never to the campaign’s ally', () => {

@@ -25,6 +25,7 @@
     ],
     "ally": "well-keepers",
     "heldShut": true,
+    "projects": true,
     "intro": {
       "title": "The Wastes",
       "paragraphs": [

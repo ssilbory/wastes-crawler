@@ -135,7 +135,7 @@ describe('founding an institution (Sam’s calls: where a service is lacking, on
     );
   });
 
-  it('is refused where the service already stands, and off the campaign or a settlement', () => {
+  it('is refused where the service already stands, and off a settlement or a buildable world', () => {
     const c = cinderhold();
     expect(cannotFound(c, data, 'workshop')).toBe('Cinderhold has a workshop already.');
     expect(cannotFound(c, data, 'alchemist')).toBe("Cinderhold has an alchemist's shop already.");
@@ -146,14 +146,14 @@ describe('founding an institution (Sam’s calls: where a service is lacking, on
     c.position = { col: 7, row: 12 };
     expect(foundInstitution(c, data, 'arena')).toEqual({
       ok: false,
-      reason: 'Institutions are founded in a settlement on the campaign.',
+      reason: 'Institutions are founded in a settlement where the party can build.',
     });
     const party = [
       { character: starter('snag'), row: 0, column: 0, defaultAction: 'auto' as const },
     ];
-    const realm = newWorld(data, createRng('realm'), party, undefined, null, 'wastes');
+    const realm = newWorld(data, createRng('realm'), party, undefined, null, 'sealed-vale');
     expect(cannotFound(realm, data, 'arena')).toBe(
-      'Institutions are founded in a settlement on the campaign.',
+      'Institutions are founded in a settlement where the party can build.',
     );
   });
 });

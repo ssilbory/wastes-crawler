@@ -93,13 +93,30 @@ describe('earning Renown (docs/rules-adaptation.md, Major projects: Earning Reno
     expect(w.log.length).toBe(lines);
   });
 
-  it('earns nothing in a shipped realm, which has no projects to spend it on', () => {
+  it('earns nothing in a realm without projects (the Sealed Vale)', () => {
+    const party = [
+      { character: starter('snag'), row: 0, column: 0, defaultAction: 'auto' as const },
+    ];
+    const w = newWorld(data, createRng('realm'), party, undefined, null, 'sealed-vale');
+    emit(w, data, { kind: 'quest-done', quest: 'bandit-camp' });
+    emit(w, data, { kind: 'fight-won', quest: null, garrison: hoard });
+    expect(w.renown).toBe(0);
+  });
+
+  it('earns Renown in the Wastes (Sam’s call): a hoard 1, a warlord’s own hoard 2 and no more', () => {
     const party = [
       { character: starter('snag'), row: 0, column: 0, defaultAction: 'auto' as const },
     ];
     const w = newWorld(data, createRng('realm'), party, undefined, null, 'wastes');
-    emit(w, data, { kind: 'quest-done', quest: 'bandit-camp' });
-    expect(w.renown).toBe(0);
+    emit(w, data, { kind: 'fight-won', quest: null, garrison: hoard });
+    expect(w.renown).toBe(1);
+    emit(w, data, {
+      kind: 'fight-won',
+      quest: null,
+      garrison: 'scrap-kings-pumpworks/scrap-kings-pumpworks-2/6,0',
+    });
+    expect(w.renown).toBe(3);
+    expect(w.log.at(-1)).toContain('The warlord is dead: 2 Renown');
   });
 
   it('names only real caches with guards as boss fights', () => {

@@ -105,6 +105,11 @@ export const RealmSchema = z.strictObject({
   ally: IdSchema.optional(),
   /** A settlement held against the ally is shut to the party: no shop, inn, or other service. */
   heldShut: z.boolean().optional(),
+  /**
+   * The party can build here: major projects and institutions, and Renown to spend on them (Sam's
+   * call: the Wastes). Needs an ally, whose help the projects ask for.
+   */
+  projects: z.boolean().optional(),
   /** What the party is told as a new world in the realm starts (Sam's call), as the campaign's. */
   intro: IntroSchema.optional(),
   /**

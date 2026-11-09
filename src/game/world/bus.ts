@@ -3,7 +3,7 @@
 // assembled in listeners.ts and reach emit through GameData, so no listener imports the others.
 import type { SiegeFight } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
-import { hasFactions, isCampaign } from './region.ts';
+import { hasFactions, hasProjects, isCampaign } from './region.ts';
 import type { Npc, World } from './types.ts';
 
 export type WorldEvent =
@@ -42,13 +42,15 @@ export type WorldEvent =
 export type Listener = (w: World, data: GameData, e: WorldEvent) => void;
 
 /**
- * Every listener, in the order each event reaches them, the campaign-only ones among them, and
- * those that run wherever the world has factions (the campaign, or a realm with an ally).
+ * Every listener, in the order each event reaches them, the campaign-only ones among them, those
+ * that run wherever the world has factions (the campaign, or a realm with an ally), and those that
+ * run wherever the party can build (the campaign, or a realm that allows projects).
  */
 export interface WorldListeners {
   all: readonly Listener[];
   campaign: ReadonlySet<Listener>;
   factions?: ReadonlySet<Listener>;
+  projects?: ReadonlySet<Listener>;
 }
 
 export function emit(w: World, data: GameData, e: WorldEvent): void {
@@ -57,7 +59,13 @@ export function emit(w: World, data: GameData, e: WorldEvent): void {
   if (!listeners) throw new Error('GameData has no world listeners (src/game/world/listeners.ts)');
   const story = isCampaign(w);
   const factions = hasFactions(w, data);
-  for (const listen of listeners.all)
-    if (story || (listeners.factions?.has(listen) ? factions : !listeners.campaign.has(listen)))
-      listen(w, data, e);
+  const projects = hasProjects(w, data);
+  const runs = (listen: Listener) =>
+    story ||
+    (listeners.factions?.has(listen)
+      ? factions
+      : listeners.projects?.has(listen)
+        ? projects
+        : !listeners.campaign.has(listen));
+  for (const listen of listeners.all) if (runs(listen)) listen(w, data, e);
 }
