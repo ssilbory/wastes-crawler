@@ -5,7 +5,7 @@ import type { Character } from '../../data/schemas/index.ts';
 import { advance, type LevelChoices } from '../character/advance.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
-import type { TrainResult } from '../character/training.ts';
+import { spendPoints, type SpendStep, type TrainResult } from '../character/training.ts';
 import { untoughened } from './companion-sync.ts';
 import { note } from './members.ts';
 import type { TownResult } from './services.ts';
@@ -27,17 +27,24 @@ const ownShape = (data: GameData, m: Member) =>
 const reshape = (data: GameData, m: Member, c: Character) =>
   m.form === null ? c : shiftCharacter(data, c, null, m.form);
 
+/**
+ * Takes the next level, then spends points on `spend` with the new level's points in hand. Any
+ * refused step refuses the whole level, so the level never lands half-trained.
+ */
 export function levelUpMember(
   w: World,
   data: GameData,
   id: string,
   choices: LevelChoices,
+  spend: SpendStep[] = [],
 ): TownResult {
   const m = living(w, data, id);
   const result = untoughened(w, data, m, () => {
     const r = advance(data, ownShape(data, m), choices, w.rng);
-    if (r.ok) m.character = reshape(data, m, r.character);
-    return r;
+    if (!r.ok) return r;
+    const spent = spendPoints(data, r.character, spend);
+    if (spent.ok) m.character = reshape(data, m, spent.character);
+    return spent;
   });
   if (!result.ok) return result;
   const level = characterSheet(m.character, data).level;

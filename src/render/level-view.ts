@@ -9,6 +9,15 @@ import { characterSheet } from '../game/character/derived.ts';
 import { focusInfo } from '../game/character/foci.ts';
 import { characterLevel } from '../rules/progression.ts';
 
+const ATTRIBUTES = {
+  str: 'Strength',
+  dex: 'Dexterity',
+  con: 'Constitution',
+  int: 'Intelligence',
+  wis: 'Wisdom',
+  cha: 'Charisma',
+} as const;
+
 const SAVES = { physical: 'Physical', evasion: 'Evasion', mental: 'Mental', luck: 'Luck' } as const;
 
 /** Hit point gains and attack bonuses are never below zero. */
@@ -37,6 +46,14 @@ export function levelSummary(data: GameData, before: Character, after: Character
   const raised = Object.entries(after.skills).filter(([id, l]) => before.skills[id] !== l);
   if (raised.length > 0)
     lines.push(`Skills: ${raised.map(([id, l]) => `${skillName(id)}-${l}`).join(', ')}.`);
+  const boosts = (c: Character, a: keyof typeof ATTRIBUTES) => c.attributes.advancement[a] ?? 0;
+  const boosted = (Object.keys(ATTRIBUTES) as (keyof typeof ATTRIBUTES)[]).filter(
+    (a) => boosts(after, a) > boosts(before, a),
+  );
+  if (boosted.length > 0)
+    lines.push(
+      `Attributes: ${boosted.map((a) => `${ATTRIBUTES[a]} +${boosts(after, a) - boosts(before, a)}`).join(', ')}.`,
+    );
   const foci = after.foci.filter(
     (f) =>
       !before.foci.some((b) => b.id === f.id && b.level === f.level && b.attribute === f.attribute),

@@ -7,6 +7,7 @@ import {
   creditSkill,
   prepareSpells,
   raiseSkill,
+  spendPoints,
   type TrainResult,
 } from '../../src/game/character/training.ts';
 import { finalScores } from '../../src/game/character/derived.ts';
@@ -200,5 +201,56 @@ describe('training in town', () => {
     expect(() => trainMember(w, data, 'm-0', (c) => raiseSkill(data, c, 'lead'))).toThrow(
       'no living party member m-0',
     );
+  });
+});
+
+describe('spending points in one go', () => {
+  it('raises skills and boosts attributes in order', () => {
+    const snag = points(starter('snag'), 6);
+    const spent = ok(
+      spendPoints(data, snag, [
+        { kind: 'skill', id: 'lead' },
+        { kind: 'attribute', id: 'wis' },
+      ]),
+    );
+    expect(spent.skills.lead).toBe(0);
+    expect(spent.attributes.advancement.wis).toBe(1);
+    expect(spent.advancement.skillPoints).toBe(6 - 1 - 1);
+    expect(spendPoints(data, snag, [])).toEqual({ ok: true, character: snag });
+  });
+
+  it('refuses the lot at the first step refused', () => {
+    const snag = points(starter('snag'), 1);
+    expect(
+      spendPoints(data, snag, [
+        { kind: 'skill', id: 'lead' },
+        { kind: 'skill', id: 'lead' },
+      ]),
+    ).toEqual({ ok: false, reason: 'that costs 2 skill points' });
+    expect(spendPoints(data, snag, [{ kind: 'attribute', id: 'str' }])).toMatchObject({
+      ok: true,
+    });
+    expect(spendPoints(data, points(snag, 0), [{ kind: 'attribute', id: 'str' }])).toMatchObject({
+      ok: false,
+    });
+  });
+
+  it('spends the new level’s points with the level, or takes neither', () => {
+    const w = world();
+    const snag = member(w, 'Snag');
+    snag.character = { ...snag.character, xp: 3 };
+    const choices = { foci: [{ id: 'die-hard' }], arts: [], spells: [] };
+    w.rng = scriptedRng([6, 6]);
+    expect(levelUpMember(w, data, 'm-0', choices, [{ kind: 'skill', id: 'juggle' }])).toEqual({
+      ok: false,
+      reason: 'unknown skill juggle',
+    });
+    expect(snag.character.classes.levels[snag.character.classes.current]).toBe(1);
+    w.rng = scriptedRng([6, 6]);
+    expect(levelUpMember(w, data, 'm-0', choices, [{ kind: 'skill', id: 'lead' }])).toEqual({
+      ok: true,
+    });
+    expect(snag.character.skills.lead).toBe(0);
+    expect(snag.character.advancement.skillPoints).toBe(2);
   });
 });

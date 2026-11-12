@@ -39,7 +39,8 @@ export function HelpApp() {
             Priest/Healer, makes survival much easier.
           </li>
           <li>
-            Train several people in Heal: Training tab in town, Assign skill points, Raise Heal.
+            Train several people in Heal: Training tab in town, Spend skill points (or Level up),
+            Skills, raise Heal.
           </li>
           <li>Give your spellcasters the Die Hard and Armored Magic foci.</li>
           <li>

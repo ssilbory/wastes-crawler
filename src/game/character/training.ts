@@ -146,3 +146,18 @@ export function changeClass(data: GameData, c: Character, target: string): Train
   } as const;
   return no(reasons[result.reason]);
 }
+
+/** One way to spend skill points: raise a skill, or boost an attribute. */
+export type SpendStep = { kind: 'skill'; id: string } | { kind: 'attribute'; id: Attribute };
+
+/** Spends points on each step in order; the first step refused refuses the lot. */
+export function spendPoints(data: GameData, c: Character, steps: SpendStep[]): TrainResult {
+  let next = c;
+  for (const step of steps) {
+    const r =
+      step.kind === 'skill' ? raiseSkill(data, next, step.id) : boostAttribute(data, next, step.id);
+    if (!r.ok) return r;
+    next = r.character;
+  }
+  return { ok: true, character: next };
+}
