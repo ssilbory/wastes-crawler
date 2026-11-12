@@ -29,6 +29,7 @@ describe('the level-up summary', () => {
     const after = levelled(fizz, {
       skills: { ...fizz.skills, magic: 1 },
       foci: [...fizz.foci, { id: 'alert', level: 1 }],
+      attributes: { ...fizz.attributes, advancement: { ...fizz.attributes.advancement, int: 1 } },
       arts: [...fizz.arts, art.id],
       spells: { ...fizz.spells, known: [...fizz.spells.known, spell.id] },
       advancement: { ...fizz.advancement, skillPoints: fizz.advancement.skillPoints + 3 },
@@ -41,6 +42,7 @@ describe('the level-up summary', () => {
     expect(lines).toContain('3 skill points to spend.');
     expect(lines).toContain('Skills: Magic-1.');
     expect(lines).toContain('Foci: Alert 1.');
+    expect(lines).toContain('Attributes: Intelligence +1.');
     expect(lines).toContain(`Arts: ${art.name}.`);
     expect(lines).toContain(`Spells: ${spell.name}.`);
     expect(lines.some((l) => l.startsWith('Saves: '))).toBe(true);

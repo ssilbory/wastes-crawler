@@ -132,31 +132,50 @@ test('levels up a character with XP to spend', async ({ page }, testInfo) => {
   await page.keyboard.press(' ');
   await page.getByRole('tab', { name: 'Training' }).click();
   await page.getByRole('combobox', { name: 'Who' }).selectOption({ label: 'Snag' });
-  const form = page.getByRole('region', { name: 'Level up' });
-  await expect(form).toBeVisible();
-  // Nothing picked yet: the form says what it needs and holds the button back.
-  await expect(form.getByRole('list', { name: 'Still needed' })).toContainText('Choose a focus.');
-  await expect(form.getByRole('button', { name: 'Level up' })).toBeDisabled();
+  await page
+    .getByRole('region', { name: 'Training' })
+    .getByRole('button', { name: 'Level up' })
+    .click();
+  const dialog = page.getByRole('dialog', { name: 'Level up Snag' });
+  await expect(dialog).toBeVisible();
+  // Only the screens with something to pick: a warrior's level brings a focus, no spells.
+  await expect(dialog.getByRole('list', { name: 'Steps' })).toHaveText(['Foci', 'Skills'].join(''));
+  const form = dialog.getByRole('region', { name: 'Foci' });
+  // Nothing picked yet: the screen says what it needs and holds the button back.
+  await expect(dialog.getByRole('list', { name: 'Still needed' })).toContainText('Choose a focus.');
+  await expect(dialog.getByRole('button', { name: 'Next' })).toBeDisabled();
   // Each focus shows the level already held: Snag has Alert, not Die Hard.
   await expect(
     form.getByRole('combobox', { name: 'Focus (any)' }).locator('option', { hasText: 'Alert' }),
   ).toHaveText('Alert (level 1 now)');
   await form.getByRole('combobox', { name: 'Focus (any)' }).selectOption({ label: 'Die Hard' });
-  await expect(form.getByRole('list', { name: 'Still needed' })).toHaveCount(0);
+  await expect(dialog.getByRole('list', { name: 'Still needed' })).toHaveCount(0);
+  await dialog.getByRole('button', { name: 'Next' }).click();
+  // The skills screen spends the new level's points before the level is taken.
+  const skills = dialog.getByRole('region', { name: 'Skills' });
+  await expect(skills).toContainText('Points left: 3 skill points');
+  await skills.getByRole('button', { name: 'Raise Lead' }).click();
+  await expect(skills).toContainText('Points left: 2 skill points');
+  await expect(skills).toContainText('Planned: Lead');
+  // Each attribute to boost shows its score and modifier now.
+  await expect(skills.getByRole('table', { name: 'Attributes' })).toContainText(
+    /Wisdom \d+ \([+-]\d\)/,
+  );
   await page.screenshot({ path: testInfo.outputPath('town-level-up.png'), fullPage: true });
-  await form.getByRole('button', { name: 'Level up' }).click();
+  await dialog.getByRole('button', { name: 'Level up' }).click();
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
     /Snag reaches level 2/,
   );
-  const assign = page.getByRole('region', { name: 'Assign skill points' });
-  await expect(assign).toContainText('Available: 3 skill points');
-  await page.getByRole('combobox', { name: 'Skill' }).selectOption('lead');
-  await page.getByRole('button', { name: 'Raise Lead' }).click();
-  await expect(assign).toContainText('Available: 2 skill points');
-  // Each attribute to boost shows its score and modifier now.
-  const attribute = assign.getByRole('combobox', { name: 'Attribute' });
-  await attribute.selectOption('wis');
-  await expect(attribute.locator('option:checked')).toHaveText(/^Wisdom \d+ \([+-]\d\)$/);
+  const summary = dialog.getByRole('region', { name: 'Level up summary' });
+  await expect(summary).toContainText('Skills: Lead-0.');
+  await summary.getByRole('button', { name: 'Done' }).click();
+  await expect(dialog).toHaveCount(0);
+  // With no level ready, the popup opens straight on skills.
+  await page.getByRole('button', { name: 'Spend skill points' }).click();
+  await expect(page.getByRole('list', { name: 'Steps' })).toHaveCount(0);
+  await expect(page.getByRole('region', { name: 'Skills' })).toContainText(
+    'Points left: 2 skill points',
+  );
 });
 
 test('plays the common room for the party’s lodging', async ({ page }) => {
