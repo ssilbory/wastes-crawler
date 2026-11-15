@@ -2,8 +2,8 @@
 // from the world's RNG the first time the party goes down, and the generated dungeon must pass the
 // same level validation as hand-made ones (ADR 0004) or the next seed is tried. Loot caches are
 // taken once; a vault's guards must be beaten first. Thirty days after its vault is emptied, the
-// ruin shifts: the next visit draws a new seed. A vault, and a hoard whose guards fall, is locked
-// and trapped (world/chests.ts) and pays out when opened.
+// ruin shifts: the next visit draws a new seed. A vault is locked and trapped (world/chests.ts)
+// and pays out when opened; a hoard lies loose.
 import { dungeonReferenceErrors } from '../../data/dungeon-check.ts';
 import type { Dungeon, Ruin, Special } from '../../data/schemas/index.ts';
 import { hexKey } from '../../rules/hex.ts';
@@ -60,18 +60,18 @@ export function openRuin(w: World, data: GameData, ruin: Ruin): Dungeon {
   const rec = w.ruins[ruin.id];
   const month = data.content.overlandRules.daysPerMonth;
   if (rec && (rec.emptied === null || w.day - rec.emptied < month))
-    return generateRuin(ruin, rec.seed, data.content.ruinTraps);
+    return generateRuin(ruin, rec.seed, data.content.ruinTraps, data.content.chests);
   if (rec) {
     note(w, `${ruin.name} has shifted: old passages are choked, and new ones open.`);
     // Chests left unopened are lost with the old passages.
     w.chests = w.chests.filter((c) => !c.at.startsWith(`${ruin.id}-v`));
   }
   let seed = w.rng.int(1, MAX_SEED);
-  let d = generateRuin(ruin, seed, data.content.ruinTraps);
+  let d = generateRuin(ruin, seed, data.content.ruinTraps, data.content.chests);
   // ADR 0004: only a layout that passes the level validation is entered.
   while (dungeonReferenceErrors({ ...data.content, dungeons: [d] }).length > 0) {
     seed = (seed % MAX_SEED) + 1;
-    d = generateRuin(ruin, seed, data.content.ruinTraps);
+    d = generateRuin(ruin, seed, data.content.ruinTraps, data.content.chests);
   }
   w.ruins[ruin.id] = { seed, emptied: null };
   return d;
@@ -108,10 +108,7 @@ function cacheAt(data: GameData, key: string): Cache | undefined {
   );
 }
 
-/**
- * A vault, or a hoard whose guards fell, is locked (chests.ts): it counts as taken now, and pays
- * out when its lock is opened.
- */
+/** A vault is locked (chests.ts): it counts as taken now, and pays out when its lock is opened. */
 function lock(w: World, data: GameData, key: string, cache: Cache): void {
   w.caches.push(key);
   lockCache(w, data, key, cache.vault === true, cache.guards ?? []);
@@ -189,8 +186,8 @@ export function ruinsListener(w: World, data: GameData, e: WorldEvent): void {
     }
     return;
   }
-  // Sam's call: vaults are locked and trapped, and a beaten boss's hoard goes into its chest.
-  if (cache.vault || e.kind === 'fight-won') lock(w, data, key, cache);
+  // Sam's calls: vaults are locked and trapped; a hoard lies loose, its boss's chest beside it.
+  if (cache.vault) lock(w, data, key, cache);
   else take(w, data, key, cache);
   if (e.kind === 'fight-won' && cache.order) endOrder(w, data, cache.order);
 }

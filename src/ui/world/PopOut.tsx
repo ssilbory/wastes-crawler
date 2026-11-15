@@ -12,10 +12,12 @@ export function PopOut(props: {
   label: string;
   /** Holds the screen's keys too, so nothing moves on under it (keys.ts). */
   modal?: boolean;
+  /** Escape closes it, when it can be put aside. */
+  onEscape?: () => void;
   children: ComponentChildren;
 }) {
   const card = useRef<HTMLDivElement>(null);
-  useDialog({ box: card, trap: true });
+  useDialog({ box: card, trap: true, onEscape: props.onEscape });
   return (
     <div class="pop-out">
       <div

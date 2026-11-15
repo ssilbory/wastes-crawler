@@ -9,7 +9,7 @@ import { LootDiceSchema, ShopStateSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 import { ComponentTypeSchema } from './crafting-content.ts';
 import { SiegeFightSchema, SiegeSchema } from './siege-state.ts';
-import { ChestStateSchema } from './chest-state.ts';
+import { ChestStateSchema, DoorStateSchema } from './chest-state.ts';
 
 export const WORLD_SCHEMA_VERSION = 56;
 
@@ -332,6 +332,8 @@ export const DungeonStateSchema = z.strictObject({
   sensed: z.record(IdSchema, z.array(z.string())),
   /** What Query the Skull has said lies where, by level and cell (skull-locate.ts). */
   located: z.record(IdSchema, z.record(z.string(), z.enum(['boss', 'vault', 'hoard']))),
+  /** Locked doors the party has reached this visit, by level and edge (dungeon/doors.ts). */
+  doors: z.record(IdSchema, z.record(z.string(), DoorStateSchema)).optional(),
 });
 export type DungeonState = z.infer<typeof DungeonStateSchema>;
 

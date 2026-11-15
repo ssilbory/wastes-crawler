@@ -9,6 +9,7 @@ import type { World } from '../world/types.ts';
 import { step, turnParty } from './explore.ts';
 import { levelOf } from './levels.ts';
 import { knownEdges } from './secrets.ts';
+import { lockedAt } from './doors.ts';
 
 type Underground = NonNullable<World['dungeon']>;
 
@@ -35,6 +36,8 @@ export function walkPath(w: World, data: GameData, to: Cell): Cell[] | null {
       const e = edge(c, side);
       const next = ahead(c, side);
       if ((e !== 'open' && e !== 'door') || from.has(cellKey(next)) || !open(next)) continue;
+      // A locked door stops a walk until it is opened (doors.ts).
+      if (e === 'door' && lockedAt(w, data, c, side)) continue;
       from.set(cellKey(next), c);
       queue.push(next);
     }

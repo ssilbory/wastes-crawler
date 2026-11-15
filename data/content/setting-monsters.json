@@ -686,5 +686,11 @@
     "name": "The Sunlord",
     "base": "great-warrior-king",
     "description": "The Sun King risen in his throne city, crowned in fire, whom every warlord in the Wastes answers to."
+  },
+  {
+    "id": "animated-chest",
+    "name": "Animated Chest",
+    "base": "automaton-laborer",
+    "description": "An old iron-bound chest that wakes when its lock gives, all hinge-teeth and splinters. Whatever it once held, it has long since eaten."
   }
 ]

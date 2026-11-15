@@ -26,7 +26,7 @@ import { CompanionsPanel } from './CompanionsPanel.tsx';
 import { FormsPanel } from './FormsPanel.tsx';
 import { ConjunctPanel } from './ConjunctPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
-import { ChestPanel } from './ChestPanel.tsx';
+import { LockPopOut } from './LockPopOut.tsx';
 import { PactPanel } from './PactPanel.tsx';
 import { SorceryPanel } from './SorceryPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
@@ -266,13 +266,17 @@ export function DungeonScreen(props: {
           {!revive.open && surrenderOpen(w) && (
             <SurrenderPopOut world={w} onChange={props.onChange} />
           )}
+          <LockPopOut
+            world={w}
+            hidden={revive.open || surrenderOpen(w)}
+            onChange={props.onChange}
+          />
         </div>
         <div class="dock">
           {!w.encounter && !revive.open && !surrenderOpen(w) && onSafeSquare(w, data) && (
             <CampPanel world={w} onChange={props.onChange} />
           )}
           {/* Quests, then the panels of powers (Sam's call: one column); the party is in the bar. */}
-          <ChestPanel world={w} onChange={props.onChange} />
           <QuestLog world={w} onChange={props.onChange} />
           <NpcPanel world={w} onChange={props.onChange} />
           <CompanionsPanel world={w} onChange={props.onChange} />

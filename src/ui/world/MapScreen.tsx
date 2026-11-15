@@ -34,7 +34,7 @@ import { HighRoadPanel } from './HighRoadPanel.tsx';
 import { PactPanel } from './PactPanel.tsx';
 import { SorceryPanel } from './SorceryPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
-import { ChestPanel } from './ChestPanel.tsx';
+import { LockPopOut } from './LockPopOut.tsx';
 import { MountsPanel } from './MountsPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { PopOut } from './PopOut.tsx';
@@ -237,6 +237,11 @@ export function MapScreen(props: {
           {!revive.open && surrenderOpen(w) && (
             <SurrenderPopOut world={w} onChange={props.onChange} />
           )}
+          <LockPopOut
+            world={w}
+            hidden={revive.open || surrenderOpen(w)}
+            onChange={props.onChange}
+          />
         </div>
         <div class="dock">
           {w.encounter || revive.open || surrenderOpen(w) ? null : w.coach ? (
@@ -261,7 +266,6 @@ export function MapScreen(props: {
             />
           )}
           {/* Quests, then the panels of powers and places (Sam's call: one column); the party is in the bar. */}
-          <ChestPanel world={w} onChange={props.onChange} />
           <QuestLog world={w} onChange={props.onChange} />
           <ProjectsPanel world={w} onChange={props.onChange} />
           <WorkingsPanel world={w} onChange={props.onChange} />

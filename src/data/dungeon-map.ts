@@ -6,7 +6,9 @@ import type { Cell, Facing } from './schemas/index.ts';
 export type EdgeKind = 'wall' | 'open' | 'door' | 'secret';
 export type CellKind = 'floor' | 'up' | 'down' | 'trap' | 'npc';
 
-const EDGES: Record<string, EdgeKind> = { ' ': 'open', d: 'door', s: 'secret' };
+// A locked door `l` is a door to everything but its lock (Locks and chests).
+const EDGES: Record<string, EdgeKind> = { ' ': 'open', d: 'door', l: 'door', s: 'secret' };
+const LOCKED = 'l';
 const H_WALL = '-';
 const V_WALL = '|';
 const CORNER = '+';
@@ -27,6 +29,8 @@ export interface LevelMap {
   cell: (c: Cell) => CellKind;
   /** The edge on a cell's side; the outer border is always a wall. */
   edge: (c: Cell, side: Facing) => EdgeKind;
+  /** Whether the door on a cell's side is a locked one. */
+  locked: (c: Cell, side: Facing) => boolean;
 }
 
 /** The text position of a cell's edge on one side. */
@@ -85,6 +89,11 @@ export function parseLevelMap(rows: readonly string[]): LevelParse {
         if (!inBounds(c)) throw new Error(`cell ${c.x},${c.y} is off the level`);
         const [row, col] = edgeAt(c, side);
         return EDGES[at(row, col)] ?? 'wall';
+      },
+      locked: (c, side) => {
+        if (!inBounds(c)) throw new Error(`cell ${c.x},${c.y} is off the level`);
+        const [row, col] = edgeAt(c, side);
+        return at(row, col) === LOCKED;
       },
     },
   };

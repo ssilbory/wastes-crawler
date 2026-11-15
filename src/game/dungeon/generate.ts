@@ -4,7 +4,15 @@
 // mazes with a few loops and rooms, stairs to the farthest cell, traps that grow denser level by
 // level, small loot caches, one or two caches held by a band of the vault's guards, and a guarded
 // vault at the far end. Cities are in city.ts.
-import type { Dungeon, DungeonLevel, Facing, Ruin, RuinTrap } from '../../data/schemas/index.ts';
+import type {
+  ChestRules,
+  Dungeon,
+  DungeonLevel,
+  Facing,
+  Ruin,
+  RuinTrap,
+} from '../../data/schemas/index.ts';
+import { dressRuin } from './dress.ts';
 import { createRng, type Rng } from '../../rules/rng.ts';
 import { generateCity } from './city.ts';
 import {
@@ -102,13 +110,21 @@ function generateStack(rng: Rng, ruin: Ruin, traps: readonly RuinTrap[]): Genera
 export const ruinDungeonId = (ruin: Ruin, seed: number) => `${ruin.id}-v${seed}`;
 
 /**
- * A ruin's dungeon under a seed, its traps drawn from `traps`: the same seed always gives the same
- * dungeon.
+ * A ruin's dungeon under a seed, its traps drawn from `traps` and, with `chests`, its locked doors
+ * and random chests: the same seed always gives the same dungeon.
  */
-export function generateRuin(ruin: Ruin, seed: number, traps: readonly RuinTrap[]): Dungeon {
+export function generateRuin(
+  ruin: Ruin,
+  seed: number,
+  traps: readonly RuinTrap[],
+  chests?: ChestRules,
+): Dungeon {
   const rng = createRng(`${ruin.id}:${seed}`);
-  const { levels, facing } =
+  const built =
     ruin.kind === 'city' ? generateCity(rng, ruin, traps) : generateStack(rng, ruin, traps);
+  const facing = built.facing;
+  // Locked doors and random chests, when the content's rules for them are given (dress.ts).
+  const levels = chests ? dressRuin(ruin, seed, built.levels, chests) : built.levels;
   const first = levels[0] as DungeonLevel;
   const exit = first.links.find((l) => 'surface' in l.to) as DungeonLevel['links'][number];
   return {
@@ -129,6 +145,7 @@ export function ruinDungeon(
   ruins: readonly Ruin[],
   traps: readonly RuinTrap[],
   id: string,
+  chests?: ChestRules,
 ): Dungeon | undefined {
   const m = /^(.+)-v(\d+)$/.exec(id);
   const ruin = m && ruins.find((r) => r.id === m[1]);
@@ -136,7 +153,7 @@ export function ruinDungeon(
   const seed = Number(m[2]);
   const bySeed = generated.get(ruin) ?? new Map<number, Dungeon>();
   generated.set(ruin, bySeed);
-  const d = bySeed.get(seed) ?? generateRuin(ruin, seed, traps);
+  const d = bySeed.get(seed) ?? generateRuin(ruin, seed, traps, chests);
   bySeed.set(seed, d);
   return d;
 }

@@ -255,3 +255,44 @@
   padding: 2px 0;
   border-bottom: 1px solid rgb(255 255 255 / 8%);
 }
+
+/* The lock popup's picture of a chest, a vault door, or a locked door (LockArt.tsx). */
+.lock-pop .lock-art {
+  display: block;
+  width: min(12rem, 60%);
+  margin: 0 auto 8px;
+}
+
+.lock-art-wood {
+  fill: #6b4423;
+  stroke: var(--bevel-lo);
+  stroke-width: 1.5;
+}
+
+.lock-art-stone {
+  fill: #57534e;
+  stroke: var(--bevel-lo);
+  stroke-width: 1.5;
+}
+
+.lock-art-iron {
+  fill: #3f3f46;
+  stroke: var(--bevel-lo);
+  stroke-width: 1.5;
+}
+
+.lock-art-band {
+  fill: none;
+  stroke: #27272a;
+  stroke-width: 3;
+}
+
+.lock-art-plate {
+  fill: var(--gold);
+  stroke: var(--bevel-lo);
+  stroke-width: 1;
+}
+
+.lock-art-hole {
+  fill: #0c0a09;
+}

@@ -16,7 +16,7 @@ export const ChestTrapSchema = TrapSchema.pick({
 }).refine((t) => t.effect.kind !== 'alarm', 'a chest trap does harm, not an alarm');
 export type ChestTrap = z.infer<typeof ChestTrapSchema>;
 
-/** Locked, trapped vaults and boss chests (docs/rules-adaptation.md, Locks and chests). */
+/** Locked vaults, boss chests, random chests, and doors (docs/rules-adaptation.md, Locks and chests). */
 export const ChestRulesSchema = z.strictObject({
   /** Lock and trap difficulty: base + level / perLevels, rounded down, at most cap. */
   difficulty: z.strictObject({
@@ -29,5 +29,24 @@ export const ChestRulesSchema = z.strictObject({
   /** The bar that helps force a lock, and its bonus. */
   crowbar: z.strictObject({ item: IdSchema, bonus: z.int().min(0) }),
   traps: z.array(ChestTrapSchema).min(1),
+  /** A heavily trapped chest: its trap's difficulty raised, and its damage dice multiplied. */
+  heavy: z.strictObject({ difficulty: z.int().min(0), damage: z.int().min(1) }),
+  /** Locked doors below ground (Sam's calls). */
+  doors: z.strictObject({
+    /** One door in this many in a ruin is locked. */
+    lockedIn: z.int().min(1),
+    /** One locked door in this many is trapped. */
+    trappedIn: z.int().min(1),
+    /** Each try at breaking a door down brings the level's wanderers on this many in 6. */
+    noise: z.int().min(0).max(6),
+    /** The difficulty of a locked door where no ruin sets a level. */
+    difficulty: z.int().min(1),
+  }),
+  /** Random chests in each ruin level, and what an animated one is when it is one creature. */
+  random: z.strictObject({
+    min: z.int().min(0),
+    max: z.int().min(0),
+    mimic: IdSchema,
+  }),
 });
 export type ChestRules = z.infer<typeof ChestRulesSchema>;

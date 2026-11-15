@@ -14,7 +14,7 @@ Every piece of content is a JSON record with a zod schema and a stable id, so Cl
 +-+-+-+
 ```
 
-`-` and `|` are walls, a space is open, `d` is a door, `s` is a secret door, `<` is stairs up, and `T` and `N` are a trap and an NPC.
+`-` and `|` are walls, a space is open, `d` is a door, `l` is a locked door (docs/rules-adaptation.md, Locks and chests), `s` is a secret door, `<` is stairs up, and `T` and `N` are a trap and an NPC.
 
 ## Content types
 

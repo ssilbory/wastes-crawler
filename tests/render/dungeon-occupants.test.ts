@@ -89,8 +89,11 @@ describe('who stands in the cells ahead', () => {
       trap: data.content.chests.traps[0] as World['chests'][number]['trap'],
       trapState: 'hidden',
       looked: true,
+      heavy: false,
       spoils: null,
       cache: 'buried-waterworks/buried-waterworks-1/1,0',
+      loot: null,
+      animated: null,
     });
     expect(occupantsOf(w, data).get('1,0')).toMatchObject({
       kind: 'hoard',

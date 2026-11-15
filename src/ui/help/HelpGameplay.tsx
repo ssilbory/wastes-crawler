@@ -61,10 +61,12 @@ export function HelpGameplay() {
         the smallest dice are left behind. Hirelings take a share of loot instead of wages.
       </p>
       <p>
-        A boss leaves its loot in a locked chest, and a ruin's vault is locked too. Every one is
-        trapped. Your best eyes look it over for the trap, which can then be disarmed. Pick the lock
-        with Dex/Sneak (-2 without Criminal Tools) or force it with Str/Exert (+1 with a crowbar),
-        but forcing always sets off a trap that's still armed.
+        A boss leaves its loot in a locked, trapped chest, and a ruin's vault is locked and trapped
+        too. Ruins also hide a few random chests (some hold loot, some are only traps, and some
+        bite) and locked doors, now and then trapped. Your best eyes look each one over for a trap,
+        which can then be disarmed. Pick a lock with Dex/Sneak (-2 without Criminal Tools) or force
+        it with Str/Exert (+1 with a crowbar). Forcing always sets off a trap that's still armed,
+        and breaking down a door may bring the wanderers.
       </p>
 
       <h3>Riding</h3>

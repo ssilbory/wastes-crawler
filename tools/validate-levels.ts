@@ -21,7 +21,7 @@ for (const r of content.ruins)
     errors.push(
       ...dungeonReferenceErrors({
         ...content,
-        dungeons: [generateRuin(r, seed, content.ruinTraps)],
+        dungeons: [generateRuin(r, seed, content.ruinTraps, content.chests)],
       }),
     );
 console.log(`${content.ruins.length} ruins generated under ${RUIN_SEEDS} seeds each.`);

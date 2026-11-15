@@ -18,6 +18,7 @@ import { glimpse, knownEdges } from './secrets.ts';
 import { arriveOn, onSpecial } from './specials.ts';
 import { countStep } from './time.ts';
 import { approach, springHere } from './traps.ts';
+import { lockedStep } from './doors.ts';
 import type { TownResult } from '../world/services.ts';
 import type { World } from '../world/types.ts';
 import { endQuarter } from '../world/end-quarter.ts';
@@ -114,7 +115,8 @@ export function enterDungeon(w: World, data: GameData): TownResult {
 export type Step = 'forward' | 'back' | 'left' | 'right';
 
 /**
- * One step; doors open as the party walks through, and walls and unfound secret doors stop it. A
+ * One step; doors open as the party walks through, and walls, unfound secret doors, and locked
+ * doors not yet opened stop it (doors.ts). A
  * trap ahead may be spotted and stop the party, unless it means to step in (traps.ts).
  */
 export function step(w: World, data: GameData, dir: Step, stepIn = false): TownResult {
@@ -125,6 +127,8 @@ export function step(w: World, data: GameData, dir: Step, stepIn = false): TownR
     dir === 'forward' ? s.facing : dir === 'back' ? turn(s.facing, 'around') : turn(s.facing, dir);
   const edge = knownEdges(w, data)(s.at, way);
   if (edge === 'wall' || edge === 'secret') return no('A wall blocks the way.');
+  const locked = lockedStep(w, data, way);
+  if (locked) return no(locked);
   const target = ahead(s.at, way);
   const stop = approach(w, data, target, stepIn);
   if (stop) return no(stop);

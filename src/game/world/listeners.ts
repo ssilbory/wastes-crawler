@@ -15,6 +15,7 @@ import { siegesListener } from './sieges.ts';
 import { raisingListener } from './raising.ts';
 import { rescueListener } from '../dungeon/rescues.ts';
 import { ruinsListener } from '../dungeon/ruins.ts';
+import { randomChestsListener } from './chests.ts';
 import { realmEndListener } from './realm-end.ts';
 import { sitesListener } from './hidden-sites.ts';
 import { waterListener } from './water.ts';
@@ -37,6 +38,7 @@ const ALL: readonly Listener[] = [
   notesListener,
   sharesListener,
   ruinsListener,
+  randomChestsListener,
   sitesListener,
   waterListener,
   warlordsListener,

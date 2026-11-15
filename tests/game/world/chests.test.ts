@@ -4,13 +4,16 @@ import {
   chestHere,
   chestLevel,
   disarmChest,
-  gearBonus,
-  handFor,
   lockCache,
   lockSpoils,
   openChest,
 } from '../../../src/game/world/chests.ts';
 import { enterDungeon } from '../../../src/game/dungeon/explore.ts';
+import { dungeonOf } from '../../../src/game/dungeon/levels.ts';
+import { emit } from '../../../src/game/world/bus.ts';
+import { placeKey } from '../../../src/game/world/necromancy.ts';
+import { place } from '../dungeon/helpers.ts';
+import { gearBonus, handFor } from '../../../src/game/world/lockwork.ts';
 import { checkBonus } from '../../../src/game/world/members.ts';
 import { enterRegion } from '../../../src/game/world/enter-region.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
@@ -209,5 +212,108 @@ describe('saves with chests (version 56)', () => {
     if (!back.ok) throw new Error(back.errors.join('; '));
     expect(back.world.chests).toEqual(w.chests);
     expect(back.world.chests).toHaveLength(1);
+  });
+});
+
+/** A random chest of `contents` at the party's feet, its lock already looked over. */
+function randomChest(w: World, of: Partial<ChestState>): ChestState {
+  const c: ChestState = {
+    at: placeKey(w),
+    vault: false,
+    difficulty: 7,
+    trap: null,
+    trapState: 'hidden',
+    looked: true,
+    heavy: false,
+    spoils: null,
+    cache: null,
+    loot: null,
+    animated: null,
+    ...of,
+  };
+  w.chests.push(c);
+  return c;
+}
+
+describe('random chests (Locks and chests)', () => {
+  it('lock a ruin’s random chest when first reached, once', () => {
+    const ruin = data.content.ruins.find((r) => r.id === 'sunken-chapel') as Ruin;
+    const w = world();
+    enterRegion(w, ruin.region, ruin);
+    enterDungeon(w, data);
+    const d = dungeonOf(data, w.dungeon?.dungeon as string);
+    const level = d.levels.find((l) => l.specials.some((x) => x.kind === 'chest'));
+    const spot = level?.specials.find((x) => x.kind === 'chest');
+    if (!level || spot?.kind !== 'chest') throw new Error('no chest');
+    place(w, level.id, spot.at.x, spot.at.y, 'n');
+    emit(w, data, { kind: 'cell-entered' });
+    const c = chestHere(w) as ChestState;
+    expect(w.log.join('\n')).toContain('A locked chest stands here.');
+    expect(c.difficulty).toBe(7);
+    expect(c.heavy).toBe(spot.contents === 'trapped');
+    const alive = spot.contents === 'mimic' || spot.contents === 'swarm';
+    expect(c.trap === null).toBe(alive);
+    expect(c.animated).toBe(alive ? spot.contents : null);
+    expect(c.loot).toEqual(spot.contents === 'loot' ? ruin.cache : null);
+    emit(w, data, { kind: 'cell-entered' });
+    expect(w.chests).toHaveLength(1);
+    w.chests = [];
+    emit(w, data, { kind: 'cell-entered' });
+    expect(w.chests).toEqual([]);
+  });
+
+  it('pay out a loot chest’s dice', () => {
+    const w = world();
+    w.loot = [];
+    randomChest(w, { loot: [{ count: 2, sides: 6 }] });
+    w.rng = faces([6, 6]);
+    openChest(w, data, 'pick');
+    expect(w.loot).toEqual([{ count: 2, sides: 6 }]);
+    expect(w.log.join('\n')).toContain('The chest holds 2d6 of loot.');
+  });
+
+  it('leave a heavily trapped chest empty, its trap harder and harsher', () => {
+    const w = world();
+    const blade = rules.traps.find((t) => t.effect.kind === 'damage' && t.effect.dice.sides === 8);
+    randomChest(w, { trap: blade as ChestState['trap'], heavy: true, looked: false });
+    for (const m of w.members) m.character.hp = { ...m.character.hp, current: 99, max: 99 };
+    // The look at 7 + 2, whatever it finds; forcing springs it: every save fails, every die an 8.
+    w.rng = faces([4, 4, 6, 6, 1, 1, 1, 1, 8, 8, 8, 8, 8, 8, 8, 8]);
+    openChest(w, data, 'force');
+    expect(w.log.join('\n')).toContain('takes 16 damage');
+    expect(w.log.join('\n')).toContain('The chest is empty.');
+  });
+
+  it('see an animated chest stir on a good look', () => {
+    const w = world();
+    const c = randomChest(w, { animated: 'mimic', looked: false });
+    w.rng = faces([6, 6, 1, 1]);
+    openChest(w, data, 'pick');
+    expect(c.trapState).toBe('noticed');
+    expect(w.log.join('\n')).toContain('sees the chest stir');
+  });
+
+  it('wake an animated chest on opening, and a swarm with no wanderers is the chest itself', () => {
+    for (const how of ['mimic', 'swarm'] as const) {
+      const w = world();
+      randomChest(w, { animated: how });
+      w.rng = faces([6, 6]);
+      openChest(w, data, 'pick');
+      expect(w.log.join('\n')).toContain('The chest lunges at the party!');
+      expect(w.encounter?.enemies).toEqual([[rules.random.mimic]]);
+      expect(w.chests).toEqual([]);
+    }
+  });
+
+  it('let a swarm of the level’s wanderers burst out below ground', () => {
+    const w = world();
+    w.position = { col: 5, row: 10 };
+    enterDungeon(w, data);
+    (w.dungeon as NonNullable<World['dungeon']>).turn = 1;
+    randomChest(w, { animated: 'swarm' });
+    w.rng = faces([6, 6]);
+    openChest(w, data, 'pick');
+    expect(w.log.join('\n')).toContain('things pour out');
+    expect(w.encounter?.enemies.flat()).not.toContain(rules.random.mimic);
   });
 });

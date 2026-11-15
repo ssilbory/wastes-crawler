@@ -87,6 +87,10 @@ export function occupantsOf(w: World, data: GameData): Map<string, Occupant> {
       chest: true,
     });
   }
+  // A random chest stands where it lies until the party first reaches it (Locks and chests).
+  for (const x of level.specials)
+    if (x.kind === 'chest' && !w.caches.includes(`${place}/${cellKey(x.at)}`))
+      out.set(cellKey(x.at), { kind: 'hoard', title: 'A chest', figures: [], chest: true });
   // A locked vault or boss chest stands where it was won until opened (Locks and chests).
   for (const c of w.chests) {
     if (!c.at.startsWith(`${place}/`)) continue;
