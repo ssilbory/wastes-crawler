@@ -146,6 +146,10 @@ function ruinErrors(content: ContentData, monsters: Set<string>): string[] {
       errors.push(`${where}: a ${r.kind}'s levels are ${sizes.min} to ${sizes.max} cells`);
     if (r.kind === 'city' && r.depth !== 1) errors.push(`${where}: a city is one level`);
     if (r.sewer && r.kind !== 'city') errors.push(`${where}: only cities have sewers`);
+    if ((r.kind === 'lair') !== (r.minions !== undefined))
+      errors.push(`${where}: lairs, and only lairs, have minions`);
+    for (const id of new Set((r.minions ?? []).flat(2)))
+      if (!monsters.has(id)) errors.push(`${where}: unknown monster ${id}`);
     if (
       content.ruins.some(
         (o) => o !== r && o.region === r.region && o.col === r.col && o.row === r.row,

@@ -6,7 +6,12 @@ import {
   lockedAt,
   lockedDoorAhead,
   openDoor,
+  reachDoor,
 } from '../../../src/game/dungeon/doors.ts';
+import type { Ruin } from '../../../src/data/schemas/index.ts';
+import { dungeonOf, levelOf } from '../../../src/game/dungeon/levels.ts';
+import { enterRegion } from '../../../src/game/world/enter-region.ts';
+import { lockDifficulty } from '../../../src/rules/locks.ts';
 import { enterDungeon, step } from '../../../src/game/dungeon/explore.ts';
 import { edgeKey } from '../../../src/game/dungeon/secrets.ts';
 import { walkPath } from '../../../src/game/dungeon/walk.ts';
@@ -14,7 +19,7 @@ import type { World } from '../../../src/game/world/types.ts';
 import { createRng } from '../../../src/rules/rng.ts';
 import { lockView } from '../../../src/render/lock-view.ts';
 import { scriptedThen } from '../../helpers/scripted-rng.ts';
-import { data, world } from '../world/helpers.ts';
+import { data, encounter, world } from '../world/helpers.ts';
 import { place, state } from './helpers.ts';
 
 // The barrow with the door north of 1,3 locked.
@@ -154,5 +159,75 @@ describe('locked doors (docs/rules-adaptation.md, Locks and chests)', () => {
     });
     state(w).facing = 's';
     expect(lockView(w, locked)).toBeNull();
+  });
+
+  it('refuse work above ground, under attack, and say a side door is locked without reaching it', () => {
+    const top = world();
+    expect(lockedAt(top, locked, { x: 1, y: 3 }, 'n')).toBe(false);
+    expect(lockedDoorAhead(top, locked)).toBeNull();
+    expect(() => openDoor(top, locked, 'pick')).toThrow('the party is not in a dungeon');
+    const w = atDoor({
+      trap: locked.content.chests.traps[0] as DoorState['trap'],
+      trapState: 'noticed',
+    });
+    w.encounter = encounter([['thug-or-militia']]);
+    expect(openDoor(w, locked, 'force')).toEqual({
+      ok: false,
+      reason: 'Settle the encounter first.',
+    });
+    expect(disarmDoor(w, locked)).toEqual({ ok: false, reason: 'Settle the encounter first.' });
+    w.encounter = null;
+    // Facing east, a step to the left runs into the locked door, which is not yet reached.
+    const side = atDoor();
+    state(side).facing = 'e';
+    expect(step(side, locked, 'left')).toEqual({ ok: false, reason: 'The door is locked.' });
+    expect(state(side).doors).toBeUndefined();
+  });
+
+  it('take a shipped ruin’s difficulty', () => {
+    const ruin = data.content.ruins.find((r) => r.level >= 4 && r.kind === 'delve') as Ruin;
+    const w = world();
+    enterRegion(w, ruin.region, ruin);
+    enterDungeon(w, data);
+    const s = state(w);
+    const d = dungeonOf(data, s.dungeon);
+    let found = false;
+    for (const level of d.levels) {
+      const { map } = levelOf(data, d.id, level.id);
+      for (let y = 0; y < map.height && !found; y++)
+        for (let x = 0; x < map.width && !found; x++)
+          for (const f of ['n', 'e', 's', 'w'] as const)
+            if (!found && map.locked({ x, y }, f)) {
+              place(w, level.id, x, y, f);
+              found = true;
+            }
+      if (found) break;
+    }
+    expect(found).toBe(true);
+    expect(reachDoor(w, data)?.difficulty).toBe(
+      lockDifficulty(data.content.chests.difficulty, ruin.level),
+    );
+  });
+
+  it('offer a spotted door trap’s disarm in the popup, and no warning for quiet doors', () => {
+    const trap = locked.content.chests.traps[0] as NonNullable<DoorState['trap']>;
+    const w = atDoor({ trap, trapState: 'noticed' });
+    expect(lockView(w, locked)?.disarm).not.toBeNull();
+    const quiet: GameData = {
+      ...locked,
+      content: {
+        ...locked.content,
+        chests: { ...locked.content.chests, doors: { ...locked.content.chests.doors, noise: 0 } },
+      },
+    };
+    expect(lockView(w, quiet)?.noise).toBeNull();
+  });
+
+  it('refuse work in the dark', () => {
+    const w = atDoor({});
+    w.light.lit = null;
+    w.light.torch = 0;
+    w.light.lantern = 0;
+    expect(openDoor(w, locked, 'pick')).toEqual({ ok: false, reason: 'It is too dark to work.' });
   });
 });

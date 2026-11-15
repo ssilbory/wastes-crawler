@@ -16,6 +16,9 @@ export const ChestTrapSchema = TrapSchema.pick({
 }).refine((t) => t.effect.kind !== 'alarm', 'a chest trap does harm, not an alarm');
 export type ChestTrap = z.infer<typeof ChestTrapSchema>;
 
+/** One step of an animated chest's monster: from this level up, this monster. */
+export const AnimatedTierSchema = z.strictObject({ level: z.int().min(1), monster: IdSchema });
+
 /** Locked vaults, boss chests, random chests, and doors (docs/rules-adaptation.md, Locks and chests). */
 export const ChestRulesSchema = z.strictObject({
   /** Lock and trap difficulty: base + level / perLevels, rounded down, at most cap. */
@@ -42,11 +45,15 @@ export const ChestRulesSchema = z.strictObject({
     /** The difficulty of a locked door where no ruin sets a level. */
     difficulty: z.int().min(1),
   }),
-  /** Random chests in each ruin level, and what an animated one is when it is one creature. */
+  /**
+   * Random chests in each ruin level, and what wakes in an animated one: a chest golem or an undead
+   * thing, the last of each list whose level is at most the chest's, so it suits the dungeon's level.
+   */
   random: z.strictObject({
     min: z.int().min(0),
     max: z.int().min(0),
-    mimic: IdSchema,
+    golem: z.array(AnimatedTierSchema).min(1),
+    undead: z.array(AnimatedTierSchema).min(1),
   }),
 });
 export type ChestRules = z.infer<typeof ChestRulesSchema>;

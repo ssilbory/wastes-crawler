@@ -53,10 +53,12 @@ function difficulty(w: World, data: GameData): number {
     : rules.doors.difficulty;
 }
 
-/** The locked door ahead, reached: its lock and trap set the first time, and looked over once. */
-export function reachDoor(w: World, data: GameData): DoorState | null {
-  const s = w.dungeon;
-  if (!s || !lockedAt(w, data, s.at, s.facing)) return null;
+/**
+ * The locked door ahead, reached: its lock and trap set the first time, and looked over once.
+ * Callers check that a locked door is ahead.
+ */
+export function reachDoor(w: World, data: GameData): DoorState {
+  const s = state(w);
   const key = edgeKey(s.at, s.facing);
   let door = record(w, key);
   if (!door) {
@@ -78,7 +80,7 @@ function blocked(w: World, data: GameData): string | null {
 export function disarmDoor(w: World, data: GameData): TownResult {
   const why = blocked(w, data);
   if (why) return no(why);
-  const door = reachDoor(w, data) as DoorState;
+  const door = reachDoor(w, data);
   if (!disarmLock(w, data, door)) return no('No trap has been found on it.');
   passTurn(w, data);
   return OK;
@@ -88,14 +90,14 @@ export function disarmDoor(w: World, data: GameData): TownResult {
 export function openDoor(w: World, data: GameData, method: LockMethod): TownResult {
   const why = blocked(w, data);
   if (why) return no(why);
-  const door = reachDoor(w, data) as DoorState;
+  const door = reachDoor(w, data);
   const verbs = { force: 'break', forces: 'breaks' };
-  door.opened = tryLock(w, data, door, 'door', method, verbs);
+  door.opened = tryLock(w, data, door, 'door', method, verbs) !== null;
   if (method === 'force' && w.rng.int(1, 6) <= data.content.chests.doors.noise) {
     note(w, 'The noise carries through the halls.');
     callWanderers(w, data);
   }
-  if (w.dungeon) passTurn(w, data);
+  passTurn(w, data);
   return OK;
 }
 

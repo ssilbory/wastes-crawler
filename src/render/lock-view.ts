@@ -31,15 +31,18 @@ export interface LockView {
   noise: string | null;
 }
 
-const itemName = (data: GameData, id: string) => findItem(data, id)?.name ?? id;
+// Content checks give the chest rules' gear real items.
+const itemName = (data: GameData, id: string) => (findItem(data, id) as { name: string }).name;
 
 /** What the party knows of the lock's trap. */
 export function trapText(l: Pick<LockState, 'trap' | 'trapState' | 'looked'> | null): string {
   if (!l || !l.looked) return 'No one has looked it over yet.';
   if (l.trapState === 'noticed')
     return l.trap ? `A ${l.trap.name} guards it.` : 'Something stirs inside it.';
-  if (l.trapState === 'disarmed') return `Its ${l.trap?.name ?? 'trap'} is disarmed.`;
-  if (l.trapState === 'sprung') return `Its ${l.trap?.name ?? 'trap'} is spent.`;
+  // Only a lock with a trap has one disarmed or sprung.
+  const name = (l.trap as NonNullable<LockState['trap']>).name;
+  if (l.trapState === 'disarmed') return `Its ${name} is disarmed.`;
+  if (l.trapState === 'sprung') return `Its ${name} is spent.`;
   return 'No trap has been spotted on it.';
 }
 

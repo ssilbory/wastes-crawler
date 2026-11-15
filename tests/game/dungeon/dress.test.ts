@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { parseLevelMap, type LevelMap } from '../../../src/data/dungeon-map.ts';
 import { dungeonReferenceErrors } from '../../../src/data/dungeon-check.ts';
 import { generateRuin } from '../../../src/game/dungeon/generate.ts';
+import { dressRuin } from '../../../src/game/dungeon/dress.ts';
 import { data } from '../world/helpers.ts';
 
 const { ruinTraps, chests } = data.content;
@@ -57,6 +58,30 @@ describe('locked doors and random chests in ruins (Locks and chests)', () => {
             expect(l.traps.some((x) => x.at.x === c.at.x && x.at.y === c.at.y)).toBe(false);
           }
         }
-    expect([...kinds].sort()).toEqual(['loot', 'mimic', 'swarm', 'trapped']);
+    expect([...kinds].sort()).toEqual(['golem', 'loot', 'trapped', 'undead']);
+  });
+});
+
+describe('dressRuin', () => {
+  it('sets chests only on reachable, empty floor', () => {
+    const ruin = data.content.ruins[0] as (typeof data.content.ruins)[number];
+    // A 3 x 1 strip: the middle cell holds a captive, the east one a post, a sealed cell below.
+    const level = {
+      id: 'strip',
+      name: 'Strip',
+      map: ['+-+-+-+', '|     |', '+-+-+-+', '| | | |', '+-+-+-+'],
+      links: [],
+      wander: null,
+      safe: [],
+      secrets: [],
+      traps: [],
+      specials: [],
+      captives: [{ at: { x: 1, y: 0 }, captive: 'c', guards: [['g']], text: 't' }],
+      garrisons: [{ at: { x: 2, y: 0 }, order: 'o', enemies: [['g']], text: 't' }],
+    };
+    for (let seed = 1; seed <= 20; seed++) {
+      const [dressed] = dressRuin(ruin, seed, [level], chests);
+      for (const s of dressed?.specials ?? []) expect(s.at).toEqual({ x: 0, y: 0 });
+    }
   });
 });

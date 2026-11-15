@@ -13,6 +13,7 @@ import type {
   RuinTrap,
 } from '../../data/schemas/index.ts';
 import { dressRuin } from './dress.ts';
+import { buildLair } from './lair.ts';
 import { createRng, type Rng } from '../../rules/rng.ts';
 import { generateCity } from './city.ts';
 import {
@@ -86,9 +87,11 @@ export interface Generated {
   facing: Facing;
 }
 
-/** A delve or a tower: a chain of levels, each linked to the next by its far stairs. */
+/** A delve, a tower, or a lair: a chain of levels, each linked to the next by its far stairs. */
 function generateStack(rng: Rng, ruin: Ruin, traps: readonly RuinTrap[]): Generated {
-  const built = Array.from({ length: ruin.depth }, (_, i) => buildLevel(rng, ruin, traps, i));
+  const built = Array.from({ length: ruin.depth }, (_, i) =>
+    ruin.kind === 'lair' ? buildLair(rng, ruin, traps, i) : buildLevel(rng, ruin, traps, i),
+  );
   built.forEach((b, i) => {
     const prev = built[i - 1];
     const next = built[i + 1];

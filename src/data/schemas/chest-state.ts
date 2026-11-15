@@ -33,8 +33,8 @@ export const ChestStateSchema = LockStateSchema.extend({
   cache: z.string().nullable(),
   /** Loot dice it holds of its own. */
   loot: z.array(LootDiceSchema).nullable(),
-  /** No chest at all: a creature, or a swarm of the level's wanderers waiting inside. */
-  animated: z.enum(['mimic', 'swarm']).nullable(),
+  /** No treasure at all: a chest golem, or an undead thing waiting inside. */
+  animated: z.enum(['golem', 'undead']).nullable(),
 });
 export type ChestState = z.infer<typeof ChestStateSchema>;
 

@@ -111,7 +111,8 @@ function cacheAt(data: GameData, key: string): Cache | undefined {
 /** A vault is locked (chests.ts): it counts as taken now, and pays out when its lock is opened. */
 function lock(w: World, data: GameData, key: string, cache: Cache): void {
   w.caches.push(key);
-  lockCache(w, data, key, cache.vault === true, cache.guards ?? []);
+  // Vaults are only generated, always with guards.
+  lockCache(w, data, key, true, cache.guards as string[][]);
 }
 
 function take(w: World, data: GameData, key: string, cache: Cache): void {
@@ -137,15 +138,31 @@ function payOut(w: World, data: GameData, key: string, cache: Cache): void {
   note(w, `${ruin.name} is emptied. Ruins like this shift within a month.`);
 }
 
+type Guards = Extract<Special, { kind: 'guards' }>;
+
+/** A lair's band of minions on the party's cell rises to fight, until beaten (Lairs). */
+function meetMinions(w: World, data: GameData): void {
+  const s = w.dungeon;
+  if (!s || w.encounter) return;
+  const { level } = levelOf(data, s.dungeon, s.level);
+  const band = level.specials.find(
+    (x): x is Guards => x.kind === 'guards' && x.at.x === s.at.x && x.at.y === s.at.y,
+  );
+  const key = `${s.dungeon}/${s.level}/${s.at.x},${s.at.y}`;
+  if (!band || w.beaten.includes(key)) return;
+  const where = `${level.name} ${s.at.x},${s.at.y}`;
+  meetGroup(w, data, band.enemies, 'hostile', null, null, band.text, where).garrison = key;
+}
+
 /**
- * The ruins' bus listener: caches are taken on stepping onto them, a vault once its guards fall. A
- * hoard whose guards keep a standing order is given up when the order ends, and beating its guards
- * ends the order (Sam's call: the Warden).
+ * The ruins' bus listener: caches are taken on stepping onto them, a vault once its guards fall,
+ * and a lair's minions rise where they wait. A hoard whose guards keep a standing order is given
+ * up when the order ends, and beating its guards ends the order (Sam's call: the Warden).
  */
 export function ruinsListener(w: World, data: GameData, e: WorldEvent): void {
+  if (e.kind === 'cell-entered') meetMinions(w, data);
   if (e.kind === 'chest-opened') {
-    const cache = cacheAt(data, e.cache);
-    if (cache) payOut(w, data, e.cache, cache);
+    payOut(w, data, e.cache, cacheAt(data, e.cache) as Cache);
     return;
   }
   if (e.kind !== 'cell-entered' && e.kind !== 'fight-won' && e.kind !== 'order-ended') return;
@@ -158,8 +175,8 @@ export function ruinsListener(w: World, data: GameData, e: WorldEvent): void {
       note(w, 'The guards step aside from the hoard.');
       w.encounter = null;
     }
-    if (cache.vault) lock(w, data, key, cache);
-    else take(w, data, key, cache);
+    // Standing orders keep only hand-placed hoards; vaults are only generated.
+    take(w, data, key, cache);
     return;
   }
   if (w.encounter) return;

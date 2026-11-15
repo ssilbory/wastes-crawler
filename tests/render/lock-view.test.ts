@@ -65,6 +65,28 @@ describe('lockView', () => {
     );
     expect(trapText({ ...base, trapState: 'disarmed' })).toContain('is disarmed');
     expect(trapText({ ...base, trapState: 'sprung' })).toContain('is spent');
-    expect(trapText({ ...base, trap: null, trapState: 'sprung' })).toBe('Its trap is spent.');
+  });
+
+  it('offers no disarm for something stirring, and names no hand with no one fit', () => {
+    const w = world();
+    w.chests.push({
+      at: `${w.region}/${w.position.col},${w.position.row}`,
+      vault: false,
+      difficulty: 7,
+      trap: null,
+      trapState: 'noticed',
+      looked: true,
+      heavy: false,
+      spoils: null,
+      cache: null,
+      loot: null,
+      animated: 'golem',
+    });
+    for (const m of w.members) m.character.hp = { ...m.character.hp, current: 0 };
+    expect(lockView(w, data)).toMatchObject({
+      trap: 'Something stirs inside it.',
+      disarm: null,
+      pick: { hand: null },
+    });
   });
 });

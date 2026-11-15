@@ -197,6 +197,8 @@ describe('setting content (Phase 12b)', () => {
       { ...ruin, id: 'big', size: { min: 12, max: 18 } },
       { ...ruin, id: 'deep-city', kind: 'city' as const, depth: 2, size: { min: 18, max: 18 } },
       { ...ruin, id: 'wet-tower', kind: 'tower' as const, sewer: true, size: { min: 7, max: 7 } },
+      { ...ruin, id: 'empty-lair', kind: 'lair' as const, size: { min: 14, max: 14 } },
+      { ...ruin, id: 'busy-delve', minions: [[['nobody']]] },
     ].map((r, i) => ({ ...r, col: i + 1, row: 9 }));
     expect(
       settingReferenceErrors(srd, { ...content, ruins: sized }).filter((e) =>
@@ -206,6 +208,9 @@ describe('setting content (Phase 12b)', () => {
       "ruins/big: a delve's levels are 12 to 15 cells",
       'ruins/deep-city: a city is one level',
       'ruins/wet-tower: only cities have sewers',
+      'ruins/empty-lair: lairs, and only lairs, have minions',
+      'ruins/busy-delve: lairs, and only lairs, have minions',
+      'ruins/busy-delve: unknown monster nobody',
     ]);
   });
 });

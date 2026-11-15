@@ -201,6 +201,7 @@ export const vaultAt = (ruin: Ruin, at: Cell): DungeonLevel['specials'][number] 
   guards: ruin.vault.guards,
   vault: true,
   ...(ruin.vault.component ? { component: ruin.vault.component } : {}),
+  ...(ruin.vault.text ? { text: ruin.vault.text } : {}),
 });
 
 /** A generated level with no links yet. */

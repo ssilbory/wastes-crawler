@@ -1,27 +1,30 @@
 // Locked chests and vaults (docs/rules-adaptation.md, Locks and chests; Sam's calls). A boss fight's
 // drop goes into a locked, trapped chest where it was won; a ruin's vault is locked and trapped the
 // same way; and ruin levels hold a few random locked chests: loot, a heavily trapped empty one, or
-// an animated one. The lock and trap share one difficulty, 7 + level / 2 at most 12, the level
+// an animated one, a chest golem or an undead thing that strikes first. The lock and trap share one difficulty, 7 + level / 2 at most 12, the level
 // being the ruin's or the quest's, else the guards' highest hit dice. Working the lock and its trap
 // is lockwork.ts; each try takes a turn below ground (vendor/wwn-srd/2.0 The Rules of the
 // Game/2.13.0 Dungeon Exploration.md).
-import type { ChestState, LockState, Special } from '../../data/schemas/index.ts';
+import type { ChestState, LockState, Monster, Special } from '../../data/schemas/index.ts';
+import { attackRoll } from '../../rules/attacks.ts';
+import { roll } from '../../rules/dice.ts';
 import { lockDifficulty, type LockMethod } from '../../rules/locks.ts';
 import { findMonster, type GameData } from '../character/context.ts';
 import { ruinOfDungeon } from '../dungeon/hidden-ruins.ts';
 import { levelOf } from '../dungeon/levels.ts';
-import { callWanderers, passTurn } from '../dungeon/time.ts';
+import { passTurn } from '../dungeon/time.ts';
+import { wound } from '../dungeon/traps.ts';
 import { emit, type WorldEvent } from './bus.ts';
 import { meetGroup } from './encounters.ts';
 import { cannotWork, disarmLock, lookOver, newLock, tryLock } from './lockwork.ts';
-import { note } from './members.ts';
+import { memberSheet, note } from './members.ts';
 import { placeKey } from './necromancy.ts';
 import { accrueShares } from './npcs.ts';
 import { pickUp } from './party-load.ts';
 import type { TownResult } from './services.ts';
 import { addLoot } from './shop.ts';
 import { spoils } from './winnings.ts';
-import type { World } from './types.ts';
+import type { Member, World } from './types.ts';
 
 const OK: TownResult = { ok: true };
 const no = (reason: string): TownResult => ({ ok: false, reason });
@@ -47,7 +50,8 @@ export function chestLevel(
   if (ruin && data.content.ruins.includes(ruin)) return ruin.level;
   const q = quest && data.content.quests.find((x) => x.id === quest);
   if (q) return q.prerequisites.minLevel;
-  return Math.max(1, ...guards.flat().map((id) => findMonster(data, id)?.hitDice ?? 1));
+  // Content checks give every guard a stat line.
+  return Math.max(1, ...guards.flat().map((id) => (findMonster(data, id) as Monster).hitDice));
 }
 
 const look = (w: World, data: GameData, c: ChestState) =>
@@ -124,11 +128,11 @@ export function randomChestsListener(w: World, data: GameData, e: WorldEvent): v
   if (!spot || w.caches.includes(key)) return;
   w.caches.push(key);
   const difficulty = lockDifficulty(data.content.chests.difficulty, chestLevel(w, data, null, []));
-  const alive = spot.contents === 'mimic' || spot.contents === 'swarm';
+  const alive = spot.contents === 'golem' || spot.contents === 'undead';
   const heavy = spot.contents === 'trapped';
   const c = newChest(w, newLock(w, data, difficulty, !alive, heavy), false);
-  c.loot = spot.contents === 'loot' ? (spot.loot ?? null) : null;
-  c.animated = alive ? (spot.contents as 'mimic' | 'swarm') : null;
+  c.loot = spot.loot ?? null;
+  c.animated = alive ? (spot.contents as 'golem' | 'undead') : null;
   note(w, 'A locked chest stands here.');
   look(w, data, c);
 }
@@ -161,18 +165,18 @@ export function openChest(w: World, data: GameData, method: LockMethod): TownRes
   if (why) return no(why);
   const c = chestHere(w) as ChestState;
   look(w, data, c);
-  const opens = tryLock(w, data, c, chestName(c), method);
+  const opener = tryLock(w, data, c, chestName(c), method);
+  // It opens before the turn passes, so what wakes inside meets the party before any wanderers.
+  if (opener) payOut(w, data, c, opener);
   spend(w, data);
-  // A wandering group the turn brought holds the opening back: the chest is opened after.
-  if (opens) payOut(w, data, c);
   return OK;
 }
 
 /** The chest is opened: whatever is inside comes out. */
-function payOut(w: World, data: GameData, c: ChestState): void {
+function payOut(w: World, data: GameData, c: ChestState, opener: Member): void {
   w.chests = w.chests.filter((x) => x !== c);
   if (c.animated) {
-    wake(w, data, c.animated);
+    wake(w, data, c, c.animated, opener);
     return;
   }
   if (c.spoils) spoils(w, data, c.spoils.enemies, { xp: c.spoils.xp, boss: true });
@@ -189,27 +193,64 @@ function payOut(w: World, data: GameData, c: ChestState): void {
   if (!c.spoils && !c.cache && !c.loot) note(w, 'The chest is empty.');
 }
 
-/** An animated chest: the chest itself lunges, or the level's wanderers burst out of it. */
-function wake(w: World, data: GameData, how: 'mimic' | 'swarm'): void {
+/** The monster in an animated chest of this level: the last of its list whose level it reaches. */
+export function animatedMonster(data: GameData, how: 'golem' | 'undead', level: number): string {
+  const tiers = data.content.chests.random[how];
+  const tier = tiers.filter((t) => t.level <= level).at(-1) ?? tiers[0];
+  return (tier as (typeof tiers)[number]).monster;
+}
+
+/**
+ * An animated chest: a chest golem, or an undead thing inside, suited to the dungeon's level. It
+ * gets one free attack on the one who opened it, then the fight begins (Sam's call).
+ */
+function wake(
+  w: World,
+  data: GameData,
+  c: ChestState,
+  how: 'golem' | 'undead',
+  opener: Member,
+): void {
+  const id = animatedMonster(data, how, chestLevel(w, data, null, []));
+  const foe = findMonster(data, id) as Monster;
+  note(
+    w,
+    how === 'golem'
+      ? `The chest unfolds into a ${foe.name}!`
+      : `A ${foe.name} lurches out of the chest!`,
+  );
+  freeAttack(w, data, foe, opener);
   const s = w.dungeon;
-  const wanderers = s && levelOf(data, s.dungeon, s.level).level.wander;
-  if (how === 'swarm' && wanderers && !w.encounter) {
-    note(w, 'The lid bursts open, and things pour out!');
-    callWanderers(w, data);
-    if (w.encounter) return;
-  }
-  note(w, 'The chest lunges at the party!');
   const where = s
     ? `${levelOf(data, s.dungeon, s.level).level.name} ${s.at.x},${s.at.y}`
     : undefined;
   meetGroup(
     w,
     data,
-    [[data.content.chests.random.mimic]],
+    [[id]],
     'hostile',
     null,
     null,
-    'An animated chest.',
+    `A ${foe.name} from the ${chestName(c)}.`,
     where,
   );
+}
+
+/** One attack from the woken thing on whoever opened the chest (vendor/wwn-srd/2.0 The Rules of
+ * the Game/2.4.0 Combat.md, 2.4.5 and 2.4.6). Content checks give it dice for damage. */
+function freeAttack(w: World, data: GameData, foe: Monster, m: Member): void {
+  const targetAc = memberSheet(data, m).equipment.armorClass;
+  const hit = attackRoll(w.rng, {
+    attackBonus: foe.attackBonus,
+    attributeModifier: 0,
+    skill: 0,
+    targetAc,
+  });
+  if (!hit.hit) {
+    note(w, `It lashes out at ${m.character.name} and misses.`);
+    return;
+  }
+  const dice = (foe.damage as Extract<Monster['damage'], { kind: 'dice' }>).dice;
+  note(w, `It catches ${m.character.name} off guard.`);
+  wound(w, data, m, Math.max(1, roll(w.rng, dice).total));
 }

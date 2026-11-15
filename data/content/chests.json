@@ -71,6 +71,33 @@
   "random": {
     "min": 1,
     "max": 2,
-    "mimic": "animated-chest"
+    "golem": [
+      {
+        "level": 1,
+        "monster": "chest-golem"
+      },
+      {
+        "level": 5,
+        "monster": "iron-chest-golem"
+      }
+    ],
+    "undead": [
+      {
+        "level": 1,
+        "monster": "raised-skeleton"
+      },
+      {
+        "level": 3,
+        "monster": "zombie"
+      },
+      {
+        "level": 5,
+        "monster": "ghoul"
+      },
+      {
+        "level": 8,
+        "monster": "mummy"
+      }
+    ]
   }
 }

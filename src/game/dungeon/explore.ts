@@ -54,7 +54,7 @@ export function openFacing(map: LevelMap, at: Cell, facing: Facing): Facing {
 /** Towers and cities are walked into and out of; delves are climbed down into and out of. */
 export function goesDown(data: GameData, dungeonId: string): boolean {
   const ruin = ruinOfDungeon(data, dungeonId);
-  return ruin === undefined || ruin.kind === 'delve';
+  return ruin === undefined || ruin.kind === 'delve' || ruin.kind === 'lair';
 }
 
 /** The button for the way out to the hex map. */

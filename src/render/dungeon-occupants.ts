@@ -87,6 +87,14 @@ export function occupantsOf(w: World, data: GameData): Map<string, Occupant> {
       chest: true,
     });
   }
+  // A lair's minions stand in their room until beaten (Lairs).
+  for (const x of level.specials)
+    if (x.kind === 'guards' && !w.beaten.includes(`${place}/${cellKey(x.at)}`))
+      out.set(cellKey(x.at), {
+        kind: 'garrison',
+        title: 'The lair’s creatures',
+        figures: foes(x.enemies, data),
+      });
   // A random chest stands where it lies until the party first reaches it (Locks and chests).
   for (const x of level.specials)
     if (x.kind === 'chest' && !w.caches.includes(`${place}/${cellKey(x.at)}`))

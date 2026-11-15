@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import type { ChestState, Ruin } from '../../../src/data/schemas/index.ts';
+import type { ChestState, Dungeon, Ruin } from '../../../src/data/schemas/index.ts';
+import type { GameData } from '../../../src/game/character/context.ts';
+import { occupantsOf } from '../../../src/render/dungeon-occupants.ts';
 import {
+  animatedMonster,
   chestHere,
   chestLevel,
   disarmChest,
@@ -251,7 +254,7 @@ describe('random chests (Locks and chests)', () => {
     expect(w.log.join('\n')).toContain('A locked chest stands here.');
     expect(c.difficulty).toBe(7);
     expect(c.heavy).toBe(spot.contents === 'trapped');
-    const alive = spot.contents === 'mimic' || spot.contents === 'swarm';
+    const alive = spot.contents === 'golem' || spot.contents === 'undead';
     expect(c.trap === null).toBe(alive);
     expect(c.animated).toBe(alive ? spot.contents : null);
     expect(c.loot).toEqual(spot.contents === 'loot' ? ruin.cache : null);
@@ -286,34 +289,157 @@ describe('random chests (Locks and chests)', () => {
 
   it('see an animated chest stir on a good look', () => {
     const w = world();
-    const c = randomChest(w, { animated: 'mimic', looked: false });
+    const c = randomChest(w, { animated: 'golem', looked: false });
     w.rng = faces([6, 6, 1, 1]);
     openChest(w, data, 'pick');
     expect(c.trapState).toBe('noticed');
     expect(w.log.join('\n')).toContain('sees the chest stir');
   });
 
-  it('wake an animated chest on opening, and a swarm with no wanderers is the chest itself', () => {
-    for (const how of ['mimic', 'swarm'] as const) {
+  it('pick the golem or undead thing that suits the dungeon’s level', () => {
+    expect(animatedMonster(data, 'golem', 1)).toBe('chest-golem');
+    expect(animatedMonster(data, 'golem', 4)).toBe('chest-golem');
+    expect(animatedMonster(data, 'golem', 5)).toBe('iron-chest-golem');
+    expect(animatedMonster(data, 'undead', 1)).toBe('raised-skeleton');
+    expect(animatedMonster(data, 'undead', 3)).toBe('zombie');
+    expect(animatedMonster(data, 'undead', 10)).toBe('mummy');
+    // Below the first step, the first.
+    expect(animatedMonster(data, 'undead', 0)).toBe('raised-skeleton');
+  });
+
+  it('wake on opening, with a free attack on the one who opened it', () => {
+    for (const how of ['golem', 'undead'] as const) {
       const w = world();
+      for (const m of w.members) m.character.hp = { ...m.character.hp, current: 99, max: 99 };
       randomChest(w, { animated: how });
-      w.rng = faces([6, 6]);
+      // The pick, a 20 to hit, and the top of its damage die.
+      w.rng = faces([6, 6, 20, 6]);
       openChest(w, data, 'pick');
-      expect(w.log.join('\n')).toContain('The chest lunges at the party!');
-      expect(w.encounter?.enemies).toEqual([[rules.random.mimic]]);
+      const log = w.log.join('\n');
+      const id = animatedMonster(data, how, 1);
+      expect(log).toContain(
+        how === 'golem' ? 'The chest unfolds into a Chest Golem!' : 'lurches out of the chest!',
+      );
+      expect(log).toContain('off guard');
+      expect(log).toContain('takes 6 damage');
+      expect(w.encounter?.enemies).toEqual([[id]]);
       expect(w.chests).toEqual([]);
     }
   });
 
-  it('let a swarm of the level’s wanderers burst out below ground', () => {
+  it('miss the opener on a poor roll', () => {
     const w = world();
-    w.position = { col: 5, row: 10 };
-    enterDungeon(w, data);
+    randomChest(w, { animated: 'undead' });
+    w.rng = faces([6, 6, 1]);
+    openChest(w, data, 'pick');
+    expect(w.log.join('\n')).toContain('and misses');
+    expect(w.encounter).not.toBeNull();
+  });
+});
+
+describe('chests below ground (Locks and chests)', () => {
+  // The barrow with a random chest of each kind up the column north of the entry.
+  const barrow = data.content.dungeons.find((d) => d.id === 'old-barrow') as Dungeon;
+  const upper = barrow.levels[0] as Dungeon['levels'][number];
+  const kinds = ['loot', 'trapped', 'golem', 'undead'] as const;
+  const spots = kinds.map((contents, i) => ({
+    kind: 'chest' as const,
+    at: { x: 1, y: 7 - i },
+    contents,
+    ...(contents === 'loot' ? { loot: [{ count: 1, sides: 4 }] } : {}),
+  }));
+  const dressed: GameData = {
+    ...data,
+    content: {
+      ...data.content,
+      dungeons: data.content.dungeons.map((d) =>
+        d === barrow
+          ? {
+              ...d,
+              levels: [{ ...upper, specials: [...upper.specials, ...spots] }, ...d.levels.slice(1)],
+            }
+          : d,
+      ),
+    },
+  };
+
+  /** The party below, on the chest of `kind`. */
+  function onChest(kind: (typeof kinds)[number]): World {
+    const w = world();
+    w.position = { ...barrow.entrance };
+    enterDungeon(w, dressed);
     (w.dungeon as NonNullable<World['dungeon']>).turn = 1;
-    randomChest(w, { animated: 'swarm' });
+    const at = (spots.find((x) => x.contents === kind) as (typeof spots)[number]).at;
+    place(w, upper.id, at.x, at.y, 'n');
+    emit(w, dressed, { kind: 'cell-entered' });
+    return w;
+  }
+
+  it('find each kind locked on first stepping there', () => {
+    expect(chestHere(onChest('loot'))).toMatchObject({
+      loot: [{ count: 1, sides: 4 }],
+      heavy: false,
+      animated: null,
+    });
+    expect(chestHere(onChest('trapped'))).toMatchObject({
+      loot: null,
+      heavy: true,
+      animated: null,
+    });
+    expect(chestHere(onChest('golem'))).toMatchObject({ trap: null, animated: 'golem' });
+    expect(chestHere(onChest('undead'))).toMatchObject({ trap: null, animated: 'undead' });
+  });
+
+  it('take a turn to open, and wake what is inside where it lies', () => {
+    const w = onChest('undead');
+    for (const m of w.members) m.character.hp = { ...m.character.hp, current: 99, max: 99 };
+    const turn = (w.dungeon as NonNullable<World['dungeon']>).turn;
+    w.rng = faces([6, 6, 1]);
+    openChest(w, dressed, 'pick');
+    expect((w.dungeon as NonNullable<World['dungeon']>).turn).toBe(turn + 1);
+    expect(w.encounter?.enemies).toEqual([['raised-skeleton']]);
+    expect(w.log.at(-1)).toContain(`(${upper.name} 1,4)`);
+  });
+
+  it('show a chest on its own level only', () => {
+    const w = onChest('loot');
+    w.chests = w.chests.map((c) => ({ ...c, at: c.at.replace(upper.id, 'elsewhere') }));
+    expect(occupantsOf(w, dressed).has('1,7')).toBe(false);
+  });
+});
+
+describe('vaults and boss chests together (Locks and chests)', () => {
+  it('pay out the vault’s cache once its lock is opened', () => {
+    const ruin = data.content.ruins.find((r) => r.id === 'sunken-chapel') as Ruin;
+    const w = world();
+    enterRegion(w, ruin.region, ruin);
+    enterDungeon(w, data);
+    const d = dungeonOf(data, w.dungeon?.dungeon as string);
+    const level = d.levels.at(-1) as (typeof d.levels)[number];
+    const vault = level.specials.find((x) => x.kind === 'cache' && x.vault);
+    if (vault?.kind !== 'cache') throw new Error('no vault');
+    place(w, level.id, vault.at.x, vault.at.y, 'n');
+    w.beaten.push(placeKey(w));
+    emit(w, data, { kind: 'cell-entered' });
+    expect(chestHere(w)).toMatchObject({ vault: true, cache: placeKey(w) });
+    (w.dungeon as NonNullable<World['dungeon']>).turn = 1;
     w.rng = faces([6, 6]);
     openChest(w, data, 'pick');
-    expect(w.log.join('\n')).toContain('things pour out');
-    expect(w.encounter?.enemies.flat()).not.toContain(rules.random.mimic);
+    expect(w.components['grave-garnet']).toBe(1);
+    expect(w.ruins[ruin.id]?.emptied).toBe(w.day);
+  });
+
+  it('keep one chest for a second boss beaten on the same spot', () => {
+    const w = withChest([1, 1]);
+    lockSpoils(w, data, [['knight-or-minor-hero']], 2, null);
+    expect(w.chests).toHaveLength(1);
+    expect(chestHere(w)?.spoils).toEqual({ enemies: [['knight-or-minor-hero']], xp: 2 });
+  });
+
+  it('refuse a disarm with nothing locked here', () => {
+    expect(disarmChest(world(), data)).toEqual({
+      ok: false,
+      reason: 'There is nothing locked here.',
+    });
   });
 });

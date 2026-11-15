@@ -688,9 +688,15 @@
     "description": "The Sun King risen in his throne city, crowned in fire, whom every warlord in the Wastes answers to."
   },
   {
-    "id": "animated-chest",
-    "name": "Animated Chest",
+    "id": "chest-golem",
+    "name": "Chest Golem",
     "base": "automaton-laborer",
-    "description": "An old iron-bound chest that wakes when its lock gives, all hinge-teeth and splinters. Whatever it once held, it has long since eaten."
+    "description": "An iron-bound chest on stubby brass legs, built to guard a hoard and long outlasting its maker. It snaps its lid like a jaw at whoever opens it."
+  },
+  {
+    "id": "iron-chest-golem",
+    "name": "Iron Chest Golem",
+    "base": "automaton-military",
+    "description": "A strongbox of riveted plate that unfolds into a squat war-engine when its lock is breached, steel arms swinging."
   }
 ]

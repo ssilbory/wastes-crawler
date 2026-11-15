@@ -1521,5 +1521,156 @@
       ],
       "component": "cold-iron"
     }
+  },
+  {
+    "id": "scorpion-hollow",
+    "name": "The Scorpion Hollow",
+    "kind": "lair",
+    "region": "borderlands",
+    "level": 2,
+    "col": 19,
+    "row": 4,
+    "depth": 1,
+    "size": {
+      "min": 14,
+      "max": 16
+    },
+    "wander": {
+      "every": 3,
+      "table": "badlands"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 6
+      }
+    ],
+    "minions": [[["giant-rattlesnake", "giant-rattlesnake"]], [["giant-black-widow"]]],
+    "minionText": "Something scuttles out of the dark to meet the party.",
+    "vault": {
+      "guards": [["giant-scorpion"]],
+      "loot": [
+        {
+          "count": 2,
+          "sides": 8
+        }
+      ],
+      "component": "beast-hide",
+      "text": "A giant scorpion uncoils from the bones of its last meal, stinger raised."
+    }
+  },
+  {
+    "id": "manticore-roost",
+    "name": "The Manticore's Roost",
+    "kind": "lair",
+    "region": "dark-lands",
+    "level": 4,
+    "col": 11,
+    "row": 4,
+    "depth": 1,
+    "size": {
+      "min": 16,
+      "max": 20
+    },
+    "wander": {
+      "every": 2,
+      "table": "dl-hills"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 10
+      }
+    ],
+    "minions": [[["giant-fly", "giant-fly"]], [["predator-beastman", "predator-beastman"]]],
+    "minionText": "The roost's scavengers rise from the filth to meet the party.",
+    "vault": {
+      "guards": [["manticore"]],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 10
+        }
+      ],
+      "component": "beast-hide",
+      "text": "The manticore drops from its ledge, tail spikes rattling, and grins with a man's face."
+    }
+  },
+  {
+    "id": "giants-hall",
+    "name": "The Giant's Hall",
+    "kind": "lair",
+    "region": "dark-lands",
+    "level": 5,
+    "col": 20,
+    "row": 5,
+    "depth": 2,
+    "size": {
+      "min": 16,
+      "max": 20
+    },
+    "wander": {
+      "every": 2,
+      "table": "dl-badlands"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 10
+      }
+    ],
+    "minions": [
+      [["beastman-trooper", "beastman-trooper", "beastman-trooper"]],
+      [["predator-beastman", "predator-beastman", "deserter-beastman"]]
+    ],
+    "minionText": "The giant's beastman thralls bar the way.",
+    "vault": {
+      "guards": [["hill-giant"], ["beastman-trooper", "beastman-trooper"]],
+      "loot": [
+        {
+          "count": 3,
+          "sides": 10
+        }
+      ],
+      "component": "cold-iron",
+      "text": "A hill giant heaves itself up from a throne of cart-wheels, a tree trunk in its fist."
+    }
+  },
+  {
+    "id": "wyrms-gullet",
+    "name": "The Wyrm's Gullet",
+    "kind": "lair",
+    "region": "wastes-sunscar",
+    "level": 10,
+    "col": 5,
+    "row": 4,
+    "depth": 2,
+    "size": {
+      "min": 18,
+      "max": 24
+    },
+    "wander": {
+      "every": 2,
+      "table": "wastes-5-ruins"
+    },
+    "cache": [
+      {
+        "count": 1,
+        "sides": 12
+      }
+    ],
+    "minions": [[["sun-hound", "sun-hound", "sun-hound"]], [["glass-golem", "glass-golem"]]],
+    "minionText": "Things that serve the wyrm come at the party through the heat-shimmer.",
+    "vault": {
+      "guards": [["glass-wyrm"]],
+      "loot": [
+        {
+          "count": 4,
+          "sides": 12
+        }
+      ],
+      "component": "beast-hide",
+      "text": "The glass wyrm uncoils across its hoard, and the cavern rings like a struck bell."
+    }
   }
 ]

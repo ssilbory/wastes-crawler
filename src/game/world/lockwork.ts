@@ -111,7 +111,7 @@ export function disarmLock(w: World, data: GameData, l: LockState): boolean {
   return true;
 }
 
-/** One try at picking or forcing the lock, springing its trap as it may; true if it opens. */
+/** One try at picking or forcing the lock, springing its trap as it may: who opened it, or null. */
 export function tryLock(
   w: World,
   data: GameData,
@@ -119,7 +119,7 @@ export function tryLock(
   what: string,
   method: LockMethod,
   verbs = { force: 'force', forces: 'forces' },
-): boolean {
+): Member | null {
   const { hand, success, missedBy } = check(w, data, method, l.difficulty);
   const { opens, springs } = attemptLock({ method, success, missedBy, armed: armed(l) });
   const name = hand.character.name;
@@ -132,7 +132,7 @@ export function tryLock(
     );
   else note(w, `${name} ${opens ? 'picks' : "can't pick"} the ${what}'s lock.`);
   if (springs) spring(w, data, l);
-  return opens;
+  return opens ? hand : null;
 }
 
 /** A new lock: its difficulty, and a trap drawn from the content's kinds, or none. */

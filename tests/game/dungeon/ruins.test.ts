@@ -203,7 +203,12 @@ describe('ruins in play (docs/rules-adaptation.md, Ruins)', () => {
     expect(openRuin(w, data, CHAPEL).id).toBe('sunken-chapel-v5');
     w.day = 30;
     w.rng = scriptedRng([9]);
+    // A chest left unopened in it is lost with the old passages; others stay.
+    const left = { at: 'sunken-chapel-v5/sunken-chapel-1/1,1' } as World['chests'][number];
+    const kept = { at: 'old-mine-v3/old-mine-1/1,1' } as World['chests'][number];
+    w.chests = [left, kept];
     expect(openRuin(w, data, CHAPEL).id).toBe('sunken-chapel-v9');
+    expect(w.chests).toEqual([kept]);
     expect(w.ruins['sunken-chapel']).toEqual({ seed: 9, emptied: null });
     expect(w.log.at(-1)).toContain('The Sunken Chapel has shifted');
   });
