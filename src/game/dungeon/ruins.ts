@@ -2,7 +2,8 @@
 // from the world's RNG the first time the party goes down, and the generated dungeon must pass the
 // same level validation as hand-made ones (ADR 0004) or the next seed is tried. Loot caches are
 // taken once; a vault's guards must be beaten first. Thirty days after its vault is emptied, the
-// ruin shifts: the next visit draws a new seed.
+// ruin shifts: the next visit draws a new seed. A vault is locked and trapped (world/chests.ts)
+// and pays out when opened; a hoard lies loose.
 import { dungeonReferenceErrors } from '../../data/dungeon-check.ts';
 import type { Dungeon, Ruin, Special } from '../../data/schemas/index.ts';
 import { hexKey } from '../../rules/hex.ts';
@@ -13,6 +14,7 @@ import { note } from '../world/members.ts';
 import { foundRuinHere } from '../world/hidden-sites.ts';
 import { endOrder, orderEnded } from '../world/orders.ts';
 import { accrueShares } from '../world/npcs.ts';
+import { lockCache } from '../world/chests.ts';
 import { addLoot } from '../world/shop.ts';
 import { pickUp } from '../world/party-load.ts';
 import type { World } from '../world/types.ts';
@@ -58,14 +60,18 @@ export function openRuin(w: World, data: GameData, ruin: Ruin): Dungeon {
   const rec = w.ruins[ruin.id];
   const month = data.content.overlandRules.daysPerMonth;
   if (rec && (rec.emptied === null || w.day - rec.emptied < month))
-    return generateRuin(ruin, rec.seed, data.content.ruinTraps);
-  if (rec) note(w, `${ruin.name} has shifted: old passages are choked, and new ones open.`);
+    return generateRuin(ruin, rec.seed, data.content.ruinTraps, data.content.chests);
+  if (rec) {
+    note(w, `${ruin.name} has shifted: old passages are choked, and new ones open.`);
+    // Chests left unopened are lost with the old passages.
+    w.chests = w.chests.filter((c) => !c.at.startsWith(`${ruin.id}-v`));
+  }
   let seed = w.rng.int(1, MAX_SEED);
-  let d = generateRuin(ruin, seed, data.content.ruinTraps);
+  let d = generateRuin(ruin, seed, data.content.ruinTraps, data.content.chests);
   // ADR 0004: only a layout that passes the level validation is entered.
   while (dungeonReferenceErrors({ ...data.content, dungeons: [d] }).length > 0) {
     seed = (seed % MAX_SEED) + 1;
-    d = generateRuin(ruin, seed, data.content.ruinTraps);
+    d = generateRuin(ruin, seed, data.content.ruinTraps, data.content.chests);
   }
   w.ruins[ruin.id] = { seed, emptied: null };
   return d;
@@ -93,8 +99,28 @@ export function atGuardedHoard(w: World, data: GameData): boolean {
   return !!found?.cache.guards && !w.beaten.includes(found.key);
 }
 
+/** The cache at a key, by dungeon, level, and cell. */
+function cacheAt(data: GameData, key: string): Cache | undefined {
+  const [dungeon, level, cell] = key.split('/') as [string, string, string];
+  const [x, y] = cell.split(',').map(Number);
+  return levelOf(data, dungeon, level).level.specials.find(
+    (c): c is Cache => c.kind === 'cache' && c.at.x === x && c.at.y === y,
+  );
+}
+
+/** A vault is locked (chests.ts): it counts as taken now, and pays out when its lock is opened. */
+function lock(w: World, data: GameData, key: string, cache: Cache): void {
+  w.caches.push(key);
+  // Vaults are only generated, always with guards.
+  lockCache(w, data, key, true, cache.guards as string[][]);
+}
+
 function take(w: World, data: GameData, key: string, cache: Cache): void {
   w.caches.push(key);
+  payOut(w, data, key, cache);
+}
+
+function payOut(w: World, data: GameData, key: string, cache: Cache): void {
   const dice = cache.loot.map((d) => `${d.count}d${d.sides}`).join(' + ');
   note(w, `${cache.vault ? 'The vault holds' : 'A cache holds'} ${dice} of loot.`);
   const kept = pickUp(w, data, () => {
@@ -112,12 +138,33 @@ function take(w: World, data: GameData, key: string, cache: Cache): void {
   note(w, `${ruin.name} is emptied. Ruins like this shift within a month.`);
 }
 
+type Guards = Extract<Special, { kind: 'guards' }>;
+
+/** A lair's band of minions on the party's cell rises to fight, until beaten (Lairs). */
+function meetMinions(w: World, data: GameData): void {
+  const s = w.dungeon;
+  if (!s || w.encounter) return;
+  const { level } = levelOf(data, s.dungeon, s.level);
+  const band = level.specials.find(
+    (x): x is Guards => x.kind === 'guards' && x.at.x === s.at.x && x.at.y === s.at.y,
+  );
+  const key = `${s.dungeon}/${s.level}/${s.at.x},${s.at.y}`;
+  if (!band || w.beaten.includes(key)) return;
+  const where = `${level.name} ${s.at.x},${s.at.y}`;
+  meetGroup(w, data, band.enemies, 'hostile', null, null, band.text, where).garrison = key;
+}
+
 /**
- * The ruins' bus listener: caches are taken on stepping onto them, a vault once its guards fall. A
- * hoard whose guards keep a standing order is given up when the order ends, and beating its guards
- * ends the order (Sam's call: the Warden).
+ * The ruins' bus listener: caches are taken on stepping onto them, a vault once its guards fall,
+ * and a lair's minions rise where they wait. A hoard whose guards keep a standing order is given
+ * up when the order ends, and beating its guards ends the order (Sam's call: the Warden).
  */
 export function ruinsListener(w: World, data: GameData, e: WorldEvent): void {
+  if (e.kind === 'cell-entered') meetMinions(w, data);
+  if (e.kind === 'chest-opened') {
+    payOut(w, data, e.cache, cacheAt(data, e.cache) as Cache);
+    return;
+  }
   if (e.kind !== 'cell-entered' && e.kind !== 'fight-won' && e.kind !== 'order-ended') return;
   const found = cacheHere(w, data);
   if (!found) return;
@@ -128,6 +175,7 @@ export function ruinsListener(w: World, data: GameData, e: WorldEvent): void {
       note(w, 'The guards step aside from the hoard.');
       w.encounter = null;
     }
+    // Standing orders keep only hand-placed hoards; vaults are only generated.
     take(w, data, key, cache);
     return;
   }
@@ -155,6 +203,8 @@ export function ruinsListener(w: World, data: GameData, e: WorldEvent): void {
     }
     return;
   }
-  take(w, data, key, cache);
+  // Sam's calls: vaults are locked and trapped; a hoard lies loose, its boss's chest beside it.
+  if (cache.vault) lock(w, data, key, cache);
+  else take(w, data, key, cache);
   if (e.kind === 'fight-won' && cache.order) endOrder(w, data, cache.order);
 }

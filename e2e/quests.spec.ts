@@ -20,10 +20,17 @@ async function fightIfMet(page: Page): Promise<boolean> {
   return true;
 }
 
+/** A boss's locked chest pops out where it fell (Locks and chests): this walk leaves it. */
+async function leaveChest(page: Page): Promise<void> {
+  const chest = page.getByRole('dialog', { name: 'A locked chest' });
+  if (await chest.isVisible()) await chest.getByRole('button', { name: 'Leave it' }).click();
+}
+
 /** Hikes toward a hex until `done` holds, fighting whatever turns up. */
 async function walk(page: Page, hex: string, done: () => Promise<boolean>) {
   for (let i = 0; i < 40 && !(await done()); i++) {
     if (await fightIfMet(page)) continue;
+    await leaveChest(page);
     await page.locator(`[data-hex="${hex}"]`).click();
     await page.getByRole('button', { name: /^(Hike|Camp) for the quarter$/ }).click();
   }

@@ -9,8 +9,9 @@ import { LootDiceSchema, ShopStateSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 import { ComponentTypeSchema } from './crafting-content.ts';
 import { SiegeFightSchema, SiegeSchema } from './siege-state.ts';
+import { ChestStateSchema, DoorStateSchema } from './chest-state.ts';
 
-export const WORLD_SCHEMA_VERSION = 55;
+export const WORLD_SCHEMA_VERSION = 56;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -331,6 +332,8 @@ export const DungeonStateSchema = z.strictObject({
   sensed: z.record(IdSchema, z.array(z.string())),
   /** What Query the Skull has said lies where, by level and cell (skull-locate.ts). */
   located: z.record(IdSchema, z.record(z.string(), z.enum(['boss', 'vault', 'hoard']))),
+  /** Locked doors the party has reached this visit, by level and edge (dungeon/doors.ts). */
+  doors: z.record(IdSchema, z.record(z.string(), DoorStateSchema)).optional(),
 });
 export type DungeonState = z.infer<typeof DungeonStateSchema>;
 
@@ -478,6 +481,8 @@ export const WorldSaveSchema = z.strictObject({
   ),
   /** Loot caches taken, by dungeon, level, and cell. */
   caches: z.array(z.string()),
+  /** Locked vaults and boss chests not yet opened (docs/rules-adaptation.md, Locks and chests). */
+  chests: z.array(ChestStateSchema),
   /** Hidden sites: the seed that places them, and those found and used up, by "<region>:<hex>". */
   sites: z.strictObject({
     seed: z.int().min(1),

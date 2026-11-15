@@ -24,6 +24,14 @@ describe('the ASCII level format (docs/plan.md, Map format)', () => {
     expect(map.inBounds({ x: 2, y: 0 })).toBe(false);
     expect(() => map.cell({ x: 2, y: 0 })).toThrow('cell 2,0 is off the level');
     expect(() => map.edge({ x: -1, y: 0 }, 'n')).toThrow('cell -1,0 is off the level');
+    expect(() => map.locked({ x: 9, y: 0 }, 'n')).toThrow('cell 9,0 is off the level');
+    // A locked door `l` is a door with a lock (Locks and chests).
+    const doors = parseLevelMap(['+-+-+', '| l |', '+-+-+']);
+    if (!doors.ok) throw new Error('no map');
+    expect(doors.map.edge({ x: 0, y: 0 }, 'e')).toBe('door');
+    expect(doors.map.locked({ x: 0, y: 0 }, 'e')).toBe(true);
+    expect(doors.map.locked({ x: 1, y: 0 }, 'w')).toBe(true);
+    expect(doors.map.locked({ x: 0, y: 0 }, 'n')).toBe(false);
     const all = parseLevelMap(['+-+-+', '|T N|', '+-+-+']);
     expect(all.ok && [all.map.cell({ x: 0, y: 0 }), all.map.cell({ x: 1, y: 0 })]).toEqual([
       'trap',

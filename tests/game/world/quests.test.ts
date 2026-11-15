@@ -116,8 +116,13 @@ describe('slay and scout steps', () => {
     );
     emit(w, data, { kind: 'fight-won', quest: null, garrison: null });
     expect(w.quests['bandit-camp']?.step).toBe(0);
+    w.loot = [];
     won(w);
     expect(w.quests['bandit-camp']?.status).toBe('ready');
+    // The boss's drop waits in a locked chest where it fell (Locks and chests).
+    expect(w.loot).toEqual([]);
+    expect(w.chests).toMatchObject([{ at: 'borderlands/6,12', vault: false, cache: null }]);
+    expect(w.chests[0]?.spoils?.enemies.flat()).toContain('paladin');
     expect(w.log.join('\n')).toContain(
       'The Raider Camp: done. Return to Reeve Halda in Rubblegate (3,8) for the reward.',
     );

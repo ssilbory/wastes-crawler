@@ -1,5 +1,6 @@
 import type { ContentData, FocusEffect, SrdData } from './schemas/index.ts';
 import { gameSkills } from './skills.ts';
+import { allMonsters } from './monsters.ts';
 
 /** Starting packages, shields, equipment rules, and focus effects reference real records. */
 export function equipmentReferenceErrors(srd: SrdData, content: ContentData): string[] {
@@ -17,6 +18,15 @@ export function equipmentReferenceErrors(srd: SrdData, content: ContentData): st
     if (items.has(s.id)) errors.push(`shields/${s.id}: clashes with another item id`);
   }
   const all = new Set([...items, ...content.shields.map((s) => s.id)]);
+  for (const id of [content.chests.tools.item, content.chests.crowbar.item])
+    if (!items.has(id)) errors.push(`chests: unknown item ${id}`);
+  // An animated chest's monster strikes first with its damage dice (Locks and chests).
+  const monsters = allMonsters(srd, content);
+  for (const t of [...content.chests.random.golem, ...content.chests.random.undead]) {
+    const m = monsters.find((x) => x.id === t.monster);
+    if (m?.damage.kind !== 'dice')
+      errors.push(`chests: ${t.monster} is no monster with damage dice`);
+  }
   for (const p of content.startingPackages) {
     for (const i of p.items) {
       if (!all.has(i.id)) errors.push(`startingPackages/${p.id}: unknown item ${i.id}`);

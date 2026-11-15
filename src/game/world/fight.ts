@@ -13,6 +13,8 @@ import { carryBack, lastStandBack, npcsBack } from './carry-back.ts';
 import { ammoBack } from './ammo.ts';
 import { ailmentsBack } from './ailments.ts';
 import { winnings } from './winnings.ts';
+import { butcher } from './butcher.ts';
+import { lockSpoils } from './chests.ts';
 import { calmWarMounts, mountsBack, warMounts } from './mount-fights.ts';
 import { emit } from './bus.ts';
 import { vigor } from './arts.ts';
@@ -212,7 +214,11 @@ export function applyBattle(
     const caught = withoutFled(fight, slain, false);
     if (caught.flat().length < slain.flat().length)
       note(w, 'Those who got away took what they carried.');
-    winnings(w, data, caught, { xp, boss: fight.quest !== null || atGuardedHoard(w, data) });
+    // A boss's drop is locked in a chest where it fell; only its meat is had at once.
+    if (fight.quest !== null || atGuardedHoard(w, data)) {
+      butcher(w, data, caught.flat());
+      lockSpoils(w, data, caught, xp, fight.quest);
+    } else winnings(w, data, caught, { xp, boss: false });
     // Neither the escaped nor the surrendered leaves a corpse (Phase 19).
     leaveCorpses(w, data, withoutFled(fight, slain));
     takeSurrender(w, fight);

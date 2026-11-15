@@ -183,6 +183,10 @@ describe('ruins in play (docs/rules-adaptation.md, Ruins)', () => {
     expect(w.caches).toHaveLength(1);
     emit(w, data, { kind: 'fight-won', quest: null, garrison: key });
     expect(w.caches).toHaveLength(2);
+    // The vault is locked and trapped (Locks and chests): it pays out when opened.
+    expect(w.chests).toMatchObject([{ vault: true, cache: key }]);
+    expect(w.components['grave-garnet']).toBeUndefined();
+    emit(w, data, { kind: 'chest-opened', cache: key });
     expect(w.components['grave-garnet']).toBe(1);
     expect(w.ruins['sunken-chapel']?.emptied).toBe(w.day);
     expect(w.log.join('\n')).toContain('The Sunken Chapel is emptied.');
@@ -199,7 +203,12 @@ describe('ruins in play (docs/rules-adaptation.md, Ruins)', () => {
     expect(openRuin(w, data, CHAPEL).id).toBe('sunken-chapel-v5');
     w.day = 30;
     w.rng = scriptedRng([9]);
+    // A chest left unopened in it is lost with the old passages; others stay.
+    const left = { at: 'sunken-chapel-v5/sunken-chapel-1/1,1' } as World['chests'][number];
+    const kept = { at: 'old-mine-v3/old-mine-1/1,1' } as World['chests'][number];
+    w.chests = [left, kept];
     expect(openRuin(w, data, CHAPEL).id).toBe('sunken-chapel-v9');
+    expect(w.chests).toEqual([kept]);
     expect(w.ruins['sunken-chapel']).toEqual({ seed: 9, emptied: null });
     expect(w.log.at(-1)).toContain('The Sunken Chapel has shifted');
   });
@@ -217,8 +226,10 @@ describe('ruins in play (docs/rules-adaptation.md, Ruins)', () => {
       at: { x: number; y: number };
     };
     place(w, level.id, vault.at.x, vault.at.y, 'n');
-    w.beaten.push(`${w.dungeon?.dungeon}/${level.id}/${vault.at.x},${vault.at.y}`);
+    const key = `${w.dungeon?.dungeon}/${level.id}/${vault.at.x},${vault.at.y}`;
+    w.beaten.push(key);
     emit(w, d, { kind: 'cell-entered' });
+    emit(w, d, { kind: 'chest-opened', cache: key });
     expect(w.log.join('\n')).toContain('The party takes mystery.');
   });
 });

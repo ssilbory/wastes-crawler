@@ -16,11 +16,17 @@ describe('tavern rumors', () => {
   it('tell only of ways down no quest names, in this region, not yet seen', () => {
     const w = world();
     // The Old Barrow is the Barrow-King's Torc's; the Borderlands' ruins are fair game.
-    expect(ids(w).sort()).toEqual(['old-mine', 'old-westgate', 'sunken-chapel', 'watchers-spire']);
+    expect(ids(w).sort()).toEqual([
+      'old-mine',
+      'old-westgate',
+      'scorpion-hollow',
+      'sunken-chapel',
+      'watchers-spire',
+    ]);
     w.visited.add('2,10');
     expect(ids(w)).not.toContain('sunken-chapel');
     enterRegion(w, 'dark-lands', { col: 6, row: 12 });
-    expect(ids(w)).toHaveLength(6);
+    expect(ids(w)).toHaveLength(8);
   });
 
   it('cost the listed price and mark the way down on the map, fog or no', () => {
@@ -60,12 +66,12 @@ describe('tavern rumors', () => {
     w.purse = 5;
     expect(buyRumor(w, data)).toEqual({ ok: false, reason: 'That costs 10 crowns.' });
     w.purse = 1000;
-    for (let i = 0; i < 4; i++) expect(buyRumor(w, data)).toEqual({ ok: true });
+    for (let i = 0; i < 5; i++) expect(buyRumor(w, data)).toEqual({ ok: true });
     expect(buyRumor(w, data)).toEqual({
       ok: false,
       reason: 'The regulars know of no other ways down around here.',
     });
-    expect(w.rumors).toHaveLength(4);
+    expect(w.rumors).toHaveLength(5);
   });
 
   it('tell of a dungeon no quest names, with no level given', () => {

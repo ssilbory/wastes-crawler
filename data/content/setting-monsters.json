@@ -686,5 +686,17 @@
     "name": "The Sunlord",
     "base": "great-warrior-king",
     "description": "The Sun King risen in his throne city, crowned in fire, whom every warlord in the Wastes answers to."
+  },
+  {
+    "id": "chest-golem",
+    "name": "Chest Golem",
+    "base": "automaton-laborer",
+    "description": "An iron-bound chest on stubby brass legs, built to guard a hoard and long outlasting its maker. It snaps its lid like a jaw at whoever opens it."
+  },
+  {
+    "id": "iron-chest-golem",
+    "name": "Iron Chest Golem",
+    "base": "automaton-military",
+    "description": "A strongbox of riveted plate that unfolds into a squat war-engine when its lock is breached, steel arms swinging."
   }
 ]

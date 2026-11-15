@@ -146,6 +146,8 @@ export interface World {
   /** Generated ruins and taken loot caches (Phase 12e). */
   ruins: Record<string, { seed: number; emptied: number | null }>;
   caches: string[];
+  /** Locked vaults and boss chests not yet opened (chests.ts). */
+  chests: WorldSave['chests'];
   /** Hidden sites (hidden-sites.ts): the seed that places them, and those found and used up. */
   sites: { seed: number; found: string[]; done: string[] };
   /** Ways down a tavern rumor has told the party of, by dungeon or ruin id. */

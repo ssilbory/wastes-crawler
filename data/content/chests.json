@@ -1,0 +1,103 @@
+{
+  "difficulty": {
+    "base": 7,
+    "perLevels": 2,
+    "cap": 12
+  },
+  "tools": {
+    "item": "criminal-tools",
+    "without": -2
+  },
+  "crowbar": {
+    "item": "crowbar",
+    "bonus": 1
+  },
+  "traps": [
+    {
+      "name": "poison needle",
+      "save": "physical",
+      "effect": {
+        "kind": "poison"
+      }
+    },
+    {
+      "name": "spring blade",
+      "save": "evasion",
+      "effect": {
+        "kind": "damage",
+        "dice": {
+          "count": 1,
+          "sides": 8,
+          "modifier": 0
+        }
+      }
+    },
+    {
+      "name": "dart volley",
+      "save": "evasion",
+      "effect": {
+        "kind": "damage",
+        "dice": {
+          "count": 2,
+          "sides": 4,
+          "modifier": 0
+        }
+      }
+    },
+    {
+      "name": "fire rune",
+      "save": "evasion",
+      "element": "fire",
+      "effect": {
+        "kind": "damage",
+        "dice": {
+          "count": 1,
+          "sides": 10,
+          "modifier": 0
+        }
+      }
+    }
+  ],
+  "heavy": {
+    "difficulty": 2,
+    "damage": 2
+  },
+  "doors": {
+    "lockedIn": 4,
+    "trappedIn": 6,
+    "noise": 2,
+    "difficulty": 8
+  },
+  "random": {
+    "min": 1,
+    "max": 2,
+    "golem": [
+      {
+        "level": 1,
+        "monster": "chest-golem"
+      },
+      {
+        "level": 5,
+        "monster": "iron-chest-golem"
+      }
+    ],
+    "undead": [
+      {
+        "level": 1,
+        "monster": "raised-skeleton"
+      },
+      {
+        "level": 3,
+        "monster": "zombie"
+      },
+      {
+        "level": 5,
+        "monster": "ghoul"
+      },
+      {
+        "level": 8,
+        "monster": "mummy"
+      }
+    ]
+  }
+}

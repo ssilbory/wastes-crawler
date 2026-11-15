@@ -69,7 +69,7 @@ export function approach(w: World, data: GameData, target: Cell, stepIn: boolean
  * A PC brought to zero lies Mortally Wounded, for the party to tend (trap-falls.ts), unless Die
  * Hard keeps them up at 1 HP, once a day (vendor/wwn-srd/1.0 Character Creation/1.6.0 Foci.md).
  */
-function wound(w: World, data: GameData, m: Member, amount: number): void {
+export function wound(w: World, data: GameData, m: Member, amount: number): void {
   const hp = m.character.hp.current - amount;
   note(w, `${m.character.name} takes ${amount} damage.`);
   const lastStand =
@@ -88,8 +88,20 @@ function wound(w: World, data: GameData, m: Member, amount: number): void {
 function spring(w: World, data: GameData, trap: Trap): void {
   note(w, `The ${trap.name} springs!`);
   mark(w, trap.at, 'noticed');
+  trapHarm(w, data, trap);
+}
+
+/** What a trap needs to do its harm, on a floor or on a chest. */
+export type TrapHarm = Pick<Trap, 'name' | 'save' | 'element' | 'effect'>;
+
+/**
+ * A sprung trap's harm: an alarm calls the level's wanderers; otherwise each conscious PC makes
+ * its save, if it has one, or takes its effect.
+ */
+export function trapHarm(w: World, data: GameData, trap: TrapHarm): void {
   const e = trap.effect;
   if (e.kind === 'alarm') {
+    // Only floor traps raise alarms: a chest's trap does harm (chest-content.ts).
     callWanderers(w, data);
     return;
   }

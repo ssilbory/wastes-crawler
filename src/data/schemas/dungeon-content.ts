@@ -124,6 +124,23 @@ export const SpecialSchema = z.discriminatedUnion('kind', [
     /** The Wastes warlord who is this hoard's boss: winning it is their fall. */
     warlord: IdSchema.optional(),
   }),
+  /**
+   * A random locked chest (Locks and chests): loot, a heavily trapped empty one, or an animated
+   * one, a chest golem or an undead thing inside.
+   */
+  z.strictObject({
+    kind: z.literal('chest'),
+    ...At,
+    contents: z.enum(['loot', 'trapped', 'golem', 'undead']),
+    loot: z.array(LootDiceSchema).min(1).optional(),
+  }),
+  /** A band of a lair's minions, met on stepping here until beaten (Lairs). */
+  z.strictObject({
+    kind: z.literal('guards'),
+    ...At,
+    enemies: z.array(z.array(IdSchema).min(1).max(8)).min(1).max(3),
+    text: z.string().min(1),
+  }),
   /** A set of crafter's notes, found the first time the party steps here (Phase 12d). */
   z.strictObject({ kind: z.literal('notes'), ...At, set: IdSchema, text: z.string().min(1) }),
   /** A token of command authority, taken the first time the party steps here (Phase 12d). */

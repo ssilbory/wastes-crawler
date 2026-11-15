@@ -155,6 +155,7 @@ describe('realms (Sam’s call)', () => {
     emit(w, data, { kind: 'fight-won', quest: null, garrison: key });
     expect(w.beaten).toContain(key);
     expect(atGuardedHoard(w, data)).toBe(false);
+    // The hoard lies loose (Locks and chests: only vaults are locked).
     expect(w.loot).toEqual(hoard.loot);
     expect(w.log.join('\n')).toContain('A cache holds');
   });

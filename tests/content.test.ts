@@ -506,4 +506,27 @@ describe('the Blood Priest (Phase 14c)', () => {
       armoredArts: true,
     });
   });
+
+  it('checks the chest rules’ gear and the monsters in animated chests', () => {
+    const { chests } = content;
+    const broken = {
+      ...content,
+      chests: {
+        ...chests,
+        tools: { ...chests.tools, item: 'skeleton-key' },
+        crowbar: { ...chests.crowbar, item: 'pry-bar' },
+        random: {
+          ...chests.random,
+          golem: [{ level: 1, monster: 'nobody' }],
+          undead: [{ level: 1, monster: 'skilled-veteran' }],
+        },
+      },
+    };
+    expect(equipmentReferenceErrors(srd, broken)).toEqual([
+      'chests: unknown item skeleton-key',
+      'chests: unknown item pry-bar',
+      'chests: nobody is no monster with damage dice',
+      'chests: skilled-veteran is no monster with damage dice',
+    ]);
+  });
 });

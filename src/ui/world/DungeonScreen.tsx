@@ -26,6 +26,7 @@ import { CompanionsPanel } from './CompanionsPanel.tsx';
 import { FormsPanel } from './FormsPanel.tsx';
 import { ConjunctPanel } from './ConjunctPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
+import { LockPopOut } from './LockPopOut.tsx';
 import { PactPanel } from './PactPanel.tsx';
 import { SorceryPanel } from './SorceryPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
@@ -265,6 +266,11 @@ export function DungeonScreen(props: {
           {!revive.open && surrenderOpen(w) && (
             <SurrenderPopOut world={w} onChange={props.onChange} />
           )}
+          <LockPopOut
+            world={w}
+            hidden={revive.open || surrenderOpen(w)}
+            onChange={props.onChange}
+          />
         </div>
         <div class="dock">
           {!w.encounter && !revive.open && !surrenderOpen(w) && onSafeSquare(w, data) && (
