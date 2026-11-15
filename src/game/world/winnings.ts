@@ -24,13 +24,26 @@ export function winnings(
   enemies: readonly (readonly string[])[],
   worth?: DropContext,
 ): void {
+  butcher(w, data, enemies.flat());
+  spoils(w, data, enemies, worth);
+}
+
+/**
+ * Everything the defeated drop but their meat: loot dice, components, and now and then gear or a
+ * potion. A boss's spoils wait in a locked chest (chests.ts).
+ */
+export function spoils(
+  w: World,
+  data: GameData,
+  enemies: readonly (readonly string[])[],
+  worth?: DropContext,
+): void {
   const won = enemies.flatMap((row) =>
     row.flatMap((id) => {
       const loot = data.content.monsterCombat.find((m) => m.id === id)?.loot;
       return loot ? [loot] : [];
     }),
   );
-  butcher(w, data, enemies.flat());
   // The item comes first, so the dice picked up after it feel its weight.
   const value = worth ? dropGear(w, data, enemies.flat(), worth) : 0;
   if (worth) dropPotion(w, data, enemies.flat(), worth);

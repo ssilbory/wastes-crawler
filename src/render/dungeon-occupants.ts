@@ -2,11 +2,13 @@
 // among their guards, a garrison post's troops, a hoard's or vault's guards (the level's boss)
 // over its chest, a quest's guardians, and a quest item waiting to be taken, drawn standing in
 // their cells with the fight screen's figures. They show until the captive is freed, the post
-// beaten or its order ended, the hoard taken, or the quest step done. Read-only.
+// beaten or its order ended, the hoard taken, or the quest step done; a locked vault or boss chest
+// shows until it is opened. Read-only.
 import type { Cell } from '../rules/grid.ts';
 import { cellKey } from '../rules/grid.ts';
 import type { GameData } from '../game/character/context.ts';
 import { captiveOf } from '../game/world/npcs.ts';
+import { chestName } from '../game/world/chests.ts';
 import { orderEnded } from '../game/world/orders.ts';
 import { currentStep, questOf } from '../game/world/quests.ts';
 import type { World } from '../game/world/types.ts';
@@ -84,6 +86,12 @@ export function occupantsOf(w: World, data: GameData): Map<string, Occupant> {
       figures: standing ? foes(x.guards, data).slice(0, CELL_SHOWN - 1) : [],
       chest: true,
     });
+  }
+  // A locked vault or boss chest stands where it was won until opened (Locks and chests).
+  for (const c of w.chests) {
+    if (!c.at.startsWith(`${place}/`)) continue;
+    const cell = c.at.slice(place.length + 1);
+    out.set(cell, { kind: 'hoard', title: `A locked ${chestName(c)}`, figures: [], chest: true });
   }
   for (const [id, st] of Object.entries(w.quests)) {
     const o = st.status === 'active' ? currentStep(w, data, id) : undefined;

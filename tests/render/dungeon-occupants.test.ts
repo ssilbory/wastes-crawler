@@ -81,6 +81,23 @@ describe('who stands in the cells ahead', () => {
     expect(occupantsOf(w, data).get('1,0')).toMatchObject({ title: 'A hoard', figures: [] });
     w.caches.push('buried-waterworks/buried-waterworks-1/1,0');
     expect(occupantsOf(w, data).has('1,0')).toBe(false);
+    // Locked in its chest, it shows until opened (Locks and chests).
+    w.chests.push({
+      at: 'buried-waterworks/buried-waterworks-1/1,0',
+      vault: false,
+      difficulty: 7,
+      trap: data.content.chests.traps[0] as World['chests'][number]['trap'],
+      trapState: 'hidden',
+      looked: true,
+      spoils: null,
+      cache: 'buried-waterworks/buried-waterworks-1/1,0',
+    });
+    expect(occupantsOf(w, data).get('1,0')).toMatchObject({
+      kind: 'hoard',
+      title: 'A locked chest',
+      figures: [],
+      chest: true,
+    });
   });
 
   it('names a warlord over their hoard, and stands a hoard’s guards down when their order ends', () => {

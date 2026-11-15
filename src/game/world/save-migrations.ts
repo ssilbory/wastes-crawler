@@ -324,4 +324,6 @@ export const WORLD_MIGRATIONS: Migrations = {
     delete out.raid;
     return out;
   },
+  // Version 56 adds locked vaults and boss chests: none lie anywhere yet.
+  55: (raw) => ({ ...raw, schemaVersion: 56, chests: [] }),
 };

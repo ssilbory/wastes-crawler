@@ -1,0 +1,28 @@
+{
+  "difficulty": { "base": 7, "perLevels": 2, "cap": 12 },
+  "tools": { "item": "criminal-tools", "without": -2 },
+  "crowbar": { "item": "crowbar", "bonus": 1 },
+  "traps": [
+    {
+      "name": "poison needle",
+      "save": "physical",
+      "effect": { "kind": "poison" }
+    },
+    {
+      "name": "spring blade",
+      "save": "evasion",
+      "effect": { "kind": "damage", "dice": { "count": 1, "sides": 8, "modifier": 0 } }
+    },
+    {
+      "name": "dart volley",
+      "save": "evasion",
+      "effect": { "kind": "damage", "dice": { "count": 2, "sides": 4, "modifier": 0 } }
+    },
+    {
+      "name": "fire rune",
+      "save": "evasion",
+      "element": "fire",
+      "effect": { "kind": "damage", "dice": { "count": 1, "sides": 10, "modifier": 0 } }
+    }
+  ]
+}

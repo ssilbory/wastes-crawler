@@ -228,8 +228,12 @@ describe('hidden sites (Sam’s calls: Explore)', () => {
       at: { x: number; y: number };
     };
     place(w, last.id, vault.at.x, vault.at.y, 'n');
-    w.beaten.push(`${id}/${last.id}/${vault.at.x},${vault.at.y}`);
+    const key = `${id}/${last.id}/${vault.at.x},${vault.at.y}`;
+    w.beaten.push(key);
     emit(w, d, { kind: 'cell-entered' });
+    // It is locked (Locks and chests) and empties the ruin once opened.
+    expect(w.ruins[ruin?.id as string]?.emptied).toBeNull();
+    emit(w, d, { kind: 'chest-opened', cache: key });
     expect(w.ruins[ruin?.id as string]?.emptied).toBe(w.day);
     expect(levelOf(d, id, last.id).level.id).toBe(last.id);
     // A save inside it loads back where it was.

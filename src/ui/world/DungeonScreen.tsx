@@ -26,6 +26,7 @@ import { CompanionsPanel } from './CompanionsPanel.tsx';
 import { FormsPanel } from './FormsPanel.tsx';
 import { ConjunctPanel } from './ConjunctPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
+import { ChestPanel } from './ChestPanel.tsx';
 import { PactPanel } from './PactPanel.tsx';
 import { SorceryPanel } from './SorceryPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
@@ -271,6 +272,7 @@ export function DungeonScreen(props: {
             <CampPanel world={w} onChange={props.onChange} />
           )}
           {/* Quests, then the panels of powers (Sam's call: one column); the party is in the bar. */}
+          <ChestPanel world={w} onChange={props.onChange} />
           <QuestLog world={w} onChange={props.onChange} />
           <NpcPanel world={w} onChange={props.onChange} />
           <CompanionsPanel world={w} onChange={props.onChange} />

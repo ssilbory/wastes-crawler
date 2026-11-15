@@ -17,6 +17,8 @@ export function equipmentReferenceErrors(srd: SrdData, content: ContentData): st
     if (items.has(s.id)) errors.push(`shields/${s.id}: clashes with another item id`);
   }
   const all = new Set([...items, ...content.shields.map((s) => s.id)]);
+  for (const id of [content.chests.tools.item, content.chests.crowbar.item])
+    if (!items.has(id)) errors.push(`chests: unknown item ${id}`);
   for (const p of content.startingPackages) {
     for (const i of p.items) {
       if (!all.has(i.id)) errors.push(`startingPackages/${p.id}: unknown item ${i.id}`);

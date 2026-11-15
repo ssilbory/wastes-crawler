@@ -88,9 +88,20 @@ function wound(w: World, data: GameData, m: Member, amount: number): void {
 function spring(w: World, data: GameData, trap: Trap): void {
   note(w, `The ${trap.name} springs!`);
   mark(w, trap.at, 'noticed');
+  trapHarm(w, data, trap);
+}
+
+/** What a trap needs to do its harm, on a floor or on a chest. */
+export type TrapHarm = Pick<Trap, 'name' | 'save' | 'element' | 'effect'>;
+
+/**
+ * A sprung trap's harm: an alarm calls the level's wanderers; otherwise each conscious PC makes
+ * its save, if it has one, or takes its effect.
+ */
+export function trapHarm(w: World, data: GameData, trap: TrapHarm): void {
   const e = trap.effect;
   if (e.kind === 'alarm') {
-    callWanderers(w, data);
+    if (w.dungeon) callWanderers(w, data);
     return;
   }
   const victims = able(w);

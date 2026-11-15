@@ -49,6 +49,7 @@ import siegeRules from '../../data/content/siege-rules.json';
 import campaign from '../../data/content/campaign.json';
 import ruins from '../../data/content/ruins.json';
 import ruinTraps from '../../data/content/ruin-traps.json';
+import chests from '../../data/content/chests.json';
 import groves from '../../data/content/groves.json';
 import warlords from '../../data/content/warlords.json';
 import projects from '../../data/content/projects.json';
@@ -137,6 +138,7 @@ export const SHIPPED_CONTENT: Record<keyof ContentData, unknown> = {
   campaign,
   ruins,
   ruinTraps,
+  chests,
   groves,
   warlords,
   projects,

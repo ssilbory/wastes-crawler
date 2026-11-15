@@ -34,6 +34,7 @@ import { HighRoadPanel } from './HighRoadPanel.tsx';
 import { PactPanel } from './PactPanel.tsx';
 import { SorceryPanel } from './SorceryPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
+import { ChestPanel } from './ChestPanel.tsx';
 import { MountsPanel } from './MountsPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { PopOut } from './PopOut.tsx';
@@ -260,6 +261,7 @@ export function MapScreen(props: {
             />
           )}
           {/* Quests, then the panels of powers and places (Sam's call: one column); the party is in the bar. */}
+          <ChestPanel world={w} onChange={props.onChange} />
           <QuestLog world={w} onChange={props.onChange} />
           <ProjectsPanel world={w} onChange={props.onChange} />
           <WorkingsPanel world={w} onChange={props.onChange} />

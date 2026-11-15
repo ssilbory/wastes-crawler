@@ -37,7 +37,9 @@ export type WorldEvent =
   /** One of the ally's held settlements freed, with or without the party's part (Phase 23e). */
   | { kind: 'town-freed'; town: string; party: boolean }
   /** A standing order ended, by countersign, token, quest, or its keeper's fall. */
-  | { kind: 'order-ended'; order: string };
+  | { kind: 'order-ended'; order: string }
+  /** A locked vault or chest holding a loot cache was opened (chests.ts). */
+  | { kind: 'chest-opened'; cache: string };
 
 export type Listener = (w: World, data: GameData, e: WorldEvent) => void;
 

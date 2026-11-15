@@ -49,6 +49,7 @@ import { ArenaCardSchema, CoachRouteSchema, CoachRulesSchema } from './travel-co
 import { MissionGiverSchema, QuestSchema } from './quest-content.ts';
 import { AuthoredMonsterSchema, SettingMonsterSchema } from './monsters.ts';
 import { DungeonSchema, RuinTrapSchema } from './dungeon-content.ts';
+import { ChestRulesSchema } from './chest-content.ts';
 import { MapGenSchema } from './map-gen-content.ts';
 import { FactionContentSchema } from './faction-content.ts';
 
@@ -226,6 +227,8 @@ export const ContentSchemas = {
   ruins: z.array(RuinSchema),
   /** The kinds of trap the ruin generators draw from. */
   ruinTraps: z.array(RuinTrapSchema).min(1),
+  /** Locked, trapped vaults and boss chests. */
+  chests: ChestRulesSchema,
   groves: z.array(GroveSchema),
   warlords: WarlordContentSchema,
   /** Major projects, institutions, recruits, and Workings (Phase 22). */

@@ -9,8 +9,9 @@ import { LootDiceSchema, ShopStateSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
 import { ComponentTypeSchema } from './crafting-content.ts';
 import { SiegeFightSchema, SiegeSchema } from './siege-state.ts';
+import { ChestStateSchema } from './chest-state.ts';
 
-export const WORLD_SCHEMA_VERSION = 55;
+export const WORLD_SCHEMA_VERSION = 56;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -478,6 +479,8 @@ export const WorldSaveSchema = z.strictObject({
   ),
   /** Loot caches taken, by dungeon, level, and cell. */
   caches: z.array(z.string()),
+  /** Locked vaults and boss chests not yet opened (docs/rules-adaptation.md, Locks and chests). */
+  chests: z.array(ChestStateSchema),
   /** Hidden sites: the seed that places them, and those found and used up, by "<region>:<hex>". */
   sites: z.strictObject({
     seed: z.int().min(1),

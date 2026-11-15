@@ -2,7 +2,8 @@
 // from the world's RNG the first time the party goes down, and the generated dungeon must pass the
 // same level validation as hand-made ones (ADR 0004) or the next seed is tried. Loot caches are
 // taken once; a vault's guards must be beaten first. Thirty days after its vault is emptied, the
-// ruin shifts: the next visit draws a new seed.
+// ruin shifts: the next visit draws a new seed. A vault, and a hoard whose guards fall, is locked
+// and trapped (world/chests.ts) and pays out when opened.
 import { dungeonReferenceErrors } from '../../data/dungeon-check.ts';
 import type { Dungeon, Ruin, Special } from '../../data/schemas/index.ts';
 import { hexKey } from '../../rules/hex.ts';
@@ -13,6 +14,7 @@ import { note } from '../world/members.ts';
 import { foundRuinHere } from '../world/hidden-sites.ts';
 import { endOrder, orderEnded } from '../world/orders.ts';
 import { accrueShares } from '../world/npcs.ts';
+import { lockCache } from '../world/chests.ts';
 import { addLoot } from '../world/shop.ts';
 import { pickUp } from '../world/party-load.ts';
 import type { World } from '../world/types.ts';
@@ -59,7 +61,11 @@ export function openRuin(w: World, data: GameData, ruin: Ruin): Dungeon {
   const month = data.content.overlandRules.daysPerMonth;
   if (rec && (rec.emptied === null || w.day - rec.emptied < month))
     return generateRuin(ruin, rec.seed, data.content.ruinTraps);
-  if (rec) note(w, `${ruin.name} has shifted: old passages are choked, and new ones open.`);
+  if (rec) {
+    note(w, `${ruin.name} has shifted: old passages are choked, and new ones open.`);
+    // Chests left unopened are lost with the old passages.
+    w.chests = w.chests.filter((c) => !c.at.startsWith(`${ruin.id}-v`));
+  }
   let seed = w.rng.int(1, MAX_SEED);
   let d = generateRuin(ruin, seed, data.content.ruinTraps);
   // ADR 0004: only a layout that passes the level validation is entered.
@@ -93,8 +99,30 @@ export function atGuardedHoard(w: World, data: GameData): boolean {
   return !!found?.cache.guards && !w.beaten.includes(found.key);
 }
 
+/** The cache at a key, by dungeon, level, and cell. */
+function cacheAt(data: GameData, key: string): Cache | undefined {
+  const [dungeon, level, cell] = key.split('/') as [string, string, string];
+  const [x, y] = cell.split(',').map(Number);
+  return levelOf(data, dungeon, level).level.specials.find(
+    (c): c is Cache => c.kind === 'cache' && c.at.x === x && c.at.y === y,
+  );
+}
+
+/**
+ * A vault, or a hoard whose guards fell, is locked (chests.ts): it counts as taken now, and pays
+ * out when its lock is opened.
+ */
+function lock(w: World, data: GameData, key: string, cache: Cache): void {
+  w.caches.push(key);
+  lockCache(w, data, key, cache.vault === true, cache.guards ?? []);
+}
+
 function take(w: World, data: GameData, key: string, cache: Cache): void {
   w.caches.push(key);
+  payOut(w, data, key, cache);
+}
+
+function payOut(w: World, data: GameData, key: string, cache: Cache): void {
   const dice = cache.loot.map((d) => `${d.count}d${d.sides}`).join(' + ');
   note(w, `${cache.vault ? 'The vault holds' : 'A cache holds'} ${dice} of loot.`);
   const kept = pickUp(w, data, () => {
@@ -118,6 +146,11 @@ function take(w: World, data: GameData, key: string, cache: Cache): void {
  * ends the order (Sam's call: the Warden).
  */
 export function ruinsListener(w: World, data: GameData, e: WorldEvent): void {
+  if (e.kind === 'chest-opened') {
+    const cache = cacheAt(data, e.cache);
+    if (cache) payOut(w, data, e.cache, cache);
+    return;
+  }
   if (e.kind !== 'cell-entered' && e.kind !== 'fight-won' && e.kind !== 'order-ended') return;
   const found = cacheHere(w, data);
   if (!found) return;
@@ -128,7 +161,8 @@ export function ruinsListener(w: World, data: GameData, e: WorldEvent): void {
       note(w, 'The guards step aside from the hoard.');
       w.encounter = null;
     }
-    take(w, data, key, cache);
+    if (cache.vault) lock(w, data, key, cache);
+    else take(w, data, key, cache);
     return;
   }
   if (w.encounter) return;
@@ -155,6 +189,8 @@ export function ruinsListener(w: World, data: GameData, e: WorldEvent): void {
     }
     return;
   }
-  take(w, data, key, cache);
+  // Sam's call: vaults are locked and trapped, and a beaten boss's hoard goes into its chest.
+  if (cache.vault || e.kind === 'fight-won') lock(w, data, key, cache);
+  else take(w, data, key, cache);
   if (e.kind === 'fight-won' && cache.order) endOrder(w, data, cache.order);
 }

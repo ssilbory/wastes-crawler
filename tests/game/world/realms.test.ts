@@ -155,6 +155,9 @@ describe('realms (Sam’s call)', () => {
     emit(w, data, { kind: 'fight-won', quest: null, garrison: key });
     expect(w.beaten).toContain(key);
     expect(atGuardedHoard(w, data)).toBe(false);
+    // The beaten boss's hoard is locked in its chest until opened (Locks and chests).
+    expect(w.loot).toEqual([]);
+    emit(w, data, { kind: 'chest-opened', cache: key });
     expect(w.loot).toEqual(hoard.loot);
     expect(w.log.join('\n')).toContain('A cache holds');
   });

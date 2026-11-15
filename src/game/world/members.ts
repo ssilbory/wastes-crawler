@@ -81,6 +81,7 @@ export function memberCheck(
   attrs: Attribute[],
   difficulty: number,
   steps = 0,
+  modifier = 0,
 ): CheckResult {
   const mods = memberSheet(data, m).modifiers;
   return skillCheck(w.rng, {
@@ -88,6 +89,7 @@ export function memberCheck(
     attributeModifier:
       Math.max(...attrs.map((a) => mods[a])) + keen(data, m, skill) - ailPenalty(data, m),
     difficulty,
+    modifier,
     steps: m.character.strain.broken ? steps - 1 : steps,
   });
 }
