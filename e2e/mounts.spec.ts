@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { inWindow } from './windows.ts';
 
 // Mounts (docs/rules-adaptation.md, Mounts): bought at the stable, ridden, and loaded in the shop;
 // the rules behind them are covered by unit tests.
@@ -51,7 +52,5 @@ test('buys a riding goat, puts Snag on it, and loads it', async ({ page }, testI
   await expect(page.getByRole('region', { name: "Riding Goat's load" })).toContainText(item);
 
   await page.getByRole('button', { name: 'Back to the map' }).click();
-  await expect(page.getByRole('region', { name: 'Mounts', exact: true })).toContainText(
-    'Riding Goat',
-  );
+  await inWindow(page, 'Mounts', (panel) => expect(panel).toContainText('Riding Goat'));
 });

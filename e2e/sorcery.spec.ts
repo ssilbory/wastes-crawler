@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { openWindow } from './windows.ts';
 
 // High Magic outside fights (docs/rules-adaptation.md, High Magic outside fights): a High Mage takes
 // the seeming of the bound and calls the palanquin overland, speaks the Imputation to a group met,
@@ -55,7 +56,7 @@ test('casts High Magic outside fights, above ground and below', async ({ page })
      save.position = { col: 5, row: 10 };
      save.visited.push('4,9', '5,10');`,
   );
-  const panel = page.getByRole('region', { name: 'High Magic' });
+  const panel = await openWindow(page, 'High Magic');
   const log = page.getByRole('region', { name: 'Journey log' });
   await panel.getByRole('button', { name: 'Take the seeming of the bound' }).click();
   await expect(panel).toContainText('The party wears the seeming of the bound until dawn.');
@@ -83,12 +84,14 @@ test('casts High Magic outside fights, above ground and below', async ({ page })
   await edit(page, `${fresh} save.encounter = null;`);
   await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
   await edit(page, `${fresh} save.dungeon.at = { x: 0, y: 4 }; save.dungeon.facing = 'e';`);
-  await panel.getByRole('button', { name: 'Dissolve the stone ahead (1 turn)' }).click();
+  // Underground the panel is in the dock.
+  const below = page.getByRole('region', { name: 'High Magic' });
+  await below.getByRole('button', { name: 'Dissolve the stone ahead (1 turn)' }).click();
   await expect(log).toContainText('Fizzwick speaks the decree');
-  await panel.getByRole('button', { name: 'Open arcane sight' }).click();
+  await below.getByRole('button', { name: 'Open arcane sight' }).click();
   await expect(log).toContainText('No working of magic shows on this level.');
-  await expect(panel).toContainText('Arcane sight lights the dark.');
-  await panel.getByRole('button', { name: 'Open a rift to the way out (1,8)' }).click();
+  await expect(below).toContainText('Arcane sight lights the dark.');
+  await below.getByRole('button', { name: 'Open a rift to the way out (1,8)' }).click();
   await expect(log).toContainText('Fizzwick tears open a pale rift');
   await expect(page.getByRole('button', { name: 'Climb out of The Old Barrow' })).toBeVisible();
 });
@@ -117,7 +120,7 @@ test('seals a pact and brings down a garrison post with the Elementalist', async
      fizz.classes = { current: 'full-elementalist', levels: { 'full-elementalist': 9 } };
      fizz.spells = { known: ${JSON.stringify(spells)}, prepared: ${JSON.stringify(spells)} };`,
   );
-  const pact = page.getByRole('region', { name: 'Pact of Stone and Sea' });
+  const pact = await openWindow(page, 'Pact of Stone and Sea');
   await pact.getByRole('combobox', { name: 'Pact' }).selectOption({ label: 'Snag' });
   await pact.getByRole('combobox', { name: 'with' }).selectOption('earth');
   await pact.getByRole('button', { name: 'Fizzwick: seal the pact' }).click();

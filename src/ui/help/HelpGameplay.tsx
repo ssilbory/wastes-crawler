@@ -71,9 +71,9 @@ export function HelpGameplay() {
 
       <h3>Riding</h3>
       <p>
-        Buy a mount on a town's Stable tab, then pick its rider in the Mounts panel, in town or on
-        the map. Each PC rides one mount; a Riding Goat carries only Goblins and Gnomes, and
-        centaurs never ride. A mount carries less gear with a rider, and can't take one while it
+        Buy a mount on a town's Stable tab, then pick its rider in the Mounts panel, in town or from
+        the map's ☰ menu. Each PC rides one mount; a Riding Goat carries only Goblins and Gnomes,
+        and centaurs never ride. A mount carries less gear with a rider, and can't take one while it
         carries more than that. Mounts don't travel faster, but a party that all rides gets +2 to
         slip away from a group it spots. Mounts wait at a dungeon's entrance. A War Boar fights from
         its rider's slot once the rider calms it (Cha/Ride against 8); the Rider focus skips the

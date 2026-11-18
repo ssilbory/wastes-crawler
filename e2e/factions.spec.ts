@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { closeWindow, inWindow, openWindow } from './windows.ts';
 
 // Phase 13: the Dark Lands' factions take a turn as each month begins; the party hears of them in
 // the Factions panel and the journal. Since Phase 23a a faction's attack on a settlement lays siege
@@ -57,18 +58,22 @@ test('follows the factions month by month, and hears of a Bastion siege', async 
       visited: ['6,12'], position: { col: 6, row: 12 }, day: 29, purse: 100 });`,
   );
 
-  const factions = page.getByRole('region', { name: 'Factions' });
+  const factions = await openWindow(page, 'Factions');
   await expect(factions.locator('summary')).toHaveCount(4);
   await factions.getByText("Grisk's Warhost").click();
   await expect(factions).toContainText(
     "Grisk's Hold: Base of Influence (20 of 20), Beastman Warband (6 of 6)",
   );
 
+  await closeWindow(page);
+
   // A night at the inn ends day 30, and the month turns.
   await nightAtTheInn(page);
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText('Word spreads:');
+  await openWindow(page, 'Factions');
   await expect(factions).toContainText('Goal: Blood the Enemy');
   await page.screenshot({ path: testInfo.outputPath('factions.png'), fullPage: true });
+  await closeWindow(page);
 
   // The Bastion's raiders stand in Cinderhold when the next month turns.
   await edit(
@@ -80,8 +85,10 @@ test('follows the factions month by month, and hears of a Bastion siege', async 
   );
   await nightAtTheInn(page);
   // The party is inside, so it is in the siege, and the assault comes the next night.
-  await expect(page.getByRole('region', { name: 'Orders and sieges' })).toContainText(
-    'The Dawnwall Bastion besieges Cinderhold, held by The Free Settlements, with 1 camp: the next assault comes at the end of day 61. The party has fought in it.',
+  await inWindow(page, 'Orders and sieges', (orders) =>
+    expect(orders).toContainText(
+      'The Dawnwall Bastion besieges Cinderhold, held by The Free Settlements, with 1 camp: the next assault comes at the end of day 61. The party has fought in it.',
+    ),
   );
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
     'The Dawnwall Bastion lays siege to Cinderhold, held by The Free Settlements. The assault comes tonight.',

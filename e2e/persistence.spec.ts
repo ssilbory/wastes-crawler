@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
+import { openWindow } from './windows.ts';
 
 // Phase 11a: save slots, full saves, and the Phase 11 exit: save mid-dungeon, reload, and play on
 // with identical state, the RNG included.
@@ -54,8 +55,8 @@ test('keeps worlds in three slots', async ({ page }) => {
 test('exports a full save and loads it back, roster and all', async ({ page }, testInfo) => {
   await begin(page, 'bundle-e2e');
   const download = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'More' }).click();
-  await page.getByRole('button', { name: 'Export save' }).click();
+  const save = await openWindow(page, 'Save');
+  await save.getByRole('button', { name: 'Export save' }).click();
   const file = testInfo.outputPath('wastes-crawler-save.json');
   await (await download).saveAs(file);
   expect(JSON.parse(readFileSync(file, 'utf8'))).toMatchObject({ kind: 'wastes-crawler-save' });

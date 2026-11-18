@@ -8,41 +8,21 @@ import { hexKey } from '../../rules/hex.ts';
 import { hexCells, mapPixels } from '../../render/hex-view.ts';
 import { crowns, lootText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
-import { ConfirmButton } from '../confirm.tsx';
 import { HEX_SIZE, HexMap } from './HexMap.tsx';
 import { ZoomFrame } from './ZoomFrame.tsx';
 import { knownBounds } from '../../render/map-zoom.ts';
 import { dayTint } from '../../render/hex-art.ts';
 import { PartyPanel } from './PartyPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
-import { FactionsPanel } from './FactionsPanel.tsx';
-import { WarlordsPanel } from './WarlordsPanel.tsx';
-import { ProjectsPanel } from './ProjectsPanel.tsx';
-import { WorkingsPanel } from './WorkingsPanel.tsx';
-import { SettingPanel } from './SettingPanel.tsx';
-import { HealerPanel, RevivePopOut, useReviveAsk } from './HealerPanel.tsx';
+import { RevivePopOut, useReviveAsk } from './HealerPanel.tsx';
+import { MapWindows } from './MapWindows.tsx';
 import { SurrenderPopOut, surrenderOpen } from './SurrenderPanel.tsx';
-import { PurgePanel } from './PurgePanel.tsx';
-import { AntidotePanel } from './AntidotePanel.tsx';
-import { PotionPanel } from './PotionPanel.tsx';
-import { ScrollPanel } from './ScrollPanel.tsx';
-import { GreenwoodPanel } from './GreenwoodPanel.tsx';
-import { CompanionsPanel } from './CompanionsPanel.tsx';
-import { FormsPanel } from './FormsPanel.tsx';
-import { ConjunctPanel } from './ConjunctPanel.tsx';
-import { HighRoadPanel } from './HighRoadPanel.tsx';
-import { PactPanel } from './PactPanel.tsx';
-import { SorceryPanel } from './SorceryPanel.tsx';
-import { NecromancyPanel } from './NecromancyPanel.tsx';
 import { LockPopOut } from './LockPopOut.tsx';
-import { MountsPanel } from './MountsPanel.tsx';
-import { NpcPanel } from './NpcPanel.tsx';
 import { PopOut } from './PopOut.tsx';
-import { BarMore } from './BarMore.tsx';
 import { useKeys } from '../keys.ts';
 import { KeyHelp } from './KeyHelp.tsx';
 import { MAP_KEYS } from '../../render/key-help.ts';
-import { openQuests, QuestLog } from './QuestLog.tsx';
+import { openQuests } from './QuestLog.tsx';
 import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
 import { JournalPanel } from './JournalPanel.tsx';
 import { captiveHomes, questTargets, revealedHexes } from '../../render/quest-view.ts';
@@ -72,6 +52,8 @@ export function MapScreen(props: {
   onCross: () => void;
   onExport: () => void;
   onAbandon: () => void;
+  /** Back to the Overland's start screen. */
+  onStart: () => void;
 }) {
   const w = props.world;
   // Asks about reviving the fallen before the party moves on (Sam's call).
@@ -195,14 +177,6 @@ export function MapScreen(props: {
           )}
           <PartyButtons onOpen={props.onOpen} />
           <KeyHelp rows={MAP_KEYS} />
-          <BarMore>
-            <button type="button" class="secondary" onClick={props.onExport}>
-              Export save
-            </button>
-            <ConfirmButton class="secondary" confirm="Delete the save" onConfirm={props.onAbandon}>
-              Abandon world
-            </ConfirmButton>
-          </BarMore>
         </span>
         <PartyPanel members={w.members} strip />
       </div>
@@ -242,6 +216,16 @@ export function MapScreen(props: {
             hidden={revive.open || surrenderOpen(w)}
             onChange={props.onChange}
           />
+          {/* Everything but the quarter's plan is a window from the ☰ menu (Sam's call). */}
+          <MapWindows
+            world={w}
+            inTown={town !== undefined}
+            reviving={revive.open}
+            onChange={props.onChange}
+            onExport={props.onExport}
+            onAbandon={props.onAbandon}
+            onStart={props.onStart}
+          />
         </div>
         <div class="dock">
           {w.encounter || revive.open || surrenderOpen(w) ? null : w.coach ? (
@@ -265,28 +249,6 @@ export function MapScreen(props: {
               spacePlays={targeted}
             />
           )}
-          {/* Quests, then the panels of powers and places (Sam's call: one column); the party is in the bar. */}
-          <QuestLog world={w} onChange={props.onChange} />
-          <ProjectsPanel world={w} onChange={props.onChange} />
-          <WorkingsPanel world={w} onChange={props.onChange} />
-          <NpcPanel world={w} onChange={props.onChange} />
-          <MountsPanel world={w} onChange={props.onChange} />
-          <CompanionsPanel world={w} onChange={props.onChange} />
-          <SettingPanel world={w} inTown={town !== undefined} onChange={props.onChange} />
-          <NecromancyPanel world={w} onChange={props.onChange} />
-          <GreenwoodPanel world={w} onChange={props.onChange} />
-          <FormsPanel world={w} onChange={props.onChange} />
-          <ConjunctPanel world={w} onChange={props.onChange} />
-          <HighRoadPanel world={w} onChange={props.onChange} />
-          <SorceryPanel world={w} onChange={props.onChange} />
-          <PactPanel world={w} onChange={props.onChange} />
-          {!revive.open && <HealerPanel world={w} onChange={props.onChange} />}
-          <PurgePanel world={w} onChange={props.onChange} />
-          <AntidotePanel world={w} onChange={props.onChange} />
-          <PotionPanel world={w} onChange={props.onChange} />
-          <ScrollPanel world={w} onChange={props.onChange} />
-          <FactionsPanel world={w} />
-          <WarlordsPanel world={w} />
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { openWindow } from './windows.ts';
 
 // Phase 14d: a Priest of Death revives a member slain in the fight just won, who lies unconscious.
 const starters = ['snag', 'fizzwick'].map((n) => `tools/sim/parties/starter/${n}.json`);
@@ -66,7 +67,7 @@ test('revives the fallen right after the fight', async ({ page }, testInfo) => {
   );
 });
 
-test('lets the party wave the revive popup away, still offering it in the dock', async ({
+test('lets the party wave the revive popup away, still offering it in the menu', async ({
   page,
 }) => {
   await begin(page);
@@ -86,7 +87,7 @@ test('lets the party wave the revive popup away, still offering it in the dock',
   await expect(ask).toContainText('Once the party moves on, Snag is gone for good.');
   await ask.getByRole('button', { name: 'Not now' }).click();
   await expect(ask).toHaveCount(0);
-  const panel = page.getByRole('region', { name: 'Revive the Fallen' });
+  const panel = await openWindow(page, 'Revive the Fallen');
   await expect(panel).toContainText('Fizzwick: 2 Effort left today');
   await expect(panel.getByRole('button', { name: 'Not now' })).toHaveCount(0);
   await panel.getByRole('button', { name: 'Revive Snag' }).click();
@@ -110,10 +111,11 @@ test('says why a Healer without Effort cannot revive, and does not ask', async (
      snag.character.hp.current = 0;
      save.fallen = { at: save.region + '/' + save.position.col + ',' + save.position.row, members: [snag.id] };`,
   );
-  const panel = page.getByRole('region', { name: 'Revive the Fallen' });
+  // No question pops up; the window is there for the asking.
+  await expect(page.getByRole('dialog', { name: 'Revive the Fallen' })).toHaveCount(0);
+  const panel = await openWindow(page, 'Revive the Fallen');
   await expect(panel).toContainText('Fizzwick has no Effort left today.');
   await expect(panel.getByRole('button', { name: 'Revive Snag' })).toBeDisabled();
-  await expect(page.getByRole('dialog', { name: 'Revive the Fallen' })).toHaveCount(0);
 });
 
 test('purges an ally of Frailty, spending Effort win or lose', async ({ page }) => {
@@ -128,14 +130,14 @@ test('purges an ally of Frailty, spending Effort win or lose', async ({ page }) 
      fizz.arts = ['healing-touch', 'purge-ailment'];
      save.members.find((m) => m.character.name === 'Snag').frail = true;`,
   );
-  const panel = page.getByRole('region', { name: 'Purge Ailment' });
+  const panel = await openWindow(page, 'Purge Ailment');
   await expect(panel).toContainText('Fizzwick: 2 Effort left today');
   await panel.getByRole('button', { name: 'Purge Snag' }).click();
   const log = page.getByRole('region', { name: 'Journey log' });
   await expect(log).toContainText(
     /Fizzwick (purges Snag's Frailty|tends Snag, but the Frailty holds)\./,
   );
-  // Either way the panel closes: a cure leaves no one to tend, and a Healer gets one try at each
+  // Either way the window closes: a cure leaves no one to tend, and a Healer gets one try at each
   // Frailty (docs/rules-adaptation.md, Purge Ailment).
   await expect(panel).toHaveCount(0);
   const party = page.getByRole('region', { name: 'Party' });
@@ -143,7 +145,7 @@ test('purges an ally of Frailty, spending Effort win or lose', async ({ page }) 
     await expect(party).not.toContainText('Frail');
   else await expect(party).toContainText('Frail');
   // The Effort and Snag's 1 System Strain are spent win or lose.
-  await expect(party).toContainText('Strain 1/');
+  await expect(party).toContainText('Str 1/');
   const spent = await page.evaluate((key) => {
     const save = JSON.parse(localStorage.getItem(key) as string);
     return save.members.find(

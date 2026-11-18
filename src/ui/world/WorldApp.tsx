@@ -320,6 +320,7 @@ function WorldScreens(props: {
       onOpen={openFrom('map')}
       onLeave={leave}
       onExport={exportSave}
+      onStart={() => setScreen('start')}
       onAbandon={() => {
         saveWorldText(null);
         setSaves((n) => n + 1);

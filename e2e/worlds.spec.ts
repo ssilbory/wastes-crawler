@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { inWindow } from './windows.ts';
 
 // Worlds on custom maps (Sam's calls): create a new world on the Overland start screen, or pick a
 // map saved in the map editor, and play on it without the campaign's story. The shipped realms
@@ -116,8 +117,10 @@ test('plays the Wastes, a shipped realm of five maps', async ({ page }) => {
   await expect(intro).toContainText('shuts its gates to you');
   await intro.getByRole('button', { name: 'Begin the journey' }).click();
   await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
-  await expect(page.getByRole('region', { name: 'Warlords' })).toContainText(
-    "The Scrap King, The Dust Fringe: holds The Scrap King's Pumpworks",
+  await inWindow(page, 'Warlords', (warlords) =>
+    expect(warlords).toContainText(
+      "The Scrap King, The Dust Fringe: holds The Scrap King's Pumpworks",
+    ),
   );
   await page.reload();
   await expect(page.getByText(/Slot 1: .* · The Wastes · Dustwell · /)).toBeVisible();

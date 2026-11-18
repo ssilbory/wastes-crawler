@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { inWindow } from './windows.ts';
 
 // Presentation V2: the overland map as an inked chart, with fog over the unknown and the light of
 // the hour. The screenshots pin the art; the map's rules are covered by unit tests.
@@ -148,7 +149,7 @@ test('zooms in on the party, scrolls, and fits the whole map again', async ({ pa
 
 // Sam's call: the side column folds into the dock, so a quest takes no width from the map; with no
 // quest under way, the quarter's plan says where to find one.
-test('keeps quests in the one dock beside the map', async ({ page }) => {
+test('keeps quests in a window, with the one dock beside the map', async ({ page }) => {
   await startWorld(page);
   const map = page.getByRole('group', { name: 'Overland map' });
   const plan = page.getByRole('region', { name: 'Quarter plan' });
@@ -162,9 +163,9 @@ test('keeps quests in the one dock beside the map', async ({ page }) => {
   }, WORLD_KEY);
   await page.reload();
   await page.getByRole('button', { name: 'Continue journey' }).click();
-  await expect(page.locator('.dock').getByRole('region', { name: 'Quests' })).toContainText(
-    'The Raider Camp',
-  );
+  await inWindow(page, 'Quests', (quests) => expect(quests).toContainText('The Raider Camp'));
+  // The dock holds the quarter's plan alone.
+  await expect(page.locator('.dock').getByRole('region')).toHaveCount(1);
   await expect(plan).not.toContainText('No quests under way.');
   await expect(page.locator('.world-main > .dock')).toHaveCount(1);
   await fit(page);

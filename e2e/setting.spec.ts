@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { inWindow } from './windows.ts';
 
 // Phase 12b: a bound garrison stands down for its countersign and offers a recruit; since Phase
 // 23a, a siege's assault falls on a Dark Lands settlement while the party stays the night.
@@ -67,16 +68,17 @@ test('gives a garrison its countersign, and takes on the guard it offers', async
   await expect(panel.getByRole('group', { name: 'Standing order' })).toContainText(
     'Hold the Ruinfield Gate',
   );
-  await expect(page.getByRole('region', { name: 'Orders and sieges' })).toContainText(
-    '"The ash remembers"',
+  // The countersign can be looked up with the garrison at the gate.
+  await inWindow(page, 'Orders and sieges', (orders) =>
+    expect(orders).toContainText('"The ash remembers"'),
   );
   await page.screenshot({ path: testInfo.outputPath('garrison.png'), fullPage: true });
   await panel.getByRole('button', { name: 'Give the countersign' }).click();
   await expect(panel.getByRole('button', { name: 'Let them pass' })).toBeVisible();
   await panel.getByRole('button', { name: 'Take them on' }).click();
-  await expect(page.getByRole('region', { name: 'NPCs' })).toContainText('Guard');
+  await inWindow(page, 'NPCs', (npcs) => expect(npcs).toContainText('Guard'));
   await panel.getByRole('button', { name: 'Let them pass' }).click();
-  await expect(page.getByRole('region', { name: 'Orders and sieges' })).toContainText('(ended)');
+  await inWindow(page, 'Orders and sieges', (orders) => expect(orders).toContainText('(ended)'));
 });
 
 async function nightAtTheInn(page: Page) {
@@ -121,8 +123,10 @@ test('fights its share of an assault on Cinderhold after a night at the inn', as
       },
     ];
   });
-  await expect(page.getByRole('region', { name: 'Orders and sieges' })).toContainText(
-    "Grisk's Warhost besieges Cinderhold, held by The Free Settlements, with 1 camp",
+  await inWindow(page, 'Orders and sieges', (orders) =>
+    expect(orders).toContainText(
+      "Grisk's Warhost besieges Cinderhold, held by The Free Settlements, with 1 camp",
+    ),
   );
   await nightAtTheInn(page);
   const alarm = page.getByRole('alert');

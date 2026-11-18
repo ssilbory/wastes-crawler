@@ -4,7 +4,9 @@
   position: fixed;
   top: 12px;
   left: 14px;
-  z-index: 20;
+  /* Over a pop-out on the stage (popups.css, 20), so its list can be reached with an encounter up;
+     under a window opened from it (map-window.css, 30). */
+  z-index: 25;
 }
 
 .app-menu-button {
@@ -29,9 +31,13 @@
   box-shadow:
     var(--bevel-out),
     0 8px 24px rgb(0 0 0 / 60%);
+  /* A screen's own menu (the overland map's windows) can run long; it scrolls inside itself. */
+  max-height: calc(100dvh - 66px);
+  overflow-y: auto;
 }
 
 .app-menu-list a,
+.app-menu-list .app-menu-pick,
 .app-menu-list .app-menu-item {
   padding: 4px 10px;
   color: var(--ink);
@@ -53,6 +59,7 @@
 }
 
 .app-menu-list a:hover,
+.app-menu-list .app-menu-pick:hover,
 .app-menu-list .app-menu-item:hover {
   background: var(--panel-raised);
   color: var(--accent-hi);
@@ -64,4 +71,18 @@
 
 .app-menu-list a[aria-current='page']::before {
   content: '▸ ';
+}
+
+/* A screen's own items are buttons that read like the links. */
+.app-menu-list .app-menu-pick {
+  text-align: left;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+
+.app-menu-list .app-menu-pick.ruled {
+  margin-top: 4px;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
 }

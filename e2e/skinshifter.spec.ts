@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { openStep } from './wizard.ts';
+import { openWindow } from './windows.ts';
 
 // The Skinshifter (1.5.15): a first form built in the builder, and Change Form on the map.
 const WORLD_KEY = 'wastes-crawler.world';
@@ -103,7 +104,7 @@ test('changes form on the map for Effort, and goes back for free', async ({ page
   }, WORLD_KEY);
   await page.reload();
   await page.getByRole('button', { name: 'Continue journey' }).click();
-  const panel = page.getByRole('region', { name: 'Forms' });
+  const panel = await openWindow(page, 'Forms');
   const snag = panel.getByRole('group', { name: 'Snag' });
   await expect(snag).toContainText('Snag: own shape');
   await expect(snag.getByRole('button', { name: 'Take the Wolf form' })).toHaveAttribute(

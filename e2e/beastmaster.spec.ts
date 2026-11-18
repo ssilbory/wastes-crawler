@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { closeWindow, inWindow, openWindow } from './windows.ts';
 
 // The Beastmaster (1.5.4): binding a companion in the wilds, sending it away, and calling it back.
 const WORLD_KEY = 'wastes-crawler.world';
@@ -36,7 +37,7 @@ test('binds a companion in the wilds, sends it away, and calls it back', async (
   }, WORLD_KEY);
   await page.reload();
   await page.getByRole('button', { name: 'Continue journey' }).click();
-  const panel = page.getByRole('region', { name: 'Companions' });
+  const panel = await openWindow(page, 'Companions');
   const snag = panel.getByRole('group', { name: 'Snag' });
   await expect(snag).toContainText('Snag has no companion.');
   await snag
@@ -46,10 +47,14 @@ test('binds a companion in the wilds, sends it away, and calls it back', async (
   await snag.getByRole('button', { name: 'Bind Companion' }).click();
   await expect(snag).toContainText('Bramble, Wild Aurochs (2 HD)');
   await expect(snag).toContainText('with the party');
-  await expect(page.getByRole('region', { name: 'NPCs' })).toContainText('companion of Snag');
+  await closeWindow(page);
+  await inWindow(page, 'NPCs', (npcs) => expect(npcs).toContainText('companion of Snag'));
+  await openWindow(page, 'Companions');
   await snag.getByRole('button', { name: 'Send Bramble away' }).click();
   await expect(snag).toContainText('waiting to be called');
-  await expect(page.getByRole('region', { name: 'NPCs' })).not.toContainText('Bramble');
+  await closeWindow(page);
+  await inWindow(page, 'NPCs', (npcs) => expect(npcs).not.toContainText('Bramble'));
+  await openWindow(page, 'Companions');
   await snag.getByRole('button', { name: 'Call Bramble' }).click();
   await expect(snag).toContainText('with the party');
 });

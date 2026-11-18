@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { openWindow } from './windows.ts';
 
 // Phase 21 (docs/rules-adaptation.md, Scrolls outside fights): a scroll of a spell cast outside
 // fights is read from the dock, and the spell waits for its reader to cast it.
@@ -42,7 +43,7 @@ test('reads a scroll of Query the Skull, and the spell waits for Snag to cast it
   await page.reload();
   await page.getByRole('button', { name: 'Continue journey' }).click();
 
-  const scrolls = page.getByRole('region', { name: 'Scrolls' });
+  const scrolls = await openWindow(page, 'Scrolls');
   await scrolls.getByRole('button', { name: 'Snag: read the scroll of Query the Skull' }).click();
   await expect(scrolls).toContainText('Snag holds Query the Skull, read from a scroll');
   await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(

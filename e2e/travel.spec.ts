@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { closeWindow, openWindow } from './windows.ts';
 
 // Sam's ask: Travel on to a targeted hex, the list of keys behind `?`, and the full journey log.
 const starters = ['snag', 'grukk'].map((n) => `tools/sim/parties/starter/${n}.json`);
@@ -73,7 +74,9 @@ async function edit(page: Page, change: string) {
 test('sets course for a quest, and for the nearest town', async ({ page }) => {
   await begin(page);
   await edit(page, `save.quests['bandit-camp'] = { status: 'active', step: 0, acceptedDay: 0 };`);
-  await page.getByRole('button', { name: /^Set course for / }).click();
+  const quests = await openWindow(page, 'Quests');
+  await quests.getByRole('button', { name: /^Set course for / }).click();
+  await closeWindow(page);
   const plan = page.getByRole('region', { name: 'Quarter plan' });
   await expect(plan.getByRole('button', { name: 'Travel on' })).toBeVisible();
   await edit(page, `save.position = { col: 4, row: 8 }; save.visited.push('4,8');`);

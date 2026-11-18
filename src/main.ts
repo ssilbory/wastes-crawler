@@ -23,6 +23,7 @@ import './ui/world/hex-terrain.css';
 import './ui/world/zoom-frame.css';
 import './ui/town/town.css';
 import './ui/world/popups.css';
+import './ui/world/map-window.css';
 import './ui/theme/screens.css';
 // After the shared screen rules: the builder fits its window instead of scrolling.
 import './ui/builder/wizard.css';

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { fullscreenAvailable, toggleFullscreen, useFullscreen } from './fullscreen.ts';
+import { useScreenMenu } from './screen-menu.ts';
 
 export type Route =
   'title' | 'builder' | 'arena' | 'world' | 'editor' | 'maps' | 'settings' | 'help' | 'about';
@@ -16,11 +17,15 @@ const ROUTES: { route: Route; label: string }[] = [
   { route: 'about', label: 'About' },
 ];
 
-/** A ☰ button in the corner; the modes open in a popup instead of a bar across every page. */
+/**
+ * A ☰ button in the corner; the modes open in a popup instead of a bar across every page. A screen
+ * with a menu of its own (the overland map's windows, screen-menu.ts) shows that in their place.
+ */
 export function AppMenu(props: { route: Route }) {
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const fullscreen = useFullscreen();
+  const screen = useScreenMenu();
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -49,17 +54,31 @@ export function AppMenu(props: { route: Route }) {
         <span aria-hidden="true">☰</span>
       </button>
       {open && (
-        <nav id="app-menu-list" class="app-menu-list" aria-label="Sections">
-          {ROUTES.map((r) => (
-            <a
-              key={r.route}
-              href={`#/${r.route}`}
-              aria-current={props.route === r.route ? 'page' : undefined}
-              onClick={() => setOpen(false)}
-            >
-              {r.label}
-            </a>
-          ))}
+        <nav id="app-menu-list" class="app-menu-list" aria-label={screen ? 'Windows' : 'Sections'}>
+          {screen
+            ? screen.items.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  class={item.rule ? 'app-menu-pick ruled' : 'app-menu-pick'}
+                  onClick={() => {
+                    setOpen(false);
+                    screen.onPick(item.id);
+                  }}
+                >
+                  {item.label}
+                </button>
+              ))
+            : ROUTES.map((r) => (
+                <a
+                  key={r.route}
+                  href={`#/${r.route}`}
+                  aria-current={props.route === r.route ? 'page' : undefined}
+                  onClick={() => setOpen(false)}
+                >
+                  {r.label}
+                </a>
+              ))}
           {fullscreenAvailable() && (
             <button
               type="button"

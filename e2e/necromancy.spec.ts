@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { closeWindow, openWindow } from './windows.ts';
 
 // Phase 14b: a Necromancer raises a skeleton from the corpses of a won fight into an NPC slot,
 // then releases it.
@@ -46,12 +47,13 @@ test('raises a skeleton from the fallen and releases it', async ({ page }, testI
      save.corpses = { at: save.region + '/' + save.position.col + ',' + save.position.row, hitDice: [1, 1],
        day: save.day, queried: false };`,
   );
-  const panel = page.getByRole('region', { name: 'Necromancy' });
+  const panel = await openWindow(page, 'Necromancy');
   await expect(panel).toContainText('2 corpses lie here.');
   await expect(panel).toContainText('Fizzwick: 2 spells left today');
   await panel.getByRole('button', { name: 'Raise a skeleton' }).click();
   await expect(panel).toContainText('A corpse lies here.');
-  const npcs = page.getByRole('region', { name: 'NPCs' });
+  await closeWindow(page);
+  const npcs = await openWindow(page, 'NPCs');
   await expect(npcs).toContainText('Raised Skeleton undead, serving Fizzwick');
   await page.screenshot({ path: testInfo.outputPath('necromancy.png'), fullPage: true });
   // Parting with a follower asks first.
@@ -88,7 +90,7 @@ test('questions the dead, then reshapes a companion and lifts it', async ({ page
      save.corpses = { at: save.region + '/' + save.position.col + ',' + save.position.row, hitDice: [1],
        day: save.day, queried: false };`,
   );
-  const panel = page.getByRole('region', { name: 'Necromancy' });
+  const panel = await openWindow(page, 'Necromancy');
   await expect(panel).toContainText('Query the Skull (up to 7 questions)');
   await panel.getByRole('checkbox', { name: 'The lay of the land' }).check();
   await panel.getByRole('button', { name: 'Question the dead' }).click();
