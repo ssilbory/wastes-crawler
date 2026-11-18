@@ -83,7 +83,7 @@
     height: calc(1.365rem + 4px);
   }
 
-  /* The party's screens and More share one row; the way on (a town, a dungeon, the map) gets a
+  /* The bar's buttons share one row; the way on (a town, a dungeon, the map) gets a
      row of its own under them, as the screen's main action. */
   .world-bar .bar-actions {
     gap: 5px;
@@ -94,9 +94,9 @@
     font-size: 0.85rem;
   }
 
-  /* The overland map's ☰ menu has Characters, Formation, and Inventory (MapWindows.tsx), so the
-     bar gives their row to the map. */
-  .map-screen .bar-party {
+  /* The ☰ menu has Characters, Formation, and Inventory on the map, underground, and in a town
+     (ScreenWindows.tsx), so the bar gives their row to the view. */
+  .world-bar .bar-party {
     display: none;
   }
 

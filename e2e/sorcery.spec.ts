@@ -84,8 +84,8 @@ test('casts High Magic outside fights, above ground and below', async ({ page })
   await edit(page, `${fresh} save.encounter = null;`);
   await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
   await edit(page, `${fresh} save.dungeon.at = { x: 0, y: 4 }; save.dungeon.facing = 'e';`);
-  // Underground the panel is in the dock.
-  const below = page.getByRole('region', { name: 'High Magic' });
+  // Underground it is a window too.
+  const below = await openWindow(page, 'High Magic');
   await below.getByRole('button', { name: 'Dissolve the stone ahead (1 turn)' }).click();
   await expect(log).toContainText('Fizzwick speaks the decree');
   await below.getByRole('button', { name: 'Open arcane sight' }).click();

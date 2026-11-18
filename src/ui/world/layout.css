@@ -28,17 +28,11 @@
   box-shadow: var(--bevel-out);
 }
 
-/* The readouts' box only matters on a phone (mobile.css). The rarely used actions fold behind
-   More (BarMore.tsx), so the bar keeps to one row. */
+/* The readouts' box only matters on a phone (mobile.css), where the party's screens leave the
+   bar for the ☰ menu. */
 .bar-status,
-.bar-party,
-.bar-more,
-.bar-more-items {
+.bar-party {
   display: contents;
-}
-
-.bar-more:not(.open) > .bar-more-items {
-  display: none;
 }
 
 .world-bar > span:not(.bar-actions),

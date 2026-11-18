@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { openWindow } from './windows.ts';
 
 // Tabula Rasa (docs/rules-adaptation.md, Potions: Tabula Rasa): Snag, at 3rd level's XP, drinks
 // it and makes his 1st-level picks anew in the dialog. The rules are unit tested.
@@ -29,7 +30,7 @@ test('drinks Tabula Rasa: picks made anew, the dose gone, and the XP kept', asyn
   await page.reload();
   await page.getByRole('button', { name: 'Continue journey' }).click();
 
-  const potions = page.getByRole('region', { name: 'Potions' });
+  const potions = await openWindow(page, 'Potions');
   await potions
     .getByRole('group', { name: 'Tabula Rasa' })
     .getByRole('button', { name: 'Drink' })

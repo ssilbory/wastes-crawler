@@ -17,14 +17,14 @@ export function HelpControls() {
         Characters, Formation, and Inventory buttons sit in the bar of every game screen.
       </p>
       <p>
-        On the overland map the ☰ menu lists Characters, Formation, and Inventory (a phone's bar
-        leaves them out there) and the party's windows instead: Quests, NPCs, Mounts, Potions,
-        Scrolls, the casters' workings, Save, and the rest, each shown only while it has something
-        in it; a class's powers (a Healer's, a Necromancer's, a Beastmaster's) are listed whenever
-        the party has them. Where the dead lie and someone can question or raise them, the game asks
-        which before the party moves on. Close a window with its Close button or Escape. Return to
-        Overland start, at the foot of that menu, goes back to the start screen, where the menu
-        lists every part of the game again.
+        On the overland map, in a dungeon, and in a town the ☰ menu lists Characters, Formation,
+        and Inventory (a phone's bar leaves them out there) and the party's windows instead: Quests,
+        NPCs, Mounts, Potions, Scrolls, the casters' workings, Save, and the rest, each shown only
+        while it has something in it; a class's powers (a Healer's, a Necromancer's, a
+        Beastmaster's) are listed whenever the party has them. Where the dead lie and someone can
+        question or raise them, the game asks which before the party moves on. Close a window with
+        its Close button or Escape. Return to Overland start, at the foot of that menu, goes back to
+        the start screen, where the menu lists every part of the game again.
       </p>
 
       <h3>Overland map</h3>
@@ -95,8 +95,8 @@ export function HelpControls() {
       <h3>Saves</h3>
       <p>
         The game autosaves into the slot chosen on the start screen. Export save (in the ☰ menu's
-        Save window on the overland map, under More in the bar elsewhere) downloads the world and
-        your characters; Load a save file on the Overland start screen reads one back.
+        Save window on the map, underground, and in town) downloads the world and your characters;
+        Load a save file on the Overland start screen reads one back.
       </p>
     </details>
   );

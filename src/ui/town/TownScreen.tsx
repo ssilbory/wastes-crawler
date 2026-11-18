@@ -4,24 +4,13 @@ import type { TownResult } from '../../game/world/services.ts';
 import type { World } from '../../game/world/types.ts';
 import { crowns, lootText, tradeText } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
-import { MountsPanel } from '../world/MountsPanel.tsx';
-import { CompanionsPanel } from '../world/CompanionsPanel.tsx';
-import { NpcPanel } from '../world/NpcPanel.tsx';
-import { QuestLog } from '../world/QuestLog.tsx';
 import { PartyButtons, type PartyScreen } from '../world/PartyButtons.tsx';
 import { JournalPanel } from '../world/JournalPanel.tsx';
-import { FactionsPanel } from '../world/FactionsPanel.tsx';
-import { ProjectsPanel } from '../world/ProjectsPanel.tsx';
-import { WorkingsPanel } from '../world/WorkingsPanel.tsx';
-import { SettingPanel } from '../world/SettingPanel.tsx';
 import { raidedText } from '../../render/setting-view.ts';
 import { SidePanel } from './SidePanel.tsx';
 import { blockadeText, heldText, shutView, stormView } from '../../render/siege-view.ts';
 import { storm } from '../../game/world/storm.ts';
 import { PartyPanel } from '../world/PartyPanel.tsx';
-import { PurgePanel } from '../world/PurgePanel.tsx';
-import { AntidotePanel } from '../world/AntidotePanel.tsx';
-import { PotionPanel } from '../world/PotionPanel.tsx';
 import { QuestsTab } from './QuestsTab.tsx';
 import { ServicesTab } from './ServicesTab.tsx';
 import { ShopTab } from './ShopTab.tsx';
@@ -35,7 +24,7 @@ import { AlchemistTab } from './AlchemistTab.tsx';
 import { ArenaTab } from './ArenaTab.tsx';
 import type { BoutStart } from '../../game/world/arena.ts';
 import { PopOut } from '../world/PopOut.tsx';
-import { BarMore } from '../world/BarMore.tsx';
+import { ScreenWindows } from '../world/ScreenWindows.tsx';
 import { panelProps, Tabs } from '../tabs.tsx';
 import { townHere } from '../../game/world/town-prices.ts';
 
@@ -66,6 +55,8 @@ export function TownScreen(props: {
   onLeave: () => void;
   onOpen: (screen: PartyScreen) => void;
   onExport: () => void;
+  /** Back to the Overland's start screen. */
+  onStart: () => void;
   /** The open tab, kept by the caller so it survives a trip to the party's screens. */
   tab: Tab;
   onTab: (tab: Tab) => void;
@@ -105,12 +96,12 @@ export function TownScreen(props: {
           {tradeText(w, data) && <span class="trade">{tradeText(w, data)}</span>}
         </div>
         <span class="bar-actions">
-          {!partyless && <PartyButtons onOpen={props.onOpen} />}
-          <BarMore>
-            <button type="button" class="secondary" onClick={props.onExport}>
-              Export save
-            </button>
-          </BarMore>
+          {/* A phone finds these in the ☰ menu instead (mobile.css). */}
+          {!partyless && (
+            <span class="bar-party">
+              <PartyButtons onOpen={props.onOpen} />
+            </span>
+          )}
           {!partyless && (
             <button type="button" class="create bar-go" onClick={props.onLeave}>
               Back to the map
@@ -187,21 +178,17 @@ export function TownScreen(props: {
             </div>
           )}
           <JournalPanel world={w} lines={30} />
-        </div>
-        <div class="dock">
-          <NpcPanel world={w} onChange={props.onChange} />
-          <MountsPanel world={w} onChange={props.onChange} />
-        </div>
-        <div class="dock">
-          <QuestLog world={w} onChange={props.onChange} />
-          <ProjectsPanel world={w} onChange={props.onChange} />
-          <WorkingsPanel world={w} onChange={props.onChange} />
-          <CompanionsPanel world={w} onChange={props.onChange} />
-          <SettingPanel world={w} inTown onChange={props.onChange} />
-          <PurgePanel world={w} onChange={props.onChange} />
-          <AntidotePanel world={w} onChange={props.onChange} />
-          <PotionPanel world={w} onChange={props.onChange} />
-          <FactionsPanel world={w} />
+          {/* The party's panels are windows from the ☰ menu (Sam's call). */}
+          <ScreenWindows
+            world={w}
+            screen="town"
+            inTown
+            reviving={false}
+            onChange={props.onChange}
+            onExport={props.onExport}
+            onOpen={partyless ? undefined : props.onOpen}
+            onStart={props.onStart}
+          />
         </div>
       </div>
     </div>
