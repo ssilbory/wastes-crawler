@@ -15,6 +15,22 @@ describe('brewText', () => {
     for (const r of data.content.alchemy.recipes) expect(brewText(data, r.item)).not.toBe('');
   });
 
+  it('is empty for gear with nothing written for it', () => {
+    const alchemy = data.content.alchemy;
+    const bare = {
+      ...data,
+      content: {
+        ...data.content,
+        alchemy: {
+          ...alchemy,
+          recipes: alchemy.recipes.map((r) => ({ ...r, text: undefined })),
+        },
+      },
+    };
+    expect(brewText(bare, 'antidote')).toBe('');
+    expect(brewText(bare, 'healing-draught')).not.toBe('');
+  });
+
   it('is empty for an item that cannot be brewed', () => {
     expect(brewText(data, 'no-such-item')).toBe('');
   });

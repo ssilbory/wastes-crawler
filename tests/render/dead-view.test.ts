@@ -88,6 +88,17 @@ describe('deadOffer', () => {
   });
 });
 
+describe('deadOffer and the Grave Knight', () => {
+  it('offers a Grave Knight over a corpse of 4 hit dice', () => {
+    const w = world();
+    necromancer(w, ['raise-grave-knight'], 10);
+    leaveCorpses(w, data, [['thug-or-militia']]);
+    expect(deadOffer(w, data)).toBeNull();
+    (w.corpses as NonNullable<World['corpses']>).hitDice = [4];
+    expect(deadOffer(w, data)?.raise).toMatchObject([{ corpse: false, knight: true }]);
+  });
+});
+
 describe('cannotRaise and cannotRaiseKnight', () => {
   it('want a corpse, and a Grave Knight one of 4 hit dice', () => {
     const w = world();
@@ -132,6 +143,13 @@ describe('idleLine', () => {
       /^Fizzwick can revive .* No one has fallen here\.$/,
     );
     expect(idleLine(w, data, 'purge')).toMatch(/^Fizzwick can purge .* is ailing\.$/);
+  });
+
+  it('names every healer the party has', () => {
+    const w = world();
+    healer(w, ['healing-touch', 'purge-ailment']);
+    member(w, 'Snag').character.arts = ['purge-ailment'];
+    expect(idleLine(w, data, 'purge')).toMatch(/^(Snag and Fizzwick|Fizzwick and Snag) can purge/);
   });
 
   it('gives way to the panel once someone needs tending, and to an encounter', () => {

@@ -13,7 +13,7 @@ import { purgeView } from './purge-view.ts';
 export type IdleKind = 'revive' | 'purge' | 'conjunct';
 
 const names = (list: string[]) =>
-  list.length <= 1 ? (list[0] ?? '') : `${list.slice(0, -1).join(', ')} and ${list.at(-1)}`;
+  list.length < 2 ? list.join('') : `${list.slice(0, -1).join(', ')} and ${list.at(-1)}`;
 
 const withArt = (w: World, art: string) =>
   w.members.filter((m) => awake(m) && m.character.arts.includes(art)).map((m) => m.character.name);
