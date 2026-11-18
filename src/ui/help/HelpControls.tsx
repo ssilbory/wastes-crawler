@@ -20,9 +20,11 @@ export function HelpControls() {
         On the overland map the ☰ menu lists Characters, Formation, and Inventory (a phone's bar
         leaves them out there) and the party's windows instead: Quests, NPCs, Mounts, Potions,
         Scrolls, the casters' workings, Save, and the rest, each shown only while it has something
-        in it. Close a window with its Close button or Escape. Return to Overland start, at the foot
-        of that menu, goes back to the start screen, where the menu lists every part of the game
-        again.
+        in it; a class's powers (a Healer's, a Necromancer's, a Beastmaster's) are listed whenever
+        the party has them. Where the dead lie and someone can question or raise them, the game asks
+        which before the party moves on. Close a window with its Close button or Escape. Return to
+        Overland start, at the foot of that menu, goes back to the start screen, where the menu
+        lists every part of the game again.
       </p>
 
       <h3>Overland map</h3>

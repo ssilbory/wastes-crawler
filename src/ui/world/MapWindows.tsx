@@ -3,6 +3,8 @@ import { useCallback, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import type { World } from '../../game/world/types.ts';
 import { ConfirmButton } from '../confirm.tsx';
 import { useDialog } from '../dialog.ts';
+import { idleLine, type IdleKind } from '../../render/idle-view.ts';
+import { data } from '../builder/data.ts';
 import { useProvideScreenMenu, type MenuItem } from '../screen-menu.ts';
 import { AntidotePanel } from './AntidotePanel.tsx';
 import { CompanionsPanel } from './CompanionsPanel.tsx';
@@ -50,6 +52,21 @@ const SCREENS: { id: PartyScreen; label: string }[] = [
   { id: 'formation', label: 'Formation' },
   { id: 'inventory', label: 'Inventory' },
 ];
+
+/**
+ * A healing window with no one to tend: it stays in the menu while the party has the power, and
+ * says there is nothing to do (Sam's call).
+ */
+function Idle(props: { world: World; kind: IdleKind; label: string }) {
+  const line = idleLine(props.world, data, props.kind);
+  if (!line) return null;
+  return (
+    <section class="panel" aria-label={props.label}>
+      <h3>{props.label}</h3>
+      <p class="hint">{line}</p>
+    </section>
+  );
+}
 
 /** The map's windows, in the menu's order. Each panel shows nothing when it has nothing to say. */
 const WINDOWS: { id: string; label: string; body: (p: Props) => ComponentChildren }[] = [
@@ -102,7 +119,12 @@ const WINDOWS: { id: string; label: string; body: (p: Props) => ComponentChildre
   {
     id: 'conjunct',
     label: 'Conjunct the Vital Viscera',
-    body: (p) => <ConjunctPanel world={p.world} onChange={p.onChange} />,
+    body: (p) => (
+      <>
+        <ConjunctPanel world={p.world} onChange={p.onChange} />
+        <Idle world={p.world} kind="conjunct" label="Conjunct the Vital Viscera" />
+      </>
+    ),
   },
   {
     id: 'high-road',
@@ -122,12 +144,23 @@ const WINDOWS: { id: string; label: string; body: (p: Props) => ComponentChildre
   {
     id: 'revive',
     label: 'Revive the Fallen',
-    body: (p) => (p.reviving ? null : <HealerPanel world={p.world} onChange={p.onChange} />),
+    body: (p) =>
+      p.reviving ? null : (
+        <>
+          <HealerPanel world={p.world} onChange={p.onChange} />
+          <Idle world={p.world} kind="revive" label="Revive the Fallen" />
+        </>
+      ),
   },
   {
     id: 'purge',
     label: 'Purge Ailment',
-    body: (p) => <PurgePanel world={p.world} onChange={p.onChange} />,
+    body: (p) => (
+      <>
+        <PurgePanel world={p.world} onChange={p.onChange} />
+        <Idle world={p.world} kind="purge" label="Purge Ailment" />
+      </>
+    ),
   },
   {
     id: 'antidotes',

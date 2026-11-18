@@ -16,6 +16,7 @@ import { PartyPanel } from './PartyPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
 import { RevivePopOut, useReviveAsk } from './HealerPanel.tsx';
 import { MapWindows } from './MapWindows.tsx';
+import { DeadPopOut, useDeadAsk } from './DeadAsk.tsx';
 import { SurrenderPopOut, surrenderOpen } from './SurrenderPanel.tsx';
 import { LockPopOut } from './LockPopOut.tsx';
 import { PopOut } from './PopOut.tsx';
@@ -58,6 +59,9 @@ export function MapScreen(props: {
   const w = props.world;
   // Asks about reviving the fallen before the party moves on (Sam's call).
   const revive = useReviveAsk(w);
+  // Then about the dead, where someone can question or raise them (Sam's call).
+  const dead = useDeadAsk(w);
+  const deadOpen = dead.offer !== null && !revive.open && !surrenderOpen(w);
   const map = regionMap(data, w.region);
   const [plan, setPlan] = useState<{ version: number; plan: QuarterPlan } | null>(null);
   const current = plan?.version === props.version ? plan.plan : suggestPlan(w, data);
@@ -214,9 +218,10 @@ export function MapScreen(props: {
           {!revive.open && surrenderOpen(w) && (
             <SurrenderPopOut world={w} onChange={props.onChange} />
           )}
+          {deadOpen && <DeadPopOut world={w} ask={dead} onChange={props.onChange} />}
           <LockPopOut
             world={w}
-            hidden={revive.open || surrenderOpen(w)}
+            hidden={revive.open || surrenderOpen(w) || deadOpen}
             onChange={props.onChange}
           />
           {/* Everything but the quarter's plan is a window from the ☰ menu (Sam's call). */}
@@ -232,7 +237,7 @@ export function MapScreen(props: {
           />
         </div>
         <div class="dock">
-          {w.encounter || revive.open || surrenderOpen(w) ? null : w.coach ? (
+          {w.encounter || revive.open || surrenderOpen(w) || deadOpen ? null : w.coach ? (
             <CoachPanel world={w} onRide={props.onRide} />
           ) : (
             <QuarterPanel

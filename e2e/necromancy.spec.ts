@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { closeWindow, openWindow } from './windows.ts';
+import { closeWindow, inWindow, openWindow } from './windows.ts';
 
 // Phase 14b: a Necromancer raises a skeleton from the corpses of a won fight into an NPC slot,
 // then releases it.
@@ -106,4 +106,51 @@ test('questions the dead, then reshapes a companion and lifts it', async ({ page
   await panel.getByRole('button', { name: 'Lift the shaping from Snag' }).click();
   await expect(panel).not.toContainText('Snag is shaped');
   await expect(log).toContainText("Fizzwick lets Snag's flesh settle back into its old shape.");
+});
+
+test('asks what becomes of the dead: question them or raise them', async ({ page }) => {
+  await page.goto('/#/arena');
+  await page.getByLabel('Import character files').setInputFiles(starters);
+  await expect(page.getByRole('region', { name: 'Roster' }).getByRole('listitem')).toHaveCount(
+    starters.length,
+  );
+  await page.goto('/#/world');
+  await expect(page.getByRole('heading', { name: 'Overland', level: 1 })).toBeVisible();
+  await page.getByRole('combobox', { name: 'Front row, slot 1' }).selectOption({ label: 'Snag' });
+  await page
+    .getByRole('combobox', { name: 'Rear row, slot 1' })
+    .selectOption({ label: 'Fizzwick' });
+  await page.getByRole('textbox', { name: 'Seed (optional)' }).fill('dead-ask-e2e');
+  await page.getByRole('button', { name: 'Start a new world' }).click();
+  await page.getByRole('button', { name: 'Begin the journey' }).click();
+  const ask = page.getByRole('dialog', { name: 'The dead' });
+  await expect(ask).toHaveCount(0);
+  await edit(
+    page,
+    `const fizz = save.members.find((m) => m.character.name === 'Fizzwick').character;
+     fizz.classes = { current: 'full-necromancer', levels: { 'full-necromancer': 3 } };
+     fizz.spells = { known: ['raise-corpse', 'query-the-skull'],
+       prepared: ['raise-corpse', 'query-the-skull'] };
+     fizz.arts = ['bonetalker'];
+     save.corpses = { at: save.region + '/' + save.position.col + ',' + save.position.row, hitDice: [1, 1],
+       day: save.day, queried: false };`,
+  );
+  // It pops up over the map, holding the quarter's plan until it is answered.
+  await expect(ask).toContainText('2 corpses lie here.');
+  await expect(page.getByRole('region', { name: 'Quarter plan' })).toHaveCount(0);
+  // One or the other: nothing to do until the party picks.
+  await expect(ask.getByRole('button', { name: 'Raise a skeleton' })).toHaveCount(0);
+  await ask.getByRole('radio', { name: 'Question the dead' }).click();
+  await expect(ask).toContainText('Query the Skull (up to 3 questions)');
+  await ask.getByRole('radio', { name: 'Raise the dead' }).click();
+  await expect(ask.getByRole('button', { name: 'Question the dead' })).toHaveCount(0);
+  await ask.getByRole('button', { name: 'Raise a skeleton' }).click();
+  // Done: the popup closes, and does not come back for the same dead.
+  await expect(ask).toHaveCount(0);
+  await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
+    'Fizzwick raises a corpse',
+  );
+  await expect(page.getByRole('region', { name: 'Quarter plan' })).toBeVisible();
+  // The Necromancy window still has the rest.
+  await inWindow(page, 'Necromancy', (panel) => expect(panel).toContainText('A corpse lies here.'));
 });
