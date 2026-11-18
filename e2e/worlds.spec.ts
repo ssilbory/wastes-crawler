@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { inWindow } from './windows.ts';
+import { inWindow, openWindow } from './windows.ts';
 
 // Worlds on custom maps (Sam's calls): create a new world on the Overland start screen, or pick a
 // map saved in the map editor, and play on it without the campaign's story. The shipped realms
@@ -64,7 +64,7 @@ test('plays the Sealed Vale, a world shipped beside the campaign', async ({ page
   await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
   // The party can build in Lastward (Sam's call): its first project is an institution, run by a
   // specialist freed from Harrowmere.
-  const projects = page.getByRole('region', { name: 'Projects' });
+  const projects = await openWindow(page, 'Projects');
   await projects.getByRole('button', { name: 'Found an arena' }).click();
   await expect(projects).toContainText('Needs an arena master.');
   await expect(projects).toContainText('No journeyman can reach The Sealed Vale');
