@@ -61,6 +61,12 @@ export function questReferenceErrors(srd: SrdData, content: ContentData): string
         if (!parsed?.ok) errors.push(`${where}: step ${i + 1} is in no dungeon level`);
         else if (o.kind !== 'reach' && !parsed.map.inBounds(o.at))
           errors.push(`${where}: step ${i + 1} is off its level`);
+        // A quest item lies on or by a piece of furniture, which marks its square (Sam's call).
+        else if (
+          o.kind === 'retrieve' &&
+          !level?.furniture?.some((f) => f.at.x === o.at.x && f.at.y === o.at.y)
+        )
+          errors.push(`${where}: step ${i + 1}'s item lies on a cell with no furniture`);
       }
       const ids =
         o.kind === 'slay' || o.kind === 'guardian'

@@ -1,5 +1,6 @@
 import {
   automapLegend,
+  GROUP_ART,
   LEGEND_HEIGHT,
   LOCATED_ART,
   MAP_CELL,
@@ -11,7 +12,7 @@ import type { MapWindow } from '../../render/automap-window.ts';
 
 /**
  * The dungeon automap: the cells seen on this level, their walls and doors, magic sensed, what the
- * dead have located, and the party's arrow, with a scale and a compass under it (docs/presentation-plan.md, V4).
+ * dead have located, groups seen standing in their cells, and the party's arrow, with a scale and a compass under it (docs/presentation-plan.md, V4).
  */
 export function Automap(props: {
   map: AutomapData;
@@ -106,6 +107,20 @@ export function Automap(props: {
               stroke-width={p.kind === 'fill' ? undefined : p.width}
             />
           ))}
+        </svg>
+      ))}
+      {map.groups.map((g) => (
+        <svg
+          key={g.key}
+          class="group"
+          x={g.x * MAP_CELL + 2}
+          y={g.y * MAP_CELL + 2}
+          width={MAP_CELL - 4}
+          height={MAP_CELL - 4}
+          viewBox="0 0 12 12"
+        >
+          <title>{g.title}</title>
+          <path d={GROUP_ART} />
         </svg>
       ))}
       <polygon class="party" points={map.party} />

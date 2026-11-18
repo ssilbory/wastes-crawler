@@ -366,6 +366,10 @@ test('shows a held captive among their guards, and a quest item, in the cells ah
   const view = page.getByRole('img', { name: 'Dungeon view' });
   await edit(page, `Object.assign(save.dungeon, { at: { x: 9, y: 0 }, facing: 'w' });`);
   await expect(view.locator('.occupant.captive title')).toContainText('held by guards');
+  // Seen from down the room, the group is marked on the map too (Sam's ask).
+  await page.keyboard.press('a');
+  await page.keyboard.press('d');
+  await expect(page.locator('.automap .group title')).toContainText('held by guards');
   await expect(view).toHaveScreenshot('barrow-captive.png');
   await edit(
     page,
@@ -373,6 +377,8 @@ test('shows a held captive among their guards, and a quest item, in the cells ah
      Object.assign(save.dungeon, { at: { x: 5, y: 1 }, facing: 'n' });`,
   );
   await expect(view.locator('.occupant.item')).toHaveCount(1);
+  // The item lies by a piece of furniture (Sam's ask).
+  await expect(view.locator('.furniture.altar').first()).toBeVisible();
   await expect(view).toHaveScreenshot('barrow-quest-item.png');
 });
 

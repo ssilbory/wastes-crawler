@@ -120,6 +120,11 @@
   fill: #e8e1d2;
 }
 
+/* A group seen standing on its cell: foes' red, paler than the party's arrow. */
+.automap .group {
+  fill: #e07a5f;
+}
+
 .automap .party {
   fill: var(--error);
 }

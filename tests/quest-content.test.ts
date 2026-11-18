@@ -63,6 +63,23 @@ describe('quest content', () => {
           text: 'x',
         },
         { kind: 'retrieve', dungeon: 'tomb', level: 'a', at: { x: 0, y: 0 }, item: 'x', text: 'x' },
+        {
+          kind: 'retrieve',
+          dungeon: 'old-barrow',
+          level: 'barrow-upper',
+          at: { x: 1, y: 8 },
+          item: 'x',
+          text: 'x',
+        },
+        // The level has no furniture at all.
+        {
+          kind: 'retrieve',
+          dungeon: 'ashgate-keep',
+          level: 'ashgate-ward',
+          at: { x: 1, y: 1 },
+          item: 'x',
+          text: 'x',
+        },
       ],
     };
     expect(questReferenceErrors(srd, { ...content, quests: [odd] })).toEqual([
@@ -70,6 +87,8 @@ describe('quest content', () => {
       'quests/barrow-torc: step 2 is off its level',
       'quests/barrow-torc: unknown monster dragon',
       'quests/barrow-torc: step 3 is in no dungeon level',
+      "quests/barrow-torc: step 4's item lies on a cell with no furniture",
+      "quests/barrow-torc: step 5's item lies on a cell with no furniture",
     ]);
   });
 

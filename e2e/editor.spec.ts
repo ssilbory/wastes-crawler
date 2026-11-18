@@ -52,7 +52,7 @@ test('edits, validates, test-walks, and exports a level', async ({ page }, testI
 
   // Furniture dresses plain floor (docs/presentation-plan.md, V4).
   await cell.getByRole('combobox', { name: 'Furniture' }).selectOption('altar');
-  await expect(page.locator('.editor-grid .furniture-mark', { hasText: 'al' })).toHaveCount(2);
+  await expect(page.locator('.editor-grid .furniture-mark', { hasText: 'al' })).toHaveCount(3);
   await expect(problems).toContainText('The dungeon is valid.');
 
   // Walk it: west across the entry room into the wall.
