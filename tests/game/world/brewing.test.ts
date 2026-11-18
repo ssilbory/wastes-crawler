@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  batchesFor,
   brewCost,
   brewDifficulty,
   canBrew,
@@ -42,6 +43,35 @@ function brewer(faces: number[] = []): { w: World; lirael: Member } {
 }
 
 describe('brewing (docs/rules-adaptation.md, Potions: Brewing)', () => {
+  it('brews Tabula Rasa one dose at a time, at 14, for 1000 crowns, two essences, and a gem', () => {
+    expect(batchesFor(data, 'tabula-rasa').map((b) => b.doses)).toEqual([1]);
+    expect(batchesFor(data, 'healing-draught').map((b) => b.doses)).toEqual([1, 2, 4]);
+    expect(brewDifficulty(data, 'tabula-rasa', 1)).toBe(14);
+    expect(brewCost(data, 'tabula-rasa')).toBe(1000);
+    expect(recipeOf(data, 'tabula-rasa').components).toEqual([
+      { type: 'essence', count: 2 },
+      { type: 'gem', count: 1 },
+    ]);
+    const { w, lirael } = brewer();
+    w.purse = 2000;
+    w.components = { 'spore-essence': 2, 'grave-garnet': 1 };
+    expect(startBrew(w, data, lirael.id, 'tabula-rasa', 2)).toEqual({
+      ok: false,
+      reason: 'Tabula Rasa is brewed 1 at a time at most.',
+    });
+    expect(startBrew(w, data, lirael.id, 'tabula-rasa', 1)).toEqual({ ok: true });
+    expect(w.purse).toBe(1000);
+    expect(w.components).toEqual({});
+  });
+
+  it('never sells Tabula Rasa, which drops rarely from bosses', () => {
+    const a = data.content.alchemy;
+    expect(a.alchemists.some((x) => x.wares.includes('tabula-rasa'))).toBe(false);
+    const weights = a.recipes.map((r) => r.weight);
+    expect(recipeOf(data, 'tabula-rasa').weight).toBe(1);
+    expect(Math.min(...weights.filter((x) => x > 0))).toBe(1);
+  });
+
   it('takes the Alchemy skill, and a batch costs the item’s cost whatever its size', () => {
     const { w, lirael } = brewer();
     expect(canBrew(data, lirael)).toBe(true);

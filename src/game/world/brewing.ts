@@ -37,6 +37,10 @@ const batchOf = (data: GameData, doses: number) => {
   return b;
 };
 
+/** The batches a recipe can be brewed in: Tabula Rasa only one dose at a time (Sam's call). */
+export const batchesFor = (data: GameData, item: string) =>
+  rules(data).batches.filter((b) => b.doses <= (recipeOf(data, item).maxDoses ?? b.doses));
+
 /** The recipe's item; content checks keep recipes to real items. */
 export const brewItem = (data: GameData, item: string) => findItem(data, item) as CatalogItem;
 
@@ -71,6 +75,10 @@ export function startBrew(
   const name = m.character.name;
   // Unknown recipes and batch sizes are caller errors.
   brewDifficulty(data, item, doses);
+  if (!batchesFor(data, item).some((b) => b.doses === doses))
+    return no(
+      `${brewItem(data, item).name} is brewed ${recipeOf(data, item).maxDoses} at a time at most.`,
+    );
   if (!canBrew(data, m)) return no(`${name} has no Alchemy skill.`);
   if (!hasKit(data, m)) return no(`${name} needs an ${rules(data).kit.name}.`);
   if (w.projects.some((p) => p.crafter === m.id)) return no(`${name} is already making something.`);

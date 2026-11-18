@@ -4,14 +4,17 @@
 // member. Healing adds System Strain as a potion (SRD 2.5.2) and is refused past the maximum; a
 // Restorative Tonic eases strain even while Hungry, Sleepless, or Cold; a Waking Tonic lifts
 // Sleepless and Cold; a Shadow Draught lets the party slip away from a group that spotted it first,
-// as The Excellent Transpicuous Transformation does. Oil of Edge is for fights only.
+// as The Excellent Transpicuous Transformation does. Oil of Edge is for fights only. Tabula Rasa
+// (Sam's call) takes the drinker back to 1st level, with the picks made anew (tabula-rasa.ts).
 import type { Potion } from '../../data/schemas/index.ts';
 import { roll } from '../../rules/dice.ts';
 import { addStrain } from '../../rules/strain.ts';
+import type { Choices } from '../character/creation.ts';
 import type { GameData } from '../character/context.ts';
 import { characterSheet } from '../character/derived.ts';
 import { findItem } from '../character/items.ts';
 import { takeLine } from '../character/stacks.ts';
+import { wipeClean } from '../character/tabula-rasa.ts';
 import { alive, awake, note, setHp } from './members.ts';
 import { settleByLeaving } from './quarter.ts';
 import type { TownResult } from './services.ts';
@@ -43,6 +46,7 @@ export function cannotDrink(w: World, data: GameData, p: Potion, target: Member)
     return !enc.hostile || enc.spotted ? 'The party can leave without it.' : null;
   }
   if (w.encounter) return 'Settle the encounter first.';
+  if (e.kind === 'tabula-rasa') return null;
   if (e.kind === 'heal') {
     if (c.hp.current >= c.hp.max) return `${c.name} is unhurt.`;
     const max = characterSheet(c, data).strainMax;
@@ -55,13 +59,17 @@ export function cannotDrink(w: World, data: GameData, p: Potion, target: Member)
   return target.sleepless || target.cold ? null : `${c.name} is neither Sleepless nor Cold.`;
 }
 
-/** One dose from the holder, given to the target (the holder themselves, or anyone for vanish). */
+/**
+ * One dose from the holder, given to the target (the holder themselves, or anyone for vanish).
+ * Tabula Rasa takes the target's new 1st-level picks with it.
+ */
 export function drink(
   w: World,
   data: GameData,
   holderId: string,
   potionId: string,
   targetId: string,
+  picks?: Choices,
 ): TownResult {
   const holder = alive(w).find((m) => m.id === holderId && awake(m));
   if (!holder) return no('Only a conscious member can hand out a potion.');
@@ -73,12 +81,34 @@ export function drink(
   if (index < 0) return no(`${holder.character.name} carries no ${p.name}.`);
   const why = cannotDrink(w, data, p, target);
   if (why) return no(why);
+  if (p.effect.kind === 'tabula-rasa') {
+    if (!picks) return no(`Choose ${target.character.name}'s new picks first.`);
+    const made = wipeClean(data, target.character, picks, w.rng);
+    if (!made.ok) return no(made.errors.join('; '));
+    take(holder, index);
+    // The pack as it is now: without the dose, when they drank their own.
+    target.character = { ...made.character, inventory: target.character.inventory };
+    // What came of the old picks goes with them: a form taken, arts' uses today.
+    target.form = null;
+    target.artUses = {};
+    const who =
+      holder === target
+        ? `${target.character.name} drinks`
+        : `${holder.character.name} gives ${target.character.name}`;
+    note(w, `${who} ${p.name}, and is 1st level again, with XP to level back up.`);
+    return { ok: true };
+  }
+  take(holder, index);
+  apply(w, data, p, holder, target);
+  return { ok: true };
+}
+
+/** One dose from the holder's line. */
+function take(holder: Member, index: number): void {
   holder.character = {
     ...holder.character,
     inventory: takeLine(holder.character.inventory, index, 1).rest,
   };
-  apply(w, data, p, holder, target);
-  return { ok: true };
 }
 
 function apply(w: World, data: GameData, p: Potion, holder: Member, target: Member): void {
@@ -116,7 +146,8 @@ function apply(w: World, data: GameData, p: Potion, holder: Member, target: Memb
     note(w, `${who} a ${p.name}; the strain eases.`);
     return;
   }
-  // What is left is a Waking Tonic: Oil of Edge never gets past cannotDrink.
+  // What is left is a Waking Tonic: Oil of Edge never gets past cannotDrink, and Tabula Rasa
+  // never reaches here (drink).
   target.sleepless = false;
   target.cold = false;
   note(w, `${who} a ${p.name}, and is wide awake and warm.`);

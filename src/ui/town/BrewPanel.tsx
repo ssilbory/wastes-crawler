@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import {
+  batchesFor,
   brewDifficulty,
   brewItem,
   canBrew,
@@ -44,7 +45,15 @@ export function BrewPanel(props: { world: World; act: Act }) {
           </label>{' '}
           <label>
             Brew{' '}
-            <select value={item} onChange={(e) => setItem((e.target as HTMLSelectElement).value)}>
+            <select
+              value={item}
+              onChange={(e) => {
+                const next = (e.target as HTMLSelectElement).value;
+                setItem(next);
+                // A batch the new recipe can't make falls back to one dose.
+                if (!batchesFor(data, next).some((b) => b.doses === doses)) setDoses(1);
+              }}
+            >
               {alchemy.recipes.map((r) => (
                 <option key={r.item} value={r.item}>
                   {brewItem(data, r.item).name}
@@ -58,7 +67,7 @@ export function BrewPanel(props: { world: World; act: Act }) {
               value={doses}
               onChange={(e) => setDoses(Number((e.target as HTMLSelectElement).value))}
             >
-              {alchemy.batches.map((b) => (
+              {batchesFor(data, item).map((b) => (
                 <option key={b.doses} value={b.doses}>
                   {b.doses} {b.doses === 1 ? 'dose' : 'doses'}
                 </option>

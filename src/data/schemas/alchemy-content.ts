@@ -10,7 +10,8 @@ const Percent = z.int().min(0).max(100);
  * What drinking a potion does (docs/rules-adaptation.md, Potions; vendor/wwn-srd/4.0 Magic and
  * Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md, 4.9.2). Healing revives the dying and
  * adds System Strain; the others ease strain, lift Sleepless and Cold, oil a weapon for the fight,
- * or hide the party from a group that spotted it.
+ * or hide the party from a group that spotted it. Tabula Rasa (Sam's call) takes the drinker back
+ * to 1st level to make their picks anew, keeping their XP.
  */
 export const PotionEffectSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('heal'), dice: DiceSchema, strain: z.int().min(0) }),
@@ -18,6 +19,7 @@ export const PotionEffectSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('wake') }),
   z.strictObject({ kind: z.literal('edge'), hit: z.int().min(1), damage: z.int().min(0) }),
   z.strictObject({ kind: z.literal('vanish') }),
+  z.strictObject({ kind: z.literal('tabula-rasa') }),
 ]);
 export type PotionEffect = z.infer<typeof PotionEffectSchema>;
 
@@ -73,6 +75,8 @@ export const AlchemyContentSchema = z.strictObject({
         item: IdSchema,
         difficulty: Difficulty,
         weight: z.int().min(0),
+        /** The most doses one batch may make, if fewer than any batch (Sam's call: Tabula Rasa, 1). */
+        maxDoses: z.int().min(1).optional(),
         components: z.array(z.strictObject({ type: ComponentTypeSchema, count: z.int().min(1) })),
       }),
     )
