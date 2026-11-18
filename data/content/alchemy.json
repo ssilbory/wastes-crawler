@@ -176,6 +176,26 @@
       "effect": {
         "kind": "vanish"
       }
+    },
+    {
+      "id": "tabula-rasa",
+      "name": "Tabula Rasa",
+      "source": {
+        "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
+        "heading": "4.9.2 Potions"
+      },
+      "cost": {
+        "amount": 2000,
+        "unit": "sp"
+      },
+      "encumbrance": 1,
+      "weightless": false,
+      "freeWhenWorn": false,
+      "bundlesOfThree": false,
+      "text": "A clear, tasteless draught that washes a life's training away. The drinker is 1st level again, keeping who they are and everything they earned, and makes their 1st-level picks anew; their XP stays, to level back up in town.",
+      "effect": {
+        "kind": "tabula-rasa"
+      }
     }
   ],
   "recipes": [
@@ -252,6 +272,22 @@
       "components": [
         {
           "type": "essence",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "item": "tabula-rasa",
+      "difficulty": 14,
+      "weight": 1,
+      "maxDoses": 1,
+      "components": [
+        {
+          "type": "essence",
+          "count": 2
+        },
+        {
+          "type": "gem",
           "count": 1
         }
       ]

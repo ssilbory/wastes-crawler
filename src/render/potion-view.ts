@@ -7,7 +7,8 @@ import type { World } from '../game/world/types.ts';
 
 export interface PotionLine {
   holder: { id: string; name: string };
-  potion: { id: string; name: string; text: string };
+  /** `anew`: Tabula Rasa, drunk only once the target's new picks are made. */
+  potion: { id: string; name: string; text: string; anew: boolean };
   count: number;
   /** Members it can go to now; empty when there is no one. */
   targets: { id: string; name: string }[];
@@ -19,7 +20,12 @@ export function potionView(w: World, data: GameData): PotionLine[] {
   return members.filter(awake).flatMap((h) =>
     carried(data, h).map(({ potion, count }) => ({
       holder: { id: h.id, name: h.character.name },
-      potion: { id: potion.id, name: potion.name, text: potion.text },
+      potion: {
+        id: potion.id,
+        name: potion.name,
+        text: potion.text,
+        anew: potion.effect.kind === 'tabula-rasa',
+      },
       count,
       targets: (potion.effect.kind === 'vanish' ? [h] : members)
         .filter((m) => cannotDrink(w, data, potion, m) === null)

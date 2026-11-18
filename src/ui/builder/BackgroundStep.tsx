@@ -21,6 +21,8 @@ export function BackgroundStep(props: {
   status: StepStatus;
   onChange: (background: Choices['background']) => void;
   onRoll: (tables: Table[]) => void;
+  /** The background is kept and only its picks are made (Tabula Rasa). */
+  fixed?: boolean;
 }) {
   const chosen = props.choices.background;
   const bg = chosen ? data.content.backgrounds.find((b) => b.id === chosen.id) : undefined;
@@ -42,16 +44,22 @@ export function BackgroundStep(props: {
 
   return (
     <Step title="3. Background" status={props.status}>
-      <Select
-        label="Background"
-        value={chosen?.id ?? ''}
-        options={data.content.backgrounds
-          .filter((b) => props.choices.people === '' || backgroundOpenTo(b, props.choices.people))
-          .map((b) => ({ value: b.id, label: b.name }))}
-        onChange={(id) =>
-          props.onChange(id === '' ? null : { id, choice: { mode: 'pick', picks: [] } })
-        }
-      />
+      {props.fixed && bg ? (
+        <p>
+          <strong>Background:</strong> {bg.name}
+        </p>
+      ) : (
+        <Select
+          label="Background"
+          value={chosen?.id ?? ''}
+          options={data.content.backgrounds
+            .filter((b) => props.choices.people === '' || backgroundOpenTo(b, props.choices.people))
+            .map((b) => ({ value: b.id, label: b.name }))}
+          onChange={(id) =>
+            props.onChange(id === '' ? null : { id, choice: { mode: 'pick', picks: [] } })
+          }
+        />
+      )}
       {bg && chosen && (
         <>
           <p class="hint">

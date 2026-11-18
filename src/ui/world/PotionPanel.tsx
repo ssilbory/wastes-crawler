@@ -1,13 +1,18 @@
 import { useState } from 'preact/hooks';
 import { drink } from '../../game/world/potions.ts';
-import type { World } from '../../game/world/types.ts';
+import type { Member, World } from '../../game/world/types.ts';
 import { potionView, usable } from '../../render/potion-view.ts';
 import { data } from '../builder/data.ts';
+import { TabulaRasaDialog } from './TabulaRasaDialog.tsx';
 
 /** Potions out of combat: drink one or give it to another member (docs/rules-adaptation.md). */
 export function PotionPanel(props: { world: World; onChange: () => void }) {
   const w = props.world;
   const [message, setMessage] = useState<string | null>(null);
+  /** Tabula Rasa waits on the target's new picks before it is drunk. */
+  const [slate, setSlate] = useState<{ holder: Member; target: Member; potion: string } | null>(
+    null,
+  );
   if (w.encounter) return null;
   const lines = usable(potionView(w, data));
   if (lines.length === 0) return null;
@@ -30,6 +35,12 @@ export function PotionPanel(props: { world: World; onChange: () => void }) {
               key={t.id}
               type="button"
               onClick={() => {
+                if (l.potion.anew) {
+                  const holder = w.members.find((m) => m.id === l.holder.id);
+                  const target = w.members.find((m) => m.id === t.id);
+                  if (holder && target) setSlate({ holder, target, potion: l.potion.id });
+                  return;
+                }
                 const r = drink(w, data, l.holder.id, l.potion.id, t.id);
                 setMessage(r.ok ? null : r.reason);
                 props.onChange();
@@ -41,6 +52,20 @@ export function PotionPanel(props: { world: World; onChange: () => void }) {
         </div>
       ))}
       {message && <p class="bump">{message}</p>}
+      {slate && (
+        <TabulaRasaDialog
+          world={w}
+          holder={slate.holder}
+          target={slate.target}
+          potion={slate.potion}
+          onClose={() => setSlate(null)}
+          onDone={(m) => {
+            setSlate(null);
+            setMessage(m);
+            props.onChange();
+          }}
+        />
+      )}
     </section>
   );
 }
