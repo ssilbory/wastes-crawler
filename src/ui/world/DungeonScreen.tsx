@@ -15,27 +15,14 @@ import { encounterPortrait } from '../../render/encounter-portrait.ts';
 import { motionOf, type Motion, type PartyMove as Move } from '../../render/dungeon-motion.ts';
 import { data } from '../builder/data.ts';
 import { PartyPanel } from './PartyPanel.tsx';
-import { HealerPanel, RevivePopOut, useReviveAsk } from './HealerPanel.tsx';
+import { RevivePopOut, useReviveAsk } from './HealerPanel.tsx';
+import { ScreenWindows } from './ScreenWindows.tsx';
 import { SurrenderPopOut, surrenderOpen } from './SurrenderPanel.tsx';
-import { PurgePanel } from './PurgePanel.tsx';
-import { AntidotePanel } from './AntidotePanel.tsx';
-import { PotionPanel } from './PotionPanel.tsx';
-import { ScrollPanel } from './ScrollPanel.tsx';
-import { GreenwoodPanel } from './GreenwoodPanel.tsx';
-import { CompanionsPanel } from './CompanionsPanel.tsx';
-import { FormsPanel } from './FormsPanel.tsx';
-import { ConjunctPanel } from './ConjunctPanel.tsx';
-import { NecromancyPanel } from './NecromancyPanel.tsx';
 import { LockPopOut } from './LockPopOut.tsx';
 import { DeadPopOut, useDeadAsk } from './DeadAsk.tsx';
-import { PactPanel } from './PactPanel.tsx';
-import { SorceryPanel } from './SorceryPanel.tsx';
-import { NpcPanel } from './NpcPanel.tsx';
-import { QuestLog } from './QuestLog.tsx';
 import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
 import { JournalPanel } from './JournalPanel.tsx';
 import { PopOut } from './PopOut.tsx';
-import { BarMore } from './BarMore.tsx';
 import { CampPanel } from './CampPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
 import { onSafeSquare } from '../../game/dungeon/time.ts';
@@ -80,6 +67,8 @@ export function DungeonScreen(props: {
   onLeave: () => void;
   onOpen: (screen: PartyScreen) => void;
   onExport: () => void;
+  /** Back to the Overland's start screen. */
+  onStart: () => void;
 }) {
   const w = props.world;
   // Asks about reviving the fallen before the party moves on (Sam's call).
@@ -164,13 +153,11 @@ export function DungeonScreen(props: {
           <span>Rations: {w.rations === 0 ? 'none' : `d${w.rations}`}</span>
         </div>
         <span class="bar-actions">
-          <PartyButtons onOpen={props.onOpen} />
+          {/* A phone finds these in the ☰ menu instead (mobile.css). */}
+          <span class="bar-party">
+            <PartyButtons onOpen={props.onOpen} />
+          </span>
           <KeyHelp rows={dungeonKeys(getSettings())} />
-          <BarMore>
-            <button type="button" class="secondary" onClick={props.onExport}>
-              Export save
-            </button>
-          </BarMore>
         </span>
         <PartyPanel members={w.members} strip />
       </div>
@@ -275,26 +262,22 @@ export function DungeonScreen(props: {
             hidden={revive.open || surrenderOpen(w) || deadOpen}
             onChange={props.onChange}
           />
+          {/* Everything but the camp is a window from the ☰ menu (Sam's call). */}
+          <ScreenWindows
+            world={w}
+            screen="dungeon"
+            inTown={false}
+            reviving={revive.open}
+            onChange={props.onChange}
+            onExport={props.onExport}
+            onOpen={props.onOpen}
+            onStart={props.onStart}
+          />
         </div>
         <div class="dock">
           {!w.encounter && !revive.open && !surrenderOpen(w) && onSafeSquare(w, data) && (
             <CampPanel world={w} onChange={props.onChange} />
           )}
-          {/* Quests, then the panels of powers (Sam's call: one column); the party is in the bar. */}
-          <QuestLog world={w} onChange={props.onChange} />
-          <NpcPanel world={w} onChange={props.onChange} />
-          <CompanionsPanel world={w} onChange={props.onChange} />
-          <NecromancyPanel world={w} onChange={props.onChange} />
-          <GreenwoodPanel world={w} onChange={props.onChange} />
-          <FormsPanel world={w} onChange={props.onChange} />
-          <ConjunctPanel world={w} onChange={props.onChange} />
-          <SorceryPanel world={w} onChange={props.onChange} />
-          <PactPanel world={w} onChange={props.onChange} />
-          {!revive.open && <HealerPanel world={w} onChange={props.onChange} />}
-          <PurgePanel world={w} onChange={props.onChange} />
-          <AntidotePanel world={w} onChange={props.onChange} />
-          <PotionPanel world={w} onChange={props.onChange} />
-          <ScrollPanel world={w} onChange={props.onChange} />
         </div>
       </div>
     </div>

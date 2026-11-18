@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
-import { openWindow } from './windows.ts';
+import { closeWindow, openWindow } from './windows.ts';
 
 // Phase 11a: save slots, full saves, and the Phase 11 exit: save mid-dungeon, reload, and play on
 // with identical state, the RNG included.
@@ -75,11 +75,12 @@ test('exports a save from town and from underground', async ({ page }) => {
   await begin(page, 'export-e2e');
   const exported = async () => {
     const download = page.waitForEvent('download');
-    // Export waits behind More; the fold stays open after.
-    const more = page.getByRole('button', { name: 'More' });
-    if ((await more.getAttribute('aria-expanded')) !== 'true') await more.click();
-    await page.getByRole('button', { name: 'Export save' }).click();
+    // Export waits in the ☰ menu's Save window, which has no Abandon world off the map.
+    const save = await openWindow(page, 'Save');
+    await expect(save.getByRole('button', { name: 'Abandon world' })).toHaveCount(0);
+    await save.getByRole('button', { name: 'Export save' }).click();
     expect((await download).suggestedFilename()).toBe('wastes-crawler-save.json');
+    await closeWindow(page);
   };
   await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
   await exported();

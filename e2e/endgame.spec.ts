@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { closeWindow, openWindow } from './windows.ts';
+import { closeWindow, inWindow, openWindow } from './windows.ts';
 
 // Phase 12d: crafter's notes are sold to a warlord's agent, advancing the warlord's clock, and once
 // the warlord is dead the party decides the Seal of Command's fate at Elder Gorvash.
@@ -69,7 +69,7 @@ test('destroys the Seal of Command, and the epilogue follows', async ({ page }, 
   await page.screenshot({ path: testInfo.outputPath('seal-choice.png'), fullPage: true });
   await seal.getByRole('button', { name: 'Destroy the seal' }).click();
   await expect(seal).toHaveCount(0);
-  await expect(page.getByRole('region', { name: 'Orders and sieges' })).toContainText(
-    "The seal cracks in Cinderhold's forge fire.",
+  await inWindow(page, 'Orders and sieges', (orders) =>
+    expect(orders).toContainText("The seal cracks in Cinderhold's forge fire."),
   );
 });

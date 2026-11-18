@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { openWindow } from './windows.ts';
 
 // Phase 12 exit, in the browser: with Warlord Grisk dead, the party climbs out of his hold, turns
 // the quest in to Elder Gorvash, and keeps the Seal of Command. The whole campaign is played
@@ -61,7 +62,7 @@ test('climbs out of Grisk’s Hold, turns the warlord in, and keeps the seal', a
   const seal = elder.getByRole('group', { name: 'The Seal of Command' });
   await seal.getByRole('button', { name: 'Keep it' }).click();
   await expect(seal).toHaveCount(0);
-  const panel = page.getByRole('region', { name: 'Orders and sieges' });
+  const panel = await openWindow(page, 'Orders and sieges');
   await expect(panel).toContainText('The party keeps the seal.');
   await expect(panel).toContainText('lie 1 sets of crafter');
   await expect(panel).toContainText('Carrying The Seal of Command.');

@@ -317,7 +317,7 @@ test('delves to the stairs and back with fights, a trap, a camp, and a rescue', 
   // Back down, east, and north through the door to the grave robbers and their captive.
   await go(page, 'ddwwawwwawwwwwwawdww');
   await expect(log).toContainText('grave-digger is free');
-  await expect(page.getByRole('region', { name: 'NPCs' })).toContainText('grave-digger');
+  await inWindow(page, 'NPCs', (npcs) => expect(npcs).toContainText('grave-digger'));
 
   // On to the stairs, down, and a camp in the first room below.
   await go(page, 'dwww');

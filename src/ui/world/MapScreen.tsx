@@ -15,7 +15,7 @@ import { dayTint } from '../../render/hex-art.ts';
 import { PartyPanel } from './PartyPanel.tsx';
 import { EncounterPanel } from './EncounterPanel.tsx';
 import { RevivePopOut, useReviveAsk } from './HealerPanel.tsx';
-import { MapWindows } from './MapWindows.tsx';
+import { ScreenWindows } from './ScreenWindows.tsx';
 import { DeadPopOut, useDeadAsk } from './DeadAsk.tsx';
 import { SurrenderPopOut, surrenderOpen } from './SurrenderPanel.tsx';
 import { LockPopOut } from './LockPopOut.tsx';
@@ -225,8 +225,9 @@ export function MapScreen(props: {
             onChange={props.onChange}
           />
           {/* Everything but the quarter's plan is a window from the ☰ menu (Sam's call). */}
-          <MapWindows
+          <ScreenWindows
             world={w}
+            screen="map"
             inTown={town !== undefined}
             reviving={revive.open}
             onChange={props.onChange}

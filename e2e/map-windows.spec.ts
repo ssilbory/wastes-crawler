@@ -106,3 +106,39 @@ test('on a phone, opens the party’s screens from the ☰ menu, not the bar', a
   await page.getByRole('button', { name: 'Back to the map' }).click();
   await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
 });
+
+test('keeps a town’s and a dungeon’s panels in the ☰ menu too', async ({ page }) => {
+  await begin(page);
+  await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
+  // No dock in town: the tabs have the room.
+  await expect(page.locator('.dock')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'More' })).toHaveCount(0);
+  const inTown = await windowNames(page);
+  expect(inTown.slice(0, 3)).toEqual(['Characters', 'Formation', 'Inventory']);
+  expect(inTown).toContain('NPCs');
+  expect(inTown).toContain('Save');
+  expect(inTown).toContain('Return to Overland start');
+  await openWindow(page, 'NPCs');
+  await closeWindow(page);
+  await page.getByRole('button', { name: 'Back to the map' }).click();
+
+  await edit(page, `save.position = { col: 5, row: 10 }; save.visited.push('4,9', '5,10');`);
+  await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
+  await expect(page.getByRole('img', { name: 'Dungeon view' })).toBeVisible();
+  const below = await windowNames(page);
+  expect(below).toContain('NPCs');
+  expect(below).toContain('Save');
+  expect(below).not.toContain('Mounts');
+  // A window holds the dungeon's keys: the party does not turn under it.
+  const bar = page.locator('.world-bar');
+  const facing = await bar.locator('.bar-status span').nth(1).innerText();
+  await openWindow(page, 'NPCs');
+  await page.keyboard.press('d');
+  await expect(bar.locator('.bar-status span').nth(1)).toHaveText(facing);
+  await closeWindow(page);
+  // Leaving for the start screen and continuing comes back underground.
+  await page.getByRole('button', { name: 'Menu' }).click();
+  await page.getByRole('button', { name: 'Return to Overland start' }).click();
+  await page.getByRole('button', { name: 'Continue journey' }).click();
+  await expect(page.getByRole('img', { name: 'Dungeon view' })).toBeVisible();
+});

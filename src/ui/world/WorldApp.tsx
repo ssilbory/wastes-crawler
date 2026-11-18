@@ -266,6 +266,7 @@ function WorldScreens(props: {
         onLeave={leave}
         onOpen={openFrom('map')}
         onExport={exportSave}
+        onStart={() => setScreen('start')}
       />
     );
   if (screen === 'town' || w.members.length === 0)
@@ -278,6 +279,7 @@ function WorldScreens(props: {
         onLeave={() => setScreen('map')}
         onOpen={openFrom('town')}
         onExport={exportSave}
+        onStart={() => setScreen('start')}
         tab={townTab}
         onTab={setTownTab}
         onBout={(start) =>

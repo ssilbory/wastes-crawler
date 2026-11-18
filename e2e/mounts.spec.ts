@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { inWindow } from './windows.ts';
+import { closeWindow, inWindow, openWindow } from './windows.ts';
 
 // Mounts (docs/rules-adaptation.md, Mounts): bought at the stable, ridden, and loaded in the shop;
 // the rules behind them are covered by unit tests.
@@ -33,7 +33,7 @@ test('buys a riding goat, puts Snag on it, and loads it', async ({ page }, testI
     .filter({ hasText: 'Riding Goat' })
     .getByRole('button', { name: /^Buy/ })
     .click();
-  const mounts = page.getByRole('region', { name: 'Mounts', exact: true });
+  const mounts = await openWindow(page, 'Mounts');
   await expect(mounts).toContainText('Riding Goat');
   // A goat carries only small riders: Grukk isn't offered.
   const rider = mounts.getByRole('combobox', { name: "Riding Goat's rider" });
@@ -41,6 +41,7 @@ test('buys a riding goat, puts Snag on it, and loads it', async ({ page }, testI
   await rider.selectOption({ label: 'Snag' });
   await expect(mounts).toContainText('load 0/3');
   await page.screenshot({ path: testInfo.outputPath('mounts-stable.png'), fullPage: true });
+  await closeWindow(page);
 
   await page.getByRole('tab', { name: 'Shop', exact: true }).click();
   const pack = page.getByRole('region', { name: "Snag's pack" });

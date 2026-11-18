@@ -1,4 +1,4 @@
-/* A window from the overland map's ☰ menu (MapWindows.tsx): over the whole screen, the menu
+/* A window from a game screen's ☰ menu (ScreenWindows.tsx): over the whole screen, the menu
    button included, until it is closed. */
 .pop-out.map-window {
   position: fixed;
