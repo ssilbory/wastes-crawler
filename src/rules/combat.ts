@@ -51,6 +51,18 @@ export function footChase(
   return { flee, pursue, caught: pursue > flee };
 }
 
+/** Sam's call: beaten foes who could give up do so on 5 or 6 of 1d6, and get away otherwise. */
+export const SURRENDER_ON = 5;
+
+/**
+ * Whether foes who would surrender do (docs/rules-adaptation.md, Morale, escape, and surrender:
+ * Flee or yield; vendor/wwn-srd/5.0 Monsters and Foes/Morale Checks and Fleeing.md, 5.3.2): one
+ * time in three, and two times in three they flee instead.
+ */
+export function givesUp(rng: Rng): boolean {
+  return rollDie(rng, 6) >= SURRENDER_ON;
+}
+
 /** 1d10 at or under the Instinct score: the creature acts on impulse instead of tactics. */
 export function actsOnInstinct(rng: Rng, instinct: number): boolean {
   return rollDie(rng, 10) <= instinct;

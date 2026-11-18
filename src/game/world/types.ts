@@ -167,6 +167,8 @@ export interface World {
   corpses: WorldSave['corpses'];
   fallen: WorldSave['fallen'];
   surrendered: WorldSave['surrendered'];
+  /** A freed captive waiting on room in the party, by id (rescue.ts). */
+  freedCaptive: string | null;
   performedDay: number | null;
   bestiary: string[];
   /** Faction state by id (Phase 13). */

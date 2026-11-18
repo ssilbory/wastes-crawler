@@ -328,4 +328,6 @@ export const WORLD_MIGRATIONS: Migrations = {
   55: (raw) => ({ ...raw, schemaVersion: 56, chests: [] }),
   // Version 57 lets the Sealed Vale's freed specialists wait at home for their institution: none yet.
   56: (raw) => ({ ...raw, schemaVersion: 57, waiting: [] }),
+  // Version 58 lets a freed captive wait while the party makes room for them: none waits yet.
+  57: (raw) => ({ ...raw, schemaVersion: 58, freedCaptive: null }),
 };

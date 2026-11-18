@@ -22,10 +22,30 @@ describe('a row that breaks', () => {
     const b = standardBattle([thugs(2)]);
     const [t1, t2] = foes(b) as [Combatant, Combatant];
     t1.status = 'dead';
-    b.rng = scriptedRng([6, 6]);
+    // Morale fails (6 + 6), and they give up on a 5 or 6 (Flee or yield).
+    b.rng = scriptedRng([6, 6, 5]);
     checkMorale(b);
     expect(t2).toMatchObject({ status: 'fled', surrendered: true });
     expect(b.log?.join(' ')).toContain('surrender');
+  });
+
+  it('gets away two times in three when it would surrender (Sam’s call)', () => {
+    const b = standardBattle([thugs(2)]);
+    const [t1, t2] = foes(b) as [Combatant, Combatant];
+    t1.status = 'dead';
+    b.rng = scriptedRng([6, 6, 4]);
+    checkMorale(b);
+    expect(t2).toMatchObject({ status: 'fled', surrendered: false });
+    expect(b.log?.at(-1)).toContain('scatter and get away before they can be taken');
+
+    // Run down in the chase, the same roll lets them break free.
+    const c = standardBattle([thugs(5)]);
+    const [u1, ...rest] = foes(c) as Combatant[];
+    (u1 as Combatant).status = 'dead';
+    c.rng = scriptedRng([6, 6, 1, 1, 6, 6, 1]);
+    checkMorale(c);
+    expect(rest.map((x) => [x.status, x.surrendered])).toEqual(Array(4).fill(['fled', false]));
+    expect(c.log?.at(-1)).toContain('are run down, but break free and get away');
   });
 
   it('tries to escape when it is not outnumbered or outrun, and gets away on a tie', () => {
@@ -46,7 +66,7 @@ describe('a row that breaks', () => {
     const b = standardBattle([thugs(5)]);
     const [t1, ...rest] = foes(b) as Combatant[];
     (t1 as Combatant).status = 'dead';
-    b.rng = scriptedRng([6, 6, 1, 1, 6, 6]);
+    b.rng = scriptedRng([6, 6, 1, 1, 6, 6, 6]);
     checkMorale(b);
     expect(rest.every((c) => c.status === 'fled' && c.surrendered)).toBe(true);
   });
@@ -66,7 +86,7 @@ describe('a row that breaks', () => {
     c.talksToBeasts.party = true;
     const [x1, x2] = foes(c) as [Combatant, Combatant];
     x1.status = 'dead';
-    c.rng = scriptedRng([6, 6]);
+    c.rng = scriptedRng([6, 6, 5]);
     checkMorale(c);
     expect(x2).toMatchObject({ status: 'fled', surrendered: true });
   });
@@ -86,7 +106,7 @@ describe('a row that breaks', () => {
     for (const c of fighters(b, 'party')) c.move = 40;
     const [t1, ...rest] = foes(b) as Combatant[];
     (t1 as Combatant).status = 'dead';
-    b.rng = scriptedRng([6, 6]);
+    b.rng = scriptedRng([6, 6, 6]);
     checkMorale(b);
     expect(rest.every((c) => c.surrendered)).toBe(true);
   });
@@ -161,7 +181,7 @@ describe('bosses and their minions', () => {
     const [gnoll, t1, t2] = foes(b) as [Combatant, Combatant, Combatant];
     t1.status = 'dead';
     // Half the side is down after the row's check too; each roll fails, and the thug yields.
-    b.rng = scriptedRng([6, 6]);
+    b.rng = scriptedRng([6, 6, 6]);
     checkMorale(b);
     expect(gnoll.status).toBe('active');
     expect(t2.surrendered).toBe(true);

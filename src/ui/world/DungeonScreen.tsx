@@ -20,6 +20,7 @@ import { ScreenWindows } from './ScreenWindows.tsx';
 import { SurrenderPopOut, surrenderOpen } from './SurrenderPanel.tsx';
 import { LockPopOut } from './LockPopOut.tsx';
 import { DeadPopOut, useDeadAsk } from './DeadAsk.tsx';
+import { FreedPopOut, freedOpen } from './FreedPanel.tsx';
 import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
 import { JournalPanel } from './JournalPanel.tsx';
 import { PopOut } from './PopOut.tsx';
@@ -189,6 +190,17 @@ export function DungeonScreen(props: {
               </section>
             )}
             <DungeonControls bump={bump} onMove={move}>
+              {/* The way to another level comes first, above Search (Sam's call). */}
+              {stairsLabel && !w.encounter && (
+                <button type="button" aria-keyshortcuts={keysFor('stairs')} onClick={climb}>
+                  {stairsLabel}
+                </button>
+              )}
+              {stairsAway && (
+                <button type="button" onClick={() => walk.walkTo(stairsAway)}>
+                  Walk to the stairs
+                </button>
+              )}
               {!w.encounter && (
                 <>
                   <button type="button" onClick={() => act(() => search(w, data))}>
@@ -227,16 +239,6 @@ export function DungeonScreen(props: {
                   )}
                 </>
               )}
-              {stairsAway && (
-                <button type="button" onClick={() => walk.walkTo(stairsAway)}>
-                  Walk to the stairs
-                </button>
-              )}
-              {stairsLabel && !w.encounter && (
-                <button type="button" aria-keyshortcuts={keysFor('stairs')} onClick={climb}>
-                  {stairsLabel}
-                </button>
-              )}
             </DungeonControls>
           </div>
           <JournalPanel world={w} />
@@ -257,6 +259,9 @@ export function DungeonScreen(props: {
             <SurrenderPopOut world={w} onChange={props.onChange} />
           )}
           {deadOpen && <DeadPopOut world={w} ask={dead} onChange={props.onChange} />}
+          {freedOpen(w) && !revive.open && !surrenderOpen(w) && !deadOpen && (
+            <FreedPopOut world={w} onChange={props.onChange} />
+          )}
           <LockPopOut
             world={w}
             hidden={revive.open || surrenderOpen(w) || deadOpen}

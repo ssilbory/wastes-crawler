@@ -180,6 +180,13 @@
               "y": 3
             },
             "kind": "brazier"
+          },
+          {
+            "at": {
+              "x": 5,
+              "y": 0
+            },
+            "kind": "altar"
           }
         ]
       },
@@ -328,6 +335,13 @@
             "at": {
               "x": 6,
               "y": 6
+            },
+            "kind": "bones"
+          },
+          {
+            "at": {
+              "x": 2,
+              "y": 1
             },
             "kind": "bones"
           }
@@ -611,6 +625,15 @@
             "order": "ashgate-hold",
             "enemies": [["bound-orc-guard"], ["bound-orc-captain"]],
             "text": "Ashgate's captain guards the archive himself, a guard at his side."
+          }
+        ],
+        "furniture": [
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "kind": "brazier"
           }
         ]
       }
@@ -984,7 +1007,16 @@
           }
         ],
         "captives": [],
-        "garrisons": []
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 7,
+              "y": 7
+            },
+            "kind": "bones"
+          }
+        ]
       }
     ]
   },
@@ -1230,6 +1262,15 @@
               ["bound-lieutenant"]
             ],
             "text": "Lieutenant Vael, an elf in a uniform twenty years old, bars the vault door. \"You are not my relief,\" he says."
+          }
+        ],
+        "furniture": [
+          {
+            "at": {
+              "x": 0,
+              "y": 0
+            },
+            "kind": "altar"
           }
         ]
       }
@@ -1786,7 +1827,16 @@
           }
         ],
         "captives": [],
-        "garrisons": []
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 0,
+              "y": 6
+            },
+            "kind": "bones"
+          }
+        ]
       }
     ]
   },
@@ -2030,6 +2080,22 @@
             "order": "archive-keep",
             "enemies": [["clockwork-soldier"], ["clockwork-servitor", "clockwork-servitor"]],
             "text": "A clockwork soldier guards the sealed stacks, with two scribes behind it."
+          }
+        ],
+        "furniture": [
+          {
+            "at": {
+              "x": 0,
+              "y": 6
+            },
+            "kind": "rubble"
+          },
+          {
+            "at": {
+              "x": 9,
+              "y": 6
+            },
+            "kind": "altar"
           }
         ]
       }
@@ -2639,7 +2705,16 @@
           }
         ],
         "captives": [],
-        "garrisons": []
+        "garrisons": [],
+        "furniture": [
+          {
+            "at": {
+              "x": 7,
+              "y": 7
+            },
+            "kind": "altar"
+          }
+        ]
       }
     ]
   },

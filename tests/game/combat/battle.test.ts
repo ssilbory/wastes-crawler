@@ -118,9 +118,10 @@ describe('morale (SRD 5.3, per enemy row)', () => {
     if (!t1 || !v1 || !v2) throw new Error('setup');
     checkMorale(b);
     expect(b.rowsChecked.size).toBe(0);
-    // Row 1 loses a member and rolls 6 + 6 against Morale 8: it breaks. Half the side is then
-    // down, so row 2 checks too: it holds (2 + 2), and each member checks Instinct (3 and 9).
-    b.rng = scriptedRng([6, 6, 2, 2, 3, 9]);
+    // Row 1 loses a member and rolls 6 + 6 against Morale 8: it breaks, and outnumbered it gets
+    // away rather than give up (1). Half the side is then down, so row 2 checks too: it holds
+    // (2 + 2), and each member checks Instinct (3 and 9).
+    b.rng = scriptedRng([6, 6, 1, 2, 2, 3, 9]);
     t1.status = 'dead';
     checkMorale(b);
     expect(enemies(b).map((e) => e.status)).toEqual(['dead', 'fled', 'active', 'active']);

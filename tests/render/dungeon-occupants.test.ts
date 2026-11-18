@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { DungeonState } from '../../src/data/schemas/index.ts';
 import type { World } from '../../src/game/world/types.ts';
 import { CELL_SHOWN, occupantsOf, placeIn } from '../../src/render/dungeon-occupants.ts';
+import { automap } from '../../src/render/automap-view.ts';
 import { dungeonView } from '../../src/render/dungeon-view.ts';
 import { generateRuin, ruinDungeonId } from '../../src/game/dungeon/generate.ts';
 import { data, world } from '../game/world/helpers.ts';
@@ -170,5 +171,34 @@ describe('who stands in the cells ahead', () => {
     // Set back a little: its foot is above the guards'.
     const foot = (p: (typeof pair)[number] | undefined) => (p?.y ?? 0) + ((p?.size ?? 0) * 46) / 48;
     expect(foot(pair[0]) < foot(pair[1])).toBe(true);
+  });
+
+  it('marks a group on the automap once its cell is seen, until it is gone (Sam’s ask)', () => {
+    const w = at('old-barrow', 'barrow-upper', 9, 0, 'w');
+    const s = w.dungeon as DungeonState;
+    // The quest's item is no group, and an unseen cell shows nothing.
+    w.quests['barrow-torc'] = { status: 'active', step: 2, acceptedDay: 0 };
+    s.seen = { 'barrow-upper': ['9,0', '5,0'] };
+    expect(automap(w, data)?.groups).toEqual([]);
+    s.seen = { 'barrow-upper': ['9,0', '6,0', '5,0'] };
+    expect(automap(w, data)?.groups).toEqual([
+      { key: '6,0', x: 6, y: 0, title: expect.stringContaining('held by guards') },
+    ]);
+    w.rescues.push('old-barrow/barrow-upper/6,0');
+    expect(automap(w, data)?.groups).toEqual([]);
+  });
+
+  it('gives every quest item’s square a piece of furniture (Sam’s ask)', () => {
+    for (const q of data.content.quests)
+      for (const o of q.objectives) {
+        if (o.kind !== 'retrieve') continue;
+        const level = data.content.dungeons
+          .find((d) => d.id === o.dungeon)
+          ?.levels.find((l) => l.id === o.level);
+        expect(
+          level?.furniture?.filter((f) => f.at.x === o.at.x && f.at.y === o.at.y),
+          `${q.id}: ${o.item}`,
+        ).toHaveLength(1);
+      }
   });
 });

@@ -4,6 +4,7 @@ import type { GameData } from '../character/context.ts';
 import { emit } from './bus.ts';
 import { note } from './members.ts';
 import { addNpc, hirelingType, MAX_NPCS, npcRoom, removeNpc } from './npcs.ts';
+import { takeFreed } from './rescue.ts';
 import { hireBlocked } from './shares.ts';
 import type { TownResult } from './services.ts';
 import { toTenths } from '../../rules/economy.ts';
@@ -69,4 +70,14 @@ export function dismiss(w: World, data: GameData, id: string): TownResult {
     );
   if (n.kind === 'escort') emit(w, data, { kind: 'npc-died', npc: n });
   return { ok: true };
+}
+
+/**
+ * Dismisses an NPC so that the freed captive waiting on room takes their place
+ * (docs/rules-adaptation.md, NPCs in Phase 6c: Rescues).
+ */
+export function makeRoomForFreed(w: World, data: GameData, npcId: string): TownResult {
+  if (!w.freedCaptive) throw new Error('no freed captive waits');
+  const r = dismiss(w, data, npcId);
+  return r.ok ? takeFreed(w, data) : r;
 }

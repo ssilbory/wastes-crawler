@@ -164,7 +164,8 @@ describe('rescues', () => {
     expect(w.log.at(-1)).toContain('joins the party until they reach Scrapmarch.');
     expect(freeCaptive(w, data, 'pilgrim')).toBe(true);
     expect(freeCaptive(w, data, 'scholar')).toBe(false);
-    expect(w.log.at(-1)).toContain('with no room in the party goes their own way');
+    expect(w.log.at(-1)).toContain('is free, but the party has no room for them.');
+    expect(w.freedCaptive).toBe('scholar');
     w.npcs = w.npcs.filter((n) => n.type !== 'pilgrim');
     const quitter = addNpc(w, data, 'hireling', 'porter', 'peaceful-human', 'Quitter', false);
     Object.assign(quitter ?? {}, {

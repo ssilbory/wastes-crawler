@@ -1,6 +1,6 @@
 // Read-only drawing data for the dungeon automap: the cells the party has seen on this level, their
 // walls and doors, and an arrow for the party. Secret doors draw as walls until found, and traps
-// as floor until known.
+// as floor until known. Groups of people or monsters standing on seen cells are marked too.
 import { knownEdges } from '../game/dungeon/secrets.ts';
 import type { GameData } from '../game/character/context.ts';
 import type { World } from '../game/world/types.ts';
@@ -9,6 +9,7 @@ import type { CellKind } from '../data/dungeon-map.ts';
 import type { Furniture } from '../data/schemas/index.ts';
 import { levelOf } from '../game/dungeon/levels.ts';
 import { locatedMarks } from '../game/world/skull-locate.ts';
+import { occupantsOf } from './dungeon-occupants.ts';
 
 export const MAP_CELL = 16;
 
@@ -39,6 +40,11 @@ export interface Automap {
   located: ReturnType<typeof locatedMarks>;
   /** Furniture on cells the party has seen (docs/presentation-plan.md, V4). */
   furniture: { key: string; x: number; y: number; kind: Furniture['kind'] }[];
+  /**
+   * Groups standing on cells the party has seen (Sam's ask): a captive's guards, a garrison, a
+   * hoard's guards, a quest's guardians, until they are beaten or gone.
+   */
+  groups: { key: string; x: number; y: number; title: string }[];
   /** The party's arrow as SVG polygon points. */
   party: string;
 }
@@ -116,6 +122,12 @@ export function automap(w: World, data: GameData, size = MAP_CELL): Automap | nu
     }),
     located: locatedMarks(w, data),
     party: arrow(s.at.x, s.at.y, s.facing, size),
+    groups: [...occupantsOf(w, data)]
+      .filter(([key, o]) => o.figures.length > 0 && seen.has(key))
+      .map(([key, o]) => {
+        const [x, y] = key.split(',').map(Number) as [number, number];
+        return { key, x, y, title: o.title };
+      }),
     furniture: (level.furniture ?? [])
       .filter((f) => seen.has(`${f.at.x},${f.at.y}`))
       .map((f) => ({ key: `${f.at.x},${f.at.y}`, x: f.at.x, y: f.at.y, kind: f.kind })),
@@ -138,6 +150,10 @@ export const LOCATED_ART: Record<Automap['located'][number]['what'], { d: string
       title: 'A hoard',
     },
   };
+
+/** The mark for a group on the map, drawn in a 12-unit box: two heads over their shoulders. */
+export const GROUP_ART =
+  'M4 1.5a2 2 0 1 1 0 4a2 2 0 0 1 0-4ZM8.5 2.5a1.7 1.7 0 1 1 0 3.4a1.7 1.7 0 0 1 0-3.4ZM0.5 11V9.5a3.5 3 0 0 1 7 0V11ZM8.3 11V9.3a4.3 3.6 0 0 0-0.9-2.2a3 2.8 0 0 1 4.1 2.4V11Z';
 
 /** A dungeon cell is 10 feet across (docs/rules-adaptation.md, Dungeon exploration: Turns). */
 export const CELL_FEET = 10;

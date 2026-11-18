@@ -63,6 +63,7 @@ export function wipe(w: World, data: GameData, nightPassed = false): void {
   w.members = [];
   // Nothing the lost party had going goes on without it.
   w.fallen = null;
+  w.freedCaptive = null;
   w.disguise = null;
   w.palanquin = null;
   w.pacts = null;
