@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import type { Site } from '../../../src/data/schemas/index.ts';
 import { buyable } from '../../../src/game/character/items.ts';
+import { newWorld } from '../../../src/game/world/new-world.ts';
 import { buy } from '../../../src/game/world/shop.ts';
 import { afterSale, drawnStock, shopStock } from '../../../src/game/world/shop-stock.ts';
 import { townHere } from '../../../src/game/world/town-prices.ts';
+import { createRng } from '../../../src/rules/rng.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { data, fullShop, member, world } from './helpers.ts';
 
@@ -43,6 +45,21 @@ describe("what a shop stocks (docs/rules-adaptation.md, Shop stock; Sam's calls)
     const w = world();
     for (const size of ['village', 'town', 'city'] as const)
       expect(ids(drawnStock(w, data, sized(w, size)))).toEqual(expect.arrayContaining(staples));
+  });
+
+  it('always sells Criminal Tools, Lastward too (Sam’s call: locks and chests)', () => {
+    expect(staples).toContain('criminal-tools');
+    const party = [
+      {
+        character: member(world(), 'Snag').character,
+        row: 0,
+        column: 0,
+        defaultAction: 'auto' as const,
+      },
+    ];
+    const vale = newWorld(data, createRng('vale-shop'), party, undefined, null, 'sealed-vale');
+    expect(townHere(vale, data).id).toBe('lastward');
+    expect(ids(shopStock(vale, data))).toContain('criminal-tools');
   });
 
   it('stocks a quarter of the rest in a village, half in a town, three quarters in a city', () => {

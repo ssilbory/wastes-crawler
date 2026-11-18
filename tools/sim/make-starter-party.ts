@@ -96,9 +96,23 @@ const party: [string, Partial<Choices>][] = [
   ],
 ];
 
+/** Gear added after creation, beyond each one's starting package. */
+const EXTRA: Record<string, string> = { lirael: 'criminal-tools', grukk: 'crowbar' };
+
 for (const [file, choices] of party) {
   const r = finishCharacter({ ...emptyChoices(), ...choices }, data, createRng(`starter-${file}`));
   if (!r.ok) throw new Error(`${file}: ${r.errors.join('; ')}`);
-  writeFileSync(`tools/sim/parties/starter/${file}.json`, exportCharacter(r.character));
+  // Sam's call: the Expert carries Criminal Tools and the bruiser a crowbar, for locks and chests.
+  const extra = EXTRA[file];
+  const character = extra
+    ? {
+        ...r.character,
+        inventory: [
+          ...r.character.inventory,
+          { id: extra, quantity: 1, location: 'stowed' as const },
+        ],
+      }
+    : r.character;
+  writeFileSync(`tools/sim/parties/starter/${file}.json`, exportCharacter(character));
 }
 console.log(`Wrote ${party.length} characters to tools/sim/parties/starter/.`);

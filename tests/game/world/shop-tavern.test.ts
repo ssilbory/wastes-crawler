@@ -153,9 +153,10 @@ describe('the shop (SRD 3.0 prices)', () => {
     expect(snag.character.inventory[5]?.quantity).toBe(1);
     expect(giveItem(w, data, 'm-0', 5, 'm-1')).toEqual({ ok: true });
     expect(snag.character.inventory).toHaveLength(6);
+    // Added to the crowbar Grukk carries already.
     expect(member(w, 'Grukk').character.inventory.at(-1)).toEqual({
       id: 'crowbar',
-      quantity: 2,
+      quantity: 3,
       location: 'stowed',
     });
     expect(giveItem(w, data, 'm-0', 5, 'm-3')).toEqual({ ok: true });
