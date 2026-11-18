@@ -36,7 +36,8 @@ export function arriveNpcs(w: World, data: GameData, townId: string): void {
     }
     if (n.kind !== 'captive') continue;
     const c = captiveOf(data, n.type);
-    if (c.destination !== townId) continue;
+    // One who waits settles instead, to run an institution (institutions.ts).
+    if (c.destination !== townId || c.waits) continue;
     removeNpc(w, n.id);
     w.purse = toTenths(w.purse + c.reward);
     for (const m of w.members) {

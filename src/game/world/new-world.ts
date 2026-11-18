@@ -75,6 +75,7 @@ export function newWorld(
     charted: {},
     light: { ...NO_LIGHT },
     rescues: [],
+    waiting: [],
     raising: { offer: null, accepted: null },
     projects: [],
     workshops: [],

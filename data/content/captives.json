@@ -115,5 +115,55 @@
     "reward": 70,
     "xp": 1,
     "text": "A gnome woodcutter, bitten and bled white, is chained to a bed among them."
+  },
+  {
+    "id": "vale-pit-master",
+    "name": "a chained pit master",
+    "monster": "peaceful-human",
+    "destination": "lastward",
+    "reward": 40,
+    "xp": 1,
+    "waits": true,
+    "text": "A broad man in chains watches the robbers dice for his boots."
+  },
+  {
+    "id": "vale-herbalist",
+    "name": "Lastward's old herbalist",
+    "monster": "peaceful-human",
+    "destination": "lastward",
+    "reward": 80,
+    "xp": 1,
+    "waits": true,
+    "text": "An old herbalist, roped to a pipe, hums to keep the ghouls at bay."
+  },
+  {
+    "id": "vale-sexton",
+    "name": "a sexton of the drowned yard",
+    "monster": "peaceful-human",
+    "destination": "lastward",
+    "reward": 30,
+    "xp": 1,
+    "waits": true,
+    "text": "A sexton stands chest-deep in the outfall, held there by the drowned."
+  },
+  {
+    "id": "vale-grey-priest",
+    "name": "a grey-robed Priest of Death",
+    "monster": "peaceful-human",
+    "destination": "lastward",
+    "reward": 80,
+    "xp": 2,
+    "waits": true,
+    "text": "A grey-robed priest kneels on a ledge above the cistern, praying for the things that hold him."
+  },
+  {
+    "id": "vale-blood-priest",
+    "name": "a Blood Priest kept for the Warden",
+    "monster": "peaceful-human",
+    "destination": "lastward",
+    "reward": 80,
+    "xp": 2,
+    "waits": true,
+    "text": "A Blood Priest sits shackled in a guard cell, kept for some use of the Warden's."
   }
 ]

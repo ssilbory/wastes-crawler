@@ -7,7 +7,7 @@ import { progressOf } from '../../src/game/world/major-projects.ts';
 import { addNpc } from '../../src/game/world/npcs.ts';
 import { projectsView } from '../../src/render/project-view.ts';
 import { createRng } from '../../src/rules/rng.ts';
-import { data, starter, world } from '../game/world/helpers.ts';
+import { data, starter, valeShut, world } from '../game/world/helpers.ts';
 
 function inCinderhold(): World {
   const w = world();
@@ -111,13 +111,31 @@ describe('projects view (docs/rules-adaptation.md, Major projects)', () => {
     expect(v.projects.find((p) => p.id === 'secure-ash-road')?.adventures[0]?.done).toBe(true);
   });
 
-  it('shows nothing in a realm without projects (the Sealed Vale)', () => {
+  it('shows nothing in a realm without projects', () => {
+    const party = [
+      { character: starter('snag'), row: 0, column: 0, defaultAction: 'auto' as const },
+    ];
+    const w = newWorld(valeShut, createRng('realm'), party, undefined, null, 'sealed-vale');
+    w.renown = 5;
+    expect(projectsView(w, valeShut)).toMatchObject({ renown: 0, projects: [] });
+  });
+
+  it('shows the Sealed Vale’s institutions to found in Lastward, with no one to ask for help', () => {
     const party = [
       { character: starter('snag'), row: 0, column: 0, defaultAction: 'auto' as const },
     ];
     const w = newWorld(data, createRng('realm'), party, undefined, null, 'sealed-vale');
     w.renown = 5;
-    expect(projectsView(w, data)).toMatchObject({ renown: 0, projects: [] });
+    const v = projectsView(w, data);
+    expect(v).toMatchObject({ renown: 5, ally: null, projects: [] });
+    // Lastward is a town, so it has a workshop already.
+    expect(v.foundable.map((f) => f.service)).toEqual([
+      'arena',
+      'alchemist',
+      'crypt',
+      'mortuary',
+      'temple',
+    ]);
   });
 
   it('shows the Wastes’ own projects on the party’s map, helped by the Well-Keepers', () => {

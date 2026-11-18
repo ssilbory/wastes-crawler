@@ -43,6 +43,7 @@
     "text": "A vale ringed by impassable peaks, with one town, Lastward, and the ruins of Harrowmere: its streets, three levels of sewers, and the Warden's six-floor tower, trapped and guarded on every floor. One pass leads out, held by five bound posts, each worse than the last; the outermost wants a party of 15th level. No quests, factions, or raids.",
     "regions": ["sealed-vale"],
     "start": "sealed-vale",
+    "projects": true,
     "ending": {
       "region": "sealed-vale",
       "col": 23,

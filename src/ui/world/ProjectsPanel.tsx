@@ -16,7 +16,8 @@ export function ProjectsPanel(props: { world: World; onChange: () => void }) {
   const w = props.world;
   const [message, setMessage] = useState<string | null>(null);
   const view = projectsView(w, data);
-  if (view.projects.length === 0) return null;
+  // The Sealed Vale lists no projects of its own: its first is an institution founded in Lastward.
+  if (view.projects.length === 0 && view.foundable.length === 0) return null;
   const act = (r: { ok: true } | { ok: false; reason: string }) => {
     setMessage(r.ok ? null : r.reason);
     props.onChange();

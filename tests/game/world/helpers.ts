@@ -91,3 +91,14 @@ export function siege(over: Partial<Siege> = {}): Siege {
     ...over,
   };
 }
+
+/** The game with the Sealed Vale's projects taken away: a realm where nothing can be built. */
+export const valeShut: GameData = {
+  ...data,
+  content: {
+    ...data.content,
+    realms: data.content.realms.map((r) =>
+      r.id === 'sealed-vale' ? { ...r, projects: false } : r,
+    ),
+  },
+};

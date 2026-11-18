@@ -11,7 +11,7 @@ import { ComponentTypeSchema } from './crafting-content.ts';
 import { SiegeFightSchema, SiegeSchema } from './siege-state.ts';
 import { ChestStateSchema, DoorStateSchema } from './chest-state.ts';
 
-export const WORLD_SCHEMA_VERSION = 56;
+export const WORLD_SCHEMA_VERSION = 57;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -439,6 +439,8 @@ export const WorldSaveSchema = z.strictObject({
   light: LightSchema,
   /** Dungeon captives freed, as "dungeon/level/x,y": each rescue happens once per world. */
   rescues: z.array(z.string()),
+  /** Freed captives waiting at home to run an institution not yet founded there (captive `waits`). */
+  waiting: z.array(z.strictObject({ captive: IdSchema, name: z.string(), town: IdSchema })),
   /** The raising quest on offer, and the day one was last taken (once a month). */
   raising: RaisingSchema,
   /** Crafting under way. */

@@ -52,5 +52,10 @@ export const CaptiveSchema = z.strictObject({
   /** XP for each PC in the party on delivery. */
   xp: z.number().min(0).multipleOf(0.5),
   text: z.string().min(1),
+  /**
+   * Home in a town no journeyman can reach, they stay there to run an institution they can, now or
+   * once it is founded, and take no reward (Sam's call: the Sealed Vale's specialists).
+   */
+  waits: z.literal(true).optional(),
 });
 export type Captive = z.infer<typeof CaptiveSchema>;
