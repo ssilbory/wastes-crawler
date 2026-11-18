@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   actsOnInstinct,
   footChase,
+  givesUp,
   killingBlowBonus,
   moraleHolds,
   partyActsFirst,
@@ -25,6 +26,17 @@ describe('combat checks', () => {
     expect(moraleHolds(scriptedRng([6, 6]), 12)).toBe(true);
     expect(actsOnInstinct(scriptedRng([3]), 3)).toBe(true);
     expect(actsOnInstinct(scriptedRng([4]), 3)).toBe(false);
+  });
+
+  it('has beaten foes give up on a 5 or 6 of 1d6, one time in three (Sam’s call)', () => {
+    expect([1, 2, 3, 4, 5, 6].map((face) => givesUp(scriptedRng([face])))).toEqual([
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+    ]);
   });
 
   it('adds a Morale bonus but never past 12', () => {

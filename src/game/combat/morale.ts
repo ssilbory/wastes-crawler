@@ -2,10 +2,11 @@
 // group loses its first member, and when the side starts visibly losing (half its number down).
 // In a boss fight the boss never checks, and its side stands firmer while it stands (Sam's call:
 // boss fights should be hard). Creatures that hold make an Instinct check (SRD 5.4.2).
-// A row that breaks surrenders or tries to escape by SRD 2.6.1's foot chase (vendor/wwn-srd/2.0
+// A row that breaks surrenders (one time in three; the rest get away) or tries to escape by SRD
+// 2.6.1's foot chase (vendor/wwn-srd/2.0
 // The Rules of the Game/2.6.0 Chases and Pursuit.md; Phase 19: Morale, escape, and surrender).
 // Sides in the party formation don't check.
-import { actsOnInstinct, footChase, moraleHolds } from '../../rules/combat.ts';
+import { actsOnInstinct, footChase, givesUp, moraleHolds } from '../../rules/combat.ts';
 import { UNTRAINED_PENALTY } from '../../rules/checks.ts';
 import { say } from './damage.ts';
 import { canAct, foeSide } from './targeting.ts';
@@ -50,8 +51,17 @@ const yields = (b: Battle, c: Combatant) =>
 
 const names = (list: Combatant[]) => list.map((c) => c.name).join(', ');
 
-function surrender(b: Battle, list: Combatant[], how: string): void {
+/**
+ * Those who would give up: one time in three they do, and two in three they get away instead
+ * (Sam's call; rules/combat.ts, givesUp). One roll for them all.
+ */
+function surrender(b: Battle, list: Combatant[], how: string, away: string): void {
   if (list.length === 0) return;
+  if (!givesUp(b.rng)) {
+    for (const c of list) c.status = 'fled';
+    say(b, `${names(list)} ${away}.`);
+    return;
+  }
   for (const c of list) Object.assign(c, { status: 'fled', surrendered: true });
   say(b, `${names(list)} ${how}.`);
 }
@@ -80,12 +90,13 @@ function escape(b: Battle, side: SideId, fleeing: Combatant[]): void {
     b,
     runners.filter((c) => yields(b, c)),
     'are run down and surrender',
+    'are run down, but break free and get away',
   );
   const cornered = runners.filter((c) => !yields(b, c));
   if (cornered.length > 0) say(b, `${names(cornered)}, cornered, fight on.`);
 }
 
-/** A broken row: people surrender to stronger or faster foes, else run; beasts run. */
+/** A broken row: people may surrender to stronger or faster foes, else run; beasts run. */
 function breakRow(b: Battle, side: SideId, members: Combatant[]): void {
   const pursuers = fighters(b, side === 'party' ? 'enemy' : 'party');
   const outnumbered = pursuers.length > fighters(b, side).length;
@@ -94,7 +105,12 @@ function breakRow(b: Battle, side: SideId, members: Combatant[]): void {
     Math.min(...pursuers.map((c) => c.move)) > Math.max(...members.map((c) => c.move));
   const hopeless = outnumbered || outrun;
   const givers = hopeless ? members.filter((c) => yields(b, c) && !c.blink) : [];
-  surrender(b, givers, 'throw down their arms and surrender');
+  surrender(
+    b,
+    givers,
+    'throw down their arms and surrender',
+    'scatter and get away before they can be taken',
+  );
   escape(
     b,
     side,
