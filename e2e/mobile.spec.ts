@@ -1,5 +1,6 @@
 import { devices, expect, test, type Page } from '@playwright/test';
 import { importAndOpen } from './wizard.ts';
+import { closeWindow, openWindow } from './windows.ts';
 
 // Phones, installing, and offline play: the About page, the full-screen toggle, the web app
 // manifest and service worker, and the world screens at phone width.
@@ -97,15 +98,16 @@ test.describe('on a phone', () => {
     expect(box?.width).toBeGreaterThan(300);
     await fitsWidth(page);
 
-    // The readouts take one row, and Export and Abandon wait behind More, so the map starts high.
+    // The readouts take one row, and Export and Abandon wait in the ☰ menu's Save window, so the
+    // map starts high.
     const status = await page.locator('.bar-status').boundingBox();
     expect(status?.height).toBeLessThan(60);
     expect(box?.y).toBeLessThan(240);
     await expect(page.getByRole('button', { name: 'Export save' })).toBeHidden();
-    await page.getByRole('button', { name: 'More' }).tap();
+    await openWindow(page, 'Save');
     await expect(page.getByRole('button', { name: 'Export save' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Abandon world' })).toBeVisible();
-    await page.getByRole('button', { name: 'More' }).tap();
+    await closeWindow(page);
     await expect(page.getByRole('button', { name: 'Abandon world' })).toBeHidden();
 
     // Every control on the screen is big enough to tap.

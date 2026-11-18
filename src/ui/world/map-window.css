@@ -1,0 +1,17 @@
+/* A window from the overland map's ☰ menu (MapWindows.tsx): over the whole screen, the menu
+   button included, until it is closed. */
+.pop-out.map-window {
+  position: fixed;
+  z-index: 30;
+  border-radius: 0;
+}
+
+.map-window .pop-out-card .panel {
+  border-color: var(--accent);
+}
+
+.map-window-foot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}

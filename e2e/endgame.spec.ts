@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { closeWindow, openWindow } from './windows.ts';
 
 // Phase 12d: crafter's notes are sold to a warlord's agent, advancing the warlord's clock, and once
 // the warlord is dead the party decides the Seal of Command's fate at Elder Gorvash.
@@ -43,13 +44,14 @@ async function inCinderhold(page: Page, seed: string, extra: string) {
 
 test("sells crafter's notes to a warlord's agent", async ({ page }) => {
   await inCinderhold(page, 'notes-e2e', `save.notes = { 'vats-notes': 'found' };`);
-  const panel = page.getByRole('region', { name: 'Orders and sieges' });
+  const panel = await openWindow(page, 'Orders and sieges');
   const notes = panel.getByRole('group', { name: "the vat-master's notes" });
   await expect(notes).toContainText("The party carries the vat-master's notes.");
   await notes.getByRole('button', { name: "Sell to a warlord's agent" }).click();
   await expect(panel).toContainText("The warlord's clock: 1 of 6.");
-  await expect(page.locator('.world-bar')).toContainText('Purse: 150 crowns');
   await expect(notes).toHaveCount(0);
+  await closeWindow(page);
+  await expect(page.locator('.world-bar')).toContainText('Purse: 150 crowns');
 });
 
 test('destroys the Seal of Command, and the epilogue follows', async ({ page }, testInfo) => {

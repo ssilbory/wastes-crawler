@@ -72,6 +72,21 @@ const laysToRest = (data: GameData, m: Member) =>
     ([id, l]) => l >= 1 && classOption(data, id)?.mage?.laysToRest,
   );
 
+/**
+ * Why the member can't raise a corpse here now, or null if they can: the spell, a corpse, the
+ * raised dead they may keep, and room in the party.
+ */
+export function cannotRaise(w: World, data: GameData, m: Member | undefined): string | null {
+  const why = cannotCast(data, m, 'raise-corpse');
+  if (why) return why;
+  const caster = m as Member;
+  if (corpsesHere(w).length === 0) return 'There are no corpses here.';
+  if (servants(w, caster).filter(isRaised).length >= castLevel(caster, 'raise-corpse'))
+    return `${caster.character.name} can keep no more raised dead.`;
+  if (!npcRoom(w, true)) return 'There is no room in the party.';
+  return null;
+}
+
 /** Raise Corpse: a corpse here rises as a zombie, or a skeleton. */
 export function raiseCorpse(
   w: World,
@@ -80,13 +95,9 @@ export function raiseCorpse(
   form: RaisedForm,
 ): TownResult {
   const m = find(w, memberId);
-  const why = cannotCast(data, m, 'raise-corpse');
+  const why = cannotRaise(w, data, m);
   if (why) return no(why);
   const caster = m as Member;
-  if (corpsesHere(w).length === 0) return no('There are no corpses here.');
-  if (servants(w, caster).filter(isRaised).length >= castLevel(caster, 'raise-corpse'))
-    return no(`${caster.character.name} can keep no more raised dead.`);
-  if (!npcRoom(w, true)) return no('There is no room in the party.');
   spendCast(data, caster, 'raise-corpse');
   (w.corpses as NonNullable<World['corpses']>).hitDice.shift();
   const npc = serve(w, data, caster, RAISED[form]);
@@ -109,17 +120,29 @@ export function mendCorpse(w: World, data: GameData, memberId: string, npcId: st
   return OK;
 }
 
+/**
+ * Why the member can't raise a Grave Knight here now, or null if they can: the spell, a corpse of
+ * 4 hit dice or more, having none already, and room in the party.
+ */
+export function cannotRaiseKnight(w: World, data: GameData, m: Member | undefined): string | null {
+  const why = cannotCast(data, m, 'raise-grave-knight');
+  if (why) return why;
+  const caster = m as Member;
+  if (!corpsesHere(w).some((hd) => hd >= 4))
+    return 'There is no corpse of 4 hit dice or more here.';
+  if (servants(w, caster).some((n) => n.type === GRAVE_KNIGHT))
+    return `${caster.character.name} already has a Grave Knight.`;
+  if (!npcRoom(w, true)) return 'There is no room in the party.';
+  return null;
+}
+
 /** Raise Grave Knight: a corpse of 4 hit dice or more rises as the caster's one Grave Knight. */
 export function raiseGraveKnight(w: World, data: GameData, memberId: string): TownResult {
   const m = find(w, memberId);
-  const why = cannotCast(data, m, 'raise-grave-knight');
+  const why = cannotRaiseKnight(w, data, m);
   if (why) return no(why);
   const caster = m as Member;
   const corpse = corpsesHere(w).findIndex((hd) => hd >= 4);
-  if (corpse < 0) return no('There is no corpse of 4 hit dice or more here.');
-  if (servants(w, caster).some((n) => n.type === GRAVE_KNIGHT))
-    return no(`${caster.character.name} already has a Grave Knight.`);
-  if (!npcRoom(w, true)) return no('There is no room in the party.');
   spendCast(data, caster, 'raise-grave-knight');
   (w.corpses as NonNullable<World['corpses']>).hitDice.splice(corpse, 1);
   serve(w, data, caster, GRAVE_KNIGHT);

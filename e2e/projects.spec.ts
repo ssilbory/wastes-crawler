@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { closeWindow, inWindow, openWindow } from './windows.ts';
 
 // Phase 22a: major projects (docs/rules-adaptation.md, Major projects). Renown and crowns go into a
 // project from a settlement on its map, and a project with no building work is done the moment
@@ -35,7 +36,7 @@ async function patch(page: Page, fields: Record<string, unknown>) {
 test('puts Renown and crowns into a project, and finishes it once covered', async ({ page }) => {
   await begin(page);
   await patch(page, { renown: 5, purse: 100 });
-  const panel = page.getByRole('region', { name: 'Projects' });
+  const panel = await openWindow(page, 'Projects');
   await expect(panel).toContainText('Renown: 5');
   await panel.getByText('Secure the West Road').click();
   await expect(panel).toContainText('Against it: the coast raiders (minor figures).');
@@ -55,7 +56,7 @@ test('pays for a project’s materials on site and spends a day building', async
   await begin(page);
   // Scrapmarch, where the pumps are worked from.
   await patch(page, { purse: 400, position: { col: 20, row: 8 }, visited: ['3,8', '20,8'] });
-  const panel = page.getByRole('region', { name: 'Projects' });
+  const panel = await openWindow(page, 'Projects');
   await panel.getByText('Restart the Scrapmarch Pumps').click();
   await expect(panel).toContainText('When done: Hexes within 3 of Scrapmarch fill the water die');
   const build = panel.getByRole('group', { name: 'Build Restart the Scrapmarch Pumps' });
@@ -72,17 +73,19 @@ test('founds a workshop in a village and hires its smith in a town', async ({ pa
   await begin(page);
   // Grimcairn, a village with no workshop.
   await patch(page, { purse: 400, position: { col: 17, row: 4 }, visited: ['3,8', '17,4'] });
-  const panel = page.getByRole('region', { name: 'Projects' });
+  const panel = await openWindow(page, 'Projects');
   await panel.getByRole('button', { name: 'Found a workshop' }).click();
   await panel.getByText('A workshop in Grimcairn', { exact: true }).click();
   await expect(panel).toContainText('Needs a journeyman smith.');
   await expect(panel).toContainText('Hire a journeyman smith in a town that has a workshop.');
   // Back in Rubblegate, which has one.
   await patch(page, { position: { col: 3, row: 8 } });
+  await openWindow(page, 'Projects');
   await panel.getByText('A workshop in Grimcairn', { exact: true }).click();
   await panel.getByRole('button', { name: 'Hire a journeyman smith (100 crowns)' }).click();
-  await expect(page.getByRole('region', { name: 'NPCs' })).toContainText(
-    'journeyman, bound for Grimcairn to run a workshop',
+  await closeWindow(page);
+  await inWindow(page, 'NPCs', (npcs) =>
+    expect(npcs).toContainText('journeyman, bound for Grimcairn to run a workshop'),
   );
 });
 
@@ -113,7 +116,7 @@ test('begins a Working led by a 6th-level mage', async ({ page }) => {
   }, WORLD_KEY);
   await page.reload();
   await page.getByRole('button', { name: 'Continue journey' }).click();
-  const panel = page.getByRole('region', { name: 'Workings' });
+  const panel = await openWindow(page, 'Workings');
   await panel.getByText('Watch-lamps', { exact: true }).click();
   await expect(panel).toContainText('Fizzwick leads: 12 points');
   await panel.getByRole('button', { name: 'Begin (240 crowns, 51 days)' }).click();

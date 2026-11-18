@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { inWindow } from './windows.ts';
 
 // Phase 7: go down into the Old Barrow from the hex map, walk both levels in first person, and climb
 // back out. The movement rules are covered by unit tests; the screenshots pin the renderer.
@@ -334,7 +335,7 @@ test('delves to the stairs and back with fights, a trap, a camp, and a rescue', 
   await go(page, 'awwwdwwawwwwwdwwwwww');
   await page.getByRole('button', { name: 'Climb out of The Old Barrow' }).click();
   await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
-  await expect(page.getByRole('region', { name: 'NPCs' })).toContainText('grave-digger');
+  await inWindow(page, 'NPCs', (npcs) => expect(npcs).toContainText('grave-digger'));
   await page.screenshot({ path: testInfo.outputPath('delve-out.png'), fullPage: true });
 });
 

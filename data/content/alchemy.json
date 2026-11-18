@@ -269,6 +269,7 @@
       "item": "antidote",
       "difficulty": 8,
       "weight": 0,
+      "text": "A sharp, chalky draught that neutralizes a lingering poison at once. It weighs nothing in a pack.",
       "components": [
         {
           "type": "essence",

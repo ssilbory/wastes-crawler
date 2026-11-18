@@ -78,6 +78,8 @@ export const AlchemyContentSchema = z.strictObject({
         /** The most doses one batch may make, if fewer than any batch (Sam's call: Tabula Rasa, 1). */
         maxDoses: z.int().min(1).optional(),
         components: z.array(z.strictObject({ type: ComponentTypeSchema, count: z.int().min(1) })),
+        /** What it does, for an item that is not a potion; a potion has its own text. */
+        text: z.string().min(1).optional(),
       }),
     )
     .min(1),

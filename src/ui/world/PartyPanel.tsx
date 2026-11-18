@@ -9,13 +9,13 @@ import type { Character } from '../../data/schemas/index.ts';
 const percent = (c: Character) => Math.round((Math.max(0, c.hp.current) / c.hp.max) * 100);
 
 function tags(m: Member): string[] {
-  if (m.dead) return ['dead'];
+  // Dead and Frail are in the card's first line, not chips under it.
+  if (m.dead) return [];
   return [
     m.reviving && 'unconscious',
     m.hungry && 'Hungry',
     m.sleepless && 'Sleepless',
     m.cold && 'Cold',
-    m.frail && 'Frail',
     m.poisoned && 'Poisoned',
     m.disease && findDisease(data, m.disease.id).name,
     m.character.strain.broken && 'Broken',
@@ -24,7 +24,8 @@ function tags(m: Member): string[] {
 }
 
 /**
- * Each member's health, strain, and conditions. As a `strip` it runs across the status bar, one
+ * Each member's health, strain, and conditions, kept to one line where it can be (Sam's call):
+ * strain reads Str, Frail is a big F beside it, and Dead stands in for the numbers. As a `strip` it runs across the status bar, one
  * small card a member, so it stays on screen while the rest scrolls (party-strip.css); the level
  * line moves into each card's hover text there.
  */
@@ -46,7 +47,20 @@ export function PartyPanel(props: { members: Member[]; strip?: boolean }) {
               <span class="member-head">
                 <strong>{c.name}</strong>
                 <span class="slot-stats">
-                  HP {c.hp.current}/{c.hp.max} · Strain {c.strain.value}/{max}
+                  {m.dead ? (
+                    'Dead'
+                  ) : (
+                    <>
+                      HP {c.hp.current}/{c.hp.max} · <abbr title="System Strain">Str</abbr>{' '}
+                      {c.strain.value}/{max}
+                      {m.frail && (
+                        <b class="frail-mark" title="Frail">
+                          <span aria-hidden="true">F</span>
+                          <span class="sr-only">Frail</span>
+                        </b>
+                      )}
+                    </>
+                  )}
                 </span>
               </span>
               <span class={`hp-bar ${hpLevel(percent(c))}`} aria-hidden="true">

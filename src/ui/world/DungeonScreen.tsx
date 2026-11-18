@@ -27,6 +27,7 @@ import { FormsPanel } from './FormsPanel.tsx';
 import { ConjunctPanel } from './ConjunctPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
 import { LockPopOut } from './LockPopOut.tsx';
+import { DeadPopOut, useDeadAsk } from './DeadAsk.tsx';
 import { PactPanel } from './PactPanel.tsx';
 import { SorceryPanel } from './SorceryPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
@@ -83,6 +84,8 @@ export function DungeonScreen(props: {
   const w = props.world;
   // Asks about reviving the fallen before the party moves on (Sam's call).
   const revive = useReviveAsk(w);
+  const dead = useDeadAsk(w);
+  const deadOpen = dead.offer !== null && !revive.open && !surrenderOpen(w);
   const s = w.dungeon as NonNullable<World['dungeon']>;
   const [bump, setBump] = useState<string | null>(null);
   // The view's motion after each move, numbered so the same motion twice plays twice.
@@ -266,9 +269,10 @@ export function DungeonScreen(props: {
           {!revive.open && surrenderOpen(w) && (
             <SurrenderPopOut world={w} onChange={props.onChange} />
           )}
+          {deadOpen && <DeadPopOut world={w} ask={dead} onChange={props.onChange} />}
           <LockPopOut
             world={w}
-            hidden={revive.open || surrenderOpen(w)}
+            hidden={revive.open || surrenderOpen(w) || deadOpen}
             onChange={props.onChange}
           />
         </div>

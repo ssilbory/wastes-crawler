@@ -11,6 +11,7 @@ import {
 import { partsText } from '../../game/world/components.ts';
 import type { World } from '../../game/world/types.ts';
 import { daysText } from '../../game/world/wording.ts';
+import { brewText } from '../../render/brew-view.ts';
 import { crowns } from '../../render/town-view.ts';
 import { data } from '../builder/data.ts';
 import type { Act } from './TownScreen.tsx';
@@ -74,6 +75,12 @@ export function BrewPanel(props: { world: World; act: Act }) {
               ))}
             </select>
           </label>{' '}
+          {/* What the chosen brew does, before the party pays for it. */}
+          {brewText(data, item) && (
+            <p class="brew-text" aria-live="polite">
+              <strong>{brewItem(data, item).name}:</strong> {brewText(data, item)}
+            </p>
+          )}
           <p class="hint">
             Int/Alchemy against {brewDifficulty(data, item, doses)}, +1 with another brewer in the
             party; a failed brew is lost. Takes an {alchemy.kit.name} and{' '}

@@ -29,6 +29,7 @@
   }
 
   .app-menu-list a,
+  .app-menu-list .app-menu-pick,
   .app-menu-list .app-menu-item {
     padding: 10px 14px;
   }
@@ -91,6 +92,12 @@
   .world-bar .bar-actions button {
     padding: 4px 7px;
     font-size: 0.85rem;
+  }
+
+  /* The overland map's ☰ menu has Characters, Formation, and Inventory (MapWindows.tsx), so the
+     bar gives their row to the map. */
+  .map-screen .bar-party {
+    display: none;
   }
 
   .world-bar .bar-go {

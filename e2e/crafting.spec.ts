@@ -189,3 +189,25 @@ test('builds a mod, keeps it up in camp, and commissions a magic sword', async (
   await expect(log).toContainText('Snag collects the +1 Sword, Long from Hagen the Smith.');
   await page.screenshot({ path: testInfo.outputPath('craftsman.png'), fullPage: true });
 });
+
+test('describes the brew picked, before the party pays for it', async ({ page }) => {
+  await start(page);
+  // Fizzwick takes up alchemy.
+  await page.evaluate((key) => {
+    const save = JSON.parse(localStorage.getItem(key) as string);
+    save.members.find(
+      (m: { character: { name: string } }) => m.character.name === 'Fizzwick',
+    ).character.skills.alchemy = 0;
+    localStorage.setItem(key, JSON.stringify(save));
+  }, WORLD_KEY);
+  await page.reload();
+  await page.getByRole('button', { name: 'Continue journey' }).click();
+  await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
+  await page.getByRole('tab', { name: 'Workshop' }).click();
+  const brew = page.getByRole('region', { name: 'Brew' });
+  await expect(brew).toContainText('Healing Draught: A red, bitter draught that knits flesh');
+  await brew.getByRole('combobox', { name: /^Brew(?!er)/ }).selectOption({ label: 'Waking Tonic' });
+  await expect(brew).toContainText('Waking Tonic: A hot, peppery tonic');
+  await brew.getByRole('combobox', { name: /^Brew(?!er)/ }).selectOption({ label: 'Antidote' });
+  await expect(brew).toContainText('Antidote: A sharp, chalky draught that neutralizes');
+});

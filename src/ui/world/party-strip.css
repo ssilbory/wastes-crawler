@@ -77,3 +77,16 @@
   font-size: 0.72rem;
   line-height: 15px;
 }
+
+/* Frail: a big F after the numbers, on their line (PartyPanel.tsx). */
+.party-panel .frail-mark {
+  margin-left: 6px;
+  font-size: 1.25em;
+  line-height: 1;
+  font-weight: 700;
+  color: var(--accent-hi);
+}
+
+.party-panel .slot-stats abbr {
+  text-decoration: none;
+}

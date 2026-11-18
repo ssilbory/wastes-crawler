@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { inWindow } from './windows.ts';
 
 // Phase 6c: hirelings, parley, and rescues in the browser; the rules behind them are covered by
 // unit tests.
@@ -44,7 +45,7 @@ test('hires a guard at the tavern', async ({ page }) => {
   const npcs = page.getByRole('region', { name: 'NPCs' });
   await expect(npcs).toContainText('Aldo Guard, a quarter share');
   await page.getByRole('button', { name: 'Back to the map' }).click();
-  await expect(page.getByRole('region', { name: 'NPCs' })).toContainText('Aldo');
+  await inWindow(page, 'NPCs', (panel) => expect(panel).toContainText('Aldo'));
 });
 
 test('bribes captors to free a captive, then brings them home', async ({ page }, testInfo) => {
@@ -63,9 +64,9 @@ test('bribes captors to free a captive, then brings them home', async ({ page },
   await expect(encounter.getByRole('group', { name: 'Parley' })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath('npc-parley.png'), fullPage: true });
   await encounter.getByRole('button', { name: /^Bribe \(10 crowns\)$/ }).click();
-  await expect(page.getByRole('region', { name: 'NPCs' })).toContainText('A captured merchant');
   await encounter.getByRole('button', { name: 'Let them pass' }).click();
   await expect(page.getByRole('region', { name: 'Encounter' })).toHaveCount(0);
+  await inWindow(page, 'NPCs', (panel) => expect(panel).toContainText('A captured merchant'));
 
   // One hex east along the road is Scrapmarch, the merchant's home.
   await page.locator('[data-hex="20,8"]').click();

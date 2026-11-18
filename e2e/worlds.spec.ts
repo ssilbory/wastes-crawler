@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { inWindow, openWindow } from './windows.ts';
 
 // Worlds on custom maps (Sam's calls): create a new world on the Overland start screen, or pick a
 // map saved in the map editor, and play on it without the campaign's story. The shipped realms
@@ -63,7 +64,7 @@ test('plays the Sealed Vale, a world shipped beside the campaign', async ({ page
   await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
   // The party can build in Lastward (Sam's call): its first project is an institution, run by a
   // specialist freed from Harrowmere.
-  const projects = page.getByRole('region', { name: 'Projects' });
+  const projects = await openWindow(page, 'Projects');
   await projects.getByRole('button', { name: 'Found an arena' }).click();
   await expect(projects).toContainText('Needs an arena master.');
   await expect(projects).toContainText('No journeyman can reach The Sealed Vale');
@@ -123,8 +124,10 @@ test('plays the Wastes, a shipped realm of five maps', async ({ page }) => {
   await expect(intro).toContainText('shuts its gates to you');
   await intro.getByRole('button', { name: 'Begin the journey' }).click();
   await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
-  await expect(page.getByRole('region', { name: 'Warlords' })).toContainText(
-    "The Scrap King, The Dust Fringe: holds The Scrap King's Pumpworks",
+  await inWindow(page, 'Warlords', (warlords) =>
+    expect(warlords).toContainText(
+      "The Scrap King, The Dust Fringe: holds The Scrap King's Pumpworks",
+    ),
   );
   await page.reload();
   await expect(page.getByText(/Slot 1: .* · The Wastes · Dustwell · /)).toBeVisible();

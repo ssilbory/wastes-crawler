@@ -31,6 +31,7 @@
 /* The readouts' box only matters on a phone (mobile.css). The rarely used actions fold behind
    More (BarMore.tsx), so the bar keeps to one row. */
 .bar-status,
+.bar-party,
 .bar-more,
 .bar-more-items {
   display: contents;

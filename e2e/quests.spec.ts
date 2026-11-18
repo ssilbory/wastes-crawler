@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { closeWindow, inWindow, openWindow } from './windows.ts';
 
 // The Phase 6 exit criterion (docs/plan.md): accept a quest in town, complete it on the hex map,
 // and collect the reward.
@@ -78,13 +79,13 @@ test('takes a quest in town, finishes it on the map, and collects the reward', a
   await page.getByRole('button', { name: 'Back to the map' }).click();
 
   const log = page.getByRole('region', { name: 'Journey log' });
-  const quests = page.getByRole('region', { name: 'Quests' });
-  await expect(quests).toContainText('The Raider Camp');
+  await inWindow(page, 'Quests', (quests) => expect(quests).toContainText('The Raider Camp'));
   await walk(page, '6,12', async () => (await log.innerText()).includes('The Raider Camp: done.'));
-  await expect(quests).toContainText(
-    'Done: return to Reeve Halda in Rubblegate (3,8) for the reward.',
+  await openWindow(page, 'Quests').then((quests) =>
+    expect(quests).toContainText('Done: return to Reeve Halda in Rubblegate (3,8) for the reward.'),
   );
   await page.screenshot({ path: testInfo.outputPath('quest-done.png'), fullPage: true });
+  await closeWindow(page);
 
   await walk(page, '3,8', () => page.getByRole('button', { name: 'Visit Rubblegate' }).isVisible());
   await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
