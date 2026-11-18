@@ -20,7 +20,7 @@ import { newWorld } from '../../../src/game/world/new-world.ts';
 import { parseWorld, serializeWorld } from '../../../src/game/world/save.ts';
 import type { World } from '../../../src/game/world/types.ts';
 import { createRng } from '../../../src/rules/rng.ts';
-import { data, starter, world } from './helpers.ts';
+import { data, starter, valeShut, world } from './helpers.ts';
 
 /** A campaign world standing in Cinderhold, on the Dark Lands map. */
 function inCinderhold(): World {
@@ -93,13 +93,13 @@ describe('earning Renown (docs/rules-adaptation.md, Major projects: Earning Reno
     expect(w.log.length).toBe(lines);
   });
 
-  it('earns nothing in a realm without projects (the Sealed Vale)', () => {
+  it('earns nothing in a realm without projects', () => {
     const party = [
       { character: starter('snag'), row: 0, column: 0, defaultAction: 'auto' as const },
     ];
-    const w = newWorld(data, createRng('realm'), party, undefined, null, 'sealed-vale');
-    emit(w, data, { kind: 'quest-done', quest: 'bandit-camp' });
-    emit(w, data, { kind: 'fight-won', quest: null, garrison: hoard });
+    const w = newWorld(valeShut, createRng('realm'), party, undefined, null, 'sealed-vale');
+    emit(w, valeShut, { kind: 'quest-done', quest: 'bandit-camp' });
+    emit(w, valeShut, { kind: 'fight-won', quest: null, garrison: hoard });
     expect(w.renown).toBe(0);
   });
 

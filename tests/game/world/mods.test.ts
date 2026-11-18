@@ -323,8 +323,16 @@ describe('building mods (SRD 2.8.2)', () => {
 
   it('strips a mod in a day, giving its components back', () => {
     const w = stocked();
-    // The stocked party has no room to spare, so the food stays behind.
+    // The stocked party has no room to spare, so the food, Grukk's crowbar, and Lirael's Criminal
+    // Tools stay behind.
     w.rations = 0;
+    for (const m of w.members)
+      m.character = {
+        ...m.character,
+        inventory: m.character.inventory.filter(
+          (e) => e.id !== 'crowbar' && e.id !== 'criminal-tools',
+        ),
+      };
     const s = snag(w);
     s.character = {
       ...s.character,

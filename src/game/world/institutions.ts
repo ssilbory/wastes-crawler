@@ -3,8 +3,10 @@
 // institution where a settlement lacks the service (a settlement keeps at most one place that
 // raises the dead); it is then a major project like any other. Its specialist is a journeyman hired
 // at a tavern where that service already stands, who travels with the party as a non-combatant and
-// settles on reaching the place, or a freed captive who settles there instead of going home. The
-// party's own arena pays it a share of a month of its fees as each month begins.
+// settles on reaching the place, or a freed captive who settles there instead of going home. A
+// captive who waits (the Sealed Vale's, Sam's call) settles on reaching home, or waits there until
+// the party founds an institution they can run. The party's own arena pays it a share of a month of
+// its fees as each month begins.
 import type { ArenaBout } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
 import { builtArena } from './built-services.ts';
@@ -72,8 +74,17 @@ export function foundInstitution(w: World, data: GameData, service: Service): To
   const town = currentTown(w, data) as NonNullable<ReturnType<typeof currentTown>>;
   const id = institutionId(service, town.id);
   progressFor(w, id);
-  const name = data.content.projects.institutions.find((x) => x.service === service)?.name;
-  note(w, `The party sets out to found ${name} in ${town.name}.`);
+  const i = data.content.projects.institutions.find((x) => x.service === service);
+  note(w, `The party sets out to found ${i?.name} in ${town.name}.`);
+  // A freed captive waiting here takes it on at once (Sam's call: found before it is founded).
+  const waiter = w.waiting.find(
+    (x) => x.town === town.id && i?.specialist.captives.includes(x.captive),
+  );
+  if (waiter) {
+    w.waiting = w.waiting.filter((x) => x !== waiter);
+    progressFor(w, id).specialist = waiter.name;
+    note(w, `${waiter.name}, who waited in ${town.name}, will run it.`);
+  }
   return { ok: true };
 }
 
@@ -85,6 +96,9 @@ export function cannotHire(w: World, data: GameData, id: string): string | null 
   if (progressOf(w, id).specialist) return `${i.specialist.name} already runs it.`;
   if (w.npcs.some((n) => n.kind === 'recruit' && n.type === id))
     return `${i.specialist.name} is already on the way.`;
+  const realm = realmOfSite(data, site.id);
+  if (realm && settlementsIn(data, realm).every((s) => s.id === site.id))
+    return `No journeyman can reach ${realm.name}: free ${i.specialist.name} held captive.`;
   const town = w.dungeon ? undefined : currentTown(w, data);
   const fromAny = !servedInRealm(w, data, site.id, i.service);
   if (!town || town.id === site.id || !(fromAny || hasService(w, data, town.id, i.service)))
@@ -101,15 +115,27 @@ export function cannotHire(w: World, data: GameData, id: string): string | null 
  * hire a smith from).
  */
 function servedInRealm(w: World, data: GameData, site: string, service: Service): boolean {
-  const c = data.content;
-  const region = c.regions.find((r) => r.sites.some((s) => s.id === site))?.id;
-  const realm = c.realms.find((r) => region !== undefined && r.regions.includes(region));
+  const realm = realmOfSite(data, site);
   if (!realm) return true;
-  return c.regions
+  return settlementsIn(data, realm).some(
+    (s) => s.id !== site && hasService(w, data, s.id, service),
+  );
+}
+
+type Realm = GameData['content']['realms'][number];
+
+/** The shipped realm a settlement lies in, or undefined on the campaign. */
+function realmOfSite(data: GameData, site: string): Realm | undefined {
+  const region = data.content.regions.find((r) => r.sites.some((s) => s.id === site))?.id;
+  return data.content.realms.find((r) => region !== undefined && r.regions.includes(region));
+}
+
+/** A realm's settlements. */
+const settlementsIn = (data: GameData, realm: Realm) =>
+  data.content.regions
     .filter((r) => realm.regions.includes(r.id))
     .flatMap((r) => r.sites)
-    .some((s) => s.kind === 'town' && s.id !== site && hasService(w, data, s.id, service));
-}
+    .filter((s) => s.kind === 'town');
 
 /** Hires a journeyman, who travels with the party to the institution and settles there. */
 export function hireJourneyman(w: World, data: GameData, id: string): TownResult {
@@ -162,6 +188,36 @@ function settleJourneymen(w: World, data: GameData, town: string): void {
   }
 }
 
+/**
+ * Freed captives who wait, home at last: each settles to run an institution of theirs under way
+ * here, or else waits here for the party to found one (Sam's call: the Sealed Vale). They take no
+ * reward, as a captive who settles doesn't.
+ */
+function settleWaiters(w: World, data: GameData, town: string): void {
+  const site = data.content.regions.flatMap((r) => r.sites).find((s) => s.id === town);
+  for (const n of [...w.npcs]) {
+    if (n.kind !== 'captive') continue;
+    const c = captiveOf(data, n.type);
+    if (!c.waits || c.destination !== town) continue;
+    removeNpc(w, n.id);
+    const runs = data.content.projects.institutions.filter((i) =>
+      i.specialist.captives.includes(c.id),
+    );
+    const id = runs
+      .map((i) => institutionId(i.service, town))
+      .find((x) => w.majorProjects[x] && !progressOf(w, x).specialist);
+    if (id) {
+      progressFor(w, id).specialist = n.name;
+      const name = parseInstitutionId(data, id)?.institution.name;
+      note(w, `${n.name} is home, and stays in ${site?.name} to run ${name}.`);
+      continue;
+    }
+    w.waiting.push({ captive: c.id, name: n.name, town });
+    const names = runs.map((i) => i.name).join(' or ');
+    note(w, `${n.name} is home, and will run ${names} once the party founds it in ${site?.name}.`);
+  }
+}
+
 /** The party's arenas pay it their share of a month of their card's fees. */
 function arenaShares(w: World, data: GameData): void {
   const { arenaSharePercent: share } = data.content.projects;
@@ -178,9 +234,15 @@ function arenaShares(w: World, data: GameData): void {
   }
 }
 
-/** The bus listener (campaign only): journeymen settle on arrival; arenas pay as a month begins. */
+/**
+ * The bus listener (wherever the party can build): journeymen and waiting captives settle on
+ * arrival; arenas pay as a month begins.
+ */
 export function institutionsListener(w: World, data: GameData, e: WorldEvent): void {
-  if (e.kind === 'town-entered') settleJourneymen(w, data, e.town);
-  else if (e.kind === 'day-passed' && (w.day + 1) % data.content.overlandRules.daysPerMonth === 0)
+  if (e.kind === 'town-entered') {
+    settleJourneymen(w, data, e.town);
+    settleWaiters(w, data, e.town);
+  }
+  if (e.kind === 'day-passed' && (w.day + 1) % data.content.overlandRules.daysPerMonth === 0)
     arenaShares(w, data);
 }

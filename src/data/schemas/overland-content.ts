@@ -107,7 +107,7 @@ export const RealmSchema = z.strictObject({
   heldShut: z.boolean().optional(),
   /**
    * The party can build here: major projects and institutions, and Renown to spend on them (Sam's
-   * call: the Wastes). Needs an ally, whose help the projects ask for.
+   * calls: the Wastes and the Sealed Vale). Its ally, if any, is asked for help; with none, no one is.
    */
   projects: z.boolean().optional(),
   /** What the party is told as a new world in the realm starts (Sam's call), as the campaign's. */

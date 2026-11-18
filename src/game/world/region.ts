@@ -71,10 +71,12 @@ export const hasProjects = (w: { map: Region | null; realm: string | null }, dat
 
 /**
  * The faction that helps the party's projects: the campaign's (projects.json), or the realm's
- * ally (Sam's call: the Wastes' Well-Keepers).
+ * ally (Sam's call: the Wastes' Well-Keepers); null in a realm with none (the Sealed Vale).
  */
-export const helpFaction = (w: { realm: string | null }, data: GameData): string =>
-  data.content.realms.find((r) => r.id === w.realm)?.ally ?? data.content.projects.help.faction;
+export const helpFaction = (w: { realm: string | null }, data: GameData): string | null => {
+  const realm = data.content.realms.find((r) => r.id === w.realm);
+  return realm ? (realm.ally ?? null) : data.content.projects.help.faction;
+};
 
 /** The factions that belong to the world: the campaign's, or its realm's. */
 export const worldFactions = <F extends { realm?: string | undefined }>(

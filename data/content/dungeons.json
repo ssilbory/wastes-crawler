@@ -12235,7 +12235,7 @@
           "+ +-+-+-+-+ +-+d+d+-+ +-+-+-+-+ +-+-+-+ +-+d+-+ +",
           "|                                               |",
           "+ +d+-+-+-+ + + + + + +-+-+-+-+ +-+-+-+ +-+d+-+ +",
-          "| |   |   |           |     | | |     |T|     | |",
+          "| |   |   |           |     |N| |     |T|     | |",
           "+ + + + + + + + + + + + + + + + + + + + + + + + +",
           "| |   d   |T          |     s | |     d |     | |",
           "+ + + + + + + + + + + + + + + + + + + + + + + + +",
@@ -12928,7 +12928,17 @@
             "pieces": 3
           }
         ],
-        "captives": [],
+        "captives": [
+          {
+            "at": {
+              "x": 14,
+              "y": 6
+            },
+            "captive": "vale-pit-master",
+            "guards": [["grave-robber", "grave-robber", "grave-robber"]],
+            "text": "Three grave robbers dice over a chained pit master's boots."
+          }
+        ],
         "garrisons": [],
         "furniture": [
           {
@@ -12979,7 +12989,7 @@
           "+-+ +-+-+-+ +-+-+-+-+ +-+ + + + + + +",
           "| | d   | | | | | | | | | d |     | |",
           "+-+ + + +-+ +-+-+-+-+ +-+-+ +-+-+-+ +",
-          "| | |   | | | | | | |T| |           |",
+          "| | |   | | | | | | |T| |N          |",
           "+-+ +-+-+-+ +-+-+-+-+ + +-+ +-+-+-+ +",
           "| | | | |       | | | | | | |     | |",
           "+-+ +-+-+ + + + +-+-+ + +-+ + + + + +",
@@ -13476,7 +13486,17 @@
             "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
           }
         ],
-        "captives": [],
+        "captives": [
+          {
+            "at": {
+              "x": 12,
+              "y": 3
+            },
+            "captive": "vale-herbalist",
+            "guards": [["ghoul", "ghoul", "ghoul"]],
+            "text": "Ghouls circle an old herbalist roped to a pipe."
+          }
+        ],
         "garrisons": [],
         "furniture": [
           {
@@ -13514,7 +13534,7 @@
           "+ +-+-+-+-+-+-+-+-+d+-+-+-+ +-+-+-+ +",
           "| d   | | | | | | |   | | | | | | | |",
           "+ + + +-+-+-+-+-+-+ + +-+-+ +-+-+-+ +",
-          "| |   | | | | | | |   | |           |",
+          "| |   | | | | | | |   | |N          |",
           "+ +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+ +",
           "|                  T    | | |     | |",
           "+-+-+-+-+d+-+-+-+-+-+d+ + + + + + + +",
@@ -14052,7 +14072,17 @@
             "text": "A quiet nook, easy to watch. A safe place to rest."
           }
         ],
-        "captives": [],
+        "captives": [
+          {
+            "at": {
+              "x": 12,
+              "y": 7
+            },
+            "captive": "vale-sexton",
+            "guards": [["mire-drowned", "mire-drowned", "mire-drowned", "mire-drowned"]],
+            "text": "The drowned hold a sexton chest-deep in the outfall."
+          }
+        ],
         "garrisons": [],
         "furniture": [
           {
@@ -14084,7 +14114,7 @@
           "+-+-+-+-+-+ +-+-+-+-+-+-+-+ +-+-+-+ +",
           "| | |               | | |           |",
           "+-+-+ + + + + + + + +-+-+-+ +-+-+-+ +",
-          "| | |               | | | | | | | | |",
+          "| | |               | | |N| | | | | |",
           "+-+-+ + + + + + + + +-+-+ + +-+-+-+ +",
           "| | |               d   | | | | | | |",
           "+-+-+ + + + + + + + +-+ + + +-+-+-+ +",
@@ -14572,7 +14602,17 @@
             "pieces": 3
           }
         ],
-        "captives": [],
+        "captives": [
+          {
+            "at": {
+              "x": 12,
+              "y": 4
+            },
+            "captive": "vale-grey-priest",
+            "guards": [["swamp-thing", "swamp-thing"]],
+            "text": "Two swamp things coil around a ledge where a grey-robed priest kneels."
+          }
+        ],
         "garrisons": [],
         "furniture": [
           {
@@ -15031,7 +15071,7 @@
           "+-+-+-+-+-+-+-+-+-+-+-+-+",
           "|                       |",
           "+ +-+d+-+-+d+-+ +d+-+-+ +",
-          "| |     |>    |T|     | |",
+          "| |     |>    |T|    N| |",
           "+ + + + + + + + + + + + +",
           "| |     d     d |     | |",
           "+ + + + + + + + + + + + +",
@@ -15411,7 +15451,20 @@
             "text": "Old bedrolls and a cold fire ring: someone rested here before, and lived to leave."
           }
         ],
-        "captives": [],
+        "captives": [
+          {
+            "at": {
+              "x": 10,
+              "y": 1
+            },
+            "captive": "vale-blood-priest",
+            "guards": [
+              ["bound-orc-guard", "bound-orc-guard", "bound-orc-guard", "bound-orc-guard"],
+              ["bound-orc-captain"]
+            ],
+            "text": "Bound orcs stand watch over a shackled Blood Priest."
+          }
+        ],
         "garrisons": [
           {
             "at": {
@@ -17110,6 +17163,7 @@
               ["old-barrow-archmage", "old-barrow-archmage"]
             ],
             "order": "warden-seal",
+            "overlord": true,
             "text": "The Warden turns from the window at last, and his bound host rises around him. \"Who comes into my vale? Give the word, or be buried in it.\""
           },
           {

@@ -1426,7 +1426,7 @@
       "specialist": {
         "name": "an arena master",
         "hireFee": 80,
-        "captives": ["chained-deserter"]
+        "captives": ["chained-deserter", "vale-pit-master"]
       }
     },
     {
@@ -1443,7 +1443,7 @@
       "specialist": {
         "name": "a journeyman alchemist",
         "hireFee": 120,
-        "captives": ["scholar", "dl-scholar"]
+        "captives": ["scholar", "dl-scholar", "vale-herbalist"]
       }
     },
     {
@@ -1476,7 +1476,7 @@
       "specialist": {
         "name": "a necromancer of the Lady",
         "hireFee": 150,
-        "captives": ["grave-digger", "taken-mourner"]
+        "captives": ["grave-digger", "taken-mourner", "vale-sexton"]
       }
     },
     {
@@ -1493,7 +1493,7 @@
       "specialist": {
         "name": "a Priest of Death",
         "hireFee": 150,
-        "captives": ["grey-priest", "pilgrim"]
+        "captives": ["grey-priest", "pilgrim", "vale-grey-priest"]
       }
     },
     {
@@ -1510,7 +1510,7 @@
       "specialist": {
         "name": "a Blood Priest",
         "hireFee": 150,
-        "captives": ["dl-pilgrim"]
+        "captives": ["dl-pilgrim", "vale-blood-priest"]
       }
     }
   ],

@@ -57,7 +57,14 @@ describe('project content (docs/rules-adaptation.md, Major projects; Sam’s cal
       after: ['no'],
       effect: { kind: 'road', route: 'no', ambushDie: 8, fareCut: 0 },
     };
-    expect(projectReferenceErrors(srd, with_({ projects: [broken] }))).toEqual([
+    // The Sealed Vale without its projects (Sam's call gave it them).
+    const realms = content.realms.map((r) =>
+      r.id === 'sealed-vale' ? { ...r, projects: false } : r,
+    );
+    // Its waiting captives sent home to the campaign instead, where the party can build.
+    const captives = content.captives.map((c) => (c.waits ? { ...c, destination: 'westhold' } : c));
+    const shut = { ...with_({ projects: [broken] }), realms, captives };
+    expect(projectReferenceErrors(srd, shut)).toEqual([
       'projects/broken: sealed-vale is in a realm without projects',
       'projects/broken: nowhere is not a site in sealed-vale',
       'projects/broken: unknown faction no',
@@ -96,12 +103,36 @@ describe('project content (docs/rules-adaptation.md, Major projects; Sam’s cal
     ]);
   });
 
-  it('reports a realm with projects but no ally to help them', () => {
+  it('reports a captive who waits where nothing is built or runs nothing, and a lordless order', () => {
+    const [waits] = content.captives.filter((c) => c.waits);
+    if (!waits) throw new Error('no captive waits');
+    const captives = [
+      ...content.captives,
+      { ...waits, id: 'idle', destination: 'westhold' },
+      { ...waits, id: 'lost', destination: 'nowhere' },
+    ];
     const realms = content.realms.map((r) =>
-      r.id === 'sealed-vale' ? { ...r, projects: true } : r,
+      r.id === 'sealed-vale' ? { ...r, projects: false } : r,
     );
-    expect(projectReferenceErrors(srd, { ...content, realms })).toEqual([
-      'realms/sealed-vale: projects need an ally to ask for help',
+    const dungeons = content.dungeons.map((d) => ({
+      ...d,
+      levels: d.levels.map((l) => ({
+        ...l,
+        specials: l.specials.map((s) =>
+          s.kind === 'cache' && s.overlord ? { ...s, order: undefined } : s,
+        ),
+      })),
+    }));
+    expect(projectReferenceErrors(srd, { ...content, captives, realms, dungeons })).toEqual([
+      "captives/vale-pit-master: waits where the party can't build",
+      "captives/vale-herbalist: waits where the party can't build",
+      "captives/vale-sexton: waits where the party can't build",
+      "captives/vale-grey-priest: waits where the party can't build",
+      "captives/vale-blood-priest: waits where the party can't build",
+      'captives/idle: waits, but runs no institution',
+      'captives/lost: waits, but runs no institution',
+      "captives/lost: waits where the party can't build",
+      "dungeons/harrowmere/hm-tower-6: an overlord's hoard keeps no order",
     ]);
   });
 
@@ -158,12 +189,16 @@ describe('project content (docs/rules-adaptation.md, Major projects; Sam’s cal
     const noExert = Object.fromEntries(
       Object.entries(p.buildAttributes).filter(([skill]) => skill !== 'exert'),
     );
-    const broken = with_({
-      buildAttributes: noExert,
-      institutions: [workshop, twice, trading],
-      help: { faction: 'no', suits: [] },
-      hiredMage: { hireling: 'no', fee: 1, points: 1, most: 2 },
-    });
+    // Without the institutions that name them, the Vale's waiting captives would run nothing.
+    const broken = {
+      ...with_({
+        buildAttributes: noExert,
+        institutions: [workshop, twice, trading],
+        help: { faction: 'no', suits: [] },
+        hiredMage: { hireling: 'no', fee: 1, points: 1, most: 2 },
+      }),
+      captives: content.captives.filter((c) => !c.waits),
+    };
     expect(projectReferenceErrors(srd, broken)).toEqual([
       'projects/institutions/workshop: listed twice',
       'projects/institutions/workshop: unknown skill juggling',

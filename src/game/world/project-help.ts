@@ -30,6 +30,8 @@ const no = (reason: string): TownResult => ({ ok: false, reason });
 export function cannotAsk(w: World, data: GameData, id: string): string | null {
   const p = projectOf(data, id);
   const ally = helpFaction(w, data);
+  // A realm with no ally has no one to ask (Sam's call: the Sealed Vale).
+  if (ally === null) return 'No one here can help.';
   const name = factionOf(data, ally).name;
   const s = progressOf(w, id);
   if (s.done !== null) return `${p.name} is finished.`;
@@ -48,7 +50,7 @@ export function cannotAsk(w: World, data: GameData, id: string): string | null {
 export function askHelp(w: World, data: GameData, id: string): TownResult {
   const why = cannotAsk(w, data, id);
   if (why) return no(why);
-  const ally = helpFaction(w, data);
+  const ally = helpFaction(w, data) as string;
   progressFor(w, id).help.push({ faction: ally, points: 0 });
   note(
     w,

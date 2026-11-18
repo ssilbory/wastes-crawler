@@ -93,9 +93,21 @@ export function projectReferenceErrors(srd: SrdData, content: ContentData): stri
   if (!p.buildAttributes.exert) errors.push('projects/buildAttributes: no attributes for exert');
   if (!factions.has(p.help.faction))
     errors.push(`projects/help: unknown faction ${p.help.faction}`);
-  // A realm's projects ask its ally for help (Faction help).
-  for (const r of content.realms)
-    if (r.projects && !r.ally) errors.push(`realms/${r.id}: projects need an ally to ask for help`);
+  // A captive who waits at home runs an institution there, where the party can build.
+  const runs = new Set(p.institutions.flatMap((i) => i.specialist.captives));
+  const home = new Map(content.regions.flatMap((r) => r.sites.map((s) => [s.id, r.id])));
+  for (const c of content.captives.filter((x) => x.waits)) {
+    const region = home.get(c.destination);
+    if (!runs.has(c.id)) errors.push(`captives/${c.id}: waits, but runs no institution`);
+    if (region === undefined || !buildable(region))
+      errors.push(`captives/${c.id}: waits where the party can't build`);
+  }
+  // An overlord's hoard pays on its order's end (Sam's call: the Warden).
+  for (const d of content.dungeons)
+    for (const l of d.levels)
+      for (const s of l.specials)
+        if (s.kind === 'cache' && s.overlord && !s.order)
+          errors.push(`dungeons/${d.id}/${l.id}: an overlord's hoard keeps no order`);
   if (!content.npcRules.hirelings.some((h) => h.id === p.hiredMage.hireling))
     errors.push(`projects/hiredMage: unknown hireling ${p.hiredMage.hireling}`);
   return errors;

@@ -326,4 +326,6 @@ export const WORLD_MIGRATIONS: Migrations = {
   },
   // Version 56 adds locked vaults and boss chests: none lie anywhere yet.
   55: (raw) => ({ ...raw, schemaVersion: 56, chests: [] }),
+  // Version 57 lets the Sealed Vale's freed specialists wait at home for their institution: none yet.
+  56: (raw) => ({ ...raw, schemaVersion: 57, waiting: [] }),
 };

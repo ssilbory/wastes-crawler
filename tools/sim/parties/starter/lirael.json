@@ -73,6 +73,11 @@
       "id": "wilderness-travel-gear",
       "quantity": 1,
       "location": "stowed"
+    },
+    {
+      "id": "criminal-tools",
+      "quantity": 1,
+      "location": "stowed"
     }
   ],
   "crowns": 10,

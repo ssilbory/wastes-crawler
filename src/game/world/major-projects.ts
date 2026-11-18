@@ -91,6 +91,25 @@ export const isGuardedHoard = (data: GameData, key: string): boolean =>
 const isWarlordHoard = (data: GameData, key: string): boolean =>
   cacheOf(data, key)?.warlord !== undefined;
 
+/** Whether a won fight's key names a hoard kept by a standing order, paid when the order ends. */
+const isOrderedHoard = (data: GameData, key: string): boolean =>
+  cacheOf(data, key)?.order !== undefined;
+
+/**
+ * The Renown for the hand-placed hoards an ended order gave up, fought for or stood down: an
+ * overlord's pays a warlord's (Sam's call: the Warden), any other a hoard's.
+ */
+function orderHoardsRenown(data: GameData, order: string): number {
+  const r = data.content.projects.renown;
+  return data.content.dungeons
+    .flatMap((d) => d.levels.flatMap((l) => l.specials))
+    .reduce(
+      (sum, s) =>
+        s.kind === 'cache' && s.order === order ? sum + (s.overlord ? r.warlord : r.boss) : sum,
+      0,
+    );
+}
+
 /** Whether every loot cache in a hand-made dungeon has been taken: the dungeon is cleared. */
 function cleared(w: World, data: GameData, dungeon: string): boolean {
   const d = data.content.dungeons.find((x) => x.id === dungeon);
@@ -233,7 +252,8 @@ function earn(w: World, points: number, why: string): void {
 /**
  * The bus listener (wherever the party can build): Renown for a quest turned in, the campaign
  * warlord's fall (the Seal's quest), a guarded hoard won (a Wastes warlord's own hoard is their
- * fall, paid as a warlord's), and a captive brought home; then any project these finish.
+ * fall, paid as a warlord's; one kept by a standing order pays once the order ends, whether its
+ * guards were beaten or stood down), and a captive brought home; then any project these finish.
  */
 export function majorProjectsListener(w: World, data: GameData, e: WorldEvent): void {
   const r = data.content.projects.renown;
@@ -242,8 +262,15 @@ export function majorProjectsListener(w: World, data: GameData, e: WorldEvent): 
     if (e.quest === data.content.campaign.seal.quest) earn(w, r.warlord, 'The warlord is dead');
   } else if (e.kind === 'fight-won' && e.garrison && isWarlordHoard(data, e.garrison))
     earn(w, r.warlord, 'The warlord is dead');
-  else if (e.kind === 'fight-won' && e.garrison && isGuardedHoard(data, e.garrison))
+  else if (
+    e.kind === 'fight-won' &&
+    e.garrison &&
+    isGuardedHoard(data, e.garrison) &&
+    !isOrderedHoard(data, e.garrison)
+  )
     earn(w, r.boss, 'Word of the hoard spreads');
+  else if (e.kind === 'order-ended')
+    earn(w, orderHoardsRenown(data, e.order), 'The keeper of the hoard is beaten');
   else if (e.kind === 'captive-home') earn(w, r.captive, 'A captive tells of their rescue');
   else return;
   finishCovered(w, data);
