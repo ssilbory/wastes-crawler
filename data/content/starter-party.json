@@ -429,6 +429,11 @@
           "id": "dungeoneering-kit",
           "quantity": 1,
           "location": "stowed"
+        },
+        {
+          "id": "writing-kit",
+          "quantity": 1,
+          "location": "stowed"
         }
       ],
       "crowns": 10,
@@ -437,7 +442,7 @@
         "heal": 0,
         "magic": 1,
         "trade": 1,
-        "convince": 0
+        "scribing": 0
       },
       "classes": {
         "current": "invoker-partial-expert",
