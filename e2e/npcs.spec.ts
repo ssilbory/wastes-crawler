@@ -80,3 +80,36 @@ test('bribes captors to free a captive, then brings them home', async ({ page },
   );
   await page.screenshot({ path: testInfo.outputPath('npc-rescue.png'), fullPage: true });
 });
+
+// Sam's ask: a captive freed with both NPC slots full asks the party to make room.
+test('dismisses an NPC to make room for a freed captive', async ({ page }) => {
+  await start(page);
+  const npc = (id: string, name: string, column: number) =>
+    `{ id: '${id}', kind: 'hireling', type: 'porter', name: '${name}', hp: 4, maxHp: 4, row: 1,
+       column: ${column}, quitting: false, inventory: [], owed: 0, refund: 0 }`;
+  await edit(
+    page,
+    `save.position = { col: 19, row: 8 };
+     save.visited.push('19,8');
+     save.npcs = [${npc('npc-0', 'Aldo', 2)}, ${npc('npc-1', 'Brenna', 3)}];
+     save.freedCaptive = 'merchant';`,
+  );
+  const ask = page.getByRole('dialog', { name: 'A freed captive' });
+  await expect(ask).toContainText('no room for another NPC');
+  await ask.getByRole('button', { name: 'Dismiss Aldo to make room' }).click();
+  await ask.getByRole('button', { name: 'Dismiss for good' }).click();
+  await expect(ask).toBeHidden();
+  await inWindow(page, 'NPCs', async (npcs) => {
+    await expect(npcs).toContainText('rescued, bound for Scrapmarch');
+    await expect(npcs).toContainText('Brenna');
+    await expect(npcs).not.toContainText('Aldo');
+  });
+
+  // Or the party keeps its company, and the captive goes their own way.
+  await edit(page, `save.freedCaptive = 'pilgrim';`);
+  await ask.getByRole('button', { name: 'Let them go their own way' }).click();
+  await expect(ask).toBeHidden();
+  await expect(page.getByRole('region', { name: 'Journey log' })).toContainText(
+    'thanks the party and goes their own way.',
+  );
+});

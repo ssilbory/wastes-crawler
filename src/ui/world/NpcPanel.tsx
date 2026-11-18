@@ -15,7 +15,8 @@ function escortTo(questId: string): string {
   return step?.kind === 'escort' ? step.to : questId;
 }
 
-function role(w: World, n: Npc): string {
+/** What an NPC is to the party, in a few words. */
+export function role(w: World, n: Npc): string {
   const t = typeOf(data, n);
   if (
     n.kind === 'undead' ||
@@ -133,7 +134,7 @@ export function NpcPanel(props: { world: World; onChange: () => void }) {
 }
 
 /** What parting with a follower is called, by what kind of follower they are. */
-function parting(n: Npc): string {
+export function parting(n: Npc): string {
   if (n.kind === 'undead' || n.kind === 'summon' || n.kind === 'thrall') return 'Release';
   if (n.kind === 'companion') return 'Send away';
   if (n.kind === 'beast' || n.kind === 'pack') return 'Set loose';

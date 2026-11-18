@@ -95,7 +95,8 @@
   display: none;
 }
 
-/* Search is the first action, not the screen's main one, so it isn't lit like one (controls.css). */
+/* The first action (the stairs, or Search) isn't the screen's main one, so it isn't lit like one
+   (controls.css). */
 .dungeon-controls .actions > button:first-child {
   color: var(--ink);
   font-weight: 400;

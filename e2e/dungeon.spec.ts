@@ -101,6 +101,10 @@ test('enters the barrow from the hex map, walks both levels, and climbs out', as
   await expect(page.getByRole('img', { name: 'Map of The Upper Barrow' })).toHaveScreenshot(
     'barrow-upper-map.png',
   );
+  // The way to another level stands above Search (Sam's ask).
+  await expect(page.getByRole('group', { name: 'Explore' }).getByRole('button').first()).toHaveText(
+    'Take the stairs to The Lower Barrow',
+  );
   await page.getByRole('button', { name: 'Take the stairs to The Lower Barrow' }).click();
   await expect(bar).toContainText('The Lower Barrow, facing south');
   await expect(view).toHaveScreenshot('barrow-lower.png');

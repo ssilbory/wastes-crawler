@@ -111,6 +111,7 @@ export function newWorld(
     corpses: null,
     fallen: null,
     surrendered: null,
+    freedCaptive: null,
     performedDay: null,
     bestiary: [],
     disguise: null,

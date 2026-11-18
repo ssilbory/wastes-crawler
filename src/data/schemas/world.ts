@@ -11,7 +11,7 @@ import { ComponentTypeSchema } from './crafting-content.ts';
 import { SiegeFightSchema, SiegeSchema } from './siege-state.ts';
 import { ChestStateSchema, DoorStateSchema } from './chest-state.ts';
 
-export const WORLD_SCHEMA_VERSION = 57;
+export const WORLD_SCHEMA_VERSION = 58;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -540,6 +540,11 @@ export const WorldSaveSchema = z.strictObject({
       immune: z.array(z.boolean()).optional(),
     })
     .nullable(),
+  /**
+   * A captive freed with both NPC slots full, by id: they wait on the party to make room or to
+   * send them on their own way (docs/rules-adaptation.md, NPCs in Phase 6c: Rescues).
+   */
+  freedCaptive: IdSchema.nullable(),
   /** The day a member last played the inn's common room for the party's lodging. */
   performedDay: z.int().min(0).nullable(),
   /** Monsters the party has named with Know, whose statistics it can see. */

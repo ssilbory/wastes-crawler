@@ -18,6 +18,7 @@ import { RevivePopOut, useReviveAsk } from './HealerPanel.tsx';
 import { ScreenWindows } from './ScreenWindows.tsx';
 import { DeadPopOut, useDeadAsk } from './DeadAsk.tsx';
 import { SurrenderPopOut, surrenderOpen } from './SurrenderPanel.tsx';
+import { FreedPopOut, freedOpen } from './FreedPanel.tsx';
 import { LockPopOut } from './LockPopOut.tsx';
 import { PopOut } from './PopOut.tsx';
 import { useKeys } from '../keys.ts';
@@ -219,6 +220,9 @@ export function MapScreen(props: {
             <SurrenderPopOut world={w} onChange={props.onChange} />
           )}
           {deadOpen && <DeadPopOut world={w} ask={dead} onChange={props.onChange} />}
+          {freedOpen(w) && !revive.open && !surrenderOpen(w) && !deadOpen && (
+            <FreedPopOut world={w} onChange={props.onChange} />
+          )}
           <LockPopOut
             world={w}
             hidden={revive.open || surrenderOpen(w) || deadOpen}
