@@ -175,7 +175,10 @@ export function MapScreen(props: {
               Take {road.name}
             </button>
           )}
-          <PartyButtons onOpen={props.onOpen} />
+          {/* A phone finds these in the ☰ menu instead (mobile.css). */}
+          <span class="bar-party">
+            <PartyButtons onOpen={props.onOpen} />
+          </span>
           <KeyHelp rows={MAP_KEYS} />
         </span>
         <PartyPanel members={w.members} strip />
@@ -225,6 +228,7 @@ export function MapScreen(props: {
             onExport={props.onExport}
             onAbandon={props.onAbandon}
             onStart={props.onStart}
+            onOpen={props.onOpen}
           />
         </div>
         <div class="dock">

@@ -44,6 +44,7 @@ test('lists the map’s windows in the ☰ menu, only those with something in th
   expect(names).toContain('Save');
   expect(names).not.toContain('Quests');
   expect(names).not.toContain('Overland');
+  expect(names.slice(0, 3)).toEqual(['Characters', 'Formation', 'Inventory']);
   expect(names.at(-2)).toBe('Return to Overland start');
 
   await edit(page, `save.quests['bandit-camp'] = { status: 'active', step: 0, acceptedDay: 0 };`);
@@ -91,4 +92,17 @@ test('keeps each party card to a line: Str, a big F for Frail, Dead for the dead
   const grukk = cards.filter({ hasText: 'Grukk' });
   await expect(grukk.locator('.slot-stats')).toHaveText('Dead');
   await expect(grukk.locator('.chip')).toHaveCount(0);
+});
+
+test('on a phone, opens the party’s screens from the ☰ menu, not the bar', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await begin(page);
+  await expect(page.locator('.world-bar').getByRole('button', { name: 'Inventory' })).toBeHidden();
+  await page.getByRole('button', { name: 'Menu' }).click();
+  await page
+    .getByRole('navigation', { name: 'Windows' })
+    .getByRole('button', { name: 'Inventory' })
+    .click();
+  await page.getByRole('button', { name: 'Back to the map' }).click();
+  await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
 });

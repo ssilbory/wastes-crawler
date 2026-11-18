@@ -94,6 +94,12 @@
     font-size: 0.85rem;
   }
 
+  /* The overland map's ☰ menu has Characters, Formation, and Inventory (MapWindows.tsx), so the
+     bar gives their row to the map. */
+  .map-screen .bar-party {
+    display: none;
+  }
+
   .world-bar .bar-go {
     order: 1;
     flex: 1 1 100%;

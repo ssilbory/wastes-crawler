@@ -16,6 +16,7 @@ import { MountsPanel } from './MountsPanel.tsx';
 import { NecromancyPanel } from './NecromancyPanel.tsx';
 import { NpcPanel } from './NpcPanel.tsx';
 import { PactPanel } from './PactPanel.tsx';
+import type { PartyScreen } from './PartyButtons.tsx';
 import { PotionPanel } from './PotionPanel.tsx';
 import { ProjectsPanel } from './ProjectsPanel.tsx';
 import { PurgePanel } from './PurgePanel.tsx';
@@ -34,12 +35,21 @@ type Props = {
   onChange: () => void;
   onExport: () => void;
   onAbandon: () => void;
+  /** Opens one of the party's own screens. */
+  onOpen: (screen: PartyScreen) => void;
   /** Back to the Overland's start screen, where the ☰ menu lists the sections again. */
   onStart: () => void;
 };
 
-/** The ☰ item that leaves the map; every other item opens a window. */
+/** The ☰ item that leaves the map. */
 const START = 'start';
+
+/** The party's screens, in the menu as well as the bar: a phone's bar has no room for them. */
+const SCREENS: { id: PartyScreen; label: string }[] = [
+  { id: 'character', label: 'Characters' },
+  { id: 'formation', label: 'Formation' },
+  { id: 'inventory', label: 'Inventory' },
+];
 
 /** The map's windows, in the menu's order. Each panel shows nothing when it has nothing to say. */
 const WINDOWS: { id: string; label: string; body: (p: Props) => ComponentChildren }[] = [
@@ -182,14 +192,18 @@ export function MapWindows(props: Props) {
     if (now.join() !== filled.join()) setFilled(now);
     if (open !== null && !now.includes(open)) setOpen(null);
   });
+  const windows = WINDOWS.filter((v) => filled.includes(v.id));
   const items: MenuItem[] = [
-    ...WINDOWS.filter((v) => filled.includes(v.id)).map((v) => ({
-      id: v.id,
-      label: v.label,
-    })),
+    ...SCREENS,
+    ...windows.map((v, i) => ({ id: v.id, label: v.label, ...(i === 0 ? { rule: true } : {}) })),
     { id: START, label: 'Return to Overland start', rule: true },
   ];
-  useProvideScreenMenu(items, (id) => (id === START ? props.onStart() : setOpen(id)));
+  useProvideScreenMenu(items, (id) => {
+    const screen = SCREENS.find((v) => v.id === id);
+    if (screen) props.onOpen(screen.id);
+    else if (id === START) props.onStart();
+    else setOpen(id);
+  });
   const shown = open !== null;
   return (
     <div
