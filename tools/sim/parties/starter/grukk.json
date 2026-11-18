@@ -68,6 +68,11 @@
       "id": "dungeoneering-kit",
       "quantity": 1,
       "location": "stowed"
+    },
+    {
+      "id": "crowbar",
+      "quantity": 1,
+      "location": "stowed"
     }
   ],
   "crowns": 15,

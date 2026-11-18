@@ -123,6 +123,8 @@ export const SpecialSchema = z.discriminatedUnion('kind', [
     vault: z.literal(true).optional(),
     /** The Wastes warlord who is this hoard's boss: winning it is their fall. */
     warlord: IdSchema.optional(),
+    /** The realm's overlord keeps this hoard: it pays a warlord's Renown (Sam's call: the Warden). */
+    overlord: z.literal(true).optional(),
   }),
   /**
    * A random locked chest (Locks and chests): loot, a heavily trapped empty one, or an animated

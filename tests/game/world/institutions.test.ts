@@ -31,7 +31,7 @@ import { raiseListed, raiserHere } from '../../../src/game/world/services.ts';
 import { currentTown } from '../../../src/game/world/town-prices.ts';
 import type { World } from '../../../src/game/world/types.ts';
 import { createRng } from '../../../src/rules/rng.ts';
-import { data, member, starter, world } from './helpers.ts';
+import { data, member, starter, valeShut, world } from './helpers.ts';
 
 /** A campaign world standing in a settlement, with crowns to spend. */
 function at(region: string, col: number, row: number): World {
@@ -151,8 +151,8 @@ describe('founding an institution (Sam’s calls: where a service is lacking, on
     const party = [
       { character: starter('snag'), row: 0, column: 0, defaultAction: 'auto' as const },
     ];
-    const realm = newWorld(data, createRng('realm'), party, undefined, null, 'sealed-vale');
-    expect(cannotFound(realm, data, 'arena')).toBe(
+    const realm = newWorld(valeShut, createRng('realm'), party, undefined, null, 'sealed-vale');
+    expect(cannotFound(realm, valeShut, 'arena')).toBe(
       'Institutions are founded in a settlement where the party can build.',
     );
   });

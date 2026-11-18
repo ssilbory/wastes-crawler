@@ -19,7 +19,7 @@ import { hasProjects, helpFaction } from '../../../src/game/world/region.ts';
 import { newWorld } from '../../../src/game/world/new-world.ts';
 import type { World } from '../../../src/game/world/types.ts';
 import { createRng } from '../../../src/rules/rng.ts';
-import { data, starter } from './helpers.ts';
+import { data, starter, valeShut } from './helpers.ts';
 
 // Building in the Wastes (docs/rules-adaptation.md, The Wastes: Projects; Sam's calls;
 // vendor/wwn-srd/7.0 Major Projects/).
@@ -36,10 +36,11 @@ const dustwell = () => wastes(4, 6);
 const cisternRest = () => wastes(16, 11);
 
 describe('projects in the Wastes (Sam’s calls)', () => {
-  it('are allowed in the Wastes and the campaign, not the Sealed Vale or a custom map', () => {
+  it('are allowed in the Wastes, the Sealed Vale, and the campaign, not elsewhere', () => {
     expect(hasProjects({ map: null, realm: null }, data)).toBe(true);
     expect(hasProjects({ map: null, realm: 'wastes' }, data)).toBe(true);
-    expect(hasProjects({ map: null, realm: 'sealed-vale' }, data)).toBe(false);
+    expect(hasProjects({ map: null, realm: 'sealed-vale' }, data)).toBe(true);
+    expect(hasProjects({ map: null, realm: 'sealed-vale' }, valeShut)).toBe(false);
     expect(hasProjects({ map: null, realm: 'atlantis' }, data)).toBe(false);
   });
 
@@ -47,8 +48,8 @@ describe('projects in the Wastes (Sam’s calls)', () => {
     const party = [
       { character: starter('snag'), row: 0, column: 0, defaultAction: 'auto' as const },
     ];
-    const w = newWorld(data, createRng('vale'), party, undefined, null, 'sealed-vale');
-    retaken(w, data, 'cistern-rest');
+    const w = newWorld(valeShut, createRng('vale'), party, undefined, null, 'sealed-vale');
+    retaken(w, valeShut, 'cistern-rest');
     expect(w.renown).toBe(0);
   });
 

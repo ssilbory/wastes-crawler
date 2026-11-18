@@ -116,6 +116,8 @@ export interface World {
   charted: Record<string, DungeonChart>;
   light: Omit<Light, 'torch' | 'lantern'> & { torch: ResourceDie; lantern: ResourceDie };
   rescues: string[];
+  /** Freed captives waiting at home to run an institution not yet founded there. */
+  waiting: { captive: string; name: string; town: string }[];
   raising: Raising;
   projects: Project[];
   workshops: string[];

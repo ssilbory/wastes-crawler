@@ -68,8 +68,8 @@ export interface ProjectsView {
   renown: number;
   /** The institutions the party can found where it stands. */
   foundable: { service: Service; name: string }[];
-  /** The faction the party can ask for help. */
-  ally: string;
+  /** The faction the party can ask for help, or null where there is none (the Sealed Vale). */
+  ally: string | null;
   projects: ProjectView[];
 }
 
@@ -160,7 +160,7 @@ function view(w: World, data: GameData, p: AnyProject): ProjectView {
  */
 export function projectsView(w: World, data: GameData): ProjectsView {
   const help = helpFaction(w, data);
-  const ally = data.content.factions.factions.find((f) => f.id === help)?.name as string;
+  const ally = data.content.factions.factions.find((f) => f.id === help)?.name ?? null;
   if (!hasProjects(w, data)) return { renown: 0, foundable: [], ally, projects: [] };
   const here = allProjects(w, data)
     .filter((p) => p.region === w.region)
