@@ -32,6 +32,7 @@ interface FieldProps {
 
 function Slot(props: {
   slot: SlotView | null;
+  far: boolean;
   active: boolean;
   target: boolean;
   changed: boolean;
@@ -58,7 +59,7 @@ function Slot(props: {
   const down = slot.status === 'dying' || slot.status === 'stable' || slot.status === 'dead';
   const body = (
     <>
-      {slot.figure && <Figure figure={slot.figure} down={down} />}
+      {slot.figure && <Figure figure={slot.figure} down={down} far={props.far} />}
       {hit && (
         // Keyed by the batch, so each batch plays its flash and numbers afresh.
         <span class={`fx ${hit}`} key={props.batchKey} aria-hidden="true">
@@ -126,6 +127,7 @@ function Side(props: SideProps) {
                 <Slot
                   key={key}
                   slot={s}
+                  far={props.isFar}
                   active={s !== null && s.id === props.activeId}
                   target={s !== null && (props.targetIds?.has(s.id) ?? false)}
                   changed={s !== null && (props.changedIds?.has(s.id) ?? false)}

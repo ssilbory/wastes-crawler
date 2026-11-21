@@ -22,6 +22,7 @@ export const MAT = {
   foe: 14,
   glint: 15,
   darkness: 16,
+  rust: 17,
 } as const;
 
 export type Mat = (typeof MAT)[keyof typeof MAT];
@@ -59,6 +60,7 @@ const BASES: Record<Mat, Base> = {
   [MAT.foe]: { h: 20, s: 0.22, l: 0.62 },
   [MAT.glint]: { h: 36, s: 0.72, l: 0.8, glows: true },
   [MAT.darkness]: { h: 0, s: 0, l: 0.01, glows: true },
+  [MAT.rust]: { h: 14, s: 0.5, l: 0.66 },
 };
 
 /** Whether a material makes its own light. */

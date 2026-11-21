@@ -48,17 +48,20 @@ export interface Sprite {
 }
 
 /** How each part of a kind of piece is coloured: the body, its lines, and its cuts. */
-interface Look {
+export interface Look {
   body: [Mat, number];
   cut: [Mat, number];
 }
 
-const LOOKS = {
+export const LOOKS = {
   stone: { body: [MAT.stone, 0.56], cut: [MAT.stone, 0.18] },
   chest: { body: [MAT.wood, 0.52], cut: [MAT.wood, 0.16] },
   // Foes are dark shapes whose eyes and visors catch the light.
   foe: { body: [MAT.foe, 0.4], cut: [MAT.glint, 0.75] },
   captive: { body: [MAT.cloth, 0.62], cut: [MAT.cloth, 0.22] },
+  // On the fight screen: the party pale as bone, its foes rust red, cuts carved in shadow.
+  party: { body: [MAT.cloth, 0.66], cut: [MAT.cloth, 0.16] },
+  enemy: { body: [MAT.rust, 0.62], cut: [MAT.rust, 0.14] },
 } satisfies Record<string, Look>;
 
 const TONES: Record<NonNullable<Part['tone']>, [Mat, number]> = {
@@ -98,15 +101,16 @@ function layers(parts: Part[], look: Look, matrix: Affine, box: Box): Layer[] {
 
 type Size = { width: number; height: number };
 
-/** A figure standing in a 48-unit box at (x, y). */
-function figureSprite(
+/** A figure in a 48-unit box at (x, y): standing, or lying down when `down`. */
+export function figureSprite(
   figure: FigureView,
   at: { x: number; y: number; size: number; light: Relief; mirror: boolean },
   look: Look,
   depth: number,
   f: Size,
+  down = false,
 ): Sprite {
-  const drawn = drawFigure(figure, false, at.light, at.mirror);
+  const drawn = drawFigure(figure, down, at.light, at.mirror);
   const place = compose(translate(at.x, at.y), scale(at.size / 48));
   const matrix = compose(place, parseTransform(drawn.transform));
   const box = boxOf(at.x, at.y, at.size, f);

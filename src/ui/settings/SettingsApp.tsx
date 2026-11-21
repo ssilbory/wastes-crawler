@@ -151,7 +151,7 @@ export function SettingsApp() {
           </select>
         </label>{' '}
         <label>
-          Dungeon graphics{' '}
+          Graphics{' '}
           <select
             value={s.graphics}
             onChange={(e) =>

@@ -12,6 +12,7 @@ import './ui/app-menu.css';
 import './ui/arena/setup.css';
 import './ui/arena/fight.css';
 import './ui/arena/fight-fx.css';
+import './ui/arena/fight-pixel.css';
 import './ui/world/layout.css';
 import './ui/world/world.css';
 import './ui/world/party-strip.css';

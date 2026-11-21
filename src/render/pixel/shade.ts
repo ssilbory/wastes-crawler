@@ -14,7 +14,7 @@ const GLOW = 0.28;
 
 const palettes = new Map<string, Rgb[][]>();
 /** The ramps under a light's colour, built once per colour. */
-function paletteFor(tint: string): Rgb[][] {
+export function paletteFor(tint: string): Rgb[][] {
   let p = palettes.get(tint);
   if (!p) {
     p = palette(tint);

@@ -15,7 +15,7 @@ export type KeyAction = z.infer<typeof KeyActionSchema>;
 
 export const TextSizeSchema = z.enum(['small', 'normal', 'large']);
 export const CombatSpeedSchema = z.enum(['instant', 'fast', 'normal', 'slow']);
-/** How the dungeon view is drawn (docs/presentation-plan.md, V8): pixel art or smooth shapes. */
+/** How the dungeon view and the fight's figures are drawn (docs/presentation-plan.md, V8). */
 export const GraphicsSchema = z.enum(['pixel', 'vector']);
 
 /** The player's settings, kept in the browser. */
