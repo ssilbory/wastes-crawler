@@ -23,6 +23,14 @@ describe('settings (docs/plan.md, Phase 11)', () => {
     expect(parseSettings('{"version":2}', data)).toEqual(s);
     const quiet = { ...s, sound: { on: true, volume: 0.2 } };
     expect(parseSettings(serializeSettings(quiet), data)).toEqual(quiet);
+    // Settings stored before the graphics and torch choices take pixel art and a normal flicker.
+    const older: Partial<typeof s> = { ...s };
+    delete older.graphics;
+    delete older.flicker;
+    expect(parseSettings(JSON.stringify(older), data)).toMatchObject({
+      graphics: 'pixel',
+      flicker: 'normal',
+    });
     // The defaults themselves are never changed.
     s.keys.forward.push('x');
     expect(defaultSettings(data).keys.forward).toEqual(['w', 'ArrowUp']);

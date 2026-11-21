@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef } from 'preact/hooks';
 import { VIEW_HEIGHT, VIEW_WIDTH, type Panel } from '../../render/dungeon-view.ts';
 import { renderScene } from '../../render/pixel/scene.ts';
+import { lampsOf } from '../../render/dungeon-lamps.ts';
 import { flickers, lightFrame } from '../../render/pixel/shade.ts';
 import type { DungeonViewProps } from './DungeonView.tsx';
 import { rasterize } from './pixel-raster.ts';
@@ -66,17 +67,18 @@ export function PixelDungeonView(props: DungeonViewProps) {
   // The screen draws the view afresh on every change to the game; the frame is only painted when
   // what it shows has changed.
   const drawn = useRef('');
-  const levels = light ? flickers(light) : [];
+  const levels = light ? flickers(light, props.flicker) : [];
   useLayoutEffect(() => {
-    const key = JSON.stringify([props.panels, props.foes ?? [], light]);
+    const key = JSON.stringify([props.panels, props.foes ?? [], light, levels]);
     if (key === drawn.current) return;
     drawn.current = key;
     if (!light) return;
     const frame = renderScene(props.panels, props.foes ?? [], rasterize);
+    const lamps = lampsOf(props.panels);
     levels.forEach((level, i) => {
       const ctx = canvases.current[i]?.getContext('2d');
       ctx?.putImageData(
-        new ImageData(lightFrame(frame, light, level), VIEW_WIDTH, VIEW_HEIGHT),
+        new ImageData(lightFrame(frame, light, level, lamps), VIEW_WIDTH, VIEW_HEIGHT),
         0,
         0,
       );
@@ -96,7 +98,7 @@ export function PixelDungeonView(props: DungeonViewProps) {
         'dungeon-view',
         'pixel',
         light ? '' : 'dark',
-        light?.flicker ? 'flicker' : '',
+        levels.length > 1 ? 'flicker' : '',
         props.motion ? `move-${props.motion}` : '',
       ]
         .filter(Boolean)

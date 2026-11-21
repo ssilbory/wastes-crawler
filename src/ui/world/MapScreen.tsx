@@ -27,7 +27,7 @@ import { MAP_KEYS } from '../../render/key-help.ts';
 import { openQuests } from './QuestLog.tsx';
 import { PartyButtons, type PartyScreen } from './PartyButtons.tsx';
 import { JournalPanel } from './JournalPanel.tsx';
-import { captiveHomes, questTargets, revealedHexes } from '../../render/quest-view.ts';
+import { questPlaces, revealedHexes } from '../../render/quest-view.ts';
 import { CoachPanel } from './CoachPanel.tsx';
 import { QuarterPanel } from './QuarterPanel.tsx';
 import { typeOf } from '../../game/world/npcs.ts';
@@ -98,7 +98,7 @@ export function MapScreen(props: {
         route(w, data),
         HEX_SIZE,
         // A freed captive's home is marked like a quest's goal, and shows through the fog.
-        [...questTargets(w, data), ...captiveHomes(w, data)],
+        questPlaces(w, data),
         entrances,
         grovesHere(w, data),
         revealedHexes(w, data),

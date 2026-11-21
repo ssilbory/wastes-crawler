@@ -1,6 +1,7 @@
 import { useLayoutEffect, useState } from 'preact/hooks';
 import {
   CombatSpeedSchema,
+  FlickerSchema,
   GraphicsSchema,
   KeyActionSchema,
   TextSizeSchema,
@@ -164,6 +165,24 @@ export function SettingsApp() {
             {GraphicsSchema.options.map((x) => (
               <option key={x} value={x}>
                 {x === 'pixel' ? 'pixel art' : 'smooth shapes'}
+              </option>
+            ))}
+          </select>
+        </label>{' '}
+        <label>
+          Torch flicker{' '}
+          <select
+            value={s.flicker}
+            onChange={(e) =>
+              setSettings({
+                ...s,
+                flicker: FlickerSchema.parse((e.target as HTMLSelectElement).value),
+              })
+            }
+          >
+            {FlickerSchema.options.map((x) => (
+              <option key={x} value={x}>
+                {x}
               </option>
             ))}
           </select>

@@ -13,11 +13,17 @@ import type { Hex } from '../rules/hex.ts';
  * docs/rules-adaptation.md, NPCs): revealed through the fog, so the party knows where to take them.
  */
 export function captiveHomes(w: World, data: GameData): Hex[] {
+  return homes(w, data).map(({ col, row }) => ({ col, row }));
+}
+
+/** Each freed captive's home on the party's map, named for them. */
+function homes(w: World, data: GameData): (Hex & { name: string })[] {
   const sites = regionMap(data, w.region).sites;
   return w.npcs.flatMap((n) => {
     if (n.kind !== 'captive') return [];
-    const home = sites.find((s) => s.id === captiveOf(data, n.type).destination);
-    return home ? [{ col: home.col, row: home.row }] : [];
+    const c = captiveOf(data, n.type);
+    const home = sites.find((s) => s.id === c.destination);
+    return home ? [{ col: home.col, row: home.row, name: `${c.name}'s home` }] : [];
   });
 }
 
@@ -52,6 +58,18 @@ export function questTarget(w: World, data: GameData, id: string): Hex | null {
 /** Hexes on the party's map where quests wait or are paid for. */
 export function questTargets(w: World, data: GameData): Hex[] {
   return Object.keys(w.quests).flatMap((id) => questTarget(w, data, id) ?? []);
+}
+
+/**
+ * The same hexes with what waits there by name, for the map's tooltip (src/render/map-tip.ts):
+ * each quest's name, and each freed captive's home.
+ */
+export function questPlaces(w: World, data: GameData): (Hex & { name: string })[] {
+  const quests = Object.keys(w.quests).flatMap((id) => {
+    const at = questTarget(w, data, id);
+    return at ? [{ ...at, name: questOf(data, id).name }] : [];
+  });
+  return [...quests, ...homes(w, data)];
 }
 
 /**
