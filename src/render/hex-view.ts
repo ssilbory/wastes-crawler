@@ -12,8 +12,10 @@ export interface HexCell {
   points: string;
   cx: number;
   cy: number;
-  /** Terrain id and name, or null under fog. */
+  /** Terrain id, or null under fog. */
   terrain: string | null;
+  /** The terrain's name, for the map's tooltip, or null under fog. */
+  terrainName: string | null;
   label: string;
   road: boolean;
   visited: boolean;
@@ -23,6 +25,8 @@ export interface HexCell {
   route: boolean;
   /** A quest step waits here; shown even under fog, since the giver said where. */
   quest: boolean;
+  /** What waits here by name (quest-view.ts's questPlaces), for the tooltip, or null. */
+  questName: string | null;
   /** A dungeon entrance's name, once the hex is known or a rumor has told of it. */
   dungeon: string | null;
   /** A road off the map, once the hex is known (Phase 12). */
@@ -64,7 +68,8 @@ export function hexCells(
   w: World,
   routeHexes: Hex[],
   size: number,
-  questHexes: readonly Hex[] = [],
+  /** Quest goals, named when the caller knows what waits there. */
+  questHexes: readonly (Hex & { name?: string })[] = [],
   entrances: readonly (Hex & { name: string; heard?: boolean })[] = [],
   groves: readonly (Hex & { name: string })[] = [],
   /** Hexes the party knows of without having seen them, such as a freed captive's home. */
@@ -76,7 +81,9 @@ export function hexCells(
 ): HexCell[] {
   const tents = new Map(camps.map((c) => [hexKey(c), c.name]));
   const dens = new Map(lairs.map((l) => [hexKey(l), l.name]));
-  const quests = new Set(questHexes.map(hexKey));
+  const quests = new Map<string, string[]>();
+  for (const q of questHexes)
+    quests.set(hexKey(q), [...(quests.get(hexKey(q)) ?? []), ...(q.name ? [q.name] : [])]);
   const ways = new Map(entrances.map((e) => [hexKey(e), e]));
   const woods = new Map(groves.map((g) => [hexKey(g), g.name]));
   const seen = knownHexes(map, w);
@@ -99,6 +106,7 @@ export function hexCells(
         cx: x,
         cy: y,
         terrain: known ? terrain.id : null,
+        terrainName: known ? terrain.name : null,
         label: known ? `${site ?? terrain.name} (${key})` : `Unexplored (${key})`,
         road: known && map.dangerAt(h) === 'road',
         visited: w.visited.has(key),
@@ -107,6 +115,7 @@ export function hexCells(
         destination: w.destination !== null && key === hexKey(w.destination),
         route: onRoute.has(key),
         quest: quests.has(key),
+        questName: quests.get(key)?.join('; ') || null,
         dungeon: known || ways.get(key)?.heard ? (ways.get(key)?.name ?? null) : null,
         exit: known ? (map.exitAt(h)?.name ?? null) : null,
         grove: known ? (woods.get(key) ?? null) : null,

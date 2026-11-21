@@ -197,3 +197,31 @@ test('shows no saves reminder once the browser keeps them', async ({ page }) => 
   await expect(plan.getByRole('radio', { name: 'Hike' })).toBeVisible();
   await expect(plan.getByRole('link', { name: 'Keep your saves' })).toHaveCount(0);
 });
+
+// Sam's asks: hovering a hex names what is there, a long press does the same on a phone without
+// picking the hex, and a quick tap still picks it.
+test('names a hex on hover, and on a long press without picking it', async ({ page }) => {
+  await startWorld(page);
+  const map = page.getByRole('group', { name: 'Overland map' });
+  const tip = page.locator('.map-tip');
+  await map.locator('.hex:has(.site)').first().hover();
+  await expect(tip.locator('strong')).toHaveText('Rubblegate');
+  await expect(tip).toContainText('The party is here');
+  await page.mouse.move(0, 0);
+  await expect(tip).toHaveCount(0);
+
+  const hex = map.locator('.hex[class*="t-"]:not(:has(.party))').first();
+  const touch = { pointerType: 'touch', isPrimary: true, pointerId: 7 };
+  await hex.dispatchEvent('pointerdown', touch);
+  await page.waitForTimeout(650);
+  await hex.dispatchEvent('pointerup', touch);
+  await hex.dispatchEvent('click');
+  await expect(tip.locator('strong')).not.toHaveText('');
+  await expect(map.locator('.hex.destination')).toHaveCount(0);
+  // The next touch puts the tooltip away; a quick tap picks the hex.
+  await hex.dispatchEvent('pointerdown', touch);
+  await expect(tip).toHaveCount(0);
+  await hex.dispatchEvent('pointerup', touch);
+  await hex.dispatchEvent('click');
+  await expect(map.locator('.hex.destination')).toHaveCount(1);
+});

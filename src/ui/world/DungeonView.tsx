@@ -1,10 +1,12 @@
 import { useId, useLayoutEffect, useRef } from 'preact/hooks';
 import { darkness, poolAt, type LightView } from '../../render/dungeon-light.ts';
+import { lampGlows, type Glow } from '../../render/dungeon-lamps.ts';
 import { VIEW_HEIGHT, VIEW_WIDTH, type Panel } from '../../render/dungeon-view.ts';
 import type { Relief } from '../../render/dungeon-relief.ts';
 import type { TrapArt } from '../../render/trap-art.ts';
 import type { Motion } from '../../render/dungeon-motion.ts';
 import type { PortraitFigure } from '../../render/encounter-portrait.ts';
+import type { Flicker } from '../../data/schemas/index.ts';
 import { FigureParts } from '../arena/Figure.tsx';
 import { useSettings } from '../settings-store.ts';
 import { FurnitureShape, OccupantShape } from './DungeonProps.tsx';
@@ -75,6 +77,22 @@ function Pool(props: { panel: Panel; light: LightView }) {
   );
 }
 
+/** The glow about a brazier or an altar's candles (src/render/dungeon-lamps.ts). */
+function LampGlow(props: { glow: Glow }) {
+  const g = props.glow;
+  return (
+    <ellipse
+      class="lamp-glow"
+      cx={g.cx}
+      cy={g.cy}
+      rx={g.rx}
+      ry={g.ry}
+      fill="url(#dv-lamp)"
+      opacity={g.opacity}
+    />
+  );
+}
+
 /** A known trap's stain, holes, wire, wedge, and the party's chalk ring over all. */
 function TrapMarks(props: { art: TrapArt }) {
   const { art } = props;
@@ -99,14 +117,17 @@ export interface DungeonViewProps {
   moves?: number;
   /** A pending encounter's foes, standing ahead (src/render/encounter-portrait.ts). */
   foes?: PortraitFigure[];
+  /** How hard a torch flickers (the Torch flicker setting); the views read it from the settings. */
+  flicker?: Flicker;
 }
 
 /** The first-person view, as pixel art or smooth shapes as the player's settings choose. */
 export function DungeonView(props: DungeonViewProps) {
-  return useSettings().graphics === 'pixel' ? (
-    <PixelDungeonView {...props} />
+  const { graphics, flicker } = useSettings();
+  return graphics === 'pixel' ? (
+    <PixelDungeonView {...props} flicker={flicker} />
   ) : (
-    <VectorDungeonView {...props} />
+    <VectorDungeonView {...props} flicker={flicker} />
   );
 }
 
@@ -117,6 +138,8 @@ export function DungeonView(props: DungeonViewProps) {
  */
 export function VectorDungeonView(props: DungeonViewProps) {
   const { light } = props;
+  // Braziers and candles light their squares (Sam's ask), whatever the party carries.
+  const glows = new Map(lampGlows(props.panels).map((g) => [g.key, g]));
   // Each move restarts the motion on the same scene: the view is patched, not rebuilt, so a step
   // changes a few attributes rather than recreating hundreds of nodes.
   const scene = useRef<SVGGElement>(null);
@@ -137,7 +160,9 @@ export function VectorDungeonView(props: DungeonViewProps) {
       class={[
         'dungeon-view',
         light ? '' : 'dark',
-        light?.flicker ? 'flicker' : '',
+        light?.flicker && props.flicker !== 'off'
+          ? `flicker flicker-${props.flicker ?? 'normal'}`
+          : '',
         props.motion ? `move-${props.motion}` : '',
       ]
         .filter(Boolean)
@@ -156,6 +181,13 @@ export function VectorDungeonView(props: DungeonViewProps) {
           </radialGradient>
         </defs>
       )}
+      <defs>
+        <radialGradient id="dv-lamp">
+          <stop offset="0" stop-color="#ffb347" stop-opacity="0.55" />
+          <stop offset="0.45" stop-color="#ff8a2a" stop-opacity="0.22" />
+          <stop offset="1" stop-color="#ff8a2a" stop-opacity="0" />
+        </radialGradient>
+      </defs>
       <clipPath id={frame}>
         <rect width={VIEW_WIDTH} height={VIEW_HEIGHT} />
       </clipPath>
@@ -165,7 +197,12 @@ export function VectorDungeonView(props: DungeonViewProps) {
           <rect class="floor" y={VIEW_HEIGHT / 2} width={VIEW_WIDTH} height={VIEW_HEIGHT / 2} />
           {props.panels.map((p) =>
             p.furniture ? (
-              <FurnitureShape key={p.key} panel={p} light={light} />
+              <g key={p.key}>
+                {glows.get(`glow-${p.key}`) && (
+                  <LampGlow glow={glows.get(`glow-${p.key}`) as Glow} />
+                )}
+                <FurnitureShape panel={p} light={light} />
+              </g>
             ) : p.occupant ? (
               <OccupantShape key={p.key} panel={p} light={light} />
             ) : (

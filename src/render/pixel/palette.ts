@@ -23,6 +23,16 @@ export const MAT = {
   glint: 15,
   darkness: 16,
   rust: 17,
+  // The overland map's land and icons.
+  grass: 18,
+  leaf: 19,
+  pine: 20,
+  sand: 21,
+  snow: 22,
+  dirt: 23,
+  blood: 24,
+  gold: 25,
+  fog: 26,
 } as const;
 
 export type Mat = (typeof MAT)[keyof typeof MAT];
@@ -61,6 +71,15 @@ const BASES: Record<Mat, Base> = {
   [MAT.glint]: { h: 36, s: 0.72, l: 0.8, glows: true },
   [MAT.darkness]: { h: 0, s: 0, l: 0.01, glows: true },
   [MAT.rust]: { h: 14, s: 0.5, l: 0.66 },
+  [MAT.grass]: { h: 84, s: 0.4, l: 0.6 },
+  [MAT.leaf]: { h: 104, s: 0.44, l: 0.54 },
+  [MAT.pine]: { h: 146, s: 0.36, l: 0.46 },
+  [MAT.sand]: { h: 42, s: 0.52, l: 0.78 },
+  [MAT.snow]: { h: 208, s: 0.18, l: 0.96 },
+  [MAT.dirt]: { h: 28, s: 0.42, l: 0.52 },
+  [MAT.blood]: { h: 2, s: 0.72, l: 0.56 },
+  [MAT.gold]: { h: 45, s: 0.78, l: 0.64 },
+  [MAT.fog]: { h: 30, s: 0.22, l: 0.32 },
 };
 
 /** Whether a material makes its own light. */

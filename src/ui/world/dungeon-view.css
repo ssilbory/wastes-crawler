@@ -201,6 +201,47 @@
   }
 }
 
+/* The Torch flicker setting: a gentler or a harder breath than the usual one. */
+.dungeon-view.flicker-low .shadow,
+.dungeon-view.flicker-low .glow {
+  animation-name: torch-flicker-low;
+}
+
+.dungeon-view.flicker-high .shadow,
+.dungeon-view.flicker-high .glow {
+  animation-name: torch-flicker-high;
+}
+
+@keyframes torch-flicker-low {
+  0% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0.97;
+  }
+}
+
+@keyframes torch-flicker-high {
+  0% {
+    opacity: 1;
+  }
+  25% {
+    opacity: 0.72;
+  }
+  45% {
+    opacity: 0.95;
+  }
+  70% {
+    opacity: 0.68;
+  }
+  100% {
+    opacity: 0.85;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .dungeon-view.flicker .shadow,
   .dungeon-view.flicker .glow {

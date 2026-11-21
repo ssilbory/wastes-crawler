@@ -80,3 +80,9 @@
   stroke: #3a332b;
   stroke-linecap: round;
 }
+
+/* The glow a brazier or an altar's candles cast on what stands about them (dungeon-lamps.ts). */
+.dungeon-view .lamp-glow {
+  mix-blend-mode: screen;
+  pointer-events: none;
+}

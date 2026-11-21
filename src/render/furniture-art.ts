@@ -74,10 +74,13 @@ export interface FurnitureArt {
   size: number;
   /** Which edge catches the party's light (figure-draw.ts). */
   light: Relief;
+  /** The cell it stands in: how many ahead of the party, and how many across (right positive). */
+  depth: number;
+  lateral: number;
 }
 
 /** The furniture on the cell `depth` ahead and `lateral` across, standing in its middle. */
 export function furnitureIn(kind: Furniture['kind'], depth: number, lateral: number): FurnitureArt {
   const { x, y, size } = standIn(depth + 0.5, lateral);
-  return { kind, parts: ART[kind], x, y, size, light: lightFrom(x + size / 2) };
+  return { kind, parts: ART[kind], x, y, size, light: lightFrom(x + size / 2), depth, lateral };
 }

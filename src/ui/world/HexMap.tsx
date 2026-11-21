@@ -4,6 +4,9 @@ import { landSignature, type HexCell } from '../../render/hex-view.ts';
 import { FogLayer, LandLayer } from './HexLand.tsx';
 import { HexArtDefs } from './HexArt.tsx';
 import { useMapKeys } from './map-keys.ts';
+import { useMapTip } from './MapTip.tsx';
+import { PixelLand } from './PixelLand.tsx';
+import { useSettings } from '../settings-store.ts';
 import { cursorText } from '../../render/map-cursor.ts';
 
 const SIZE = 18;
@@ -72,7 +75,9 @@ function ScaleBarMark(props: { bar: ScaleBar }) {
  * group per hex with its icons, which takes the clicks; clicking a hex, even under fog, picks it as
  * the destination. With `onDrag`, moving over hexes with the button held picks them too, for
  * painting in the map editor. Each hex is a button for the keyboard and screen readers
- * (`useMapKeys`): Tab to the map, the arrow keys, then Enter.
+ * (`useMapKeys`): Tab to the map, the arrow keys, then Enter. Hovering a hex, a long press on it
+ * on a phone, or moving the keyboard onto it shows a tooltip naming its site or terrain
+ * (`useMapTip`).
  */
 export function HexMap(props: {
   cells: HexCell[];
@@ -93,12 +98,16 @@ export function HexMap(props: {
     signature: landSignature(cells),
   };
   const keys = useMapKeys(cells, props.onPick);
+  const tip = useMapTip();
   const hint = useId();
+  // Pixel art draws the land, fog, hour, and icons as images (PixelLand.tsx); the hexes over them
+  // are the same either way.
+  const pixel = useSettings().graphics === 'pixel';
   return (
     <>
       <svg
         ref={keys.svg}
-        class="hex-map"
+        class={pixel ? 'hex-map pixel' : 'hex-map'}
         viewBox={`0 0 ${props.width} ${props.height}`}
         role="group"
         aria-label={props.label ?? 'Overland map'}
@@ -106,28 +115,36 @@ export function HexMap(props: {
         onKeyDown={keys.onKeyDown}
       >
         <HexArtDefs />
-        <rect class="paper" width={props.width} height={props.height} fill="url(#hm-paper)" />
-        <LandLayer {...layer} />
-        <rect class="grain" width={props.width} height={props.height} fill="url(#hm-grain)" />
-        {tint && tint.opacity > 0 && (
-          <rect
-            class="day-tint"
-            width={props.width}
-            height={props.height}
-            fill={tint.color}
-            fill-opacity={tint.opacity}
+        {pixel ? (
+          <PixelLand {...layer} tint={tint} />
+        ) : (
+          <>
+            <rect class="paper" width={props.width} height={props.height} fill="url(#hm-paper)" />
+            <LandLayer {...layer} />
+            <rect class="grain" width={props.width} height={props.height} fill="url(#hm-grain)" />
+            {tint && tint.opacity > 0 && (
+              <rect
+                class="day-tint"
+                width={props.width}
+                height={props.height}
+                fill={tint.color}
+                fill-opacity={tint.opacity}
+              />
+            )}
+            <FogLayer {...layer} />
+          </>
+        )}
+        <ScaleBarMark bar={scaleBar(props.height, SIZE)} />
+        {!pixel && (
+          <use
+            class="compass"
+            href="#hi-compass"
+            x={props.width - SIZE * 3.2}
+            y={SIZE * 0.6}
+            width={SIZE * 2.6}
+            height={SIZE * 2.6}
           />
         )}
-        <FogLayer {...layer} />
-        <ScaleBarMark bar={scaleBar(props.height, SIZE)} />
-        <use
-          class="compass"
-          href="#hi-compass"
-          x={props.width - SIZE * 3.2}
-          y={SIZE * 0.6}
-          width={SIZE * 2.6}
-          height={SIZE * 2.6}
-        />
         {cells.map((c) => (
           <g
             key={c.key}
@@ -145,13 +162,17 @@ export function HexMap(props: {
             role="button"
             aria-label={cursorText(c)}
             tabindex={c.key === keys.tabStop ? 0 : -1}
-            onFocus={() => keys.onFocus(c)}
-            onClick={() => props.onPick(c.col, c.row)}
-            onPointerEnter={
-              onDrag ? (e: PointerEvent) => e.buttons === 1 && onDrag(c.col, c.row) : undefined
-            }
+            {...tip.hexProps(c)}
+            onFocus={(e: FocusEvent) => {
+              keys.onFocus(c);
+              tip.hexProps(c).onFocus(e);
+            }}
+            onClick={tip.onClick(() => props.onPick(c.col, c.row))}
+            onPointerEnter={(e: PointerEvent) => {
+              tip.hexProps(c).onPointerEnter(e);
+              if (onDrag && e.buttons === 1) onDrag(c.col, c.row);
+            }}
           >
-            <title>{c.label}</title>
             <polygon class="hit" points={c.points} />
             {c.site && (
               <>
@@ -230,6 +251,7 @@ export function HexMap(props: {
       <p id={hint} class="sr-only">
         Arrow keys move across the map; Enter picks the hex.
       </p>
+      {tip.element}
     </>
   );
 }

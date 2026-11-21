@@ -8,6 +8,7 @@ import {
   questTargets,
   rewardText,
   townName,
+  questPlaces,
   revealedHexes,
 } from '../../src/render/quest-view.ts';
 import { addNpc } from '../../src/game/world/npcs.ts';
@@ -109,6 +110,35 @@ describe('revealed hexes (Sam’s call)', () => {
     expect(camp?.label).not.toContain('Unexplored');
     // A neighbor stays fogged.
     expect(cells.find((c) => c.key === '7,12')?.terrain).toBeNull();
+  });
+});
+
+describe('quest places by name, for the map’s tooltip (Sam’s ask)', () => {
+  it('names each quest’s goal and each freed captive’s home, and the hex carries the names', () => {
+    const w = world();
+    expect(questPlaces(w, data)).toEqual([]);
+    w.quests['bandit-camp'] = { status: 'active', step: 0, acceptedDay: 0 };
+    freeCaptive(w, data, 'merchant');
+    freeCaptive(w, data, 'grey-priest');
+    addNpc(w, data, 'hireling', 'porter', 'peaceful-human', 'Porter', false);
+    const places = questPlaces(w, data);
+    const quest = data.content.quests.find((q) => q.id === 'bandit-camp')?.name;
+    expect(places).toEqual([
+      { col: 6, row: 12, name: quest },
+      { col: 20, row: 8, name: expect.stringMatching(/'s home$/) },
+    ]);
+    // A quest done elsewhere, or not taken, names nothing.
+    w.quests.letters = { status: 'done', step: 0, acceptedDay: 0 };
+    expect(questPlaces(w, data)).toHaveLength(2);
+    const map = regionMap(data, w.region);
+    const cells = hexCells(map, w, [], 18, [...places, { col: 6, row: 12, name: 'Another' }]);
+    expect(cells.find((c) => c.key === '6,12')).toMatchObject({
+      quest: true,
+      questName: `${quest}; Another`,
+    });
+    // A goal with no name is marked but not named.
+    const bare = hexCells(map, w, [], 18, [{ col: 6, row: 12 }]).find((c) => c.key === '6,12');
+    expect(bare).toMatchObject({ quest: true, questName: null });
   });
 });
 

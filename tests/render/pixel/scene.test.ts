@@ -11,6 +11,7 @@ import { MAT } from '../../../src/render/pixel/palette.ts';
 import { renderScene } from '../../../src/render/pixel/scene.ts';
 import { brightness, flickers, glowAt, lightFrame } from '../../../src/render/pixel/shade.ts';
 import { trapSprite, type Rasterize } from '../../../src/render/pixel/sprites.ts';
+import { lampsOf } from '../../../src/render/dungeon-lamps.ts';
 import { data, world } from '../../game/world/helpers.ts';
 
 function at(dungeon: string, level: string, x: number, y: number, facing: DungeonState['facing']) {
@@ -233,7 +234,17 @@ describe('pixel lighting', () => {
     // Built once per colour, and the same frame twice is the same picture.
     expect(lightFrame(f, torch)).toEqual(rgba);
     expect(lightFrame(newFrame(), sight).every((v, i) => i % 4 === 3 || v < 40)).toBe(true);
+    // Braziers and candles brighten the frame about them (dungeon-lamps.ts).
+    const shrine = dungeonView(at('old-barrow', 'barrow-upper', 9, 0, 'w'), data);
+    const g = renderScene(shrine, [], raster);
+    expect(sum(lightFrame(g, torch, 1, lampsOf(shrine)))).toBeGreaterThan(
+      sum(lightFrame(g, torch)),
+    );
     expect(flickers(torch)).toHaveLength(3);
     expect(flickers(sight)).toEqual([1]);
+    // The Torch flicker setting: off holds one frame, high steps further down than low.
+    expect(flickers(torch, 'off')).toEqual([1]);
+    expect(flickers(sight, 'high')).toEqual([1]);
+    expect(Math.min(...flickers(torch, 'high'))).toBeLessThan(Math.min(...flickers(torch, 'low')));
   });
 });

@@ -30,6 +30,7 @@ export function editorHexCells(
         cx: x,
         cy: y,
         terrain: terrain.id,
+        terrainName: terrain.name,
         label: `${site ? `${site.name} (${site.size}${start}), ` : ''}${terrain.name}, ${map.dangerAt(h)}${
           here.length > 0 ? `, ${here.join(', ')}` : ''
         } (${key})`,
@@ -40,6 +41,7 @@ export function editorHexCells(
         destination: selected !== null && key === hexKey(selected),
         route: false,
         quest: false,
+        questName: null,
         dungeon: here.length > 0 ? here.join(', ') : null,
         exit: map.exitAt(h)?.name ?? null,
         grove: null,

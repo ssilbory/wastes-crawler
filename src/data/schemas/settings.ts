@@ -17,6 +17,8 @@ export const TextSizeSchema = z.enum(['small', 'normal', 'large']);
 export const CombatSpeedSchema = z.enum(['instant', 'fast', 'normal', 'slow']);
 /** How the dungeon view and the fight's figures are drawn (docs/presentation-plan.md, V8). */
 export const GraphicsSchema = z.enum(['pixel', 'vector']);
+/** How hard a torch flickers in the dungeon view (docs/presentation-plan.md, V8); off holds it steady. */
+export const FlickerSchema = z.enum(['off', 'low', 'normal', 'high']);
 
 /** The player's settings, kept in the browser. */
 export const SettingsSchema = z.strictObject({
@@ -29,8 +31,11 @@ export const SettingsSchema = z.strictObject({
   textSize: TextSizeSchema,
   /** Settings stored before there was a choice take the pixel view. */
   graphics: GraphicsSchema.default('pixel'),
+  /** Settings stored before there was a choice flicker as they always did. */
+  flicker: FlickerSchema.default('normal'),
 });
 export type Settings = z.infer<typeof SettingsSchema>;
+export type Flicker = z.infer<typeof FlickerSchema>;
 
 /** Defaults and the speeds' delays, from data/content/settings-defaults.json. */
 export const SettingsDefaultsSchema = z.strictObject({

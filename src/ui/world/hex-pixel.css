@@ -1,0 +1,77 @@
+/* The overland map as pixel art (PixelLand.tsx, docs/presentation-plan.md, V8): the land and icon
+   images scaled up whole pixels, the vector icons kept on each hex but not drawn (the pixel ones
+   stand in for them), names in the pixel font, and the route and destination marks in hard dashes.
+   Loaded after hex-map.css and hex-terrain.css. */
+
+.hex-map.pixel {
+  background: #241d16;
+}
+
+.hex-map.pixel image {
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+/* The pixel icons stand in for the vector ones; these stay for their names and the keyboard. */
+.hex-map.pixel .hex use {
+  opacity: 0;
+}
+
+.hex-map.pixel .hex .site-name {
+  font-family: var(--font-term);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  fill: #f5e7c4;
+  stroke: #1a130d;
+  stroke-width: 2.5px;
+  stroke-linejoin: miter;
+}
+
+.hex-map.pixel .hex:hover .hit {
+  fill: #fff8e0;
+  fill-opacity: 0.16;
+}
+
+.hex-map.pixel .hex.route .hit,
+.hex-map.pixel .hex.destination .hit,
+.hex-map.pixel .hex.quest .hit {
+  stroke-linejoin: miter;
+  shape-rendering: crispEdges;
+}
+
+.hex-map.pixel .hex.route .hit {
+  stroke: #ffcf6a;
+  stroke-dasharray: 2 2;
+}
+
+.hex-map.pixel .hex.destination .hit {
+  stroke: #ff6a4a;
+}
+
+.hex-map.pixel .hex.quest .hit {
+  stroke: #c58aff;
+}
+
+.hex-map.pixel .scale-bar .backing {
+  rx: 0;
+  fill: #241d16;
+  fill-opacity: 0.85;
+  stroke: #f5e7c4;
+}
+
+.hex-map.pixel .scale-bar .light {
+  fill: #f5e7c4;
+  stroke: none;
+}
+
+.hex-map.pixel .scale-bar .dark {
+  fill: #8a7a5c;
+}
+
+.hex-map.pixel .scale-bar text {
+  font-family: var(--font-term);
+  font-size: 9px;
+  font-weight: 400;
+  fill: #f5e7c4;
+}
