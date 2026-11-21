@@ -21,6 +21,8 @@ export function furniturePanel(kind: Furniture['kind'], depth: number, lateral: 
     key: `furniture-${depth}-${lateral}`,
     kind: 'furniture',
     points: '',
+    quad: null,
+    seed: `furniture-${depth}-${lateral}`,
     frame: null,
     fill: shade('wall', depth, false),
     detail: { lines: '', patches: '' },

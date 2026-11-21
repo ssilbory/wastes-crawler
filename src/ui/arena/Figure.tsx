@@ -2,12 +2,17 @@ import { useId } from 'preact/hooks';
 import type { Part } from '../../render/figure-art.ts';
 import { drawFigure, type Relief } from '../../render/figure-draw.ts';
 import type { FigureView } from '../../render/figure-view.ts';
+import { useSettings } from '../settings-store.ts';
+import { PixelFigure } from './PixelFigure.tsx';
 
 /**
  * A combatant's silhouette (docs/presentation-plan.md, V3), drawn in the side's colour; cut lines
- * take the slot's colour to carve details out of it.
+ * take the slot's colour to carve details out of it. As pixel art (V8) when the graphics setting
+ * says so.
  */
-export function Figure(props: { figure: FigureView; down: boolean }) {
+export function Figure(props: { figure: FigureView; down: boolean; far?: boolean }) {
+  if (useSettings().graphics === 'pixel')
+    return <PixelFigure figure={props.figure} down={props.down} far={props.far ?? false} />;
   return (
     <svg class="figure" viewBox="0 0 48 48" aria-hidden="true">
       <FigureParts figure={props.figure} down={props.down} />

@@ -187,6 +187,8 @@ export function occupantPanel(o: Occupant, depth: number, lateral: number): Pane
     key: `occupant-${depth}-${lateral}`,
     kind: 'occupant',
     points: '',
+    quad: null,
+    seed: `occupant-${depth}-${lateral}`,
     frame: null,
     fill: shade('wall', depth, false),
     detail: { lines: '', patches: '' },

@@ -1,0 +1,113 @@
+/* The dungeon's first-person view as pixel art (PixelDungeonView.tsx, docs/presentation-plan.md,
+   V8): a 320 by 240 canvas scaled up whole pixels at a time, invisible boxes over what stands in
+   it, and a torch stepping between its frames. Loaded right after dungeon-props.css; the frame,
+   its size, and the motion after a step are dungeon-view.css's. */
+
+.dungeon-view.pixel {
+  position: relative;
+  overflow: hidden;
+  background: #08070a;
+}
+
+.dungeon-view.pixel > .scene {
+  position: absolute;
+  inset: 0;
+}
+
+.dungeon-view.pixel canvas,
+.dungeon-view.pixel .marks {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.dungeon-view.pixel canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* Firefox reads the last value it knows; Chrome and Safari take pixelated. */
+@supports (image-rendering: pixelated) {
+  .dungeon-view.pixel canvas {
+    image-rendering: pixelated;
+  }
+}
+
+.dungeon-view.pixel .marks rect {
+  fill: transparent;
+}
+
+/* A torch's dimmer frames lie over its brightest, shown in turn without fading: a flame jumps. */
+.dungeon-view.pixel .frame-1,
+.dungeon-view.pixel .frame-2 {
+  opacity: 0;
+}
+
+.dungeon-view.pixel.flicker .frame-1 {
+  animation: px-flicker-1 2.3s steps(1, end) infinite;
+}
+
+.dungeon-view.pixel.flicker .frame-2 {
+  animation: px-flicker-2 3.1s steps(1, end) infinite;
+}
+
+@keyframes px-flicker-1 {
+  0% {
+    opacity: 0;
+  }
+  21% {
+    opacity: 1;
+  }
+  29% {
+    opacity: 0;
+  }
+  58% {
+    opacity: 1;
+  }
+  63% {
+    opacity: 0;
+  }
+  84% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 0;
+  }
+}
+
+@keyframes px-flicker-2 {
+  0% {
+    opacity: 0;
+  }
+  38% {
+    opacity: 1;
+  }
+  42% {
+    opacity: 0;
+  }
+  73% {
+    opacity: 1;
+  }
+  76% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dungeon-view.pixel.flicker .frame-1,
+  .dungeon-view.pixel.flicker .frame-2 {
+    animation: none;
+  }
+}
+
+.dungeon-view.pixel .pitch-dark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #6b6258;
+  font-family: var(--font-term);
+  font-size: 1.6rem;
+  letter-spacing: 0.08em;
+}

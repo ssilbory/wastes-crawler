@@ -78,9 +78,11 @@ test('enters the barrow from the hex map, walks both levels, and climbs out', as
   const bar = page.locator('.world-bar');
   await expect(bar).toContainText('The Upper Barrow, facing north');
   await expect(view).toHaveScreenshot('barrow-entry.png');
-  // A turn or a step shrinks and slides the scene; it is clipped to the frame as it moves, so the
-  // cells drawn past the frame's edges (beside the party, behind its side walls) never show.
-  await expect(view.locator('.scene > g').first()).toHaveAttribute('clip-path', /^url\(#dv-frame-/);
+  // A turn or a step shrinks and slides the scene; the frame clips it as it moves, so the dark
+  // shows round its edges and nothing past them. The pixel view (docs/presentation-plan.md, V8)
+  // draws only what lies inside the frame; the frame hides the rest.
+  await expect(view).toHaveCSS('overflow', 'hidden');
+  await expect(view.locator('.scene canvas').first()).toBeVisible();
 
   // Up the corridor to the door of the first room.
   await keys(page, 'wwwww');
