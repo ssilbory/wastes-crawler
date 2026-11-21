@@ -39,10 +39,9 @@ export function trapText(l: Pick<LockState, 'trap' | 'trapState' | 'looked'> | n
   if (!l || !l.looked) return 'No one has looked it over yet.';
   if (l.trapState === 'noticed')
     return l.trap ? `A ${l.trap.name} guards it.` : 'Something stirs inside it.';
-  // Only a lock with a trap has one disarmed or sprung.
-  const name = (l.trap as NonNullable<LockState['trap']>).name;
-  if (l.trapState === 'disarmed') return `Its ${name} is disarmed.`;
-  if (l.trapState === 'sprung') return `Its ${name} is spent.`;
+  // Most locks have no trap at all, so the name is read only once one has been worked.
+  if (l.trap && l.trapState === 'disarmed') return `Its ${l.trap.name} is disarmed.`;
+  if (l.trap && l.trapState === 'sprung') return `Its ${l.trap.name} is spent.`;
   return 'No trap has been spotted on it.';
 }
 
