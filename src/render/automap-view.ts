@@ -10,6 +10,15 @@ import type { Furniture } from '../data/schemas/index.ts';
 import { levelOf } from '../game/dungeon/levels.ts';
 import { locatedMarks } from '../game/world/skull-locate.ts';
 import { occupantsOf } from './dungeon-occupants.ts';
+import { blind } from '../game/dungeon/light.ts';
+import { onSpecial } from '../game/dungeon/specials.ts';
+
+/**
+ * Whether the map can't be read here (Sam's call, docs/rules-adaptation.md, Dungeon exploration:
+ * Darkness): on a square of magical darkness, for a party that can't see in it.
+ */
+export const automapDark = (w: World, data: GameData): boolean =>
+  w.dungeon !== null && onSpecial(w, data, 'darkness') && blind(w, data);
 
 export const MAP_CELL = 16;
 

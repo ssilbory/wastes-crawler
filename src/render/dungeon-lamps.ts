@@ -1,8 +1,9 @@
 // Fire that lights the dungeon by itself (Sam's ask; docs/presentation-plan.md, V8): a brazier, or
 // an altar's candles, lights its own square and fades out over the squares around it, whatever
 // the party carries. Seen from afar it shows dimly: its light ignores the reach of the party's
-// torch but fades with distance from the party. Presentation only: no rule reads it, and a party
-// without light of its own still sees nothing (docs/rules-adaptation.md, Dungeon exploration).
+// torch but fades with distance from the party. The glow itself is presentation; the rule that a
+// brazier lights the square it stands on is src/game/dungeon/light.ts's brazierLit
+// (docs/rules-adaptation.md, Dungeon exploration: Braziers).
 import { VIEW_HEIGHT, VIEW_WIDTH } from './dungeon-geometry.ts';
 import type { Panel } from './dungeon-panel.ts';
 

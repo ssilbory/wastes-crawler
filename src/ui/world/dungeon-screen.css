@@ -110,3 +110,18 @@
     max-height: none;
   }
 }
+
+/* The automap on a square of magical darkness (Sam's call): nothing to read by. */
+.automap-dark {
+  display: grid;
+  place-items: center;
+  min-height: 160px;
+  margin: 0;
+  background: #050404;
+  color: #6b6258;
+  font-family: var(--font-term);
+  font-size: 1.2rem;
+  box-shadow:
+    inset 2px 2px 0 0 #000,
+    inset -2px -2px 0 0 var(--line);
+}

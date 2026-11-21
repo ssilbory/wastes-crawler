@@ -3,7 +3,7 @@ import { exitLabel, stairsHere, step, takeStairs, turnParty } from '../../game/d
 import { levelOf } from '../../game/dungeon/levels.ts';
 import { describeDate } from '../../game/world/calendar.ts';
 import type { World } from '../../game/world/types.ts';
-import { automap, FACING_NAMES } from '../../render/automap-view.ts';
+import { automap, automapDark, FACING_NAMES } from '../../render/automap-view.ts';
 import { Automap } from './Automap.tsx';
 import { automapWindow } from '../../render/automap-window.ts';
 import { PHONE, useMedia } from '../media.ts';
@@ -150,7 +150,7 @@ export function DungeonScreen(props: {
             {level.name}, facing {FACING_NAMES[s.facing]}
           </span>
           <span class="turn">{turnText(w)}</span>
-          <span class="light">{lightText(w)}</span>
+          <span class="light">{lightText(w, data)}</span>
           <span>Rations: {w.rations === 0 ? 'none' : `d${w.rations}`}</span>
         </div>
         <span class="bar-actions">
@@ -178,14 +178,23 @@ export function DungeonScreen(props: {
             {map && (
               <section class="panel dungeon-map" aria-label="Automap">
                 <h3>Map</h3>
-                <Automap
-                  map={map}
-                  label={`Map of ${level.name}`}
-                  onPick={w.encounter ? undefined : walk.walkTo}
-                  window={phone ? automapWindow(map, s.at) : undefined}
-                />
-                {!w.encounter && (
-                  <p class="hint">Tap or click a square you've seen to walk there.</p>
+                {automapDark(w, data) ? (
+                  // Magical darkness swallows the map too (Sam's call).
+                  <p class="automap-dark" role="img" aria-label={`Map of ${level.name}`}>
+                    Too dark to read the map
+                  </p>
+                ) : (
+                  <>
+                    <Automap
+                      map={map}
+                      label={`Map of ${level.name}`}
+                      onPick={w.encounter ? undefined : walk.walkTo}
+                      window={phone ? automapWindow(map, s.at) : undefined}
+                    />
+                    {!w.encounter && (
+                      <p class="hint">Tap or click a square you've seen to walk there.</p>
+                    )}
+                  </>
                 )}
               </section>
             )}
