@@ -6,7 +6,9 @@ import type { TrapArt } from '../../render/trap-art.ts';
 import type { Motion } from '../../render/dungeon-motion.ts';
 import type { PortraitFigure } from '../../render/encounter-portrait.ts';
 import { FigureParts } from '../arena/Figure.tsx';
+import { useSettings } from '../settings-store.ts';
 import { FurnitureShape, OccupantShape } from './DungeonProps.tsx';
+import { PixelDungeonView } from './PixelDungeonView.tsx';
 
 const DARK = '#050404';
 
@@ -87,12 +89,7 @@ function TrapMarks(props: { art: TrapArt }) {
   );
 }
 
-/**
- * The first-person view: the panels far to near with their stone and wood, then the light over
- * them, a falloff into the dark toward the vanishing point and the colour the light casts
- * (docs/presentation-plan.md, V1). With no light, the view is pitch dark.
- */
-export function DungeonView(props: {
+export interface DungeonViewProps {
   panels: Panel[];
   light: LightView | null;
   label: string;
@@ -102,7 +99,23 @@ export function DungeonView(props: {
   moves?: number;
   /** A pending encounter's foes, standing ahead (src/render/encounter-portrait.ts). */
   foes?: PortraitFigure[];
-}) {
+}
+
+/** The first-person view, as pixel art or smooth shapes as the player's settings choose. */
+export function DungeonView(props: DungeonViewProps) {
+  return useSettings().graphics === 'pixel' ? (
+    <PixelDungeonView {...props} />
+  ) : (
+    <VectorDungeonView {...props} />
+  );
+}
+
+/**
+ * The first-person view in smooth shapes: the panels far to near with their stone and wood, then
+ * the light over them, a falloff into the dark toward the vanishing point and the colour the light
+ * casts (docs/presentation-plan.md, V1). With no light, the view is pitch dark.
+ */
+export function VectorDungeonView(props: DungeonViewProps) {
   const { light } = props;
   // Each move restarts the motion on the same scene: the view is patched, not rebuilt, so a step
   // changes a few attributes rather than recreating hundreds of nodes.

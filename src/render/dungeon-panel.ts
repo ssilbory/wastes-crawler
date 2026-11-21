@@ -1,6 +1,6 @@
 // One surface of the first-person view as drawing data, and how it is shaded (docs/plan.md, Phase
 // 7; docs/presentation-plan.md, V1). The view builds these in dungeon-view.ts.
-import type { Breach, Detail } from './dungeon-detail.ts';
+import type { Breach, Detail, Quad } from './dungeon-detail.ts';
 import type { Span } from './dungeon-geometry.ts';
 import type { FurnitureArt } from './furniture-art.ts';
 import type { Occupant, Placed } from './dungeon-occupants.ts';
@@ -22,6 +22,13 @@ export interface Panel {
     | 'occupant';
   /** SVG polygon points. */
   points: string;
+  /**
+   * The same corners unrounded (top-left, top-right, bottom-right, bottom-left) for the pixel
+   * view's textures (src/render/pixel/); null for furniture and occupants, which are figures.
+   */
+  quad: Quad | null;
+  /** Keys the panel's texture to its cell and side, so it stays put between steps. */
+  seed: string;
   /** A door's leaf inside the panel, or null. */
   frame: string | null;
   fill: string;

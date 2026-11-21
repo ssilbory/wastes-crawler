@@ -1,6 +1,7 @@
 import { useLayoutEffect, useState } from 'preact/hooks';
 import {
   CombatSpeedSchema,
+  GraphicsSchema,
   KeyActionSchema,
   TextSizeSchema,
   type KeyAction,
@@ -14,7 +15,7 @@ import './settings.css';
 
 const MODIFIERS = new Set(['Shift', 'Control', 'Alt', 'Meta', 'AltGraph']);
 
-/** Settings: keys, sound, combat speed, and text size (docs/plan.md, Phase 11). */
+/** Settings: keys, sound, combat speed, text size (docs/plan.md, Phase 11), and graphics. */
 export function SettingsApp() {
   const s = useSettings();
   /** The action and slot waiting for a key press, if any. */
@@ -111,8 +112,8 @@ export function SettingsApp() {
           Test
         </button>
       </section>
-      <section class="panel" aria-label="Combat and text">
-        <h2>Combat and text</h2>
+      <section class="panel" aria-label="Combat, text, and graphics">
+        <h2>Combat, text, and graphics</h2>
         <label>
           Auto-resolve speed{' '}
           <select
@@ -145,6 +146,24 @@ export function SettingsApp() {
             {TextSizeSchema.options.map((x) => (
               <option key={x} value={x}>
                 {x}
+              </option>
+            ))}
+          </select>
+        </label>{' '}
+        <label>
+          Dungeon graphics{' '}
+          <select
+            value={s.graphics}
+            onChange={(e) =>
+              setSettings({
+                ...s,
+                graphics: GraphicsSchema.parse((e.target as HTMLSelectElement).value),
+              })
+            }
+          >
+            {GraphicsSchema.options.map((x) => (
+              <option key={x} value={x}>
+                {x === 'pixel' ? 'pixel art' : 'smooth shapes'}
               </option>
             ))}
           </select>

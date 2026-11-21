@@ -15,6 +15,8 @@ const face = (key: string, q: Quad, span: Panel['span']): Panel => ({
   key,
   kind: 'darkness',
   points: fmt(q),
+  quad: q,
+  seed: key,
   frame: null,
   fill: DARKNESS,
   detail: { lines: '', patches: '' },

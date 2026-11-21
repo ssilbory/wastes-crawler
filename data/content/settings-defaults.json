@@ -16,7 +16,8 @@
       "volume": 0.5
     },
     "combatSpeed": "instant",
-    "textSize": "normal"
+    "textSize": "normal",
+    "graphics": "pixel"
   },
   "roundDelays": {
     "instant": 0,

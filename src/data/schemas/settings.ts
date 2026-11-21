@@ -15,6 +15,8 @@ export type KeyAction = z.infer<typeof KeyActionSchema>;
 
 export const TextSizeSchema = z.enum(['small', 'normal', 'large']);
 export const CombatSpeedSchema = z.enum(['instant', 'fast', 'normal', 'slow']);
+/** How the dungeon view is drawn (docs/presentation-plan.md, V8): pixel art or smooth shapes. */
+export const GraphicsSchema = z.enum(['pixel', 'vector']);
 
 /** The player's settings, kept in the browser. */
 export const SettingsSchema = z.strictObject({
@@ -25,6 +27,8 @@ export const SettingsSchema = z.strictObject({
   /** How fast auto-resolve plays out a fight. */
   combatSpeed: CombatSpeedSchema,
   textSize: TextSizeSchema,
+  /** Settings stored before there was a choice take the pixel view. */
+  graphics: GraphicsSchema.default('pixel'),
 });
 export type Settings = z.infer<typeof SettingsSchema>;
 

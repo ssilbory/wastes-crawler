@@ -1,0 +1,210 @@
+/* The pixel chrome (docs/presentation-plan.md, V8): the game's panels, windows, buttons, fields,
+   and tags drawn as pixel art to match the dungeon view. Square corners notched a pixel-step in,
+   a hard black outline, two-pixel bevels lit from the top left, a hard drop shadow, and a faint
+   dither over each plate. Loaded after every screen's own CSS and before mobile.css. It sets the
+   frame and leaves layout alone: the outline is drawn outside each box, taking no room. No
+   images: every edge is a box shadow. */
+
+:root {
+  --radius-control: 0;
+  --radius-panel: 0;
+  /* One pixel of the chrome, in CSS pixels. */
+  --px: 2px;
+  --px-outline: var(--bevel-lo);
+  /* A notched outline: the four sides pushed out a pixel each leave the corners open. */
+  --px-frame:
+    0 calc(-1 * var(--px)) 0 0 var(--px-outline), 0 var(--px) 0 0 var(--px-outline),
+    calc(-1 * var(--px)) 0 0 0 var(--px-outline), var(--px) 0 0 0 var(--px-outline);
+  --px-bevel-out:
+    inset var(--px) var(--px) 0 0 var(--bevel-hi),
+    inset calc(-1 * var(--px)) calc(-1 * var(--px)) 0 0 #0b0907;
+  --px-bevel-in:
+    inset var(--px) var(--px) 0 0 #0b0907,
+    inset calc(-1 * var(--px)) calc(-1 * var(--px)) 0 0 var(--bevel-hi);
+  --px-drop: calc(2 * var(--px)) calc(3 * var(--px)) 0 0 rgb(0 0 0 / 55%);
+  /* A checkerboard two pixels square: the dither of an old 16-colour screen. */
+  --px-dither: repeating-conic-gradient(rgb(255 255 255 / 2.2%) 0 25%, transparent 0 50%);
+}
+
+body {
+  background:
+    radial-gradient(ellipse at center, transparent 55%, rgb(0 0 0 / 60%) 100%),
+    repeating-conic-gradient(rgb(255 255 255 / 1.6%) 0 25%, transparent 0 50%) 0 0 / 4px 4px,
+    var(--bg);
+}
+
+h1 {
+  text-shadow:
+    var(--px) var(--px) 0 var(--bevel-lo),
+    calc(2 * var(--px)) calc(2 * var(--px)) 0 rgb(0 0 0 / 50%);
+}
+
+h2,
+h3 {
+  text-shadow: var(--px) var(--px) 0 var(--bevel-lo);
+}
+
+h2 {
+  padding-bottom: 4px;
+  border-bottom: var(--px) solid var(--line);
+  box-shadow: 0 var(--px) 0 0 #0b0907;
+}
+
+/* Plates: panels, sheets, the command menu, the log, and windows. */
+.panel,
+.step,
+.sheet,
+.side,
+.commands,
+.log,
+.dialog {
+  border: none;
+  border-radius: 0;
+  background:
+    var(--px-dither) 0 0 / calc(2 * var(--px)) calc(2 * var(--px)),
+    linear-gradient(180deg, var(--panel-raised), var(--panel) 48px);
+  box-shadow: var(--px-frame), var(--px-bevel-out), var(--px-drop);
+}
+
+/* Buttons: a raised block that presses in. */
+button {
+  border: none;
+  border-radius: 0;
+  padding: 5px 12px;
+  background: var(--btn-top);
+  box-shadow:
+    var(--px-frame),
+    var(--px-bevel-out),
+    inset 0 calc(-2 * var(--px)) 0 0 var(--btn-bot);
+}
+
+button:hover:not(:disabled) {
+  background: var(--btn-hover-top);
+}
+
+button:active:not(:disabled) {
+  background: var(--panel-sunk);
+  box-shadow: var(--px-frame), var(--px-bevel-in);
+  transform: translateY(var(--px));
+}
+
+button.create,
+.actions > button:first-child,
+.dungeon-controls .actions > button:first-child {
+  background: var(--accent);
+  box-shadow:
+    var(--px-frame),
+    inset var(--px) var(--px) 0 0 #ffd6a0,
+    inset calc(-1 * var(--px)) calc(-1 * var(--px)) 0 0 #7a4413;
+}
+
+button.create:hover:not(:disabled),
+.actions > button:first-child:hover:not(:disabled) {
+  background: var(--accent-hi);
+}
+
+.dungeon-controls .actions > button:first-child {
+  background: var(--btn-top);
+  box-shadow:
+    var(--px-frame),
+    var(--px-bevel-out),
+    inset 0 calc(-2 * var(--px)) 0 0 var(--btn-bot);
+}
+
+button.secondary {
+  background: transparent;
+  box-shadow: inset 0 0 0 var(--px) var(--control-line);
+}
+
+button.secondary:hover:not(:disabled) {
+  background: var(--panel-raised);
+}
+
+button.danger {
+  background: var(--danger-hi);
+  box-shadow:
+    var(--px-frame),
+    inset var(--px) var(--px) 0 0 #e0705f,
+    inset calc(-1 * var(--px)) calc(-1 * var(--px)) 0 0 #5a140d;
+}
+
+button.danger:hover:not(:disabled) {
+  background: var(--danger-hover-top);
+}
+
+button[role='tab'][aria-selected='true'],
+button[role='radio'][aria-checked='true'],
+button[role='tab'][aria-selected='true']:hover,
+button[role='radio'][aria-checked='true']:hover {
+  background: var(--accent);
+  box-shadow:
+    var(--px-frame),
+    inset var(--px) var(--px) 0 0 #ffd6a0,
+    inset calc(-1 * var(--px)) calc(-1 * var(--px)) 0 0 #7a4413;
+}
+
+/* Fields: a well sunk into the plate. */
+select,
+input[type='text'],
+input[type='number'],
+input[type='search'],
+textarea {
+  border: none;
+  border-radius: 0;
+  background-color: var(--panel-sunk);
+  box-shadow: var(--px-frame), var(--px-bevel-in);
+}
+
+/* Tags and gauges. */
+.chip {
+  border: none;
+  border-radius: 0;
+  margin: 0 var(--px);
+  box-shadow:
+    0 calc(-1 * var(--px) / 2) 0 0 var(--line),
+    0 calc(var(--px) / 2) 0 0 var(--line),
+    calc(-1 * var(--px) / 2) 0 0 0 var(--line),
+    calc(var(--px) / 2) 0 0 0 var(--line);
+}
+
+.hp-bar {
+  border: none;
+  border-radius: 0;
+  box-shadow: var(--px-frame);
+}
+
+.hp-bar span {
+  transition: width 0.3s steps(6, end);
+  box-shadow:
+    inset 0 var(--px) 0 0 rgb(255 255 255 / 25%),
+    inset 0 calc(-1 * var(--px)) 0 0 rgb(0 0 0 / 30%);
+}
+
+/* The dungeon view sits in the same frame as the plates around it, at most 640 by 480: each of
+   the pixel view's 320 by 240 pixels then covers exactly two by two. */
+.dungeon-view {
+  border: none;
+  max-height: 480px;
+  aspect-ratio: 4 / 3;
+  box-shadow: var(--px-frame), var(--px-drop);
+}
+
+:focus-visible {
+  outline: var(--px) solid var(--focus);
+  outline-offset: var(--px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hp-bar span {
+    transition: none;
+  }
+}
+
+/* Groups of fields: a square groove with its lit edge below, cut into the plate. */
+fieldset {
+  border: var(--px) solid #0b0907;
+  border-radius: 0;
+  box-shadow:
+    inset var(--px) var(--px) 0 0 var(--line),
+    var(--px) var(--px) 0 0 var(--line);
+}

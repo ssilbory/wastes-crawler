@@ -16,6 +16,7 @@ import { loadLibrary, saveLibrary } from '../editor-store.ts';
 import '../world/world.css';
 import '../world/dungeon-view.css';
 import '../world/dungeon-props.css';
+import '../world/pixel-view.css';
 import './editor.css';
 import { LevelEditor } from './LevelEditor.tsx';
 import { readText, unreadable } from '../storage.ts';
