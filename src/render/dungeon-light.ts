@@ -6,7 +6,7 @@ import { blind, faithLit, rodLit, inDark } from '../game/dungeon/light.ts';
 import type { GameData } from '../game/character/context.ts';
 import type { World } from '../game/world/types.ts';
 
-export type LightSource = 'torch' | 'lantern' | 'faith' | 'sight';
+export type LightSource = 'torch' | 'lantern' | 'faith' | 'sight' | 'brazier';
 
 export interface LightView {
   source: LightSource;
@@ -29,7 +29,12 @@ const LOOKS: Record<LightSource, Look> = {
   faith: { tint: '#fff1b8', tintOpacity: 0.3, flicker: false, pool: 0.18 },
   // Seeing without light casts none.
   sight: { tint: '#7f93b0', tintOpacity: 0.55, flicker: false, pool: 0 },
+  // A brazier on the party's own square: warm, flickering, and short (Sam's call).
+  brazier: { tint: '#ff9a4a', tintOpacity: 0.45, flicker: true, pool: 0.28 },
 };
+
+/** How far a brazier the party stands by lights the view: its own square and a little past. */
+export const BRAZIER_REACH = 1.2;
 
 /** Cells a burning light reaches by its die: a fresh lantern four, a guttering torch two. */
 export const dieReach = (die: number) => 1 + die / 4;
@@ -72,7 +77,9 @@ export function lightView(w: World, data: GameData): LightView | null {
   if (inDark(w, data)) return look('sight', 2);
   // Light of Faith and a Rod of Light shine alike.
   if (faithLit(w, data) || rodLit(w, data)) return look('faith', 3.5);
-  const lit = w.light.lit as 'torch' | 'lantern';
+  // Not in the dark with nothing lit: a brazier on the square lights it (src/game/dungeon/light.ts).
+  if (w.light.lit === null) return look('brazier', BRAZIER_REACH);
+  const lit = w.light.lit;
   return look(lit, dieReach(w.light[lit]));
 }
 

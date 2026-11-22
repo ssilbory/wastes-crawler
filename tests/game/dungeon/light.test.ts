@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
+  blind,
+  brazierLit,
   burn,
   carried,
   douse,
@@ -206,5 +208,38 @@ describe('world save version 8', () => {
     const surface = JSON.parse(serializeWorld(world()));
     const up = parseWorld(JSON.stringify({ ...surface, schemaVersion: 7 }), data);
     expect(up.ok && up.world.dungeon).toBeNull();
+  });
+});
+
+describe('braziers (Sam’s call, docs/rules-adaptation.md, Dungeon exploration: Braziers)', () => {
+  const dark = (at: { x: number; y: number }, level = 'barrow-upper') => {
+    const w = below();
+    Object.assign(w.dungeon as NonNullable<World['dungeon']>, { level, at });
+    w.light.lit = null;
+    return w;
+  };
+
+  it('lights the square it stands on for a party with nothing lit, and no other', () => {
+    // The Old Barrow's upper level has braziers at 7,3 and 9,3.
+    const by = dark({ x: 7, y: 3 });
+    expect(brazierLit(by, data)).toBe(true);
+    expect(inDark(by, data)).toBe(false);
+    expect(blind(by, data)).toBe(false);
+    const beside = dark({ x: 8, y: 3 });
+    expect(brazierLit(beside, data)).toBe(false);
+    expect(inDark(beside, data)).toBe(true);
+  });
+
+  it('is swallowed by magical darkness, and counts for nothing above ground or without furniture', () => {
+    // The lower level's square of darkness, at 6,4.
+    expect(brazierLit(dark({ x: 6, y: 4 }, 'barrow-lower'), data)).toBe(false);
+    expect(brazierLit(world(), data)).toBe(false);
+    const w = below();
+    Object.assign(w.dungeon as NonNullable<World['dungeon']>, {
+      dungeon: 'ashgate-keep',
+      level: 'ashgate-ward',
+      at: { x: 0, y: 0 },
+    });
+    expect(brazierLit(w, data)).toBe(false);
   });
 });

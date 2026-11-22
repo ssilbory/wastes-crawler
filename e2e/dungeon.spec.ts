@@ -357,6 +357,28 @@ test('shows a square of magical darkness as black', async ({ page }) => {
   await expect(page.getByRole('img', { name: 'Dungeon view' })).toHaveScreenshot(
     'barrow-darkness.png',
   );
+  // Standing in it, the view goes black and the map can't be read (Sam's call).
+  await edit(page, `Object.assign(save.dungeon, { at: { x: 6, y: 4 } });`);
+  await expect(page.getByRole('img', { name: 'Dungeon view' })).toContainText('Pitch dark');
+  await expect(page.getByRole('region', { name: 'Automap' })).toContainText(
+    'Too dark to read the map',
+  );
+});
+
+// Sam's call: a burning brazier lights its square for a party with nothing lit.
+test('sees by a brazier with no torch, and only on its square', async ({ page }) => {
+  await startAtBarrow(page);
+  await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
+  const view = page.getByRole('img', { name: 'Dungeon view' });
+  await edit(
+    page,
+    `save.encounter = null;
+     Object.assign(save.dungeon, { at: { x: 7, y: 3 }, facing: 'e' });
+     Object.assign(save.light, { lit: null, torch: 0, kitTorches: 0 });`,
+  );
+  await expect(page.locator('.world-bar')).toContainText('No light but the brazier here');
+  await expect(view).not.toContainText('Pitch dark');
+  await expect(page.getByRole('button', { name: /^Search/ })).toBeEnabled();
 });
 
 // Sam's ask: who stands ahead shows in the view: a captive among their guards, and a quest's item.

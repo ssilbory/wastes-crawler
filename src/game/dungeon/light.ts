@@ -11,6 +11,7 @@ import type { Member, World } from '../world/types.ts';
 import type { GameData } from '../character/context.ts';
 import { onSpecial } from './specials.ts';
 import { bearsRod } from '../character/rods.ts';
+import { levelOf } from './levels.ts';
 
 export const TORCH_DIE: ResourceDie = 6;
 export const LANTERN_DIE: ResourceDie = 12;
@@ -131,10 +132,28 @@ export function burn(w: World, data: GameData): void {
   kindle(w);
 }
 
-/** Underground with nothing burning and no Light of Faith, or on a square of magical darkness. */
+/**
+ * The party stands on a square with a burning brazier, which lights that square whatever the
+ * party carries (Sam's call, docs/rules-adaptation.md, Dungeon exploration: Braziers), unless
+ * magical darkness swallows it. The SRD has no rule for fixed lights; it only times torches and
+ * lanterns (vendor/wwn-srd/2.0 The Rules of the Game/2.13.0 Dungeon Exploration.md).
+ */
+export function brazierLit(w: World, data: GameData): boolean {
+  const s = w.dungeon;
+  if (!s || onSpecial(w, data, 'darkness')) return false;
+  const { level } = levelOf(data, s.dungeon, s.level);
+  return (level.furniture ?? []).some(
+    (f) => f.kind === 'brazier' && f.at.x === s.at.x && f.at.y === s.at.y,
+  );
+}
+
+/**
+ * Underground with nothing burning, no Light of Faith, and no brazier on the square, or on a
+ * square of magical darkness.
+ */
 export const inDark = (w: World, data: GameData) =>
   w.dungeon !== null &&
-  ((w.light.lit === null && !faithLit(w, data) && !rodLit(w, data)) ||
+  ((w.light.lit === null && !faithLit(w, data) && !rodLit(w, data) && !brazierLit(w, data)) ||
     onSpecial(w, data, 'darkness'));
 
 /**
