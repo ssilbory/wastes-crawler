@@ -5,6 +5,7 @@ import { findItem } from '../character/items.ts';
 import { workingAt } from './working-effects.ts';
 import type { GameData } from '../character/context.ts';
 import { daysText, tierName, workOn, workshopHere } from './crafting.ts';
+import { closeRanks } from './formation.ts';
 import { note } from './members.ts';
 import { innListed, stayAtInn, type TownResult } from './services.ts';
 import type { World } from './types.ts';
@@ -55,6 +56,7 @@ export function stayToWork(w: World, data: GameData, crafterId: string): TownRes
   followMaster(w, m);
   w.members = w.members.filter((x) => x !== m);
   w.benched.push(m);
+  closeRanks(w);
   const name = findItem(data, p.item)?.name as string;
   note(
     w,

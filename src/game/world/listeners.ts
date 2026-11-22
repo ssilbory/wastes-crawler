@@ -4,6 +4,7 @@
 import type { Listener, WorldListeners } from './bus.ts';
 import { clockListener } from './clock.ts';
 import { craftingListener } from './crafting.ts';
+import { formationListener } from './formation.ts';
 import { grovesListener } from './groves.ts';
 import { factionsListener } from '../factions/turn.ts';
 import { maintenanceListener } from './maintenance.ts';
@@ -45,6 +46,8 @@ const ALL: readonly Listener[] = [
   majorProjectsListener,
   institutionsListener,
   workingsListener,
+  // After the sieges, so a siege's next fight keeps its slots.
+  formationListener,
   // Last, so the fight's garrison is recorded before the ending checks the hex.
   realmEndListener,
 ];

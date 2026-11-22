@@ -37,7 +37,8 @@ describe('servants joining the party take the front where they can', () => {
     setHp(w, 'Lirael', 1);
     const beast = addNpc(w, data, 'beast', 'herd-beast', 'herd-beast', 'Ox', true);
     expect(beast && at(beast)).toEqual([0, 2]);
-    expect(at(member(w, 'Lirael'))).toEqual([1, 2]);
+    // Behind her slot, then closed up to the left of the empty rear row (Closing ranks).
+    expect(at(member(w, 'Lirael'))).toEqual([1, 0]);
     expect(w.log.at(-1)).toMatch(/Lirael steps back for Ox\./);
   });
 
@@ -57,7 +58,9 @@ describe('servants joining the party take the front where they can', () => {
     setHp(w, 'Snag', 3);
     const rotter = addNpc(w, data, 'undead', 'zombie', 'zombie', 'Rotter', true);
     expect(rotter && at(rotter)).toEqual([0, 0]);
-    expect(at(member(w, 'Snag'))).toEqual([1, 0]);
+    // Fizzwick stepped back for the ox and closed up to the rear's first slot; Snag goes beside him.
+    expect(at(member(w, 'Fizzwick'))).toEqual([1, 0]);
+    expect(at(member(w, 'Snag'))).toEqual([1, 1]);
     expect(at(ox)).toEqual([0, 3]);
     const guard = fullFront();
     const hired = addNpc(guard, data, 'hireling', 'guard', 'thug-or-militia', 'Hob', true);
@@ -78,7 +81,7 @@ describe('servants joining the party take the front where they can', () => {
     expect([member(w, 'Snag'), member(w, 'Grukk'), member(w, 'Lirael')].map(at)).toEqual([
       [0, 0],
       [0, 1],
-      [1, 2],
+      [1, 0],
     ]);
   });
 
@@ -100,7 +103,8 @@ describe('servants joining the party take the front where they can', () => {
     hob.hp = 1;
     const ox = addNpc(w, data, 'beast', 'herd-beast', 'herd-beast', 'Ox', true);
     expect(ox && at(ox)).toEqual([0, 3]);
-    expect(at(hob)).toEqual([1, 3]);
+    // Behind his slot, then closed up beside Fizzwick, who slid left when Lirael moved up.
+    expect(at(hob)).toEqual([1, 1]);
     expect(w.log.at(-1)).toMatch(/Hob steps back for Ox\./);
   });
 

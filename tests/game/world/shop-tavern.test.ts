@@ -268,9 +268,11 @@ describe('the tavern', () => {
   it('brings a benched member back into the first free slot', () => {
     const w = world();
     bench(w, data, 'm-0');
-    expect(freeSlot(w, true)).toEqual({ row: 0, column: 0 });
+    // Grukk closes up into Snag's slot, leaving the next one free.
+    expect(member(w, 'Grukk')).toMatchObject({ row: 0, column: 0 });
+    expect(freeSlot(w, true)).toEqual({ row: 0, column: 1 });
     expect(rejoin(w, data, 'm-0')).toEqual({ ok: true });
-    expect(member(w, 'Snag')).toMatchObject({ row: 0, column: 0 });
+    expect(member(w, 'Snag')).toMatchObject({ row: 0, column: 1 });
     expect(() => rejoin(w, data, 'm-0')).toThrow('no benched member m-0');
     w.encounter = thugs;
     expect(rejoin(w, data, 'm-0')).toEqual({ ok: false, reason: 'Settle the encounter first.' });

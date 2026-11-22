@@ -11,6 +11,7 @@ import { toTenths } from '../../rules/economy.ts';
 import type { LootDice } from '../../data/schemas/index.ts';
 import { findMonster, type GameData } from '../character/context.ts';
 import { activeEffects } from '../character/equipment.ts';
+import { closeRanks } from './formation.ts';
 import { alive, awake, note } from './members.ts';
 import type { Member, Npc, World } from './types.ts';
 
@@ -191,6 +192,8 @@ export function addNpc(
     refund: 0,
   };
   w.npcs.push(npc);
+  // A servant may have stepped someone back into a rear row with a gap to its left.
+  closeRanks(w);
   return npc;
 }
 
@@ -199,6 +202,7 @@ export function placeNpc(w: World, n: Npc, front: boolean): boolean {
   const slot = isServant(n) ? servantSlot(w, n.name) : npcRoom(w, front);
   if (!slot) return false;
   w.npcs.push({ ...n, ...slot, id: nextId(w) });
+  closeRanks(w);
   return true;
 }
 
@@ -206,6 +210,7 @@ export function removeNpc(w: World, id: string): Npc {
   const n = w.npcs.find((x) => x.id === id);
   if (!n) throw new Error(`no NPC ${id}`);
   w.npcs = w.npcs.filter((x) => x !== n);
+  closeRanks(w);
   return n;
 }
 
