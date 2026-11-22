@@ -72,7 +72,16 @@ export const CraftingRulesSchema = z.strictObject({
     shield: z.int().min(1),
     gear: z.int().min(1),
   }),
-  quality: z.strictObject({ 'jury-rigged': Tier, mastercrafted: Tier }),
+  quality: z.strictObject({
+    'jury-rigged': Tier.extend({
+      /**
+       * Jury-rigged parts are scrap, paid in loot dice of this size or larger whose top faces cover
+       * the quarter cost (SRD 2.8.1's scrap salvage; Sam's call).
+       */
+      lootDie: z.int().min(2),
+    }),
+    mastercrafted: Tier,
+  }),
   mods: z.strictObject({
     /** SRD 2.8.2: a week per Craft level of the mod, halved working full time. */
     daysPerLevel: z.int().min(1),

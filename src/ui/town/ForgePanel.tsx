@@ -8,6 +8,7 @@ import {
   forgeTerms,
   forgeable,
   startForge,
+  type ForgeQuality,
 } from '../../game/world/forging.ts';
 import { fitSizeOf } from '../../game/world/shop.ts';
 import type { World } from '../../game/world/types.ts';
@@ -29,6 +30,7 @@ export function ForgePanel(props: { world: World; act: Act }) {
   const [bonus, setBonus] = useState(1);
   const [ability, setAbility] = useState('');
   const [size, setSize] = useState<Size | null>(null);
+  const [make, setMake] = useState<ForgeQuality>('normal');
   const m = smiths.find((x) => x.id === who) ?? smiths[0];
   if (!m)
     return (
@@ -38,7 +40,7 @@ export function ForgePanel(props: { world: World; act: Act }) {
       </section>
     );
   const fit = abilitiesFor(data, item).some((a) => a.id === ability) ? ability : '';
-  const terms = forgeTerms(data, item, bonus, fit || undefined);
+  const terms = forgeTerms(data, item, bonus, fit || undefined, make);
   const armor = findItem(data, item)?.kind === 'armor';
   const sized: Size = size ?? fitSizeOf(data, m);
   return (
@@ -78,6 +80,16 @@ export function ForgePanel(props: { world: World; act: Act }) {
         </select>
       </label>{' '}
       <label>
+        Make{' '}
+        <select
+          value={make}
+          onChange={(e) => setMake((e.target as HTMLSelectElement).value as ForgeQuality)}
+        >
+          <option value="normal">normal</option>
+          <option value="mastercrafted">mastercrafted</option>
+        </select>
+      </label>{' '}
+      <label>
         Ability{' '}
         <select value={fit} onChange={(e) => setAbility((e.target as HTMLSelectElement).value)}>
           <option value="">none</option>
@@ -109,7 +121,16 @@ export function ForgePanel(props: { world: World; act: Act }) {
         type="button"
         onClick={() =>
           props.act(() =>
-            startForge(w, data, m.id, item, bonus, fit || undefined, armor ? sized : undefined),
+            startForge(
+              w,
+              data,
+              m.id,
+              item,
+              bonus,
+              fit || undefined,
+              armor ? sized : undefined,
+              make,
+            ),
           )
         }
       >

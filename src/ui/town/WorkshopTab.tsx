@@ -6,6 +6,7 @@ import {
   canCraft,
   craftable,
   daysText,
+  juryDice,
   partsListed,
   startProject,
   tiersFor,
@@ -48,6 +49,7 @@ export function WorkshopTab(props: { world: World; act: Act }) {
   const t = tiers.includes(tier) ? tier : 'normal';
   const armor = item?.kind === 'armor';
   const sized: Size = size ?? (m ? fitSizeOf(data, m) : 'standard');
+  const dice = item && t === 'jury-rigged' ? juryDice(data, item) : null;
   return (
     <>
       <section class="panel" aria-label="Workshop">
@@ -177,8 +179,11 @@ export function WorkshopTab(props: { world: World; act: Act }) {
                 props.act(() => startProject(w, data, m.id, item.id, t, armor ? sized : undefined))
               }
             >
-              Start ({crowns(priceHere(w, data, partsListed(data, item, t)))},{' '}
-              {daysText(buildDays(data, item, t))})
+              Start (
+              {dice
+                ? `${dice.count}d${dice.sides} loot dice`
+                : crowns(priceHere(w, data, partsListed(data, item, t)))}
+              , {daysText(buildDays(data, item, t))})
             </button>
           </>
         )}

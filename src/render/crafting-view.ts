@@ -4,7 +4,7 @@ import { gameSpells, type GameSpell } from '../data/spells.ts';
 import type { GameData } from '../game/character/context.ts';
 import { findItem, type CatalogItem } from '../game/character/items.ts';
 import { daysText, tierName } from '../game/world/crafting.ts';
-import { forgedName } from '../game/world/forging.ts';
+import { forgedName, makeName } from '../game/world/forging.ts';
 import type { Member, World } from '../game/world/types.ts';
 
 /** "Snag: mastercrafted Spear, 3 days left, at the workshop in Rubblegate". */
@@ -35,11 +35,12 @@ export function projectText(w: World, data: GameData, p: Project): string {
   return `${crafter.character.name}: ${work}, ${days}${where}`;
 }
 
-/** "forging a +2 Long Sword (Flaming), unbalanced". */
+/** "forging a +2 Long Sword (Flaming), unbalanced", or "forging a mastercrafted +1 Spear". */
 function forgeText(data: GameData, p: Project): string {
   const flaws = (p.flaws ?? []).map(
     (id) => (data.content.forging.flaws.find((f) => f.id === id) as { name: string }).name,
   );
   const name = forgedName(data, p.item, p.ability);
-  return `forging a +${p.bonus as number} ${name}${p.small ? ' (small)' : ''}${flaws.length ? `, ${flaws.join(', ')}` : ''}`;
+  const make = makeName(p.quality === 'mastercrafted' ? 'mastercrafted' : 'normal');
+  return `forging a ${make}+${p.bonus as number} ${name}${p.small ? ' (small)' : ''}${flaws.length ? `, ${flaws.join(', ')}` : ''}`;
 }

@@ -26,7 +26,8 @@
   "quality": {
     "jury-rigged": {
       "cost": 0.25,
-      "time": 0.5
+      "time": 0.5,
+      "lootDie": 6
     },
     "mastercrafted": {
       "cost": 10,
