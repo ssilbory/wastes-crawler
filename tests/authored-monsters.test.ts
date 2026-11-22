@@ -41,6 +41,26 @@ describe('authored monsters', () => {
     );
   });
 
+  it('add tags of their own to their base’s (Sam’s call: the Bone Crawler is undead)', () => {
+    const tags = (id: string) => content.monsterCombat.find((m) => m.id === id)?.tags;
+    expect(tags('terrible-warbeast')).not.toContain('undead');
+    expect(tags('bone-crawler')).toEqual([
+      ...(tags('terrible-warbeast') ?? []),
+      'unliving',
+      'undead',
+    ]);
+    // A tag the base already has is not doubled.
+    const salt = content.settingMonsters.find((r) => r.id === 'salt-wight');
+    const doubled = withSettingMonsters({
+      ...content,
+      monsterCombat: content.monsterCombat.filter((m) => m.id !== 'salt-wight'),
+      settingMonsters: [
+        { ...(salt as (typeof content.settingMonsters)[number]), tags: ['undead'] },
+      ],
+    });
+    expect(doubled.monsterCombat.find((m) => m.id === 'salt-wight')?.tags).toEqual(['undead']);
+  });
+
   it('stand alongside the SRD monsters, with combat data', () => {
     expect(allMonsters(srd, content).map((m) => m.id)).toContain('death-hare');
     expect(allMonsters(srd, content)).toHaveLength(

@@ -292,6 +292,16 @@ describe('Command the Dead on ghouls and the too strong (4.6.0)', () => {
     expect(w.encounter).toBeNull();
   });
 
+  it('counts the Bone Crawler, raised bone, as undead (Sam’s call)', () => {
+    const w = world();
+    const m = necromancer(w, 1);
+    // 8 HD to the caster's 2: it fails its save and stands dazed.
+    w.encounter = encounter([['bone-crawler']]);
+    w.rng = scriptedRng([2]);
+    expect(commandTheDead(w, data, m.id)).toEqual({ ok: true });
+    expect(w.encounter?.dazed).toEqual({ 'bone-crawler': 1 });
+  });
+
   it('dazes one only partly within the hit dice left, and it loses its first turn', () => {
     const w = world();
     const m = necromancer(w, 1);
