@@ -1,5 +1,10 @@
 // Starting a world: the chosen characters set out from the region's starting town.
-import type { Character, DefaultPreset, Region } from '../../data/schemas/index.ts';
+import {
+  NO_HARDCORE,
+  type Character,
+  type DefaultPreset,
+  type Region,
+} from '../../data/schemas/index.ts';
 import { toTenths } from '../../rules/economy.ts';
 import { hexKey } from '../../rules/hex.ts';
 import type { Rng } from '../../rules/rng.ts';
@@ -119,6 +124,7 @@ export function newWorld(
     disguise: null,
     palanquin: null,
     pacts: null,
+    hardcore: { ...NO_HARDCORE },
     factions: {},
     purse: toTenths(party.reduce((sum, p) => sum + p.character.crowns, 0)),
     loot: [],

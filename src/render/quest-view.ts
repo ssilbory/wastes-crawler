@@ -116,11 +116,14 @@ export function revealedHexes(w: World, data: GameData): Hex[] {
   ];
 }
 
-/** "60 crowns, 3 XP, 2d6 loot", or a raising quest's free raising. */
-export function rewardText(q: Quest): string {
+/**
+ * "60 crowns, 3 XP, 2d6 loot", or a raising quest's free raising; `noXp` (hardcore's No quest XP)
+ * leaves the XP out.
+ */
+export function rewardText(q: Quest, noXp = false): string {
   if (q.reward.raise) return 'one dead PC raised';
   const loot = q.reward.loot.map((d) => `${d.count}d${d.sides}`).join(' + ');
-  return [`${q.reward.crowns} crowns`, `${q.reward.xp} XP`, loot && `${loot} loot`]
+  return [`${q.reward.crowns} crowns`, !noXp && `${q.reward.xp} XP`, loot && `${loot} loot`]
     .filter(Boolean)
     .join(', ');
 }

@@ -41,7 +41,7 @@ export function QuestsTab(props: { world: World; act: Act }) {
                   <strong>{q.name}</strong>
                   <span>{q.summary}</span>
                   <span class="hint">
-                    Reward: {rewardText(q)}
+                    Reward: {rewardText(q, w.hardcore.noQuestXp)}
                     {q.deadlineDays !== undefined && ` · ${q.deadlineDays} days to finish`}
                   </span>
                   {st ? (

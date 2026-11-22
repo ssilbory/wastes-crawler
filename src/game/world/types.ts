@@ -183,6 +183,8 @@ export interface World {
   palanquin: number | null;
   /** Pact of Stone and Sea, for the rest of the scene. */
   pacts: WorldSave['pacts'];
+  /** The hardcore options on (hardcore.ts). */
+  hardcore: WorldSave['hardcore'];
   log: string[];
 }
 

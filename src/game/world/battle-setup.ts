@@ -4,7 +4,7 @@
 // the finished battle is fight.ts.
 import { createBattle, type MountSetup, type NpcSetup } from '../combat/battle.ts';
 import type { Battle, WaitingCompanion } from '../combat/types.ts';
-import type { Character, Element } from '../../data/schemas/index.ts';
+import type { Character, Element, Hardcore } from '../../data/schemas/index.ts';
 import type { Rng } from '../../rules/rng.ts';
 import type { GameData } from '../character/context.ts';
 import { alive } from './members.ts';
@@ -84,6 +84,8 @@ export interface PartySetup {
   antiMagic: boolean;
   /** The fight is underground. */
   indoors: boolean;
+  /** The world's hardcore options; none when absent. */
+  hardcore?: Hardcore;
 }
 
 /**
@@ -133,6 +135,7 @@ export function partySetup(
     dark: inDark(w, data),
     antiMagic: onSpecial(w, data, 'anti-magic'),
     indoors: w.dungeon !== null,
+    hardcore: w.hardcore,
   };
 }
 
@@ -156,6 +159,7 @@ export function battleFrom(data: GameData, rng: Rng, setup: PartySetup, log: boo
     antiMagic: setup.antiMagic,
     indoors: setup.indoors,
     log,
+    hardcore: setup.hardcore,
   });
   setup.party.forEach((p, i) => {
     const c = battle.combatants[i] as Battle['combatants'][number];

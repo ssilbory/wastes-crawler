@@ -11,6 +11,7 @@ import { characterSheet } from '../character/derived.ts';
 import { findDisease } from './ailing.ts';
 import { cure } from './ailments.ts';
 import { cannotUseArt } from './healer.ts';
+import { purgeStrain } from './hardcore.ts';
 import { alive, cureFrailty, memberCheck, note } from './members.ts';
 import type { TownResult } from './services.ts';
 import type { Member, World } from './types.ts';
@@ -41,12 +42,10 @@ export function purgeFrailty(
   const target = frailAllies(w, h.id).find((m) => m.id === targetId);
   if (!target) return { ok: false, reason: 'Choose a Frail ally you haven’t tried to purge.' };
   const c = target.character;
-  const max = characterSheet(c, data).strainMax;
-  const strain = addStrain({ strain: c.strain.value, max, broken: c.strain.broken }, 1, 'healing');
-  if (strain.kind !== 'applied') return { ok: false, reason: `${c.name} can't bear more strain.` };
+  if (!bearStrain(data, target, 1))
+    return { ok: false, reason: `${c.name} can't bear more strain.` };
   h.effortDay += 1;
   target.purgeTries = [...target.purgeTries, h.id];
-  target.character = { ...c, strain: { value: strain.state.strain, broken: strain.state.broken } };
   const rules = data.content.skillRules.purgeAilment;
   const name = h.character.name;
   if (!memberCheck(w, data, h, 'heal', rules.attributes, rules.difficulty).success) {
@@ -56,6 +55,17 @@ export function purgeFrailty(
   cureFrailty(target);
   note(w, `${name} purges ${c.name}'s Frailty.`);
   return { ok: true };
+}
+
+/** Lays magical healing's strain on the ally: false, with nothing changed, if they can't bear it. */
+function bearStrain(data: GameData, m: Member, amount: number): boolean {
+  const c = m.character;
+  const max = characterSheet(c, data).strainMax;
+  const state = { strain: c.strain.value, max, broken: c.strain.broken };
+  const outcome = addStrain(state, amount, 'healing');
+  if (outcome.kind !== 'applied') return false;
+  m.character = { ...c, strain: { value: outcome.state.strain, broken: outcome.state.broken } };
+  return true;
 }
 
 export type Sickness = 'poison' | 'disease';
@@ -86,6 +96,10 @@ export function purgeSickness(
   const target = sickAllies(w, h.id, s).find((m) => m.id === targetId);
   if (!target)
     return { ok: false, reason: `Choose an ally who is ${s === 'poison' ? 'Poisoned' : 'sick'}.` };
+  // Hardcore's harsh healing: the ally takes strain as for lifting Frailty, whatever the check.
+  const extra = purgeStrain(w);
+  if (extra > 0 && !bearStrain(data, target, extra))
+    return { ok: false, reason: `${target.character.name} can't bear more strain.` };
   const rules = data.content.ailments;
   if (characterLevel(h.character.classes) < rules.purgeSceneLevel) h.effortDay += 1;
   const name = h.character.name;

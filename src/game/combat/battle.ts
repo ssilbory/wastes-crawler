@@ -1,6 +1,6 @@
 // Setting up a battle (vendor/wwn-srd/2.0 The Rules of the Game/2.4.0 Combat.md): the party's
 // formation or a second side of monster rows, the enemy rows, and side initiative (2.4.1).
-import type { Character } from '../../data/schemas/index.ts';
+import { NO_HARDCORE, type Character, type Hardcore } from '../../data/schemas/index.ts';
 import { partyActsFirst, sideInitiative } from '../../rules/combat.ts';
 import { ROW_SLOTS } from '../../rules/formation.ts';
 import type { Rng } from '../../rules/rng.ts';
@@ -104,6 +104,8 @@ export interface BattleSetup {
   /** Someone on the party's side can talk to animals, so beasts can surrender (Phase 19). */
   talksToBeasts?: boolean;
   log?: boolean;
+  /** The world's hardcore options (docs/rules-adaptation.md, Hardcore options); none by default. */
+  hardcore?: Hardcore | undefined;
 }
 
 /**
@@ -252,6 +254,8 @@ export function createBattle(s: BattleSetup): Battle {
     vines: null,
     escaped: false,
     mended: false,
+    hardcore: { ...(s.hardcore ?? NO_HARDCORE) },
+    healedAfter: new Set(),
     log: s.log ? [] : null,
     logSides: s.log ? [] : null,
     acting: null,

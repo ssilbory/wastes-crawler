@@ -17,6 +17,7 @@ import {
 } from './reactions.ts';
 import type { Battle, Combatant } from './types.ts';
 import { vitalHold } from './companions.ts';
+import { diesAtZero } from './hardcore.ts';
 
 export { say };
 
@@ -140,6 +141,11 @@ export function fall(b: Battle, target: Combatant): void {
   if (target.selfStabilize) {
     say(b, `${target.name} falls, but hangs on.`);
     Object.assign(target, { status: 'stable', frail: true, fellRound: b.round });
+    return;
+  }
+  // Hardcore (docs/rules-adaptation.md, Hardcore options): no lying Mortally Wounded.
+  if (diesAtZero(b, target)) {
+    die(b, target);
     return;
   }
   target.status = 'dying';

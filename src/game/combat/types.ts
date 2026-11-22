@@ -1,6 +1,6 @@
 // Battle state for the combat engine. The engine mutates a Battle it owns; callers get it back
 // from runBattle or step through it round by round.
-import type { AbilityEffect } from '../../data/schemas/index.ts';
+import type { AbilityEffect, Hardcore } from '../../data/schemas/index.ts';
 import type { ArmorClassInput } from '../../rules/armor-class.ts';
 import type {
   Attribute,
@@ -403,6 +403,10 @@ export interface Battle {
   escaped: boolean;
   /** The player is done healing the wounded after the fight (Sam's call). */
   mended: boolean;
+  /** The world's hardcore options (docs/rules-adaptation.md, Hardcore options). */
+  hardcore: Hardcore;
+  /** With harsh healing, those already healed once since the fight ended. */
+  healedAfter: Set<string>;
   log: string[] | null;
   /** For each log line, the side whose turn it came in; null between turns. Kept with the log. */
   logSides: (SideId | null)[] | null;

@@ -16,6 +16,7 @@ import { artEffect, counterSpell, retainsSpell } from './arts.ts';
 import { elementalistEffect } from './elementalist.ts';
 import { healingFails, necromancerEffect } from './necromancer.ts';
 import { bearsHealing, takeHealingStrain } from './healing-strain.ts';
+import { healedEnough, healingStrain, noStrainCasting, noteHealed } from './hardcore.ts';
 import { donorFor, sanctuaryEffect } from './sanctuary.ts';
 import { highMagicEffect, type Resists } from './high-magic.ts';
 import { blast } from './blast.ts';
@@ -55,14 +56,19 @@ const touchReaches = (b: Battle, actor: Combatant, t: Combatant) =>
 function fitsTarget(b: Battle, actor: Combatant, m: CombatMagic, id?: string): boolean {
   const t = b.combatants.find((x) => x.id === id);
   if (!t) return true;
+  if (healedEnough(b, m.effect.kind, t.id)) return false;
   if (m.effect.kind === 'amber') return t !== actor;
   // Swift Healing tends only the Beastmaster's own companion (1.5.4).
   if (m.effect.kind === 'companion-heal' && t.companion?.master !== actor.id) return false;
   // Healing the target couldn't bear is never offered (SRD 2.5.2).
-  if (m.effect.kind === 'heal') return bearsHealing(t, m.effect.strain);
+  if (m.effect.kind === 'heal') return bearsHealing(t, healingStrain(b, t, m.effect.strain));
   // Healing Touch finds no life to mend in the Half-Dead (Phase 20).
   if (m.effect.kind === 'touch-heal')
-    return !t.touchless && touchReaches(b, actor, t) && bearsHealing(t, m.effect.strain);
+    return (
+      !t.touchless &&
+      touchReaches(b, actor, t) &&
+      bearsHealing(t, healingStrain(b, t, m.effect.strain))
+    );
   return m.effect.kind !== 'conjunct' || donorFor(b, t) !== null;
 }
 
@@ -86,6 +92,7 @@ export function canUse(
   if (m.source === 'art')
     return (freeUse(c, m) ? c.arts.includes(m.id) : hasEffort(c, m.id)) && m.target !== 'none';
   if (strain) {
+    if (noStrainCasting(b)) return false;
     const s = actor.strain;
     return (
       c.known.includes(m.id) && s !== null && !s.broken && s.strain + spellLevel(b, m.id) <= s.max
@@ -164,6 +171,7 @@ export function castMagic(
   say(b, `${actor.name} ${m.source === 'art' ? 'uses' : 'casts'} ${magicName(b, m.id)}.`);
   if (m.source === 'spell' && counterSpell(b, actor)) return true;
   const e = m.effect;
+  noteHealed(b, e.kind, targetId);
   switch (e.kind) {
     case 'damage': {
       if (!target) return true;
@@ -235,13 +243,17 @@ export function castMagic(
       actor.acFloor = e.base + Math.floor(c.level / 2);
       return true;
     case 'heal':
-      if (target) restore(b, target, roll(b.rng, tierAt(e.tiers, c.level).dice).total, e.strain);
+      if (target) {
+        const amount = roll(b.rng, tierAt(e.tiers, c.level).dice).total;
+        restore(b, target, amount, healingStrain(b, target, e.strain));
+      }
       return true;
     case 'touch-heal': {
       if (!target) return true;
       const empowered = c.arts.includes('empowered-healer') ? c.level : 0;
       const dice = roll(b.rng, e.dice).total;
-      restore(b, target, dice + (actor.skills[e.skill] ?? 0) + empowered, e.strain);
+      const amount = dice + (actor.skills[e.skill] ?? 0) + empowered;
+      restore(b, target, amount, healingStrain(b, target, e.strain));
       return true;
     }
     case 'companion-heal':
