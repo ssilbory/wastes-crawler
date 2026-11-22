@@ -12,6 +12,8 @@ const TEXT: Record<HardcoreOption, string> = {
   noQuestXp: 'Quests pay their crowns and loot, but no XP.',
   harshHealing:
     'Healing Touch and Merciful Healing add 1 more System Strain when they revive the downed. Purge Ailment adds 1 System Strain for a poison or disease. After a fight, each ally can be healed by magic once.',
+  healerStrain:
+    'Healing Touch and Merciful Healing cost the healer 1 System Strain each use, as well as the patient. A healer who is Broken, or would pass their maximum, can’t heal.',
 };
 
 const ORDER: HardcoreOption[] = [
@@ -20,6 +22,7 @@ const ORDER: HardcoreOption[] = [
   'noCraftingXp',
   'noQuestXp',
   'harshHealing',
+  'healerStrain',
 ];
 
 export interface HardcoreLine {

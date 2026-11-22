@@ -12,6 +12,7 @@ export const HARDCORE_NAMES: Record<HardcoreOption, string> = {
   noCraftingXp: 'No crafting XP',
   noQuestXp: 'No quest XP',
   harshHealing: 'Harsh healing',
+  healerStrain: 'Healer strain',
 };
 
 /** Switches a hardcore option on or off; a change is noted in the journal. */

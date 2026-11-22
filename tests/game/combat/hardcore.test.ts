@@ -6,8 +6,10 @@ import { harm } from '../../../src/game/combat/damage.ts';
 import {
   diesAtZero,
   healedEnough,
+  healerBears,
   healingStrain,
   noteHealed,
+  payHealerStrain,
 } from '../../../src/game/combat/hardcore.ts';
 import { canUse, castMagic, combatMagic } from '../../../src/game/combat/spells.ts';
 import type { Battle, CasterState, Combatant } from '../../../src/game/combat/types.ts';
@@ -153,5 +155,37 @@ describe('hardcore in a fight', () => {
     expect(rescues(b)).toEqual([]);
     tendDying(b, () => null);
     expect(['stable', 'dead']).toContain(grukk.status);
+  });
+
+  it('costs the healer 1 strain a heal with Healer strain, refused past the maximum or Broken', () => {
+    const b = priestBattle(on({ healerStrain: true }));
+    const snag = who(b, 'Snag');
+    snag.strain = { strain: 0, max: 10, broken: false };
+    const grukk = hurt(b);
+    b.rng = scriptedRng([1, 1]);
+    expect(castMagic(b, snag, 'healing-touch', grukk.id, undefined)).toBe(true);
+    expect([snag.strain.strain, grukk.strain?.strain]).toEqual([1, 1]);
+    const touch = combatMagic(b, 'healing-touch');
+    if (!touch) throw new Error('no touch');
+    snag.strain = { strain: 10, max: 10, broken: false };
+    expect(canUse(b, snag, touch, false, grukk.id)).toBe(false);
+    snag.strain = { strain: 0, max: 10, broken: true };
+    expect(canUse(b, snag, touch, false, grukk.id)).toBe(false);
+    // Healing themselves, they must bear both costs: 9 + 1 + 1 passes 10.
+    snag.strain = { strain: 9, max: 10, broken: false };
+    snag.hp = 1;
+    expect(canUse(b, snag, touch, false, snag.id)).toBe(false);
+    snag.strain = { strain: 8, max: 10, broken: false };
+    expect(canUse(b, snag, touch, false, snag.id)).toBe(true);
+    // Other magic, those with no strain track, and the option off cost nothing.
+    expect(healerBears(b, snag, 'damage')).toBe(true);
+    const lirael = who(b, 'Lirael');
+    lirael.strain = null;
+    expect(healerBears(b, lirael, 'heal')).toBe(true);
+    payHealerStrain(b, lirael, 'heal');
+    expect(lirael.strain).toBeNull();
+    b.hardcore = NO_HARDCORE;
+    snag.strain = { strain: 10, max: 10, broken: false };
+    expect(canUse(b, snag, touch, false, grukk.id)).toBe(true);
   });
 });

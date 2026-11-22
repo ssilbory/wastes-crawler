@@ -59,6 +59,7 @@ describe('hardcore options in the world', () => {
       'noCraftingXp',
       'noQuestXp',
       'harshHealing',
+      'healerStrain',
     ]);
     expect(view.filter((o) => o.on).map((o) => o.name)).toEqual(['No crafting XP']);
     expect(view.every((o) => o.text.length > 0)).toBe(true);

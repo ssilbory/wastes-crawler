@@ -18,6 +18,8 @@ export const HardcoreSchema = z.strictObject({
    * adds one more, and after a fight each ally takes one healing at most.
    */
   harshHealing: z.boolean(),
+  /** Healing Touch and Merciful Healing cost the healer 1 System Strain too. */
+  healerStrain: z.boolean(),
 });
 export type Hardcore = z.infer<typeof HardcoreSchema>;
 export type HardcoreOption = keyof Hardcore;
@@ -29,4 +31,5 @@ export const NO_HARDCORE: Hardcore = {
   noCraftingXp: false,
   noQuestXp: false,
   harshHealing: false,
+  healerStrain: false,
 };
