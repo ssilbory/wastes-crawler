@@ -27,6 +27,37 @@ function homes(w: World, data: GameData): (Hex & { name: string })[] {
   });
 }
 
+/** A freed captive the party is taking home, as the quest log lists it (Sam's call). */
+export interface Escort {
+  /** The NPC's id in the party. */
+  id: string;
+  name: string;
+  status: string;
+  /** Their home on the party's map; null when it lies in another region. */
+  target: Hex | null;
+}
+
+/**
+ * Each freed captive travelling with the party, listed in the quest log beside the quests: where
+ * they are bound and what bringing them there pays (docs/rules-adaptation.md, NPCs: Rescues).
+ */
+export function captiveEscorts(w: World, data: GameData): Escort[] {
+  const sites = regionMap(data, w.region).sites;
+  return w.npcs.flatMap((n) => {
+    if (n.kind !== 'captive') return [];
+    const c = captiveOf(data, n.type);
+    const home = sites.find((s) => s.id === c.destination);
+    return [
+      {
+        id: n.id,
+        name: `Escort ${c.name}`,
+        status: `Bring them to ${townName(data, c.destination)}: ${c.reward} crowns and ${c.xp} XP each.`,
+        target: home ? { col: home.col, row: home.row } : null,
+      },
+    ];
+  });
+}
+
 /** A town's name from its id, in any region, so a captive's home far off still reads by name. */
 export const townName = (data: GameData, id: string): string =>
   data.content.regions.flatMap((r) => r.sites).find((s) => s.id === id)?.name ?? id;

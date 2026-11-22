@@ -66,6 +66,15 @@ test('bribes captors to free a captive, then brings them home', async ({ page },
   await encounter.getByRole('button', { name: 'Let them pass' }).click();
   await expect(page.getByRole('region', { name: 'Encounter' })).toHaveCount(0);
   await inWindow(page, 'NPCs', (panel) => expect(panel).toContainText('A captured merchant'));
+  // Sam's ask: the quest log lists the escort home, with the town and the pay.
+  await inWindow(page, 'Quests', async (quests) => {
+    await expect(quests).toContainText('Escort a captured merchant');
+    await expect(quests).toContainText('Bring them to Scrapmarch: 60 crowns and 1 XP each.');
+    await expect(
+      quests.getByRole('button', { name: 'Set course for Escort a captured merchant' }),
+    ).toBeVisible();
+    await quests.screenshot({ path: testInfo.outputPath('npc-escort-quest.png') });
+  });
 
   // One hex east along the road is Scrapmarch, the merchant's home.
   await page.locator('[data-hex="20,8"]').click();
