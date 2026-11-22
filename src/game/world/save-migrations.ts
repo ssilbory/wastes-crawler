@@ -1,5 +1,6 @@
 // World save migrations: each upgrades a save from version n to n + 1 (save.ts loads them).
 import type { Migrations, Raw } from '../character/io.ts';
+import { NO_HARDCORE } from '../../data/schemas/hardcore.ts';
 import { NO_LIGHT } from './types.ts';
 
 const crownsOf = (m: Raw) => {
@@ -349,4 +350,6 @@ export const WORLD_MIGRATIONS: Migrations = {
     wizards: {},
     wizardOrders: [],
   }),
+  // Version 60 adds hardcore options: all off.
+  59: (raw) => ({ ...raw, schemaVersion: 60, hardcore: { ...NO_HARDCORE } }),
 };

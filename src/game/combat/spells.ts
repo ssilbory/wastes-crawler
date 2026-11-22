@@ -16,6 +16,7 @@ import { artEffect, counterSpell, retainsSpell } from './arts.ts';
 import { elementalistEffect } from './elementalist.ts';
 import { healingFails, necromancerEffect } from './necromancer.ts';
 import { bearsHealing, takeHealingStrain } from './healing-strain.ts';
+import * as hardcore from './hardcore.ts';
 import { donorFor, sanctuaryEffect } from './sanctuary.ts';
 import { highMagicEffect, type Resists } from './high-magic.ts';
 import { blast } from './blast.ts';
@@ -55,14 +56,21 @@ const touchReaches = (b: Battle, actor: Combatant, t: Combatant) =>
 function fitsTarget(b: Battle, actor: Combatant, m: CombatMagic, id?: string): boolean {
   const t = b.combatants.find((x) => x.id === id);
   if (!t) return true;
+  if (hardcore.healedEnough(b, m.effect.kind, t.id)) return false;
   if (m.effect.kind === 'amber') return t !== actor;
   // Swift Healing tends only the Beastmaster's own companion (1.5.4).
   if (m.effect.kind === 'companion-heal' && t.companion?.master !== actor.id) return false;
   // Healing the target couldn't bear is never offered (SRD 2.5.2).
-  if (m.effect.kind === 'heal') return bearsHealing(t, m.effect.strain);
+  // With Healer strain, a Healer healing themselves bears both costs at once.
+  if (m.effect.kind === 'heal')
+    return bearsHealing(t, hardcore.strainOn(b, actor, t, m.effect.kind, m.effect.strain));
   // Healing Touch finds no life to mend in the Half-Dead (Phase 20).
   if (m.effect.kind === 'touch-heal')
-    return !t.touchless && touchReaches(b, actor, t) && bearsHealing(t, m.effect.strain);
+    return (
+      !t.touchless &&
+      touchReaches(b, actor, t) &&
+      bearsHealing(t, hardcore.strainOn(b, actor, t, m.effect.kind, m.effect.strain))
+    );
   return m.effect.kind !== 'conjunct' || donorFor(b, t) !== null;
 }
 
@@ -82,10 +90,12 @@ export function canUse(
   if (m.effect.kind === 'burst' && m.effect.outdoorsOnly && b.indoors) return false;
   if (m.limit === 'scene' && c.usedThisScene.has(m.id)) return false;
   if (m.limit === 'target-scene' && c.usedThisScene.has(`${m.id}:${target ?? ''}`)) return false;
-  if (!fitsTarget(b, actor, m, target)) return false;
+  if (!hardcore.healerBears(b, actor, m.effect.kind) || !fitsTarget(b, actor, m, target))
+    return false;
   if (m.source === 'art')
     return (freeUse(c, m) ? c.arts.includes(m.id) : hasEffort(c, m.id)) && m.target !== 'none';
   if (strain) {
+    if (hardcore.noStrainCasting(b)) return false;
     const s = actor.strain;
     return (
       c.known.includes(m.id) && s !== null && !s.broken && s.strain + spellLevel(b, m.id) <= s.max
@@ -160,10 +170,12 @@ export function castMagic(
   const c = actor.caster as CasterState;
   const target = b.combatants.find((x) => x.id === targetId);
   pay(b, actor, m, strain);
+  hardcore.payHealerStrain(b, actor, m.effect.kind);
   c.usedThisScene.add(m.limit === 'target-scene' ? `${m.id}:${targetId ?? ''}` : m.id);
   say(b, `${actor.name} ${m.source === 'art' ? 'uses' : 'casts'} ${magicName(b, m.id)}.`);
   if (m.source === 'spell' && counterSpell(b, actor)) return true;
   const e = m.effect;
+  hardcore.noteHealed(b, e.kind, targetId);
   switch (e.kind) {
     case 'damage': {
       if (!target) return true;
@@ -235,13 +247,17 @@ export function castMagic(
       actor.acFloor = e.base + Math.floor(c.level / 2);
       return true;
     case 'heal':
-      if (target) restore(b, target, roll(b.rng, tierAt(e.tiers, c.level).dice).total, e.strain);
+      if (target) {
+        const amount = roll(b.rng, tierAt(e.tiers, c.level).dice).total;
+        restore(b, target, amount, hardcore.healingStrain(b, target, e.strain));
+      }
       return true;
     case 'touch-heal': {
       if (!target) return true;
       const empowered = c.arts.includes('empowered-healer') ? c.level : 0;
       const dice = roll(b.rng, e.dice).total;
-      restore(b, target, dice + (actor.skills[e.skill] ?? 0) + empowered, e.strain);
+      const amount = dice + (actor.skills[e.skill] ?? 0) + empowered;
+      restore(b, target, amount, hardcore.healingStrain(b, target, e.strain));
       return true;
     }
     case 'companion-heal':

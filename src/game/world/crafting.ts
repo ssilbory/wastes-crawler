@@ -15,6 +15,7 @@ import { entryPrice, findItem, type CatalogItem, type InventoryEntry } from '../
 import { findPeople } from '../character/people.ts';
 import type { WorldEvent } from './bus.ts';
 import { note } from './members.ts';
+import { craftingXpPerDay } from './hardcore.ts';
 import { daysText } from './wording.ts';
 import { completeBrew } from './brewing.ts';
 import { completeScroll } from './scribing.ts';
@@ -162,7 +163,8 @@ export function workOn(w: World, data: GameData, p: Project, days = 1): void {
   const left = Math.max(0, p.daysLeft - days);
   // XP comes in half points, so a half day's shift pays when the day it starts is done.
   const finished = Math.ceil(p.daysLeft) - Math.ceil(left);
-  const xp = crafter.character.xp + finished * data.content.craftingRules.xpPerDay;
+  const xp =
+    crafter.character.xp + finished * craftingXpPerDay(w, data.content.craftingRules.xpPerDay);
   crafter.character = { ...crafter.character, xp };
   p.daysLeft = left;
   if (p.daysLeft > 0) return;

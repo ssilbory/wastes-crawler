@@ -9,6 +9,7 @@ import { ConjunctPanel } from './ConjunctPanel.tsx';
 import { FactionsPanel } from './FactionsPanel.tsx';
 import { FormsPanel } from './FormsPanel.tsx';
 import { GreenwoodPanel } from './GreenwoodPanel.tsx';
+import { HardcorePanel } from './HardcorePanel.tsx';
 import { HealerPanel } from './HealerPanel.tsx';
 import { HighRoadPanel } from './HighRoadPanel.tsx';
 import { MountsPanel } from './MountsPanel.tsx';
@@ -213,6 +214,12 @@ export const WINDOWS: {
     body: (p) => <FactionsPanel world={p.world} />,
   },
   { id: 'warlords', label: 'Warlords', on: MAP, body: (p) => <WarlordsPanel world={p.world} /> },
+  {
+    id: 'hardcore',
+    label: 'Hardcore',
+    on: ALL,
+    body: (p) => <HardcorePanel world={p.world} onChange={p.onChange} />,
+  },
   {
     id: 'save',
     label: 'Save',

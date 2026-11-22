@@ -42,6 +42,7 @@ export * from './device-content.ts';
 export * from './wizard-content.ts';
 export * from './forging-content.ts';
 export * from './settings.ts';
+export * from './hardcore.ts';
 export * from './setting-content.ts';
 export * from './ruin-content.ts';
 export * from './equipment-content.ts';

@@ -7,6 +7,7 @@ import type { GameData } from '../character/context.ts';
 import { emit } from './bus.ts';
 import { partyLevel } from './difficulty.ts';
 import { note } from './members.ts';
+import { questXp } from './hardcore.ts';
 import { addNpc } from './npcs.ts';
 import { fulfilOrders, gainAuthority, learnCountersign } from './orders.ts';
 import { failQuest, giverName, payerName, payerOf, questOf } from './quests.ts';
@@ -115,15 +116,14 @@ export function turnInQuest(w: World, data: GameData, id: string, raise?: string
   }
   (w.quests[id] as { status: string }).status = 'done';
   w.purse = toTenths(w.purse + q.reward.crowns);
+  // Hardcore's No quest XP pays the crowns and loot alone.
+  const xp = questXp(w, q.reward.xp);
   for (const m of w.members) {
-    if (m.dead) m.pendingXp += q.reward.xp;
-    else m.character = { ...m.character, xp: m.character.xp + q.reward.xp };
+    if (m.dead) m.pendingXp += xp;
+    else m.character = { ...m.character, xp: m.character.xp + xp };
   }
   pickUp(w, data, () => addLoot(w, q.reward.loot));
-  note(
-    w,
-    `${payerName(data, q)} pays for ${q.name}: ${q.reward.crowns} crowns and ${q.reward.xp} XP each.`,
-  );
+  note(w, `${payerName(data, q)} pays for ${q.name}: ${q.reward.crowns} crowns and ${xp} XP each.`);
   for (const o of q.reward.countersigns ?? []) learnCountersign(w, data, o);
   if (q.reward.authority) gainAuthority(w, data, q.reward.authority);
   fulfilOrders(w, data, id);

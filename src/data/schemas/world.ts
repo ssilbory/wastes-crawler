@@ -11,8 +11,9 @@ import { WizardOrderSchema, WizardStateSchema } from './wizard-content.ts';
 import { ComponentTypeSchema } from './crafting-content.ts';
 import { SiegeFightSchema, SiegeSchema } from './siege-state.ts';
 import { ChestStateSchema, DoorStateSchema } from './chest-state.ts';
+import { HardcoreSchema } from './hardcore.ts';
 
-export const WORLD_SCHEMA_VERSION = 59;
+export const WORLD_SCHEMA_VERSION = 60;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -588,6 +589,8 @@ export const WorldSaveSchema = z.strictObject({
       by: z.record(z.string(), ElementSchema),
     })
     .nullable(),
+  /** The hardcore options on (docs/rules-adaptation.md, Hardcore options). */
+  hardcore: HardcoreSchema,
   log: z.array(z.string()),
 });
 export type WorldSave = z.infer<typeof WorldSaveSchema>;

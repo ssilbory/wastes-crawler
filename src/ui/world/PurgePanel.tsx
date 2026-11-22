@@ -18,6 +18,8 @@ export function PurgePanel(props: { world: World; onChange: () => void }) {
         Effort for the day cures an ally of a poison or a disease; some diseases need a Heal check
         first. Lifting Frailty takes a Heal check against {rules.difficulty} and 1 System Strain,
         one try per Frailty. The Effort is spent even if a check fails.
+        {w.hardcore.harshHealing &&
+          ' Harsh healing: curing a poison or disease adds 1 System Strain.'}
       </p>
       {view.healers.map((h) => (
         <div key={h.id} class="parley" role="group" aria-label={h.name}>

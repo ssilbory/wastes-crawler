@@ -105,6 +105,7 @@ export function serializeWorld(w: World): string {
     disguise: w.disguise,
     palanquin: w.palanquin,
     pacts: w.pacts,
+    hardcore: { ...w.hardcore },
     log: w.log.slice(-SAVED_LOG_LINES),
   };
   return `${JSON.stringify(save)}\n`;
@@ -246,6 +247,7 @@ export function parseWorld(text: string, data: GameData): WorldLoad {
     disguise: s.disguise,
     palanquin: s.palanquin,
     pacts: s.pacts,
+    hardcore: { ...s.hardcore },
     log: s.log,
     rng: rngFromState(s.rng),
     visited: new Set(s.visited),
