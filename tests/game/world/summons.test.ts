@@ -76,8 +76,9 @@ describe('summoned servants after the fight (Phase 18a)', () => {
     applyBattle(w, data, fight, result, null);
     const npc = w.npcs[0];
     expect(npc && [npc.row, npc.column]).toEqual([0, 2]);
+    // She steps back behind her slot, then closes up to the left of the empty rear row.
     const lirael = member(w, 'Lirael');
-    expect([lirael.row, lirael.column]).toEqual([1, 2]);
+    expect([lirael.row, lirael.column]).toEqual([1, 0]);
     expect(w.log.join('\n')).toContain('Lirael steps back for Phantasmal Eidolon.');
   });
 

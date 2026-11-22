@@ -1,10 +1,12 @@
 // Crafting gear (docs/rules-adaptation.md, Crafting and modifying gear; vendor/wwn-srd/2.0 The Rules
 // of the Game/2.8.0 Crafting and Modifying Gear.md, 2.8.1). A PC with Craft or the Artisan focus
-// buys parts in a settlement and builds one item at a time: jury-rigged at a quarter of the cost and
-// half the time, normal at market cost, or mastercrafted at ten times the cost and twice the time.
+// buys parts in a settlement and builds one item at a time: jury-rigged from scrap paid in loot dice
+// covering a quarter of the cost, in half the time; normal at market cost; or mastercrafted at ten
+// times the cost and twice the time.
 // The work goes on in a town's workshop, or in camp shifts out in the wilds for a crafter carrying
 // crafting tools, a portable workshop in the SRD's sense (Sam's calls).
-import type { People, Project } from '../../data/schemas/index.ts';
+import type { LootDice, People, Project } from '../../data/schemas/index.ts';
+import { payDice } from '../../rules/loot-dice.ts';
 import { builtWorkshop } from './built-services.ts';
 import { gameSpells, type GameSpell } from '../../data/spells.ts';
 import type { GameData } from '../character/context.ts';
@@ -80,6 +82,16 @@ const entryOf = (item: Craftable, tier: Tier): InventoryEntry => ({
 export const partsListed = (data: GameData, item: Craftable, tier: Tier) =>
   entryPrice(data, item, entryOf(item, tier)) / 10;
 
+/**
+ * Jury-rigged parts in loot dice: dice of the rules' size or larger whose top faces cover the
+ * quarter cost, at least one (SRD 2.8.1's scrap salvage; Sam's call). A war axe takes 3d6.
+ */
+export function juryDice(data: GameData, item: Craftable): LootDice {
+  const sides = data.content.craftingRules.quality['jury-rigged'].lootDie;
+  const count = Math.max(1, Math.ceil(partsListed(data, item, 'jury-rigged') / sides));
+  return { count, sides };
+}
+
 export const tierName = (tier: Tier) => (tier === 'normal' ? '' : `${tier} `);
 
 export { daysText } from './wording.ts';
@@ -111,9 +123,18 @@ export function startProject(
   if (w.projects.some((p) => p.crafter === m.id)) return no(`${name} is already making something.`);
   if (!tiersFor(item).includes(tier)) return no(`${item.name} is only ever made normal.`);
   if (size === 'small' && item.kind !== 'armor') return no(`${item.name} isn't made small.`);
-  const listed = partsListed(data, item, tier);
+  // Jury-rigged parts are paid in loot dice, any short in crowns at their top face, like a mod's.
+  const cost = tier === 'jury-rigged' ? juryDice(data, item) : null;
+  const dice = cost ? payDice(w.loot, cost) : null;
+  const listed = dice ? dice.crowns : partsListed(data, item, tier);
   const price = priceHere(w, data, listed);
-  if (!spend(w, data, listed)) return no(`The parts cost ${price} crowns.`);
+  if (!spend(w, data, listed))
+    return no(
+      cost && dice
+        ? `The parts take ${cost.count}d${cost.sides} in loot dice; the ${dice.short} short cost ${price} crowns.`
+        : `The parts cost ${price} crowns.`,
+    );
+  if (dice) w.loot = dice.left;
   const small = sizedLine(data, entryOf(item, tier), size ?? fitSize(peopleOf(data, m)));
   const days = buildDays(data, item, tier);
   w.projects.push({
@@ -265,7 +286,8 @@ function workName(data: GameData, p: Project): string {
   if (p.kind === 'brew') return `a brew of ${item}`;
   if (p.kind === 'scribe') return `a scroll of ${spellName(data, p.spell as string)}`;
   if (p.kind === 'device') return `the ${item}`;
-  if (p.kind === 'forge') return `the +${p.bonus as number} ${forgedName(data, p.item, p.ability)}`;
+  if (p.kind === 'forge')
+    return `the ${tierName(p.quality)}+${p.bonus as number} ${forgedName(data, p.item, p.ability)}`;
   return p.kind === 'mod'
     ? `${modOf(data, p.mod as string).name} for the ${item}`
     : `the ${tierName(p.quality)}${item}`;

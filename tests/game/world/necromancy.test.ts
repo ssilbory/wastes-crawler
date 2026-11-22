@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { applyBattle, type WorldBattle } from '../../../src/game/world/fight.ts';
+import { applyBattle, encounterBattle, type WorldBattle } from '../../../src/game/world/fight.ts';
 import { firstAid } from '../../../src/game/world/first-aid.ts';
 import { dismiss } from '../../../src/game/world/hire.ts';
 import {
@@ -224,7 +224,7 @@ describe('Command the Dead (4.6.0)', () => {
     w.encounter = encounter([['thug-or-militia']]);
     expect(commandTheDead(w, data, m.id)).toEqual(fail('There are no undead here to command.'));
     // Two zombies of 2 HD: the first fails its save (2) and is bound; the budget of 2 is spent,
-    // so the second only stands dazed.
+    // so the second is untouched, not even dazed.
     w.encounter = encounter([['zombie', 'zombie'], ['thug-or-militia']]);
     w.rng = scriptedRng([2, 1, 1]);
     expect(commandTheDead(w, data, m.id)).toEqual({ ok: true });
@@ -273,6 +273,62 @@ describe('Command the Dead (4.6.0)', () => {
     commandTheDead(w, data, m.id);
     expect(w.encounter).toBeNull();
     expect(w.log.at(-1)).toContain('No foe is left standing against the party.');
+  });
+});
+
+describe('Command the Dead on ghouls and the too strong (4.6.0)', () => {
+  it('binds ghouls and their reskins like any undead', () => {
+    const w = world();
+    const m = necromancer(w, 2);
+    // Twice level 2 is 4 hit dice: a ghoul and a Salt Wight (a ghoul's stat line), 2 each.
+    w.encounter = encounter([['ghoul', 'salt-wight']]);
+    // Each fails its save (2), then rolls 2d8 hit points.
+    w.rng = scriptedRng([2, 4, 4, 2, 4, 4]);
+    expect(commandTheDead(w, data, m.id)).toEqual({ ok: true });
+    expect(w.npcs.map((n) => [n.type, n.master])).toEqual([
+      ['ghoul', m.id],
+      ['salt-wight', m.id],
+    ]);
+    expect(w.encounter).toBeNull();
+  });
+
+  it('dazes one only partly within the hit dice left, and it loses its first turn', () => {
+    const w = world();
+    const m = necromancer(w, 1);
+    // Ash Walkers have 6 HD to the caster's 2: the first fails its save and takes the 2 left,
+    // standing dazed; the second and the ghoul are untouched, rolling nothing.
+    w.encounter = encounter([['ash-walker', 'ash-walker'], ['ghoul']]);
+    w.rng = scriptedRng([2]);
+    expect(commandTheDead(w, data, m.id)).toEqual({ ok: true });
+    expect(w.encounter?.enemies).toEqual([['ash-walker', 'ash-walker'], ['ghoul']]);
+    expect(w.encounter?.dazed).toEqual({ 'ash-walker': 1 });
+    expect(w.log.at(-1)).toContain("The Ash Walker stands dazed under Fizzwick's will.");
+    expect(w.npcs).toEqual([]);
+    // Saves made leave it as it was; with the budget unspent, each undead rolls one.
+    m.spellsCast = 0;
+    w.rng = scriptedRng([20, 20, 20]);
+    commandTheDead(w, data, m.id);
+    expect(w.encounter?.dazed).toEqual({ 'ash-walker': 1 });
+    // Cast again and again, no more are dazed than stand there.
+    for (let i = 0; i < 2; i++) {
+      m.spellsCast = 0;
+      w.rng = scriptedRng([2]);
+      commandTheDead(w, data, m.id);
+    }
+    expect(w.encounter?.dazed).toEqual({ 'ash-walker': 2 });
+    w.encounter = encounter([['ash-walker', 'ash-walker'], ['ghoul']], {
+      dazed: { 'ash-walker': 1 },
+    });
+    w.rng = createRng('daze');
+    const foes = encounterBattle(w, data).battle.combatants.filter((c) => c.side === 'enemy');
+    expect(foes.map((c) => [c.monster, c.stunned])).toEqual([
+      ['ash-walker', true],
+      ['ash-walker', false],
+      ['ghoul', false],
+    ]);
+    // Nothing dazed, no one stunned.
+    w.encounter = encounter([['ash-walker']]);
+    expect(encounterBattle(w, data).battle.combatants.some((c) => c.stunned)).toBe(false);
   });
 });
 

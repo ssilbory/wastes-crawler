@@ -2,7 +2,9 @@
 // Forged magic and Abilities; vendor/wwn-srd/4.0 Magic and Spellcasting/4.10.0 Creating Magic
 // Items.md). A member with Magic 1 and Craft 1 (or the Artisan focus) forges a +1 to +3 weapon or
 // suit of body armor at a craftsman's commission price, components, and days, with a special
-// ability for its own price, components, and days besides. When the work is done they roll
+// ability for its own price, components, and days besides. Like a smith's commission it can be
+// mastercrafted (vendor/wwn-srd/2.0 The Rules of the Game/2.8.0 Crafting and Modifying Gear.md,
+// 2.8.1): ten times the item's price and the build's extra week. When the work is done they roll
 // Int/Magic against 10, 12, or 14, 2 more with an ability; another member who could forge helps
 // for +1. A failure waits on the forger: start over at full price and time (the components are
 // kept), or go on with a flaw in the item and try again in half the time at a cumulative +1 — once
@@ -53,19 +55,41 @@ export function abilityById(data: GameData, id: string): Ability {
 /** A forgeable weapon's or suit's own market price in crowns; forged ones always have one. */
 const basePrice = (data: GameData, id: string) => tenths(findItem(data, id)?.cost as Cost) / 10;
 
+/** A forging's make: normal, or mastercrafted (SRD 2.8.1). */
+export type ForgeQuality = 'normal' | 'mastercrafted';
+
+/** Days a mastercrafted build adds over a normal one (SRD 2.8.1: twice the time). */
+function masterDays(data: GameData, item: string): number {
+  const days = data.content.craftingRules.buildDays[kindOf(data, item)];
+  return Math.ceil(days * data.content.craftingRules.quality.mastercrafted.time) - days;
+}
+
 /**
  * Crowns, components, and days for an item with a bonus and an optional ability: the item's own
- * price plus the bonus's and the ability's, as a magic item is valued (Crafting: Magic gear).
+ * price at its make plus the bonus's and the ability's, as a magic item is valued (Crafting: Magic
+ * gear); mastercrafted, ten times the item's price and its build's extra days (SRD 2.8.1).
  */
-export function forgeTerms(data: GameData, item: string, bonus: number, ability?: string) {
+export function forgeTerms(
+  data: GameData,
+  item: string,
+  bonus: number,
+  ability?: string,
+  quality: ForgeQuality = 'normal',
+) {
   const tier = tierOf(data, bonus);
   const a = ability ? abilityById(data, ability) : null;
+  const master = quality === 'mastercrafted';
+  const make = master ? data.content.craftingRules.quality.mastercrafted.cost : 1;
   return {
-    crowns: basePrice(data, item) + tier.commission + (a?.cost ?? 0),
+    crowns: basePrice(data, item) * make + tier.commission + (a?.cost ?? 0),
     components: [...tier.components, ...(a?.components ?? [])],
-    days: tier.days + (a?.days ?? 0),
+    days: tier.days + (a?.days ?? 0) + (master ? masterDays(data, item) : 0),
   };
 }
+
+/** The make a forging project was started at. */
+const qualityOf = (p: Project): ForgeQuality =>
+  p.quality === 'mastercrafted' ? 'mastercrafted' : 'normal';
 
 /** The roll's difficulty: the bonus's, more with an ability, less a point per flaw taken. */
 export function forgeDifficulty(data: GameData, bonus: number, ability?: string, flaws = 0) {
@@ -81,6 +105,7 @@ export function startForge(
   bonus: number,
   ability?: string,
   size?: Size,
+  quality: ForgeQuality = 'normal',
 ): TownResult {
   if (w.encounter) return no('Settle the encounter first.');
   const town = townHere(w, data);
@@ -92,7 +117,7 @@ export function startForge(
   if (ability && !abilitiesFor(data, item).some((a) => a.id === ability))
     return no(`${abilityById(data, ability).name} doesn't fit that.`);
   if (w.projects.some((p) => p.crafter === m.id)) return no(`${name} is already making something.`);
-  const terms = forgeTerms(data, item, bonus, ability);
+  const terms = forgeTerms(data, item, bonus, ability, quality);
   const parts = pickComponents(w, data, terms.components);
   if (!parts)
     return no(`It needs ${terms.components.map((x) => `${x.count} ${x.type}`).join(', ')}.`);
@@ -108,7 +133,7 @@ export function startForge(
     bonus,
     ...(ability ? { ability } : {}),
     ...(small ? { small: true as const } : {}),
-    quality: 'normal',
+    quality,
     daysLeft: terms.days,
     days: terms.days,
     town: town.id,
@@ -116,10 +141,13 @@ export function startForge(
   });
   note(
     w,
-    `${name} starts forging a +${bonus} ${forgedName(data, item, ability)}: ${daysText(terms.days)}.`,
+    `${name} starts forging a ${makeName(quality)}+${bonus} ${forgedName(data, item, ability)}: ${daysText(terms.days)}.`,
   );
   return { ok: true };
 }
+
+/** "mastercrafted " before a mastercrafted forging's name, else nothing. */
+export const makeName = (quality: ForgeQuality) => (quality === 'normal' ? '' : `${quality} `);
 
 export const forgedName = (data: GameData, item: string, ability?: string) =>
   `${(findItem(data, item) as { name: string }).name}${ability ? ` (${abilityById(data, ability).name})` : ''}`;
@@ -147,10 +175,14 @@ export function completeForge(w: World, data: GameData, p: Project, smith: Membe
     bonus,
     ...(p.ability ? { ability: p.ability } : {}),
     ...(flaws.length > 0 ? { flaws } : {}),
+    // The forger is its maker: their first mod on it needs no maintenance (SRD 2.8.1).
+    ...(qualityOf(p) === 'mastercrafted'
+      ? { quality: 'mastercrafted' as const, maker: smith.character.id }
+      : {}),
   };
   const line = sizedLine(data, entry, p.small ? 'small' : 'standard');
   smith.character = { ...smith.character, inventory: [...smith.character.inventory, line] };
-  note(w, `${who} forges a +${bonus} ${name}.`);
+  note(w, `${who} forges a ${makeName(qualityOf(p))}+${bonus} ${name}.`);
 }
 
 function failedOf(w: World, smithId: string): Project {
@@ -164,7 +196,7 @@ export function restartForge(w: World, data: GameData, smithId: string): TownRes
   if (w.encounter) return no('Settle the encounter first.');
   townHere(w, data);
   const p = failedOf(w, smithId);
-  const terms = forgeTerms(data, p.item, p.bonus as number, p.ability);
+  const terms = forgeTerms(data, p.item, p.bonus as number, p.ability, qualityOf(p));
   if (!spend(w, data, terms.crowns))
     return no(`Starting over costs ${priceHere(w, data, terms.crowns)} crowns.`);
   const next: Project = { ...p, daysLeft: terms.days };

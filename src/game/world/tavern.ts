@@ -4,6 +4,7 @@ import type { Character, DefaultPreset } from '../../data/schemas/index.ts';
 import { toTenths } from '../../rules/economy.ts';
 import { newMember, note } from './members.ts';
 import { MAX_PCS } from './new-world.ts';
+import { closeRanks } from './formation.ts';
 import { freeSlot } from './npcs.ts';
 import type { TownResult } from './services.ts';
 import type { GameData } from '../character/context.ts';
@@ -30,6 +31,7 @@ export function bench(w: World, data: GameData, id: string): TownResult {
   followMaster(w, m);
   w.members = w.members.filter((x) => x !== m);
   w.benched.push(m);
+  closeRanks(w);
   note(w, `${m.character.name} stays behind at the tavern.`);
   return { ok: true };
 }

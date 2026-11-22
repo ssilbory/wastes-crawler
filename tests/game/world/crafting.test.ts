@@ -18,6 +18,7 @@ import {
   craftShift,
   craftable,
   hasTools,
+  juryDice,
   partsListed,
   startProject,
   tiersFor,
@@ -131,6 +132,39 @@ describe('crafting gear (docs/rules-adaptation.md, Crafting and modifying gear)'
     });
     w.encounter = encounter([['thug-or-militia']]);
     expect(startProject(w, data, 'm-3', 'crowbar', 'normal')).toMatchObject({ ok: false });
+  });
+
+  it('pays for jury-rigged parts in loot dice, any short in crowns (SRD 2.8.1 scrap; Sam’s call)', () => {
+    // The top faces cover the quarter cost, at least one die.
+    expect(juryDice(data, item('axe-war'))).toEqual({ count: 3, sides: 6 });
+    expect(juryDice(data, item('dagger'))).toEqual({ count: 1, sides: 6 });
+    const w = rich();
+    // Smallest fitting dice first; d4s are too small to count.
+    w.loot = [
+      { count: 2, sides: 4 },
+      { count: 1, sides: 6 },
+      { count: 5, sides: 8 },
+    ];
+    expect(startProject(w, data, 'm-3', 'axe-war', 'jury-rigged')).toEqual({ ok: true });
+    expect(w.loot).toEqual([
+      { count: 2, sides: 4 },
+      { count: 3, sides: 8 },
+    ]);
+    expect(w.purse).toBe(1000);
+    expect(w.projects[0]).toMatchObject({ quality: 'jury-rigged', daysLeft: 4 });
+    abandonProject(w, data, 'm-3');
+    // One die short: 6 crowns for it.
+    w.loot = [{ count: 2, sides: 6 }];
+    w.purse = 5;
+    expect(startProject(w, data, 'm-3', 'axe-war', 'jury-rigged')).toEqual({
+      ok: false,
+      reason: 'The parts take 3d6 in loot dice; the 1 short cost 6 crowns.',
+    });
+    expect(w.loot).toEqual([{ count: 2, sides: 6 }]);
+    w.purse = 6;
+    expect(startProject(w, data, 'm-3', 'axe-war', 'jury-rigged')).toEqual({ ok: true });
+    expect(w.loot).toEqual([]);
+    expect(w.purse).toBe(0);
   });
 
   it('sizes armor for the crafter’s people', () => {

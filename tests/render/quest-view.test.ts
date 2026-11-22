@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { regionMap } from '../../src/game/world/region.ts';
 import { hexCells } from '../../src/render/hex-view.ts';
 import {
+  captiveEscorts,
   captiveHomes,
   questStatus,
   questTarget,
@@ -156,6 +157,29 @@ describe('captives’ homes (docs/rules-adaptation.md, NPCs)', () => {
     const shown = hexCells(map, w, [], 18, homes, [], [], homes).find((c) => c.key === '20,8');
     expect(shown).toMatchObject({ site: 'Scrapmarch', quest: true, visited: false });
     expect(shown?.terrain).not.toBeNull();
+  });
+
+  it('lists each freed captive as an escort in the quest log, with where they go and the pay', () => {
+    const w = world();
+    expect(captiveEscorts(w, data)).toEqual([]);
+    freeCaptive(w, data, 'merchant');
+    // A hireling is no escort.
+    expect(addNpc(w, data, 'hireling', 'porter', 'peaceful-human', 'Porter', false)).toBeTruthy();
+    const merchant = w.npcs.find((n) => n.type === 'merchant');
+    expect(captiveEscorts(w, data)).toEqual([
+      {
+        id: merchant?.id,
+        name: 'Escort a captured merchant',
+        status: 'Bring them to Scrapmarch: 60 crowns and 1 XP each.',
+        target: { col: 20, row: 8 },
+      },
+    ]);
+    // A home in another region still reads by name, with no hex on this map.
+    const far = world();
+    freeCaptive(far, data, 'grey-priest');
+    const [priest] = captiveEscorts(far, data);
+    expect(priest?.target).toBeNull();
+    expect(priest?.status).toContain(`Bring them to ${townName(data, 'saltwick')}`);
   });
 
   it('marks none for a home in another region, nor for hirelings', () => {

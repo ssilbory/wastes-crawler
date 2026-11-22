@@ -26,6 +26,8 @@ import {
 import { checkBonus } from '../../../src/game/world/members.ts';
 import type { Member, World } from '../../../src/game/world/types.ts';
 import { stayToWork, workDay } from '../../../src/game/world/workshop.ts';
+import { pieceTerms } from '../../../src/game/world/smith-work.ts';
+import { priceHere } from '../../../src/game/world/town-prices.ts';
 import { projectText } from '../../../src/render/crafting-view.ts';
 import { data, encounter, member, world } from './helpers.ts';
 
@@ -119,6 +121,46 @@ describe('forging magic (docs/rules-adaptation.md, Forged magic; SRD 4.10.0)', (
       ok: false,
       reason: 'Settle the encounter first.',
     });
+  });
+
+  it('forges mastercrafted magic on a smith’s commission terms (SRD 2.8.1, 4.10.0)', () => {
+    // Ten times the sword's 100 crowns plus the +1's 200; the build's extra week on the month.
+    const terms = forgeTerms(data, SWORD, 1, undefined, 'mastercrafted');
+    expect([terms.crowns, terms.days]).toEqual([1200, 37]);
+    const ordered = pieceTerms(data, { weapon: SWORD, quality: 'mastercrafted', bonus: 1 });
+    expect([ordered.crowns, ordered.days]).toEqual([terms.crowns, terms.days]);
+    expect(forgeTerms(data, 'mail-shirt', 1, 'warding', 'mastercrafted').days).toBe(67);
+    const { w, fizz } = smith([1, 1, 6, 6]);
+    expect(startForge(w, data, fizz.id, SWORD, 1, undefined, undefined, 'mastercrafted')).toEqual({
+      ok: true,
+    });
+    expect(w.purse).toBe(3800);
+    expect(w.log.at(-1)).toContain(
+      'Fizzwick starts forging a mastercrafted +1 Sword, Long: 37 days.',
+    );
+    const p = w.projects[0] as P;
+    expect(p).toMatchObject({ quality: 'mastercrafted', days: 37 });
+    expect(projectText(w, data, p)).toBe(
+      'Fizzwick: forging a mastercrafted +1 Sword, Long, 37 days left',
+    );
+    // A failure starts over at the mastercrafted price.
+    workOn(w, data, p, 37);
+    const again = priceHere(w, data, 1200);
+    expect(restartForge(w, data, fizz.id)).toEqual({ ok: true });
+    expect(w.purse).toBe(3800 - again);
+    workOn(w, data, w.projects[0] as P, 37);
+    const blade = fizz.character.inventory.at(-1) as InventoryEntry;
+    expect(blade).toEqual({
+      id: SWORD,
+      quantity: 1,
+      location: 'stowed',
+      bonus: 1,
+      quality: 'mastercrafted',
+      maker: fizz.character.id,
+    });
+    expect(w.log.at(-1)).toContain('Fizzwick forges a mastercrafted +1 Sword, Long.');
+    // The mastercraft's +1 to hit stacks with the magic; damage takes only the magic.
+    expect(upgrade(data, blade)).toMatchObject({ hit: 2, damage: 1 });
   });
 
   it('sizes armor for the smith’s people unless asked otherwise', () => {
