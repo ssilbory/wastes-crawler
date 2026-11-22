@@ -1512,6 +1512,23 @@
         "hireFee": 150,
         "captives": ["dl-pilgrim", "vale-blood-priest"]
       }
+    },
+    {
+      "service": "sanctum",
+      "name": "a wizard's sanctum",
+      "build": {
+        "crowns": 300,
+        "days": 30,
+        "skill": "magic",
+        "exert": false
+      },
+      "probability": "plausible",
+      "opposition": [],
+      "specialist": {
+        "name": "a journeyman wizard",
+        "hireFee": 150,
+        "captives": ["scholar", "dl-scholar"]
+      }
     }
   ],
   "workings": [

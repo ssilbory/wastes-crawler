@@ -3,7 +3,8 @@ import type { ContentData, SrdData } from './schemas/index.ts';
 
 /**
  * Components drop from real monsters, every component type a mod or magic weapon needs exists, and
- * craftsmen work in towns (one each, never a village) and forge real weapons and armor, the crafting tools
+ * craftsmen work in real settlements (one each; crafter-check.ts counts the places) and forge real,
+ * priced weapons and armor, the crafting tools
  * are an item of their own, and the armor that drops late is real body armor.
  */
 export function craftingReferenceErrors(srd: SrdData, content: ContentData): string[] {
@@ -37,11 +38,14 @@ export function craftingReferenceErrors(srd: SrdData, content: ContentData): str
     const where = `craftsmen/${c.id}`;
     const site = sites.get(c.town);
     if (!site) errors.push(`${where}: unknown town ${c.town}`);
-    else if (site.size === 'village') errors.push(`${where}: villages have no craftsman`);
     if (towns.has(c.town)) errors.push(`${where}: ${c.town} already has a craftsman`);
     towns.add(c.town);
     for (const id of c.weapons) if (!weapons.has(id)) errors.push(`${where}: unknown weapon ${id}`);
     for (const id of c.armor) if (!body.has(id)) errors.push(`${where}: unknown armor ${id}`);
+    // They build what they sell, so it needs a market price (smith-work.ts).
+    for (const x of [...srd.weapons, ...srd.armor])
+      if ([...c.weapons, ...c.armor].includes(x.id) && !x.cost)
+        errors.push(`${where}: ${x.id} has no price`);
   }
   return errors;
 }

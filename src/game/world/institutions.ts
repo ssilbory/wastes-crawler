@@ -11,6 +11,7 @@ import type { ArenaBout } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
 import { builtArena } from './built-services.ts';
 import type { WorldEvent } from './bus.ts';
+import { crafterKindOf, crafterRoom } from './crafter-places.ts';
 import { workshopHere } from './crafting.ts';
 import {
   institutionId,
@@ -38,6 +39,7 @@ export function hasService(w: World, data: GameData, town: string, service: Serv
   const c = data.content;
   if (service === 'arena') return c.arenaCards.some((a) => a.town === town);
   if (service === 'alchemist') return c.alchemy.alchemists.some((a) => a.town === town);
+  if (service === 'sanctum') return c.wizards.wizards.some((x) => x.town === town);
   if (service === 'workshop') {
     const region = c.regions.find((r) => r.sites.some((s) => s.id === town));
     const site = region?.sites.find((s) => s.id === town);
@@ -58,6 +60,10 @@ export function cannotFound(w: World, data: GameData, service: Service): string 
     service === 'workshop' ? workshopHere(w, data) !== null : hasService(w, data, town.id, service)
   )
     return `${town.name} has ${name} already.`;
+  // Each tier of settlement has room for one more kind of crafter (Crafters, Sam's call).
+  const kind = crafterKindOf(service);
+  if (kind && !crafterRoom(w, data, town, kind))
+    return `${town.name} has no room for another kind of crafter.`;
   if (RAISERS.includes(service)) {
     const raiser =
       data.content.missionGivers.some((g) => g.town === town.id && g.raises) ||

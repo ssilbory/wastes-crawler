@@ -37,8 +37,13 @@ export const AlchemistSchema = z.strictObject({
   name: z.string().min(1),
   town: IdSchema,
   text: z.string().min(1),
-  /** The recipes they keep in stock and brew on commission. */
+  /** The recipes they keep in stock; they brew these, and any other recipe their skill allows, to order. */
   wares: z.array(IdSchema).min(1),
+  /**
+   * Their Alchemy skill, as a PC's: they brew to order any recipe of difficulty 7 plus this or less,
+   * the brew they make on an average roll (Sam's call; SRD 4.10.0).
+   */
+  alchemy: z.int().min(1).max(4),
 });
 export type Alchemist = z.infer<typeof AlchemistSchema>;
 

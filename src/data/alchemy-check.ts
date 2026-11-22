@@ -3,8 +3,8 @@ import type { ContentData, SrdData } from './schemas/index.ts';
 
 /**
  * Brewing uses a real skill; potions are items of their own, each with one recipe; recipes name
- * potions or other brewable gear (the antidote); and alchemists work in towns (one each, never a
- * village) and keep only recipes in stock.
+ * potions or other brewable gear (the antidote); and alchemists work in real settlements (one
+ * each; crafter-check.ts counts the places) and stock only recipes within their Alchemy.
  */
 export function alchemyReferenceErrors(srd: SrdData, content: ContentData): string[] {
   const a = content.alchemy;
@@ -37,10 +37,14 @@ export function alchemyReferenceErrors(srd: SrdData, content: ContentData): stri
     const where = `alchemy/alchemists/${c.id}`;
     const site = sites.get(c.town);
     if (!site) errors.push(`${where}: unknown town ${c.town}`);
-    else if (site.size === 'village') errors.push(`${where}: villages have no alchemist`);
     if (towns.has(c.town)) errors.push(`${where}: ${c.town} already has an alchemist`);
     towns.add(c.town);
-    for (const id of c.wares) if (!recipes.includes(id)) errors.push(`${where}: no recipe ${id}`);
+    for (const id of c.wares) {
+      const r = a.recipes.find((x) => x.item === id);
+      if (!r) errors.push(`${where}: no recipe ${id}`);
+      // They stock only what they brew to order (alchemists.ts: 7 plus their Alchemy).
+      else if (r.difficulty > 7 + c.alchemy) errors.push(`${where}: ${id} is past their Alchemy`);
+    }
   }
   return errors;
 }

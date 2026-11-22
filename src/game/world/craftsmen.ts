@@ -1,7 +1,9 @@
-// Craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craftsmen; Sam's calls). One in
-// each town, never a village. Each month a craftsman has a trade pool of crowns for buying loot dice
-// and components, a few components for sale, and up to two ready-made magic weapons or suits of
-// armor (4.9.3) at the SRD's creation prices (vendor/wwn-srd/4.0 Magic and Spellcasting/4.10.0). What the party pays them goes
+// Craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craftsmen; Sam's calls). A smith
+// takes one of a settlement's crafter places (Crafters). Each month a craftsman has a trade pool of
+// crowns for buying loot dice and components, a few components for sale, up to two ready-made magic
+// weapons or suits of armor (4.9.3) at the SRD's creation prices (vendor/wwn-srd/4.0 Magic and
+// Spellcasting/4.10.0), and up to three plain pieces: normal, mastercrafted, or with one of their
+// mods (vendor/wwn-srd/2.0 The Rules of the Game/2.8.0, 2.8.1 and 2.8.2). What the party pays them goes
 // back into the pool, and a quarter of it counts toward the town's spending threshold. The month's
 // stock is drawn when the party calls on them, so arriving in town rolls nothing.
 import type { Cost, Craftsman, CraftsmanState } from '../../data/schemas/index.ts';
@@ -19,6 +21,7 @@ import { note } from './members.ts';
 import type { TownResult } from './services.ts';
 import type { Member, World } from './types.ts';
 import { currentTown, ledger, townHere } from './town-prices.ts';
+import { goodsPrice, modsFor, type Piece } from './smith-mods.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 const rules = (data: GameData) => data.content.craftingRules.craftsmen;
@@ -64,9 +67,38 @@ export function visitCraftsman(w: World, data: GameData): TownResult {
     const id = (all[w.rng.int(0, all.length - 1)] as (typeof all)[number]).id;
     parts[id] = (parts[id] ?? 0) + 1;
   }
-  w.craftsmen[c.id] = { since: w.day, pool: c.tradePool, stock, parts };
+  const goods = Array.from({ length: w.rng.int(0, rules(data).maxGoods) }, () =>
+    drawGoods(w, data, c),
+  );
+  w.craftsmen[c.id] = { since: w.day, pool: c.tradePool, stock, parts, goods };
   return { ok: true };
 }
+
+/**
+ * One ready-made plain piece: an item from their lists, normal, mastercrafted, or normal with a mod
+ * of theirs that fits it, by the goods weights (Sam's call). With no mod that fits, it is normal.
+ */
+function drawGoods(w: World, data: GameData, c: Craftsman): CraftsmanState['goods'][number] {
+  const all = wares(c);
+  const item = all[w.rng.int(0, all.length - 1)] as string;
+  const weights = Object.entries(rules(data).goods);
+  let pick = w.rng.int(
+    1,
+    weights.reduce((n, [, x]) => n + x, 0),
+  );
+  const kind = (weights.find(([, x]) => (pick -= x) <= 0) as [string, number])[0];
+  if (kind === 'mastercrafted') return { item, quality: 'mastercrafted' };
+  const mods = kind === 'modded' ? modsFor(data, c, item) : [];
+  if (mods.length === 0) return { item };
+  return { item, mod: (mods[w.rng.int(0, mods.length - 1)] as (typeof mods)[number]).id };
+}
+
+/** A ready-made plain piece as a commission's piece, for pricing and naming. */
+export const goodsPiece = (g: CraftsmanState['goods'][number]): Piece => ({
+  weapon: g.item,
+  ...(g.quality ? { quality: g.quality } : {}),
+  ...(g.mod ? { mod: g.mod } : {}),
+});
 
 /** The craftsman here and this month's state, once called on. */
 function open(w: World, data: GameData): { c: Craftsman; st: CraftsmanState } | TownResult {
@@ -157,21 +189,27 @@ export function buyComponent(w: World, data: GameData, id: string): TownResult {
   return { ok: true };
 }
 
-/** Puts a magic weapon or suit of armor in a member's pack, armor sized for their people. */
-export function giveMagic(
-  data: GameData,
-  m: Member,
-  id: string,
-  bonus: number,
-  ability?: string,
-): void {
+/**
+ * Puts a weapon or suit of armor a smith made in a member's pack, armor sized for their people. A
+ * mod comes with the smith's own components, so stripping it gives none back; on a mastercrafted
+ * piece it needs no maintenance, as its creator's first mod (SRD 2.8.1).
+ */
+export function givePiece(data: GameData, m: Member, piece: Piece): void {
   const people = findPeople(data, m.character.people) as People;
   const line = {
-    id,
+    id: piece.weapon,
     quantity: 1,
     location: 'stowed' as const,
-    bonus,
-    ...(ability ? { ability } : {}),
+    ...(piece.quality ? { quality: piece.quality } : {}),
+    ...(piece.mod
+      ? {
+          mods: [
+            { id: piece.mod, components: [], ...(piece.quality ? { free: true as const } : {}) },
+          ],
+        }
+      : {}),
+    ...(piece.bonus ? { bonus: piece.bonus } : {}),
+    ...(piece.ability ? { ability: piece.ability } : {}),
   };
   const entry = sizedLine(data, line, fitSize(people));
   m.character = { ...m.character, inventory: [...m.character.inventory, entry] };
@@ -204,11 +242,31 @@ export function buyMagic(w: World, data: GameData, index: number, memberId: stri
   const price = magicStockPrice(data, item.weapon, item.bonus);
   if (!pay(w, data, c, st, price)) return no(`That costs ${price} crowns.`);
   st.stock = st.stock.filter((_, i) => i !== index);
-  giveMagic(data, m, item.weapon, item.bonus);
+  givePiece(data, m, { weapon: item.weapon, bonus: item.bonus });
   note(
     w,
     `${m.character.name} buys a +${item.bonus} ${kindWord(data, item.weapon)} from ${c.name}.`,
   );
+  return { ok: true };
+}
+
+/** Buys a ready-made plain piece from the month's goods. */
+export function buyGoods(w: World, data: GameData, index: number, memberId: string): TownResult {
+  const shop = open(w, data);
+  if ('ok' in shop) return shop;
+  const { c, st } = shop;
+  const g = st.goods[index];
+  if (!g) throw new Error(`no goods line ${index}`);
+  const m = partyMember(w, memberId);
+  const piece = goodsPiece(g);
+  const price = goodsPrice(data, piece);
+  if (!pay(w, data, c, st, price)) return no(`That costs ${price} crowns.`);
+  st.goods = st.goods.filter((_, i) => i !== index);
+  givePiece(data, m, piece);
+  const item = findItem(data, g.item)?.name.toLowerCase() as string;
+  const how = g.quality ? 'mastercrafted ' : '';
+  const mod = g.mod ? ` with ${data.content.mods.find((x) => x.id === g.mod)?.name}` : '';
+  note(w, `${m.character.name} buys a ${how}${item}${mod} from ${c.name}.`);
   return { ok: true };
 }
 

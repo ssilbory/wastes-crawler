@@ -15,6 +15,11 @@
     "town": 1500,
     "city": 6000
   },
+  "crafterPlaces": {
+    "village": 1,
+    "town": 2,
+    "city": 3
+  },
   "lootThresholdFraction": 0.5,
   "surchargeRate": 0.5,
   "lootDropRate": 2,

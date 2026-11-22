@@ -127,6 +127,8 @@ export const ServiceSchema = z.enum([
   'crypt',
   'mortuary',
   'temple',
+  /** A wizard's sanctum (Sam's call): a wizard who sells and makes scrolls and devices. */
+  'sanctum',
 ]);
 
 /** An institution any settlement lacking it can build, with the specialist who runs it. */

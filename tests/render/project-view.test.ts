@@ -135,6 +135,7 @@ describe('projects view (docs/rules-adaptation.md, Major projects)', () => {
       'crypt',
       'mortuary',
       'temple',
+      'sanctum',
     ]);
   });
 
@@ -173,10 +174,12 @@ describe('institutions in the projects view (Major projects: Institutions)', () 
       'crypt',
       'mortuary',
       'temple',
+      'sanctum',
     ]);
     w.majorProjects['inst-workshop-lanternfall'] = progressOf(w, 'inst-workshop-lanternfall');
     const v = projectsView(w, data);
-    expect(v.foundable.map((f) => f.service)).not.toContain('workshop');
+    // A village has room for one kind of crafter (Crafters): the smith takes it.
+    expect(v.foundable.map((f) => f.service)).toEqual(['arena', 'crypt', 'mortuary', 'temple']);
     const shop = v.projects.find((p) => p.id === 'inst-workshop-lanternfall');
     expect(shop).toMatchObject({
       name: 'A workshop in Lanternfall',

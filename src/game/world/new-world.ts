@@ -108,6 +108,8 @@ export function newWorld(
     commissions: [],
     alchemists: {},
     brewOrders: [],
+    wizards: {},
+    wizardOrders: [],
     corpses: null,
     fallen: null,
     surrendered: null,

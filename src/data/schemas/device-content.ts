@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { AttributeSchema, DiceSchema, IdSchema } from './common.ts';
 import { GearSchema } from './gear.ts';
+import { SpellTraditionSchema } from './magic.ts';
 
 /**
  * A magical device (docs/rules-adaptation.md, Potions, scrolls, and magic devices: Devices;
@@ -27,7 +28,12 @@ export const DeviceSchema = z.strictObject({
       maxLevels: z.int().min(1),
       charges: DiceSchema,
     }),
-    z.strictObject({ kind: z.literal('rod'), effect: z.enum(['light', 'mending', 'warding']) }),
+    z.strictObject({
+      kind: z.literal('rod'),
+      effect: z.enum(['light', 'mending', 'warding']),
+      /** The one kind of wizard who makes it (Sam's call: rods split by theme). */
+      tradition: SpellTraditionSchema,
+    }),
   ]),
 });
 export type Device = z.infer<typeof DeviceSchema>;

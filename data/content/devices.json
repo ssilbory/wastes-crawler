@@ -82,7 +82,8 @@
       "difficulty": 10,
       "device": {
         "kind": "rod",
-        "effect": "light"
+        "effect": "light",
+        "tradition": "elementalist"
       }
     },
     {
@@ -104,7 +105,8 @@
       "difficulty": 10,
       "device": {
         "kind": "rod",
-        "effect": "mending"
+        "effect": "mending",
+        "tradition": "necromancer"
       }
     },
     {
@@ -126,7 +128,8 @@
       "difficulty": 10,
       "device": {
         "kind": "rod",
-        "effect": "warding"
+        "effect": "warding",
+        "tradition": "high-magic"
       }
     }
   ]

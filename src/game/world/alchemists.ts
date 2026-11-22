@@ -1,7 +1,8 @@
-// Alchemists (docs/rules-adaptation.md, Potions: Alchemists; Sam's calls): one in each town with a
-// craftsman, never a village. Each month an alchemist has a few ready-made potions from their wares,
-// drawn when the party calls on them, at four times the brewing cost; and they brew any of their
-// wares to order at the brewing cost a dose, ready in the SRD's week (vendor/wwn-srd/4.0 Magic and
+// Alchemists (docs/rules-adaptation.md, Potions: Alchemists; Sam's calls): an alchemist takes one of
+// a settlement's crafter places (Crafters). Each month an alchemist has a few ready-made potions from
+// their wares, drawn when the party calls on them, at four times the brewing cost; and, like a PC
+// with Alchemy, they brew to order any recipe of difficulty 7 plus their Alchemy or less (the brew
+// they make on an average roll), at the brewing cost a dose, ready in the SRD's week (vendor/wwn-srd/4.0 Magic and
 // Spellcasting/4.10.0 Creating Magic Items.md), to be collected in their town. Purchases and
 // orders are town purchases, through the spending threshold.
 import type { Alchemist, AlchemistState } from '../../data/schemas/index.ts';
@@ -17,6 +18,9 @@ import { currentTown, priceHere, spend, townHere } from './town-prices.ts';
 
 const no = (reason: string): TownResult => ({ ok: false, reason });
 const rules = (data: GameData) => data.content.alchemy;
+
+/** An average 2d6 roll, against which an alchemist's Alchemy sets what they brew to order. */
+const ORDER_ROLL = 7;
 
 export function alchemistHere(w: World, data: GameData): Alchemist | undefined {
   const town = currentTown(w, data);
@@ -93,12 +97,18 @@ export function buyPotion(w: World, data: GameData, item: string, memberId: stri
   return { ok: true };
 }
 
-/** Orders doses of one of the alchemist's wares, paid now. */
+/** The recipes an alchemist brews to order: those their Alchemy makes on an average roll. */
+export const brewsToOrder = (data: GameData, a: Alchemist): string[] =>
+  rules(data)
+    .recipes.filter((r) => r.difficulty <= ORDER_ROLL + a.alchemy)
+    .map((r) => r.item);
+
+/** Orders doses of a recipe the alchemist brews, paid now. */
 export function orderBrew(w: World, data: GameData, item: string, doses: number): TownResult {
   const shop = open(w, data);
   if ('ok' in shop) return shop;
   const { a } = shop;
-  if (!a.wares.includes(item)) throw new Error(`${a.name} doesn't brew ${item}`);
+  if (!brewsToOrder(data, a).includes(item)) throw new Error(`${a.name} doesn't brew ${item}`);
   if (doses < 1) throw new Error(`can't order ${doses} doses`);
   const listed = reagentsListed(data, item) * doses;
   if (!spend(w, data, listed)) return no(`${a.name} asks ${priceHere(w, data, listed)} crowns.`);
