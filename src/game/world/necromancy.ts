@@ -4,11 +4,13 @@
 // than their character level, and casting it on a hurt one makes it whole. Raise Grave Knight needs
 // the corpse of a creature of 4 hit dice or more, one knight at a time. Command the Dead binds the
 // undead of an encounter, within twice the caster's level in hit dice, each resisting with a Mental
-// save at a penalty of the caster's Magic skill. The bound and raised serve in the NPC slots; each
-// casting spends one of the day's spells.
+// save at a penalty of the caster's Magic skill; one that fails but is only partly within the hit
+// dice left stands dazed, losing its first turn in the fight. The bound and raised serve in the
+// NPC slots; each casting spends one of the day's spells.
 import type { Monster, MonsterCombat } from '../../data/schemas/index.ts';
 import { hexKey } from '../../rules/hex.ts';
 import { rollSave } from '../../rules/saves.ts';
+import type { Battle } from '../combat/types.ts';
 import { findMonster, type GameData } from '../character/context.ts';
 import { classOption } from '../character/class-step.ts';
 import { cannotCast, castLevel, spendCast } from './casting.ts';
@@ -153,9 +155,10 @@ export function raiseGraveKnight(w: World, data: GameData, memberId: string): To
 /**
  * Command the Dead on the encounter's undead: those within the hit dice the caster has left that
  * fail their saves are bound, joining the party while there is room and released where there is
- * none; those too strong only stand dazed. A Priest of the Lady lays the mastered to rest instead,
- * within twice their level in hit dice (Sam's call, Phase 16). Without foes left, the encounter
- * ends.
+ * none. One that fails but has more hit dice than are left is only partly bewitched: it takes the
+ * rest of them and stands dazed, losing its first turn when the fight starts (SRD 4.6.0). A Priest
+ * of the Lady lays the mastered to rest instead, within twice their level in hit dice (Sam's call,
+ * Phase 16). Without foes left, the encounter ends.
  */
 export function commandTheDead(w: World, data: GameData, memberId: string): TownResult {
   const m = find(w, memberId);
@@ -173,11 +176,18 @@ export function commandTheDead(w: World, data: GameData, memberId: string): Town
   let room =
     2 * level - (rest ? 0 : bound.reduce((sum, n) => sum + npcMonster(data, n).hitDice, 0));
   const penalty = caster.character.skills.magic ?? 0;
+  const dazed: Record<string, number> = { ...e.dazed };
   const rows = e.enemies.map((row) =>
     row.filter((id) => {
       const foe = monster(data, id);
-      if (!tagged(data, id, 'undead') || foe.hitDice > room) return true;
+      if (!tagged(data, id, 'undead') || room <= 0) return true;
       if (rollSave(w.rng, foe.save, { modifier: -penalty }).success) return true;
+      if (foe.hitDice > room) {
+        room = 0;
+        dazed[id] = (dazed[id] ?? 0) + 1;
+        note(w, `The ${foe.name} stands dazed under ${caster.character.name}'s will.`);
+        return true;
+      }
       room -= foe.hitDice;
       if (rest) note(w, `${foe.name} is laid to rest in the Lady's embrace.`);
       else if (npcRoom(w, true))
@@ -187,9 +197,25 @@ export function commandTheDead(w: World, data: GameData, memberId: string): Town
     }),
   );
   e.enemies = rows.filter((r) => r.length > 0);
+  // No more dazed of a kind than stand there, cast as often as it may be.
+  const left = (id: string) => e.enemies.flat().filter((x) => x === id).length;
+  const counts = Object.entries(dazed).map(([id, n]) => [id, Math.min(n, left(id))] as const);
+  const kept = counts.filter(([, n]) => n > 0);
+  if (kept.length > 0) e.dazed = Object.fromEntries(kept);
   if (e.enemies.length === 0) {
     w.encounter = null;
     note(w, 'No foe is left standing against the party.');
   }
   return OK;
+}
+
+/** The undead Command the Dead left dazed lose their first turn: they start the fight stunned. */
+export function dazeCommanded(b: Battle, dazed: Readonly<Record<string, number>> = {}): void {
+  const left = { ...dazed };
+  for (const c of b.combatants) {
+    const n = c.side === 'enemy' && c.monster ? (left[c.monster] ?? 0) : 0;
+    if (n === 0) continue;
+    left[c.monster as string] = n - 1;
+    c.stunned = true;
+  }
 }

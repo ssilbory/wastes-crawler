@@ -20,7 +20,7 @@ import { emit } from './bus.ts';
 import { vigor } from './arts.ts';
 import { atGuardedHoard } from '../dungeon/ruins.ts';
 import { recordFallen } from './healer.ts';
-import { leaveCorpses } from './necromancy.ts';
+import { dazeCommanded, leaveCorpses } from './necromancy.ts';
 import { endPacts } from './pacts.ts';
 import { freeCaptive } from './rescue.ts';
 import { wipe } from './town.ts';
@@ -64,6 +64,7 @@ export function encounterBattle(w: World, data: GameData): WorldBattle {
   const fight = partyBattle(w, data, w.encounter.enemies, true, w.encounter.captive);
   // A quest's fixed fight, a vault's, or a hoard's guards have a boss (Phase 19).
   if (w.encounter.quest || atGuardedHoard(w, data)) markBoss(fight.battle);
+  dazeCommanded(fight.battle, w.encounter.dazed);
   return {
     ...fight,
     quest: w.encounter.quest,

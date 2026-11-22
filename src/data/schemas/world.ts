@@ -174,6 +174,11 @@ export const PendingEncounterSchema = z.strictObject({
   patrol: z.string().optional(),
   /** The part of a siege this fight is (Phase 23a). */
   siege: SiegeFightSchema.optional(),
+  /**
+   * Undead left dazed by Command the Dead, counted by monster id: that many of each lose their
+   * first turn in the fight (vendor/wwn-srd/4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md).
+   */
+  dazed: z.record(z.string(), z.int().min(1)).optional(),
 });
 
 /** Crowns spent and loot cashed in at one town, at listed value, since `since` (a day). */
