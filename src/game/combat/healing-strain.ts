@@ -6,6 +6,16 @@ import { say } from './log.ts';
 import type { Combatant } from './types.ts';
 import type { Battle } from './types.ts';
 
+/** Healing other than by spell: arts (Healing Touch, Merciful Healing, Swift Healing) and potions. */
+const NOT_SPELLS = new Set(['heal', 'touch-heal', 'companion-heal', 'potion']);
+
+/**
+ * Sam's call: only spells heal the undead (Conjunct the Vital Viscera; Raise Corpse mends its own
+ * outside fights). `kind` is an art's effect kind, or `potion`.
+ */
+export const onlySpellsHeal = (target: Combatant, kind: string): boolean =>
+  NOT_SPELLS.has(kind) && target.tags.has('undead');
+
 /** Whether the target can take this much healing strain; those without strain always can. */
 export const bearsHealing = (target: Combatant, strain: number): boolean =>
   !target.strain || strain === 0 || addStrain(target.strain, strain, 'healing').kind !== 'refused';

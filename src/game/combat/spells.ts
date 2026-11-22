@@ -15,7 +15,7 @@ import { isUp } from './targeting.ts';
 import { artEffect, counterSpell, retainsSpell } from './arts.ts';
 import { elementalistEffect } from './elementalist.ts';
 import { healingFails, necromancerEffect } from './necromancer.ts';
-import { bearsHealing, takeHealingStrain } from './healing-strain.ts';
+import { bearsHealing, onlySpellsHeal, takeHealingStrain } from './healing-strain.ts';
 import * as hardcore from './hardcore.ts';
 import { donorFor, sanctuaryEffect } from './sanctuary.ts';
 import { highMagicEffect, type Resists } from './high-magic.ts';
@@ -57,6 +57,7 @@ function fitsTarget(b: Battle, actor: Combatant, m: CombatMagic, id?: string): b
   const t = b.combatants.find((x) => x.id === id);
   if (!t) return true;
   if (hardcore.healedEnough(b, m.effect.kind, t.id)) return false;
+  if (m.source === 'art' && onlySpellsHeal(t, m.effect.kind)) return false;
   if (m.effect.kind === 'amber') return t !== actor;
   // Swift Healing tends only the Beastmaster's own companion (1.5.4).
   if (m.effect.kind === 'companion-heal' && t.companion?.master !== actor.id) return false;

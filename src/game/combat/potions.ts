@@ -9,7 +9,7 @@ import type { Character, Potion, PotionEffect } from '../../data/schemas/index.t
 import { findItem, lineLabel } from '../character/items.ts';
 import { takeLine } from '../character/stacks.ts';
 import type { Choice, Command } from './commands.ts';
-import { bearsHealing } from './healing-strain.ts';
+import { bearsHealing, onlySpellsHeal } from './healing-strain.ts';
 import { say } from './log.ts';
 import { restore } from './spells.ts';
 import type { Action, Battle, Combatant } from './types.ts';
@@ -35,6 +35,7 @@ export function potionTargets(b: Battle, actor: Combatant, index: number): Comba
         (c) =>
           c.side === actor.side &&
           !c.amber &&
+          !onlySpellsHeal(c, 'potion') &&
           hurt(c) &&
           (c === actor || inTouch(actor, c)) &&
           bearsHealing(c, strain),

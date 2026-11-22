@@ -1,5 +1,5 @@
 import { useState } from 'preact/hooks';
-import { drink } from '../../game/world/potions.ts';
+import { drink, pourDraught } from '../../game/world/potions.ts';
 import type { Member, World } from '../../game/world/types.ts';
 import { potionView, usable } from '../../render/potion-view.ts';
 import { data } from '../builder/data.ts';
@@ -30,25 +30,40 @@ export function PotionPanel(props: { world: World; onChange: () => void }) {
             <strong>{l.holder.name}</strong>: {l.potion.name} ({l.count})
           </p>
           <p class="hint">{l.potion.text}</p>
-          {l.targets.map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              onClick={() => {
-                if (l.potion.anew) {
-                  const holder = w.members.find((m) => m.id === l.holder.id);
-                  const target = w.members.find((m) => m.id === t.id);
-                  if (holder && target) setSlate({ holder, target, potion: l.potion.id });
-                  return;
-                }
-                const r = drink(w, data, l.holder.id, l.potion.id, t.id);
-                setMessage(r.ok ? null : r.reason);
-                props.onChange();
-              }}
-            >
-              {t.id === l.holder.id ? 'Drink' : `Give ${t.name}`}
-            </button>
-          ))}
+          {l.potion.raises &&
+            (['zombie', 'skeleton'] as const).map((form) => (
+              <button
+                key={form}
+                type="button"
+                onClick={() => {
+                  const r = pourDraught(w, data, l.holder.id, l.potion.id, form);
+                  setMessage(r.ok ? null : r.reason);
+                  props.onChange();
+                }}
+              >
+                Raise a {form}
+              </button>
+            ))}
+          {!l.potion.raises &&
+            l.targets.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => {
+                  if (l.potion.anew) {
+                    const holder = w.members.find((m) => m.id === l.holder.id);
+                    const target = w.members.find((m) => m.id === t.id);
+                    if (holder && target) setSlate({ holder, target, potion: l.potion.id });
+                    return;
+                  }
+                  const r = drink(w, data, l.holder.id, l.potion.id, t.id);
+                  setMessage(r.ok ? null : r.reason);
+                  props.onChange();
+                }}
+              >
+                {t.id === l.holder.id ? 'Drink' : `Give ${t.name}`}
+              </button>
+            ))}
         </div>
       ))}
       {message && <p class="bump">{message}</p>}

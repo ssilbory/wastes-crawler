@@ -5,7 +5,10 @@
 // Restorative Tonic eases strain even while Hungry, Sleepless, or Cold; a Waking Tonic lifts
 // Sleepless and Cold; a Shadow Draught lets the party slip away from a group that spotted it first,
 // as The Excellent Transpicuous Transformation does. Oil of Edge is for fights only. Tabula Rasa
-// (Sam's call) takes the drinker back to 1st level, with the picks made anew (tabula-rasa.ts).
+// (Sam's call) takes the drinker back to 1st level, with the picks made anew (tabula-rasa.ts). A
+// Grave Draught (Sam's call) is poured on a corpse here, which rises as Raise Corpse's zombie or
+// skeleton (vendor/wwn-srd/4.0 Magic and Spellcasting/4.6.0 Necromancer Spells.md) to serve the
+// holder, with room in the NPC slots the only limit.
 import type { Potion } from '../../data/schemas/index.ts';
 import { roll } from '../../rules/dice.ts';
 import { addStrain } from '../../rules/strain.ts';
@@ -16,6 +19,7 @@ import { findItem } from '../character/items.ts';
 import { takeLine } from '../character/stacks.ts';
 import { wipeClean } from '../character/tabula-rasa.ts';
 import { alive, awake, note, setHp } from './members.ts';
+import { cannotRaiseHere, raiseFrom, type RaisedForm } from './necromancy.ts';
 import { settleByLeaving } from './quarter.ts';
 import type { TownResult } from './services.ts';
 import type { Member, World } from './types.ts';
@@ -47,6 +51,7 @@ export function cannotDrink(w: World, data: GameData, p: Potion, target: Member)
   }
   if (w.encounter) return 'Settle the encounter first.';
   if (e.kind === 'tabula-rasa') return null;
+  if (e.kind === 'raise-corpse') return cannotRaiseHere(w);
   if (e.kind === 'heal') {
     if (c.hp.current >= c.hp.max) return `${c.name} is unhurt.`;
     const max = characterSheet(c, data).strainMax;
@@ -81,6 +86,8 @@ export function drink(
   if (index < 0) return no(`${holder.character.name} carries no ${p.name}.`);
   const why = cannotDrink(w, data, p, target);
   if (why) return no(why);
+  if (p.effect.kind === 'raise-corpse')
+    return no('Choose whether the corpse rises as a zombie or a skeleton.');
   if (p.effect.kind === 'tabula-rasa') {
     if (!picks) return no(`Choose ${target.character.name}'s new picks first.`);
     const made = wipeClean(data, target.character, picks, w.rng);
@@ -100,6 +107,28 @@ export function drink(
   }
   take(holder, index);
   apply(w, data, p, holder, target);
+  return { ok: true };
+}
+
+/** A Grave Draught from the holder, poured on a corpse here, which rises as `form` to serve them. */
+export function pourDraught(
+  w: World,
+  data: GameData,
+  holderId: string,
+  potionId: string,
+  form: RaisedForm,
+): TownResult {
+  const holder = alive(w).find((m) => m.id === holderId && awake(m));
+  if (!holder) return no('Only a conscious member can pour a draught.');
+  const p = potionOf(data, potionId);
+  if (p?.effect.kind !== 'raise-corpse') throw new Error(`${potionId} raises no corpse`);
+  const index = holder.character.inventory.findIndex((e) => e.id === potionId);
+  if (index < 0) return no(`${holder.character.name} carries no ${p.name}.`);
+  const why = cannotDrink(w, data, p, holder);
+  if (why) return no(why);
+  take(holder, index);
+  const npc = raiseFrom(w, data, holder, form);
+  note(w, `${holder.character.name} pours a ${p.name} on a corpse; ${npc.name} stands.`);
   return { ok: true };
 }
 

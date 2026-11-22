@@ -82,11 +82,22 @@ export function cannotRaise(w: World, data: GameData, m: Member | undefined): st
   const why = cannotCast(data, m, 'raise-corpse');
   if (why) return why;
   const caster = m as Member;
-  if (corpsesHere(w).length === 0) return 'There are no corpses here.';
   if (servants(w, caster).filter(isRaised).length >= castLevel(caster, 'raise-corpse'))
     return `${caster.character.name} can keep no more raised dead.`;
+  return cannotRaiseHere(w);
+}
+
+/** Why no corpse can be raised here now, by spell or Grave Draught: a corpse, and room. */
+export function cannotRaiseHere(w: World): string | null {
+  if (corpsesHere(w).length === 0) return 'There are no corpses here.';
   if (!npcRoom(w, true)) return 'There is no room in the party.';
   return null;
+}
+
+/** A corpse here rises to serve the member; callers check cannotRaiseHere first. */
+export function raiseFrom(w: World, data: GameData, m: Member, form: RaisedForm): Npc {
+  (w.corpses as NonNullable<World['corpses']>).hitDice.shift();
+  return serve(w, data, m, RAISED[form]);
 }
 
 /** Raise Corpse: a corpse here rises as a zombie, or a skeleton. */
@@ -101,8 +112,7 @@ export function raiseCorpse(
   if (why) return no(why);
   const caster = m as Member;
   spendCast(data, caster, 'raise-corpse');
-  (w.corpses as NonNullable<World['corpses']>).hitDice.shift();
-  const npc = serve(w, data, caster, RAISED[form]);
+  const npc = raiseFrom(w, data, caster, form);
   note(w, `${caster.character.name} raises a corpse; ${npc.name} stands.`);
   return OK;
 }
