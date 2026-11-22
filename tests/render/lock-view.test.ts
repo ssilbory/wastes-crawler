@@ -59,6 +59,8 @@ describe('lockView', () => {
     const base = { trap, trapState: 'hidden' as const, looked: true };
     expect(trapText({ ...base, looked: false })).toBe('No one has looked it over yet.');
     expect(trapText(base)).toBe('No trap has been spotted on it.');
+    // An untrapped lock, looked over: most doors and chests, which once threw here.
+    expect(trapText({ ...base, trap: null })).toBe('No trap has been spotted on it.');
     expect(trapText({ ...base, trapState: 'noticed' })).toBe(`A ${trap.name} guards it.`);
     expect(trapText({ ...base, trap: null, trapState: 'noticed' })).toBe(
       'Something stirs inside it.',

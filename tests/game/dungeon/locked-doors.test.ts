@@ -161,6 +161,18 @@ describe('locked doors (docs/rules-adaptation.md, Locks and chests)', () => {
     expect(lockView(w, locked)).toBeNull();
   });
 
+  it('still show the popup once an untrapped door is reached and looked over', () => {
+    const w = atDoor();
+    w.rng = scriptedThen([2], createRng('plain'));
+    step(w, locked, 'forward');
+    expect(lockedDoorAhead(w, locked)?.known).toMatchObject({ trap: null, looked: true });
+    expect(lockView(w, locked)).toMatchObject({
+      kind: 'door',
+      trap: 'No trap has been spotted on it.',
+      disarm: null,
+    });
+  });
+
   it('refuse work above ground, under attack, and say a side door is locked without reaching it', () => {
     const top = world();
     expect(lockedAt(top, locked, { x: 1, y: 3 }, 'n')).toBe(false);
