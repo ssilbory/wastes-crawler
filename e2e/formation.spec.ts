@@ -27,15 +27,18 @@ test('rearranges the party on the map, and the change is saved', async ({ page }
   await slot('Front row, slot 1').selectOption({ label: 'Fizzwick' });
   await expect(slot('Front row, slot 1').locator('option:checked')).toHaveText('Fizzwick');
   await expect(slot('Rear row, slot 1').locator('option:checked')).toHaveText('Snag');
-  // Moving Snag to an empty slot leaves his old one empty.
+  // Moving Snag to an empty slot leaves his old one empty, and the row closes up to the left
+  // (Closing ranks, Sam's call).
   await slot('Front row, slot 3').selectOption({ label: 'Snag' });
   await expect(slot('Rear row, slot 1').locator('option:checked')).toHaveText('Empty');
+  await expect(slot('Front row, slot 2').locator('option:checked')).toHaveText('Snag');
+  await expect(slot('Front row, slot 3').locator('option:checked')).toHaveText('Empty');
 
   await page.reload();
   await page.getByRole('button', { name: 'Continue journey' }).click();
   await page.getByRole('button', { name: 'Formation' }).click();
   await expect(slot('Front row, slot 1').locator('option:checked')).toHaveText('Fizzwick');
-  await expect(slot('Front row, slot 3').locator('option:checked')).toHaveText('Snag');
+  await expect(slot('Front row, slot 2').locator('option:checked')).toHaveText('Snag');
   await page.getByRole('button', { name: 'Back to the map' }).click();
   await expect(page.getByRole('group', { name: 'Overland map' })).toBeVisible();
 });
