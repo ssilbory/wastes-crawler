@@ -55,6 +55,11 @@ describe('smiths work like PCs with Craft (docs/rules-adaptation.md, Craftsmen)'
     );
     expect(pieceMisfit(data, hagen, { weapon: 'sword-long', mod: 'razor-edge' })).toBeNull();
     expect(pieceMisfit(data, grashna, { weapon: 'sword-long', mod: 'thirsting-blade' })).toBeNull();
+    expect(() => pieceMisfit(data, hagen, { weapon: 'sword-long', mod: 'nope' })).toThrow(
+      'unknown mod nope',
+    );
+    // A club has no market price, so it is never built (content checks keep it off the lists).
+    expect(() => pieceTerms(data, { weapon: 'club' })).toThrow("club isn't built");
   });
 
   it('price a piece as its parts, its mod’s dice, and its magic, and add up the days', () => {
@@ -185,6 +190,24 @@ describe('smiths work like PCs with Craft (docs/rules-adaptation.md, Craftsmen)'
     });
     expect(w.purse).toBe(2500);
     expect(w.commissions[0]?.readyDay).toBe(14);
+    w.day = 14;
+    w.rng = scriptedRng([0, 0, 0, 0]);
+    visitCraftsman(w, data);
+    expect(collect(w, data, 0, 'm-1')).toEqual({ ok: true });
+    expect(member(w, 'Grukk').character.inventory.at(-1)).toEqual({
+      id: 'mail-shirt',
+      quantity: 1,
+      location: 'stowed',
+      quality: 'mastercrafted',
+    });
+  });
+
+  it('sell plain work only once called on', () => {
+    const w = world([]);
+    expect(buyGoods(w, data, 0, 'm-0')).toEqual({
+      ok: false,
+      reason: 'Call on Hagen the Smith first.',
+    });
   });
 
   it('start old saves’ months with no plain work, and no wizards called on', () => {

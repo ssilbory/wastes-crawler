@@ -152,6 +152,26 @@ describe('wizards (docs/rules-adaptation.md, Potions, scrolls, and magic devices
     };
     w.rng = scriptedRng([10]);
     expect(drawWizardPiece(w, bare, none)).toBeNull();
+    // A tradition with no spells at all loses every scroll, wand, and staff draw.
+    const noNecro = {
+      ...data,
+      srd: { ...data.srd, spells: data.srd.spells.filter((x) => x.tradition !== 'necromancer') },
+      content: {
+        ...data.content,
+        spellRules: {
+          ...data.content.spellRules,
+          added: data.content.spellRules.added.filter((x) => x.tradition !== 'necromancer'),
+        },
+      },
+    };
+    for (const face of [1, 7, 9]) {
+      w.rng = scriptedRng([face]);
+      expect(drawWizardPiece(w, noNecro, hask)).toBeNull();
+    }
+    // Lost draws leave the month's stock short.
+    const v = mirewatch([2, 1, 7]);
+    visitWizard(v, noNecro);
+    expect(v.wizards[hask.id]?.stock).toEqual([]);
   });
 
   it('are called on first, outside a fight, and only where one works', () => {
@@ -168,12 +188,24 @@ describe('wizards (docs/rules-adaptation.md, Potions, scrolls, and magic devices
     const l = lanternfall();
     expect(wizardHere(l, data)).toBeUndefined();
     expect(visitWizard(l, data)).toEqual({ ok: false, reason: 'No wizard works in Lanternfall.' });
+    expect(buyWizardPiece(l, data, 0, 'm-0')).toEqual({
+      ok: false,
+      reason: 'No wizard works in Lanternfall.',
+    });
+    expect(collectWizardPiece(w, data, 0, 'm-0')).toEqual({
+      ok: false,
+      reason: 'Settle the encounter first.',
+    });
+    // Out on the road, no one is here at all.
+    l.position = { col: 9, row: 4 };
+    expect(wizardHere(l, data)).toBeUndefined();
   });
 
   it('sell ready-made pieces that go off at their level', () => {
     const w = mirewatch([2, 1, 0, 7, 3]);
     visitWizard(w, data);
     expect(() => buyWizardPiece(w, data, 7, 'm-0')).toThrow('no stock line 7');
+    expect(() => buyWizardPiece(w, data, 0, 'm-9')).toThrow('no living party member m-9');
     w.purse = 10;
     expect(buyWizardPiece(w, data, 0, 'm-0')).toEqual({
       ok: false,
@@ -335,6 +367,10 @@ describe('crafter places (docs/rules-adaptation.md, Crafters)', () => {
       'wizards/lost: unknown town atlantis',
       'devices: no rod for elementalist',
       'westhold: 3 kinds of crafter, room for 2',
+    ]);
+    const offLevel = { ...content.wizards, wizards: [{ ...hask, level: 11 }] };
+    expect(crafterReferenceErrors(srd, { ...content, wizards: offLevel })).toEqual([
+      'wizards/wizard-mirewatch: level 11 is off the progression',
     ]);
     const offTrack = { ...content.wizards, progression: 'nothing' };
     expect(crafterReferenceErrors(srd, { ...content, wizards: offTrack })).toEqual([

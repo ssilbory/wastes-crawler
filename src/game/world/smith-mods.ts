@@ -3,7 +3,7 @@
 // (vendor/wwn-srd/2.0 The Rules of the Game/2.8.0 Crafting and Modifying Gear.md, 2.8.2): only those
 // of their own Craft level or lower, and only onto gear they fit (2.8.4). Reads only, and imports
 // nothing of the town's other trades, so craftsmen.ts can draw stock with it.
-import type { Commission, Craftsman, Mod } from '../../data/schemas/index.ts';
+import type { Commission, Cost, Craftsman, Mod } from '../../data/schemas/index.ts';
 import type { GameData } from '../character/context.ts';
 import { findItem, tenths, type CatalogItem } from '../character/items.ts';
 import { toTenths } from '../../rules/economy.ts';
@@ -13,11 +13,8 @@ export type Piece = Omit<Commission, 'craftsman' | 'readyDay'>;
 
 export const itemOf = (data: GameData, id: string) => findItem(data, id) as CatalogItem;
 
-/** An item's own market price in crowns. */
-export const ownPrice = (data: GameData, id: string) => {
-  const cost = itemOf(data, id).cost;
-  return cost ? tenths(cost) / 10 : 0;
-};
+/** An item's own market price in crowns; content checks keep smiths' wares priced. */
+export const ownPrice = (data: GameData, id: string) => tenths(itemOf(data, id).cost as Cost) / 10;
 
 /** The item's price at its quality: mastercrafted is ten times the cost (SRD 2.8.1). */
 export const qualityPrice = (data: GameData, piece: Piece) =>
@@ -30,12 +27,12 @@ export function modById(data: GameData, id: string): Mod {
   return mod;
 }
 
-/** Whether a mod fits a weapon or suit at all (SRD 2.8.4's targets). */
+/** Whether a mod fits a smith's weapon or suit (SRD 2.8.4's targets); their wares are only those. */
 export function modFits(data: GameData, item: string, mod: Mod): boolean {
   const it = itemOf(data, item);
-  if (it.kind !== 'weapon' && it.kind !== 'armor') return false;
-  if (!mod.targets.includes(it.kind)) return false;
-  return !mod.rangedOnly || (it.kind === 'weapon' && Boolean(it.weapon.range));
+  if (it.kind === 'armor') return mod.targets.includes('armor');
+  const ranged = it.kind === 'weapon' && Boolean(it.weapon.range);
+  return mod.targets.includes('weapon') && (!mod.rangedOnly || ranged);
 }
 
 /** The mods a smith builds onto an item: those that fit it, up to their Craft level. */

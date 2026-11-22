@@ -58,6 +58,9 @@ describe('project effects in words (docs/rules-adaptation.md, Major projects: Pr
     expect(serviceText(data, 'alchemist')).toBe(
       'An alchemist who sells potions and brews them to order.',
     );
+    expect(serviceText(data, 'sanctum')).toBe(
+      'A wizard who sells scrolls, wands, staves, and rods of their tradition, and makes them to order.',
+    );
     expect(serviceText(data, 'crypt')).toBe(
       "A crypt that raises the party's dead at 50% of the price, Half-Dead.",
     );

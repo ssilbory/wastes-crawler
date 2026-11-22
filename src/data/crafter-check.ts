@@ -28,7 +28,6 @@ export function crafterReferenceErrors(srd: SrdData, content: ContentData): stri
       errors.push(`devices: no rod for ${t}`);
   const places = content.townRules.crafterPlaces;
   for (const s of sites) {
-    if (s.kind !== 'town' || !s.size) continue;
     const kinds = contentCrafters(content, s.id);
     if (kinds.length > places[s.size])
       errors.push(`${s.id}: ${kinds.length} kinds of crafter, room for ${places[s.size]}`);

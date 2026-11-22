@@ -8,10 +8,10 @@
 // rods of their tradition. An order costs the item's full price (a scroll's 20 crowns a spell level,
 // a device's 100, a rod's own), with a scroll's components; ready-made pieces cost four times that.
 // Reads only, but for drawing a month's stock with the world's RNG.
-import type { Device, Wizard, WizardPiece } from '../../data/schemas/index.ts';
+import type { CastingProgression, Device, Wizard, WizardPiece } from '../../data/schemas/index.ts';
 import type { GameSpell } from '../../data/spells.ts';
 import type { GameData } from '../character/context.ts';
-import { findItem } from '../character/items.ts';
+import { findItem, type CatalogItem } from '../character/items.ts';
 import { heldSpell } from '../character/spell-items.ts';
 import { deviceListed, spellsMisfit } from './enchanting.ts';
 import { fightScribable, scribable, scrollListed, scrollParts } from './scribing.ts';
@@ -24,9 +24,12 @@ export type PieceKind = 'scroll' | 'wand' | 'staff' | 'rod';
 
 /** The highest spell level a wizard writes: their level's on the casting progression. */
 export function maxSpellLevel(data: GameData, wz: Wizard): number {
-  const p = data.srd['casting-progressions'].find((x) => x.id === rules(data).progression);
   // Content checks keep the progression and the wizard's level on it.
-  return p?.levels.find((l) => l.level === wz.level)?.maxSpellLevel ?? 1;
+  const p = data.srd['casting-progressions'].find(
+    (x) => x.id === rules(data).progression,
+  ) as CastingProgression;
+  return (p.levels.find((l) => l.level === wz.level) as CastingProgression['levels'][number])
+    .maxSpellLevel;
 }
 
 /** Spells of the wizard's tradition and reach that fit on a scroll, or in a device. */
@@ -75,7 +78,7 @@ export function wizardMisfit(data: GameData, wz: Wizard, piece: WizardPiece): st
 }
 
 const deviceOf = (data: GameData, id: string) => devices(data).find((d) => d.id === id) as Device;
-const itemName = (data: GameData, id: string) => findItem(data, id)?.name ?? id;
+const itemName = (data: GameData, id: string) => (findItem(data, id) as CatalogItem).name;
 
 const TRADITION_NAMES: Record<Wizard['tradition'], string> = {
   'high-magic': 'high magic',
