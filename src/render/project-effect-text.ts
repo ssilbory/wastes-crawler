@@ -53,6 +53,8 @@ export function serviceText(data: GameData, service: string): string {
       return `An arena with bouts, paying the party ${share}% of a month's entry fees as each month begins.`;
     case 'alchemist':
       return 'An alchemist who sells potions and brews them to order.';
+    case 'sanctum':
+      return 'A wizard who sells scrolls, wands, staves, and rods of their tradition, and makes them to order.';
     case 'crypt':
       return `A crypt that ${raising}, Half-Dead.`;
     default:

@@ -108,6 +108,18 @@ export const CraftingRulesSchema = z.strictObject({
   craftsmen: z.strictObject({
     /** Ready-made magic weapons in stock each month: 0 to this many. */
     maxStock: z.int().min(0),
+    /**
+     * Ready-made plain work each month besides (Sam's call): 0 to this many pieces, each normal,
+     * mastercrafted, or normal with one of the smith's mods, by these weights.
+     */
+    maxGoods: z.int().min(0),
+    goods: z.strictObject({
+      normal: z.int().min(0),
+      mastercrafted: z.int().min(0),
+      modded: z.int().min(0),
+    }),
+    /** A ready-made mod costs this many times its commission crowns, as magic stock does. */
+    readyModMultiplier: z.number().min(1),
     /** Components for sale each month. */
     partsStock: z.int().min(0),
     /** What a craftsman pays for a component of each rarity. */
@@ -194,5 +206,10 @@ export const CraftsmanSchema = z.strictObject({
   weapons: z.array(IdSchema).min(1),
   /** Body armor they make as magic armor (SRD 4.9.3), on commission or for stock. */
   armor: z.array(IdSchema),
+  /**
+   * Their Craft skill, as a PC's (SRD 1.2.0): they build only mods of this Craft level or lower
+   * (SRD 2.8.2). Every smith makes +1 to +3 magic gear (Sam's call).
+   */
+  craft: z.int().min(1).max(4),
 });
 export type Craftsman = z.infer<typeof CraftsmanSchema>;

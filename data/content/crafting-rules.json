@@ -110,6 +110,9 @@
   },
   "craftsmen": {
     "maxStock": 2,
+    "maxGoods": 3,
+    "goods": { "normal": 3, "mastercrafted": 2, "modded": 2 },
+    "readyModMultiplier": 4,
     "partsStock": 2,
     "componentPrices": {
       "common": 10,

@@ -1,6 +1,7 @@
 import { useState } from 'preact/hooks';
 import {
   alchemistHere,
+  brewsToOrder,
   alchemistState,
   buyPotion,
   collectBrew,
@@ -40,7 +41,8 @@ export function AlchemistTab(props: { world: World; act: Act }) {
         </button>
       </section>
     );
-  const ware = a.wares.includes(item) ? item : (a.wares[0] as string);
+  const brews = brewsToOrder(data, a);
+  const ware = brews.includes(item) ? item : (a.wares[0] as string);
   const orders = w.brewOrders.flatMap((o, i) => (o.alchemist === a.id ? [{ o, i }] : []));
   const stock = Object.entries(st.stock);
   return (
@@ -48,6 +50,7 @@ export function AlchemistTab(props: { world: World; act: Act }) {
       <section class="panel" aria-label={a.name}>
         <h2>{a.name}</h2>
         <p class="hint">{a.text}</p>
+        <p>Alchemy-{a.alchemy}</p>
         <label>
           For{' '}
           <select value={m.id} onChange={(e) => setWho((e.target as HTMLSelectElement).value)}>
@@ -79,7 +82,7 @@ export function AlchemistTab(props: { world: World; act: Act }) {
         <label>
           Potion{' '}
           <select value={ware} onChange={(e) => setItem((e.target as HTMLSelectElement).value)}>
-            {a.wares.map((id) => (
+            {brews.map((id) => (
               <option key={id} value={id}>
                 {name(id)}
               </option>

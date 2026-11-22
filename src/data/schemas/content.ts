@@ -36,6 +36,7 @@ import { RuinSchema } from './ruin-content.ts';
 import { AlchemyContentSchema } from './alchemy-content.ts';
 import { ScrollContentSchema } from './scroll-content.ts';
 import { DeviceContentSchema } from './device-content.ts';
+import { WizardContentSchema } from './wizard-content.ts';
 import { ForgingContentSchema } from './forging-content.ts';
 import {
   ComponentSchema,
@@ -243,6 +244,8 @@ export const ContentSchemas = {
   alchemy: AlchemyContentSchema,
   scrolls: ScrollContentSchema,
   devices: DeviceContentSchema,
+  /** Wizards who make scrolls and devices of their tradition (Sam's calls). */
+  wizards: WizardContentSchema,
   forging: ForgingContentSchema,
   settingsDefaults: SettingsDefaultsSchema,
   soundCues: z.array(SoundCueSchema).min(1),

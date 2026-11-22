@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { alchemyReferenceErrors } from '../../../src/data/alchemy-check.ts';
 import {
+  brewsToOrder,
   alchemistHere,
   alchemistState,
   buyPotion,
@@ -110,10 +111,33 @@ describe('alchemists (docs/rules-adaptation.md, Potions: Alchemists)', () => {
     ];
     expect(() => collectBrew(w, data, 0, snag.id)).toThrow();
     w.brewOrders = [];
-    expect(() => orderBrew(w, data, 'oil-of-edge', 1)).toThrow();
+    // Past their Alchemy: 7 plus Mother Vell's 3 is 10, and Tabula Rasa is 14.
+    expect(() => orderBrew(w, data, 'tabula-rasa', 1)).toThrow("Mother Vell doesn't brew");
     expect(() => orderBrew(w, data, 'waking-tonic', 0)).toThrow();
     w.purse = 0;
     expect(orderBrew(w, data, 'waking-tonic', 1).ok).toBe(false);
+  });
+
+  it('brew to order any recipe their Alchemy makes on an average roll, like a PC', () => {
+    expect(vell.alchemy).toBe(3);
+    expect(brewsToOrder(data, vell)).toEqual([
+      'healing-draught',
+      'greater-healing',
+      'restorative-tonic',
+      'waking-tonic',
+      'oil-of-edge',
+      'shadow-draught',
+      'antidote',
+    ]);
+    expect(brewsToOrder(data, { ...vell, alchemy: 1 })).toEqual([
+      'healing-draught',
+      'waking-tonic',
+      'antidote',
+    ]);
+    // Oil of Edge isn't in her stock, but she brews it to order.
+    const w = atVell();
+    expect(vell.wares).not.toContain('oil-of-edge');
+    expect(orderBrew(w, data, 'oil-of-edge', 1)).toEqual({ ok: true });
   });
 
   it('keep their state and orders in the save, and old saves start with none', () => {
@@ -139,7 +163,7 @@ describe('alchemy content checks', () => {
     expect(alchemyReferenceErrors(data.srd, data.content)).toEqual([]);
   });
 
-  it('catches unknown skills, clashing ids, missing recipes, and misplaced alchemists', () => {
+  it('catches unknown skills, clashing ids, missing recipes, misplaced alchemists, and stock past their skill', () => {
     const a = data.content.alchemy;
     const potion = a.potions[0] as (typeof a.potions)[0];
     const broken = {
@@ -159,7 +183,7 @@ describe('alchemy content checks', () => {
           { ...vell, wares: ['dagger-x'] },
           { ...vell, id: 'twin' },
           { ...vell, id: 'nowhere', town: 'nowhere' },
-          { ...vell, id: 'village', town: 'highcairn' },
+          { ...vell, id: 'novice', town: 'highcairn', alchemy: 1 },
         ],
       },
     } as typeof data.content;
@@ -175,7 +199,8 @@ describe('alchemy content checks', () => {
       'alchemy/alchemists/alchemist-westhold: no recipe dagger-x',
       'alchemy/alchemists/twin: westhold already has an alchemist',
       'alchemy/alchemists/nowhere: unknown town nowhere',
-      'alchemy/alchemists/village: villages have no alchemist',
+      'alchemy/alchemists/novice: greater-healing is past their Alchemy',
+      'alchemy/alchemists/novice: restorative-tonic is past their Alchemy',
     ]);
   });
 });

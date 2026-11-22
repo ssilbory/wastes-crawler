@@ -330,4 +330,23 @@ export const WORLD_MIGRATIONS: Migrations = {
   56: (raw) => ({ ...raw, schemaVersion: 57, waiting: [] }),
   // Version 58 lets a freed captive wait while the party makes room for them: none waits yet.
   57: (raw) => ({ ...raw, schemaVersion: 58, freedCaptive: null }),
+  // Version 59 makes crafters more like PCs: a smith's month keeps plain ready-made work (none drawn
+  // in a month already under way), and wizards trade and take orders (none called on yet).
+  58: (raw) => ({
+    ...raw,
+    schemaVersion: 59,
+    // A missing list is left for the schema to report.
+    ...(raw.craftsmen
+      ? {
+          craftsmen: Object.fromEntries(
+            Object.entries(raw.craftsmen as Record<string, Raw>).map(([id, st]) => [
+              id,
+              { ...st, goods: [] },
+            ]),
+          ),
+        }
+      : {}),
+    wizards: {},
+    wizardOrders: [],
+  }),
 };

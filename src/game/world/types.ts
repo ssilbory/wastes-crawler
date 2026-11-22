@@ -17,6 +17,8 @@ import type {
   Project,
   AlchemistState,
   BrewOrder,
+  WizardOrder,
+  WizardState,
   Commission,
   CraftsmanState,
   ComponentType,
@@ -163,6 +165,8 @@ export interface World {
   commissions: Commission[];
   alchemists: Record<string, AlchemistState>;
   brewOrders: BrewOrder[];
+  wizards: Record<string, WizardState>;
+  wizardOrders: WizardOrder[];
   /** Corpses lying where the last won fight was (Phase 14b). */
   corpses: WorldSave['corpses'];
   fallen: WorldSave['fallen'];

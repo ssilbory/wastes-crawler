@@ -46,6 +46,11 @@ export const TownRulesSchema = z.strictObject({
   /** Gear sells for this fraction of its listed price. */
   sellFraction: z.number().positive().max(1),
   spendingThresholds: z.record(TownSizeSchema, Crowns),
+  /**
+   * How many kinds of crafter (smith, alchemist, wizard) a settlement of each size holds, one of
+   * each kind at most (Sam's call: each tier of settlement makes room for one more).
+   */
+  crafterPlaces: z.record(TownSizeSchema, z.int().min(0).max(3)),
   /** The loot threshold as a fraction of the spending threshold. */
   lootThresholdFraction: z.number().positive(),
   /** Price rise per unit of overage past the spending threshold. */

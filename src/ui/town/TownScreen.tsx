@@ -26,6 +26,7 @@ import type { BoutStart } from '../../game/world/arena.ts';
 import { PopOut } from '../world/PopOut.tsx';
 import { ScreenWindows } from '../world/ScreenWindows.tsx';
 import { panelProps, Tabs } from '../tabs.tsx';
+import { WizardTab } from './WizardTab.tsx';
 import { townHere } from '../../game/world/town-prices.ts';
 
 const TABS = {
@@ -38,6 +39,7 @@ const TABS = {
   workshop: 'Workshop',
   craftsman: 'Craftsman',
   alchemist: 'Alchemist',
+  wizard: 'Wizard',
   travel: 'Coaches',
   arena: 'Arena',
 } as const;
@@ -173,6 +175,7 @@ export function TownScreen(props: {
               {tab === 'workshop' && <WorkshopTab world={w} act={act} />}
               {tab === 'craftsman' && <CraftsmanTab world={w} act={act} />}
               {tab === 'alchemist' && <AlchemistTab world={w} act={act} />}
+              {tab === 'wizard' && <WizardTab world={w} act={act} />}
               {tab === 'travel' && <TravelTab world={w} act={act} onBoard={props.onLeave} />}
               {tab === 'arena' && <ArenaTab world={w} act={act} onBout={props.onBout} />}
             </div>

@@ -1,14 +1,15 @@
 // The services the party's institutions open (docs/rules-adaptation.md, Major projects:
 // Institutions; Sam's calls, Phase 22c): a built and staffed workshop is the party's to use and
-// brings a smith, and an alchemist, an arena, or a place that raises the dead opens like any town's.
-// A new smith, alchemist, or arena takes the lists or bout card of the nearest settlement on the map
-// that has one (the first anywhere, if none does). Reads only, so the town lookups can use them.
+// brings a smith, and an alchemist, a wizard's sanctum, an arena, or a place that raises the dead
+// opens like any town's. A new smith, alchemist, wizard, or arena takes the lists, tradition, or
+// bout card of the nearest settlement on the map that has one (the first anywhere, if none does). Reads only, so the town lookups can use them.
 import type {
   Alchemist,
   ArenaBout,
   Craftsman,
   MissionGiver,
   Site,
+  Wizard,
 } from '../../data/schemas/index.ts';
 import { distance } from '../../rules/hex.ts';
 import type { GameData } from '../character/context.ts';
@@ -56,6 +57,15 @@ export function builtAlchemist(w: World, data: GameData, town: string): Alchemis
   if (!name) return undefined;
   const base = nearest(data, town, data.content.alchemy.alchemists);
   return { ...base, id: institutionId('alchemist', town), name, town };
+}
+
+/** The party's wizard there, of the nearest wizard's tradition and level. */
+export function builtWizard(w: World, data: GameData, town: string): Wizard | undefined {
+  const name = specialistOf(w, 'sanctum', town);
+  if (!name) return undefined;
+  const base = nearest(data, town, data.content.wizards.wizards);
+  const text = `${name} keeps the party's sanctum, and learned the craft from ${base.name}.`;
+  return { ...base, id: institutionId('sanctum', town), name, town, text };
 }
 
 /** The party's arena there, with the nearest arena's bout card. */

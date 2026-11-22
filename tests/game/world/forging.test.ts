@@ -280,15 +280,17 @@ describe('forging magic (docs/rules-adaptation.md, Forged magic; SRD 4.10.0)', (
 
 describe('commissions with an ability', () => {
   it('add the ability’s price, components, and days, and deliver it', () => {
-    const w = world([1, 0, 1, 2, 2]);
+    const w = world([1, 0, 1, 2, 2, 0]);
     w.purse = 2000;
     w.components = { ...PARTS };
     visitCraftsman(w, data);
-    expect(commission(w, data, 'dagger', 1, 'bane-of-the-dead')).toEqual({ ok: true });
+    expect(
+      commission(w, data, { weapon: 'dagger', bonus: 1, ability: 'bane-of-the-dead' }),
+    ).toEqual({ ok: true });
     expect(w.commissions[0]).toEqual(
       expect.objectContaining({ ability: 'bane-of-the-dead', readyDay: 60 }),
     );
-    expect(() => commission(w, data, 'dagger', 1, 'warding')).toThrow();
+    expect(() => commission(w, data, { weapon: 'dagger', bonus: 1, ability: 'warding' })).toThrow();
     w.day = 60;
     const st = w.craftsmen['smith-westhold'] as NonNullable<World['craftsmen'][string]>;
     w.craftsmen['smith-westhold'] = { ...st, since: 60 };
@@ -299,7 +301,7 @@ describe('commissions with an ability', () => {
       bonus: 1,
       ability: 'bane-of-the-dead',
     });
-    expect(w.log.at(-1)).toContain('the +1 Dagger (Bane of the Dead)');
+    expect(w.log.at(-1)).toContain('the Dagger +1 (Bane of the Dead)');
   });
 });
 

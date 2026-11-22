@@ -37,6 +37,7 @@ import craftsmen from '../../data/content/craftsmen.json';
 import alchemy from '../../data/content/alchemy.json';
 import scrolls from '../../data/content/scrolls.json';
 import devices from '../../data/content/devices.json';
+import wizards from '../../data/content/wizards.json';
 import forging from '../../data/content/forging.json';
 import settingsDefaults from '../../data/content/settings-defaults.json';
 import soundCues from '../../data/content/sound-cues.json';
@@ -77,6 +78,7 @@ import { dungeonReferenceErrors } from './dungeon-check.ts';
 import { craftingReferenceErrors } from './crafting-check.ts';
 import { alchemyReferenceErrors } from './alchemy-check.ts';
 import { deviceReferenceErrors } from './device-check.ts';
+import { crafterReferenceErrors } from './crafter-check.ts';
 import { ContentSchemas, type ContentData, type Dungeon, type SrdData } from './schemas/index.ts';
 import { gameSkills, skillRuleErrors } from './skills.ts';
 import { spellRuleErrors } from './spells.ts';
@@ -126,6 +128,7 @@ export const SHIPPED_CONTENT: Record<keyof ContentData, unknown> = {
   alchemy,
   scrolls,
   devices,
+  wizards,
   forging,
   settingsDefaults,
   soundCues,
@@ -251,6 +254,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ['alchemy/potions', content.alchemy.potions],
     ['alchemy/alchemists', content.alchemy.alchemists],
     ['devices', content.devices.devices],
+    ['wizards', content.wizards.wizards],
     ['forging/abilities', content.forging.abilities],
     ['forging/flaws', content.forging.flaws],
     ['settingMonsters', content.settingMonsters],
@@ -292,6 +296,7 @@ export function contentReferenceErrors(srd: SrdData, content: ContentData): stri
     ...ammoReferenceErrors(srd, content),
     ...alchemyReferenceErrors(srd, content),
     ...deviceReferenceErrors(srd, content),
+    ...crafterReferenceErrors(srd, content),
     ...settingReferenceErrors(srd, content),
     ...groveReferenceErrors(srd, content),
     ...ailmentReferenceErrors(srd, content),

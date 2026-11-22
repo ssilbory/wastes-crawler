@@ -178,15 +178,19 @@ test('builds a mod, keeps it up in camp, and commissions a magic sword', async (
   await page.getByRole('button', { name: 'Call on Hagen the Smith' }).click();
   const jobs = page.getByRole('region', { name: 'Commissions' });
   await jobs.getByRole('combobox', { name: 'Item' }).selectOption({ label: 'Sword, Long' });
+  await expect(
+    jobs.getByRole('button', { name: /^Commission \(100 crowns, 7 days\)/ }),
+  ).toBeVisible();
+  await jobs.getByRole('combobox', { name: 'Bonus' }).selectOption({ label: '+1' });
   await jobs.getByRole('button', { name: /^Commission \(300 crowns, 30 days/ }).click();
-  await expect(log).toContainText('Hagen the Smith takes on a +1 Sword, Long: ready in 30 days.');
+  await expect(log).toContainText('Hagen the Smith takes on a Sword, Long +1: ready in 30 days.');
   await expect(jobs).toContainText('Sword, Long +1: ready in 30 days');
   await edit(page, `save.day += 30;`);
   await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
   await page.getByRole('tab', { name: 'Craftsman' }).click();
   await page.getByRole('button', { name: 'Call on Hagen the Smith' }).click();
   await jobs.getByRole('button', { name: 'Collect for Snag' }).click();
-  await expect(log).toContainText('Snag collects the +1 Sword, Long from Hagen the Smith.');
+  await expect(log).toContainText('Snag collects the Sword, Long +1 from Hagen the Smith.');
   await page.screenshot({ path: testInfo.outputPath('craftsman.png'), fullPage: true });
 });
 
@@ -210,4 +214,48 @@ test('describes the brew picked, before the party pays for it', async ({ page })
   await expect(brew).toContainText('Waking Tonic: A hot, peppery tonic');
   await brew.getByRole('combobox', { name: /^Brew(?!er)/ }).selectOption({ label: 'Antidote' });
   await expect(brew).toContainText('Antidote: A sharp, chalky draught that neutralizes');
+});
+
+// Crafters like PCs: the party's own sanctum in Rubblegate opens a wizard of the nearest wizard's
+// tradition, who writes a scroll to order; Hagen offers mastercrafted and modded work.
+test('orders a scroll from a wizard, and prices a smith’s mastercrafted, modded work', async ({
+  page,
+}, testInfo) => {
+  await start(page);
+  await edit(
+    page,
+    `save.purse = 3000;
+     save.components = { 'beast-hide': 1, 'spore-essence': 1 };
+     save.majorProjects['inst-sanctum-westhold'] = { renown: 0, bought: 0, done: 0, daysLeft: null,
+       help: [], trouble: null, shutUntil: null, specialist: 'Ama Quill' };`,
+  );
+  await page.getByRole('button', { name: 'Visit Rubblegate' }).click();
+  await page.getByRole('tab', { name: 'Wizard' }).click();
+  await page.getByRole('button', { name: 'Call on Ama Quill' }).click();
+  await expect(page.getByText(/A level 7 high magic wizard: spells up to level 4/)).toBeVisible();
+  const order = page.getByRole('region', { name: 'Make to order' });
+  await order
+    .getByRole('combobox', { name: 'Spell' })
+    .selectOption({ label: 'The Coruscating Coffin (1)' });
+  await order
+    .getByRole('button', { name: /^Order \(20 crowns, 7 days, 1 hide, 1 essence\)/ })
+    .click();
+  const log = page.getByRole('region', { name: 'Journey log' });
+  await expect(log).toContainText(
+    'Ama Quill takes on a Scroll of The Coruscating Coffin: ready in 7 days.',
+  );
+  await order.getByRole('combobox', { name: 'Item' }).selectOption({ label: 'Rod of Warding' });
+  await expect(order.getByRole('button', { name: /^Order \(300 crowns, 30 days\)/ })).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath('wizard.png'), fullPage: true });
+
+  await page.getByRole('tab', { name: 'Craftsman' }).click();
+  await page.getByRole('button', { name: 'Call on Hagen the Smith' }).click();
+  const jobs = page.getByRole('region', { name: 'Commissions' });
+  await jobs.getByRole('combobox', { name: 'Item' }).selectOption({ label: 'Sword, Long' });
+  await jobs.getByRole('checkbox', { name: 'Mastercrafted' }).check();
+  await jobs.getByRole('combobox', { name: 'Mod' }).selectOption({ label: 'Balanced Fittings' });
+  await expect(
+    jobs.getByRole('button', { name: /^Commission \(1,?174 crowns, 21 days\)/ }),
+  ).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath('smith.png'), fullPage: true });
 });

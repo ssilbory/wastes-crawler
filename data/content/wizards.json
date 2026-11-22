@@ -1,0 +1,37 @@
+{
+  "progression": "full-high-mage-arts-and-spells",
+  "maxStock": 3,
+  "draws": {
+    "scroll": 6,
+    "wand": 2,
+    "staff": 1,
+    "rod": 1
+  },
+  "stockMultiplier": 4,
+  "wizards": [
+    {
+      "id": "wizard-saltwick",
+      "name": "Magister Thessaly Vorne",
+      "town": "saltwick",
+      "tradition": "high-magic",
+      "level": 7,
+      "text": "A high mage of the old imperial schools who copies spells out of half-burned folios. She sells what she writes, and never says where the folios came from."
+    },
+    {
+      "id": "wizard-thornwatch",
+      "name": "Oszkar Hedgefire",
+      "town": "thornwatch",
+      "tradition": "elementalist",
+      "level": 5,
+      "text": "An elementalist who keeps Thornwatch's hedge-fires burning without wood. Travellers pay him for wands; the village pays him not to leave."
+    },
+    {
+      "id": "wizard-mirewatch",
+      "name": "Widow Hask",
+      "town": "mirewatch",
+      "tradition": "necromancer",
+      "level": 5,
+      "text": "A necromancer who lives in a stilt house over the bog and buys bones by the sack. Her scrolls smell of peat and grave-wax."
+    }
+  ]
+}

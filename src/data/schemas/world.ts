@@ -7,11 +7,12 @@ import { FactionStateSchema } from './faction-content.ts';
 import { RegionSchema } from './overland-content.ts';
 import { LootDiceSchema, ShopStateSchema } from './town-content.ts';
 import { AlchemistStateSchema, BrewOrderSchema } from './alchemy-content.ts';
+import { WizardOrderSchema, WizardStateSchema } from './wizard-content.ts';
 import { ComponentTypeSchema } from './crafting-content.ts';
 import { SiegeFightSchema, SiegeSchema } from './siege-state.ts';
 import { ChestStateSchema, DoorStateSchema } from './chest-state.ts';
 
-export const WORLD_SCHEMA_VERSION = 58;
+export const WORLD_SCHEMA_VERSION = 59;
 
 const HexSchema = z.strictObject({ col: z.int().min(0), row: z.int().min(0) });
 
@@ -272,16 +273,29 @@ export const CraftsmanStateSchema = z.strictObject({
   pool: z.number().min(0),
   /** `weapon` names the weapon or suit of armor (the field predates magic armor). */
   stock: z.array(z.strictObject({ weapon: IdSchema, bonus: z.int().min(1).max(3) })),
+  /** Ready-made plain work: normal, mastercrafted, or normal with a mod (Sam's call). */
+  goods: z.array(
+    z.strictObject({
+      item: IdSchema,
+      quality: z.literal('mastercrafted').optional(),
+      mod: IdSchema.optional(),
+    }),
+  ),
   parts: z.record(IdSchema, z.int().min(1)),
 });
 export type CraftsmanState = z.infer<typeof CraftsmanStateSchema>;
 
-/** A magic weapon or suit of armor commissioned from a craftsman, collected in their town once ready. */
+/**
+ * A weapon or suit of armor commissioned from a craftsman, collected in their town once ready:
+ * normal or mastercrafted, with a mod, a magic bonus, and an ability as asked (Sam's calls).
+ */
 export const CommissionSchema = z.strictObject({
   craftsman: IdSchema,
   /** The weapon or suit of armor (the field predates magic armor). */
   weapon: IdSchema,
-  bonus: z.int().min(1).max(3),
+  bonus: z.int().min(1).max(3).optional(),
+  quality: z.literal('mastercrafted').optional(),
+  mod: IdSchema.optional(),
   /** A special ability asked for besides (SRD 4.9.3). */
   ability: IdSchema.optional(),
   readyDay: z.int().min(0),
@@ -507,6 +521,9 @@ export const WorldSaveSchema = z.strictObject({
   /** Each alchemist's month, by id, once the party has visited, and potions brewing to order. */
   alchemists: z.record(IdSchema, AlchemistStateSchema),
   brewOrders: z.array(BrewOrderSchema),
+  /** Wizards' months and the scrolls and devices ordered from them (Sam's calls). */
+  wizards: z.record(IdSchema, WizardStateSchema),
+  wizardOrders: z.array(WizardOrderSchema),
   /**
    * Corpses left by the party's last won fight, as each one's hit dice, and where they lie: a hex
    * key above ground, or dungeon/level/cell below (Phase 14b).

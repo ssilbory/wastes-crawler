@@ -300,6 +300,7 @@
       "name": "Mother Vell",
       "town": "westhold",
       "wares": ["healing-draught", "greater-healing", "waking-tonic", "restorative-tonic"],
+      "alchemy": 3,
       "text": "A stooped herbwife who boils roots in the back of a tannery. Her draughts taste of bark and work better than they should."
     },
     {
@@ -307,6 +308,7 @@
       "name": "Corwin Ashby",
       "town": "eastmarch",
       "wares": ["healing-draught", "restorative-tonic", "oil-of-edge", "shadow-draught"],
+      "alchemy": 3,
       "text": "A former army surgeon who brews in copper stills he salvaged from the old imperial depot."
     },
     {
@@ -314,6 +316,7 @@
       "name": "Brakka Ashtongue",
       "town": "cinderhold",
       "wares": ["healing-draught", "greater-healing", "oil-of-edge", "waking-tonic"],
+      "alchemy": 3,
       "text": "An orc brewer who learned her trade dosing a legion. She still measures by the war-cup."
     },
     {
@@ -321,6 +324,7 @@
       "name": "Pilt Fennick",
       "town": "gutterwick",
       "wares": ["healing-draught", "restorative-tonic", "shadow-draught", "greater-healing"],
+      "alchemy": 3,
       "text": "A goblin who distils things in jars he won't let anyone see into. The temple buys his tonics by the case."
     }
   ]

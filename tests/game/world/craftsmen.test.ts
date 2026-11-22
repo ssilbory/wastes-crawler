@@ -21,9 +21,12 @@ import { entryText } from '../../../src/render/town-view.ts';
 import { scriptedRng } from '../../helpers/scripted-rng.ts';
 import { data, encounter, member, world } from './helpers.ts';
 
-/** The starters in Rubblegate, called on Hagen: one +1 spear in stock, two cold irons for sale. */
+/**
+ * The starters in Rubblegate, called on Hagen: one +1 spear in stock, two cold irons for sale, and
+ * no plain work.
+ */
 function atHagen(faces: number[] = []): World {
-  const w = world([1, 0, 1, 2, 2, ...faces]);
+  const w = world([1, 0, 1, 2, 2, 0, ...faces]);
   w.purse = 1000;
   expect(visitCraftsman(w, data)).toEqual({ ok: true });
   return w;
@@ -41,6 +44,7 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
       pool: 300,
       stock: [{ weapon: 'spear-light', bonus: 1 }],
       parts: { 'cold-iron': 2 },
+      goods: [],
     });
     // Called on again the same month, nothing is drawn.
     expect(visitCraftsman(at, data)).toEqual({ ok: true });
@@ -55,7 +59,7 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
   });
 
   it('rolls +2 and +3 weapons more rarely', () => {
-    const w = world([2, 1, 8, 4, 10, 0, 0]);
+    const w = world([2, 1, 8, 4, 10, 0, 0, 0]);
     visitCraftsman(w, data);
     expect(w.craftsmen['smith-westhold']?.stock).toEqual([
       { weapon: 'sword-short', bonus: 2 },
@@ -166,25 +170,28 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
 
   it('take commissions for crowns and components, ready a month later', () => {
     const w = atHagen();
-    expect(() => commission(w, data, 'halberd', 1)).toThrow("doesn't forge halberd");
-    expect(commission(w, data, 'sword-long', 1)).toEqual({
+    expect(commission(w, data, { weapon: 'halberd', bonus: 1 })).toEqual({
       ok: false,
-      reason: 'A +1 weapon needs 1 metal, 1 essence.',
+      reason: "Hagen the Smith doesn't make a Halberd.",
+    });
+    expect(commission(w, data, { weapon: 'sword-long', bonus: 1 })).toEqual({
+      ok: false,
+      reason: 'A Sword, Long +1 needs 1 metal, 1 essence.',
     });
     w.components = { 'cold-iron': 1, 'ooze-essence': 1 };
     w.purse = 100;
-    expect(commission(w, data, 'sword-long', 1)).toEqual({
+    expect(commission(w, data, { weapon: 'sword-long', bonus: 1 })).toEqual({
       ok: false,
       reason: 'Hagen the Smith asks 300 crowns.',
     });
     w.purse = 1000;
-    expect(commission(w, data, 'sword-long', 1)).toEqual({ ok: true });
+    expect(commission(w, data, { weapon: 'sword-long', bonus: 1 })).toEqual({ ok: true });
     expect(w.components).toEqual({});
     expect(w.purse).toBe(700);
     expect(w.commissions).toEqual([
       { craftsman: 'smith-westhold', weapon: 'sword-long', bonus: 1, readyDay: 30 },
     ]);
-    expect(w.log.at(-1)).toContain('Hagen the Smith takes on a +1 Sword, Long: ready in 30 days.');
+    expect(w.log.at(-1)).toContain('Hagen the Smith takes on a Sword, Long +1: ready in 30 days.');
     expect(collect(w, data, 0, 'm-1')).toEqual({ ok: false, reason: 'Not ready for 30 days.' });
     expect(() => collect(w, data, 3, 'm-1')).toThrow('no commission 3 here');
     w.day = 30;
@@ -196,16 +203,16 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
       bonus: 1,
     });
     expect(w.commissions).toEqual([]);
-    expect(w.log.at(-1)).toContain('Grukk collects the +1 Sword, Long from Hagen the Smith.');
+    expect(w.log.at(-1)).toContain('Grukk collects the Sword, Long +1 from Hagen the Smith.');
     w.encounter = encounter([['thug-or-militia']]);
-    expect(commission(w, data, 'sword-long', 1)).toMatchObject({ ok: false });
+    expect(commission(w, data, { weapon: 'sword-long', bonus: 1 })).toMatchObject({ ok: false });
     expect(collect(w, data, 0, 'm-1')).toMatchObject({ ok: false });
   });
 
   it('make magic armor too, sized for whoever takes it', () => {
     expect(hagen.armor).toEqual(['buff-coat', 'mail-shirt', 'cuirass-and-greaves']);
     // Stock draws from the weapons, then the armor: index 6 is the mail shirt.
-    const w = world([1, 6, 1, 2, 2]);
+    const w = world([1, 6, 1, 2, 2, 0]);
     w.purse = 1000;
     visitCraftsman(w, data);
     expect(w.craftsmen['smith-westhold']?.stock).toEqual([{ weapon: 'mail-shirt', bonus: 1 }]);
@@ -219,13 +226,13 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
       small: true,
     });
     expect(w.log.at(-1)).toContain('Snag buys a +1 suit of armor from Hagen the Smith.');
-    expect(commission(w, data, 'cuirass-and-greaves', 1)).toEqual({
+    expect(commission(w, data, { weapon: 'cuirass-and-greaves', bonus: 1 })).toEqual({
       ok: false,
-      reason: 'A +1 suit of armor needs 1 metal, 1 essence.',
+      reason: 'A Cuirass and Greaves +1 needs 1 metal, 1 essence.',
     });
     w.purse = 1000;
     w.components = { 'cold-iron': 1, 'ooze-essence': 1 };
-    expect(commission(w, data, 'cuirass-and-greaves', 1)).toEqual({ ok: true });
+    expect(commission(w, data, { weapon: 'cuirass-and-greaves', bonus: 1 })).toEqual({ ok: true });
     w.day = 30;
     w.rng = scriptedRng([0, 0, 0, 0]);
     visitCraftsman(w, data);
@@ -257,7 +264,7 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
     expect(entryPrice(data, findItem(data, 'axe-war') as CatalogItem, line)).toBe(8500);
   });
 
-  it('are checked against towns, weapons, and armor', () => {
+  it('are checked against towns, weapons, and armor, and may work in villages', () => {
     const { srd, content } = data;
     expect(craftingReferenceErrors(srd, content)).toEqual([]);
     const broken = {
@@ -267,14 +274,16 @@ describe('craftsmen (docs/rules-adaptation.md, Crafting and modifying gear: Craf
         { ...hagen, id: 'twin' },
         { ...hagen, id: 'hill', town: 'highcairn', weapons: ['laser'], armor: ['dagger'] },
         { ...hagen, id: 'lost', town: 'atlantis' },
+        // A club has no market price, so a smith can't price one (SRD 3.5.0).
+        { ...hagen, id: 'odd', town: 'mirewatch', weapons: ['club'] },
       ],
     };
     expect(craftingReferenceErrors(srd, broken)).toEqual([
       'craftsmen/twin: westhold already has a craftsman',
-      'craftsmen/hill: villages have no craftsman',
       'craftsmen/hill: unknown weapon laser',
       'craftsmen/hill: unknown armor dagger',
       'craftsmen/lost: unknown town atlantis',
+      'craftsmen/odd: club has no price',
     ]);
   });
 

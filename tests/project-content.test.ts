@@ -22,7 +22,7 @@ describe('project content (docs/rules-adaptation.md, Major projects; Sam’s cal
       new Set(['fortify', 'road', 'grip', 'restore']),
     );
     expect(p.institutions.map((i) => i.service).sort()).toEqual(
-      ['alchemist', 'arena', 'crypt', 'mortuary', 'temple', 'workshop'].sort(),
+      ['alchemist', 'arena', 'crypt', 'mortuary', 'sanctum', 'temple', 'workshop'].sort(),
     );
     // SRD 7.5.0's table at 1/50, and 4.8.2's 1,000 silver a point at 1/50.
     expect(p.buying.map((b) => b.crowns)).toEqual([10, 40, 80, 160, 320, 640]);
