@@ -40,6 +40,9 @@ function specialistOf(w: World, service: Service, town: string): string | null {
   return isOpen(w, id) ? (w.majorProjects[id]?.specialist as string) : null;
 }
 
+/** Whether the party's own mortuary is open in a settlement. */
+export const builtMortuary = (w: World, town: string) => specialistOf(w, 'mortuary', town) !== null;
+
 /** Whether the party's own workshop is open in a settlement. */
 export const builtWorkshop = (w: World, town: string) => specialistOf(w, 'workshop', town) !== null;
 

@@ -20,6 +20,8 @@ export const PotionEffectSchema = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('edge'), hit: z.int().min(1), damage: z.int().min(0) }),
   z.strictObject({ kind: z.literal('vanish') }),
   z.strictObject({ kind: z.literal('tabula-rasa') }),
+  /** Poured on a corpse, it rises as Raise Corpse's zombie or skeleton (Sam's call). */
+  z.strictObject({ kind: z.literal('raise-corpse') }),
 ]);
 export type PotionEffect = z.infer<typeof PotionEffectSchema>;
 
@@ -72,7 +74,8 @@ export const AlchemyContentSchema = z.strictObject({
   potions: z.array(PotionSchema).min(1),
   /**
    * What can be brewed: a potion or other gear (the antidote), its difficulty, its weight in
-   * stock and drops (0 never drops or stocks), and the components a batch takes (Sam's call).
+   * stock and drops (0 never drops, and stocks only with an alchemist who lists it, as if 1), and
+   * the components a batch takes (Sam's call).
    */
   recipes: z
     .array(

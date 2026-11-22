@@ -41,7 +41,7 @@ export function AlchemistTab(props: { world: World; act: Act }) {
         </button>
       </section>
     );
-  const brews = brewsToOrder(data, a);
+  const brews = brewsToOrder(w, data, a);
   const ware = brews.includes(item) ? item : (a.wares[0] as string);
   const orders = w.brewOrders.flatMap((o, i) => (o.alchemist === a.id ? [{ o, i }] : []));
   const stock = Object.entries(st.stock);

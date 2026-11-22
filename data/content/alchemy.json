@@ -196,6 +196,26 @@
       "effect": {
         "kind": "tabula-rasa"
       }
+    },
+    {
+      "id": "grave-draught",
+      "name": "Grave Draught",
+      "source": {
+        "file": "4.0 Magic and Spellcasting/4.9.0 Magic Items and Enchanted Treasures.md",
+        "heading": "4.9.2 Potions"
+      },
+      "cost": {
+        "amount": 40,
+        "unit": "sp"
+      },
+      "encumbrance": 1,
+      "weightless": false,
+      "freeWhenWorn": false,
+      "bundlesOfThree": true,
+      "text": "A black, gritty draught poured between a corpse's teeth: like Raise Corpse, the corpse rises as a zombie or a skeleton and serves whoever poured it. The Lady's priests burn any they find, and no alchemist sells it where her mortuary stands.",
+      "effect": {
+        "kind": "raise-corpse"
+      }
     }
   ],
   "recipes": [
@@ -292,6 +312,17 @@
           "count": 1
         }
       ]
+    },
+    {
+      "item": "grave-draught",
+      "difficulty": 10,
+      "weight": 0,
+      "components": [
+        {
+          "type": "essence",
+          "count": 1
+        }
+      ]
     }
   ],
   "alchemists": [
@@ -299,7 +330,13 @@
       "id": "alchemist-westhold",
       "name": "Mother Vell",
       "town": "westhold",
-      "wares": ["healing-draught", "greater-healing", "waking-tonic", "restorative-tonic"],
+      "wares": [
+        "healing-draught",
+        "greater-healing",
+        "waking-tonic",
+        "restorative-tonic",
+        "grave-draught"
+      ],
       "alchemy": 3,
       "text": "A stooped herbwife who boils roots in the back of a tannery. Her draughts taste of bark and work better than they should."
     },
@@ -307,7 +344,13 @@
       "id": "alchemist-eastmarch",
       "name": "Corwin Ashby",
       "town": "eastmarch",
-      "wares": ["healing-draught", "restorative-tonic", "oil-of-edge", "shadow-draught"],
+      "wares": [
+        "healing-draught",
+        "restorative-tonic",
+        "oil-of-edge",
+        "shadow-draught",
+        "grave-draught"
+      ],
       "alchemy": 3,
       "text": "A former army surgeon who brews in copper stills he salvaged from the old imperial depot."
     },
@@ -315,7 +358,13 @@
       "id": "alchemist-cinderhold",
       "name": "Brakka Ashtongue",
       "town": "cinderhold",
-      "wares": ["healing-draught", "greater-healing", "oil-of-edge", "waking-tonic"],
+      "wares": [
+        "healing-draught",
+        "greater-healing",
+        "oil-of-edge",
+        "waking-tonic",
+        "grave-draught"
+      ],
       "alchemy": 3,
       "text": "An orc brewer who learned her trade dosing a legion. She still measures by the war-cup."
     },
@@ -323,7 +372,13 @@
       "id": "alchemist-gutterwick",
       "name": "Pilt Fennick",
       "town": "gutterwick",
-      "wares": ["healing-draught", "restorative-tonic", "shadow-draught", "greater-healing"],
+      "wares": [
+        "healing-draught",
+        "restorative-tonic",
+        "shadow-draught",
+        "greater-healing",
+        "grave-draught"
+      ],
       "alchemy": 3,
       "text": "A goblin who distils things in jars he won't let anyone see into. The temple buys his tonics by the case."
     }

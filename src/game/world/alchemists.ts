@@ -4,9 +4,10 @@
 // with Alchemy, they brew to order any recipe of difficulty 7 plus their Alchemy or less (the brew
 // they make on an average roll), at the brewing cost a dose, ready in the SRD's week (vendor/wwn-srd/4.0 Magic and
 // Spellcasting/4.10.0 Creating Magic Items.md), to be collected in their town. Purchases and
-// orders are town purchases, through the spending threshold.
+// orders are town purchases, through the spending threshold. Sam's call: where the Lady's mortuary
+// stands, no alchemist sells or brews a potion that raises the dead (the Grave Draught).
 import type { Alchemist, AlchemistState } from '../../data/schemas/index.ts';
-import { builtAlchemist } from './built-services.ts';
+import { builtAlchemist, builtMortuary } from './built-services.ts';
 import type { GameData } from '../character/context.ts';
 import { putLine } from '../character/stacks.ts';
 import { brewItem, reagentsListed, recipeOf } from './brewing.ts';
@@ -28,6 +29,20 @@ export function alchemistHere(w: World, data: GameData): Alchemist | undefined {
   return rules(data).alchemists.find((a) => a.town === town.id) ?? builtAlchemist(w, data, town.id);
 }
 
+/** Whether the item raises the dead and the Lady's mortuary stands in the alchemist's town. */
+function shunned(w: World, data: GameData, a: Alchemist, item: string): boolean {
+  const potion = rules(data).potions.find((p) => p.id === item);
+  if (potion?.effect.kind !== 'raise-corpse') return false;
+  const givers = data.content.missionGivers;
+  return (
+    builtMortuary(w, a.town) || givers.some((g) => g.town === a.town && g.raises === 'mortuary')
+  );
+}
+
+/** The wares an alchemist stocks here: all of them, but where the Lady's mortuary stands. */
+export const waresHere = (w: World, data: GameData, a: Alchemist): string[] =>
+  a.wares.filter((id) => !shunned(w, data, a, id));
+
 /** This month's state, or null before the party has called on them this month. */
 export function alchemistState(w: World, data: GameData, a: Alchemist): AlchemistState | null {
   const st = w.alchemists[a.id];
@@ -40,12 +55,13 @@ export function visitAlchemist(w: World, data: GameData): TownResult {
   if (!a) return no(`No alchemist works in ${townHere(w, data).name}.`);
   if (alchemistState(w, data, a)) return { ok: true };
   // Every ware stocks at least now and then, however rarely it drops.
-  const weights = a.wares.map((id) => Math.max(1, recipeOf(data, id).weight));
+  const wares = waresHere(w, data, a);
+  const weights = wares.map((id) => Math.max(1, recipeOf(data, id).weight));
   const total = weights.reduce((n, x) => n + x, 0);
   const stock: Record<string, number> = {};
   for (let i = w.rng.int(0, rules(data).maxStock); i > 0; i--) {
     let pick = w.rng.int(1, total);
-    const id = a.wares[weights.findIndex((x) => (pick -= x) <= 0)] as string;
+    const id = wares[weights.findIndex((x) => (pick -= x) <= 0)] as string;
     stock[id] = (stock[id] ?? 0) + w.rng.int(1, rules(data).maxDoses);
   }
   w.alchemists[a.id] = { since: w.day, stock };
@@ -97,10 +113,13 @@ export function buyPotion(w: World, data: GameData, item: string, memberId: stri
   return { ok: true };
 }
 
-/** The recipes an alchemist brews to order: those their Alchemy makes on an average roll. */
-export const brewsToOrder = (data: GameData, a: Alchemist): string[] =>
+/**
+ * The recipes an alchemist brews to order: those their Alchemy makes on an average roll, less what
+ * the Lady's mortuary there forbids.
+ */
+export const brewsToOrder = (w: World, data: GameData, a: Alchemist): string[] =>
   rules(data)
-    .recipes.filter((r) => r.difficulty <= ORDER_ROLL + a.alchemy)
+    .recipes.filter((r) => r.difficulty <= ORDER_ROLL + a.alchemy && !shunned(w, data, a, r.item))
     .map((r) => r.item);
 
 /** Orders doses of a recipe the alchemist brews, paid now. */
@@ -108,7 +127,7 @@ export function orderBrew(w: World, data: GameData, item: string, doses: number)
   const shop = open(w, data);
   if ('ok' in shop) return shop;
   const { a } = shop;
-  if (!brewsToOrder(data, a).includes(item)) throw new Error(`${a.name} doesn't brew ${item}`);
+  if (!brewsToOrder(w, data, a).includes(item)) throw new Error(`${a.name} doesn't brew ${item}`);
   if (doses < 1) throw new Error(`can't order ${doses} doses`);
   const listed = reagentsListed(data, item) * doses;
   if (!spend(w, data, listed)) return no(`${a.name} asks ${priceHere(w, data, listed)} crowns.`);

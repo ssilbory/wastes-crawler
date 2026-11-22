@@ -120,7 +120,8 @@ describe('alchemists (docs/rules-adaptation.md, Potions: Alchemists)', () => {
 
   it('brew to order any recipe their Alchemy makes on an average roll, like a PC', () => {
     expect(vell.alchemy).toBe(3);
-    expect(brewsToOrder(data, vell)).toEqual([
+    const w = atVell();
+    expect(brewsToOrder(w, data, vell)).toEqual([
       'healing-draught',
       'greater-healing',
       'restorative-tonic',
@@ -128,14 +129,14 @@ describe('alchemists (docs/rules-adaptation.md, Potions: Alchemists)', () => {
       'oil-of-edge',
       'shadow-draught',
       'antidote',
+      'grave-draught',
     ]);
-    expect(brewsToOrder(data, { ...vell, alchemy: 1 })).toEqual([
+    expect(brewsToOrder(w, data, { ...vell, alchemy: 1 })).toEqual([
       'healing-draught',
       'waking-tonic',
       'antidote',
     ]);
     // Oil of Edge isn't in her stock, but she brews it to order.
-    const w = atVell();
     expect(vell.wares).not.toContain('oil-of-edge');
     expect(orderBrew(w, data, 'oil-of-edge', 1)).toEqual({ ok: true });
   });
@@ -201,6 +202,7 @@ describe('alchemy content checks', () => {
       'alchemy/alchemists/nowhere: unknown town nowhere',
       'alchemy/alchemists/novice: greater-healing is past their Alchemy',
       'alchemy/alchemists/novice: restorative-tonic is past their Alchemy',
+      'alchemy/alchemists/novice: grave-draught is past their Alchemy',
     ]);
   });
 });
