@@ -192,7 +192,7 @@ test('fights a wanderer, camps on a safe square, and goes dark', async ({ page }
 });
 
 // Phase 8b: Search for a secret door, and a known trap to disarm.
-test('searches out the secret closet and works on a known trap', async ({ page }) => {
+test('searches out the secret closet and works on a known trap', async ({ page }, testInfo) => {
   await startAtBarrow(page);
   await page.getByRole('button', { name: 'Enter The Old Barrow' }).click();
   await edit(page, `Object.assign(save.dungeon, { at: { x: 2, y: 1 }, facing: 'e' });`);
@@ -217,6 +217,14 @@ test('searches out the secret closet and works on a known trap', async ({ page }
   await expect(view).toHaveScreenshot('barrow-trap.png');
   await page.getByRole('button', { name: 'Forward' }).click();
   await expect(page.locator('.bump')).toHaveText('The dart trap lies ahead.');
+  // Sam's ask: the trap's options come above the rest.
+  const explore = page.getByRole('group', { name: 'Explore' });
+  await expect(explore.getByRole('button')).toHaveText([
+    'Disarm the dart trap (1 turn)',
+    'Step onto the dart trap',
+    'Search (1 turn)',
+  ]);
+  await explore.screenshot({ path: testInfo.outputPath('trap-first.png') });
   await page.getByRole('button', { name: 'Disarm the dart trap (1 turn)' }).click();
   await expect(log).toContainText(/(disarms|can't work out|fumbles) the dart trap/);
 });

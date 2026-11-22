@@ -199,11 +199,24 @@ export function DungeonScreen(props: {
               </section>
             )}
             <DungeonControls bump={bump} onMove={move}>
-              {/* The way to another level comes first, above Search (Sam's call). */}
+              {/*
+                The way to another level and a known trap ahead come first, above the rest of the
+                options (Sam's calls).
+              */}
               {stairsLabel && !w.encounter && (
                 <button type="button" aria-keyshortcuts={keysFor('stairs')} onClick={climb}>
                   {stairsLabel}
                 </button>
+              )}
+              {trap && !w.encounter && (
+                <>
+                  <button type="button" onClick={() => act(() => disarm(w, data))}>
+                    Disarm the {trap.name} (1 turn)
+                  </button>
+                  <button type="button" onClick={() => act(() => step(w, data, 'forward', true))}>
+                    Step onto the {trap.name}
+                  </button>
+                </>
               )}
               {stairsAway && (
                 <button type="button" onClick={() => walk.walkTo(stairsAway)}>
@@ -233,19 +246,6 @@ export function DungeonScreen(props: {
                       {m.character.name}: escape to the surface with the Ochre Sigil
                     </button>
                   ))}
-                  {trap && (
-                    <>
-                      <button type="button" onClick={() => act(() => disarm(w, data))}>
-                        Disarm the {trap.name} (1 turn)
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => act(() => step(w, data, 'forward', true))}
-                      >
-                        Step onto the {trap.name}
-                      </button>
-                    </>
-                  )}
                 </>
               )}
             </DungeonControls>
