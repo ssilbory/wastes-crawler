@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { MonsterFigureSchema } from './figure-content.ts';
-import { MonsterCasterSchema } from './combat-content.ts';
+import { MonsterCasterSchema, MonsterTagSchema } from './combat-content.ts';
 import { DiceSchema, IdSchema, recordBase } from './common.ts';
 
 /** The SRD 5.1.0 stat line every monster shares. */
@@ -70,5 +70,7 @@ export const SettingMonsterSchema = z.strictObject({
   weapon: IdSchema.optional(),
   /** A figure of its own, when it looks nothing like its base (V7: the sand drake, a lizard). */
   figure: MonsterFigureSchema.optional(),
+  /** Tags it has on top of its base's (Sam's call: the Bone Crawler, raised bone, is undead). */
+  tags: z.array(MonsterTagSchema).min(1).optional(),
 });
 export type SettingMonster = z.infer<typeof SettingMonsterSchema>;

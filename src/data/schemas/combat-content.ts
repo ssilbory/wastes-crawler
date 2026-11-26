@@ -60,22 +60,23 @@ export type Strike = z.infer<typeof StrikeSchema>;
  * what each one drops when the party wins; none for beasts and the mindless. `caster` makes it
  * cast.
  */
+/** What a monster is, for the rules that ask: flight, reach, undeath, and the like. */
+export const MonsterTagSchema = z.enum([
+  'flying',
+  'reach',
+  'unliving',
+  'metal',
+  'slow',
+  'undead',
+  'large',
+  'plant',
+  'humanoid',
+]);
+
 export const MonsterCombatSchema = z.strictObject({
   id: IdSchema,
   weapon: IdSchema.optional(),
-  tags: z.array(
-    z.enum([
-      'flying',
-      'reach',
-      'unliving',
-      'metal',
-      'slow',
-      'undead',
-      'large',
-      'plant',
-      'humanoid',
-    ]),
-  ),
+  tags: z.array(MonsterTagSchema),
   /** Its blows only knock foes out, as the Phantasmal Eidolon's (4.4.0). */
   nonLethal: z.literal(true).optional(),
   loot: LootDiceSchema.optional(),

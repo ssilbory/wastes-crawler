@@ -557,6 +557,7 @@
     "name": "Bone Crawler",
     "base": "terrible-warbeast",
     "figure": "crawler",
+    "tags": ["unliving", "undead"],
     "description": "A centipede-thing of fused bone, raised in some war no one recorded."
   },
   {
